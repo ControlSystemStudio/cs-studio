@@ -7,7 +7,7 @@ package org.epics.pvmanager.sim;
 
 import java.math.BigDecimal;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  *

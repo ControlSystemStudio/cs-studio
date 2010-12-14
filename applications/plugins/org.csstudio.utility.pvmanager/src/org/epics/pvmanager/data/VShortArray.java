@@ -11,5 +11,6 @@ package org.epics.pvmanager.data;
  * @author carcassi
  */
 public interface VShortArray extends Array<Integer>, Alarm, Time, Display {
+    @Override
     short[] getArray();
 }

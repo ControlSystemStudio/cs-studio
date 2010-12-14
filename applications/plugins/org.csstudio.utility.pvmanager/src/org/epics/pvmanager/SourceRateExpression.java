@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,11 @@ public class SourceRateExpression<T> {
         this.defaultName = pvName;
     }
 
-    private SourceRateExpression(List<SourceRateExpression<?>> childExpressions, Function<T> function, String defaultName) {
+    public SourceRateExpression(SourceRateExpression<?> childExpression, Function<T> function, String defaultName) {
+        this(Collections.<SourceRateExpression<?>>singletonList(childExpression), function, defaultName);
+    }
+
+    public SourceRateExpression(List<SourceRateExpression<?>> childExpressions, Function<T> function, String defaultName) {
         caches = new HashMap<String, ValueCache>();
         for (SourceRateExpression<?> childExpression : childExpressions) {
             for (Map.Entry<String, ValueCache> entry : childExpression.getCaches().entrySet()) {

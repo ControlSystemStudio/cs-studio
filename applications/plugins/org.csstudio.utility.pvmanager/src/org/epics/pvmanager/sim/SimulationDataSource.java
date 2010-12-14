@@ -15,7 +15,8 @@ import java.util.logging.Logger;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.DataRecipe;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.ExceptionHandler;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.data.VDouble;
 
@@ -34,15 +35,6 @@ public final class SimulationDataSource extends DataSource {
      */
     public static DataSource simulatedData() {
         return SimulationDataSource.instance;
-    }
-
-    static abstract class ValueProcessor<T, E>
-    extends DataSource.ValueProcessor<T, E> {
-
-        public ValueProcessor(Collector collector, ValueCache<E> cache) {
-            super(collector, cache);
-        }
-
     }
 
     private static final Logger log = Logger.getLogger(SimulationDataSource.class.getName());
@@ -66,7 +58,7 @@ public final class SimulationDataSource extends DataSource {
         for (Map.Entry<Collector, Map<String, ValueCache>> collEntry : recipe.getChannelsPerCollectors().entrySet()) {
             Collector collector = collEntry.getKey();
             for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
-                Simulation<?> simFunction = connectSingle(collector, entry.getKey(), entry.getValue());
+                Simulation<?> simFunction = connectSingle(collector, entry.getKey(), entry.getValue(), recipe.getExceptionHandler());
                 functions.add(simFunction);
             }
         }
@@ -98,21 +90,11 @@ public final class SimulationDataSource extends DataSource {
         timer.purge();
     }
 
-    private Simulation<?> connectSingle(Collector collector, String pvName, ValueCache<?> cache) {
-        if (cache.getType().equals(VDouble.class)) {
-            @SuppressWarnings("unchecked")
-            ValueCache<VDouble> vDoubleCache = (ValueCache<VDouble>) cache;
-            return connectVDouble(pvName, collector, vDoubleCache);
-        } else {
-            throw new UnsupportedOperationException("Type " + cache.getType().getName() + " is not yet supported");
-        }
-    }
-
-    private Simulation<?> connectVDouble(String name, Collector collector, ValueCache<VDouble> cache) {
-        @SuppressWarnings("unchecked")
-        final Simulation<VDouble> simulation = (Simulation<VDouble>) NameParser.createFunction(name);
-        simulation.initialize(collector, cache);
-        return simulation;
+    @SuppressWarnings("unchecked")
+    private Simulation<?> connectSingle(Collector collector, String pvName, ValueCache<?> cache, ExceptionHandler exceptionHandler) {
+        SimFunction simFunction = (SimFunction) NameParser.createFunction(pvName);
+        simFunction.initialize(collector, cache, exceptionHandler);
+        return simFunction;
     }
 
 }

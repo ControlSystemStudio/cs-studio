@@ -37,7 +37,7 @@ public class MeterWidgetTest
         gd.verticalAlignment = SWT.FILL;
         meter.setLayoutData(gd);
         
-        meter.configure(0, 0.0, 2.0, 8.0, 9.0, 10.0, 2);
+        meter.setLimits(0, 0.0, 2.0, 8.0, 9.0, 10.0, 2);
         
         final Slider slider = new Slider(shell, SWT.HORIZONTAL);
         gd = new GridData();
@@ -51,7 +51,7 @@ public class MeterWidgetTest
             public void widgetSelected(SelectionEvent e)
             {
                 final double value = slider.getSelection()-10.0;
-                System.out.println("Value: " + value);
+                //System.out.println("Value: " + value);
                 meter.setValue(value);
             }
         });

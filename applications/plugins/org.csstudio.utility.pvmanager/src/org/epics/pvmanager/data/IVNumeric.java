@@ -6,22 +6,15 @@
 package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Set;
 import org.epics.pvmanager.util.TimeStamp;
 
 /**
- * Immutable VMultiDouble implementation.
+ * Partial implementation for numeric types.
  *
  * @author carcassi
  */
-class IVMultiDouble implements VMultiDouble {
+class IVNumeric extends IVMetadata implements Display {
     
-    private final List<VDouble> values;
-    private final AlarmSeverity alarmSeverity;
-    private final AlarmStatus alarmStatus;
-    private final TimeStamp timeStamp;
-    private final Integer timeUserTag;
     private final Double lowerDisplayLimit;
     private final Double lowerCtrlLimit;
     private final Double lowerAlarmLimit;
@@ -33,17 +26,12 @@ class IVMultiDouble implements VMultiDouble {
     private final Double upperCtrlLimit;
     private final Double upperDisplayLimit;
 
-    IVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
-            AlarmStatus alarmStatus,
+    IVNumeric(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        this.values = values;
-        this.alarmSeverity = alarmSeverity;
-        this.alarmStatus = alarmStatus;
-        this.timeStamp = timeStamp;
-        this.timeUserTag = timeUserTag;
+        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag);
         this.lowerDisplayLimit = lowerDisplayLimit;
         this.lowerCtrlLimit = lowerCtrlLimit;
         this.lowerAlarmLimit = lowerAlarmLimit;
@@ -54,33 +42,6 @@ class IVMultiDouble implements VMultiDouble {
         this.upperAlarmLimit = upperAlarmLimit;
         this.upperCtrlLimit = upperCtrlLimit;
         this.upperDisplayLimit = upperDisplayLimit;
-    }
-
-
-
-    @Override
-    public List<VDouble> getValues() {
-        return values;
-    }
-
-    @Override
-    public AlarmSeverity getAlarmSeverity() {
-        return alarmSeverity;
-    }
-
-    @Override
-    public AlarmStatus getAlarmStatus() {
-        return alarmStatus;
-    }
-
-    @Override
-    public TimeStamp getTimeStamp() {
-        return timeStamp;
-    }
-
-    @Override
-    public Integer getTimeUserTag() {
-        return timeUserTag;
     }
 
     @Override

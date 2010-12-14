@@ -7,6 +7,7 @@ package org.epics.pvmanager;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * An object representing the PV. It contains all elements that are common
@@ -60,12 +61,61 @@ public final class PV<T> {
     }
 
     /**
+     * Adds a listener to the value, which is notified only if the value is
+     * of a given type. This method is thread safe.
+     *
+     * @param listener a new listener
+     */
+    public void addPVValueChangeListener(final Class<?> clazz, final PVValueChangeListener listener) {
+        if (isClosed())
+            throw new IllegalStateException("Can't add listeners to a closed PV");
+        valueChangeListeners.add(new ListenerDelegate<T>(clazz, listener));
+    }
+
+    private class ListenerDelegate<T> implements PVValueChangeListener {
+
+        private Class<?> clazz;
+        private PVValueChangeListener delegate;
+
+        public ListenerDelegate(Class<?> clazz, PVValueChangeListener delegate) {
+            this.clazz = clazz;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void pvValueChanged() {
+            // forward the change if the value is of the right type
+            if (clazz.isInstance(getValue()))
+                delegate.pvValueChanged();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // Override equals so that a remove on the user listener
+            // will remove this delegate
+            if (obj instanceof ListenerDelegate) {
+                return delegate.equals(((ListenerDelegate) obj).delegate);
+            }
+
+            return delegate.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            // Override hashCode because of equals/hashCode contract
+            return delegate.hashCode();
+        }
+    }
+
+    /**
      * Adds a listener to the value. This method is thread safe.
      *
      * @param listener a new listener
      */
     public void removePVValueChangeListener(PVValueChangeListener listener) {
-        valueChangeListeners.remove(listener);
+        // Removing a delegate will cause the proper comparisons
+        // so that it removes either the direct or the delegate
+        valueChangeListeners.remove(new ListenerDelegate<T>(Object.class, listener));
     }
 
     private final String name;
@@ -119,5 +169,26 @@ public final class PV<T> {
      */
     public boolean isClosed() {
         return closed;
+    }
+    
+    private AtomicReference<Exception> lastException = new AtomicReference<Exception>();
+    
+    /**
+     * Changes the last exception associated with the PV.
+     * 
+     * @param ex the new exception
+     */
+    void setLastException(Exception ex) {
+        lastException.set(ex);
+    }
+
+    /**
+     * Returns the last exception that was generated preparing the value
+     * for this PV and clears it (subsequent call will return null).
+     *
+     * @return the last generated exception or null
+     */
+    public Exception lastException() {
+        return lastException.getAndSet(null);
     }
 }

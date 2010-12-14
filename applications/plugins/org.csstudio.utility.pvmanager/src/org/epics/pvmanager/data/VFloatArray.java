@@ -11,5 +11,6 @@ package org.epics.pvmanager.data;
  * @author carcassi
  */
 public interface VFloatArray extends Array<Double>, Alarm, Time, Display {
+    @Override
     float[] getArray();
 }

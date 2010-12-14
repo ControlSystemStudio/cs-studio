@@ -3,7 +3,7 @@
  * All rights reserved. Use is subject to license terms.
  */
 
-package org.epics.pvmanager;
+package org.epics.pvmanager.util;
 
 /**
  * A duration of time (such as 3 sec, 30ms, 1nsec) at the nanosecond precision.

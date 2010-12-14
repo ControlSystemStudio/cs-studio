@@ -8,18 +8,17 @@ package org.epics.pvmanager.data;
 import java.util.ArrayList;
 import java.util.List;
 import org.epics.pvmanager.NullUtils;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.TimedTypeSupport;
-import org.epics.pvmanager.TypeSupport;
 
 /**
- * Adds support for EPICS standard types.
+ * Adds support for control system standard types defined in this package.
  *
  * @author carcassi
  */
-class EpicsTypeSupport {
+public class TypeSupport {
 
-    private static <T> TypeSupport<T> immutableTypeSupport(Class<T> clazz) {
+    private static <T> org.epics.pvmanager.TypeSupport<T> immutableTypeSupport(Class<T> clazz) {
         return new TimedTypeSupport<T>() {
 
             @Override
@@ -38,7 +37,11 @@ class EpicsTypeSupport {
 
     private static boolean installed = false;
 
-    static void install() {
+    /**
+     * Installs type support. This should only be called by either DataSources
+     * or ExpressionLanguage libraries that require support for these types.
+     */
+    public static void install() {
         // Install only once
         if (installed)
             return;
@@ -54,26 +57,26 @@ class EpicsTypeSupport {
 
     private static void addScalar() {
         // Add support for all scalars: simply return the new value
-        TypeSupport.addTypeSupport(Scalar.class, immutableTypeSupport(Scalar.class));
+        org.epics.pvmanager.TypeSupport.addTypeSupport(Scalar.class, immutableTypeSupport(Scalar.class));
     }
 
     private static void addMultiScalar() {
         // Add support for all multi scalars: simply return the new value
-        TypeSupport.addTypeSupport(MultiScalar.class, immutableTypeSupport(MultiScalar.class));
+        org.epics.pvmanager.TypeSupport.addTypeSupport(MultiScalar.class, immutableTypeSupport(MultiScalar.class));
     }
 
     private static void addArray() {
         // Add support for all arrays: simply return the new value
-        TypeSupport.addTypeSupport(Array.class, immutableTypeSupport(Array.class));
+        org.epics.pvmanager.TypeSupport.addTypeSupport(Array.class, immutableTypeSupport(Array.class));
     }
 
     private static void addStatistics() {
         // Add support for statistics: simply return the new value
-        TypeSupport.addTypeSupport(Statistics.class, immutableTypeSupport(Statistics.class));
+        org.epics.pvmanager.TypeSupport.addTypeSupport(Statistics.class, immutableTypeSupport(Statistics.class));
     }
 
     private static void addList() {
-        TypeSupport.addTypeSupport(List.class, new TypeSupport<List>() {
+        org.epics.pvmanager.TypeSupport.addTypeSupport(List.class, new org.epics.pvmanager.TypeSupport<List>() {
 
             @Override
             @SuppressWarnings("unchecked")
@@ -93,7 +96,7 @@ class EpicsTypeSupport {
                     }
 
                     if (newValue.get(index) != null) {
-                        Notification itemNotification = TypeSupport.notification(oldValue.get(index), newValue.get(index));
+                        Notification itemNotification = org.epics.pvmanager.TypeSupport.notification(oldValue.get(index), newValue.get(index));
                         if (itemNotification.isNotificationNeeded()) {
                             notificationNeeded = true;
                             oldValue.set(index, itemNotification.getNewValue());

@@ -1,6 +1,6 @@
 package org.csstudio.multichannelviewer;
 
-import static org.epics.pvmanager.TimeDuration.ms;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 import static org.epics.pvmanager.data.ExpressionLanguage.synchronizedArrayOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
 

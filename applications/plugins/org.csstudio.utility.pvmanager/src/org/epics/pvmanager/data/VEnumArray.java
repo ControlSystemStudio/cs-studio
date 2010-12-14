@@ -10,5 +10,6 @@ package org.epics.pvmanager.data;
  * @author carcassi
  */
 public interface VEnumArray extends Array<String>, Enum, Alarm, Time {
+    @Override
     String[] getArray();
 }
