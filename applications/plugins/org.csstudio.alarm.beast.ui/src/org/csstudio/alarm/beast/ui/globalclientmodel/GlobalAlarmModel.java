@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
@@ -44,6 +45,7 @@ public class GlobalAlarmModel
      *
      *  Synchronize on <code>alarms</code> for access.
      */
+    final private List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
     final private List<GlobalAlarm> alarms = new ArrayList<GlobalAlarm>();
 
     /** Initialize
@@ -151,9 +153,8 @@ public class GlobalAlarmModel
         }
         else
         {
-            // TODO check for existing alarm
-            // Add alarm
-            final GlobalAlarm alarm = GlobalAlarm.fromPath(info.getNameOrPath(),
+            // Add/update alarm
+            final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations, info.getNameOrPath(),
                     info.getSeverity(), info.getMessage(), info.getTimestamp());
             synchronized (alarms)
             {
