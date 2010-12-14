@@ -71,6 +71,17 @@ public class TypeSupportUnitTest {
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
+
+        try {
+            final Byte b = Byte.valueOf((byte) -128);
+            final String sb = b.toString();
+            final String archiveString = TypeSupport.toArchiveString(b);
+            Assert.assertTrue(archiveString.equals(sb));
+            final Byte bFromA = TypeSupport.fromScalarArchiveString(Byte.class, archiveString);
+            Assert.assertTrue(bFromA.equals(b));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
         // TODO (bknerr) for all number types...
 
         try {
@@ -81,11 +92,10 @@ public class TypeSupportUnitTest {
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
-
     }
 
     @Test
-    public void testMultiScalarConversion() {
+    public void testMultiScalarEmptyConversion() {
 
         final List<String> valuesEmpty = Lists.newArrayList();
         try {
@@ -96,13 +106,20 @@ public class TypeSupportUnitTest {
         } catch (final Exception e) {
             Assert.assertTrue(true);
         }
+    }
 
+    @Test
+    public void testMultiScalarMisMatchConversion() {
         try {
             TypeSupport.fromMultiScalarArchiveString(Integer.class, "theshapeofpunk,tocome");
         } catch (final ConversionTypeSupportException e) {
             Assert.assertTrue(true);
         }
 
+    }
+
+    @Test
+    public void testMultiScalarStringConversion() {
         final Collection<String> valuesS = Lists.newArrayList("modest", "mouse");
         try {
             final String archiveString = TypeSupport.toArchiveString(valuesS);
@@ -111,6 +128,10 @@ public class TypeSupportUnitTest {
             Assert.fail();
         }
 
+    }
+
+    @Test
+    public void testMultiScalarIntegerConversion() {
         final Collection<Integer> valuesI = Lists.newArrayList(1,2,3,4);
         try {
             final String archiveString = TypeSupport.toArchiveString(valuesI);
@@ -119,10 +140,27 @@ public class TypeSupportUnitTest {
             Assert.fail();
         }
 
+    }
+
+    @Test
+    public void testMultiScalarDoubleConversion() {
         final Collection<Double> valuesD = Lists.newArrayList(1.0,2.0);
         try {
             final String archiveString = TypeSupport.toArchiveString(valuesD);
-            Assert.assertEquals("1.0,2.0", archiveString);
+            Assert.assertEquals("1.0\\,2.0", archiveString);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+
+    }
+
+    @Test
+    public void testMultiScalarByteConversion() {
+        final Collection<Byte> valuesB = Lists.newArrayList(Byte.valueOf("127"),
+                                                            Byte.valueOf("-128"));
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesB);
+            Assert.assertEquals("127\\,-128", archiveString);
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
@@ -149,19 +187,97 @@ public class TypeSupportUnitTest {
     }
 
     @Test
-    public void testIValue2CssValueConversion() {
+    public void testIValue2CssValueConversionReturnsNull() {
         try {
-            final ICssAlarmValueType<List<Double>> cssV = TypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                                                               ValueFactory.createMinorSeverity(),
-                                                                                                               "HIHI",
-                                                                                                               null,
-                                                                                                               null,
-                                                                                                               new double[]{1.0, 2.0}),
-                                                                                null,
-                                                                                TimeInstantBuilder.buildFromNow());
+            final ICssAlarmValueType<List<Double>> cssV =
+                TypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                     ValueFactory.createMinorSeverity(),
+                                                                     "HIHI",
+                                                                     null,
+                                                                     null,
+                                                                     null),
+                                                                     null,
+                                                                     TimeInstantBuilder.buildFromNow());
+            Assert.assertNull(cssV);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testDoubleValue2CssValueConversion() {
+        try {
+            final ICssAlarmValueType<List<Double>> cssV =
+                TypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                     ValueFactory.createMinorSeverity(),
+                                                                     "HIHI",
+                                                                     null,
+                                                                     null,
+                                                                     new double[]{1.0, 2.0}),
+                                                                     null,
+                                                                     TimeInstantBuilder.buildFromNow());
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals(Double.valueOf(1.0), cssV.getValueData().get(0));
             Assert.assertEquals(Double.valueOf(2.0), cssV.getValueData().get(1));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testLongValue2CssValueConversion() {
+        try {
+            final ICssAlarmValueType<List<Long>> cssV =
+                TypeSupport.toCssType(ValueFactory.createLongValue(TimestampFactory.now(),
+                                                                   ValueFactory.createMinorSeverity(),
+                                                                   "HIHI",
+                                                                   null,
+                                                                   null,
+                                                                   new long[]{1L, 2L}),
+                                                                   null,
+                                                                   TimeInstantBuilder.buildFromNow());
+            Assert.assertEquals(2, cssV.getValueData().size());
+            Assert.assertEquals(Long.valueOf(1L), cssV.getValueData().get(0));
+            Assert.assertEquals(Long.valueOf(2L), cssV.getValueData().get(1));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testEnumValue2CssValueConversion() {
+        try {
+            final ICssAlarmValueType<List<Integer>> cssV =
+                TypeSupport.toCssType(ValueFactory.createEnumeratedValue(TimestampFactory.now(),
+                                                                         ValueFactory.createMinorSeverity(),
+                                                                         "HIHI",
+                                                                         null,
+                                                                         null,
+                                                                         new int[]{1, 2}),
+                                                                         null,
+                                                                         TimeInstantBuilder.buildFromNow());
+            Assert.assertEquals(2, cssV.getValueData().size());
+            Assert.assertEquals(Integer.valueOf(1), cssV.getValueData().get(0));
+            Assert.assertEquals(Integer.valueOf(2), cssV.getValueData().get(1));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testStringValue2CssValueConversion() {
+        try {
+            final ICssAlarmValueType<List<String>> cssV =
+                TypeSupport.toCssType(ValueFactory.createStringValue(TimestampFactory.now(),
+                                                                     ValueFactory.createMinorSeverity(),
+                                                                     "HIHI",
+                                                                     null,
+                                                                     new String[]{"small", "black"}),
+                                                                     null,
+                                                                         TimeInstantBuilder.buildFromNow());
+            Assert.assertEquals(2, cssV.getValueData().size());
+            Assert.assertEquals("small", cssV.getValueData().get(0));
+            Assert.assertEquals("black", cssV.getValueData().get(1));
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }

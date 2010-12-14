@@ -43,7 +43,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final N d) {
+    public Double convertToDouble(@Nonnull final N d) throws ConversionTypeSupportException {
         return d.doubleValue();
     }
 }

@@ -61,7 +61,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
     // CHECKSTYLE OFF: MethodLength
     public static void install() {
-    // CHECKSTYLE ON: MethodLength
+        // CHECKSTYLE ON: MethodLength
         if (INSTALLED) {
             return;
         }
@@ -73,39 +73,39 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                                                           @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final double[] values = value.getValues();
-                if (values.length == 0) {
+                if (values == null || values.length == 0) {
                     return null;
                 }
                 if (values.length == 1) {
                     return new CssAlarmValueType<Double>(Double.valueOf(values[0]),
-                                                                 alarm,
-                                                                 timestamp);
+                                                         alarm,
+                                                         timestamp);
                 }
                 return new CssAlarmValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values)),
-                                                                   alarm,
-                                                                   timestamp);
+                                                           alarm,
+                                                           timestamp);
             }
         });
         TypeSupport.addTypeSupport(IEnumeratedValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IEnumeratedValue>() {
-                @CheckForNull
-                @Override
-                public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value,
-                                                              @Nullable final IAlarm alarm,
-                                                              @Nonnull final TimeInstant timestamp)  {
-                    final int[] values = value.getValues();
-                    if (values.length == 0) {
-                        return null;
-                    }
-                    if (values.length == 1) {
-                        return new CssAlarmValueType<Integer>(Integer.valueOf(values[0]),
-                                alarm,
-                                timestamp);
-                    }
-                    return new CssAlarmValueType<List<Integer>>(Lists.newArrayList(Ints.asList(values)),
-                            alarm,
-                            timestamp);
+            @CheckForNull
+            @Override
+            public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value,
+                                                          @Nullable final IAlarm alarm,
+                                                          @Nonnull final TimeInstant timestamp)  {
+                final int[] values = value.getValues();
+                if (values == null || values.length == 0) {
+                    return null;
                 }
+                if (values.length == 1) {
+                    return new CssAlarmValueType<Integer>(Integer.valueOf(values[0]),
+                                                          alarm,
+                                                          timestamp);
+                }
+                return new CssAlarmValueType<List<Integer>>(Lists.newArrayList(Ints.asList(values)),
+                                                            alarm,
+                                                            timestamp);
+            }
         });
         TypeSupport.addTypeSupport(ILongValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, ILongValue>() {
@@ -115,17 +115,17 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                                                           @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final long[] values = value.getValues();
-                if (values.length == 0) {
+                if (values == null || values.length == 0) {
                     return null;
                 }
                 if (values.length == 1) {
                     return new CssAlarmValueType<Long>(Long.valueOf(values[0]),
-                                                               alarm,
-                                                               timestamp);
+                                                       alarm,
+                                                       timestamp);
                 }
                 return new CssAlarmValueType<List<Long>>(Lists.newArrayList(Longs.asList(values)),
-                                                                 alarm,
-                                                                 timestamp);
+                                                         alarm,
+                                                         timestamp);
             }
         });
         TypeSupport.addTypeSupport(IStringValue.class,
@@ -136,17 +136,17 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                                                           @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final String[] values = value.getValues();
-                if (values.length == 0) {
+                if (values == null || values.length == 0) {
                     return null;
                 }
                 if (values.length == 1) {
                     return new CssAlarmValueType<String>(values[0],
-                                                                 alarm,
-                                                                 timestamp);
+                                                         alarm,
+                                                         timestamp);
                 }
                 return new CssAlarmValueType<List<String>>(Lists.newArrayList(values),
-                                                                   alarm,
-                                                                   timestamp);
+                                                           alarm,
+                                                           timestamp);
             }
         });
         INSTALLED = true;

@@ -64,44 +64,8 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
         TypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
 
-//        TypeSupport.addTypeSupport(Iterable.class, new ScalarArchiveTypeConversionSupport<Iterable>() {
-//            @Override
-//            @Nonnull
-//            public String convertToArchiveString(@Nonnull final Iterable values) throws ConversionTypeSupportException {
-//                @SuppressWarnings("unchecked")
-//                final Iterable items = Iterables.transform(values, new Function<Object, String>() {
-//                    @Override
-//                    @CheckForNull
-//                    public String apply(@Nonnull final Object from) {
-//                        try {
-//                            return TypeSupport.toArchiveString(from);
-//                        } catch (final ConversionTypeSupportException e) {
-//                            LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
-//                            return null;
-//                        }
-//                    }
-//                });
-//                final String result = Joiner.on(",").join(items);
-//                return result;
-//            }
-//            @Override
-//            @Nonnull
-//            public Iterable convertScalarFromArchiveString(@Nonnull final String value) {
-//
-//                final Iterable<String> split = Splitter.on(",").split(value);
-//                return split;
-//            }
-//            @Override
-//            @Nonnull
-//            public Double convertToDouble(@Nonnull final Iterable l) throws ConversionTypeSupportException {
-//                if (Iterables.size(l) == 1) {
-//                    final Object value = l.iterator().next();
-//                    return TypeSupport.toDouble(value);
-//                }
-//                return Double.NaN;
-//            }
-//        });
         INSTALLED = true;
     }
 
