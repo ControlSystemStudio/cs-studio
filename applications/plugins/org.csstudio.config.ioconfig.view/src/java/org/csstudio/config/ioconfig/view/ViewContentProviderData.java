@@ -36,7 +36,9 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
 	@SuppressWarnings("unchecked")
 	public void inputChanged(@Nullable final Viewer v,
 			@Nullable final Object oldInput, @Nullable final Object newInput) {
-		if (newInput instanceof FacilityDBO) {
+	    if(newInput == null && _facilities == null) {
+	        _facilities = new ArrayList<FacilityDBO>();
+	    } else  if (newInput instanceof FacilityDBO) {
 			_facilities.add((FacilityDBO) newInput);
 		} else if (newInput instanceof List) {
 			_facilities = (List<FacilityDBO>) newInput;

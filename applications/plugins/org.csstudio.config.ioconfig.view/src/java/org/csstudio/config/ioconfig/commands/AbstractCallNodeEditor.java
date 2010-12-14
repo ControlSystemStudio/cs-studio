@@ -37,8 +37,10 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.view.MainView;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -59,6 +61,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public abstract class AbstractCallNodeEditor extends AbstractHandler {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AbstractCallNodeEditor.class);
+    
     /**
      * (@inheritDoc)
      */
@@ -70,12 +75,13 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         IWorkbenchPage page = window.getActivePage();
 
         AbstractNodeDBO obj = getCallerNode(page);
-
-        try {
-            openNodeEditor(obj, page);
-        } catch (PartInitException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        
+        if (obj != null) {
+            try {
+                openNodeEditor(obj, page);
+            } catch (PartInitException e1) {
+                LOG.error(e1);
+            }
         }
         return null;
     }

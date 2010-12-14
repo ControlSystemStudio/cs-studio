@@ -403,25 +403,6 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         _alsoChanfedNodes.clear();
     }
 
-    /**
-     * {@link Comparable}.
-     *
-     * @param other
-     *            the node to compare whit this node.
-     * @return if this node equals whit the give node return 0.
-     */
-    @Override
-    public int compareTo(final AbstractNodeDBO other) {
-        if (this.getClass() != other.getClass()) {
-            return -1;
-        }
-        int comper = getId() - other.getId();
-        if (comper == 0 && getId() == 0) {
-            comper = this.getSortIndex() - other.getSortIndex();
-        }
-        return comper;
-    }
-
     @Deprecated
     public void setImage(final Image image) {
         if (image != null) {
@@ -560,17 +541,46 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     }
 
     /**
+     * {@link Comparable}.
+     *
+     * @param other
+     *            the node to compare whit this node.
+     * @return if this node equals whit the give node return 0.
+     */
+    @Override
+    public int compareTo(final AbstractNodeDBO other) {
+
+        if (other == null) {
+            return -1;
+        }
+
+        if (this.getClass() != other.getClass()) {
+            return -1;
+        }
+        int compare = getId() - other.getId();
+        if (compare == 0 && getId() == 0) {
+            compare = this.getSortIndex() - other.getSortIndex();
+        }
+        return compare;
+    }
+
+    
+    /**
      * (@inheritDoc)
      */
     @Override
     public boolean equals(final Object obj) {
         // TODO (hrickens) : check whether this method does what is intended - do we need hashcode as well?
-        if (!super.equals(obj)) {
-            return false;
+        if (super.equals(obj)) {
+            return true;
         }
         if (obj == null) {
             return false;
         }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        
         if (obj instanceof AbstractNodeDBO ) {
 
             final AbstractNodeDBO other = (AbstractNodeDBO) obj;

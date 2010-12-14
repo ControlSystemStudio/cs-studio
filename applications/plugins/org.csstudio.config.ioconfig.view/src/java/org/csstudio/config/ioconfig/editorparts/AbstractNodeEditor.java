@@ -60,7 +60,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -104,7 +103,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.views.markers.TodoFiltersContributionParameters;
 import org.eclipse.ui.part.EditorPart;
 
 /**
@@ -139,8 +137,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			// if (getNode().isPersistent()) {
 			if (!isNew()) {
 				cancel();
-				if (getDocumentationManageView() != null) {
-					getDocumentationManageView().cancel();
+				DocumentationManageView documentationManageView = getDocumentationManageView();
+                if (documentationManageView != null) {
+					documentationManageView.cancel();
 				}
 				setSaveButtonSaved();
 			} else {
@@ -150,10 +149,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 								+ node.getClass().getSimpleName() + "?");
 				if (openQuestion) {
 					setSaveButtonSaved();
-					// ISelection selection = getProfiBusTreeView()
-					// .getTreeViewer().getSelection();
-					// if(selection.isEmpty()) {
-
 					// hrickens (01.10.2010): Beim Cancel einer neuen Facility
 					// macht nur Perfrom close Sinn.
 					AbstractNodeDBO parent = node.getParent();
@@ -161,12 +156,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 						parent.removeChild(node);
 					}
 					perfromClose();
-					// } else {
-					// getProfiBusTreeView().getTreeViewer().setSelection(selection);
-					// }
-				} else {
-					// TODO: do nothing or cancel?
-				}
+				} 
 			}
 		}
 
@@ -242,21 +232,22 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 		@Override
 		public void widgetSelected(@Nonnull final SelectionEvent e) {
-			final StructuredSelection selection = (StructuredSelection) _tableViewer
-					.getSelection();
-			final GSDFileDBO removeFile = (GSDFileDBO) selection
-					.getFirstElement();
-
-			if (MessageDialog.openQuestion(getShell(),
-					"Lösche Datei aus der Datenbank",
-					"Sind sie sicher das sie die Datei " + removeFile.getName()
-							+ " löschen möchten")) {
-				Repository.removeGSDFiles(removeFile);
-				if (getGsdFiles() != null) {
-					getGsdFiles().remove(removeFile);
-				}
-				_tableViewer.setInput(getGsdFiles());
-			}
+            final StructuredSelection selection = (StructuredSelection) _tableViewer.getSelection();
+            final GSDFileDBO removeFile = (GSDFileDBO) selection.getFirstElement();
+            
+            if (removeFile != null) {
+                if (MessageDialog.openQuestion(getShell(),
+                                               "Lösche Datei aus der Datenbank",
+                                               "Sind sie sicher das sie die Datei "
+                                                       + removeFile.getName() + " löschen möchten")) {
+                    Repository.removeGSDFiles(removeFile);
+                    List<GSDFileDBO> gsdFiles = getGsdFiles();
+                    if (gsdFiles != null) {
+                        gsdFiles.remove(removeFile);
+                    }
+                    _tableViewer.setInput(gsdFiles);
+                }
+            }
 
 		}
 	}
@@ -483,7 +474,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		return newText;
 	}
 
-	protected static void resetString(Text textField) {
+	protected static void resetString(@Nonnull Text textField) {
 		String text = (String) textField.getData();
 		if (text != null) {
 			textField.setText(text);
@@ -577,9 +568,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	// Node Editor View
 
 	public void cancel() {
-		if (getDescText() != null && getDescText().getData() != null
-				&& getDescText().getData() instanceof String) {
-			setDesc((String) getDescText().getData());
+		Text descText = getDescText();
+        if (descText != null && descText.getData() != null
+				&& descText.getData() instanceof String) {
+			setDesc((String) descText.getData());
 		}
 		if (getNode() != null) {
 			getNode().setDirty(false);
@@ -951,7 +943,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			@Nonnull final IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		getProfiBusTreeView().closeOpenEditor();
+//		getProfiBusTreeView().closeOpenEditor();
 		_node = ((NodeEditorInput) input).getNode();
 		setNew(((NodeEditorInput) input).isNew());
 		setPartName(_node.getName());
@@ -1029,7 +1021,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		});
 		setText(descText, getNode().getDescription(), 255);
 		setDescWidget(descText);
-		gDesc.setTabList(new Control[] { descText });
+		gDesc.setTabList(new Control[] {descText });
 	}
 
 	/**
@@ -1135,21 +1127,13 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	}
 
 	public void perfromClose() {
-		// TODO: Schliesst den Momentan angezeigen Editor und nicht den Editor
-		// der das Command ausführt
 		final IViewSite site = getProfiBusTreeView().getSite();
-		final IHandlerService handlerService = (IHandlerService) site
-				.getService(IHandlerService.class);
-		try {
-			setFocus();
-			handlerService.executeCommand("org.eclipse.ui.file.close", null);
-		} catch (final Exception ex) {
-			LOG.error(ex);
-		}
+		site.getPage().closeEditor(this, false);
 	}
 
 	protected void perfromSave() {
 		final IViewSite site = getProfiBusTreeView().getSite();
+        
 		final IHandlerService handlerService = (IHandlerService) site
 				.getService(IHandlerService.class);
 		try {
@@ -1304,7 +1288,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		setHeaderField(HeaderFields.MODIFIED_ON, modifiedOn);
 		temp = "";
 
-		final Label dbID = getNewLabel(header, "DataBase ID:");
+		getNewLabel(header, "DataBase ID:");
 		/** The description field with the Version from GSD File. */
 		if (node != null) {
 			temp = node.getId() + "";
