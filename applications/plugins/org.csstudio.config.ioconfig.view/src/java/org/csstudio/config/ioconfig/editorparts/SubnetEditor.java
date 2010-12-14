@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
@@ -73,18 +74,11 @@ public class SubnetEditor extends AbstractNodeEditor {
     /**
      * An array with all kinds of Baudrates.
      */
-    private static final Baudrates[] DB_BAUDRATES = new Baudrates[] {
-            new Baudrates(" 9,6  kBAUD", "#define DP_KBAUD_9_6    0x00", 0x00),
-            new Baudrates("19,2  kBAUD", "#define DP_KBAUD_19_2   0x01", 0x01),
-            new Baudrates("45,45 kBAUD", "#define DP_KBAUD_45_45  0x0B", 0x0B),
-            new Baudrates("93,75 kBAUD", "#define DP_KBAUD_93_75  0x02", 0x02),
-            new Baudrates("187,5 kBAUD", "#define DP_KBAUD_187_5  0x03", 0x03),
-            new Baudrates("500   kBAUD", "#define DP_KBAUD_500    0x04", 0x04),
-            new Baudrates("750   kBAUD", "#define DP_KBAUD_750    0x05", 0x05),
-            new Baudrates("  1,5 MBAUD", "#define DP_MBAUD_1_5    0x06", 0x06),
-            new Baudrates("  3   MBAUD", "#define DP_MBAUD_3      0x07", 0x07),
-            new Baudrates("  6   MBAUD", "#define DP_MBAUD_6      0x08", 0x08),
-            new Baudrates(" 12   MBAUD", "#define DP_MBAUD_12     0x09", 0x09) };
+    private static final Baudrates[] DB_BAUDRATES = new Baudrates[] {Baudrates.DP_KBAUD_9_6,
+            Baudrates.DP_KBAUD_19_2, Baudrates.DP_KBAUD_45_45, Baudrates.DP_KBAUD_93_75,
+            Baudrates.DP_KBAUD_187_5, Baudrates.DP_KBAUD_500, Baudrates.DP_KBAUD_750,
+            Baudrates.DP_MBAUD_1_5, Baudrates.DP_MBAUD_3, Baudrates.DP_MBAUD_6,
+            Baudrates.DP_MBAUD_12 };
 
     /**
      * The Profibus Subnet Object.
@@ -205,7 +199,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * {@inheritDoc}
      */
     @Override
-    public void doSave(final IProgressMonitor monitor) {
+    public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         Date now = new Date();
         boolean updateChildrens = false;
@@ -340,7 +334,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * @param head
      *            is TabHead Text
      */
-    private void general(final String head) {
+    private void general(@Nonnull final String head) {
         InstanceScope instanceScope = new InstanceScope();
         IEclipsePreferences prefNode = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
 
@@ -383,7 +377,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * @param headline
      *            is TabHead Text
      */
-    private void netSetting(final String headline) {
+    private void netSetting(@Nonnull final String headline) {
         final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 1, 470, 350);
 
         Group topGroup = new Group(comp, SWT.NONE);
@@ -431,7 +425,8 @@ public class SubnetEditor extends AbstractNodeEditor {
         }
         _baudList.getCombo().setData(_baudList.getCombo().getSelectionIndex());
         _baudList.addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(final SelectionChangedEvent event) {
+            @Override
+            public void selectionChanged(@Nullable final SelectionChangedEvent event) {
                 boolean b = ((Integer) _baudList.getCombo().getData()) != _baudList.getCombo()
                         .getSelectionIndex();
                 setSavebuttonEnabled("SubNetBaud", b);
@@ -443,7 +438,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * @param parent
      *            The Parent Composite.
      */
-    private void bottom(final Composite parent) {
+    private void bottom(@Nonnull final Composite parent) {
         GridDataFactory gdf = GridDataFactory.fillDefaults();
 
         Group bottomGroup = new Group(parent, SWT.NONE);
@@ -473,7 +468,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * @param rigth
      *            The Parent Group.
      */
-    private void rigth(final Composite rigth) {
+    private void rigth(@Nonnull final Composite rigth) {
         Control[] control = new Control[2];
 
         // tslot
@@ -564,7 +559,8 @@ public class SubnetEditor extends AbstractNodeEditor {
         _ttr.addModifyListener(getMLSB());
         _ttr.addModifyListener(new ModifyListener() {
 
-            public void modifyText(final ModifyEvent e) {
+            @Override
+            public void modifyText(@Nullable final ModifyEvent e) {
                 ttr2.setText(Float.toString(Integer.parseInt(_ttr.getText()) / 1000f));
             }
 
@@ -572,7 +568,8 @@ public class SubnetEditor extends AbstractNodeEditor {
 
         _watchdog.addModifyListener(getMLSB());
         _watchdog.addModifyListener(new ModifyListener() {
-            public void modifyText(final ModifyEvent e) {
+            @Override
+            public void modifyText(@Nonnull final ModifyEvent e) {
                 _watchdog2.setText(Float.toString(Integer.parseInt(_watchdog.getText()) / 10f));
             }
         });
@@ -589,7 +586,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      * @param left
      *            The Parent Composite.
      */
-    private void left(final Composite left) {
+    private void left(@Nonnull final Composite left) {
         // Tslot_Init
         Label front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -719,7 +716,7 @@ public class SubnetEditor extends AbstractNodeEditor {
         _retrayCombo.setData(_retrayCombo.getSelectionIndex());
         _retrayCombo.addModifyListener(getMLSB());
 
-        front = new Label(left, SWT.NONE);
+        new Label(left, SWT.NONE);
 
         for (Control children : left.getChildren()) {
 
@@ -732,7 +729,7 @@ public class SubnetEditor extends AbstractNodeEditor {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean fill(final GSDFileDBO gsdFile) {
+    public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
         return false;
     }
 
@@ -756,7 +753,7 @@ public class SubnetEditor extends AbstractNodeEditor {
             _subnet.setWatchdog(1000);
         }
         // Headline for the different Tab's.
-        String[] heads = { "General", "Net Settings" };
+        String[] heads = {"General", "Net Settings" };
         netSetting(heads[1]);
         general(heads[0]);
         getTabFolder().setSelection(0);

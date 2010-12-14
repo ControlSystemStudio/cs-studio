@@ -83,31 +83,26 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
     protected void openNodeEditor(@Nonnull final AbstractNodeDBO parentNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
         AbstractNodeDBO node = null;
         String id = null;
-        String nodeType = "";
+
         if (parentNode instanceof FacilityDBO) {
             id = IocEditor.ID;
             node = new IocDBO((FacilityDBO)parentNode);
-            nodeType = "Ioc";
         }else if (parentNode instanceof IocDBO) {
             id = SubnetEditor.ID;
             node = new ProfibusSubnetDBO((IocDBO) parentNode);
-            nodeType = "Subnet";
         } else if (parentNode instanceof ProfibusSubnetDBO) {
             id = MasterEditor.ID;
             node = new MasterDBO((ProfibusSubnetDBO) parentNode);
-            nodeType = "Master";
         } else if (parentNode instanceof MasterDBO) {
             id = SlaveEditor.ID;
             node = new SlaveDBO((MasterDBO) parentNode);
-            nodeType = "Slave";
         } else if (parentNode instanceof SlaveDBO) {
             id = ModuleEditor.ID;
             node = new ModuleDBO((SlaveDBO) parentNode);
-            nodeType = "Module";
         }
-
         	
         if((node != null) && (id != null)) {
+            String nodeType = node.getNodeType().getName();
         	if(id.equals(ModuleEditor.ID)){
         		node.setName("");
         		node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));

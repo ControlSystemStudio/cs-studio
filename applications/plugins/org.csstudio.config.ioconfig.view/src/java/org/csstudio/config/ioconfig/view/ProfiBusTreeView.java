@@ -1055,6 +1055,7 @@ public class ProfiBusTreeView extends Composite {
                     node2Copy.setSortIndex(freeStationAddress);
                 }
                 selectedNode.addChild(node2Copy);
+                copy = node2Copy;
                 try {
                     selectedNode.save();
                 } catch (PersistenceException e) {
