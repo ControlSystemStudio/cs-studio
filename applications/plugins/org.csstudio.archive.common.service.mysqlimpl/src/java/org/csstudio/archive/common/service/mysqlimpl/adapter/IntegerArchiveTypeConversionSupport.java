@@ -19,12 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -53,7 +55,7 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String value) throws ConversionTypeSupportException {
+    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String value) throws TypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(value);
         final Iterable<Integer> ints = Iterables.transform(strings, new Function<String, Integer>() {
             @Override
@@ -66,10 +68,10 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
         try {
             size = Iterables.size(ints);
         } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("Values representation is not convertible to Integer.", e);
+            throw new TypeSupportException("Values representation is not convertible to Integer.", e);
         }
         if (Iterables.size(strings) != size) {
-            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
+            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
         }
         return Lists.newArrayList(ints);
     }

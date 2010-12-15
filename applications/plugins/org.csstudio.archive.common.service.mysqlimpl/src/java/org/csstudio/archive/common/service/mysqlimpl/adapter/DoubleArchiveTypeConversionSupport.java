@@ -19,12 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -32,20 +34,19 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * Type conversions for {@link Float}.
+ * Type conversions for {@link Double}.
  *
  * @author bknerr
- * @since 14.12.2010
+ * @since 10.12.2010
  */
-public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Float> {
-
+public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Double> {
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Float convertScalarFromArchiveString(@Nonnull final String value) {
-        return Float.parseFloat(value);
+    public Double convertScalarFromArchiveString(@Nonnull final String value) {
+        return Double.parseDouble(value);
     }
 
     /**
@@ -53,25 +54,24 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
      */
     @Override
     @Nonnull
-    public Collection<Float> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
+    public Collection<Double> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-        final Iterable<Float> floats = Iterables.transform(strings, new Function<String, Float>() {
+        final Iterable<Double> doubles = Iterables.transform(strings, new Function<String, Double>() {
             @Override
             @CheckForNull
-            public Float apply(@Nonnull final String from) {
+            public Double apply(@Nonnull final String from) {
                 return convertScalarFromArchiveString(from);
             }
         });
         int size;
         try {
-            size = Iterables.size(floats);
+            size = Iterables.size(doubles);
         } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("Values representation is not convertible to Float.", e);
+            throw new TypeSupportException("Values representation is not convertible to Double.", e);
         }
         if (Iterables.size(strings) != size) {
-            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
+            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
         }
-        return Lists.newArrayList(floats);
+        return Lists.newArrayList(doubles);
     }
-
 }

@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  * @author bknerr
  * @since 02.12.2010
  */
-public class ConversionTypeSupportException extends Exception {
+public class TypeSupportException extends Exception {
 
     private static final long serialVersionUID = -9187145383318928915L;
 
@@ -39,7 +39,7 @@ public class ConversionTypeSupportException extends Exception {
      * @param msg the describing message
      * @param e the wrapped exception, may be <code>null</code>
      */
-	public ConversionTypeSupportException(@Nonnull final String msg, @Nullable final Exception e) {
+	public TypeSupportException(@Nonnull final String msg, @Nullable final Exception e) {
 		super(msg, e);
 	}
 }

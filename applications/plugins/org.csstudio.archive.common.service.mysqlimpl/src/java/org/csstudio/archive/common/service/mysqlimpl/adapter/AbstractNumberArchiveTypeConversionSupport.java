@@ -19,9 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
  * Common type conversions for {@link Number} subtypes.
@@ -30,12 +32,12 @@ import javax.annotation.Nonnull;
  * @since 10.12.2010
  * @param <N> the number subtype
  */
-public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends AbstractArchiveTypeConversionSupport<N> {
+public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
     /**
      * {@inheritDoc}
      */
     @Override
-    public String convertScalarToArchiveString(@Nonnull final N value) throws ConversionTypeSupportException {
+    public String convertScalarToArchiveString(@Nonnull final N value) throws TypeSupportException {
         return value.toString();
     }
     /**
@@ -43,7 +45,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final N d) throws ConversionTypeSupportException {
+    public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
         return d.doubleValue();
     }
 }

@@ -32,21 +32,21 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -73,7 +73,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
-    static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
+    private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
 //    /**
 //     * {@inheritDoc}
@@ -111,13 +111,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         try {
             final Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> func =
                 new Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>() {
+                    @SuppressWarnings("synthetic-access")
                     @Override
                     @CheckForNull
                     public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
                         try {
                             return ADAPT_MGR.adapt(valWithId);
 
-                        } catch (final ConversionTypeSupportException e) {
+                        } catch (final TypeSupportException e) {
                             final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
                             LOG.error(msg, e);
                             try {

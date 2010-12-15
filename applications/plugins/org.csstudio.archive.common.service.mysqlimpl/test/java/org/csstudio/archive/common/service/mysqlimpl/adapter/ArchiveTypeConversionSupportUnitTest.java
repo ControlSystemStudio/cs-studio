@@ -19,11 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +37,11 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 10.12.2010
  */
-public class DesyDomainTypeSupportUnitTest {
+public class ArchiveTypeConversionSupportUnitTest {
 
     @Before
     public void setup() {
-        AbstractArchiveTypeConversionSupport.install();
+        ArchiveTypeConversionSupport.install();
     }
 
     @Test
@@ -49,11 +50,11 @@ public class DesyDomainTypeSupportUnitTest {
         try {
             final Double d = Double.valueOf(1.01010101010101010100101010000010010);
             final String sd = d.toString();
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(d);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(d);
             Assert.assertTrue(archiveString.equals(sd));
-            final Double dFromA = DesyDomainTypeSupport.fromScalarArchiveString(Double.class, archiveString);
+            final Double dFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Double.class, archiveString);
             Assert.assertTrue(dFromA.equals(d));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
 
@@ -64,11 +65,11 @@ public class DesyDomainTypeSupportUnitTest {
         try {
             final Integer i = Integer.valueOf(-1234567);
             final String si = i.toString();
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(i);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(i);
             Assert.assertTrue(archiveString.equals(si));
-            final Integer iFromA = DesyDomainTypeSupport.fromScalarArchiveString(Integer.class, archiveString);
+            final Integer iFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Integer.class, archiveString);
             Assert.assertTrue(iFromA.equals(i));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -78,11 +79,11 @@ public class DesyDomainTypeSupportUnitTest {
         try {
             final Byte b = Byte.valueOf((byte) -128);
             final String sb = b.toString();
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(b);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(b);
             Assert.assertTrue(archiveString.equals(sb));
-            final Byte bFromA = DesyDomainTypeSupport.fromScalarArchiveString(Byte.class, archiveString);
+            final Byte bFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Byte.class, archiveString);
             Assert.assertTrue(bFromA.equals(b));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
 
@@ -93,11 +94,11 @@ public class DesyDomainTypeSupportUnitTest {
         try {
             final Float f = Float.valueOf(44.44F);
             final String sf = f.toString();
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(f);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(f);
             Assert.assertTrue(archiveString.equals(sf));
-            final Float fFromA = DesyDomainTypeSupport.fromScalarArchiveString(Float.class, archiveString);
+            final Float fFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Float.class, archiveString);
             Assert.assertTrue(fFromA.equals(f));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -107,11 +108,11 @@ public class DesyDomainTypeSupportUnitTest {
         // TODO (bknerr) for all number types...
 
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString("test me");
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString("test me");
             Assert.assertTrue(archiveString.equals("test me"));
-            final String sFromA = DesyDomainTypeSupport.fromScalarArchiveString(String.class, archiveString);
+            final String sFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(String.class, archiveString);
             Assert.assertTrue(sFromA.equals(archiveString));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -121,10 +122,10 @@ public class DesyDomainTypeSupportUnitTest {
 
         final List<String> valuesEmpty = Lists.newArrayList();
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesEmpty);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesEmpty);
             Assert.assertEquals("", archiveString);
 
-            DesyDomainTypeSupport.fromMultiScalarArchiveString(IDoNotExist.class, "Iwasborninafactory,,,,whohoo");
+            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(IDoNotExist.class, "Iwasborninafactory,,,,whohoo");
         } catch (final Exception e) {
             Assert.assertTrue(true);
         }
@@ -133,8 +134,8 @@ public class DesyDomainTypeSupportUnitTest {
     @Test
     public void testMultiScalarMisMatchConversion() {
         try {
-            DesyDomainTypeSupport.fromMultiScalarArchiveString(Integer.class, "theshapeofpunk,tocome");
-        } catch (final ConversionTypeSupportException e) {
+            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Integer.class, "theshapeofpunk,tocome");
+        } catch (final TypeSupportException e) {
             Assert.assertTrue(true);
         }
 
@@ -144,9 +145,9 @@ public class DesyDomainTypeSupportUnitTest {
     public void testMultiScalarStringConversion() {
         final Collection<String> valuesS = Lists.newArrayList("modest", "mouse");
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesS);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesS);
             Assert.assertEquals("modest\\,mouse", archiveString);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
 
@@ -156,9 +157,9 @@ public class DesyDomainTypeSupportUnitTest {
     public void testMultiScalarIntegerConversion() {
         final Collection<Integer> valuesI = Lists.newArrayList(1,2,3,4);
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesI);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesI);
             Assert.assertEquals("1\\,2\\,3\\,4", archiveString);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
 
@@ -168,9 +169,9 @@ public class DesyDomainTypeSupportUnitTest {
     public void testMultiScalarDoubleConversion() {
         final Collection<Double> valuesD = Lists.newArrayList(1.0,2.0);
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesD);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesD);
             Assert.assertEquals("1.0\\,2.0", archiveString);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -179,9 +180,9 @@ public class DesyDomainTypeSupportUnitTest {
     public void testMultiScalarFloatConversion() {
         final Collection<Float> valuesF = Lists.newArrayList(1.0F, 2.0F);
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesF);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesF);
             Assert.assertEquals("1.0\\,2.0", archiveString);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -191,9 +192,9 @@ public class DesyDomainTypeSupportUnitTest {
         final Collection<Byte> valuesB = Lists.newArrayList(Byte.valueOf("127"),
                                                             Byte.valueOf("-128"));
         try {
-            final String archiveString = DesyDomainTypeSupport.toArchiveString(valuesB);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
             Assert.assertEquals("127\\,-128", archiveString);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -212,8 +213,8 @@ public class DesyDomainTypeSupportUnitTest {
     @Test(expected=RuntimeException.class)
     public void testTypeNotSuppportedException() {
         try {
-            DesyDomainTypeSupport.toArchiveString(new IDoNotExist());
-        } catch (final ConversionTypeSupportException e) {
+            ArchiveTypeConversionSupport.toArchiveString(new IDoNotExist());
+        } catch (final TypeSupportException e) {
             Assert.fail("Unexpected exception");
         }
     }

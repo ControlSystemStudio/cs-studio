@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -91,11 +90,6 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * In case there'll be several WriteThreads later on.
      */
     private final ThreadLocal<RDBArchive> _archive = new ThreadLocal<RDBArchive>();
-
-//    private final ThreadLocal<String> _archivePrefix = new ThreadLocal<String>();
-//    private final ThreadLocal<String> _sampleTable = new ThreadLocal<String>();
-//    private final ThreadLocal<String> _arrayValTable = new ThreadLocal<String>();
-
 
 
     /**

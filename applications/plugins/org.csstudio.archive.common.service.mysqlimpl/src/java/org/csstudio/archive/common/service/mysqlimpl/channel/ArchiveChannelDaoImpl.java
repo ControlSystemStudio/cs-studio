@@ -146,14 +146,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (!filteredList.isEmpty()) {
             return new ArrayList<IArchiveChannel>(filteredList);
         }
-
-        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         // Nothing yet in the cache? Ask the database:
+        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
-
             final ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 // id, name, sample_mode_id, sample_period, last_sample_time

@@ -31,9 +31,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.CssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -248,6 +248,6 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
     @CheckForNull
     public abstract R convertToCssType(@Nonnull final T value,
                                        @Nullable final IAlarm alarm,
-                                       @Nonnull final TimeInstant timestamp) throws ConversionTypeSupportException;
+                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException;
 
 }

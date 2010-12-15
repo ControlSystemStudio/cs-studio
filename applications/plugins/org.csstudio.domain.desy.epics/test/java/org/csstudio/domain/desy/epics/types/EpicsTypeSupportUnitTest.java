@@ -24,8 +24,8 @@ package org.csstudio.domain.desy.epics.types;
 import java.util.List;
 
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
@@ -60,7 +60,7 @@ public class EpicsTypeSupportUnitTest {
                                                                           null,
                                                                           TimeInstantBuilder.buildFromNow());
             Assert.assertNull(cssV);
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -80,7 +80,7 @@ public class EpicsTypeSupportUnitTest {
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals(Double.valueOf(1.0), cssV.getValueData().get(0));
             Assert.assertEquals(Double.valueOf(2.0), cssV.getValueData().get(1));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -100,7 +100,7 @@ public class EpicsTypeSupportUnitTest {
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals(Long.valueOf(1L), cssV.getValueData().get(0));
             Assert.assertEquals(Long.valueOf(2L), cssV.getValueData().get(1));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -121,7 +121,7 @@ public class EpicsTypeSupportUnitTest {
             Assert.assertEquals(Integer.valueOf(2), cssV.getValueData().getIndex());
             Assert.assertEquals("part", cssV.getValueData().getState());
             Assert.assertEquals(null, cssV.getValueData().getRaw());
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
@@ -140,7 +140,7 @@ public class EpicsTypeSupportUnitTest {
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals("small", cssV.getValueData().get(0));
             Assert.assertEquals("black", cssV.getValueData().get(1));
-        } catch (final ConversionTypeSupportException e) {
+        } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }

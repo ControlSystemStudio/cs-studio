@@ -27,9 +27,9 @@ import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -49,7 +49,7 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
      * @param alarm the value's alarm state
      * @param timestamp the value's timestamp
      * @return the conversion result
-     * @throws ConversionTypeSupportException when conversion failed.
+     * @throws TypeSupportException when conversion failed.
      * @param <R>
      * @param <T>
      */
@@ -58,13 +58,13 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
     public static <R extends ICssAlarmValueType<?>, T extends IValue>
         R toCssType(@Nonnull final T value,
                     @Nullable final IAlarm alarm,
-                    @Nonnull final TimeInstant timestamp) throws ConversionTypeSupportException {
+                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
             (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass);
         if (support == null) {
-            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+            throw new TypeSupportException("No conversion type support registered.", null);
         }
         return support.convertToCssType(value, alarm, timestamp);
     }

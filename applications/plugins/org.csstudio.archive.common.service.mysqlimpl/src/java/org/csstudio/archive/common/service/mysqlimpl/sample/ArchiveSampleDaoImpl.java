@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
+import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
@@ -47,8 +48,7 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.DesyDomainTypeSupport;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
@@ -305,8 +305,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private Double isDataConvertibleToDouble(@Nonnull final Object data) {
         try {
-            return DesyDomainTypeSupport.toDouble(data);
-        } catch (final ConversionTypeSupportException e) {
+            return ArchiveTypeConversionSupport.toDouble(data);
+        } catch (final TypeSupportException e) {
             return null; // is not convertible. Type support missing.
         }
     }
@@ -375,9 +375,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   timestamp.getFractalMillisInNanos(),
                                                   sevId.intValue(),
                                                   statusId.intValue(),
-                                                  "'" + DesyDomainTypeSupport.toArchiveString(value.getValueData()) + "'") +
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getValueData()) + "'") +
                        ")";
-            } catch (final ConversionTypeSupportException e) {
+            } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
                 return "";
             }
