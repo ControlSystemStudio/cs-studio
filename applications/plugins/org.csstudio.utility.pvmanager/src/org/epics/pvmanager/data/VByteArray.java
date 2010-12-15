@@ -11,5 +11,6 @@ package org.epics.pvmanager.data;
  * @author carcassi
  */
 public interface VByteArray extends Array<Integer>, Alarm, Time, Display {
+    @Override
     byte[] getArray();
 }

@@ -1,6 +1,9 @@
 package org.csstudio.diag.pvmanager.probe.views;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.vDouble;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
+
+import java.text.DecimalFormat;
 
 import org.csstudio.diag.pvmanager.probe.Activator;
 import org.csstudio.diag.pvmanager.probe.Messages;
@@ -35,13 +38,21 @@ import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
-import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.data.Alarm;
+import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.Enum;
+import org.epics.pvmanager.data.SimpleValueFormat;
+import org.epics.pvmanager.data.Time;
+import org.epics.pvmanager.data.Util;
+import org.epics.pvmanager.data.ValueFormat;
+import org.epics.pvmanager.util.TimeStampFormat;
 
 /**
  *
  */
 
-public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
+public class PVManagerProbe extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -49,19 +60,31 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	public static final String ID = "org.csstudio.diag.pvmanager.probe.views.PVManagerProbe";
 	private static int instance = 0;
 
-	PV<VDouble> pv;
-
 	// GUI
+	private Label lblAlarm;
+	private Label alarmField;
 	private ComboViewer cbo_name;
 	private ComboHistoryHelper name_helper;
-	private Label lbl_value;
-	private Label lbl_time;
-	private Label lbl_status;
+	private Label valueField;
+	private Label timeField;
+	private Label statusField;
 	private MeterWidget meter;
 	private Composite top_box;
 	private Composite bottom_box;
 	private Button show_meter;
 	private Button btn_save_to_ioc;
+	
+	/** Currently displayed pv */
+	private String PVName;
+	
+	/** Currently connected pv */
+	private PV<?> pv;
+	
+	/** Formatting used for the value text field */
+	private ValueFormat valueFormat;
+	
+	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
+	
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
 
@@ -79,18 +102,20 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	/** Memento tag */
 	private static final String METER_TAG = "meter"; //$NON-NLS-1$
 
-	/** Is this a new channel where we never received a value? */
-	private boolean new_channel = true;
-
 	/**
 	 * Id of the save value command.
 	 */
 	private static final String SAVE_VALUE_COMMAND_ID = "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
+	private GridData gd_valueField;
+	private GridData gd_timeField;
+	private GridData gd_statusField;
 
 	/**
 	 * The constructor.
 	 */
 	public PVManagerProbe() {
+		valueFormat = new SimpleValueFormat(3);
+		//valueFormat.setNumberFormat(new DecimalFormat("0.##########E0"));
 	}
 
 	/**
@@ -132,7 +157,6 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 
 		Label label = new Label(top_box, SWT.READ_ONLY);
 		label.setText(Messages.S_PVName);
-		label.setLayoutData(new GridData());
 
 		cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
 		cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
@@ -144,7 +168,6 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		final Button btn_info = new Button(top_box, SWT.PUSH);
 		btn_info.setText(Messages.S_Info);
 		btn_info.setToolTipText(Messages.S_ObtainInfo);
-		btn_info.setLayoutData(new GridData());
 
 		// New Box with only the meter
 		meter = new MeterWidget(parent, 0);
@@ -158,30 +181,27 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 
 		label = new Label(bottom_box, 0);
 		label.setText(Messages.S_Value);
-		label.setLayoutData(new GridData());
 
-		lbl_value = new Label(bottom_box, SWT.BORDER);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		lbl_value.setLayoutData(gd);
+		valueField = new Label(bottom_box, SWT.BORDER);
+		gd_valueField = new GridData();
+		gd_valueField.grabExcessHorizontalSpace = true;
+		gd_valueField.horizontalAlignment = SWT.FILL;
+		valueField.setLayoutData(gd_valueField);
 
 		show_meter = new Button(bottom_box, SWT.CHECK);
 		show_meter.setText(Messages.S_Meter);
 		show_meter.setToolTipText(Messages.S_Meter_TT);
 		show_meter.setSelection(true);
-		show_meter.setLayoutData(new GridData());
 
 		// New Row
 		label = new Label(bottom_box, 0);
 		label.setText(Messages.S_Timestamp);
-		label.setLayoutData(new GridData());
 
-		lbl_time = new Label(bottom_box, SWT.BORDER);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		lbl_time.setLayoutData(gd);
+		timeField = new Label(bottom_box, SWT.BORDER);
+		gd_timeField = new GridData();
+		gd_timeField.grabExcessHorizontalSpace = true;
+		gd_timeField.horizontalAlignment = SWT.FILL;
+		timeField.setLayoutData(gd_timeField);
 
 		btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
 		btn_save_to_ioc.setText(Messages.S_SaveToIoc);
@@ -190,11 +210,18 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		gd.horizontalAlignment = SWT.FILL;
 		btn_save_to_ioc.setLayoutData(gd);
 		btn_save_to_ioc.setEnabled(canExecute);
+		
+		lblAlarm = new Label(bottom_box, SWT.NONE);
+		lblAlarm.setText("Alarm:");
+		
+		alarmField = new Label(bottom_box, SWT.BORDER);
+		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		alarmField.setText("");
+		new Label(bottom_box, SWT.NONE);
 
 		// New Row
 		final Label new_value_label = new Label(bottom_box, 0);
 		new_value_label.setText(Messages.S_NewValueLabel);
-		new_value_label.setLayoutData(new GridData());
 		new_value_label.setVisible(false);
 
 		new_value = new Text(bottom_box, SWT.BORDER);
@@ -207,7 +234,6 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
 		btn_adjust.setText(Messages.S_Adjust);
 		btn_adjust.setToolTipText(Messages.S_ModValue);
-		btn_adjust.setLayoutData(new GridData());
 		btn_adjust.setEnabled(canExecute);
 
 		// Status bar
@@ -220,15 +246,14 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 
 		label = new Label(bottom_box, 0);
 		label.setText(Messages.S_Status);
-		label.setLayoutData(new GridData());
 
-		lbl_status = new Label(bottom_box, SWT.BORDER);
-		lbl_status.setText(Messages.S_Waiting);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		gd.horizontalSpan = grid.numColumns - 1;
-		lbl_status.setLayoutData(gd);
+		statusField = new Label(bottom_box, SWT.BORDER);
+		statusField.setText(Messages.S_Waiting);
+		gd_statusField = new GridData();
+		gd_statusField.grabExcessHorizontalSpace = true;
+		gd_statusField.horizontalAlignment = SWT.FILL;
+		gd_statusField.horizontalSpan = grid.numColumns - 1;
+		statusField.setLayoutData(gd_statusField);
 
 		// Connect the 3 boxes in form layout
 		FormData fd = new FormData();
@@ -261,7 +286,8 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 
 		cbo_name.getCombo().addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(final DisposeEvent e) {
-				disposeChannel();
+				if (pv != null)
+					pv.close();
 				name_helper.saveSettings();
 			}
 		});
@@ -355,97 +381,126 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
 
-		final StringBuffer info = new StringBuffer();
+		final StringBuilder info = new StringBuilder();
 		if (pv == null) {
-			info.append(Messages.S_NotConnected + nl);
+			info.append(Messages.S_NotConnected).append(nl);
 		} else {
-			info.append(nl + Messages.S_ChannelInfo + "  " + pv.getName() + nl); //$NON-NLS-1$
-			if (!pv.isClosed()) {
-				info.append(Messages.S_STATEConn + nl);
+			Object value = pv.getValue();
+			Alarm alarm = Util.alarmOf(value);
+			Display display = Util.displayOf(value);
+			Class<?> type = Util.typeOf(value);
+			
+			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
+			if (pv.getValue() == null) {
+				info.append(Messages.S_STATEDisconn).append(nl);
 			} else {
-				info.append(Messages.S_STATEDisconn + nl);
+				if (alarm != null && AlarmSeverity.UNDEFINED.equals(alarm.getAlarmSeverity())) {
+					info.append(Messages.S_STATEDisconn).append(nl);
+				} else {
+					info.append(Messages.S_STATEConn).append(nl);
+				}
 			}
-			// TODO
-			// Add value information
+			
+			if (type != null) {
+				info.append("Data type: ").append(type.getSimpleName()).append(nl);
+			}
+			
+			if (display != null) {
+				info.append("Numeric display information:").append(nl)
+			    .append("  Low display limit: ").append(display.getLowerDisplayLimit()).append(nl)
+			    .append("  Low alarm limit: ").append(display.getLowerAlarmLimit()).append(nl)
+			    .append("  Low warn limit: ").append(display.getLowerWarningLimit()).append(nl)
+			    .append("  High warn limit: ").append(display.getUpperWarningLimit()).append(nl)
+			    .append("  High alarm limit: ").append(display.getUpperAlarmLimit()).append(nl)
+			    .append("  High display limit: ").append(display.getUpperDisplayLimit()).append(nl);
+			}
+			
+			if (value instanceof org.epics.pvmanager.data.Enum) {
+				Enum enumValue = (Enum) value;
+				info.append("Enum metadata: ").append(enumValue.getLabels().size()).append(" labels").append(nl);
+				for (String label : enumValue.getLabels()) {
+					info.append("  ").append(label).append(nl);
+				}
+			}
+			
 		}
 		if (info.length() == 0) {
 			info.append(Messages.S_NoInfo);
 		}
-		final MessageBox box = new MessageBox(lbl_value.getShell(),
+		final MessageBox box = new MessageBox(valueField.getShell(),
 				SWT.ICON_INFORMATION);
-		box.setText(Messages.S_Info);
+		if (pv == null) {
+			box.setText(Messages.S_Info);
+		} else {
+			box.setText("Channel information for " + pv.getName());
+		}
 		box.setMessage(info.toString());
 		box.open();
 	}
 
-	protected void disposeChannel() {
-		if (pv != null) {
-			Activator.getLogger()
-					.debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
-			pv.removePVValueChangeListener(this);
-			pv.close();
-			pv = null;
-		}
-	}
-
 	/**
+	 * Changes the PV currently displayed by probe.
 	 * 
-	 * @param pvName
+	 * @param pvName the new pv name or null
 	 * @return
 	 */
-	public boolean setPVName(String pvName) {
-		// TODO Alarm severity.
+	public void setPVName(String pvName) {
 		Activator.getLogger().debug("setPVName(" + pvName + ")");
-		// Reset rest of GUI
-		lbl_value.setText("");
-		lbl_time.setText("");
-		new_value.setText("");
-		meter.setEnabled(false);
-		new_channel = true;
+		
+		// If we are already scanning that pv, do nothing
+		if (this.PVName != null && this.PVName.equals(pvName)) {
+			// XXX Seems like something is clearing the combo-box,
+			// reset to the actual pv...
+			cbo_name.getCombo().setText(pvName);
+		}
+		
+		// The PV is different, so disconnect and reset the visuals
+		if (pv != null)
+			pv.close();
+		
+		setValue(null);
+		setAlarm(null);
+		setTime(null);
+		setMeter(null, null);
 
-		// Check the name
+		// If name is blank, update status to waiting and qui
 		if ((pvName == null) || pvName.equals("")) {
 			cbo_name.getCombo().setText("");
-			updateStatus(Messages.S_Waiting);
-			return false;
+			setStatus(Messages.S_Waiting);
 		}
 
+		// If new name, add to history and connect
 		name_helper.addEntry(pvName);
+		
 		// Update displayed name, unless it's already current
 		if (!(cbo_name.getCombo().getText().equals(pvName))) {
 			cbo_name.getCombo().setText(pvName);
 		}
-
-		// Create a new channel
-		// dispose existing pv
-		if (pv != null)
-			pv.close();
-		int scanRate = 1;
-		try {
-			updateStatus(Messages.S_Searching);
-			pv = PVManager.read(vDouble(pvName)).atHz(scanRate);
-			pv.addPVValueChangeListener(this);
-		} catch (Throwable ex) {
-			Activator.getLogger().error(Messages.S_CreateError, ex);
-			updateStatus(Messages.S_CreateError + ex.getMessage());
-			return false;
-		}
-		return true;
-		// TODO
-		// update the view to some initial value for the pv
+		
+		setStatus(Messages.S_Searching);
+		pv = PVManager.read(channel(pvName)).atHz(25);
+		pv.addPVValueChangeListener(new PVValueChangeListener() {
+			
+			@Override
+			public void pvValueChanged() {
+				Object obj = pv.getValue();
+				setLastError(pv.lastException());
+				setValue(valueFormat.format(obj));
+				setAlarm(Util.alarmOf(obj));
+				setTime(Util.timeOf(obj));
+				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
+            }
+		});
+		this.PVName = pvName;
 	}
-
-	private void updateStatus(final String text) {
-		if (text != null) {
-			// Make it run in the SWT UI thread
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					if (!lbl_status.isDisposed()) {
-						lbl_status.setText(text);
-					}
-				}
-			});
-		}
+	
+	/**
+	 * Returns the currently displayed PV.
+	 * 
+	 * @return pv name or null
+	 */
+	public String getPVName() {
+		return this.PVName;
 	}
 
 	private void hookContextMenu() {
@@ -486,65 +541,99 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		++instance;
 		return Integer.toString(instance);
 	}
-
-	@Override
-	public void pvValueChanged() {
-		// System.out.println("Current thread " + Thread.currentThread());
-		// System.out.println("GUI thread " +
-		// PlatformUI.getWorkbench().getDisplay().getThread());
-
-		if (lbl_value.isDisposed()) {
-			return;
+	
+	/**
+	 * Modifies the prove status.
+	 * 
+	 * @param status new status to be displayed
+	 */
+	private void setStatus(String status) {
+		if (status == null) {
+			statusField.setText(Messages.S_Waiting);
+		} else {
+			statusField.setText(status);
 		}
-		// final INumericMetaData meta = value.getNumericMetaData();
-		if (pv == null) {
-			meter.setEnabled(false);
-		} else { // Configure on first value from new channel
-			VDouble val = pv.getValue();
-			switch (val.getAlarmSeverity()) {
-			case UNDEFINED:
-				updateStatus(Messages.S_STATEDisconn + " "
-						+ val.getAlarmSeverity().toString() + " "
-						+ val.getAlarmStatus().toString());
-				break;
-			case INVALID:
-				updateStatus(Messages.S_STATEConn + " "
-						+ val.getAlarmSeverity().toString() + " "
-						+ val.getAlarmStatus().toString());
-				break;
-			default:
-				String strValue = pv.getValue().getValue() + " "
-						+ pv.getValue().getUnits();
-				lbl_value.setText(strValue);
-				new_value.setText(strValue);
-				lbl_time.setText(val.getTimeStamp().asDate().toString());
-				if (new_channel) {
-					if (pv.getValue().getLowerDisplayLimit() < pv.getValue()
-							.getUpperDisplayLimit()) {
-						meter.configure(val.getLowerDisplayLimit(), val
-								.getLowerAlarmLimit(), val
-								.getLowerWarningLimit(), val
-								.getUpperWarningLimit(), val
-								.getUpperAlarmLimit(), val
-								.getUpperDisplayLimit(), 1);
-						meter.setEnabled(true);
-					} else {
-						meter.setEnabled(false);
-					}
-				}
-				meter.setValue(val.getValue());
-				updateStatus(Messages.S_STATEConn + " "
-						+ val.getAlarmSeverity().toString() + " "
-						+ val.getAlarmStatus().toString());
-				Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
-						+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
-				new_channel = false;
-				break;
-			}
-
-		}
-
 	}
+	
+	/**
+	 * Displays the last error in the status.
+	 * 
+	 * @param ex an exception
+	 */
+	private void setLastError(Exception ex) {
+		if (ex == null) {
+			statusField.setText("Connected");
+		} else {
+			statusField.setText(ex.getMessage());
+		}
+	}
+	
+	/**
+	 * Displays the new value.
+	 * 
+	 * @param value a new value
+	 */
+	private void setValue(String value) {
+		if (value == null) {
+			valueField.setText("");
+		} else {
+			valueField.setText(value);
+		}
+			
+	}
+	
+	/**
+	 * Displays the new alarm.
+	 * 
+	 * @param alarm a new alarm
+	 */
+	private void setAlarm(Alarm alarm) {
+		if (alarm == null) {
+			alarmField.setText("");
+		} else {
+			alarmField.setText(alarm.getAlarmSeverity() + " - " + alarm.getAlarmStatus());
+		}
+	}
+	
+	/**
+	 * Displays the new time.
+	 * 
+	 * @param time a new time
+	 */
+	private void setTime(Time time) {
+		if (time == null) {
+			timeField.setText("");
+		} else {
+			timeField.setText(timeFormat.format(time.getTimeStamp()));
+		}
+	}
+	
+	/**
+	 * Displays a new value in the meter.
+	 * 
+	 * @param value the new value
+	 * @param display the display information
+	 */
+	private void setMeter(Double value, Display display) {
+		if (value == null || display == null) {
+			meter.setEnabled(false);
+			//meter.setValue(0.0);
+		} else if (display.getUpperDisplayLimit() <= display.getLowerDisplayLimit()) {
+			meter.setEnabled(false);
+			//meter.setValue(0.0);
+		} else {
+			meter.setEnabled(true);
+			meter.setLimits(display.getLowerDisplayLimit(),
+					display.getLowerAlarmLimit(), 
+					display.getLowerWarningLimit(),
+					display.getUpperWarningLimit(),
+					display.getUpperAlarmLimit(),
+					display.getUpperDisplayLimit(),
+					1);
+			meter.setValue(value);
+		}
+	}
+	
 
 	/**
 	 * {@inheritDoc}
@@ -552,13 +641,14 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	@Override
 	public void dispose() {
 		pv.close();
+		super.dispose();
 	}
 
 	/**
-	 * Open PVManagerProbe initialised to the given PV
+	 * Open PVManagerProbe initialized to the given PV
 	 * 
-	 * @param pvName
-	 * @return
+	 * @param pvName the pv
+	 * @return true if successful
 	 */
 	public static boolean activateWithPV(IProcessVariable pvName) {
 		 try

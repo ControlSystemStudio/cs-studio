@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 
@@ -22,9 +23,11 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
     public void globalAlarmsChanged(final GlobalAlarmModel model)
     {
         System.out.println("\nGlobal alarms:");
-        final GlobalAlarm alarms[] = model.getAlarms();
-        for (GlobalAlarm alarm : alarms)
-            System.out.println(alarm);
+        final AlarmTreeRoot alarms[] = model.getAlarms();
+        for (AlarmTreeRoot root : alarms)
+            root.dump(System.out);
+
+        // TODO Demo a delayed printout that would (usually) have GUI detail
     }
 
     @Test

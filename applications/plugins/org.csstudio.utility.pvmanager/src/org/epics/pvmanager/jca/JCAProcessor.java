@@ -7,7 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
-import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.MonitorEvent;
@@ -23,17 +23,15 @@ import org.epics.pvmanager.ValueCache;
  *
  * @author carcassi
  */
-abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSource.ValueProcessor<MonitorEvent, VType> {
+class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType> {
 
-    private final DBRType metaType;
-    private final DBRType epicsType;
+    private Class<VType> cacheType;
 
-    protected SingleValueProcessor(final Channel channel, Collector collector,
-            ValueCache<VType> cache, final ExceptionHandler handler, DBRType epicsType, DBRType metaType)
+    protected JCAProcessor(final Channel channel, Collector collector,
+            ValueCache<VType> cache, final ExceptionHandler handler)
             throws CAException {
-        super(collector, cache);
-        this.metaType = metaType;
-        this.epicsType = epicsType;
+        super(collector, cache, handler);
+        this.cacheType = cache.getType();
 
         // Need to wait for the connection to be established
         // before reading the metadata
@@ -50,7 +48,7 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
                         close();
                         processValue(event);
                     }
-                } catch (CAException ex) {
+                } catch (Exception ex) {
                     handler.handleException(ex);
                 }
             }
@@ -63,11 +61,7 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
         }
     }
 
-    protected SingleValueProcessor(final Channel channel, Collector collector,
-            ValueCache<VType> cache, final ExceptionHandler handler)
-            throws CAException {
-        this(channel, collector, cache, handler, null, null);
-    }
+    private volatile VTypeFactory vTypeFactory;
 
     synchronized void setup(Channel channel) throws CAException {
         // This method may be called twice, if the connection happens
@@ -78,33 +72,27 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
         // two calls are serial. Checking the monitor for null to
         // make sure the second call does not create another monitor.
         if (monitor == null) {
-            if (getMetaType() != null) {
-                @SuppressWarnings("unchecked")
-                MetaType temp = (MetaType) channel.get(getMetaType(), 1);
-                metadata = temp;
+            vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
+            if (vTypeFactory.getEpicsMetaType() != null) {
+                metadata = channel.get(vTypeFactory.getEpicsMetaType(), 1);
             }
-            monitor = channel.addMonitor(getEpicsType(), 1, Monitor.VALUE, monitorListener);
+            if (vTypeFactory.isArray()) {
+                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), Monitor.VALUE, monitorListener);
+            } else {
+                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, Monitor.VALUE, monitorListener);
+            }
             channel.getContext().flushIO();
         }
     }
 
-    protected DBRType getMetaType() {
-        return metaType;
-    }
-
-    protected DBRType getEpicsType() {
-        return epicsType;
-    }
-
-    protected abstract VType createValue(EpicsType value, MetaType metadata, boolean disconnected);
     volatile Monitor monitor;
-    volatile MetaType metadata;
+    volatile DBR metadata;
     private volatile MonitorEvent event;
     final MonitorListener monitorListener = new MonitorListener() {
 
         @Override
         public void monitorChanged(MonitorEvent event) {
-            SingleValueProcessor.this.event = event;
+            JCAProcessor.this.event = event;
             processValue(event);
         }
     };
@@ -119,9 +107,10 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
 
     @Override
     public boolean updateCache(MonitorEvent event, ValueCache<VType> cache) {
+        DBR rawvalue = event.getDBR();
         @SuppressWarnings("unchecked")
-        EpicsType rawvalue = (EpicsType) event.getDBR();
-        cache.setValue(createValue(rawvalue, metadata, monitor == null));
+        VType newValue = cacheType.cast(vTypeFactory.createValue(rawvalue, metadata, monitor == null));
+        cache.setValue(newValue);
         return true;
     }
 }

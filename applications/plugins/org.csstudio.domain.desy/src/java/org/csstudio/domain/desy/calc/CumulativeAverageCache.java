@@ -53,7 +53,9 @@ public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Dou
 
         if (accVal != null) {
             return accVal + nextVal;
-            // better to calc division once on #getValue invocation instead of this:
+
+            // performs better than the following lines on every accumulation but may
+            // result in precision loss or even overflow for a lot of very large values before resetting.
             //final int n = getNumberOfAccumulations();
             //result = curVal + (nextVal - curVal)/(n + 1);
         } else {

@@ -8,9 +8,9 @@ package org.epics.pvmanager.sim;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import org.epics.pvmanager.TimeDuration;
-import org.epics.pvmanager.TimeInterval;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeDuration;
+import org.epics.pvmanager.util.TimeInterval;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.VDouble;
 
 /**

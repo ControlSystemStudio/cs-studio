@@ -50,7 +50,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.AbstractArchiveConversionTypeSupport;
+import org.csstudio.domain.desy.types.AbstractArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -80,9 +80,8 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        //AbstractBasicTypeConversionTypeSupport.install();
         AbstractIValueConversionTypeSupport.install();
-        AbstractArchiveConversionTypeSupport.install();
+        AbstractArchiveTypeConversionSupport.install();
     }
 
     /**

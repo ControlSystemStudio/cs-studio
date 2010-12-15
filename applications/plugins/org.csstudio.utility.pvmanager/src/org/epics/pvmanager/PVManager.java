@@ -63,12 +63,32 @@ public class PVManager {
     public static class PVManagerExpression<T>  {
 
         private DesiredRateExpression<T> aggregatedPVExpression;
+        private ExceptionHandler exceptionHandler;
         // Initialize to defaults
         private ThreadSwitch onThread = defaultOnThread;
         private DataSource source = defaultDataSource;
 
         private PVManagerExpression(DesiredRateExpression<T> aggregatedPVExpression) {
             this.aggregatedPVExpression = aggregatedPVExpression;
+        }
+
+        /**
+         * Forwards exception to the given exception handler. No thread switch
+         * is done, so the handler is notified on the thread where the exception
+         * was thrown.
+         * <p>
+         * Giving a custom exception handler will disable the default handler,
+         * so {@link PV#lastException() } is no longer set and no notification
+         * is done.
+         *
+         * @param exceptionHandler an exception handler
+         * @return this
+         */
+        public PVManagerExpression<T> routeExceptionsTo(ExceptionHandler exceptionHandler) {
+            if (this.exceptionHandler != null)
+                throw new IllegalArgumentException("Exception handler already set");
+            this.exceptionHandler = exceptionHandler;
+            return this;
         }
 
         /**
@@ -118,8 +138,13 @@ public class PVManager {
             // Create PV and connect
             PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName());
             DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
+            if (exceptionHandler == null) {
+                dataRecipe = dataRecipe.withExceptionHandler(new DefaultExceptionHandler(pv, onThread));
+            } else {
+                dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
+            }
             Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread);
+            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread, dataRecipe.getExceptionHandler());
             Scanner.scan(notifier, scanPeriodMs);
             source.connect(dataRecipe);
             PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);

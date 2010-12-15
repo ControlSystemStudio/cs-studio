@@ -5,7 +5,7 @@
 
 package org.epics.pvmanager.sim;
 
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;

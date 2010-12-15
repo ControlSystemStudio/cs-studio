@@ -29,8 +29,9 @@ public abstract class DataSource {
      */
     public static abstract class ValueProcessor<P, V> {
 
-        private final WeakReference<Collector> collectorRef;
+        private final Collector collector;
         private final ValueCache<V> cache;
+        private final ExceptionHandler exceptionHandler;
 
         /**
          * Creates a value processor using the collector and the value cache
@@ -38,10 +39,12 @@ public abstract class DataSource {
          *
          * @param collector collector to notify of updates
          * @param cache cache where to put the new data
+         * @param exceptionHandler where to forward exceptions
          */
-        public ValueProcessor(Collector collector, ValueCache<V> cache) {
-            collectorRef = new WeakReference<Collector>(collector);
+        public ValueProcessor(Collector collector, ValueCache<V> cache, ExceptionHandler exceptionHandler) {
+            this.collector = collector;
             this.cache = cache;
+            this.exceptionHandler = exceptionHandler;
         }
 
         /**
@@ -51,22 +54,13 @@ public abstract class DataSource {
          * @param payload payload for the data source specific event
          */
         public final void processValue(P payload) {
-            // Get the collector. If it was garbage collected,
-            // remove the connect
-            Collector c = collectorRef.get();
-            if (c == null) {
-                logger.log(Level.FINE, "Removing monitor {0}", this);
-                close();
-                return;
-            }
-
             // Lock the collector and prepare the new value.
-            synchronized (c) {
+            synchronized (collector) {
                 try {
                     if (updateCache(payload, cache))
-                        c.collect();
-                } catch (Exception e) {
-                    logger.log(Level.WARNING, "Value processing failed", e);
+                        collector.collect();
+                } catch (RuntimeException e) {
+                    exceptionHandler.handleException(e);
                 }
             }
         }

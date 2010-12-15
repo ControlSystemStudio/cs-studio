@@ -10,5 +10,6 @@ package org.epics.pvmanager.data;
  * @author carcassi
  */
 public interface VStringArray extends Array<String>, Alarm, Time {
+    @Override
     String[] getArray();
 }

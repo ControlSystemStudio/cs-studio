@@ -8,7 +8,7 @@ package org.epics.pvmanager.data;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Set;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Immutable VMultiDouble implementation.
