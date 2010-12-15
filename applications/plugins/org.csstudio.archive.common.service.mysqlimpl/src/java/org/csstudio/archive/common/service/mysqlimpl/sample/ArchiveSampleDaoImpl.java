@@ -79,14 +79,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectLastSmplTimeByChannelIdStmt =
-        "SELECT MAX(sample_time) FROM archive.sample WHERE channel_id=?";
+        "SELECT MAX(sample_time) FROM archive_new.sample WHERE channel_id=?";
 
     private final String _insertSamplesStmt =
-        "INSERT INTO archive.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
+        "INSERT INTO archive_new.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
     private final String _insertSamplesPerMinuteStmt =
-        "INSERT INTO archive.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive_new.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
     private final String _insertSamplesPerHourStmt =
-        "INSERT INTO archive.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive_new.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
 
 
     // TODO (bknerr) : move this to a place where we collect the DESY archive standard time stamp format
@@ -370,12 +370,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                         final T value,
                                         final TimeInstant timestamp) {
             try {
-                return "(" + channelId.intValue() + ", '" +
-                             timestamp.formatted(SAMPLE_TIME_FMT) + "', " +
-                             timestamp.getFractalMillisInNanos() +
-                             sevId.intValue() + ", " +
-                             statusId.intValue() + ", '" +
-                             TypeSupport.toArchiveString(value.getValueData()) + "' ," +
+                return "(" + Joiner.on(", ").join(channelId.intValue(),
+                                                  "'" + timestamp.formatted(SAMPLE_TIME_FMT) + "'",
+                                                  timestamp.getFractalMillisInNanos(),
+                                                  sevId.intValue(),
+                                                  statusId.intValue(),
+                                                  "'" + TypeSupport.toArchiveString(value.getValueData()) + "'") +
                        ")";
             } catch (final ConversionTypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);

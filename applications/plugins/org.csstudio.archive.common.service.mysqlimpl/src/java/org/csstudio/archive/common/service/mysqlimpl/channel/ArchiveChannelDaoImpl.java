@@ -69,9 +69,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE name=?";
+        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE name=?";
     private final String _selectChannelsByGroupId =
-        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE group_id=? ORDER BY name";
+        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE group_id=? ORDER BY name";
 
     /**
      * Constructor.
