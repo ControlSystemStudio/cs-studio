@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.epics.types;
 
 import java.util.List;
 
@@ -27,17 +27,24 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
+import org.csstudio.domain.desy.types.CssAlarmValueType;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 
 /**
@@ -48,7 +55,11 @@ import com.google.common.primitives.Longs;
  * @param <R> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmValueType<?>, T extends IValue> extends TypeSupport<T> {
+public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmValueType<?>, T extends IValue>
+    extends EpicsTypeSupport<T> {
+
+    static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
 
     private static boolean INSTALLED = false;
 
@@ -65,7 +76,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
         if (INSTALLED) {
             return;
         }
-        TypeSupport.addTypeSupport(IDoubleValue.class,
+        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IDoubleValue>() {
             @CheckForNull
             @Override
@@ -86,28 +97,52 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                                                            timestamp);
             }
         });
-        TypeSupport.addTypeSupport(IEnumeratedValue.class,
+        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IEnumeratedValue>() {
+            /**
+             * {@inheritDoc}
+             *
+             * Kay's enumerated values have to have only a single value element corresponding to the set
+             * enumerated value string. We want to archive the string, which yields the information, not the
+             * index which doesn't speak for itself or might change.
+             */
             @CheckForNull
             @Override
             public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value,
                                                           @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
+                // This is a nice example for what happens when physicists 'design' programs.
+                // (...and I already got rid of an unsafe cast)
                 final int[] values = value.getValues();
-                if (values == null || values.length == 0) {
+                if (values == null || values.length != 1) {
+                    LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
                     return null;
                 }
-                if (values.length == 1) {
-                    return new CssAlarmValueType<Integer>(Integer.valueOf(values[0]),
-                                                          alarm,
-                                                          timestamp);
+                final IEnumeratedMetaData metaData = value.getMetaData();
+                if (metaData == null) {
+                    LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                    return null;
                 }
-                return new CssAlarmValueType<List<Integer>>(Lists.newArrayList(Ints.asList(values)),
-                                                            alarm,
-                                                            timestamp);
+                final String[] states = metaData.getStates();
+                final int index = values[0];
+                if (states == null || index < 0 || index >= states.length) {
+                    LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                    return null;
+                }
+                final String state = states[index];
+                if (StringUtil.isBlank(state)) {
+                    LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                    return null;
+                }
+
+                // Now I know that IEnumeratedValue has been concisely filled, yeah.
+                // (And I already got rid of some boilerplate...)
+                // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
+                final EpicsEnumTriple eVal = EpicsEnumTriple.createInstance(index, state, null);
+                return new CssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
             }
         });
-        TypeSupport.addTypeSupport(ILongValue.class,
+        AbstractTypeSupport.addTypeSupport(ILongValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, ILongValue>() {
             @CheckForNull
             @Override
@@ -128,7 +163,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                                                          timestamp);
             }
         });
-        TypeSupport.addTypeSupport(IStringValue.class,
+        AbstractTypeSupport.addTypeSupport(IStringValue.class,
                                    new AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IStringValue>() {
             @Override
             @CheckForNull

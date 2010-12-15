@@ -40,7 +40,7 @@ import com.google.common.collect.Iterables;
  * @since 07.12.2010
  * @param <T>
  */
-public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSupport<T> {
+public abstract class AbstractArchiveTypeConversionSupport<T> extends DesyDomainTypeSupport<T> {
 
     protected static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveTypeConversionSupport.class);
@@ -61,11 +61,11 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
         if (INSTALLED) {
             return;
         }
-        TypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
 
         INSTALLED = true;
     }
@@ -82,7 +82,7 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
           @CheckForNull
           public String apply(@Nonnull final T from) {
               try {
-                  return TypeSupport.toArchiveString(from);
+                  return DesyDomainTypeSupport.toArchiveString(from);
               } catch (final ConversionTypeSupportException e) {
                   LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
                   return null;

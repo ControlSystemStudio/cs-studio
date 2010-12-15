@@ -48,13 +48,13 @@ import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.AbstractArchiveTypeConversionSupport;
-import org.csstudio.domain.desy.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -282,7 +282,7 @@ public enum ArchiveEngineAdapter {
         final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
         final TimeInstant timestamp = adapt(value.getTime());
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
-        final T data = TypeSupport.toCssType(value, alarm, timestamp);
+        final T data = EpicsTypeSupport.toCssType(value, alarm, timestamp);
         if (data == null) {
             return null;
         }

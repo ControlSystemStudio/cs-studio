@@ -48,8 +48,8 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
+import org.csstudio.domain.desy.types.DesyDomainTypeSupport;
 import org.csstudio.domain.desy.types.ICssValueType;
-import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
@@ -305,7 +305,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private Double isDataConvertibleToDouble(@Nonnull final Object data) {
         try {
-            return TypeSupport.toDouble(data);
+            return DesyDomainTypeSupport.toDouble(data);
         } catch (final ConversionTypeSupportException e) {
             return null; // is not convertible. Type support missing.
         }
@@ -375,7 +375,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   timestamp.getFractalMillisInNanos(),
                                                   sevId.intValue(),
                                                   statusId.intValue(),
-                                                  "'" + TypeSupport.toArchiveString(value.getValueData()) + "'") +
+                                                  "'" + DesyDomainTypeSupport.toArchiveString(value.getValueData()) + "'") +
                        ")";
             } catch (final ConversionTypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
