@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @since 07.12.2010
  * @param <T> the basic value type of the datum/data
  */
-public class AbstractCssAlarmValueType<T> implements ICssAlarmValueType<T> {
+public class CssAlarmValueType<T> implements ICssAlarmValueType<T> {
 
     private final T _data;
     private final IAlarm _alarm;
@@ -44,7 +44,7 @@ public class AbstractCssAlarmValueType<T> implements ICssAlarmValueType<T> {
     /**
      * Constructor.
      */
-    public AbstractCssAlarmValueType(@Nonnull final T data,
+    public CssAlarmValueType(@Nonnull final T data,
                                      @Nullable final IAlarm alarm,
                                      @Nonnull final TimeInstant timestamp) {
         _data = data;
