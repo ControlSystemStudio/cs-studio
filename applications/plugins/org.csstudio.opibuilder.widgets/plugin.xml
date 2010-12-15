@@ -417,6 +417,14 @@
                tooltip="add tab after this tab.">
          </action>
          <action
+               class="org.csstudio.opibuilder.widgets.actions.ChangeTabIndexAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.changeTabIndex"
+               label="Change Tab Index"
+               menubarPath="tab"
+               tooltip="Change Tab Index.">
+         </action>
+         <action
                class="org.csstudio.opibuilder.widgets.actions.DuplicateTabAction"
                enablesFor="1"
                id="org.csstudio.opibuilder.widgets.duplicateTab"
