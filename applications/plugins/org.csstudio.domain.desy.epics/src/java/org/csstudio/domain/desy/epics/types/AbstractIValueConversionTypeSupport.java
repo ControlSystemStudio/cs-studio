@@ -173,7 +173,6 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
         public IEnumeratedValueConversionTypeSupport() {
             // Empty
         }
-
         /**
          * {@inheritDoc}
          *

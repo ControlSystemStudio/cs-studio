@@ -29,20 +29,20 @@ import org.csstudio.domain.desy.types.AbstractTriple;
 /**
  * The enum type for epics.
  * Example epics record definition
-   field(ZRVL, "33")
-   field(ONVL, "21")
-   field(TWVL, "12")
-   field(THVL, "45")
-   field(ZRST, "val of 33")
-   field(ONST, "val of 21")
-   field(TWST, "val of 12")
-   field(THST, "val of 45")
-
-   EpicsEnumTriples:
-   (0, "val of 33", 33),
-   (0, "val of 21", 21),
-   (0, "val of 12", 12),
-   (0, "val of 45", 45)
+   field(ZRVL, "33")<br>
+   field(ONVL, "21")<br>
+   field(TWVL, "12")<br>
+   field(THVL, "45")<br>
+   field(ZRST, "val of 33")<br>
+   field(ONST, "val of 21")<br>
+   field(TWST, "val of 12")<br>
+   field(THST, "val of 45")<br>
+   <br>
+   Resulting EpicsEnumTriples:<br>
+   (0, "val of 33", 33)<br>
+   (0, "val of 21", 21)<br>
+   (0, "val of 12", 12)<br>
+   (0, "val of 45", 45)<br>
  *
  * @author bknerr
  * @since 15.12.2010

@@ -27,6 +27,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
@@ -52,8 +53,24 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
 
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
+    protected static final String ARCHIVE_COLLECTION_ELEM_PREFIX = "(";
+    protected static final String ARCHIVE_COLLECTION_ELEM_SUFFIX = ")";
+    protected static final String ARCHIVE_NULL_ENTRY = "null";
 
     private static boolean INSTALLED = false;
+
+    @Nonnull
+    protected static String embrace(@Nonnull final String input) {
+        return ARCHIVE_COLLECTION_ELEM_PREFIX + input + ARCHIVE_COLLECTION_ELEM_SUFFIX;
+    }
+    @CheckForNull
+    protected static String release(@Nonnull final String input) {
+        if (input.startsWith(ARCHIVE_COLLECTION_ELEM_PREFIX) && input.endsWith(ARCHIVE_COLLECTION_ELEM_SUFFIX)) {
+            return input.substring(ARCHIVE_COLLECTION_ELEM_PREFIX.length(),
+                                   input.length() - ARCHIVE_COLLECTION_ELEM_SUFFIX.length());
+        }
+        return null;
+    }
 
     /**
      * Constructor.
@@ -71,6 +88,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         AbstractTypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(EpicsEnumTriple.class, new EnumArchiveTypeConversionSupport());
 
         INSTALLED = true;
     }
@@ -179,7 +197,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     @CheckForNull
     public abstract String convertScalarToArchiveString(@Nonnull final T value) throws TypeSupportException;
     @CheckForNull
-    public abstract T convertScalarFromArchiveString(@Nonnull final String value);
+    public abstract T convertScalarFromArchiveString(@Nonnull final String value) throws TypeSupportException;
 
     @CheckForNull
     public String convertMultiScalarToArchiveString(@Nonnull final Iterable<T> values) throws TypeSupportException {

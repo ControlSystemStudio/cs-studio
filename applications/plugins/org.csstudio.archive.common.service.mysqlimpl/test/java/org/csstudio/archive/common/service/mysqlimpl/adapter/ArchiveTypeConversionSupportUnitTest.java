@@ -21,9 +21,15 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_PREFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SUFFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.embrace;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.release;
+
 import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +48,31 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Before
     public void setup() {
         ArchiveTypeConversionSupport.install();
+    }
+
+    @Test
+    public void testEmbraceRelease() {
+        final String empty = embrace("");
+        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX +
+                            ARCHIVE_COLLECTION_ELEM_SUFFIX, empty);
+        Assert.assertEquals("", release(empty));
+
+
+        final String xxx = embrace("xxx");
+        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX + "xxx" +
+                            ARCHIVE_COLLECTION_ELEM_SUFFIX, xxx);
+        Assert.assertEquals("xxx", release(xxx));
+
+        final String yyy = embrace("(()()d(x)");
+        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX + "(()()d(x)" +
+                            ARCHIVE_COLLECTION_ELEM_SUFFIX, yyy);
+        Assert.assertEquals("(()()d(x)", release(yyy));
+
+        Assert.assertEquals(null, release(""));
+        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_PREFIX));
+        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_SUFFIX));
+        Assert.assertEquals(null, release("x" + ARCHIVE_COLLECTION_ELEM_SUFFIX));
+        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_PREFIX + "s"));
     }
 
     @Test
@@ -105,13 +136,28 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testScalarStringArchiveStringConversion() {
-        // TODO (bknerr) for all number types...
-
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString("test me");
             Assert.assertTrue(archiveString.equals("test me"));
             final String sFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(String.class, archiveString);
             Assert.assertTrue(sFromA.equals(archiveString));
+        } catch (final TypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testScalarEnumArchiveStringConversion() {
+        try {
+            final EpicsEnumTriple t = EpicsEnumTriple.createInstance(3, "in case we die", 44);
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
+            Assert.assertTrue(archiveString.equals(ARCHIVE_COLLECTION_ELEM_PREFIX +
+                                                   "3\\,in case we die\\,44" +
+                                                   ARCHIVE_COLLECTION_ELEM_SUFFIX));
+            final EpicsEnumTriple tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnumTriple.class, archiveString);
+            Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
+            Assert.assertEquals("in case we die", tFromA.getState());
+            Assert.assertEquals(Integer.valueOf(44), tFromA.getRaw());
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -194,6 +240,24 @@ public class ArchiveTypeConversionSupportUnitTest {
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
             Assert.assertEquals("127\\,-128", archiveString);
+        } catch (final TypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testMultiScalarEnumConversion() {
+        final Collection<EpicsEnumTriple> valuesE = Lists.newArrayList(EpicsEnumTriple.createInstance(0, "first", 26),
+                                                                       EpicsEnumTriple.createInstance(1, "second", 27));
+        try {
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
+            Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX +
+                                "0\\,first\\,26" +
+                                ARCHIVE_COLLECTION_ELEM_SUFFIX +
+                                "\\," +
+                                ARCHIVE_COLLECTION_ELEM_PREFIX +
+                                "1\\,second\\,27" +
+                                ARCHIVE_COLLECTION_ELEM_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
