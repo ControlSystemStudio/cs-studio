@@ -48,8 +48,8 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
@@ -372,7 +372,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             try {
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted(SAMPLE_TIME_FMT) + "'",
-                                                  timestamp.getFractalMillisInNanos(),
+                                                  timestamp.getFractalSecondsInNanos(),
                                                   sevId.intValue(),
                                                   statusId.intValue(),
                                                   "'" + ArchiveTypeConversionSupport.toArchiveString(value.getValueData()) + "'") +

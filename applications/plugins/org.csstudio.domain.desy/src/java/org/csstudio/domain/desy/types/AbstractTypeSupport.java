@@ -68,11 +68,11 @@ public abstract class AbstractTypeSupport<T> {
      * @param typeClass the class of the type
      * @return the support for the type or null
      * @param <T> the type to retrieve support for
+     * @throws TypeSupportException
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    protected
-    static <T> AbstractTypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass) {
+    protected static <T> AbstractTypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass) throws TypeSupportException {
         AbstractTypeSupport<T> support = (AbstractTypeSupport<T>) CALC_TYPE_SUPPORTS.get(typeClass);
         if (support == null) {
             support = recursiveTypeSupportFor(typeClass);
@@ -87,7 +87,7 @@ public abstract class AbstractTypeSupport<T> {
                 }
             }
             if (support == null) {
-                throw new RuntimeException("No type support found for type " + typeClass, null);
+                throw new TypeSupportException("No type support found for type " + typeClass, null);
             }
             CALC_TYPE_SUPPORTS.put(typeClass, support);
         }

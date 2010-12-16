@@ -55,8 +55,8 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(value);
+    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
         final Iterable<Integer> ints = Iterables.transform(strings, new Function<String, Integer>() {
             @Override
             @CheckForNull

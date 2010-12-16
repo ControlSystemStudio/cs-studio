@@ -43,7 +43,7 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
      */
     @Override
     @Nonnull
-    public String convertScalarToArchiveString(@Nonnull final String value) throws TypeSupportException {
+    public String convertToArchiveString(@Nonnull final String value) throws TypeSupportException {
         return value;
     }
 

@@ -34,7 +34,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.Collections2;
 
 /**
  * TODO (bknerr) :
@@ -86,9 +86,11 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         AbstractTypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Long.class, new LongArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
         AbstractTypeSupport.addTypeSupport(EpicsEnumTriple.class, new EnumArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Collection.class, new CollectionTypeConversionSupport());
 
         INSTALLED = true;
     }
@@ -108,28 +110,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
-        return support.convertScalarToArchiveString(value);
-    }
-
-    /**
-     * Tries to convert the value data/datum into a string representation suitable for archiving purposes.
-     * @param valueData
-     * @return
-     * @throws TypeSupportException
-     */
-    @CheckForNull
-    public static <T> String toArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
-        if (values.isEmpty()) {
-            return "";
-        }
-        @SuppressWarnings("unchecked")
-        final Class<T> typeClass = (Class<T>) values.iterator().next().getClass();
-        final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
-        return support.convertMultiScalarToArchiveString(values);
+        return support.convertToArchiveString(value);
     }
 
     /**
@@ -193,15 +174,14 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return support.convertToDouble(value);
     }
 
+    @CheckForNull
+    protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
+    @CheckForNull
+    protected abstract T convertScalarFromArchiveString(@Nonnull final String value) throws TypeSupportException;
 
     @CheckForNull
-    public abstract String convertScalarToArchiveString(@Nonnull final T value) throws TypeSupportException;
-    @CheckForNull
-    public abstract T convertScalarFromArchiveString(@Nonnull final String value) throws TypeSupportException;
-
-    @CheckForNull
-    public String convertMultiScalarToArchiveString(@Nonnull final Iterable<T> values) throws TypeSupportException {
-      final Iterable<String> items = Iterables.transform(values, new Function<T, String>() {
+    protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
+      final Collection<String> items = Collections2.transform(values, new Function<T, String>() {
           @Override
           @CheckForNull
           public String apply(@Nonnull final T from) {
@@ -213,17 +193,16 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
               }
           }
       });
-      if (Iterables.size(values) != Iterables.size(items)) {
-          throw new TypeSupportException("Number of converted elements (" + Iterables.size(items) +
-                                                   " does not match the number of passed elements (" + Iterables.size(values) + "!", null);
+      if (values.size() != items.size()) {
+          throw new TypeSupportException("Number of transformed elements (" + items.size() +
+                                                   " does not match the number of input elements (" + values.size() + "!", null);
       }
       final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
       return result;
     }
 
     @CheckForNull
-    public abstract Collection<T> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException;
+    protected abstract Collection<T> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException;
     @CheckForNull
-    public abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
-
+    protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
 }

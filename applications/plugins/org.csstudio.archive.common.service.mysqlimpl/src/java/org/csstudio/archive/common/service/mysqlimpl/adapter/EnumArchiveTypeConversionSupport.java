@@ -57,7 +57,7 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
      */
     @Override
     @Nonnull
-    public String convertScalarToArchiveString(@Nonnull final EpicsEnumTriple value) throws TypeSupportException {
+    public String convertToArchiveString(@Nonnull final EpicsEnumTriple value) throws TypeSupportException {
         return embrace(Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(value.getIndex(),
                                                            value.getState(),
                                                            value.getRaw() != null ? value.getRaw() : ARCHIVE_NULL_ENTRY));

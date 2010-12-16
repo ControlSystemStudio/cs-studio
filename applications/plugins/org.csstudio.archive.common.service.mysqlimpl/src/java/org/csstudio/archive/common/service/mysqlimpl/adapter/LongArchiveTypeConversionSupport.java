@@ -21,31 +21,59 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.types.TypeSupportException;
 
+import com.google.common.base.Function;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 /**
- * Common type conversions for {@link Number} subtypes.
+ * Type conversions for {@link Long}.
  *
  * @author bknerr
- * @since 10.12.2010
- * @param <N> the number subtype
+ * @since 15.12.2010
  */
-public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String convertToArchiveString(@Nonnull final N value) throws TypeSupportException {
-        return value.toString();
-    }
+public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
+
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
-        return d.doubleValue();
+    public Long convertScalarFromArchiveString(@Nonnull final String value) {
+        return Long.parseLong(value);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<Long> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
+        final Iterable<Long> longs = Iterables.transform(strings, new Function<String, Long>() {
+            @Override
+            @CheckForNull
+            public Long apply(@Nonnull final String from) {
+                return convertScalarFromArchiveString(from);
+            }
+        });
+        int size;
+        try {
+            size = Iterables.size(longs);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Values representation is not convertible to Long.", e);
+        }
+        if (Iterables.size(strings) != size) {
+            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
+        }
+        return Lists.newArrayList(longs);
+    }
+
 }
