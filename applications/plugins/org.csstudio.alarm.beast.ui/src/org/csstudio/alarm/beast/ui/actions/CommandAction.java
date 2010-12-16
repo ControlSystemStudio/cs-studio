@@ -5,10 +5,11 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.ui.actions;
 
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
+import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that executes some command (reset, open valve, ...).

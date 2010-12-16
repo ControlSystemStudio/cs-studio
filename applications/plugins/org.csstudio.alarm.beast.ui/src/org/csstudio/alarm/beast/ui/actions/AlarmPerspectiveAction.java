@@ -5,8 +5,11 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.ui.actions;
 
+import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.Perspective;
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 
 /** Action that opens the alarm perspective

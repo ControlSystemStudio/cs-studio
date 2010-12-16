@@ -15,6 +15,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
  *  Severity changes that percolate up to the root send signal to model.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AlarmClientModelRoot extends AlarmTreeRoot
 {
     final private AlarmClientModel model;
@@ -47,8 +48,10 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
     {
         super.maximizeSeverity(pv);
         if (model != null)
-        {   // In the client model, the leaf items are PVs
-            model.fireNewAlarmState((AlarmTreePV) pv);
-        }
+            // In the client model, the leaf items are PVs
+            if (pv instanceof AlarmTreePV)
+                model.fireNewAlarmState((AlarmTreePV) pv);
+            else
+                throw new IllegalArgumentException("Expected PV");
     }
 }

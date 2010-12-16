@@ -5,9 +5,11 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.ui.actions;
 
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.alarm.beast.ui.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

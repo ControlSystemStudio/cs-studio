@@ -5,9 +5,12 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.ui.actions;
 
-import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.alarm.beast.ui.AuthIDs;
+import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
@@ -18,56 +21,55 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
-/** Action that duplicates an alarm tree PV
+/** Action that renames an alarm tree item
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
-public class DuplicatePVAction extends AbstractUserDependentAction
+public class RenameItemAction extends AbstractUserDependentAction
 {
-    final private Shell shell;
-    final private AlarmClientModel model;
-    final private AlarmTreePV pv;
+    private Shell shell;
+    private AlarmClientModel model;
+    private AlarmTreeItem item;
 
     /** Initialize
      *  @param shell Shell
      *  @param model Model that contains the PV
-     *  @param pv PV to configure
+     *  @param item PV to configure
      */
-    public DuplicatePVAction(final Shell shell, final AlarmClientModel model,
-            final AlarmTreePV pv)
+    public RenameItemAction(final Shell shell, final AlarmClientModel model,
+            final AlarmTreeItem item)
     {
-        super(Messages.DuplicatePV,
-                Activator.getImageDescriptor("icons/move.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
+        super(Messages.RenameItem,
+                Activator.getImageDescriptor("icons/rename.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
-        this.pv = pv;
+        this.item = item;
 
         setEnabledWithoutAuthorization(true);
     	//authorization
     	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
     }
 
+    /** Open rename dialog
+     *  @see org.eclipse.jface.action.Action#run()
+     */
 	@Override
 	protected void doWork()
 	{
-        final String path = pv.getPathName();
-        final InputDialog dlg = new InputDialog(shell, Messages.DuplicatePV,
-                NLS.bind(Messages.DuplicatePVMesgFmt,
-                         pv.getName(), pv.getDescription()),
-                path, null);
+		final InputDialog dlg = new InputDialog(shell, Messages.RenameItem,
+                Messages.RenameItemMsg, item.getName(), null);
         if (dlg.open() != Window.OK)
             return;
-        final String new_path = dlg.getValue();
         try
         {
-            model.duplicatePV(pv, new_path);
+            model.rename(item, dlg.getValue());
         }
         catch (Throwable ex)
         {
             CentralLogger.getInstance().getLogger(this).error(ex);
             MessageDialog.openError(shell, Messages.Error,
                     NLS.bind(Messages.CannotUpdateConfigurationErrorFmt,
-                            new_path, ex.getMessage()));
+                            item.getName(), ex.getMessage()));
         }
 	}
 }

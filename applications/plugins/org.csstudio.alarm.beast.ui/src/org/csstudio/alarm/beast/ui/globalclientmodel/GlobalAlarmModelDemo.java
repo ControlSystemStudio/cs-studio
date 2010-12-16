@@ -10,8 +10,8 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of the {@link GlobalAlarmModel}
@@ -28,9 +28,10 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
     public void globalAlarmsChanged(final GlobalAlarmModel model)
     {
         System.out.println("\nGlobal alarms:");
-        final AlarmTreeRoot alarms[] = model.getAlarms();
-        for (AlarmTreeRoot root : alarms)
-            root.dump(System.out);
+        final AlarmTreeRoot trees[] = model.getAlarmRoots();
+        final AlarmTreeLeaf alarms[] = model.getAlarms();
+        for (AlarmTreeLeaf alarm : alarms)
+            System.out.println(alarm.getPathName());
 
         // Delayed printout that would (usually) have GUI detail
         delayed_update.schedule(new TimerTask()
@@ -38,8 +39,7 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
             @Override
             public void run()
             {
-                System.out.println("\nDelayed alarm display:");
-                for (AlarmTreeRoot root : alarms)
+                for (AlarmTreeRoot root : trees)
                     root.dump(System.out);
             }
         }, 3000);
@@ -48,8 +48,8 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
     @Test
     public void testGlobalClientModel() throws Exception
     {
-        final GlobalAlarmModel model = new GlobalAlarmModel(this);
-        model.readConfiguration(new NullProgressMonitor());
+        final GlobalAlarmModel model = GlobalAlarmModel.reference();
+        model.addListener(this);
 
         System.out.println("Model is running ....");
         while (true)

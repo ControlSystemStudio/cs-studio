@@ -5,7 +5,7 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui.alarmtable;
+package org.csstudio.alarm.beast.ui;
 
 import org.csstudio.platform.logging.CentralLogger;
 

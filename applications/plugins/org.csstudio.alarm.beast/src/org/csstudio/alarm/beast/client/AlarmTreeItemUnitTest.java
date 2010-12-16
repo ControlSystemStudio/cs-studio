@@ -9,6 +9,9 @@ package org.csstudio.alarm.beast.client;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.TimestampFactory;
 import org.junit.Test;
@@ -39,8 +42,18 @@ public class AlarmTreeItemUnitTest
                 new GDCDataStructure("reset PV123", "caput PV123 Reset")
         };
 
+        // Root
+        //    DTL
+        //       Vacuum
+        //            ...1:Pressure
+        //            ...2:Pressure
+        //       RCCS
+        //            ...Flow
+        //            ...Temp
+        //    CCL
+        //       Vacuum
+        //            ...Pressure
         final AlarmTreeRoot tree = new AlarmTreeRoot("Root", 0);
-
         final AlarmTreeItem dtl = new AlarmTreeItem(tree, "DTL", 0);
         final AlarmTreeItem dtl_vac = new AlarmTreeItem(dtl, "Vacuum", 0);
         AlarmTreePV pv = new AlarmTreePV(dtl_vac, "DTL_Vac:Sensor1:Pressure", 0);
@@ -65,9 +78,16 @@ public class AlarmTreeItemUnitTest
 
         final AlarmTreeItem ccl = new AlarmTreeItem(tree, "CCL", 0);
         final AlarmTreeItem ccl_vac = new AlarmTreeItem(ccl, "Vacuum", 0);
-        pv = new AlarmTreePV(ccl_vac, "DTL_RCCS:Sensor1:Temp", 0);
+        pv = new AlarmTreePV(ccl_vac, "CCL_Vac:Sensor:Pressure", 0);
 
-        assertEquals(5, tree.getPVCount());
+        assertEquals(5, tree.getLeafCount());
+        final List<AlarmTreeLeaf> leaves = new ArrayList<AlarmTreeLeaf>();
+        tree.addLeavesToList(leaves);
+        assertEquals(5, leaves.size());
+        for (AlarmTreeLeaf leaf : leaves)
+            System.out.println(leaf.getPathName());
+        assertEquals("DTL_Vac:Sensor1:Pressure", leaves.get(0).getName());
+        assertEquals("CCL_Vac:Sensor:Pressure", leaves.get(4).getName());
 
         // Check severity propagation
         assertEquals(SeverityLevel.OK, ccl.getSeverity());

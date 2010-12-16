@@ -9,12 +9,14 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
@@ -28,7 +30,15 @@ import org.eclipse.osgi.util.NLS;
  */
 public class GlobalAlarmModel
 {
-    final private GlobalAlarmModelListener listener;
+    /** Singleton instance */
+    private static volatile GlobalAlarmModel instance = null;
+
+    /** Reference count for instance */
+    private AtomicInteger references = new AtomicInteger();
+
+    /** Listeners who registered for notifications */
+    final private CopyOnWriteArrayList<GlobalAlarmModelListener> listeners =
+        new CopyOnWriteArrayList<GlobalAlarmModelListener>();
 
     /** Communicator that receives alarm updates from JMS */
     final private GlobalAlarmCommunicator communicator;
@@ -47,12 +57,9 @@ public class GlobalAlarmModel
      */
     final private List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
 
-    /** Initialize
-     *  @param listener Listener
-     */
-    public GlobalAlarmModel(final GlobalAlarmModelListener listener)
+    /** Initialize */
+    private GlobalAlarmModel()
     {
-        this.listener = listener;
         communicator = new GlobalAlarmCommunicator(Preferences.getJMS_URL())
         {
             @Override
@@ -77,10 +84,57 @@ public class GlobalAlarmModel
                 GlobalAlarmModel.this.handleAlarmUpdate(info);
             }
         };
+
+        new ReadConfigJob(this).schedule();
     }
 
-    /** @return Currently active global alarms */
-    public AlarmTreeRoot[] getAlarms()
+    /** Obtain the shared instance.
+     *  <p>
+     *  Increments the reference count.
+     *  @see #release()
+     *  @return Global alarm model instance
+     */
+    public static GlobalAlarmModel reference()
+    {
+        synchronized (GlobalAlarmModel.class)
+        {
+            if (instance == null)
+                instance = new GlobalAlarmModel();
+        }
+        instance.references.incrementAndGet();
+        return instance;
+    }
+
+    /** Release the 'instance' */
+    private static void releaseInstance()
+    {
+        synchronized (GlobalAlarmModel.class)
+        {
+            instance = null;
+        }
+    }
+
+    /** Must be called to release model when no longer used.
+     *  <p>
+     *  Based on reference count, model is closed when last
+     *  user releases it.
+     */
+    public void release()
+    {
+        if (references.decrementAndGet() > 0)
+            return;
+        communicator.stop();
+        releaseInstance();
+    }
+
+    /** @param listener Listener to add */
+    public void addListener(GlobalAlarmModelListener listener)
+    {
+        listeners.add(listener);
+    }
+
+    /** @return Roots of currently active global alarms */
+    public AlarmTreeRoot[] getAlarmRoots()
     {
         synchronized (configurations)
         {
@@ -88,10 +142,26 @@ public class GlobalAlarmModel
         }
     }
 
+    /** @return Currently active global alarms */
+    public AlarmTreeLeaf[] getAlarms()
+    {
+        final List<AlarmTreeLeaf> alarms = new ArrayList<AlarmTreeLeaf>();
+        synchronized (configurations)
+        {
+            for (AlarmTreeRoot root : configurations)
+            {
+                for (int i=root.getAlarmChildCount()-1; i>=0; --i)
+                    root.addLeavesToList(alarms);
+            }
+        }
+        return alarms.toArray(new AlarmTreeLeaf[alarms.size()]);
+    }
+
     /** Read 'global' alarms from RDB
+     *  Invoked by {@link ReadConfigJob}
      *  @param monitor Progress monitor
      */
-    public void readConfiguration(final IProgressMonitor monitor)
+    void readConfiguration(final IProgressMonitor monitor)
     {
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
         // Arrange for JMS updates to be queued
@@ -214,6 +284,7 @@ public class GlobalAlarmModel
     /** Inform listener of changes */
     private void fireAlarmUpdate()
     {
-        listener.globalAlarmsChanged(this);
+        for (GlobalAlarmModelListener listener : listeners)
+            listener.globalAlarmsChanged(this);
     }
 }

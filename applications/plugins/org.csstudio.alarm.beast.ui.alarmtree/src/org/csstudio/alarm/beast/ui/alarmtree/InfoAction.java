@@ -34,7 +34,7 @@ public class InfoAction extends Action
         info.append("JMS Server: " + model.getJMSServerInfo() + "\n");
         info.append("Alarm Server alive: " + model.isServerAlive() + "\n");
         info.append("'Write' allowed: " + model.isWriteAllowed() + "\n");
-        info.append("PV Count: " + model.getConfigTree().getPVCount() + "\n");
+        info.append("PV Count: " + model.getConfigTree().getLeafCount() + "\n");
         info.append("Active alarms: " + model.getActiveAlarms().length + "\n");
         info.append("Acknowledged alarms: " + model.getAcknowledgedAlarms().length + "\n");
         

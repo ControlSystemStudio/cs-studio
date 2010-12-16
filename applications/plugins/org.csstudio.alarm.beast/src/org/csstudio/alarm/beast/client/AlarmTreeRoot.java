@@ -8,6 +8,7 @@
 package org.csstudio.alarm.beast.client;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.apputil.xml.XMLWriter;
@@ -43,26 +44,49 @@ public class AlarmTreeRoot extends AlarmTreeItem
      *  @param pv PV that needs to be ack'ed
      *  @param acknowledge Ack or un-ack?
      */
-    protected void acknowledge(AlarmTreePV pv, boolean acknowledge)
+    protected void acknowledge(final AlarmTreePV pv, final boolean acknowledge)
     {
         // NOP
     }
 
     /** @return Number of PVs in tree */
-    public synchronized int getPVCount()
+    public synchronized int getLeafCount()
     {
-        return getPVCount(this);
+        return getLeafCount(this);
     }
 
     /** @return Number of PVs below item (counts recursively) */
-    private int getPVCount(final AlarmTreeItem item)
+    private int getLeafCount(final AlarmTreeItem item)
     {
         if (item instanceof AlarmTreeLeaf)
             return 1;
         int count = 0;
         for (int i=0; i<item.getChildCount(); ++i)
-            count += getPVCount(item.getClientChild(i));
+            count += getLeafCount(item.getClientChild(i));
         return count;
+    }
+
+    /** @param leaves List to which all leaves of this tree are added */
+    public void addLeavesToList(final List<AlarmTreeLeaf> leaves)
+    {
+        addLeavesToList(leaves, this);
+    }
+
+    /** @param leaves List to which leaves are added
+     *  @param item Item where addition starts, then recurses down
+     */
+    private void addLeavesToList(final List<AlarmTreeLeaf> leaves, final AlarmTreeItem item)
+    {
+        if (item instanceof AlarmTreeLeaf)
+        {
+            leaves.add((AlarmTreeLeaf) item);
+            return;
+        }
+        synchronized (item)
+        {
+            for (int i=0; i<item.getChildCount(); ++i)
+                addLeavesToList(leaves, item.getClientChild(i));
+        }
     }
 
     /** @return Number of elements (children, sub-children) in tree */

@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import org.csstudio.alarm.beast.ui.AcknowledgeAction;
-import org.csstudio.alarm.beast.ui.MaintenanceModeAction;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.alarm.beast.ui.UnAcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
+import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.IToolBarManager;

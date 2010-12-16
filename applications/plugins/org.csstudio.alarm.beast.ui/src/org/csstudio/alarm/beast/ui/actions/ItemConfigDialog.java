@@ -5,7 +5,7 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast.ui;
+package org.csstudio.alarm.beast.ui.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ import java.util.List;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
+import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
