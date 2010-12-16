@@ -18,13 +18,6 @@
    </license>
 
    <plugin
-         id="org.csstudio.ams.connector.sms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.archive.archiveRecord"
          download-size="0"
          install-size="0"
@@ -108,6 +101,13 @@
 
    <plugin
          id="org.csstudio.diag.icsiocmonitor.service"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.nameSpaceBrowser"
          download-size="0"
          install-size="0"
          version="0.0.0"
