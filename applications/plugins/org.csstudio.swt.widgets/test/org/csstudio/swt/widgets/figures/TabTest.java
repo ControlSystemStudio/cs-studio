@@ -6,7 +6,13 @@ public class TabTest extends AbstractWidgetTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new TabFigure();
+		TabFigure tabFigure = new TabFigure();
+		tabFigure.addTab("Tab 0");
+		tabFigure.addTab("Tab 1");
+		tabFigure.addTab("Tab 2");
+		tabFigure.addTab("Tab 3");
+		
+		return tabFigure;
 	}
 	
 	
@@ -20,5 +26,9 @@ public class TabTest extends AbstractWidgetTest{
 		return concatenateStringArrays(superProps, myProps);
 	}
 	
-			
+	@Override
+	public boolean isAutoTest() {
+		return true;
+	}		
+	
 }

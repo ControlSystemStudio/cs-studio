@@ -1,6 +1,8 @@
 package org.csstudio.opibuilder.widgets.actions;
 
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
+import org.csstudio.opibuilder.widgets.editparts.TabItem;
+import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.eclipse.gef.commands.Command;
 
 /**The command which add a tab to the tab widget.
@@ -9,10 +11,11 @@ import org.eclipse.gef.commands.Command;
  */
 public class AddTabCommand extends Command {
 	private int tabIndex;
-	private TabEditPart tabEditPart;
+	private TabModel tabModel;
+	private TabItem tabItem = null;
 	
 	public AddTabCommand(TabEditPart tabEditPart, boolean before) {
-		this.tabEditPart = tabEditPart;
+		this.tabModel = tabEditPart.getWidgetModel();
 		if(before)
 			this.tabIndex = tabEditPart.getActiveTabIndex();
 		else
@@ -22,12 +25,14 @@ public class AddTabCommand extends Command {
 	
 	@Override
 	public void execute() {
-		tabEditPart.addTab(tabIndex, null, null);
+		if(tabItem == null)
+			tabItem = new TabItem(tabIndex);
+		tabModel.addTab(tabIndex, tabItem);
 	}
 	
 	@Override
 	public void undo() {
-		tabEditPart.removeTab(tabIndex);
+		tabModel.removeTab(tabIndex);
 	}
 	
 	
