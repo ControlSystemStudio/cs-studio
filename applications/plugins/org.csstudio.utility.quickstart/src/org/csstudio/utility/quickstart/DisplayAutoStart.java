@@ -37,13 +37,9 @@ package org.csstudio.utility.quickstart;
 import org.csstudio.platform.logging.CentralLogger;
 
 import org.csstudio.sds.ui.runmode.RunModeService;
-import org.csstudio.trends.databrowser.DB2Shell;
 import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.csstudio.utility.quickstart.preferences.PreferenceValidator;
-import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -102,15 +98,16 @@ public class DisplayAutoStart implements Runnable {
 		final IPath sdsFilePath = Path.fromOSString(checkedPrefItem[0]);
 		final IFile file = ResourcesPlugin.getWorkspace().getRoot()
 				.getFile(sdsFilePath);
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-
-			@Override
-			public void run() {
-
-				DB2Shell dbShell = new DB2Shell(file);
-				dbShell.openShell();
-			}
-		});
+// TODO (jhatje): enable when Databrwoser2 is integrates in CSS
+//		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//
+//				DB2Shell dbShell = new DB2Shell(file);
+//				dbShell.openShell();
+//			}
+//		});
 	}
 
 	private void startSdsDidplay(final String[] checkedPrefItem) {

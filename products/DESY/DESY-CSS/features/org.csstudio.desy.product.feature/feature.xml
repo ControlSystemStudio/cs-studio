@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.desy.product.feature"
-      label="Feature"
-      version="1.0.0.qualifier">
+      label="Desy Product Feature"
+      version="1.0.0.qualifier"
+      provider-name="Desy, Jan Hatje &lt;jan.hatje@desy.de&gt;">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -72,29 +73,20 @@
          id="org.csstudio.desy.management.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.desy.platform.base.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.library.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.librarydesy.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.desy.product"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.workspace"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"

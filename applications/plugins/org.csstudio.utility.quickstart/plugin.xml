@@ -296,16 +296,6 @@
               id="org.csstudio.utility.quickstart.addtoquickstartaction"
               label="Add to quickstart"/>
      </objectContribution>
-     <objectContribution
-           adaptable="false"
-           id="org.csstudio.utility.quickstart.addtoquickstartplt"
-           nameFilter="*plt"
-           objectClass="org.eclipse.core.resources.IResource">
-        <action
-              class="org.csstudio.utility.quickstart.AddToQuickstartAction"
-              id="org.csstudio.utility.quickstart.addtoquickstartactionplt"
-              label="Add to quickstart"/>
-     </objectContribution>
   </extension>
      <extension
          point="org.eclipse.ui.preferencePages">
@@ -336,3 +326,16 @@
    </extension>  
 
 </plugin>
+
+<!-- TODO (jhatje): enable when Databwoser2 is integrated in CSS.
+     <objectContribution
+           adaptable="false"
+           id="org.csstudio.utility.quickstart.addtoquickstartplt"
+           nameFilter="*plt"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              class="org.csstudio.utility.quickstart.AddToQuickstartAction"
+              id="org.csstudio.utility.quickstart.addtoquickstartactionplt"
+              label="Add to quickstart"/>
+     </objectContribution>
+  -->
