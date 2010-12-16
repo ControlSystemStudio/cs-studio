@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.alarm.beast.ui.globaltable.GlobalAlarmTableView"
+            icon="icons/alarmtable.gif"
+            id="org.csstudio.alarm.beast.ui.globaltable.view"
+            name="%GlobalAlarmTable">
+      </view>
+   </extension>
+
+</plugin>
