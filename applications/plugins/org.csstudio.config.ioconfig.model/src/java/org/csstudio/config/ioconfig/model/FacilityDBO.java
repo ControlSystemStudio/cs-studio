@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -64,7 +65,7 @@ public class FacilityDBO extends AbstractNodeDBO {
     public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
-        copy.setDocuments(getDocuments());
+        copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
         return copy;
     }
 
@@ -75,7 +76,8 @@ public class FacilityDBO extends AbstractNodeDBO {
     public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
         final AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }

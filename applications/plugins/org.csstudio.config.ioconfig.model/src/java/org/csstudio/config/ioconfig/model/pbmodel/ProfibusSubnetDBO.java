@@ -1,5 +1,6 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -449,7 +451,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
             IocDBO ioc = (IocDBO) parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
             copy.setDescription(getDescription());
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
             copy.setGap(getGap());
@@ -479,7 +481,8 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
     public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }

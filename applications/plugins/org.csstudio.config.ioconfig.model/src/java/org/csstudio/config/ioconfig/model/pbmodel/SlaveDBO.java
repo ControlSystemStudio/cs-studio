@@ -26,6 +26,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -464,7 +466,7 @@ public class SlaveDBO extends AbstractNodeDBO {
         if (parentNode instanceof MasterDBO) {
             MasterDBO master = (MasterDBO) parentNode;
             SlaveDBO copy = new SlaveDBO(master);
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setFdlAddress(getFdlAddress());
             copy.setGroupIdent(getGroupIdent());
             copy.setGSDFile(getGSDFile());
@@ -480,8 +482,9 @@ public class SlaveDBO extends AbstractNodeDBO {
             copy.setVendorName(getVendorName());
             copy.setWdFact1(getWdFact1());
             copy.setWdFact2(getWdFact2());
-            for (AbstractNodeDBO n : getChildren()) {
-                n.copyThisTo(copy);
+            for (AbstractNodeDBO node : getChildren()) {
+                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
             }
             return copy;
         }

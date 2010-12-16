@@ -24,6 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -34,6 +35,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -361,7 +363,7 @@ public class MasterDBO extends AbstractNodeDBO {
             ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setAutoclear(isAutoclear());
             copy.setDataControlTime(getDataControlTime());
             copy.setRedundant(getRedundant());
@@ -383,9 +385,11 @@ public class MasterDBO extends AbstractNodeDBO {
     public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
-        return copy;    }
+        return copy;
+    }
 
     public void setMaxNrSlave(final int maxNrSlave) {
         _maxNrSlave = maxNrSlave;

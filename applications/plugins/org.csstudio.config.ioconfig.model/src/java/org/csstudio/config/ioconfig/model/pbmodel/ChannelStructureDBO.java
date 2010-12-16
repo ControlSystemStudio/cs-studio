@@ -268,7 +268,8 @@ public class ChannelStructureDBO extends AbstractNodeDBO implements IStructured 
             copy.setSortIndex((int)getSortIndex());
             copy.removeAllChild();
             for (AbstractNodeDBO node : getChildrenAsMap().values()) {
-                node.copyThisTo(copy);
+                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
             }
             return copy;
         }

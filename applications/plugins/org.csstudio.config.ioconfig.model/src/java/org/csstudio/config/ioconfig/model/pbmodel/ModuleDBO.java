@@ -288,6 +288,13 @@ public class ModuleDBO extends AbstractNodeDBO {
         return -1;
     }
 
+    @Override
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+        AbstractNodeDBO copy = super.copyThisTo(parentNode);
+        copy.setName(getName());
+        return copy;
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -304,8 +311,10 @@ public class ModuleDBO extends AbstractNodeDBO {
             copy.setConfigurationData(getConfigurationData());
             copy.setExtModulePrmDataLen(getExtModulePrmDataLen());
 
-            for (AbstractNodeDBO n: getChildrenAsMap().values()) {
-                n.copyThisTo(copy);
+            for (AbstractNodeDBO node: getChildrenAsMap().values()) {
+                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
+
             }
 
             return copy;
