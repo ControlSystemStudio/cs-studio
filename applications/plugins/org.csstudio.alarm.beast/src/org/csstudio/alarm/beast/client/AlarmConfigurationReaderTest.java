@@ -5,10 +5,12 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import static org.junit.Assert.*;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.SQL;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;

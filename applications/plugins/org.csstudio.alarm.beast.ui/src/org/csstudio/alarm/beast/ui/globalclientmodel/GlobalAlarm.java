@@ -9,26 +9,29 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmConfigurationReader;
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmConfigurationReader;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.eclipse.osgi.util.NLS;
 
 /** A 'global' alarm
+ *  Similar to the AlarmTreePV, but doesn't track 'current' state, value,
+ *  configuration detail.
+ *  Instead, it handles async. retrieval of GUI info to allow display
+ *  of a few 'global' alarms without having to read the complete
+ *  alarm configuration.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GlobalAlarm extends AlarmTreePV
+public class GlobalAlarm extends AlarmTreeLeaf
 {
-    /** Time of alarm */
-    private ITimestamp timestamp;
-
     /** Create global alarm with path and alarm info,
      *  but without GUI detail (guidance,..) nor valid RDB ID.
      *  If possible, uses alarm tree elements from existing configurations.
@@ -79,13 +82,12 @@ public class GlobalAlarm extends AlarmTreePV
             {
                 // Update existing alarm
                 final GlobalAlarm alarm = (GlobalAlarm) item;
-                alarm.setAlarmState(severity, severity, message);
-                alarm.setAlarmTime(timestamp);
+                alarm.setAlarmState(severity, severity, message, timestamp);
                 return alarm;
             }
         }
         // Create new item
-        return new GlobalAlarm(parent, name, -1, severity, message, timestamp);
+        return new GlobalAlarm(parent, name, severity, message, timestamp);
     }
 
     /** Locate item in known configuration.
@@ -127,22 +129,34 @@ public class GlobalAlarm extends AlarmTreePV
         return root;
     }
 
-    // Similar to the AlarmTreePV, but doesn't track 'current' state,
-    // only 'alarm' state
-    private GlobalAlarm(final AlarmTreeItem parent, final String name, final int id,
+    /** Initialize
+     *  @param parent Parent item within known configuration
+     *  @param name Name
+     *  @param severity Alarm severity
+     *  @param message Alarm message
+     *  @param timestamp Alarm time stamp
+     */
+    private GlobalAlarm(final AlarmTreeItem parent, final String name,
             final SeverityLevel severity, final String message, final ITimestamp timestamp)
     {
-        super(parent, name, id);
-
-        setAlarmState(severity, severity, message);
-        this.timestamp = timestamp;
-        if (parent != null)
-            parent.maximizeSeverity(null);
+        super(parent, name, -1);
+        setAlarmState(severity, severity, message, timestamp);
     }
 
-    private void setAlarmTime(final ITimestamp timestamp)
+    /** @return Text (multi-line) that can be used as a tool-tip to
+     *          describe this item and its current state
+     */
+    @Override
+    public synchronized String getToolTipText()
     {
-        this.timestamp = timestamp;
+        return NLS.bind("Global Alarm: {0}\nTime since event: {1}\nAlarm Severity: {2}\nAlarm Message: {3}",
+            new Object[]
+            {
+                getPathName(),
+                getDuration(),
+                getSeverity().getDisplayName(),
+                getMessage()
+            });
     }
 
     // Complete the guidance etc. from RDB
@@ -179,12 +193,5 @@ public class GlobalAlarm extends AlarmTreePV
         if (item.getID() >= 0)
             return;
         reader.completeItemInfo(item);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString()
-    {
-        return "Global Alarm " + super.toString() +  " @ " + timestamp;
     }
 }

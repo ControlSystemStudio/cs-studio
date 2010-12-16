@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.swt.widgets.Shell;
 import org.csstudio.platform.security.SecurityFacade;

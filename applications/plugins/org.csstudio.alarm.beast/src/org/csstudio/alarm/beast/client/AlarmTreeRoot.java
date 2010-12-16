@@ -5,10 +5,11 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import java.io.PrintWriter;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.apputil.xml.XMLWriter;
 
 /** Root of the alarm configuration tree.
@@ -56,7 +57,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
     /** @return Number of PVs below item (counts recursively) */
     private int getPVCount(final AlarmTreeItem item)
     {
-        if (item instanceof AlarmTreePV)
+        if (item instanceof AlarmTreeLeaf)
             return 1;
         int count = 0;
         for (int i=0; i<item.getChildCount(); ++i)

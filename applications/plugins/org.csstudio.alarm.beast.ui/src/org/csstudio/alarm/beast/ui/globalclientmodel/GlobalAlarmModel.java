@@ -10,12 +10,12 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
 import org.eclipse.core.runtime.IProgressMonitor;

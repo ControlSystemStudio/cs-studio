@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTreePosition;
-import org.csstudio.alarm.beast.GDCDataStructure;
+import org.csstudio.alarm.beast.client.AlarmTreePosition;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that executes some command (reset, open valve, ...).

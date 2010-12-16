@@ -9,8 +9,8 @@ package org.csstudio.alarm.beast.ui;
 
 import java.net.URL;
 
-import org.csstudio.alarm.beast.AlarmTreePosition;
-import org.csstudio.alarm.beast.GDCDataStructure;
+import org.csstudio.alarm.beast.client.AlarmTreePosition;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;

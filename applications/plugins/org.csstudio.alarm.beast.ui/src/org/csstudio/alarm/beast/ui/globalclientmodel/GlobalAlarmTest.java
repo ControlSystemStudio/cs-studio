@@ -11,8 +11,8 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.TimestampFactory;

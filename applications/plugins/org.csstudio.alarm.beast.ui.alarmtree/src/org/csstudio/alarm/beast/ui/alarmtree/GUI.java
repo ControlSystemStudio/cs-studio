@@ -9,10 +9,10 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreePosition;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePosition;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.AddComponentAction;
 import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;

@@ -5,7 +5,7 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -15,6 +15,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

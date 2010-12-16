@@ -5,16 +5,15 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import java.io.PrintWriter;
 
-import org.csstudio.apputil.time.SecondsParser;
+import org.csstudio.alarm.beast.Messages;
+import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ITimestamp.Format;
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.osgi.util.NLS;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,
@@ -22,7 +21,7 @@ import org.eclipse.osgi.util.NLS;
  *
  *  @author Kay Kasemir, Xihui Chen
  */
-public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
+public class AlarmTreePV extends AlarmTreeLeaf
 {
     private String description = ""; //$NON-NLS-1$
 
@@ -41,8 +40,6 @@ public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
     private String current_message = SeverityLevel.OK.getDisplayName();
 
     private String value = null;
-
-    private ITimestamp timestamp = null;
 
     /** Initialize
      *  @param parent Parent component in hierarchy
@@ -203,27 +200,6 @@ public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
         return value;
     }
 
-    /** @return Time stamp of last status/severity update */
-    public synchronized ITimestamp getTimestamp()
-    {
-        return timestamp;
-    }
-
-    /** @return Duration of current alarm state or empty text */
-    public synchronized String getDuration()
-    {
-    	final ITimestamp now = TimestampFactory.now();
-    	if (timestamp == null  ||  now.isLessThan(timestamp))
-    		return ""; //$NON-NLS-1$
-    	return SecondsParser.formatSeconds(now.seconds() - timestamp.seconds());
-    }
-
-    /** @return Time stamp of last status/severity update as text */
-    public synchronized String getTimestampText()
-	{
-		return timestamp.format(Format.DateTimeSeconds);
-	}
-
     /** Update status/message/time stamp and maximize
      *  severities of parent entries.
      *
@@ -233,7 +209,6 @@ public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
      *  @param message Alarm message
      *  @param value Value that triggered the update
      *  @param timestamp Time stamp for this update
-     *  @see #getTimestamp()
      */
     public synchronized void setAlarmState(final SeverityLevel current_severity,
             final String current_message,
@@ -241,27 +216,12 @@ public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
             final String value,
             final ITimestamp timestamp)
     {
-        if (getCurrentSeverity() == current_severity &&
-            getSeverity() == severity  &&
-            current_message.equals(this.current_message) &&
-            getMessage().equals(message))
-            return;
-        setAlarmState(current_severity, severity, message);
-        this.current_message = current_message;
-        this.value = value;
-        this.timestamp = timestamp;
-        final AlarmTreeItem parent = getClientParent();
-        if (parent != null)
-            parent.maximizeSeverity(this);
-    }
-
-    /** PV entries have no sub-entries and thus don't maximize their severity;
-     *  they receive it from the control system
-     */
-    @Override
-    public void maximizeSeverity(final AlarmTreePV pv)
-    {
-        throw new IllegalStateException("Cannot maximize severity on PV"); //$NON-NLS-1$
+        if (setAlarmState(current_severity, severity, message, timestamp)  &&
+            ! current_message.equals(this.current_message) )
+        {
+            this.current_message = current_message;
+            this.value = value;
+        }
     }
 
     /** Called either directly or recursively from parent item.
@@ -271,21 +231,6 @@ public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
     public synchronized void acknowledge(final boolean acknowledge)
     {
         getClientRoot().acknowledge(this, acknowledge);
-    }
-
-    /** @see IProcessVariable */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
-    }
-
-    /** @see IProcessVariable */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(Class adapter)
-    {
-        return null;
     }
 
     /** @return XML tag for this tree item */

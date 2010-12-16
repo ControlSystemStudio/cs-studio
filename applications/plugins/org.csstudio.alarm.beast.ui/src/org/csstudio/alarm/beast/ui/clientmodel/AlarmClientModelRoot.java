@@ -7,8 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 
 /** Root of the alarm configuration tree that the client model uses.
  *  Severity changes that percolate up to the root send signal to model.
@@ -42,10 +43,12 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
      *  @see org.csstudio.alarm.beast.AlarmTree#maximizeSeverity()
      */
     @Override
-    public void maximizeSeverity(final AlarmTreePV pv)
+    public void maximizeSeverity(final AlarmTreeLeaf pv)
     {
         super.maximizeSeverity(pv);
         if (model != null)
-            model.fireNewAlarmState(pv);
+        {   // In the client model, the leaf items are PVs
+            model.fireNewAlarmState((AlarmTreePV) pv);
+        }
     }
 }

@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

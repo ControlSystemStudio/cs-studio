@@ -10,10 +10,10 @@ package org.csstudio.alarm.beast.configtool;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
-import org.csstudio.alarm.beast.AlarmConfiguration;
-import org.csstudio.alarm.beast.AlarmConfigurationLoader;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.client.AlarmConfiguration;
+import org.csstudio.alarm.beast.client.AlarmConfigurationLoader;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;

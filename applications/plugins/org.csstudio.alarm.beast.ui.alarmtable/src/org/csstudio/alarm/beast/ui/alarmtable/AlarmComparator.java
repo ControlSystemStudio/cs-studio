@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 
 /** ViewerComparator (= table sorter) that compares one column of an alarm.

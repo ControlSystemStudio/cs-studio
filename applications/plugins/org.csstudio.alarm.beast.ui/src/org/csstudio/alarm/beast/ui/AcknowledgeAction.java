@@ -9,8 +9,8 @@ package org.csstudio.alarm.beast.ui;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

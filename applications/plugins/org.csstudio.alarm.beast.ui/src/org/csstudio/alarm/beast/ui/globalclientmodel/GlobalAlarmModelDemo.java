@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.csstudio.alarm.beast.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 

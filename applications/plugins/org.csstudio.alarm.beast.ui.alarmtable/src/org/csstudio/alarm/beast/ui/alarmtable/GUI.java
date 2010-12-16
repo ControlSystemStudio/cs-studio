@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.ConfigureItemAction;

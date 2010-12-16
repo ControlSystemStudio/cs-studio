@@ -5,7 +5,7 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +14,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.SQL;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;

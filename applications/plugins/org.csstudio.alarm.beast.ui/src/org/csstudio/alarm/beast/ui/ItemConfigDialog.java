@@ -10,9 +10,9 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.GDCDataStructure;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.TitleAreaDialog;

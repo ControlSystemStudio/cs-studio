@@ -5,7 +5,7 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.alarm.beast.Messages;
+import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TreeItem;
+import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ITimestamp.Format;
@@ -228,19 +232,28 @@ public class AlarmTreeItem extends TreeItem
         return message;
     }
 
-    /** Update alarm state.
-     *  <u>Won't</u> maximize severity of parent, only affects this item.
-     *
+    /** Update alarm state of this item, maximize alarm tree severities.
      *  @param current_severity Current severity of PV
      *  @param severity Alarm severity
      *  @param message Alarm message
+     *  @param leaf PV that triggered this update
+     *  @return <code>true</code> if alarm state actually changed
      */
-    protected synchronized void setAlarmState(final SeverityLevel current_severity,
-            final SeverityLevel severity, final String message)
+    protected synchronized boolean setAlarmState(final SeverityLevel current_severity,
+            final SeverityLevel severity, final String message,
+            final AlarmTreeLeaf pv)
     {
+        if (getCurrentSeverity() == current_severity &&
+            getSeverity() == severity  &&
+            getMessage().equals(message))
+            return false;
         this.current_severity = current_severity;
         this.severity = severity;
         this.message = message;
+        final AlarmTreeItem parent = getClientParent();
+        if (parent != null)
+            parent.maximizeSeverity(pv);
+        return true;
     }
 
     /** Acknowledge or un-acknowledge current alarms.
@@ -262,9 +275,9 @@ public class AlarmTreeItem extends TreeItem
      *  Recursively updates its parent items,
      *  the root item will then notify the model,
      *  which will notify listeners.
-     *  @param pv PV that triggered this update
+     *  @param leaf PV that triggered this update
      */
-    public synchronized void maximizeSeverity(final AlarmTreePV pv)
+    public synchronized void maximizeSeverity(final AlarmTreeLeaf leaf)
     {
         // Get maximum child severity and its status
         current_severity = SeverityLevel.OK;
@@ -292,7 +305,7 @@ public class AlarmTreeItem extends TreeItem
         // Percolate changes towards root
         final AlarmTreeItem parent = getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv);
+            parent.maximizeSeverity(leaf);
     }
 
     /** {@inheritDoc} */

@@ -5,10 +5,11 @@
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.alarm.beast;
+package org.csstudio.alarm.beast.client;
 
 import static org.junit.Assert.assertEquals;
 
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.TimestampFactory;
 import org.junit.Test;
 
@@ -76,7 +77,15 @@ public class AlarmTreeItemUnitTest
         assertEquals(SeverityLevel.MINOR, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR, ccl.getSeverity());
         assertEquals("Problem", ccl.getMessage());
+        tree.dump(System.out);
 
+        // Check propagation of alarm that clears
+        pv.setAlarmState(SeverityLevel.OK, "Nuissance",
+                SeverityLevel.MAJOR_ACK, "Problem2",
+                "Value2", TimestampFactory.now());
+        assertEquals(SeverityLevel.OK, ccl.getCurrentSeverity());
+        assertEquals(SeverityLevel.MAJOR_ACK, ccl.getSeverity());
+        assertEquals("Problem2", ccl.getMessage());
         tree.dump(System.out);
 
         System.out.println("Total tree element count: " + tree.getElementCount());

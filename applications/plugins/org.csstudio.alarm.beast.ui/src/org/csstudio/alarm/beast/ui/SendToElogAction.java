@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.logbook.ILogbook;

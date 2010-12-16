@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
