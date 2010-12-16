@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
@@ -18,6 +21,8 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
 {
+    final Timer delayed_update = new Timer();
+
     // GlobalAlarmModelListener
     @Override
     public void globalAlarmsChanged(final GlobalAlarmModel model)
@@ -27,7 +32,17 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
         for (AlarmTreeRoot root : alarms)
             root.dump(System.out);
 
-        // TODO Demo a delayed printout that would (usually) have GUI detail
+        // Delayed printout that would (usually) have GUI detail
+        delayed_update.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("\nDelayed alarm display:");
+                for (AlarmTreeRoot root : alarms)
+                    root.dump(System.out);
+            }
+        }, 3000);
     }
 
     @Test

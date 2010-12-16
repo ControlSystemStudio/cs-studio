@@ -180,4 +180,11 @@ public class GlobalAlarm extends AlarmTreePV
             return;
         reader.completeItemInfo(item);
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+        return "Global Alarm " + super.toString() +  " @ " + timestamp;
+    }
 }

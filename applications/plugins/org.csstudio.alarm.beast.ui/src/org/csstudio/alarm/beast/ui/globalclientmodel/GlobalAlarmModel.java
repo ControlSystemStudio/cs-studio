@@ -24,7 +24,6 @@ import org.eclipse.osgi.util.NLS;
 /** Model for a 'global' alarm client.
  *  Initially reads alarms from RDB, then tracks changes via JMS.
  *
- *  TODO Check for latency from GUI clearing alarm to global alarm clearing up
  *  @author Kay Kasemir
  */
 public class GlobalAlarmModel
@@ -138,6 +137,7 @@ public class GlobalAlarmModel
 
         // From now on, updates will be executed right away
         monitor.done();
+        // Send initial alarm update after we read configuration
         fireAlarmUpdate();
     }
 
