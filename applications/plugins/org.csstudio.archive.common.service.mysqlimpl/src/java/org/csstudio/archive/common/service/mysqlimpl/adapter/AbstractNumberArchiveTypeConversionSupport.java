@@ -19,61 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
-
-import java.util.Collection;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
- * TODO (bknerr) :
+ * Common type conversions for {@link Number} subtypes.
  *
  * @author bknerr
- * @since 13.12.2010
+ * @since 10.12.2010
+ * @param <N> the number subtype
  */
-public class StringArchiveTypeConversionSupport extends AbstractArchiveTypeConversionSupport<String> {
-
+public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String convertToArchiveString(@Nonnull final N value) throws TypeSupportException {
+        return value.toString();
+    }
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public String convertScalarToArchiveString(@Nonnull final String value) throws ConversionTypeSupportException {
-        return value;
+    public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
+        return d.doubleValue();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String convertScalarFromArchiveString(@Nonnull final String value) {
-        return value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final String value) throws ConversionTypeSupportException {
-        try {
-            return Double.parseDouble(value);
-        } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("String value " + value + " could not be converted to Double." , e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<String> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
-        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
-    }
-
 }

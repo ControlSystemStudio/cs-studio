@@ -19,12 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Splitter;
@@ -44,7 +46,7 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Byte convertScalarFromArchiveString(@Nonnull final String value) {
+    public Byte convertFromArchiveString(@Nonnull final String value) {
         return Byte.parseByte(value);
     }
 
@@ -53,8 +55,8 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final Byte b) throws ConversionTypeSupportException {
-        throw new ConversionTypeSupportException("Byte shall not be converted to Double.", null);
+    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
+        throw new TypeSupportException("Byte shall not be converted to Double.", null);
     }
 
     /**
@@ -62,23 +64,23 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Collection<Byte> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
+    public Collection<Byte> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
         final Iterable<Byte> bytes = Iterables.transform(strings, new Function<String, Byte>() {
             @Override
             @CheckForNull
             public Byte apply(@Nonnull final String from) {
-                return convertScalarFromArchiveString(from);
+                return convertFromArchiveString(from);
             }
         });
         int size;
         try {
             size = Iterables.size(bytes);
         } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("Values representation is not convertible to Byte.", e);
+            throw new TypeSupportException("Values representation is not convertible to Byte.", e);
         }
         if (Iterables.size(strings) != size) {
-            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
+            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
         }
         return Lists.newArrayList(bytes);
     }

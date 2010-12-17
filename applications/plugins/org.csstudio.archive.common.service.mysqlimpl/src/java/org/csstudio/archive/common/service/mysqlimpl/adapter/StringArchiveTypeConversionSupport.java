@@ -19,33 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Function;
+import org.csstudio.domain.desy.types.TypeSupportException;
+
 import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * Type conversions for {@link Integer}.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 10.12.2010
+ * @since 13.12.2010
  */
-public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Integer> {
+public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<String> {
 
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Integer convertScalarFromArchiveString(@Nonnull final String value) {
-        return Integer.parseInt(value);
+    public String convertToArchiveString(@Nonnull final String value) throws TypeSupportException {
+        return value;
     }
 
     /**
@@ -53,24 +52,30 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String value) throws ConversionTypeSupportException {
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(value);
-        final Iterable<Integer> ints = Iterables.transform(strings, new Function<String, Integer>() {
-            @Override
-            @CheckForNull
-            public Integer apply(@Nonnull final String from) {
-                return convertScalarFromArchiveString(from);
-            }
-        });
-        int size;
+    public String convertFromArchiveString(@Nonnull final String value) {
+        return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Double convertToDouble(@Nonnull final String value) throws TypeSupportException {
         try {
-            size = Iterables.size(ints);
+            return Double.parseDouble(value);
         } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("Values representation is not convertible to Integer.", e);
+            throw new TypeSupportException("String value " + value + " could not be converted to Double." , e);
         }
-        if (Iterables.size(strings) != size) {
-            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
-        }
-        return Lists.newArrayList(ints);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<String> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
+    }
+
 }

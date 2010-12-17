@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import java.util.Collection;
 
@@ -27,6 +27,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.types.AbstractTypeSupport;
+import org.csstudio.domain.desy.types.DesyDomainTypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
@@ -40,7 +42,7 @@ import com.google.common.collect.Iterables;
  * @since 07.12.2010
  * @param <T>
  */
-public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSupport<T> {
+public abstract class AbstractArchiveTypeConversionSupport<T> extends DesyDomainTypeSupport<T> {
 
     protected static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveTypeConversionSupport.class);
@@ -61,45 +63,13 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
         if (INSTALLED) {
             return;
         }
-        TypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
+        AbstractTypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
 
         INSTALLED = true;
     }
-
-    @CheckForNull
-    public abstract String convertScalarToArchiveString(@Nonnull final T value) throws ConversionTypeSupportException;
-    @CheckForNull
-    public abstract T convertScalarFromArchiveString(@Nonnull final String value);
-
-    @CheckForNull
-    public String convertMultiScalarToArchiveString(@Nonnull final Iterable<T> values) throws ConversionTypeSupportException {
-      final Iterable<String> items = Iterables.transform(values, new Function<T, String>() {
-          @Override
-          @CheckForNull
-          public String apply(@Nonnull final T from) {
-              try {
-                  return TypeSupport.toArchiveString(from);
-              } catch (final ConversionTypeSupportException e) {
-                  LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
-                  return null;
-              }
-          }
-      });
-      if (Iterables.size(values) != Iterables.size(items)) {
-          throw new ConversionTypeSupportException("Number of converted elements (" + Iterables.size(items) +
-                                                   " does not match the number of passed elements (" + Iterables.size(values) + "!", null);
-      }
-      final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
-      return result;
-    }
-
-    @CheckForNull
-    public abstract Collection<T> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException;
-    @CheckForNull
-    public abstract Double convertToDouble(@Nonnull final T value) throws ConversionTypeSupportException;
 
 }

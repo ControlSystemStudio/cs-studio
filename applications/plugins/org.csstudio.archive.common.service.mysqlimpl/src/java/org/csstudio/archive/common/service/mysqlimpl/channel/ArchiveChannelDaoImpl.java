@@ -69,9 +69,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE name=?";
+        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE name=?";
     private final String _selectChannelsByGroupId =
-        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE group_id=? ORDER BY name";
+        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE group_id=? ORDER BY name";
 
     /**
      * Constructor.
@@ -146,14 +146,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (!filteredList.isEmpty()) {
             return new ArrayList<IArchiveChannel>(filteredList);
         }
-
-        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         // Nothing yet in the cache? Ask the database:
+        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
-
             final ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 // id, name, sample_mode_id, sample_period, last_sample_time

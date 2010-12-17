@@ -19,31 +19,60 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.epics.types;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.domain.desy.types.AbstractTriple;
 
 /**
- * Common type conversions for {@link Number} subtypes.
+ * The enum type for epics.
+ * Example epics record definition
+   field(ZRVL, "33")<br>
+   field(ONVL, "21")<br>
+   field(TWVL, "12")<br>
+   field(THVL, "45")<br>
+   field(ZRST, "val of 33")<br>
+   field(ONST, "val of 21")<br>
+   field(TWST, "val of 12")<br>
+   field(THST, "val of 45")<br>
+   <br>
+   Resulting EpicsEnumTriples:<br>
+   (0, "val of 33", 33)<br>
+   (0, "val of 21", 21)<br>
+   (0, "val of 12", 12)<br>
+   (0, "val of 45", 45)<br>
  *
  * @author bknerr
- * @since 10.12.2010
- * @param <N> the number subtype
+ * @since 15.12.2010
  */
-public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends AbstractArchiveTypeConversionSupport<N> {
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String convertScalarToArchiveString(@Nonnull final N value) throws ConversionTypeSupportException {
-        return value.toString();
+public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
+
+    public static final EpicsEnumTriple createInstance(@Nonnull final Integer index,
+                                                       @Nonnull final String state,
+                                                       @Nullable final Integer raw) {
+        return new EpicsEnumTriple(index, state, raw);
     }
+
     /**
-     * {@inheritDoc}
+     * Constructor.
+     * @param first
+     * @param second
+     * @param third
      */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final N d) throws ConversionTypeSupportException {
-        return d.doubleValue();
+    protected EpicsEnumTriple(final Integer first, final String second, final Integer third) {
+        super(first, second, third);
     }
+
+    public Integer getIndex() {
+        return super.getFirst();
+    }
+    public String getState() {
+        return super.getSecond();
+    }
+    public Integer getRaw() {
+        return super.getThird();
+    }
+
 }

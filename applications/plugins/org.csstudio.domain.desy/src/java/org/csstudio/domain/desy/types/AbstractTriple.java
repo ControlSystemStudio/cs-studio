@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,36 +19,48 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.data;
+package org.csstudio.domain.desy.types;
 
-import org.csstudio.platform.internal.data.EnumeratedMetaData;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-/** An enumerated value.
- *  <p>
- *  Enumerated types carry a limited number of integer values,
- *  where each possible value represents a state with a string representation.
- *  <p>
- *  {@link IEnumeratedValue} values go with {@link EnumeratedMetaData}
- *  @see IValue
- *  @see EnumeratedMetaData
- *  @author Kay Kasemir
+/**
+ * Abstract base class for any kind of triple.
+ *
+ * @author bknerr
+ * @since 15.12.2010
+ * @param <A> type of the 1st member
+ * @param <B> type of the 2nd member
+ * @param <C> type of the 3rd member
  */
-public interface IEnumeratedValue extends IValue
-{
-    /** @return Returns the whole array of values. */
-    public int[] getValues();
+public abstract class AbstractTriple<A, B, C> {
 
-    /** @return Returns the first array element.
-     *  <p>
-     *  Since most values are probably scalars, this is a convenient
-     *  way to get that one and only element.
-     *  @see #getValues
-     */
-    public int getValue();
+    private final A _first;
+    private final B _second;
+    private final C _third;
 
     /**
-     * {@inheritDoc}
+     * Constructor.
      */
-    @Override
-    public IEnumeratedMetaData getMetaData();
+    protected AbstractTriple(@Nonnull  final A first, @Nonnull final B second, @Nullable final C third) {
+        _first = first;
+        _second = second;
+        _third = third;
+    }
+
+    @Nonnull
+    protected A getFirst() {
+        return _first;
+    }
+
+    @Nonnull
+    protected B getSecond() {
+        return _second;
+    }
+
+    @CheckForNull
+    protected C getThird() {
+        return _third;
+    }
 }

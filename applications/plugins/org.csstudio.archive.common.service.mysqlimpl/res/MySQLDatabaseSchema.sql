@@ -130,7 +130,7 @@ DROP TABLE IF EXISTS `sample`;
 CREATE TABLE `sample` (
   `channel_id` int(10) unsigned NOT NULL,
   `sample_time` datetime NOT NULL,
-  `nanosecs` int(10) unsigned NOT NULL,
+  `ms_ns` double unsigned NOT NULL,
   `severity_id` int(10) unsigned NOT NULL,
   `status_id` int(10) unsigned NOT NULL,
   `value` varchar(1000) DEFAULT NULL

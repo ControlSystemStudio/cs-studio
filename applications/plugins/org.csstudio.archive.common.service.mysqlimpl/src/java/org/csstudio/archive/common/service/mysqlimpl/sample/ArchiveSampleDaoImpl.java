@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
+import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
@@ -47,9 +48,8 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
-import org.csstudio.domain.desy.types.TypeSupport;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
@@ -79,14 +79,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectLastSmplTimeByChannelIdStmt =
-        "SELECT MAX(sample_time) FROM archive.sample WHERE channel_id=?";
+        "SELECT MAX(sample_time) FROM archive_new.sample WHERE channel_id=?";
 
     private final String _insertSamplesStmt =
-        "INSERT INTO archive.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
+        "INSERT INTO archive_new.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
     private final String _insertSamplesPerMinuteStmt =
-        "INSERT INTO archive.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive_new.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
     private final String _insertSamplesPerHourStmt =
-        "INSERT INTO archive.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive_new.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
 
 
     // TODO (bknerr) : move this to a place where we collect the DESY archive standard time stamp format
@@ -305,8 +305,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private Double isDataConvertibleToDouble(@Nonnull final Object data) {
         try {
-            return TypeSupport.toDouble(data);
-        } catch (final ConversionTypeSupportException e) {
+            return ArchiveTypeConversionSupport.toDouble(data);
+        } catch (final TypeSupportException e) {
             return null; // is not convertible. Type support missing.
         }
     }
@@ -370,14 +370,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                         final T value,
                                         final TimeInstant timestamp) {
             try {
-                return "(" + channelId.intValue() + ", '" +
-                             timestamp.formatted(SAMPLE_TIME_FMT) + "', " +
-                             timestamp.getFractalMillisInNanos() +
-                             sevId.intValue() + ", " +
-                             statusId.intValue() + ", '" +
-                             TypeSupport.toArchiveString(value.getValueData()) + "' ," +
+                return "(" + Joiner.on(", ").join(channelId.intValue(),
+                                                  "'" + timestamp.formatted(SAMPLE_TIME_FMT) + "'",
+                                                  timestamp.getFractalSecondsInNanos(),
+                                                  sevId.intValue(),
+                                                  statusId.intValue(),
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getValueData()) + "'") +
                        ")";
-            } catch (final ConversionTypeSupportException e) {
+            } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
                 return "";
             }
