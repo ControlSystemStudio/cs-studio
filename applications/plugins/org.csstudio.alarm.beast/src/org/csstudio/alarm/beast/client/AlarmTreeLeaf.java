@@ -20,6 +20,9 @@ import org.csstudio.platform.model.IProcessVariable;
  */
 public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
 {
+    /** Description of alarm */
+    private String description = ""; //$NON-NLS-1$
+
     /** Timestamp of last alarm update */
     private ITimestamp timestamp = null;
 
@@ -47,6 +50,18 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     public Object getAdapter(Class adapter)
     {
         return null;
+    }
+
+    /** @param description New description */
+    public synchronized void setDescription(final String description)
+    {
+        this.description = description == null ? "" : description; //$NON-NLS-1$
+    }
+
+    /** @return Alarm description */
+    public synchronized String getDescription()
+    {
+        return description;
     }
 
     /** @return Time stamp of last status/severity update */

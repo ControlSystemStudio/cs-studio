@@ -23,8 +23,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class AlarmTreePV extends AlarmTreeLeaf
 {
-    private String description = ""; //$NON-NLS-1$
-
     private boolean enabled = true;
     private boolean latching = true;
     private boolean annunciating = false;
@@ -101,18 +99,6 @@ public class AlarmTreePV extends AlarmTreeLeaf
     public synchronized String getMessage()
     {
         return enabled ? super.getMessage() : SeverityLevel.OK.getDisplayName();
-    }
-
-    /** @param description New description */
-    public synchronized void setDescription(final String description)
-    {
-        this.description = description == null ? "" : description; //$NON-NLS-1$
-    }
-
-    /** @return Alarm description */
-    public synchronized String getDescription()
-    {
-        return description;
     }
 
     /** @return <code>true</code> if alarms from PV are enabled */
@@ -246,7 +232,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     @Override
     protected synchronized void writeConfigXML(final PrintWriter out, final int level)
     {
-        XMLWriter.XML(out, level, XMLTags.DESCRIPTION, description);
+        XMLWriter.XML(out, level, XMLTags.DESCRIPTION, getDescription());
         if (!enabled)
             XMLWriter.XML(out, level, XMLTags.ENABLED, Boolean.FALSE.toString());
         if (latching)

@@ -19,7 +19,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmConfigurationReaderTest
+public class AlarmConfigurationReaderUnitTest
 {
     @Test
     public void testAlarmConfigurationReader() throws Exception

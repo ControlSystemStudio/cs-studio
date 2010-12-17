@@ -277,16 +277,20 @@ public class AlarmConfigurationReader
             item.setID(id);
             // Check PV's ID. If null, this is a component, not PV
             result.getInt(3);
-            if (! result.wasNull() &&  (item instanceof AlarmTreePV))
+            if (! result.wasNull())
             {
-                final AlarmTreePV pv = (AlarmTreePV) item;
-                pv.setDescription(result.getString(4));
-                pv.setEnabled(result.getBoolean(5));
-                pv.setAnnunciating(result.getBoolean(6));
-                pv.setLatching(result.getBoolean(7));
-                pv.setDelay(result.getInt(8));
-                pv.setCount(result.getInt(9));
-                pv.setFilter(result.getString(10));
+                if (item instanceof AlarmTreeLeaf)
+                    ((AlarmTreeLeaf) item).setDescription(result.getString(4));
+                if (item instanceof AlarmTreePV)
+                {
+                    final AlarmTreePV pv = (AlarmTreePV) item;
+                    pv.setEnabled(result.getBoolean(5));
+                    pv.setAnnunciating(result.getBoolean(6));
+                    pv.setLatching(result.getBoolean(7));
+                    pv.setDelay(result.getInt(8));
+                    pv.setCount(result.getInt(9));
+                    pv.setFilter(result.getString(10));
+                }
             }
         }
         finally
