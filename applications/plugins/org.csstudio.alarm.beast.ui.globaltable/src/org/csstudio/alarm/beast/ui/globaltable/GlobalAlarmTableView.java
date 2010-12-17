@@ -7,16 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globaltable;
 
-import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarm;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModel;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModelListener;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -28,7 +23,6 @@ import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse 'View' for global alarms
  *
- *  TODO Sort by column header
  *  TODO Tooltip with detail
  *  TODO Context menu to select configuration, show guidance etc.
  *
@@ -120,73 +114,15 @@ public class GlobalAlarmTableView extends ViewPart
      */
     private void createColumns(final TableViewer table_viewer, final TableColumnLayout table_layout)
     {
-        // PV Path
-        TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
-        TableColumn col = view_col.getColumn();
-        col.setText(Messages.AlarmPV);
-        table_layout.setColumnData(col, new ColumnWeightData(100, 100, true));
-        col.setMoveable(true);
-        view_col.setLabelProvider(new CellLabelProvider()
+        for (GlobalAlarmColumnInfo info : GlobalAlarmColumnInfo.values())
         {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getPathName());
-            }
-        });
-
-        // TODO Would be nice to display description, but that's fetched
-        //      in background and not available when alarm first displayed...
-        //      Send descr. with alarm server update?
-        //      Delay display until RDB info available?
-
-        // Time
-        view_col = new TableViewerColumn(table_viewer, 0);
-        col = view_col.getColumn();
-        col.setText(Messages.AlarmTime);
-        table_layout.setColumnData(col, new ColumnWeightData(50, 80, true));
-        col.setMoveable(true);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getTimestampText());
-            }
-        });
-
-        // Severity
-        view_col = new TableViewerColumn(table_viewer, 0);
-        col = view_col.getColumn();
-        col.setText(Messages.AlarmSeverity);
-        table_layout.setColumnData(col, new ColumnWeightData(30, 50, true));
-        col.setMoveable(true);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getSeverity().getDisplayName());
-            }
-        });
-
-        // Message
-        view_col = new TableViewerColumn(table_viewer, 0);
-        col = view_col.getColumn();
-        col.setText(Messages.AlarmMessage);
-        table_layout.setColumnData(col, new ColumnWeightData(30, 45, true));
-        col.setMoveable(true);
-        view_col.setLabelProvider(new CellLabelProvider()
-        {
-            @Override
-            public void update(final ViewerCell cell)
-            {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getMessage());
-            }
-        });
+            final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+            final TableColumn col = view_col.getColumn();
+            col.setText(info.getTitle());
+            table_layout.setColumnData(col, info.getLayoutData());
+            col.setMoveable(true);
+            view_col.setLabelProvider(info.getLabelProvider());
+            col.addSelectionListener(new GobalAlarmColumnSortingSelector(table_viewer, col, info));
+        }
     }
 }
