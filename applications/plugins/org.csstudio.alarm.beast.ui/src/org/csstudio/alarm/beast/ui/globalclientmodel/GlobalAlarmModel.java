@@ -128,9 +128,18 @@ public class GlobalAlarmModel
     }
 
     /** @param listener Listener to add */
-    public void addListener(GlobalAlarmModelListener listener)
+    public void addListener(final GlobalAlarmModelListener listener)
     {
         listeners.add(listener);
+    }
+
+    /** @param listener Listener to remove
+     *  @throws IllegalArgumentException when listener not known
+     */
+    public void removeListener(final GlobalAlarmModelListener listener)
+    {
+        if (! listeners.remove(listener))
+            throw new IllegalArgumentException("Unknown listener"); //$NON-NLS-1$
     }
 
     /** @return Roots of currently active global alarms */
