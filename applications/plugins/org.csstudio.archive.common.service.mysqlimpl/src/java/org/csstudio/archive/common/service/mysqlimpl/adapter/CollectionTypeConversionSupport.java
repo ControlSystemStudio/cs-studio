@@ -67,7 +67,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     /**
      * {@inheritDoc}
      *
-     * ATTENTION: guarantueed to throw {@link TypeSupportException}.<br>
+     * ATTENTION: guaranteed to throw {@link TypeSupportException}.<br>
      *            Use {@link ArchiveTypeConversionSupport#fromMultiScalarArchiveString(Class<T>, String)}
      *            with Class<T> for Collection<T> instead of Collection.class.
      */
@@ -81,7 +81,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     /**
      * {@inheritDoc}
      *
-     * ATTENTION: guarantueed to throw {@link TypeSupportException}.<br>
+     * ATTENTION: guaranteed to throw {@link TypeSupportException}.<br>
      *            Use {@link ArchiveTypeConversionSupport#fromMultiScalarArchiveString(Class<T>, String)}
      *            with Class<T> for Collection<T> instead of Collection.class.
      */
