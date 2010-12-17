@@ -407,6 +407,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
             CentralLogger.getInstance().getLogger(this).error(ex);
         }
     }
