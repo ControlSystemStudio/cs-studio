@@ -42,7 +42,7 @@ public class DocumentDBOTest {
                         //.setProperty("hibernate.hbm2ddl.auto", "update")
                         .setProperty("hibernate.show_sql", "true");
 
-        HibernateManager.setSessionFactory(cfg.buildSessionFactory());
+        HibernateManager.getInstance().setSessionFactory(cfg.buildSessionFactory());
     }
 
     @Test

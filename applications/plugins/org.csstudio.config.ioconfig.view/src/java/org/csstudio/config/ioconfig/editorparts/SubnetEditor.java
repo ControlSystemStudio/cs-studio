@@ -716,10 +716,9 @@ public class SubnetEditor extends AbstractNodeEditor {
         _retrayCombo.setData(_retrayCombo.getSelectionIndex());
         _retrayCombo.addModifyListener(getMLSB());
 
-        new Label(left, SWT.NONE);
+        new Label(left, SWT.NONE).setText("");
 
         for (Control children : left.getChildren()) {
-
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
             }
@@ -756,7 +755,7 @@ public class SubnetEditor extends AbstractNodeEditor {
         String[] heads = {"General", "Net Settings" };
         netSetting(heads[1]);
         general(heads[0]);
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
         getTabFolder().pack();
     }
 

@@ -148,9 +148,9 @@ public class AbstractNodeDBOTest {
                         //.setProperty("hibernate.hbm2ddl.auto", "update")
                 .setProperty("hibernate.show_sql", "false");
 
-        HibernateManager.setSessionFactory(cfg.buildSessionFactory());
+        HibernateManager.getInstance().setSessionFactory(cfg.buildSessionFactory());
         // set Timeout to 1 min
-        HibernateManager.setTimeout(60);
+        HibernateManager.getInstance().setTimeout(60);
     }
 
 }

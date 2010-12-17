@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
@@ -54,7 +57,7 @@ public class NamedDBClass extends DBClass {
      * @param name
      *            set the Name of this Node.
      */
-    public void setName(final String name) {
+    public void setName(@Nonnull final String name) {
         this._name = name;
         Diagnose.addNewLine(_name+"\t"+this.getClass().getSimpleName());
         Diagnose.countNamedDBClass();
@@ -64,6 +67,7 @@ public class NamedDBClass extends DBClass {
      *
      * @return the Name of this Node.
      */
+    @CheckForNull
     public String getName() {
         return _name;
     }

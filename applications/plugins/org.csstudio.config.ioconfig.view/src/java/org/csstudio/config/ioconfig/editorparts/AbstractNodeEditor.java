@@ -642,11 +642,12 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 				.applyTo(gsdFileTableViewer.getTable());
 
 		setGsdFiles(Repository.load(GSDFileDBO.class));
-		if (getGsdFiles() == null) {
+		List<GSDFileDBO> gsdFiles = getGsdFiles();
+        if (gsdFiles == null) {
 			setGsdFiles(new ArrayList<GSDFileDBO>());
-		} else if (!getGsdFiles().isEmpty()) {
-			gsdFileTableViewer.setInput(getGsdFiles().toArray(
-					new GSDFileDBO[getGsdFiles().size()]));
+		} else if (!gsdFiles.isEmpty()) {
+			gsdFileTableViewer.setInput(gsdFiles.toArray(
+					new GSDFileDBO[gsdFiles.size()]));
 		}
 		return gsdFileTableViewer;
 	}
@@ -678,9 +679,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		tSelected = new Text(gSelected, SWT.SINGLE | SWT.BORDER);
 		tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		if (getGsdFile() != null) {
-			setGsdFile(getGsdFile());
-			tSelected.setText(getGsdFile().getName());
+		GSDFileDBO gsdFile = getGsdFile();
+        if (gsdFile != null) {
+			setGsdFile(gsdFile);
+			tSelected.setText(gsdFile.getName());
 		}
 		return tSelected;
 	}
@@ -795,10 +797,11 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 	@Nonnull
 	public String getDesc() {
-		if (getDescText() == null || getDescText().getText() == null) {
+		Text descText = getDescText();
+        if (descText == null || descText.getText() == null) {
 			return "";
 		}
-		return getDescText().getText();
+		return descText.getText();
 	}
 
 	@CheckForNull
@@ -935,6 +938,12 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		return _tabFolder;
 	}
 
+	protected final void selecttTabFolder(int index) {
+	    if(_tabFolder!=null) {
+	        _tabFolder.setSelection(index);
+	    }
+	}
+
 	/**
 	 * (@inheritDoc)
 	 */
@@ -943,7 +952,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			@Nonnull final IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-//		getProfiBusTreeView().closeOpenEditor();
 		_node = ((NodeEditorInput) input).getNode();
 		setNew(((NodeEditorInput) input).isNew());
 		setPartName(_node.getName());
@@ -1158,7 +1166,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		}
 
 		setSaveButtonSaved();
-		getSaveButton().setText("&Save");
+		Button saveButton = getSaveButton();
+		if(saveButton!=null) {
+		    saveButton.setText("&Save");
+		}
 
 		if (isNew() && !getNode().isRootNode()) {
 			getProfiBusTreeView().refresh(getNode().getParent());
@@ -1432,9 +1443,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		_nameText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(@Nonnull final KeyEvent e) {
-				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-					getDescText().setFocus();
-				}
+			    Text descText = getDescText();
+                if ( (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) && (descText != null) ) {
+                    descText.setFocus();
+                }
 			}
 		});
 	}

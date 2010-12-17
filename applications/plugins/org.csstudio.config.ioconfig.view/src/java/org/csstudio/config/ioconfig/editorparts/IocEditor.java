@@ -90,11 +90,9 @@ public class IocEditor extends AbstractNodeEditor {
             newNode();
         }
         main("IOC");
-        TabFolder tabFolder = getTabFolder();
-		if(tabFolder!=null) {
-        	tabFolder.setSelection(0);
-        }
+        selecttTabFolder(0);    
     }
+    
 
     /**
      * Generate the Main IOC configuration Tab.

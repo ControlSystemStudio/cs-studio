@@ -29,6 +29,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * @author hrickens
@@ -36,7 +38,7 @@ import java.util.Date;
  * @version $Revision: 1.2 $
  * @since 15.12.2009
  */
-public class Diagnose {
+public final class Diagnose {
     
     private static StringBuilder _DIAG_STRING = new StringBuilder();
     
@@ -48,7 +50,14 @@ public class Diagnose {
 
     private static int _NAMED_DB_CLASS_COUNTER = 0;
     
-    public static synchronized void addNewLine(String line) {
+    /**
+     * Constructor.
+     */
+    private Diagnose() {
+        // Defualt Constructor
+    }
+    
+    public static synchronized void addNewLine(@Nonnull String line) {
 //    public static void addNewLine(String line) {
         long time = new Date().getTime();
         long l = time-_OLD_TIME;
@@ -88,16 +97,18 @@ public class Diagnose {
         
     }
 
+    @Nonnull
     public static String getString() {
         return _DIAG_STRING.toString();
     }
 
+    @Nonnull
     public static String getCounts() {
         return ""+_COUNTER;
     }
 
     public static void countNamedDBClass() {
-        _NAMED_DB_CLASS_COUNTER ++;
+        _NAMED_DB_CLASS_COUNTER++;
     }
     
 }

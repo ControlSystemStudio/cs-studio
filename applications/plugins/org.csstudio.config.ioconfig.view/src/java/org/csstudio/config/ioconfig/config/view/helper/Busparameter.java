@@ -365,7 +365,7 @@ public class Busparameter extends Composite {
             
         });
 
-        new Label(left,SWT.NONE);
+        new Label(left, SWT.NONE).setText("");
         
         for (Control children : left.getChildren()) {
             

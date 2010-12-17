@@ -233,7 +233,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_slave = (SlaveDBO) getNode();
 		super.createPartControl(parent);
 		makeSlaveKonfiguration();
-		getTabFolder().setSelection(0);
+		selecttTabFolder(0);
 	}
 
 	/**
@@ -1007,7 +1007,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 		getTabFolder().pack();
 		if (nevv) {
-			getTabFolder().setSelection(4);
+		    selecttTabFolder(4);
 		}
 	}
 
