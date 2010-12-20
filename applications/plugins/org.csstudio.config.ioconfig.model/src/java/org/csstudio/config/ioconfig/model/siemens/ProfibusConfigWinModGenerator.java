@@ -189,7 +189,8 @@ public class ProfibusConfigWinModGenerator {
 		Set<Short> keySet = channelsAsMap.keySet();
 		for (Short key : keySet) {
 			ChannelDBO channelDBO = channelsAsMap.get(key);
-			String io;
+			char io1;
+			String io2="";
 			String def;
 			String convertedChannelType;
 			String desc = "";
@@ -197,54 +198,56 @@ public class ProfibusConfigWinModGenerator {
 			DataType channelType = channelDBO.getChannelType();
 			switch (channelType) {
 			case BIT:
-				convertedChannelType = "B";
+				convertedChannelType = "B"; // Binary
 				break;
 			case INT8:
 			case UINT8:
+			    convertedChannelType = "A"; // Analog
+			    break;
 			case INT16:
 			case UINT16:
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				lines = 2;
 				break;
 			case INT32:
 			case UINT32:
 				lines = 4;
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			case DS33:
 				lines = channelType.getByteSize();
 				desc = "> "+channelType;
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			default:
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			}
 			if(channelDBO.isInput()) {
-					io = "E";
-					convertedChannelType += "I";
+					io1 = 'E';              // Eingang
+					convertedChannelType += "I"; // Input
 			} else {
-					io = "A";
-					convertedChannelType += "O";
+					io1 = 'A';              // Ausgang
+					convertedChannelType += "O"; // Output
 			}
 
 			if(channelDBO.isDigital()) {
 				def = "0";
 			}else {
-				def = "0,00 %";
+				def = "0,00";
 				int byteSize = channelType.getByteSize();
 				switch (byteSize) {
 				case 1:
-					io += "B";
+					io2 = "B"; // Byte
 					break;
 				case 2:
-					io += "W";
+					io2 = "W"; // Word
 					break;
 				case 4:
-					io += "D";
+					io2 = "D"; // Double Word
 					break;
 				case 5:
-					io += "D"; // TODO: hier kommt sicherlich was anderes hin!
+					io2 = "D"; // TODO: hier kommt sicherlich was anderes hin!
 					break;
 				default:
 					break;
@@ -275,11 +278,14 @@ public class ProfibusConfigWinModGenerator {
 				bytee = channelDBO.getChannelNumber();
 			}
 			
-			
-			for (int i = 0; i < lines; i++) {
-				appendLine(i, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			String io = io1+""+io2;
+			appendLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			if(lines>1) {
+			    io = io1+"B";
+    			for (int i = 0; i < lines; i++) {
+    				appendLine(i, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+    			}
 			}
-			
 		}
 	}
 
@@ -308,11 +314,13 @@ public class ProfibusConfigWinModGenerator {
 			addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
 		}else {
 			_winModSlaveAdr.append("'").append(channelDBO.getIoName());
-			if(lineNr>0) {
-				_winModSlaveAdr.append("_").append(lineNr);
+//			if(lineNr>0) {
+			if(channelType.startsWith("A")&&io.endsWith("B")) {
+				_winModSlaveAdr.append("_Byte").append(lineNr);
 			}
+			_winModSlaveAdr.append("'");
 		}
-		_winModSlaveAdr.append("','").append(channelType).append("','").append(def).append("',");
+		_winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
 		if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
 			_winModSlaveAdr.append("'").append(desc).append("'");
 		}
@@ -330,9 +338,12 @@ public class ProfibusConfigWinModGenerator {
 	 */
 	private void addAdr(@Nonnull StringBuilder winModSlaveAdr, int id, int module,
 			@Nonnull String io, int bytee, boolean digital, short bit) {
-		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(io).append(" ").append(bytee);
+	    int fullBytes = bit/8;
+	    int bitsModifier = fullBytes*8; 
+        int byt = bytee+fullBytes;
+		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(io).append(" ").append(byt);
 		if(digital) {
-			winModSlaveAdr.append(".").append(bit);
+			winModSlaveAdr.append(".").append(bit-bitsModifier);
 		}
 		winModSlaveAdr.append("'");
 	}
