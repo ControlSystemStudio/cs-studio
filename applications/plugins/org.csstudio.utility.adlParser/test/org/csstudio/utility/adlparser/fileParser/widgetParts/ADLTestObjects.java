@@ -1,14 +1,14 @@
-/**
- * 
- */
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
-import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
-import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
-import org.csstudio.utility.adlparser.fileParser.widgets.Line;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -230,17 +230,80 @@ public class ADLTestObjects {
 		return map;
 	}
 
-	public static ADLWidget setupBasicLine() {
+	public static ADLWidget setupBasicOval1() {
 		ADLWidget line = new ADLWidget("oval", null, 4);
-		ADLWidget baParts = new ADLWidget("basic attribute", line, 0);
-		baParts.addBody(new FileLine("clr=2", 10));
-		line.addObject(baParts);
 		return line;
 	}
 
+	public static ADLWidget setupBasicOval2() {
+		ADLWidget line = new ADLWidget("oval", null, 4);
+		return line;
+	}
+
+	public static ADLWidget setupBasicOval3() {
+		ADLWidget line = new ADLWidget("oval", null, 4);
+		return line;
+	}
+
+	public static ADLWidget setupBasicAttributes1(ADLWidget parent){
+		ADLWidget baParts = new ADLWidget("basic attribute", parent, 0);
+		baParts.addBody(new FileLine("clr=2", 10));
+		baParts.addBody(new FileLine("width=3", 10));
+		baParts.addBody(new FileLine("style=solid", 10));
+		baParts.addBody(new FileLine("fill=solid", 10));
+		return baParts;
+	}
+
+	public static ADLWidget setupBasicAttributes2(ADLWidget parent){
+		ADLWidget baParts = new ADLWidget("basic attribute", parent, 0);
+		baParts.addBody(new FileLine("clr=4", 10));
+		baParts.addBody(new FileLine("width=3", 10));
+		baParts.addBody(new FileLine("style=solid", 10));
+		baParts.addBody(new FileLine("fill=solid", 10));
+		return baParts;
+	}
+
+	public static ADLWidget setupBasicAttributesOld1(ADLWidget parent){
+		ADLWidget attr = new ADLWidget("attr", null, 0);
+		
+		attr.addBody(new FileLine("clr=2", 10));
+		attr.addBody(new FileLine("width=3", 10));
+		attr.addBody(new FileLine("style=solid", 10));
+		attr.addBody(new FileLine("fill=solid", 10));
+		return attr;
+	}
+
+	public static ADLWidget setupBasicAttributesOld2(ADLWidget parent){
+		ADLWidget attr = new ADLWidget("attr", null, 0);
+		
+		attr.addBody(new FileLine("clr=4", 10));
+		attr.addBody(new FileLine("width=3", 11));
+		attr.addBody(new FileLine("style=solid", 12));
+		attr.addBody(new FileLine("fill=solid", 13));
+		return attr;
+	}
+
 	public static String getColorName(int index) {
-		RGB rgb = makeColorMap()[index];
-		return "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
+		String name = null;
+		if (index > 2){
+			if ( index == 3) {
+				name = "Red";
+			}
+			else if ( index == 4) {
+				name = "Green";
+			}
+			else if ( index == 5) {
+				name = "Blue";
+			}
+			else {
+				name = "Unknown";
+			}
+		}
+		else {
+			RGB rgb = makeColorMap()[index];
+			name =  "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
+		}
+		return name;
 	}
 
 	public static RGB getRGBValue(int index) {
