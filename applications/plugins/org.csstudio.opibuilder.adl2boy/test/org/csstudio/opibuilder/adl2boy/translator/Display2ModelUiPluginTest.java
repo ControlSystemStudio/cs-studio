@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author hammonds
+ * @author John Hammonds, Argonne National Laboratory
  *
  */
 public class Display2ModelUiPluginTest extends TestCase {

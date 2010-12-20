@@ -1,6 +1,9 @@
-/**
- * 
- */
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import java.util.Map;
@@ -21,7 +24,7 @@ import org.csstudio.utility.adlparser.fileParser.widgets.RelatedDisplay;
 import org.eclipse.core.runtime.Path;
 
 /**
- * @author hammonds
+ * @author John Hammonds, Argonne National Laboratory
  *
  */
 public class RelatedDisplay2ModelUiPluginTest extends TestCase {

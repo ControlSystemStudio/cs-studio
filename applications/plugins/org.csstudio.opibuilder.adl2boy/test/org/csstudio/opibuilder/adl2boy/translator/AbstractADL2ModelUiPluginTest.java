@@ -7,13 +7,14 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import junit.framework.TestCase;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.adl2boy.utilities.ColorUtilities;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
-import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLTestObjects;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
 import org.csstudio.utility.adlparser.fileParser.widgets.Oval;
@@ -28,6 +29,7 @@ import org.junit.Before;
 public class AbstractADL2ModelUiPluginTest extends TestCase {
 	TestDisp2Model dispModel;
 	TestWidget2Model testWidgetModel;
+	OPIColor[] tableColors;
 
 	protected class TestDisp2Model extends AbstractADL2Model {
 
@@ -72,11 +74,19 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 	 */
 	@Before
 	public void setUp() throws Exception {
+
+		ColorUtilities
+				.loadToBoyColorTable("platform:/base/plugin/org.csstudio.opibuilder.adl2boy/resources/color.def");
+		tableColors = ColorUtilities.getTableColors();
+	}
+
+	/**
+	 * @param disp
+	 */
+	public void initialilzeDisplay(ADLWidget disp) {
 		dispModel = new TestDisp2Model(ADLTestObjects.makeColorMap());
-		dispModel.processWidget(ADLTestObjects.setupBasicDisplay());
+		dispModel.processWidget(disp);
 		testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
-		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
-		d.addChild(testWidgetModel.getWidgetModel());
 	}
 
 	/**
@@ -87,10 +97,81 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 	}
 
 	public void testADL2ModelColors() {
-		testWidgetModel.processWidget(ADLTestObjects.setupBasicLine());
+		initialilzeDisplay(ADLTestObjects.setupBasicDisplay());
+		ADLWidget oval = ADLTestObjects.setupBasicOval1();
+		oval.addObject(ADLTestObjects.setupBasicAttributes1(oval));
+		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
+		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.processWidget(oval);
 		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel()
 				.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-		assertEquals("Foreground Color", ADLTestObjects.makeColorMap()[2],
+		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(2),
 				frgd.getRGBValue());
+		assertEquals("Foreground Color Name", ADLTestObjects.getColorName(2),
+				frgd.getColorName());
 	}
+	
+	public void testADLModelColorsWithTable(){
+		initialilzeDisplay(ADLTestObjects.setupBasicDisplay());
+		testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
+		ADLWidget oval = ADLTestObjects.setupBasicOval1();
+		oval.addObject(ADLTestObjects.setupBasicAttributes2(oval));
+		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
+		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.processWidget(oval);
+		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
+				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(4),
+				frgd.getRGBValue());
+		assertEquals("Foreground Color Name", ADLTestObjects.getColorName(4),
+				frgd.getColorName());
+
+	}
+
+	public void testADLModelColorsWithTableFromParent1(){
+		ADLWidget disp = ADLTestObjects.setupBasicDisplay();
+		testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
+		initialilzeDisplay(disp);
+		try {
+			TranslatorUtils.setDefaultBasicAttribute(ADLTestObjects.setupBasicAttributesOld1(disp));
+		} catch (WrongADLFormatException e) {
+			System.out.println("Trouble creating basic attributes");
+			e.printStackTrace();
+		}
+		
+		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
+		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.processWidget(ADLTestObjects.setupBasicOval1());
+		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
+				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(2),
+				frgd.getRGBValue());
+		assertEquals("Foreground Color Name", ADLTestObjects.getColorName(2),
+				frgd.getColorName());
+
+	}
+
+	public void testADLModelColorsWithTableFromParent2(){
+		ADLWidget disp = ADLTestObjects.setupBasicDisplay();
+		testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
+		initialilzeDisplay(disp);
+		try {
+			TranslatorUtils.setDefaultBasicAttribute(ADLTestObjects.setupBasicAttributesOld2(disp));
+		} catch (WrongADLFormatException e) {
+			System.out.println("Trouble creating basic attributes");
+			e.printStackTrace();
+		}
+		
+		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
+		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.processWidget(ADLTestObjects.setupBasicOval1());
+		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
+				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(4),
+				frgd.getRGBValue());
+		assertEquals("Foreground Color Name", ADLTestObjects.getColorName(4),
+				frgd.getColorName());
+
+	}
+
 }
