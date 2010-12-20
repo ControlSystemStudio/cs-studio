@@ -24,7 +24,6 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -41,9 +40,9 @@ public class ADLMonitor extends WidgetPart{
 
     // The foreground Color (also Font color).
     private int _clr;
-    // The background Color.
+    // The background color.
     private int _bclr;
-    // The Channel.
+    // The channel.
     private String _chan;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
@@ -65,16 +64,16 @@ public class ADLMonitor extends WidgetPart{
     public ADLMonitor(){
     	super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     void init() {
         name = new String("monitor");
-        set_isBackColorDefined(false);
-        set_isForeColorDefined(false);
         _chan = String.valueOf("");
+        set_isForeColorDefined(false);
+        set_isBackColorDefined(false);
     }
     
     /**
@@ -112,21 +111,16 @@ public class ADLMonitor extends WidgetPart{
     
 
     /**
-     * 
-     * @return get the Channel.
+     * @return child objects
      */
-    public final String getChan() {
-        return _chan;
-    }
-
-	@Override
-	public Object[] getChildren() {
-		Object[] ret = new Object[3];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
-		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, _bclr);
+    @Override
+    public Object[] getChildren(){
+    	Object[] ret = new Object[3];
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
+		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, new Integer(_bclr));
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
 		return ret;
-	}
+    }
 
     /** 
      * @return background Color
@@ -140,6 +134,13 @@ public class ADLMonitor extends WidgetPart{
      */
     public int getForegroundColor(){
     	return _clr;
+    }
+
+    /**
+     * @return get the Channel.
+     */
+    public String getChan(){
+    	return _chan;
     }
 
 	/**
@@ -169,6 +170,4 @@ public class ADLMonitor extends WidgetPart{
 	public boolean isForeColorDefined() {
 		return _isForeColorDefined;
 	}
-
 }
-

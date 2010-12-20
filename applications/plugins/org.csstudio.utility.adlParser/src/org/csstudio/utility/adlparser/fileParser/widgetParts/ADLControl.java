@@ -41,14 +41,10 @@ public class ADLControl extends WidgetPart{
     private int _clr;
     // The background color.
     private int _bclr;
-     // The channel.
+    // The channel.
     private String _chan;
-    // If true backgroundColor get the ConnectionState.
-    // Default is false.
-    private boolean _connectionState;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
-     
 
     /**
      * The default constructor.
@@ -61,20 +57,19 @@ public class ADLControl extends WidgetPart{
         super(adlControl);
     }
 
-
     /**
      * Default constructor
      */
     public ADLControl() {
     	super();
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     final void init() {
         name = new String("control");
-        _connectionState = false;
         _chan = new String();
         set_isForeColorDefined(false);
         set_isBackColorDefined(false);
@@ -85,14 +80,14 @@ public class ADLControl extends WidgetPart{
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlControl) throws WrongADLFormatException {
-
         assert adlControl.isType("control") : Messages.ADLControl_AssertError_Begin+adlControl.getType()+Messages.ADLControl_AssertError_End; //$NON-NLS-1$
 
-        for (FileLine parameter : adlControl.getBody()) {
-            if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
+        for (FileLine fileLine : adlControl.getBody()) {
+            String parameter = fileLine.getLine();
+            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.getLine().split("="); //$NON-NLS-1$
+            String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Begin+parameter+Messages.ADLControl_WrongADLFormatException_End);
             }
@@ -104,7 +99,6 @@ public class ADLControl extends WidgetPart{
                 set_isBackColorDefined(true);
             }else if(FileLine.argEquals(row[0], "chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
             	_chan = FileLine.getTrimmedValue(row[1]);
-            	//**                _chan=ADLHelper.cleanString(row[1]);
             }else if(FileLine.argEquals(row[0], "ctrl")){ //$NON-NLS-1$
             	_chan = FileLine.getTrimmedValue(row[1]);
             }else {
@@ -114,23 +108,16 @@ public class ADLControl extends WidgetPart{
     }
 
     
-    /**
-     * @return the state of background color display the ConnectionState.
-     */
-    public final boolean isConnectionState() {
-        return _connectionState;
-    }
-
 
     /**
      * @return child objects
      */
+    @Override
     public Object[] getChildren(){
-    	Object[] ret = new Object[4];
+    	Object[] ret = new Object[3];
 		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
 		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, new Integer(_bclr));
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
-		ret[3] = new ADLResource(ADLResource.CONNECTION_STATE, _connectionState);
 		return ret;
     }
 
@@ -148,7 +135,7 @@ public class ADLControl extends WidgetPart{
     	return _clr;
     }
 
-    /** 
+    /**
      * @return control channel
      */
     public String getChan(){
@@ -158,7 +145,7 @@ public class ADLControl extends WidgetPart{
 	/**
 	 * @param _isBackColorDefined the _isBackColorDefined to set
 	 */
-	public void set_isBackColorDefined(boolean _isBackColorDefined) {
+	private void set_isBackColorDefined(boolean _isBackColorDefined) {
 		this._isBackColorDefined = _isBackColorDefined;
 	}
 
@@ -172,7 +159,7 @@ public class ADLControl extends WidgetPart{
 	/**
 	 * @param _isForeColorDefined the _isForeColorDefined to set
 	 */
-	public void set_isForeColorDefined(boolean _isForeColorDefined) {
+	private void set_isForeColorDefined(boolean _isForeColorDefined) {
 		this._isForeColorDefined = _isForeColorDefined;
 	}
 
