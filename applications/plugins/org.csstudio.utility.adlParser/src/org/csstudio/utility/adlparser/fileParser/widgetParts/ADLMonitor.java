@@ -24,11 +24,9 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.utility.adlparser.internationalization.Messages;
-import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
-import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
  * @author hrickens
@@ -36,138 +34,44 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @version $Revision$
  * @since 12.09.2007
  */
-public class ADLMonitor extends WidgetPart{
-
-    // The foreground Color (also Font color).
-    private int _clr;
-    // The background color.
-    private int _bclr;
-    // The channel.
-    private String _chan;
-    private boolean _isBackColorDefined;
-    private boolean _isForeColorDefined;
-
-    /**
-     * The default constructor.
-     * 
-     * @param monitor An ADLWidget that correspond a ADL Monitor. 
-     * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
-     * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
-     */
-    public ADLMonitor(final ADLWidget monitor) throws WrongADLFormatException {
-        super(monitor);
-    }
-
-    /**
-     * Default constructor
-     */
-    public ADLMonitor(){
-    	super();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    void init() {
-        name = new String("monitor");
-        _chan = String.valueOf("");
-        set_isForeColorDefined(false);
-        set_isBackColorDefined(false);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    final void parseWidgetPart(final ADLWidget monitor) throws WrongADLFormatException {
-        assert monitor.isType("monitor") : Messages.ADLMonitor_assertError_Begin+monitor.getType()+Messages.ADLMonitor_assertError_End; //$NON-NLS-1$
-
-        for (FileLine fileLine : monitor.getBody()) {
-            String parameter = fileLine.getLine();
-            if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
-                continue;
-            }
-            String[] row = parameter.split("="); //$NON-NLS-1$
-            if(row.length!=2){
-                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Begin+parameter+Messages.ADLMonitor_WrongADLFormatException_End);
-            }
-            if(FileLine.argEquals(row[0], "clr")){ //$NON-NLS-1$
-                _clr=FileLine.getIntValue(row[1]);
-                set_isForeColorDefined(true);
-            }else if(FileLine.argEquals(row[0], "bclr")){ //$NON-NLS-1$
-                _bclr=FileLine.getIntValue(row[1]);
-                set_isBackColorDefined(true);
-            }else if(FileLine.argEquals(row[0], "chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
-            	_chan = FileLine.getTrimmedValue(row[1]);
-            }else if(FileLine.argEquals(row[0], "rdbk")){ //$NON-NLS-1$
-            	_chan = FileLine.getTrimmedValue(row[1]);
-            }else {
-                throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
-            }
-        }
-    }
-
-    
-
-    /**
-     * @return child objects
-     */
-    @Override
-    public Object[] getChildren(){
-    	Object[] ret = new Object[3];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, new Integer(_clr));
-		ret[1] = new ADLResource(ADLResource.BACKGROUND_COLOR, new Integer(_bclr));
-		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
-		return ret;
-    }
-
-    /** 
-     * @return background Color
-     */
-    public int getBackgroundColor(){
-    	return _bclr;
-    }
-
-    /** 
-     * @return background Color
-     */
-    public int getForegroundColor(){
-    	return _clr;
-    }
-
-    /**
-     * @return get the Channel.
-     */
-    public String getChan(){
-    	return _chan;
-    }
+public class ADLMonitor extends ADLConnected {
 
 	/**
-	 * @param _isBackColorDefined the _isBackColorDefined to set
+	 * The default constructor.
+	 * 
+	 * @param adlWidget
+	 *            An ADLWidget that correspond a ADL Monitor.
+	 * @param parentWidgetModel
+	 *            The Widget that set the parameter from ADLWidget.
+	 * @throws WrongADLFormatException
+	 *             Wrong ADL format or untreated parameter found.
 	 */
-	private void set_isBackColorDefined(boolean _isBackColorDefined) {
-		this._isBackColorDefined = _isBackColorDefined;
+	public ADLMonitor(final ADLWidget adlWidget) throws WrongADLFormatException {
+		super(adlWidget);
 	}
 
 	/**
-	 * @return the _isBackColorDefined
+	 * Default constructor
 	 */
-	public boolean isBackColorDefined() {
-		return _isBackColorDefined;
+	public ADLMonitor() {
+		super();
 	}
 
 	/**
-	 * @param _isForeColorDefined the _isForeColorDefined to set
+	 * {@inheritDoc}
 	 */
-	private void set_isForeColorDefined(boolean _isForeColorDefined) {
-		this._isForeColorDefined = _isForeColorDefined;
-	}
-
-	/**
-	 * @return the _isForeColorDefined
-	 */
-	public boolean isForeColorDefined() {
-		return _isForeColorDefined;
+	@Override
+	void init() {
+		name = new String("monitor");
+		_chan = String.valueOf("");
+		set_isForeColorDefined(false);
+		set_isBackColorDefined(false);
+		assertBeginMsg = Messages.ADLMonitor_AssertError_Begin;
+		assertEndMsg = Messages.ADLMonitor_AssertError_End;
+		exceptionBeginMsg = Messages.ADLMonitor_WrongADLFormatException_Begin;
+		exceptionEndMsg = Messages.ADLMonitor_WrongADLFormatException_End;
+		exceptionBeginParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin;
+		exceptionEndParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_End;
+		oldChannelName = "rdbk";
 	}
 }
