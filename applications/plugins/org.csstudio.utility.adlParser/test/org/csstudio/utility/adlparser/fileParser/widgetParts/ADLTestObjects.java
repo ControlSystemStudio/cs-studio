@@ -1,7 +1,7 @@
 /*************************************************************************\
-* Copyright (c) 2010  UChicago Argonne, LLC
-* This file is distributed subject to a Software License Agreement found
-* in the file LICENSE that is included with this distribution.
+ * Copyright (c) 2010  UChicago Argonne, LLC
+ * This file is distributed subject to a Software License Agreement found
+ * in the file LICENSE that is included with this distribution.
 /*************************************************************************/
 
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
@@ -12,14 +12,17 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * Just a bunch of static methods that produce ADLWidgets that can be used in testing.
+ * Just a bunch of static methods that produce ADLWidgets that can be used in
+ * testing.
+ * 
  * @author hammonds
- *
+ * 
  */
 public class ADLTestObjects {
 
 	/**
-	 * 	Setup a normal control
+	 * Setup a normal control
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDispUnkownElement() {
@@ -30,12 +33,13 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("args=\"P=$(P),M=$(M)\"", 9));
 		object.addBody(new FileLine("policy=true", 10));
 		object.addBody(new FileLine("xyz=true", 11));
-	
+
 		return object;
 	}
 
 	/**
-	 * 	Setup a normal control
+	 * Setup a normal control
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDisp() {
@@ -45,12 +49,13 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("name=myfile.adl", 8));
 		object.addBody(new FileLine("args=\"P=$(P),M=$(M)\"", 9));
 		object.addBody(new FileLine("policy=replace display", 10));
-	
+
 		return object;
 	}
 
 	/**
-	 * 	Setup a normal control
+	 * Setup a normal control
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDispNoPolicy() {
@@ -59,12 +64,13 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("//", 7));
 		object.addBody(new FileLine("name=myfile.adl", 8));
 		object.addBody(new FileLine("args=\"P=iocT1:,M=m1:\"", 9));
-	
+
 		return object;
 	}
 
 	/**
-	 * 	Setup a normal control
+	 * Setup a normal control
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDispMixedArgs() {
@@ -73,12 +79,13 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("//", 7));
 		object.addBody(new FileLine("name=path/myfile.adl", 8));
 		object.addBody(new FileLine("args=\"P=$(P),M=$(M),T=temp:,PREC=3\"", 9));
-	
+
 		return object;
 	}
 
 	/**
-	 * 	Setup a display with no arguments
+	 * Setup a display with no arguments
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDispEmptyArgs() {
@@ -86,72 +93,78 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("label=my label", 6));
 		object.addBody(new FileLine("name=path/myfile.adl", 8));
 		object.addBody(new FileLine("args=", 9));
-	
+
 		return object;
 	}
 
 	/**
-	 * 	Setup a display with no arguments
+	 * Setup a display with no arguments
+	 * 
 	 * @return
 	 */
 	public static ADLWidget setupRelDispNoArgs() {
 		ADLWidget object = new ADLWidget("display[0]", null, 5);
 		object.addBody(new FileLine("label=my label", 6));
 		object.addBody(new FileLine("name=path/myfile.adl", 8));
-	
+
 		return object;
 	}
 
-	public static RelatedDisplayItem makeRelatedDisplay1()  {
+	public static RelatedDisplayItem makeRelatedDisplay1() {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDisp());
 		} catch (WrongADLFormatException e) {
-			//We should not hit here since we are starting with a well known object
+			// We should not hit here since we are starting with a well known
+			// object
 			e.printStackTrace();
 		}
 		return rd;
 	}
 
-	public static RelatedDisplayItem makeRelatedDisplayNoPolicy()  {
+	public static RelatedDisplayItem makeRelatedDisplayNoPolicy() {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDispNoPolicy());
 		} catch (WrongADLFormatException e) {
-			//We should not hit here since we are starting with a well known object
+			// We should not hit here since we are starting with a well known
+			// object
 			e.printStackTrace();
 		}
 		return rd;
 	}
 
-	public static RelatedDisplayItem makeRelatedDisplayMixedArgs()  {
+	public static RelatedDisplayItem makeRelatedDisplayMixedArgs() {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDispMixedArgs());
 		} catch (WrongADLFormatException e) {
-			//We should not hit here since we are starting with a well known object
+			// We should not hit here since we are starting with a well known
+			// object
 			e.printStackTrace();
 		}
 		return rd;
 	}
 
-	public static RelatedDisplayItem makeRelatedDisplayNoArgs()  {
+	public static RelatedDisplayItem makeRelatedDisplayNoArgs() {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDispNoArgs());
 		} catch (WrongADLFormatException e) {
-			//We should not hit here since we are starting with a well known object
+			// We should not hit here since we are starting with a well known
+			// object
 			e.printStackTrace();
 		}
 		return rd;
 	}
 
-	public static RelatedDisplayItem makeRelatedDisplayEmptyArgs()  {
+	public static RelatedDisplayItem makeRelatedDisplayEmptyArgs() {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDispEmptyArgs());
 		} catch (WrongADLFormatException e) {
-			//We should not hit here since we are starting with a well known object
+			// We should not hit here since we are starting with a well known
+			// object
 			e.printStackTrace();
 		}
 		return rd;
@@ -163,7 +176,7 @@ public class ADLTestObjects {
 		object.addBody(new FileLine("version", 6));
 		object.addObject(setupBasicDisplay());
 		object.addObject(setupBasicColorMap());
-		
+
 		return object;
 	}
 
@@ -195,7 +208,7 @@ public class ADLTestObjects {
 		display.addBody(new FileLine("gridSpacing=5", 13));
 		display.addBody(new FileLine("gridOn=0", 14));
 		display.addBody(new FileLine("snapToGrid=0", 15));
-		
+
 		return display;
 	}
 
@@ -215,8 +228,10 @@ public class ADLTestObjects {
 
 		return widget;
 	}
+
 	/**
-	 *  Convenience method to create a colorMap
+	 * Convenience method to create a colorMap
+	 * 
 	 * @return the colorMap
 	 */
 	public static RGB[] makeColorMap() {
@@ -245,7 +260,7 @@ public class ADLTestObjects {
 		return line;
 	}
 
-	public static ADLWidget setupBasicAttributes1(ADLWidget parent){
+	public static ADLWidget setupBasicAttributes1(ADLWidget parent) {
 		ADLWidget baParts = new ADLWidget("basic attribute", parent, 0);
 		baParts.addBody(new FileLine("clr=2", 10));
 		baParts.addBody(new FileLine("width=3", 10));
@@ -254,7 +269,7 @@ public class ADLTestObjects {
 		return baParts;
 	}
 
-	public static ADLWidget setupBasicAttributes2(ADLWidget parent){
+	public static ADLWidget setupBasicAttributes2(ADLWidget parent) {
 		ADLWidget baParts = new ADLWidget("basic attribute", parent, 0);
 		baParts.addBody(new FileLine("clr=4", 10));
 		baParts.addBody(new FileLine("width=3", 10));
@@ -263,9 +278,9 @@ public class ADLTestObjects {
 		return baParts;
 	}
 
-	public static ADLWidget setupBasicAttributesOld1(ADLWidget parent){
+	public static ADLWidget setupBasicAttributesOld1(ADLWidget parent) {
 		ADLWidget attr = new ADLWidget("attr", null, 0);
-		
+
 		attr.addBody(new FileLine("clr=2", 10));
 		attr.addBody(new FileLine("width=3", 10));
 		attr.addBody(new FileLine("style=solid", 10));
@@ -273,9 +288,9 @@ public class ADLTestObjects {
 		return attr;
 	}
 
-	public static ADLWidget setupBasicAttributesOld2(ADLWidget parent){
+	public static ADLWidget setupBasicAttributesOld2(ADLWidget parent) {
 		ADLWidget attr = new ADLWidget("attr", null, 0);
-		
+
 		attr.addBody(new FileLine("clr=4", 10));
 		attr.addBody(new FileLine("width=3", 11));
 		attr.addBody(new FileLine("style=solid", 12));
@@ -285,23 +300,19 @@ public class ADLTestObjects {
 
 	public static String getColorName(int index) {
 		String name = null;
-		if (index > 2){
-			if ( index == 3) {
+		if (index > 2) {
+			if (index == 3) {
 				name = "Red";
-			}
-			else if ( index == 4) {
+			} else if (index == 4) {
 				name = "Green";
-			}
-			else if ( index == 5) {
+			} else if (index == 5) {
 				name = "Blue";
-			}
-			else {
+			} else {
 				name = "Unknown";
 			}
-		}
-		else {
+		} else {
 			RGB rgb = makeColorMap()[index];
-			name =  "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
+			name = "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
 		}
 		return name;
 	}
