@@ -39,5 +39,4 @@ public class ArchiveEngineConfigServiceTracker extends ServiceTracker {
     public ArchiveEngineConfigServiceTracker(@Nonnull final BundleContext context) {
         super(context, IArchiveEngineConfigService.class.getName(), null);
     }
-
 }

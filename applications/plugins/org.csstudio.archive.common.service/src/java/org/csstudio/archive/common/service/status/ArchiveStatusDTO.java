@@ -51,6 +51,7 @@ public class ArchiveStatusDTO implements IArchiveStatus {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ArchiveStatusId getId() {
         return _id;
     }
@@ -59,6 +60,7 @@ public class ArchiveStatusDTO implements IArchiveStatus {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getName() {
         return _name;
     }

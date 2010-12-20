@@ -22,41 +22,20 @@
 package org.csstudio.domain.desy.epics.alarm;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 
 
 /**
- * Represents the EPICS alarm types as of epics version 3.14.12.rc1 in dbStatic/alarm.h
+ * Represents the EPICS alarm types as of epics version 3.14.12.rc1 in dbStatic/alarm.h<br>
  *
  * The EPICS alarm concept seems to match into the (CSS) general alarm abstraction by
- * mapping its two fields 'severity' and 'status' into the dedicated object.
+ * mapping its two fields 'severity' and 'status' into the dedicated object.<br>
  *
- * Epics alarms are comparable by their severity field.
+ * Epics alarms are comparable by their severity field.<br>
  *
- * TODO (bknerr, jpenning, jhatje, bschoeneburg) : Epics Alarm Abstraction Problem
- *
- * 1 Some of the possible status from alarm.h are apparently not used
- * 2 Some status capture the very same information as severity does
- * 3 Some status' information overlaps,
- * 4 Some status are not defined for certain data types
- * (5) Some status have been introduced for CSS code only (is that good or bad or doesn't matter?)
- * (6) NO_ALARM
- *
- * Examples:
- * Status                      Severity
- *
- * NO_ALARM                    (->NO_ALARM) : (in principle, just learned there's an exception
- * LO, HI                      (->MINOR)    : but data-type dependent
- * LOLO, HIHI                  (->MAJOR)    : but data-type dependent
- * disconnected     (->?)                   : used in the archiver code
- * Archive_Disabled (?=DISABLE) (->?)       : TODO (bknerr) does 'Archive_Disabled' match any epics value, ask bernd.
- *
- * SoftAlarm ??
- *
- * For non-numerical data types LO,HI,LOLO,HIHI isn't defined, hence, not possible.
  * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting it's alarm.
- *
  *
  * @author Bastian Knerr
  */
@@ -111,7 +90,39 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final EpicsAlarm other) {
+    public int compareTo(@Nonnull final EpicsAlarm other) {
         return _severity.compareSeverityTo(other._severity);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( _severity == null ? 0 : _severity.hashCode());
+        result = prime * result + ( _status == null ? 0 : _status.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@Nullable final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof EpicsAlarm)) {
+            return false;
+        }
+        final EpicsAlarm other = (EpicsAlarm) obj;
+        if (_severity != other._severity || _status != other._status) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

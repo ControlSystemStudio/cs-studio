@@ -22,10 +22,15 @@
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.platform.logging.CentralLogger;
 
 
 /**
@@ -35,6 +40,9 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
  * @since 10.11.2010
  */
 public abstract class AbstractArchiveDao {
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
 
     private final ArchiveDaoManager _mgr;
 
@@ -59,5 +67,20 @@ public abstract class AbstractArchiveDao {
     @Nonnull
     protected ArchiveDaoManager getDaoMgr() {
         return _mgr;
+    }
+
+    /**
+     * Tries to close the passed statement and logs the given message on closing error.
+     * @param stmt
+     * @param logMsg
+     */
+    protected void closeStatement(@CheckForNull final PreparedStatement stmt, @Nonnull final String logMsg) {
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (final SQLException e) {
+                LOG.warn(logMsg);
+            }
+        }
     }
 }

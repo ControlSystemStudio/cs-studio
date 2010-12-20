@@ -21,59 +21,30 @@
  */
 package org.csstudio.domain.desy.types;
 
-import java.util.Collection;
-
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.platform.data.ITimestamp;
 
 /**
- * TODO (bknerr) :
+ * Type conversion necessary as long as there are these other classes around.
  *
  * @author bknerr
- * @since 13.12.2010
+ * @since 17.12.2010
  */
-public class StringArchiveTypeConversionSupport extends AbstractArchiveTypeConversionSupport<String> {
+public final class BaseTypeConversionSupport {
 
     /**
-     * {@inheritDoc}
+     * Constructor.
      */
-    @Override
-    @Nonnull
-    public String convertScalarToArchiveString(@Nonnull final String value) throws ConversionTypeSupportException {
-        return value;
+    private BaseTypeConversionSupport() {
+        // may later inherit {@link org.csstudio.domain.desy.types.TypeSupport}
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public String convertScalarFromArchiveString(@Nonnull final String value) {
-        return value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final String value) throws ConversionTypeSupportException {
-        try {
-            return Double.parseDouble(value);
-        } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("String value " + value + " could not be converted to Double." , e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<String> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
-        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
+    public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
+        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
     }
 
 }

@@ -19,66 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.samplemode;
+package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
-
+import javax.annotation.Nullable;
 
 /**
- * Immutable data transfer object for DAOs.
+ * Exception for the conversion type support.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 02.12.2010
  */
-public class ArchiveSampleModeDTO implements IArchiveSampleMode {
+public class TypeSupportException extends Exception {
 
-    private final ArchiveSampleModeId _id;
-
-    private final String _name;
-
-    private final String _description;
+    private static final long serialVersionUID = -9187145383318928915L;
 
     /**
      * Constructor.
-     *
-     * @param id
-     * @param name
-     * @param description
+     * @param msg the describing message
+     * @param e the wrapped exception, may be <code>null</code>
      */
-    public ArchiveSampleModeDTO(@Nonnull final ArchiveSampleModeId id,
-                                @Nonnull final String name,
-                                @Nonnull final String description) {
-
-        _id = id;
-        _name = name;
-        _description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ArchiveSampleModeId getId() {
-        return _id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getName() {
-        return _name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getDescription() {
-        return _description;
-    }
-
+	public TypeSupportException(@Nonnull final String msg, @Nullable final Exception e) {
+		super(msg, e);
+	}
 }

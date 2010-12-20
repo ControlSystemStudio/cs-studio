@@ -40,34 +40,34 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
      * @return the name of the channel
      */
     @Nonnull
-    public String getName();
+    String getName();
 
     /**
      * @return Channel group ID
      */
     @Nonnull
-    public ArchiveChannelGroupId getGroupId();
+    ArchiveChannelGroupId getGroupId();
 
     /**
      * @return the sample mode (int means scan or monitor typically)
      */
     @Nonnull
-    public ArchiveSampleModeId getSampleModeId();
+    ArchiveSampleModeId getSampleModeId();
 
     /**
      * @return
      */
-    public double getSamplePeriod();
+    double getSamplePeriod();
 
     /**
      * @return Sample mode configuration value, e.g. 'delta' for Monitor
      */
-    public double getSampleValue();
+    double getSampleValue();
 
     /**
      * @return the timestamp of the latest archived sample for this channel
      */
     @Nonnull
-    public TimeInstant getLatestTimestamp();
+    TimeInstant getLatestTimestamp();
 
 }
