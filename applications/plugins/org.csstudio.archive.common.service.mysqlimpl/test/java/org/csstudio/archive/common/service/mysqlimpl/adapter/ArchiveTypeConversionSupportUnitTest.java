@@ -57,6 +57,7 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testEmbraceRelease() {
+
         final String empty = collectionEmbrace("");
         Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
                             ARCHIVE_COLLECTION_SUFFIX, empty);
