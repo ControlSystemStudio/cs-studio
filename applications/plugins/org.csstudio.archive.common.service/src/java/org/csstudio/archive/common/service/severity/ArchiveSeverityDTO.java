@@ -51,6 +51,7 @@ public class ArchiveSeverityDTO implements IArchiveSeverity {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ArchiveSeverityId getId() {
         return _id;
     }
@@ -59,8 +60,8 @@ public class ArchiveSeverityDTO implements IArchiveSeverity {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getName() {
         return _name;
     }
-
 }

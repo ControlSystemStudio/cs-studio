@@ -39,5 +39,4 @@ public class ArchiveWriterServiceTracker extends ServiceTracker {
     public ArchiveWriterServiceTracker(@Nonnull final BundleContext context) {
         super(context, IArchiveWriterService.class.getName(), null);
     }
-
 }
