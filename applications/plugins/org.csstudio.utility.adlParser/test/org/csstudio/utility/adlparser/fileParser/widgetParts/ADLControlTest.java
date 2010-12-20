@@ -1,3 +1,8 @@
+/*************************************************************************\
+ * Copyright (c) 2010  UChicago Argonne, LLC
+ * This file is distributed subject to a Software License Agreement found
+ * in the file LICENSE that is included with this distribution.
+/*************************************************************************/
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -42,7 +47,6 @@ public class ADLControlTest extends TestCase {
 
 	public void testADLControl() {
 		assertTrue( "Test Name ", control.getName().equals("control"));
-		assertFalse( "connection state ", control.isConnectionState());
 		assertFalse( "Foreground define ", control.isForeColorDefined());
 		assertFalse( "Background defined ", control.isBackColorDefined());
 		assertTrue( "channel initialized ", control.getChan().equals(""));
