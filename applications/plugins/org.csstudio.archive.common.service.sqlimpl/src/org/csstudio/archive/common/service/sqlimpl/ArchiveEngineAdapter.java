@@ -123,9 +123,12 @@ public enum ArchiveEngineAdapter {
      * @param time the archive.rdb timestamp
      * @return the service interface type for a time instant
      */
-    @Nonnull
-    public TimeInstant adapt(@Nonnull final ITimestamp time) {
-        return TimeInstantBuilder.buildFromSeconds(time.seconds()).plusNanosPerSecond(time.nanoseconds());
+    @CheckForNull
+    public TimeInstant adapt(@CheckForNull final ITimestamp time) {
+        if (time != null) {
+            return TimeInstantBuilder.buildFromSeconds(time.seconds()).plusNanosPerSecond(time.nanoseconds());
+        }
+        return null;
     }
 
     /**

@@ -79,7 +79,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(SqlArchiveServiceImpl.class);
 
-    private static final ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
+    static final ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
     public static final String ARCHIVE_PREF_KEY = "archive";
     public static final String PREFIX_PREF_KEY = "prefix";
@@ -105,11 +105,15 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
     public int getChannelId(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
-            final ChannelConfig channel = _archive.get().getChannel(channelName);
-            return channel != null ? channel.getId() : null;
+            final RDBArchive rdbArchive = _archive.get();
+            final ChannelConfig channel = rdbArchive != null ? rdbArchive.getChannel(channelName) :
+                                                               null;
+            if (channel == null) {
+                throw new NullPointerException("Channel reference from DB is null");
+            }
+            return channel.getId();
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel id for channel " + channelName + " failed.", e);

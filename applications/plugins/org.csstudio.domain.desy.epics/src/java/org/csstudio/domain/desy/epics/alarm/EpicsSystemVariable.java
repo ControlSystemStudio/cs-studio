@@ -40,7 +40,6 @@ import org.csstudio.domain.desy.types.ICssValueType;
  */
 public class EpicsSystemVariable<V, T extends ICssValueType<V>> implements ISystemVariable<V, T>, IHasAlarm {
 
-
     private final SystemVariableId _id;
     private final String _name;
     private final T _value;
