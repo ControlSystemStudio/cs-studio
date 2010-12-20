@@ -23,7 +23,6 @@ package org.csstudio.domain.desy.epics.types;
 
 import java.util.List;
 
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -56,9 +55,7 @@ public class EpicsTypeSupportUnitTest {
                                                                           "HIHI",
                                                                           null,
                                                                           null,
-                                                                          null),
-                                                                          null,
-                                                                          TimeInstantBuilder.buildFromNow());
+                                                                          null));
             Assert.assertNull(cssV);
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -74,9 +71,8 @@ public class EpicsTypeSupportUnitTest {
                                                                           "HIHI",
                                                                           null,
                                                                           null,
-                                                                          new double[]{1.0, 2.0}),
-                                                                          null,
-                                                                          TimeInstantBuilder.buildFromNow());
+                                                                          new double[]{1.0, 2.0}));
+            Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals(Double.valueOf(1.0), cssV.getValueData().get(0));
             Assert.assertEquals(Double.valueOf(2.0), cssV.getValueData().get(1));
@@ -94,9 +90,8 @@ public class EpicsTypeSupportUnitTest {
                                                                         "HIHI",
                                                                         null,
                                                                         null,
-                                                                        new long[]{1L, 2L}),
-                                                                        null,
-                                                                        TimeInstantBuilder.buildFromNow());
+                                                                        new long[]{1L, 2L}));
+            Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals(Long.valueOf(1L), cssV.getValueData().get(0));
             Assert.assertEquals(Long.valueOf(2L), cssV.getValueData().get(1));
@@ -115,9 +110,8 @@ public class EpicsTypeSupportUnitTest {
                                                                              null,
                                                                              new int[]{2});
 
-            final ICssAlarmValueType<EpicsEnumTriple> cssV = EpicsTypeSupport.toCssType(eVal,
-                                                                                        null,
-                                                                                        TimeInstantBuilder.buildFromNow());
+            final ICssAlarmValueType<EpicsEnumTriple> cssV = EpicsTypeSupport.toCssType(eVal);
+            Assert.assertNotNull(cssV);
             Assert.assertEquals(Integer.valueOf(2), cssV.getValueData().getIndex());
             Assert.assertEquals("part", cssV.getValueData().getState());
             Assert.assertEquals(null, cssV.getValueData().getRaw());
@@ -134,9 +128,8 @@ public class EpicsTypeSupportUnitTest {
                                                                           ValueFactory.createMinorSeverity(),
                                                                           "HIHI",
                                                                           null,
-                                                                          new String[]{"small", "black"}),
-                                                                          null,
-                                                                          TimeInstantBuilder.buildFromNow());
+                                                                          new String[]{"small", "black"}));
+            Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals("small", cssV.getValueData().get(0));
             Assert.assertEquals("black", cssV.getValueData().get(1));

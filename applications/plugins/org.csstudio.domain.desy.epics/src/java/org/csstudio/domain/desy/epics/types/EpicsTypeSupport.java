@@ -25,11 +25,13 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -37,6 +39,7 @@ import org.csstudio.platform.data.IValue;
  *
  * @author bknerr
  * @since 15.12.2010
+ * @param <T> the type to be supported
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
@@ -46,8 +49,6 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
     /**
      * Tries to convert the given IValue type and its accompanying parms to the css value type.
      * @param value the value to be converted
-     * @param alarm the value's alarm state
-     * @param timestamp the value's timestamp
      * @return the conversion result
      * @throws TypeSupportException when conversion failed.
      * @param <R>
@@ -56,9 +57,7 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
     @SuppressWarnings("unchecked")
     @CheckForNull
     public static <R extends ICssAlarmValueType<?>, T extends IValue>
-        R toCssType(@Nonnull final T value,
-                    @Nullable final IAlarm alarm,
-                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+        R toCssType(@Nonnull final T value) throws TypeSupportException {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
@@ -66,6 +65,44 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
-        return support.convertToCssType(value, alarm, timestamp);
+        return support.convertToCssType(value);
+    }
+
+    /**
+     * Converts the parameters into a type safe enum class for EPICS alarms.
+     * Attention:
+     * <li>the parameter severity is not safe, since the interface does
+     * not force the is* methods returning true exactly for one of them
+     * <li>the parameter status is string based and may therefore not be parseable into
+     * the {@link EpicsStatus}
+     *
+     * @param sev the severity
+     * @param status the status
+     * @return the epics alarm composite (as of 3.14.12.rc1 in dbStatic/alarm.h)
+     */
+    @CheckForNull
+    public static EpicsAlarm toEpicsAlarm(@CheckForNull final ISeverity sev,
+                                          @Nullable final String status) {
+        // once before...
+        if (sev == null) {
+            return null;
+        }
+        EpicsAlarmSeverity severity = null;
+        // Unfortunately ISeverity is not an enum (if it were, I would have used it)
+        // so dispatch - btw from the interface the mutual exclusion of these states is not ensured
+        if (sev.isOK()) {
+            severity = EpicsAlarmSeverity.NO_ALARM;
+        } else if (sev.isMinor()) {
+            severity = EpicsAlarmSeverity.MINOR;
+        } else if (sev.isMajor()) {
+            severity = EpicsAlarmSeverity.MAJOR;
+        } else if (sev.isInvalid()) {
+            severity = EpicsAlarmSeverity.INVALID;
+        }
+        // and once after... in case anything was false! This interface is lovely
+        if (severity == null) {
+            return null;
+        }
+        return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
     }
 }

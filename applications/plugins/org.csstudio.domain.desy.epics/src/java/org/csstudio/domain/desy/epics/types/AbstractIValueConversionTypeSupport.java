@@ -25,12 +25,12 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.CssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
@@ -48,7 +48,8 @@ import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Longs;
 
 /**
- * Type Conversion Support for IValue types
+ * Type Conversion Support for IValue types. Be careful, due to the IValue design there isn't any
+ * type safety.
  *
  * @author bknerr
  * @since 02.12.2010
@@ -59,7 +60,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
     extends EpicsTypeSupport<T> {
 
     /**
-     * IStringIValue converstioonsupport
+     * IStringIValue converstion support
      *
      * @author bknerr
      * @since 15.12.2010
@@ -75,13 +76,15 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
         @Override
         @CheckForNull
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IStringValue value,
-                                                      @Nullable final IAlarm alarm,
-                                                      @Nonnull final TimeInstant timestamp)  {
+        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IStringValue value)  {
+
             final String[] values = value.getValues();
             if (values == null || values.length == 0) {
                 return null;
             }
+
+            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<String>(values[0],
                                                      alarm,
@@ -110,13 +113,15 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
         @CheckForNull
         @Override
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final ILongValue value,
-                                                      @Nullable final IAlarm alarm,
-                                                      @Nonnull final TimeInstant timestamp)  {
+        public ICssAlarmValueType<?> convertToCssType(@Nonnull final ILongValue value)  {
+
             final long[] values = value.getValues();
             if (values == null || values.length == 0) {
                 return null;
             }
+
+            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<Long>(Long.valueOf(values[0]),
                                                    alarm,
@@ -143,13 +148,15 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
         @CheckForNull
         @Override
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IDoubleValue value,
-                                                      @Nullable final IAlarm alarm,
-                                                      @Nonnull final TimeInstant timestamp)  {
+        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IDoubleValue value) {
+
             final double[] values = value.getValues();
             if (values == null || values.length == 0) {
                 return null;
             }
+
+            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<Double>(Double.valueOf(values[0]),
                                                      alarm,
@@ -179,12 +186,14 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
          * Kay's enumerated values have to have only a single value element corresponding to the set
          * enumerated value string. We want to archive the string, which yields the information, not the
          * index which doesn't speak for itself or might change.
+         *
+         * CHECKSTYLE OFF: CyclomaticComplexity (accepted here as we'll get rid of I*Values anyway)
          */
         @CheckForNull
         @Override
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value,
-                                                      @Nullable final IAlarm alarm,
-                                                      @Nonnull final TimeInstant timestamp)  {
+        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value)  {
+        // CHECKSTYLE ON: CyclomaticComplexity
+
             // This is a nice example for what happens when physicists 'design' programs.
             // (...and I already got rid of an unsafe cast)
             final int[] values = value.getValues();
@@ -213,9 +222,14 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             // (And I already got rid of some boilerplate...)
             // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
             final EpicsEnumTriple eVal = EpicsEnumTriple.createInstance(index, state, null);
+
+            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
+
             return new CssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
         }
     }
+
 
     static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
@@ -234,19 +248,16 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             return;
         }
         AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                   new IDoubleValueConversionTypeSupport());
+                                           new IDoubleValueConversionTypeSupport());
         AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                   new IEnumeratedValueConversionTypeSupport());
+                                           new IEnumeratedValueConversionTypeSupport());
         AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                   new ILongValueConversionTypeSupport());
+                                           new ILongValueConversionTypeSupport());
         AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                   new IStringValueConversionTypeSupport());
+                                           new IStringValueConversionTypeSupport());
         INSTALLED = true;
     }
 
     @CheckForNull
-    public abstract R convertToCssType(@Nonnull final T value,
-                                       @Nullable final IAlarm alarm,
-                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException;
-
+    protected abstract R convertToCssType(@Nonnull final T value) throws TypeSupportException;
 }

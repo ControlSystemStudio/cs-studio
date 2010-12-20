@@ -41,7 +41,8 @@ public class ArchiveSeverityDTO implements IArchiveSeverity {
      * @param id
      * @param name
      */
-    public ArchiveSeverityDTO(@Nonnull final ArchiveSeverityId id, @Nonnull final String name) {
+    public ArchiveSeverityDTO(@Nonnull final ArchiveSeverityId id,
+                              @Nonnull final String name) {
         _id = id;
         _name = name;
     }
