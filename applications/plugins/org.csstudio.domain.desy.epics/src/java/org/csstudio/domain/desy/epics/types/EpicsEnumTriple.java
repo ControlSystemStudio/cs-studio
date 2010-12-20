@@ -26,6 +26,8 @@ import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.types.AbstractTriple;
 
+import com.google.common.base.Joiner;
+
 /**
  * The enum type for epics.
  * Example epics record definition
@@ -75,4 +77,11 @@ public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
         return super.getThird();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "(" + Joiner.on(",").join(getIndex(), getState(), getRaw()) + ")";
+    }
 }

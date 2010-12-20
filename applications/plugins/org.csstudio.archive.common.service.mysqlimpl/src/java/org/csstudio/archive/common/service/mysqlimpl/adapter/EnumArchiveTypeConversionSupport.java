@@ -32,6 +32,7 @@ import org.csstudio.domain.desy.types.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -58,9 +59,10 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public String convertToArchiveString(@Nonnull final EpicsEnumTriple value) throws TypeSupportException {
-        return embrace(Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(value.getIndex(),
-                                                                   value.getState(),
-                                                                   value.getRaw() != null ? value.getRaw() : ARCHIVE_NULL_ENTRY));
+        return tupleEmbrace(Joiner.on(ARCHIVE_TUPLE_SEP).join(value.getIndex(),
+                                                              value.getState(),
+                                                              value.getRaw() != null ? value.getRaw() :
+                                                                                       ARCHIVE_NULL_ENTRY));
     }
 
     /**
@@ -69,11 +71,11 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public EpicsEnumTriple convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        final String released = release(value);
+        final String released = tupleRelease(value);
         if (released == null) {
             throw new TypeSupportException("EpicsEnumTriple '" + value + "' is not embraced by proper pre- and suffixes.", null);
         }
-        final Iterable<String> splitted = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(released);
+        final Iterable<String> splitted = Splitter.on(ARCHIVE_TUPLE_SEP).split(released);
         if (Iterables.size(splitted) != 3) {
             throw new TypeSupportException("EpicsEnumTriple '" + value + "' from archive cannot be split into three elements.", null);
         }
@@ -98,19 +100,20 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public Collection<EpicsEnumTriple> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-        final Iterable<EpicsEnumTriple> enums = Iterables.transform(strings, new Function<String, EpicsEnumTriple>() {
-            @Override
-            @CheckForNull
-            public EpicsEnumTriple apply(@Nonnull final String from) {
-                try {
-                    return convertFromArchiveString(from);
-                } catch (final TypeSupportException e) {
-                    // Cannot easily be propagated out of apply, is handled via the number mismatch below
-                    return null;
-                }
-            }
-        });
+        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease(values));
+        final Iterable<EpicsEnumTriple> enums =
+            Iterables.filter(Iterables.transform(strings, new Function<String, EpicsEnumTriple>() {
+                                                              @Override
+                                                              @CheckForNull
+                                                              public EpicsEnumTriple apply(@Nonnull final String from) {
+                                                                  try {
+                                                                      return convertFromArchiveString(from);
+                                                                  } catch (final TypeSupportException e) {
+                                                                      return null;
+                                                                  }
+                                                              }
+                                                }),
+                                                Predicates.<EpicsEnumTriple>notNull());
         int size;
         try {
             size = Iterables.size(enums);

@@ -52,6 +52,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 
 
@@ -69,6 +70,46 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
     INSTANCE;
 
+    /**
+     * Converter function with email error.
+     *
+     * @author bknerr
+     * @since 20.12.2010
+     */
+    private final class IValueWithId2ICssAlarmValueFunction implements
+            Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> {
+        /**
+         * Constructor.
+         */
+        public IValueWithId2ICssAlarmValueFunction() {
+            // EMPTY
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        @CheckForNull
+        public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
+            try {
+                return ADAPT_MGR.adapt(valWithId);
+
+            } catch (final TypeSupportException e) {
+                final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
+                LOG.error(msg, e);
+                try {
+                    final EMailSender mailer =new EMailSender("smtp.desy.de",
+                                                              "archive.service@dontreply",
+                                                              "bastian.knerr@desy.de",
+                                                              msg);
+                    mailer.addText(e.getMessage() + "\n" + e.getCause());
+                    mailer.close();
+                } catch (final IOException ioe) {
+                    LOG.error("Closing of mailer for error message failed.", ioe);
+                }
+                return null;
+            }
+        }
+    }
+
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
@@ -84,33 +125,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
        //                   And apparently the type insafeness leads to Object instead of generic type...damn
         try {
             final Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> func =
-                new Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>() {
-                    @SuppressWarnings("synthetic-access")
-                    @Override
-                    @CheckForNull
-                    public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
-                        try {
-                            return ADAPT_MGR.adapt(valWithId);
-
-                        } catch (final TypeSupportException e) {
-                            final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
-                            LOG.error(msg, e);
-                            try {
-                                final EMailSender mailer =new EMailSender("smtp.desy.de",
-                                                                          "archive.service@dontreply",
-                                                                          "bastian.knerr@desy.de",
-                                                                          msg);
-                                mailer.addText(e.getMessage() + "\n" + e.getCause());
-                                mailer.close();
-                            } catch (final IOException ioe) {
-                                LOG.error("Closing of mailer for error message failed.", ioe);
-                            }
-                            return null;
-                        }
-                    }
-                };
+                new IValueWithId2ICssAlarmValueFunction();
             final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
-                Collections2.transform(samples, func);
+                Collections2.filter(Collections2.transform(samples, func), Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveDaoException e) {

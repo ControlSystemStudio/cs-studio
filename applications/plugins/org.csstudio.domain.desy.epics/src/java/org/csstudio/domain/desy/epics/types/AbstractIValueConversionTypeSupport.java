@@ -189,32 +189,32 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
          *
          * CHECKSTYLE OFF: CyclomaticComplexity (accepted here as we'll get rid of I*Values anyway)
          */
-        @CheckForNull
         @Override
+        @CheckForNull
         public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value)  {
         // CHECKSTYLE ON: CyclomaticComplexity
 
             // This is a nice example for what happens when physicists 'design' programs.
             // (...and I already got rid of an unsafe cast)
             final int[] values = value.getValues();
-            if (values == null || values.length != 1) {
-                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+            if (values == null || values.length <= 0) {
+                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!");
                 return null;
             }
             final IEnumeratedMetaData metaData = value.getMetaData();
             if (metaData == null) {
-                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any metadata!");
                 return null;
             }
             final String[] states = metaData.getStates();
             final int index = values[0];
             if (states == null || index < 0 || index >= states.length) {
-                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue's index cannot be linked to a state!");
                 return null;
             }
             final String state = states[index];
             if (StringUtil.isBlank(state)) {
-                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue is not properly filled!");
+                LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue's state is null or empty string!");
                 return null;
             }
 

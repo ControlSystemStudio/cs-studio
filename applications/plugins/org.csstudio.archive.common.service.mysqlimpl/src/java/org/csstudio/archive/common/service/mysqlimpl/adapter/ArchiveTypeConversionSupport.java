@@ -34,6 +34,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 
 /**
@@ -53,24 +54,41 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
 
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
-    protected static final String ARCHIVE_COLLECTION_ELEM_PREFIX = "[";
-    protected static final String ARCHIVE_COLLECTION_ELEM_SUFFIX = "]";
+    protected static final String ARCHIVE_COLLECTION_PREFIX = "[";
+    protected static final String ARCHIVE_COLLECTION_SUFFIX = "]";
     protected static final String ARCHIVE_TUPLE_PREFIX = "(";
     protected static final String ARCHIVE_TUPLE_SUFFIX = ")";
+    protected static final String ARCHIVE_TUPLE_SEP = "\\|";
 
-    protected static final String ARCHIVE_NULL_ENTRY = "null";
+    protected static final String ARCHIVE_NULL_ENTRY = "<null>";
 
     private static boolean INSTALLED = false;
 
     @Nonnull
-    protected static String embrace(@Nonnull final String input) {
-        return ARCHIVE_COLLECTION_ELEM_PREFIX + input + ARCHIVE_COLLECTION_ELEM_SUFFIX;
+    protected static String collectionEmbrace(@Nonnull final String input) {
+        return embrace(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
+    }
+    @Nonnull
+    protected static String tupleEmbrace(@Nonnull final String input) {
+        return embrace(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
+    }
+    @Nonnull
+    private static String embrace(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
+        return prefix + input + suffix;
     }
     @CheckForNull
-    protected static String release(@Nonnull final String input) {
-        if (input.startsWith(ARCHIVE_COLLECTION_ELEM_PREFIX) && input.endsWith(ARCHIVE_COLLECTION_ELEM_SUFFIX)) {
-            return input.substring(ARCHIVE_COLLECTION_ELEM_PREFIX.length(),
-                                   input.length() - ARCHIVE_COLLECTION_ELEM_SUFFIX.length());
+    protected static String collectionRelease(@Nonnull final String input) {
+        return release(ARCHIVE_COLLECTION_PREFIX, input, ARCHIVE_COLLECTION_SUFFIX);
+    }
+    @CheckForNull
+    protected static String tupleRelease(@Nonnull final String input) {
+        return release(ARCHIVE_TUPLE_PREFIX, input, ARCHIVE_TUPLE_SUFFIX);
+    }
+    @CheckForNull
+    private static String release(@Nonnull final String prefix, @Nonnull final String input, @Nonnull final String suffix) {
+        if (input.startsWith(prefix) && input.endsWith(suffix)) {
+            return input.substring(prefix.length(),
+                                   input.length() - suffix.length());
         }
         return null;
     }
@@ -184,24 +202,26 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
 
     @Nonnull
     protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
-        final Collection<String> items = Collections2.transform(values, new Function<T, String>() {
-            @Override
-            @CheckForNull
-            public String apply(@Nonnull final T from) {
-                try {
-                    return ArchiveTypeConversionSupport.toArchiveString(from);
-                } catch (final TypeSupportException e) {
-                    LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
-                    return null;
-                }
-            }
-        });
+        final Collection<String> items =
+            Collections2.filter(Collections2.transform(values, new Function<T, String>() {
+                                    @Override
+                                    @CheckForNull
+                                    public String apply(@Nonnull final T from) {
+                                        try {
+                                            return ArchiveTypeConversionSupport.toArchiveString(from);
+                                        } catch (final TypeSupportException e) {
+                                            LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
+                                            return null;
+                                        }
+                                    }
+                                }),
+                                Predicates.<String>notNull());
         if (values.size() != items.size()) {
             throw new TypeSupportException("Number of transformed elements (" + items.size() +
                                            " does not match the number of input elements (" + values.size() + "!", null);
         }
         final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
-        return result;
+        return collectionEmbrace(result);
     }
 
     @Nonnull

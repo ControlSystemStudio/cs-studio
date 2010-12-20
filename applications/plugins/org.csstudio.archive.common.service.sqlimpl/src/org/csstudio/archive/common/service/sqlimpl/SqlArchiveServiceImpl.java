@@ -50,7 +50,8 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
 
 /**
  * Example archive service implementation to separate the processing and logic layer from
@@ -74,6 +75,46 @@ import com.google.common.collect.Lists;
 public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
 
     INSTANCE;
+
+    /**
+     * Converter function.
+     *
+     * @author bknerr
+     * @since 20.12.2010
+     */
+    private final class ChannelCfg2ArchiveChannelFunction implements
+            Function<ChannelConfig, IArchiveChannel> {
+        /**
+         * Constructor.
+         */
+        public ChannelCfg2ArchiveChannelFunction() {
+            // empty
+        }
+
+        @Override
+        @CheckForNull
+        public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
+            try {
+                ITimestamp lastTimestamp;
+                try {
+                    // ATTENTION: obscured database access via
+                    // lastTimestamp = channel.getLastTimestamp();
+                    // Looks like a getter, but is a db call, perform via service:
+                    lastTimestamp =
+                        SqlArchiveServiceImpl.INSTANCE.getLatestTimestampForChannel(from.getName());
+
+                } catch (final Exception e) {
+                    throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
+                                                      " could not be retrieved.", e);
+                }
+                return ADAPT_MGR.adapt(from, lastTimestamp);
+
+            } catch (final ArchiveServiceException e) {
+                // FIXME (bknerr) : How to propagate an exception from here???
+                return null;
+            }
+        }
+    }
 
     @SuppressWarnings("unused")
     private static final Logger LOG =
@@ -156,41 +197,22 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
 
     @Override
     @Nonnull
-    public List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
+    public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
             final ChannelGroupConfig cfg = _archive.get().findGroup(groupId.intValue()); // cache in archive ???
 
             // ATTENTION : in this adapt another database access is obscured (channel.getLastTimeStamp)
-            final List<ChannelConfig> channels = cfg.getChannels();
+            final Collection<ChannelConfig> channels = cfg.getChannels();
 
             // Due to the internal service call, the transformation can't be hidden in the ArchiveEngineAdapter, (or
             // alternatively, the archive.service plugin would need an activator and register for its own service)
-            final List<IArchiveChannel> moreChannels = Lists.transform(channels,
-                                   new Function<ChannelConfig, IArchiveChannel>() {
-                                        @Override
-                                        @CheckForNull
-                                        public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
-                                            try {
-                                                ITimestamp lastTimestamp;
-                                                try {
-                                                    // ATTENTION: obscured database access via
-                                                    // lastTimestamp = channel.getLastTimestamp();
-                                                    // Looks like a getter, but is a db call, perform via service:
-                                                    lastTimestamp =
-                                                        SqlArchiveServiceImpl.INSTANCE.getLatestTimestampForChannel(from.getName());
-
-                                                } catch (final Exception e) {
-                                                    throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
-                                                                                      " could not be retrieved.", e);
-                                                }
-                                                return ADAPT_MGR.adapt(from, lastTimestamp);
-
-                                            } catch (final ArchiveServiceException e) {
-                                                // FIXME (bknerr) : How to propagate an exception from here???
-                                                return null;
-                                            }
-                                        }
-                                   });
+            final Function<ChannelConfig, IArchiveChannel> channelCfg2ArchChannel = new ChannelCfg2ArchiveChannelFunction();
+            final Collection<IArchiveChannel> moreChannels = Collections2.filter(Collections2.transform(channels,
+                                                                                                        channelCfg2ArchChannel),
+                                                                                 Predicates.<IArchiveChannel>notNull());
+            if (moreChannels.size() != channels.size()) {
+                throw new Exception("Conversion from ChannelGroupConfig to IArchiveChannel failed. ");
+            }
             return moreChannels;
 
         } catch (final Exception e) {

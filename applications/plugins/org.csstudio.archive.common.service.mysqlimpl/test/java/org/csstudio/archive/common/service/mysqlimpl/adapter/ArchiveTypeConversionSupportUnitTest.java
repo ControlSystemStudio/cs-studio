@@ -21,12 +21,17 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_PREFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SUFFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.embrace;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.release;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_PREFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SEP;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SUFFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.collectionEmbrace;
+import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.collectionRelease;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
@@ -52,27 +57,27 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testEmbraceRelease() {
-        final String empty = embrace("");
-        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX +
-                            ARCHIVE_COLLECTION_ELEM_SUFFIX, empty);
-        Assert.assertEquals("", release(empty));
+        final String empty = collectionEmbrace("");
+        Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
+                            ARCHIVE_COLLECTION_SUFFIX, empty);
+        Assert.assertEquals("", collectionRelease(empty));
 
 
-        final String xxx = embrace("xxx");
-        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX + "xxx" +
-                            ARCHIVE_COLLECTION_ELEM_SUFFIX, xxx);
-        Assert.assertEquals("xxx", release(xxx));
+        final String xxx = collectionEmbrace("xxx");
+        Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "xxx" +
+                            ARCHIVE_COLLECTION_SUFFIX, xxx);
+        Assert.assertEquals("xxx", collectionRelease(xxx));
 
-        final String yyy = embrace("(()()d(x)");
-        Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX + "(()()d(x)" +
-                            ARCHIVE_COLLECTION_ELEM_SUFFIX, yyy);
-        Assert.assertEquals("(()()d(x)", release(yyy));
+        final String yyy = collectionEmbrace("(()()d(x)");
+        Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "(()()d(x)" +
+                            ARCHIVE_COLLECTION_SUFFIX, yyy);
+        Assert.assertEquals("(()()d(x)", collectionRelease(yyy));
 
-        Assert.assertEquals(null, release(""));
-        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_PREFIX));
-        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_SUFFIX));
-        Assert.assertEquals(null, release("x" + ARCHIVE_COLLECTION_ELEM_SUFFIX));
-        Assert.assertEquals(null, release(ARCHIVE_COLLECTION_ELEM_PREFIX + "s"));
+        Assert.assertEquals(null, collectionRelease(""));
+        Assert.assertEquals(null, collectionRelease(ARCHIVE_COLLECTION_PREFIX));
+        Assert.assertEquals(null, collectionRelease(ARCHIVE_COLLECTION_SUFFIX));
+        Assert.assertEquals(null, collectionRelease("x" + ARCHIVE_COLLECTION_SUFFIX));
+        Assert.assertEquals(null, collectionRelease(ARCHIVE_COLLECTION_PREFIX + "s"));
     }
 
     @Test
@@ -156,9 +161,9 @@ public class ArchiveTypeConversionSupportUnitTest {
         try {
             final EpicsEnumTriple t = EpicsEnumTriple.createInstance(3, "in case we die", 44);
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
-            Assert.assertTrue(archiveString.equals(ARCHIVE_COLLECTION_ELEM_PREFIX +
-                                                   "3\\,in case we die\\,44" +
-                                                   ARCHIVE_COLLECTION_ELEM_SUFFIX));
+            Assert.assertTrue(archiveString.equals(ARCHIVE_TUPLE_PREFIX +
+                                                   "3" + ARCHIVE_TUPLE_SEP + "in case we die" + ARCHIVE_TUPLE_SEP + "44" +
+                                                   ARCHIVE_TUPLE_SUFFIX));
             final EpicsEnumTriple tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnumTriple.class, archiveString);
             Assert.assertNotNull(tFromA);
             Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
@@ -178,7 +183,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             Assert.assertEquals("", archiveString);
 
             ArchiveTypeConversionSupport.fromMultiScalarArchiveString(IDoNotExist.class, "Iwasborninafactory,,,,whohoo");
-        } catch (final Exception e) {
+        } catch (final TypeSupportException e) {
             Assert.assertTrue(true);
         }
     }
@@ -198,7 +203,8 @@ public class ArchiveTypeConversionSupportUnitTest {
         final Collection<String> valuesS = Lists.newArrayList("modest", "mouse");
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesS);
-            Assert.assertEquals("modest\\,mouse", archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "modest\\,mouse" + ARCHIVE_COLLECTION_SUFFIX,
+                                archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -210,7 +216,7 @@ public class ArchiveTypeConversionSupportUnitTest {
         final Collection<Integer> valuesI = Lists.newArrayList(1,2,3,4);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesI);
-            Assert.assertEquals("1\\,2\\,3\\,4", archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1\\,2\\,3\\,4" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -222,7 +228,7 @@ public class ArchiveTypeConversionSupportUnitTest {
         final Collection<Double> valuesD = Lists.newArrayList(1.0,2.0);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesD);
-            Assert.assertEquals("1.0\\,2.0", archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -233,7 +239,7 @@ public class ArchiveTypeConversionSupportUnitTest {
         final Collection<Float> valuesF = Lists.newArrayList(1.0F, 2.0F);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesF);
-            Assert.assertEquals("1.0\\,2.0", archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -245,7 +251,7 @@ public class ArchiveTypeConversionSupportUnitTest {
                                                             Byte.valueOf("-128"));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
-            Assert.assertEquals("127\\,-128", archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -257,13 +263,24 @@ public class ArchiveTypeConversionSupportUnitTest {
                                                                        EpicsEnumTriple.createInstance(1, "second", 27));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
-            Assert.assertEquals(ARCHIVE_COLLECTION_ELEM_PREFIX +
-                                "0\\,first\\,26" +
-                                ARCHIVE_COLLECTION_ELEM_SUFFIX +
-                                "\\," +
-                                ARCHIVE_COLLECTION_ELEM_PREFIX +
-                                "1\\,second\\,27" +
-                                ARCHIVE_COLLECTION_ELEM_SUFFIX, archiveString);
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
+                                ARCHIVE_TUPLE_PREFIX +
+                                "0" + ARCHIVE_TUPLE_SEP + "first" + ARCHIVE_TUPLE_SEP + "26" +
+                                ARCHIVE_TUPLE_SUFFIX +
+                                ARCHIVE_COLLECTION_ELEM_SEP +
+                                ARCHIVE_TUPLE_PREFIX +
+                                "1" + ARCHIVE_TUPLE_SEP + "second" + ARCHIVE_TUPLE_SEP + "27" +
+                                ARCHIVE_TUPLE_SUFFIX +
+                                ARCHIVE_COLLECTION_SUFFIX, archiveString);
+            final Collection<EpicsEnumTriple> enums =
+                ArchiveTypeConversionSupport.fromMultiScalarArchiveString(EpicsEnumTriple.class, archiveString);
+            Assert.assertEquals(2, enums.size());
+            final Iterator<EpicsEnumTriple> iterator = enums.iterator();
+            final EpicsEnumTriple first = iterator.next();
+            Assert.assertEquals("first", first.getState());
+            final EpicsEnumTriple second = iterator.next();
+            Assert.assertEquals("second", second.getState());
+
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
