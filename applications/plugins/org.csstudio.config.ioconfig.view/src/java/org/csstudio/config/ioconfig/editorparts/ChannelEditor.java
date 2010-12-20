@@ -117,9 +117,7 @@ public class ChannelEditor extends AbstractNodeEditor {
 		            channel.setChannelType(moduleChannelPrototype.getType());
 		        }
 		    }
-		    if (!channel.getName().equals(moduleChannelPrototype.getName())) {
-		        channel.setName(moduleChannelPrototype.getName());
-		    }
+	        channel.setName(moduleChannelPrototype.getName());
 		    String oldAdr = channel.getEpicsAddressStringNH();
 		    channel.assembleEpicsAddressString();
 		    String newAdr = channel.getEpicsAddressStringNH();
@@ -284,7 +282,7 @@ public class ChannelEditor extends AbstractNodeEditor {
             perfromSave();
         }
         _ioNameText.setFocus();
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
     }
 
 	/**
@@ -309,7 +307,10 @@ public class ChannelEditor extends AbstractNodeEditor {
         sizeGroup.setText("Size: ");
         Text sizeText = new Text(sizeGroup, SWT.SINGLE | SWT.RIGHT);
         sizeText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        setText(sizeText, getChannel().getChSize(), 255);
+        ChannelDBO channel = getChannel();
+        if (channel != null) {
+            setText(sizeText, channel.getChSize(), 255);
+        }
         sizeText.setEditable(false);
 	}
 
@@ -320,20 +321,22 @@ public class ChannelEditor extends AbstractNodeEditor {
     public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Channel Settings
-        getChannel().setIoName(_ioNameText.getText());
-        getChannel().setName(getNameWidget().getText());
-        _ioNameText.setData(_ioNameText.getText());
-        if (_sensorsViewer != null) {
-            SensorsDBO firstElement = (SensorsDBO) ((StructuredSelection) _sensorsViewer.getSelection())
-                    .getFirstElement();
-            getChannel().setCurrentValue(Integer.toString(firstElement.getId()));
-            Combo combo = _sensorsViewer.getCombo();
-            combo.setData(combo.getSelectionIndex());
+        ChannelDBO channel = getChannel();
+        if (channel != null) {
+            channel.setIoName(_ioNameText.getText());
+            channel.setName(getNameWidget().getText());
+            _ioNameText.setData(_ioNameText.getText());
+            if (_sensorsViewer != null) {
+                SensorsDBO firstElement = (SensorsDBO) ((StructuredSelection) _sensorsViewer
+                        .getSelection()).getFirstElement();
+                channel.setCurrentValue(Integer.toString(firstElement.getId()));
+                Combo combo = _sensorsViewer.getCombo();
+                combo.setData(combo.getSelectionIndex());
+            }
+            // Document
+            Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+            channel.setDocuments(docs);
         }
-        // Document
-        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-        getChannel().setDocuments(docs);
-
         save();
     }
 
@@ -400,12 +403,15 @@ public class ChannelEditor extends AbstractNodeEditor {
 		_sensorsViewer.setContentProvider(new ArrayContentProvider());
 		_sensorsViewer.setInput(loadSensors.toArray());
 		int id = 0;
-		if ((getChannel().getCurrentValue() != null) && (getChannel().getCurrentValue().length() > 0)) {
-		    id = Integer.parseInt(getChannel().getCurrentValue());
-		} else {
-		    id = loadSensors.get(0).getId();
-		    getChannel().setCurrentValue(Integer.toString(id));
-		    getChannel().setDirty(true);
+		ChannelDBO channel = getChannel();
+		if(channel!=null) {
+            if ( (channel.getCurrentValue() != null) && (channel.getCurrentValue().length() > 0)) {
+                id = Integer.parseInt(channel.getCurrentValue());
+            } else {
+                id = loadSensors.get(0).getId();
+                channel.setCurrentValue(Integer.toString(id));
+                channel.setDirty(true);
+            }
 		}
 		_sensorsViewer.getCombo().select(0);
 		for (SensorsDBO sensors : loadSensors) {

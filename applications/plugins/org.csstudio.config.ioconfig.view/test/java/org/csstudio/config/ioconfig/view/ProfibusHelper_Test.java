@@ -55,10 +55,6 @@ public class ProfibusHelper_Test {
     public void testGetTextField1(){
         final Composite composite = new Composite(new Shell(),SWT.NULL);
 
-        // Test null Parent
-        assertTrue(ProfibusHelper.getTextField(null, null)==null);
-        assertTrue(ProfibusHelper.getTextField(null, "value")==null);
-
         Text textField = ProfibusHelper.getTextField(composite, null);
 
         assertNotNull(textField);
@@ -78,10 +74,6 @@ public class ProfibusHelper_Test {
     @Test
     public void testGetTextField2(){
         final Composite composite = new Composite(new Shell(),SWT.NULL);
-
-        // Test null Parent
-        assertNull(ProfibusHelper.getTextField(null,false, null, null, -1));
-        assertNull(ProfibusHelper.getTextField(null,true,"value",new Value(0,100,50),-1));
 
         Text textField = ProfibusHelper.getTextField(composite,false, null, null, -1);
 

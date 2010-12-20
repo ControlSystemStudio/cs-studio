@@ -327,7 +327,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
         moduels("Module");
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
     }
 
     /**
@@ -348,9 +348,11 @@ public class ModuleEditor extends AbstractNodeEditor {
         gName.setLayout(new GridLayout(3, false));
 
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
-        setText(getNameWidget(), _module.getName(), 255);
-        getNameWidget().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-
+        Text nameWidget = getNameWidget();
+        if (nameWidget != null) {
+            setText(nameWidget, _module.getName(), 255);
+            nameWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        }
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
                                                      _module,
                                                      getMLSB(),
@@ -462,7 +464,11 @@ public class ModuleEditor extends AbstractNodeEditor {
                     if (element instanceof GsdModuleModel) {
                         GsdModuleModel gmm = (GsdModuleModel) element;
                         int selectedModuleNo = gmm.getModuleNumber();
-                        GSDModuleDBO module = getGsdFile().getGSDModule(selectedModuleNo);
+                        GSDFileDBO gsdFile = getGsdFile();
+                        GSDModuleDBO module = null;
+                        if(gsdFile!=null) {
+                            module = gsdFile.getGSDModule(selectedModuleNo);
+                        }
                         return module != null;
                     }
                 }
@@ -799,7 +805,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      */
     private void makecurrentUserParamData(@Nonnull final Composite currentUserParamDataGroup,
                                           @Nonnull final ExtUserPrmData extUserPrmData,
-                                          @Nonnull final Integer value) {
+                                          @CheckForNull final Integer value) {
         HashMap<Integer, PrmText> prmTextMap = null;
 
         Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
@@ -829,7 +835,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      */
     @Nonnull
     private Text makeTextField(@Nonnull final Composite currentUserParamDataGroup,
-                               @Nonnull final Integer value,
+                               @CheckForNull final Integer value,
                                @Nonnull final ExtUserPrmData extUserPrmData) {
         Integer localValue = value;
         Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER | SWT.SINGLE | SWT.RIGHT);
@@ -868,7 +874,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      */
     @Nonnull
     private ComboViewer makeComboViewer(@Nonnull final Composite parent,
-                                        @Nonnull final Integer value,
+                                        @CheckForNull final Integer value,
                                         @Nonnull final ExtUserPrmData extUserPrmData,
                                         @Nonnull final HashMap<Integer, PrmText> prmTextMap) {
         Integer localValue = value;

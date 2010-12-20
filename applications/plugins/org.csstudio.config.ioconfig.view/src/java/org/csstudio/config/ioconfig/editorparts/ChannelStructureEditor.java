@@ -100,7 +100,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
         
         _ioNameList.addModifyListener(getMLSB());
         _ioNameList.setFocus();
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
     }
 
 	/**

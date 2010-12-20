@@ -176,10 +176,7 @@ public class MasterEditor extends AbstractNodeEditor {
 		String[] heads = {"Master", "GSD File List" };
 		master(heads[0]);
 		fill(_gsdFile);
-		TabFolder tabFolder = getTabFolder();
-		if (tabFolder != null) {
-			tabFolder.setSelection(0);
-		}
+		selecttTabFolder(0);
 	}
 
 	@SuppressWarnings("unused")

@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,10 +43,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -59,18 +62,28 @@ import org.hibernate.cfg.AnnotationConfiguration;
  */
 public final class HibernateManager {
 
+    private static HibernateManager _INSTANCE;
+
+    /**
+     * 
+     * This class is a Watchdog over the Session Time. At DESY DB connection was after 24h rested: 
+     * 
+     * @author Rickens Helge
+     * @author $Author: $
+     * @since 16.12.2010
+     */
 	private static final class SessionWatchDog extends Job {
 		private SessionFactory _sessionFactory;
 		private int _sessionUseCounter;
 		private final long _timeToCloseSession = (3600000 * 5);
 
-		private SessionWatchDog(final String name) {
+		protected SessionWatchDog(@Nonnull final String name) {
 			super(name);
 			setPriority(DECORATE);
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor) {
+		protected IStatus run(@Nonnull IProgressMonitor monitor) {
 			boolean watch = true;
 			Date date = new Date();
 			while (watch) {
@@ -78,8 +91,11 @@ public final class HibernateManager {
 			        this.getThread();
 			        // Sleep 5 min.
 			        Thread.sleep(30000);
+		        // CHECKSTYLE OFF: EmptyBlock
 			    } catch (InterruptedException e) {
+			        // Ignore Interrupt
 			    }
+			    // CHECKSTYLE ON: EmptyBlock
 				if ((_sessionFactory == null) || _sessionFactory.isClosed()) {
 					break;
 				}
@@ -98,12 +114,10 @@ public final class HibernateManager {
 				}
 			}
 			monitor.done();
-			monitor = null;
-
 			return Status.OK_STATUS;
 		}
 
-		public void setSessionFactory(final SessionFactory sessionFactory) {
+		public void setSessionFactory(@Nonnull final SessionFactory sessionFactory) {
 			_sessionFactory = sessionFactory;
 
 		}
@@ -117,67 +131,67 @@ public final class HibernateManager {
 		}
 	}
 
-	private static SessionFactory _SESSION_FACTORY_DEV_DB;
-	private static AnnotationConfiguration _CFG;
+	private  SessionFactory _sessionFactoryDevDB;
+	private  AnnotationConfiguration _cfg;
 
 	/**
 	 * The timeout in sec.
 	 */
-	private static int _TIMEOUT = 10;
-	private static Session _SESSION;
-	private static Transaction _TRX;
-	private static SessionWatchDog _SESSION_WATCH_DOG;
-    private static List<Class<?>> _CLASSES = new ArrayList<Class<?>>();
+	private  int _timeout = 10;
+	private  Session _session;
+	private  Transaction _trx;
+	private  SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+    private  List<Class<?>> _classes = new ArrayList<Class<?>>();
 
 	/**
 	 *
 	 * @param timeout
 	 *            set the DB Timeout.
 	 */
-	public static void setTimeout(final int timeout) {
-		_TIMEOUT = timeout;
+	public  void setTimeout(final int timeout) {
+		_timeout = timeout;
 	}
 
 	private HibernateManager() {
+	    // Default constructor
 	}
 
-	public static void setSessionFactory(final SessionFactory sf) {
+	public  void setSessionFactory(@Nonnull final SessionFactory sf) {
 		synchronized (HibernateManager.class) {
-			_SESSION_FACTORY_DEV_DB = sf;
+			_sessionFactoryDevDB = sf;
 		}
 	}
 
-	private static void initSessionFactoryDevDB() {
-		if ((_SESSION_FACTORY_DEV_DB != null) && !_SESSION_FACTORY_DEV_DB.isClosed()) {
+	private  void initSessionFactoryDevDB() {
+		if ((_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
 			return;
 		}
 		buildConifg();
 		try {
-		    HibernateManager.setSessionFactory(_CFG.buildSessionFactory());
+		    setSessionFactory(_cfg.buildSessionFactory());
 		} catch (HibernateException e) {
 		    CentralLogger.getInstance().error(HibernateManager.class.getName(), e);
         }
 	}
 
-	private static void buildConifg() {
+	private  void buildConifg() {
 		new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
 				.addPreferenceChangeListener(new IPreferenceChangeListener() {
 
 					@Override
-					public void preferenceChange(final PreferenceChangeEvent event) {
+					public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
 						setProperty(event.getKey(), event.getNewValue());
-						HibernateManager.setSessionFactory(_CFG
-								.buildSessionFactory());
+                        setSessionFactory(getCfg().buildSessionFactory());
 					}
 				});
 
 		IPreferencesService prefs = Platform.getPreferencesService();
 		String pluginId = IOConifgActivator.getDefault().getPluginId();
-        _CFG = new AnnotationConfiguration();
-        for (Class<?> clazz : _CLASSES) {
-            _CFG.addAnnotatedClass(clazz);
+        _cfg = new AnnotationConfiguration();
+        for (Class<?> clazz : _classes) {
+            _cfg.addAnnotatedClass(clazz);
         }
-        _CFG.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
+        _cfg.setProperty("org.hibernate.cfg.Environment.MAX_FETCH_DEPTH", "0")
             .setProperty("hibernate.connection.driver_class",
                     prefs.getString(pluginId, HIBERNATE_CONNECTION_DRIVER_CLASS, "", null))
             .setProperty("hibernate.dialect", prefs.getString(pluginId, DIALECT, "", null))
@@ -209,12 +223,12 @@ public final class HibernateManager {
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
 	}
 
-    public static void addClasses(final List<Class<?>> classes){
-        _CLASSES.addAll(classes);
+    public  void addClasses(@Nonnull final List<Class<?>> classes){
+        _classes.addAll(classes);
     }
 
-    public static void removeClasses(final List<Class<?>> classes) {
-        _CLASSES.removeAll(classes);
+    public  void removeClasses(@Nonnull final List<Class<?>> classes) {
+        _classes.removeAll(classes);
     }
 
 	/**
@@ -225,7 +239,7 @@ public final class HibernateManager {
 	 * @param value
 	 *            the value for the Property.
 	 */
-	protected static void setProperty(final String property, final Object value) {
+	protected  void setProperty(@Nonnull final String property,@Nonnull final Object value) {
 		if (property.equals(PreferenceConstants.DDB_TIMEOUT)) {
 			if (value instanceof Integer) {
 				setTimeout((Integer) value);
@@ -233,28 +247,36 @@ public final class HibernateManager {
 				setTimeout(Integer.parseInt((String) value));
 			}
 		} else if (value instanceof String) {
-			String stringValue = ((String) value).trim();
-
-			if (property.equals(DDB_PASSWORD)) {
-				_CFG.setProperty("hibernate.connection.password", stringValue);
-			} else if (property.equals(DDB_USER_NAME)) {
-				_CFG.setProperty("hibernate.connection.username", stringValue);
-			} else if (property.equals(DIALECT)) {
-				_CFG.setProperty("hibernate.dialect", stringValue);
-			} else if (property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)) {
-				_CFG.setProperty("hibernate.connection.driver_class",
-						stringValue);
-			} else if (property.equals(HIBERNATE_CONNECTION_URL)) {
-				_CFG.setProperty("hibernate.connection.url", stringValue);
-
-			} else if (property.equals(SHOW_SQL)) {
-				_CFG.setProperty("hibernate.show_sql", stringValue);
-				_CFG.setProperty("hibernate.format_sql", stringValue);
-                _CFG.setProperty("hibernate.use_sql_comments", stringValue);
-
-			}
+			setStringProperty(property, value);
 		}
 	}
+
+    /**
+     * @param property
+     * @param value
+     */
+    private  void setStringProperty(@Nonnull final String property,@Nonnull final Object value) {
+        String stringValue = ((String) value).trim();
+
+        if (property.equals(DDB_PASSWORD)) {
+        	_cfg.setProperty("hibernate.connection.password", stringValue);
+        } else if (property.equals(DDB_USER_NAME)) {
+        	_cfg.setProperty("hibernate.connection.username", stringValue);
+        } else if (property.equals(DIALECT)) {
+        	_cfg.setProperty("hibernate.dialect", stringValue);
+        } else if (property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)) {
+        	_cfg.setProperty("hibernate.connection.driver_class",
+        			stringValue);
+        } else if (property.equals(HIBERNATE_CONNECTION_URL)) {
+        	_cfg.setProperty("hibernate.connection.url", stringValue);
+
+        } else if (property.equals(SHOW_SQL)) {
+        	_cfg.setProperty("hibernate.show_sql", stringValue);
+        	_cfg.setProperty("hibernate.format_sql", stringValue);
+            _cfg.setProperty("hibernate.use_sql_comments", stringValue);
+
+        }
+    }
 
 	/**
 	 *
@@ -264,34 +286,28 @@ public final class HibernateManager {
 	 *            The Hibernate call back.
 	 * @return the Session resulte.
 	 */
-	public static <T> T doInDevDBHibernate(final HibernateCallback hibernateCallback) {
+    @CheckForNull
+	public <T> T doInDevDBHibernate(@Nonnull final HibernateCallback hibernateCallback) {
 
-		if ((_SESSION == null) ||!_SESSION.isConnected() || !_SESSION.isOpen()) {
-		    if (_SESSION_WATCH_DOG == null) {
-	            _SESSION_WATCH_DOG = new SessionWatchDog("Session Watch Dog");
-	            _SESSION_WATCH_DOG.setSystem(true);
-	        }
-		    initSessionFactoryDevDB();
-			_SESSION = _SESSION_FACTORY_DEV_DB.openSession();
-		}
-		_SESSION_WATCH_DOG.setSessionFactory(_SESSION_FACTORY_DEV_DB);
-        _SESSION_WATCH_DOG.schedule(30000);
-        _SESSION_WATCH_DOG.useSession();
-		_TRX = null;
+		handleSession();
+		_sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+        _sessionWatchDog.schedule(30000);
+        _sessionWatchDog.useSession();
+		_trx = null;
 		try {
 			CentralLogger.getInstance().debug(
 					HibernateManager.class.getSimpleName(),
-					"session is " + _SESSION);
-			_TRX = _SESSION.getTransaction();
-			_TRX.setTimeout(_TIMEOUT);
-			_TRX.begin();
-			T result = execute( hibernateCallback, _SESSION);
-			_TRX.commit();
+					"session is " + _session);
+			_trx = _session.getTransaction();
+			_trx.setTimeout(_timeout);
+			_trx.begin();
+			T result = execute( hibernateCallback, _session);
+			_trx.commit();
 			return result;
 		} catch (HibernateException ex) {
-			if (_TRX != null) {
+			if (_trx != null) {
 				try {
-					_TRX.rollback();
+					_trx.rollback();
 				} catch (HibernateException exRb) {
 					CentralLogger.getInstance().error(
 							HibernateManager.class.getSimpleName(), exRb);
@@ -303,26 +319,53 @@ public final class HibernateManager {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-    private static <T> T execute(final HibernateCallback callback, final Session sess) {
-        return (T) callback.execute(_SESSION);
+    /**
+     * 
+     */
+    private void handleSession() {
+        if ((_session == null) ||!_session.isConnected() || !_session.isOpen()) {
+		    if (_sessionWatchDog == null) {
+	            _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+	            _sessionWatchDog.setSystem(true);
+	        }
+		    initSessionFactoryDevDB();
+			_session = _sessionFactoryDevDB.openSession();
+		}
     }
 
-    public static void closeSession() {
-	    if((_SESSION!=null)&&_SESSION.isOpen()) {
-	        _SESSION.close();
-	        _SESSION=null;
+	@CheckForNull
+    private <T> T execute(@Nonnull final HibernateCallback callback,@Nonnull final Session sess) {
+        return callback.execute(sess);
+    }
+
+    public  void closeSession() {
+	    if((_session!=null)&&_session.isOpen()) {
+	        _session.close();
+	        _session=null;
 	    }
-	    if((_SESSION_FACTORY_DEV_DB!=null)&&!_SESSION_FACTORY_DEV_DB.isClosed()) {
-	        _SESSION_FACTORY_DEV_DB.close();
-	        _SESSION_FACTORY_DEV_DB=null;
+	    if((_sessionFactoryDevDB!=null)&&!_sessionFactoryDevDB.isClosed()) {
+	        _sessionFactoryDevDB.close();
+	        _sessionFactoryDevDB=null;
 	    }
-	    if(_SESSION_WATCH_DOG!=null) {
-	        _SESSION_WATCH_DOG.cancel();
-	        _SESSION_WATCH_DOG=null;
+	    if(_sessionWatchDog!=null) {
+	        _sessionWatchDog.cancel();
+	        _sessionWatchDog=null;
 	    }
 	    CentralLogger.getInstance().info(HibernateManager.class, "DB Session closed");
 
+    }
+    
+    @Nonnull
+    public static synchronized HibernateManager getInstance(){
+        if(_INSTANCE==null) {
+            _INSTANCE = new HibernateManager();
+        }
+        return _INSTANCE;
+    }
+
+    @Nonnull
+    protected AnnotationConfiguration getCfg() {
+        return _cfg;
     }
 
 }

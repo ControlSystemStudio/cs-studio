@@ -263,13 +263,14 @@ public class SearchDialog extends Dialog {
 		 */
 		protected boolean compareStrings(@Nonnull String text) {
 			String string1;
-			String string2;
-			if (isCaseSensetive()) {
+			String string2 = getSearchText();
+            if (isCaseSensetive()) {
 				string1 = text;
-				string2 = getSearchText();
 			} else {
 				string1 = text.toLowerCase();
-				string2 = getSearchText().toLowerCase();
+				if(string2!=null) {
+				    string2 = string2.toLowerCase();
+				}
 			}
 			return string1.contains(string2);
 		}
@@ -506,7 +507,7 @@ public class SearchDialog extends Dialog {
 		columnName.getColumn().setText("Name");
 		columnName.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					cell.setText(((SearchNodeDBO) cell.getElement()).getName());
 				}
@@ -522,7 +523,7 @@ public class SearchDialog extends Dialog {
 				new SortSelectionListener(sorter, state++));
 		columnIOName.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					SearchNodeDBO channel = (SearchNodeDBO) cell.getElement();
 					cell.setText(channel.getIoName());
@@ -539,7 +540,7 @@ public class SearchDialog extends Dialog {
 		columnEpicsAddress.getColumn().setText("Epics Address");
 		columnEpicsAddress.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					SearchNodeDBO channel = (SearchNodeDBO) cell.getElement();
 					cell.setText(channel.getEpicsAddressString());
@@ -556,7 +557,7 @@ public class SearchDialog extends Dialog {
 		columnCreateBy.getColumn().setText("Create By");
 		columnCreateBy.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					String createdBy = ((SearchNodeDBO) cell.getElement())
 							.getCreatedBy();
@@ -581,7 +582,7 @@ public class SearchDialog extends Dialog {
 		columnCreateOn.getColumn().setText("Create On");
 		columnCreateOn.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Date createdOn = ((SearchNodeDBO) cell.getElement())
 							.getCreatedOn();
@@ -601,7 +602,7 @@ public class SearchDialog extends Dialog {
 		columnUpdatedBy.getColumn().setText("Updated By");
 		columnUpdatedBy.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					String updatedBy = ((SearchNodeDBO) cell.getElement())
 							.getUpdatedBy();
@@ -625,7 +626,7 @@ public class SearchDialog extends Dialog {
 		columnUpdatedOn.getColumn().setText("Updated On");
 		columnUpdatedOn.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Date updatedOn = ((SearchNodeDBO) cell.getElement())
 							.getUpdatedOn();
@@ -645,7 +646,7 @@ public class SearchDialog extends Dialog {
 		columnId.getColumn().setText("DB Id");
 		columnId.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Integer id = ((SearchNodeDBO) cell.getElement()).getId();
 					cell.setText(id.toString());
@@ -662,7 +663,7 @@ public class SearchDialog extends Dialog {
 		columnParentId.getColumn().setText("ParentId");
 		columnParentId.setLabelProvider(new CellLabelProvider() {
 			@Override
-			public void update(@Nullable ViewerCell cell) {
+			public void update(@Nonnull ViewerCell cell) {
 				if (cell.getElement() instanceof SearchNodeDBO) {
 					Integer id = ((SearchNodeDBO) cell.getElement())
 							.getParentId();
@@ -779,10 +780,12 @@ public class SearchDialog extends Dialog {
 								.getSelection();
 						setSearchNode((SearchNodeDBO) selection
 								.getFirstElement());
-						if (getSearchNode() != null) {
-							setSelectedId(getSearchNode().getId());
-							if (getSelectedId() > 0) {
-								setSelectedNode(NodeMap.get(getSelectedId()));
+						SearchNodeDBO searchNode = getSearchNode();
+                        if (searchNode != null) {
+							setSelectedId(searchNode.getId());
+							Integer selectedId = getSelectedId();
+                            if (selectedId!=null && selectedId > 0) {
+								setSelectedNode(NodeMap.get(selectedId));
 							}
 						} else {
 							setSelectedId(null);

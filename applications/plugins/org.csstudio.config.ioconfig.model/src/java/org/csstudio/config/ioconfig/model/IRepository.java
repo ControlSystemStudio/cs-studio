@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 
@@ -24,7 +28,8 @@ public interface IRepository {
      * @return the Saved Data class.
      * @throws PersistenceException
      */
-    <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException;
+    @Nonnull
+    <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException;
 
     /**
      * @param <T>
@@ -33,7 +38,8 @@ public interface IRepository {
      *            the Data class that update to DB
      * @return the Saved Data class.
      */
-    <T extends DBClass> T update(final T dbClass);
+    @Nonnull
+    <T extends DBClass> T update(@Nonnull final T dbClass);
 
     /**
      * @param <T>
@@ -42,7 +48,8 @@ public interface IRepository {
      *            The Class Typ.
      * @return All Object of the Table clazz.getName.
      */
-    <T> List<T> load(final Class<T> clazz);
+    @CheckForNull
+    <T> List<T> load(@Nonnull final Class<T> clazz);
 
     /**
      *
@@ -54,7 +61,8 @@ public interface IRepository {
      *            The DB Id of the object.
      * @return The Object of the Table clazz.getName with the given id.
      */
-    <T> T load(final Class<T> clazz, Serializable id);
+    @CheckForNull
+    <T> T load(@Nonnull final Class<T> clazz,@Nonnull  Serializable id);
 
     /**
      * @param <T>
@@ -62,24 +70,27 @@ public interface IRepository {
      * @param dbClass
      *            The Class Typ.
      */
-    <T extends DBClass> void removeNode(final T dbClass);
+    @CheckForNull
+    <T extends DBClass> void removeNode(@Nonnull final T dbClass);
 
     /**
      * @param gsdFile
      *            the GSD File that save to DB
      * @return the Saved GSD File.
      */
-    GSDFileDBO save(final GSDFileDBO gsdFile);
+    @Nonnull 
+    GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile);
 
     /**
      * @param gsdFile
      *            The GSD File to remove.
      */
-    void removeGSDFiles(final GSDFileDBO gsdFile);
+    void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile);
 
     /**
      * @return All loaded Document's from the DB.
      */
+    @CheckForNull
     List<DocumentDBO> loadDocument();
 
     /**
@@ -87,21 +98,21 @@ public interface IRepository {
      *            the document that save to DB
      * @return the Saved document.
      */
-    DocumentDBO save(final DocumentDBO document);
+    DocumentDBO save(@Nonnull final DocumentDBO document);
 
     /**
      * @param document
      *            the document that update to DB.
      * @return the update document.
      */
-    DocumentDBO update(final DocumentDBO document);
+    DocumentDBO update(@Nonnull final DocumentDBO document);
 
     /**
      * Give a to a ioName the Epics Address String.
      * @param ioName the IO Name.
      * @return the Epics Address String.
      */
-    String getEpicsAddressString(final String ioName);
+    String getEpicsAddressString(@Nonnull final String ioName);
 
     /**
      *
@@ -113,14 +124,14 @@ public interface IRepository {
      * @param iocName the name of the Ioc.
      * @return a List of all IoNames from the Ioc with the given name.
      */
-    List<String> getIoNames(String iocName);
+    List<String> getIoNames(@Nonnull String iocName);
 
     /**
      *  Load all Sensors from the Id ioName.
      * @param ioName the Key IO-Name for the search Sensors.
      * @return a {@link List} of {@link SensorsDBO}
      */
-    List<SensorsDBO> loadSensors(String ioName);
+    List<SensorsDBO> loadSensors(@Nonnull String ioName);
 
     /**
      *  Load the selected Sensor from the Id ioName.
@@ -128,27 +139,27 @@ public interface IRepository {
      * @param selection the selection of the Sensor.
      * @return a {@link List} of {@link SensorsDBO}
      */
-    SensorsDBO loadSensor(String ioName, String selection);
+    SensorsDBO loadSensor(@Nonnull String ioName,@Nonnull  String selection);
 
     /**
      * Load the short Description (max. 40 character) selected by the IO Name.
      * @param ioName the selection IO-Name.
      * @return The the short Description or null when not found!
      */
-    String getShortChannelDesc(String ioName);
+    String getShortChannelDesc(@Nonnull String ioName);
 
     /**
      * Load the Channel selected by the IO Name
      * @param ioName the selection IO-Name.
      * @return The the selected Channel or null when not found!
      */
-    ChannelDBO loadChannel(String ioName);
+    ChannelDBO loadChannel(@Nullable String ioName);
 
     /**
      * @param pvName
      * @return
      */
-    List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(Collection<String> pvName);
+    List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable Collection<String> pvName);
 
     /**
      * Close all resources that the Repository need.
