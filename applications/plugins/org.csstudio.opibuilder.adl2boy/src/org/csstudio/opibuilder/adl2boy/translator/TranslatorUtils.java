@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.ColorMap;
 import org.csstudio.utility.adlparser.fileParser.ParserADL;
+import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.eclipse.swt.graphics.RGB;
@@ -116,17 +117,13 @@ public class TranslatorUtils {
 				else if (widgetType.equals("basic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
-						if (child.getType().equals("attr")){
-							TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute(child);
-						}
+						setDefaultBasicAttribute(child);
 					}
 				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
-						if (child.getType().equals("attr")){
-							TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute(child);
-						}
+						setDefaultBasicAttribute(child);
 					}
 				}
 
@@ -136,6 +133,18 @@ public class TranslatorUtils {
 			}
 		}
 		
+	}
+
+	/**
+	 * @param child
+	 * @throws WrongADLFormatException
+	 */
+	public static void setDefaultBasicAttribute(ADLWidget child)
+			throws WrongADLFormatException {
+		if (child.getType().equals("attr")){
+			child.setType("basic attribute");
+			TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute(child);
+		}
 	}
 
 	/** 
@@ -280,4 +289,5 @@ public class TranslatorUtils {
 		}
 		return displayModel;
 	}
+
 }

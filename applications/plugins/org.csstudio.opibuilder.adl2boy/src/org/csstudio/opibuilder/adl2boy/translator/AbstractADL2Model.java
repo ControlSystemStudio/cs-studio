@@ -1,7 +1,14 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.adl2boy.utilities.ColorUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -9,6 +16,7 @@ import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
@@ -18,6 +26,10 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * @author John Hammonds, Argonne National Laboratory
+ * 
+ */
 public abstract class AbstractADL2Model {
 	AbstractWidgetModel widgetModel;
 	RGB colorMap[] = new RGB[0];
@@ -68,24 +80,25 @@ public abstract class AbstractADL2Model {
 			adlWidget.setAdlBasicAttribute(basAttr);
 		}
 		if (basAttr.isColorDefined()) {
+			OPIColor foundColor = ColorUtilities.matchToTableColor(colorMap[basAttr.getClr()]);
 			if (colorForeground) {
-				widgetModel.setForegroundColor(colorMap[basAttr.getClr()]);
+				widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foundColor);
 			} else {
-				widgetModel.setBackgroundColor(colorMap[basAttr.getClr()]);
+				widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, foundColor);
 			}
 		} else {
 			if (colorForeground) {
-				widgetModel.setForegroundColor(widgetModel.getParent()
-						.getForegroundColor());
+				widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, widgetModel.getParent()
+						.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 			} else {
-				widgetModel.setBackgroundColor(widgetModel.getParent()
-						.getBackgroundColor());
+				widgetModel.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, widgetModel.getParent()
+						.getPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
 			}
 
 		}
 		
 	}
-	
+
 	/**
 	 * 
 	 * @param adlWidget
@@ -186,5 +199,15 @@ public abstract class AbstractADL2Model {
 				widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_PVNAME, channel);
 			}
 		}
+	}
+
+	/**
+	 * @param displayForeColor
+	 * @param propertyName
+	 */
+	public void setColor(int displayForeColor, String propertyName) {
+		OPIColor color;
+		color = ColorUtilities.matchToTableColor(this.colorMap[displayForeColor]);
+		widgetModel.setPropertyValue(propertyName, color);
 	}
 }
