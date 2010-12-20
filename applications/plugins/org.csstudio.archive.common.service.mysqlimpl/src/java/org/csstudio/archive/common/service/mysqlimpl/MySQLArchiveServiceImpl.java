@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -53,7 +52,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Collections2;
 
 
 /**
@@ -74,31 +73,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
     private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException {
-//        DAO_MGR.connect(connectionPrefs);
-//
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void reconnect() throws ArchiveConnectionException {
-//        DAO_MGR.reconnect();
-//    }
-//
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void disconnect() throws ArchiveConnectionException {
-//        DAO_MGR.disconnect();
-//    }
 
     /**
      * {@inheritDoc}
@@ -135,8 +109,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
                         }
                     }
                 };
-            final List<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
-                Lists.transform((List<IValueWithChannelId>) samples, func);
+            final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
+                Collections2.transform(samples, func);
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveDaoException e) {
@@ -205,6 +179,10 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel Id information for " + name +
                                               " could not be retrieved.", e);
+        }
+        if (channel == null) {
+            throw new ArchiveServiceException("Channel Id information for " + name +
+                                              " is null.", null);
         }
         return channel.getId().intValue();
     }

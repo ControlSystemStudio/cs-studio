@@ -29,7 +29,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupDTO;
@@ -39,7 +38,6 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
 
@@ -50,9 +48,6 @@ import com.google.common.collect.Lists;
  * @since 09.11.2010
  */
 public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IArchiveChannelGroupDao {
-
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveChannelGroupDaoImpl.class);
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
@@ -101,13 +96,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final SQLException e) {
             throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
         }
     }
 

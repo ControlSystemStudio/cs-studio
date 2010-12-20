@@ -53,8 +53,11 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
 
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
-    protected static final String ARCHIVE_COLLECTION_ELEM_PREFIX = "(";
-    protected static final String ARCHIVE_COLLECTION_ELEM_SUFFIX = ")";
+    protected static final String ARCHIVE_COLLECTION_ELEM_PREFIX = "[";
+    protected static final String ARCHIVE_COLLECTION_ELEM_SUFFIX = "]";
+    protected static final String ARCHIVE_TUPLE_PREFIX = "(";
+    protected static final String ARCHIVE_TUPLE_SUFFIX = ")";
+
     protected static final String ARCHIVE_NULL_ENTRY = "null";
 
     private static boolean INSTALLED = false;
@@ -101,7 +104,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
      * @return
      * @throws TypeSupportException
      */
-    @CheckForNull
+    @Nonnull
     public static <T> String toArchiveString(@Nonnull final T value) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
@@ -179,7 +182,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return support.convertToDouble(value);
     }
 
-    @CheckForNull
+    @Nonnull
     protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
         final Collection<String> items = Collections2.transform(values, new Function<T, String>() {
             @Override
@@ -201,12 +204,12 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return result;
     }
 
-    @CheckForNull
+    @Nonnull
     protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
     @CheckForNull
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @CheckForNull
     protected abstract Collection<T> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException;
-    @CheckForNull
+    @Nonnull
     protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
 }

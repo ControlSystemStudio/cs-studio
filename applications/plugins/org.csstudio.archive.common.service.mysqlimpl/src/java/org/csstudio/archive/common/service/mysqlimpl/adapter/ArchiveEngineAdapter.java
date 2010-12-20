@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -32,15 +31,11 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.epics.types.EpicsTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -64,15 +59,6 @@ public enum ArchiveEngineAdapter {
     private ArchiveEngineAdapter() {
         AbstractIValueConversionTypeSupport.install();
         ArchiveTypeConversionSupport.install();
-    }
-
-    /**
-     * @param time the archive.rdb timestamp
-     * @return the service interface type for a time instant
-     */
-    @Nonnull
-    public TimeInstant adapt(@Nonnull final ITimestamp time) {
-        return TimeInstantBuilder.buildFromSeconds(time.seconds()).plusNanosPerSecond(time.nanoseconds());
     }
 
     /**
@@ -107,45 +93,12 @@ public enum ArchiveEngineAdapter {
      * @param time instant (service impl side)
      * @return the engine side timestamp
      */
-    @Nonnull
+    @CheckForNull
     public ITimestamp adapt(@CheckForNull final TimeInstant time) {
         return time == null ? null :
                               TimestampFactory.fromMillisecs(time.getMillis());
     }
 
-
-    /**
-     * Severity and status transferred to typed (epics) alarm.
-     *
-     * @param severity
-     * @param status
-     * @return the epics alarm object
-     */
-    @CheckForNull
-    private EpicsAlarm adapt(@CheckForNull final ISeverity sev, @Nullable final String status) {
-
-        // once before...
-        if (sev == null) {
-            return null;
-        }
-        EpicsAlarmSeverity severity = null;
-        // Unfortunately ISeverity is not an enum (if it were, I would have used it)
-        // so dispatch - btw whoever implements ISeverity may just returned true or false anytime...
-        if (sev.isOK()) {
-            severity = EpicsAlarmSeverity.NO_ALARM;
-        } else if (sev.isMinor()) {
-            severity = EpicsAlarmSeverity.MINOR;
-        } else if (sev.isMajor()) {
-            severity = EpicsAlarmSeverity.MAJOR;
-        } else if (sev.isInvalid()) {
-            severity = EpicsAlarmSeverity.INVALID;
-        }
-        // and once after... in case anything was false... this interface is lovely
-        if (severity == null) {
-            return null;
-        }
-        return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
-    }
 
     /**
      * Take care, the IArchiveSample is dedicated to the db abstraction, which is of course very
@@ -164,9 +117,8 @@ public enum ArchiveEngineAdapter {
         final IValue value = valueWithId.getValue();
 
         final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
-        final TimeInstant timestamp = adapt(value.getTime());
-        final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
-        final T data = EpicsTypeSupport.toCssType(value, alarm, timestamp);
+        final T data = EpicsTypeSupport.toCssType(value);
+
         if (data == null) {
             return null;
         }
@@ -188,7 +140,7 @@ public enum ArchiveEngineAdapter {
                 return data.getTimestamp();
             }
             @Override
-            @Nonnull
+            @CheckForNull
             public EpicsAlarm getAlarm() {
                 return (EpicsAlarm) data.getAlarm();
             }

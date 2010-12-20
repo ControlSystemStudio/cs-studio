@@ -33,10 +33,12 @@ import org.csstudio.domain.desy.types.TypeSupportException;
  * @param <N> the number subtype
  */
 public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
+
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String convertToArchiveString(@Nonnull final N value) throws TypeSupportException {
         return value.toString();
     }

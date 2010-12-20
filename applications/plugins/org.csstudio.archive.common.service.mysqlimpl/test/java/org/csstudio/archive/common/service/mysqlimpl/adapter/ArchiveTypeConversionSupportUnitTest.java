@@ -84,6 +84,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(d);
             Assert.assertTrue(archiveString.equals(sd));
             final Double dFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Double.class, archiveString);
+            Assert.assertNotNull(dFromA);
             Assert.assertTrue(dFromA.equals(d));
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -99,6 +100,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(i);
             Assert.assertTrue(archiveString.equals(si));
             final Integer iFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Integer.class, archiveString);
+            Assert.assertNotNull(iFromA);
             Assert.assertTrue(iFromA.equals(i));
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -113,6 +115,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(b);
             Assert.assertTrue(archiveString.equals(sb));
             final Byte bFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Byte.class, archiveString);
+            Assert.assertNotNull(bFromA);
             Assert.assertTrue(bFromA.equals(b));
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -128,6 +131,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(f);
             Assert.assertTrue(archiveString.equals(sf));
             final Float fFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Float.class, archiveString);
+            Assert.assertNotNull(fFromA);
             Assert.assertTrue(fFromA.equals(f));
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -140,6 +144,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString("test me");
             Assert.assertTrue(archiveString.equals("test me"));
             final String sFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(String.class, archiveString);
+            Assert.assertNotNull(sFromA);
             Assert.assertTrue(sFromA.equals(archiveString));
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -155,6 +160,7 @@ public class ArchiveTypeConversionSupportUnitTest {
                                                    "3\\,in case we die\\,44" +
                                                    ARCHIVE_COLLECTION_ELEM_SUFFIX));
             final EpicsEnumTriple tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnumTriple.class, archiveString);
+            Assert.assertNotNull(tFromA);
             Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
             Assert.assertEquals("in case we die", tFromA.getState());
             Assert.assertEquals(Integer.valueOf(44), tFromA.getRaw());
@@ -274,12 +280,16 @@ public class ArchiveTypeConversionSupportUnitTest {
             // EMPTY
         }
     }
-    @Test(expected=RuntimeException.class)
-    public void testTypeNotSuppportedException() {
-        try {
-            ArchiveTypeConversionSupport.toArchiveString(new IDoNotExist());
-        } catch (final TypeSupportException e) {
-            Assert.fail("Unexpected exception");
-        }
+    @Test(expected=TypeSupportException.class)
+    public void testTypeNotSuppportedException() throws TypeSupportException {
+        ArchiveTypeConversionSupport.toArchiveString(new IDoNotExist());
+    }
+    @Test(expected=TypeSupportException.class)
+    public void testInvalidCollectionTypeConversions1() throws TypeSupportException {
+        ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Collection.class, "");
+    }
+    @Test(expected=TypeSupportException.class)
+    public void testInvalidCollectionTypeConversions2() throws TypeSupportException {
+        ArchiveTypeConversionSupport.fromScalarArchiveString(Collection.class, "");
     }
 }

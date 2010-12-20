@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelDTO;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -44,7 +43,6 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -58,8 +56,6 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveChannelDaoImpl.class);
 
     /**
      * Archive channel configuration cache.
@@ -124,13 +120,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelByNameStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelByNameStmt + " failed.");
         }
         return channel;
     }
@@ -181,13 +171,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelsByGroupId + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
         }
     }
 
