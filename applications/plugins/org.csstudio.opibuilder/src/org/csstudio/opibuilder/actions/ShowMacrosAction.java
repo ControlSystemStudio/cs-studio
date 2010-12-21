@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -30,8 +32,10 @@ public class ShowMacrosAction extends SelectionAction {
 	 */
 	public ShowMacrosAction(IWorkbenchPart part) {
 		super(part);
-		setText("Show Predefined Macros");
+		setText("Show Macros");
 		setId(ID);
+		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+				OPIBuilderPlugin.PLUGIN_ID, "icons/macro.png"));
 	}
 
 	@Override

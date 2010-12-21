@@ -384,6 +384,7 @@
          <action
                class="org.csstudio.opibuilder.widgets.actions.SelectAllInGroupAction"
                enablesFor="1"
+               icon="icons/select_all.png"
                id="org.csstudio.opibuilder.widgets.selectall"
                label="Select All Widgets in Group"
                menubarPath="group"
