@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelDTO;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
@@ -44,7 +43,6 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -58,8 +56,6 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveChannelDaoImpl.class);
 
     /**
      * Archive channel configuration cache.
@@ -69,9 +65,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE name=?";
+        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE name=?";
     private final String _selectChannelsByGroupId =
-        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE group_id=? ORDER BY name";
+        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE group_id=? ORDER BY name";
 
     /**
      * Constructor.
@@ -124,13 +120,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelByNameStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelByNameStmt + " failed.");
         }
         return channel;
     }
@@ -146,14 +136,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (!filteredList.isEmpty()) {
             return new ArrayList<IArchiveChannel>(filteredList);
         }
-
-        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         // Nothing yet in the cache? Ask the database:
+        final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
-
             final ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 // id, name, sample_mode_id, sample_period, last_sample_time
@@ -183,13 +171,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelsByGroupId + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
         }
     }
 

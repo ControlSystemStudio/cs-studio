@@ -54,7 +54,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectEngineByNameStmt =
-        "SELECT id, url FROM archive.engine WHERE name=?";
+        "SELECT id, url FROM archive_new.engine WHERE name=?";
 
 
     /**
