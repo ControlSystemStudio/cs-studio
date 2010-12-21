@@ -32,8 +32,6 @@ public class ColorUtilities {
 	 */
 	public static OPIColor[] getTableColors() {
 		OPIColor[] tableColors;
-		IPreferenceStore store = OPIBuilderPlugin.getDefault().getPreferenceStore();
-
 
 		OPIColor[] colors = MediaService.getInstance().getAllPredefinedColors();
 		tableColors = new OPIColor[colors.length-4];
