@@ -142,7 +142,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * dispose the resources used by this figure
 	 */
-	public void dispose(){
+	public synchronized void dispose(){
+		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
 			offScreenImage = null;
