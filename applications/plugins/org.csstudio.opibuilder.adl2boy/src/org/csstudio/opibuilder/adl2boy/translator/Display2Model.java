@@ -19,18 +19,22 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public class Display2Model extends AbstractADL2Model {
-	//DisplayModel displayModel = new DisplayModel();
 	
 	public Display2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		processWidget(adlWidget);
 	}
 
-	/**
-	 * @param adlWidget
-	 */
-	public void processWidget(ADLWidget adlWidget) {
+	public Display2Model(RGB[] colorMap){
+		super(colorMap);
+	}
+
+
+	public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
 		widgetModel = new DisplayModel();
+	}
+	
+	@Override
+	public void processWidget(ADLWidget adlWidget) {
 		ADLDisplay adlDisp = new ADLDisplay(adlWidget);
 	
 		setDisplayColors(adlDisp);
@@ -75,13 +79,4 @@ public class Display2Model extends AbstractADL2Model {
 			widgetModel.setPropertyValue(DisplayModel.PROP_SHOW_GRID, false);
 		}
 	}
-
-	public Display2Model(RGB[] colorMap){
-		super(colorMap);
-	}
-	@Override
-	public AbstractWidgetModel getWidgetModel() {
-		return widgetModel;
-	}
-
 }

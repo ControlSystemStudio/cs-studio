@@ -8,13 +8,13 @@ package org.csstudio.opibuilder.adl2boy.translator;
 import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.adl2boy.utilities.ColorUtilities;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
-import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLTestObjects;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
 import org.csstudio.utility.adlparser.fileParser.widgets.Oval;
@@ -35,18 +35,17 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 
 		public TestDisp2Model(RGB[] colorMap) {
 			super(colorMap);
-			widgetModel = new DisplayModel();
-		}
-
-		@Override
-		public AbstractWidgetModel getWidgetModel() {
-			// TODO Auto-generated method stub
-			return widgetModel;
 		}
 
 		public void processWidget(ADLWidget adlWidget) {
 			ADLDisplay adlDisp = new ADLDisplay(adlWidget);
 
+		}
+
+		@Override
+		public void makeModel(ADLWidget adlWidget,
+				AbstractContainerModel parentModel) {
+			widgetModel = new DisplayModel();
 		}
 	}
 
@@ -54,18 +53,18 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 
 		public TestWidget2Model(RGB[] colorMap) {
 			super(colorMap);
-			widgetModel = new PolyLineModel();
-		}
-
-		@Override
-		public AbstractWidgetModel getWidgetModel() {
-			// TODO Auto-generated method stub
-			return widgetModel;
 		}
 
 		public void processWidget(ADLWidget adlWidget) {
 			Oval adlLine = new Oval(adlWidget);
 			setADLBasicAttributeProps(adlLine, widgetModel, true);
+		}
+
+		@Override
+		public void makeModel(ADLWidget adlWidget,
+				AbstractContainerModel parentModel) {
+			widgetModel = new PolyLineModel();
+			parentModel.addChild(widgetModel, true);
 		}
 	}
 
@@ -85,6 +84,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 	 */
 	public void initialilzeDisplay(ADLWidget disp) {
 		dispModel = new TestDisp2Model(ADLTestObjects.makeColorMap());
+		dispModel.makeModel(disp, null);
 		dispModel.processWidget(disp);
 		testWidgetModel = new TestWidget2Model(ADLTestObjects.makeColorMap());
 	}
@@ -102,6 +102,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 		oval.addObject(ADLTestObjects.setupBasicAttributes1(oval));
 		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
 		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.makeModel(oval, (AbstractContainerModel)dispModel.getWidgetModel());
 		testWidgetModel.processWidget(oval);
 		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel()
 				.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
@@ -118,6 +119,7 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 		oval.addObject(ADLTestObjects.setupBasicAttributes2(oval));
 		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
 		d.addChild(testWidgetModel.getWidgetModel());
+		testWidgetModel.makeModel(oval, (AbstractContainerModel)dispModel.getWidgetModel());
 		testWidgetModel.processWidget(oval);
 		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
 				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
@@ -141,7 +143,9 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 		
 		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
 		d.addChild(testWidgetModel.getWidgetModel());
-		testWidgetModel.processWidget(ADLTestObjects.setupBasicOval1());
+		ADLWidget oval = ADLTestObjects.setupBasicOval1();
+		testWidgetModel.makeModel(oval, (AbstractContainerModel)dispModel.getWidgetModel());
+		testWidgetModel.processWidget(oval);
 		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
 				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(2),
@@ -164,7 +168,9 @@ public class AbstractADL2ModelUiPluginTest extends TestCase {
 		
 		DisplayModel d = (DisplayModel) (dispModel.getWidgetModel());
 		d.addChild(testWidgetModel.getWidgetModel());
-		testWidgetModel.processWidget(ADLTestObjects.setupBasicOval1());
+		ADLWidget oval = ADLTestObjects.setupBasicOval1();
+		testWidgetModel.makeModel(oval, (AbstractContainerModel)dispModel.getWidgetModel());
+		testWidgetModel.processWidget(oval);
 		OPIColor frgd = (OPIColor) testWidgetModel.getWidgetModel().getPropertyValue(
 				AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 		assertEquals("Foreground Color", ADLTestObjects.getRGBValue(4),

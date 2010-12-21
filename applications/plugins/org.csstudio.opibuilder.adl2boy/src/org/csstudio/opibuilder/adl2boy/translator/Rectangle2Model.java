@@ -1,3 +1,9 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -10,45 +16,48 @@ import org.csstudio.utility.adlparser.fileParser.widgets.Rectangle;
 import org.eclipse.swt.graphics.RGB;
 
 public class Rectangle2Model extends AbstractADL2Model {
-	RectangleModel rectangleModel = new RectangleModel();
 
 	public Rectangle2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		parentModel.addChild(rectangleModel, true);
+	}
+
+	@Override
+	public void processWidget(ADLWidget adlWidget) {
 		Rectangle rectWidget = new Rectangle(adlWidget);
 		if (rectWidget != null) {
-			setADLObjectProps(rectWidget, rectangleModel);
-			setADLBasicAttributeProps(rectWidget, rectangleModel, true);
-			setADLDynamicAttributeProps(rectWidget, rectangleModel);
+			setADLObjectProps(rectWidget, widgetModel);
+			setADLBasicAttributeProps(rectWidget, widgetModel, true);
+			setADLDynamicAttributeProps(rectWidget, widgetModel);
 		}
 		//check fill parameters
 		if ( rectWidget.hasADLBasicAttribute() ) {
 			if (rectWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, false);
-				rectangleModel.setPropertyValue(RectangleModel.PROP_FILL_LEVEL, 100);
-				rectangleModel.setPropertyValue(RectangleModel.PROP_HORIZONTAL_FILL, true);
+				widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, false);
+				widgetModel.setPropertyValue(RectangleModel.PROP_FILL_LEVEL, 100);
+				widgetModel.setPropertyValue(RectangleModel.PROP_HORIZONTAL_FILL, true);
 				
 			}
 			else if (rectWidget.getAdlBasicAttribute().getFill().equals("outline")) {
-				rectangleModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, true);
-				OPIColor fColor = (OPIColor)rectangleModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-				rectangleModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
+				widgetModel.setPropertyValue(RectangleModel.PROP_TRANSPARENT, true);
+				OPIColor fColor = (OPIColor)widgetModel.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+				widgetModel.setPropertyValue(AbstractShapeModel.PROP_LINE_COLOR, fColor);
 				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("solid") ) {
-					rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Solid");
+					widgetModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Solid");
 				}
 				if ( rectWidget.getAdlBasicAttribute().getStyle().equals("dash") ) {
-					rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Dash");
+					widgetModel.setPropertyValue(RectangleModel.PROP_LINE_STYLE, "Dash");
 					
 				}
-				rectangleModel.setPropertyValue(RectangleModel.PROP_LINE_WIDTH, rectWidget.getAdlBasicAttribute().getWidth());
+				widgetModel.setPropertyValue(RectangleModel.PROP_LINE_WIDTH, rectWidget.getAdlBasicAttribute().getWidth());
 			}
 			
 		}
 	}
 
 	@Override
-	public	AbstractWidgetModel getWidgetModel() {
-		return rectangleModel;
+	public void makeModel(ADLWidget adlWidget,
+			AbstractContainerModel parentModel) {
+		widgetModel = new RectangleModel();
+		parentModel.addChild(widgetModel, true);
 	}
-
 }

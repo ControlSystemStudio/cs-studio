@@ -31,19 +31,21 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 	public RelatedDisplay2Model(ADLWidget adlWidget, RGB[] colorMap,
 			AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		processWidget(adlWidget);
-		parentModel.addChild(widgetModel, true);
 	}
 
 	public RelatedDisplay2Model(RGB[] colorMap) {
 		super(colorMap);
 	}
 
+	public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
+		widgetModel = new MenuButtonModel();
+		parentModel.addChild(widgetModel, true);
+	}
+	
 	/**
 	 * @param adlWidget
 	 */
 	public void processWidget(ADLWidget adlWidget) {
-		widgetModel = new MenuButtonModel();
 		RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
 		if (rdWidget != null) {
 			setADLObjectProps(rdWidget, widgetModel);
@@ -176,11 +178,6 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 		}
 		String resArgs = strBuff.toString();
 		return resArgs;
-	}
-
-	@Override
-	public AbstractWidgetModel getWidgetModel() {
-		return widgetModel;
 	}
 
 	public void cleanup() {

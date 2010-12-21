@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLTestObjects;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
 import org.eclipse.swt.graphics.RGB;
@@ -22,15 +23,12 @@ import org.junit.Test;
  *
  */
 public class Display2ModelUiPluginTest extends TestCase {
-	Display2Model converter = null;
-	RGB[] colorMap = ADLTestObjects.makeColorMap();
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
-		converter = new Display2Model(colorMap);
 	}
 
 	/**
@@ -45,9 +43,8 @@ public class Display2ModelUiPluginTest extends TestCase {
 	 */
 	@Test
 	public void testDisplay2Model() {
-		ADLDisplay adlDisp = new ADLDisplay(ADLTestObjects.setupBasicDisplay());
-		converter.processWidget(ADLTestObjects.setupBasicDisplay());;
-		DisplayModel disp = (DisplayModel)converter.getWidgetModel();
+		ADLDisplay adlDisp = ADLTestObjects.makeBasicDisplay();
+		DisplayModel disp = makeDisplayModel(ADLTestObjects.setupBasicDisplay());
 		OPIColor frgd = (OPIColor)disp.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
 		OPIColor bkgd = (OPIColor)disp.getPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 		assertEquals ("Foreground Color", ADLTestObjects.getRGBValue(adlDisp.getForegroundColor()), frgd.getRGBValue());
@@ -58,6 +55,20 @@ public class Display2ModelUiPluginTest extends TestCase {
 		assertEquals ("Y", adlDisp.getAdlObject().getY(), disp.getY());
 		assertEquals ("Height", adlDisp.getAdlObject().getHeight(), disp.getHeight());
 		assertEquals ("Width", adlDisp.getAdlObject().getWidth(), disp.getWidth());
+	}
+
+	/**
+	 * @param adlWidget
+	 * @return
+	 */
+	public static DisplayModel makeDisplayModel(ADLWidget adlWidget) {
+		RGB[] colorMap = ADLTestObjects.makeColorMap();
+		Display2Model converter = null;
+		converter = new Display2Model(colorMap);
+		converter.makeModel(adlWidget, null);
+		converter.processWidget(adlWidget);;
+		DisplayModel disp = (DisplayModel)converter.getWidgetModel();
+		return disp;
 	}
 
 }

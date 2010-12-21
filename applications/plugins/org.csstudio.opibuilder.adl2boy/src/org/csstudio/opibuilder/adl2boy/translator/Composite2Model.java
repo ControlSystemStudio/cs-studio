@@ -1,3 +1,9 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -9,27 +15,37 @@ import org.csstudio.utility.adlparser.fileParser.widgets.Composite;
 import org.eclipse.swt.graphics.RGB;
 
 public class Composite2Model extends AbstractADL2Model {
-	AbstractContainerModel containerModel;
-
+//	AbstractContainerModel containerModel;
+	AbstractContainerModel parentModel;
+	
 	public Composite2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		className = "Composite2Model";
+	}
+
+	public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
 		Composite compositeWidget = new Composite(adlWidget);
 
 		if (compositeWidget.hasCompositeFile()) {
-			containerModel = new LinkingContainerModel();
+			widgetModel = new LinkingContainerModel();
 		}
 		else {
-			containerModel = new GroupingContainerModel();
+			widgetModel = new GroupingContainerModel();
 		}
-		parentModel.addChild(containerModel, true);
-		containerModel.setBackgroundColor(parentModel.getBackgroundColor());
-		containerModel.setForegroundColor(parentModel.getForegroundColor());
+		parentModel.addChild(widgetModel, true);
+	}
+
+	@Override
+	public void processWidget(ADLWidget adlWidget) {
+		className = "Composite2Model";
+		Composite compositeWidget = new Composite(adlWidget);
+
+		widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
+		widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
 		if (compositeWidget != null) {
-			setADLObjectProps(compositeWidget, containerModel);
+			setADLObjectProps(compositeWidget, widgetModel);
 			if (compositeWidget != null) {
-				setADLObjectProps(compositeWidget, containerModel);
-				setADLDynamicAttributeProps(compositeWidget, containerModel);
+				setADLObjectProps(compositeWidget, widgetModel);
+				setADLDynamicAttributeProps(compositeWidget, widgetModel);
 			}
 		}
 		if (compositeWidget.hasCompositeFile()) {
@@ -37,22 +53,17 @@ public class Composite2Model extends AbstractADL2Model {
 			TranslatorUtils.printNotHandledWarning(className, "composite file");
 		}
 		else {
-			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), containerModel, colorMap);
-			((GroupingContainerModel)(containerModel)).setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
+			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), (AbstractContainerModel)widgetModel, colorMap);
+			((GroupingContainerModel)(widgetModel)).setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 			FixChildPositions();
 		}
 	}
 
-	@Override
-	public	AbstractWidgetModel getWidgetModel() {
-		return containerModel;
-	}
-
 	private void FixChildPositions() {
-		int compositeX = containerModel.getX();
-		int compositeY = containerModel.getY();
+		int compositeX = widgetModel.getX();
+		int compositeY = widgetModel.getY();
 		
-		for (AbstractWidgetModel model : containerModel.getChildren()){
+		for (AbstractWidgetModel model : ((AbstractContainerModel)widgetModel).getChildren()){
 			model.setX(model.getX() - compositeX);
 			model.setY(model.getY() - compositeY);
 		}
