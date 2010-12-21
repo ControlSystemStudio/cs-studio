@@ -5,8 +5,9 @@ Bundle-SymbolicName: org.csstudio.archivereader.aapi;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy, Jan Hatje <jan.hatje@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.archivereader
+ org.csstudio.archivereader,
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/aapi-2.4.jar,
- .
+Bundle-ClassPath: .
+Import-Package: org.junit
