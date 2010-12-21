@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guava
 Bundle-SymbolicName: org.csstudio.platform.libs.guava
-Bundle-Version: 0.6.0
+Bundle-Version: 0.6.0.qualifier
 Export-Package: com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
