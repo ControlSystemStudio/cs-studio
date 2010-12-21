@@ -628,4 +628,84 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
 	}	
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 */
+	public void flipHorizontally(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerX the center X coordinate
+	 */
+	public void flipHorizontally(int centerX){
+		setX(2*centerX-getX()-getWidth());
+	}
+	
+	/**
+	 * Flip the widget figure vertically.
+	 */
+	public void flipVertically(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerY the center Y coordinate
+	 */
+	public void flipVertically(int centerY){
+		setY(2*centerY - getY() - getHeight());
+	}
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise){
+		int x = getX();
+		int y = getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+
+		newX = x+w/2-h/2;
+		newY = y+h/2-w/2;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);
+		
+	}	
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise, Point center){
+		//Point shiftedPoint = moveCoordinateToCenter(getLocation(), center);
+		int x = getX() - center.x;
+		int y = center.y - getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+		if(clockwise){
+			newX = y-h;
+			newY = -x;
+		}else{
+			newX = -y ;
+			newY = x+w;
+		}
+	//	Point rotatedPoint = recoverFromCenterCoordinate(new Point(newX, newY), center);
+		newX = newX + center.x;
+		newY = center.y - newY;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);		
+	}		
+
 }
