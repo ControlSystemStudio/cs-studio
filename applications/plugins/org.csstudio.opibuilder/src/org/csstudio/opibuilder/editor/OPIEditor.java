@@ -37,12 +37,14 @@ import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.CopyWidgetsAction;
 import org.csstudio.opibuilder.actions.CutWidgetsAction;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction;
+import org.csstudio.opibuilder.actions.ChangeOrientationAction;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
+import org.csstudio.opibuilder.actions.ChangeOrientationAction.OrientationType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
@@ -424,21 +426,18 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			registry.registerAction(action);
 			getSelectionActions().add(action.getId());
 		}
-		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.TO_FRONT);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
 		
-		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.STEP_FRONT);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
+		for(OrderType orderType : OrderType.values()){
+			action = new ChangeOrderAction((IWorkbenchPart)this, orderType);
+			registry.registerAction(action);
+			getSelectionActions().add(action.getId());
+		}
 		
-		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.STEP_BACK);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-		
-		action = new ChangeOrderAction((IWorkbenchPart)this, OrderType.TO_BACK);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
+		for(OrientationType orientationType : OrientationType.values()){
+			action = new ChangeOrientationAction(this, orientationType);
+			registry.registerAction(action);
+			getSelectionActions().add(action.getId());
+		}
 		
 		action = new RunOPIAction();
 		registry.registerAction(action);

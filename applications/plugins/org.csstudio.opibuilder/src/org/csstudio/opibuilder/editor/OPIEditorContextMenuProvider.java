@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
+import org.csstudio.opibuilder.actions.ChangeOrientationAction.OrientationType;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.ContextMenuProvider;
@@ -89,13 +90,24 @@ public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
 		String orderGroup = "Order";
 		MenuManager orderMenu = new MenuManager(orderGroup, 
 				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-						OPIBuilderPlugin.PLUGIN_ID, "icons/order.png"), null);	 //$NON-NLS-1$	
+						OPIBuilderPlugin.PLUGIN_ID, "icons/shape_move_front.png"), null);	 //$NON-NLS-1$	
 		orderMenu.add(new Separator(orderGroup));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_FRONT.getActionID()));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.TO_BACK.getActionID()));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_FRONT.getActionID()));
-		orderMenu.appendToGroup(orderGroup, getAction(OrderType.STEP_BACK.getActionID()));		
+		for(OrderType orderType : OrderType.values()){
+			orderMenu.appendToGroup(orderGroup, getAction(orderType.getActionID()));
+		}
 		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orderMenu);
+		
+		String orientationGroup = "Orientation";
+		MenuManager orientationMenu = new MenuManager(orientationGroup, 
+				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+						OPIBuilderPlugin.PLUGIN_ID, "icons/flip_horizontal.png"), null);	 //$NON-NLS-1$	
+		orientationMenu.add(new Separator(orientationGroup));
+		for(OrientationType orientationType : OrientationType.values()){
+			orientationMenu.appendToGroup(orientationGroup, getAction(orientationType.getActionID()));
+
+		}
+		menu.appendToGroup(GEFActionConstants.GROUP_COPY, orientationMenu);
+	
 		
 		menu.add(new Separator("group")); //$NON-NLS-1$
 		
