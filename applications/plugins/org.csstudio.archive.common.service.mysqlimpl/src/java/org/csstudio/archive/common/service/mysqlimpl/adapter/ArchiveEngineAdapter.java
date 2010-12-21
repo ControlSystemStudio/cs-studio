@@ -21,19 +21,131 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsTypeSupport;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
 
 /**
- * Adapter class to map mysql specific dao classes to dedicated engine classes.
+ * This adapter translates the originally used types in the archive.rdb to new interface types.
+ *
+ * These new types shall decouple the two layers AND be as slim as possible, so that data that is
+ * not used by the client (engine or writer) is not present in the client.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 12.11.2010
  */
 public enum ArchiveEngineAdapter {
 
     INSTANCE;
 
+    /**
+     * Constructor.
+     */
+    private ArchiveEngineAdapter() {
+        AbstractIValueConversionTypeSupport.install();
+        ArchiveTypeConversionSupport.install();
+    }
+
+    /**
+     *
+     * @param cfg cfg the archive.rdb channel group config
+     * @return the service interface for this config
+     */
+    @Nonnull
+    public IArchiveChannelGroup adapt(@Nonnull final ChannelGroupConfig cfg) {
+        return new IArchiveChannelGroup() {
+            @Override
+            @Nonnull
+            public ArchiveChannelGroupId getId() {
+                return new ArchiveChannelGroupId(cfg.getId());
+            }
+            @Override
+            @CheckForNull
+            public String getName() {
+                return cfg.getName();
+            }
+            @Override
+            @CheckForNull
+            public ArchiveChannelId getEnablingChannelId() {
+                return new ArchiveChannelId(cfg.getId());
+            }
+        };
+    }
 
 
+    /**
+     * Converts the service impl side time instant to the engine side timestamp
+     * @param time instant (service impl side)
+     * @return the engine side timestamp
+     */
+    @CheckForNull
+    public ITimestamp adapt(@CheckForNull final TimeInstant time) {
+        return time == null ? null :
+                              TimestampFactory.fromMillisecs(time.getMillis());
+    }
 
 
+    /**
+     * Take care, the IArchiveSample is dedicated to the db abstraction, which is of course very
+     * similar but NOT the same as the fundamental system variable capturing the state of a part
+     * of the system.
+
+     * This placeholder shall replace the IValueWithChannelId workaround and should find its way
+     * up to the layers into the engine and the namely the pvValueUpdate, where it shall
+     * be properly instantiated. See Carcassi's types for that, very likely to replace IValue.
+     * @throws TypeSupportException
+     */
+    @CheckForNull
+    public <T extends ICssAlarmValueType<?>>
+        IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws TypeSupportException {
+
+        final IValue value = valueWithId.getValue();
+
+        final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
+        final T data = EpicsTypeSupport.toCssType(value);
+
+        if (data == null) {
+            return null;
+        }
+
+        final IArchiveSample<T, EpicsAlarm> sample = new IArchiveSample<T, EpicsAlarm>() {
+            @Nonnull
+            @Override
+            public ArchiveChannelId getChannelId() {
+                return id;
+            }
+            @Nonnull
+            @Override
+            public T getData() {
+                return data;
+            }
+            @Override
+            @Nonnull
+            public TimeInstant getTimestamp() {
+                return data.getTimestamp();
+            }
+            @Override
+            @CheckForNull
+            public EpicsAlarm getAlarm() {
+                return (EpicsAlarm) data.getAlarm();
+            }
+        };
+
+        return sample;
+    }
 }

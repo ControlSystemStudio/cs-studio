@@ -62,7 +62,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
-    private final String _selectStatusByNameStmt = "SELECT id FROM archive.status WHERE name=?";
+    private final String _selectStatusByNameStmt = "SELECT id FROM archive_new.status WHERE name=?";
 
     /**
      * Constructor.
