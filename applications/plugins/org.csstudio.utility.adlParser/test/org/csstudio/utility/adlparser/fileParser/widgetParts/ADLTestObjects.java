@@ -9,6 +9,7 @@ package org.csstudio.utility.adlparser.fileParser.widgetParts;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -212,6 +213,11 @@ public class ADLTestObjects {
 		return display;
 	}
 
+	public static ADLDisplay makeBasicDisplay() {
+		ADLDisplay adlDisp = new ADLDisplay(setupBasicDisplay());
+		return adlDisp;
+	}
+	
 	public static ADLWidget setupRelatedDisplayWidget() {
 		ADLWidget widget = new ADLWidget("related display", null, 0);
 		ADLWidget object = new ADLWidget("object", null, 5);
