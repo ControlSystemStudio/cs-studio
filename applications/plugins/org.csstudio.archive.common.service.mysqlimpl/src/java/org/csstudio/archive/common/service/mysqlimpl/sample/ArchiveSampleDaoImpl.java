@@ -273,6 +273,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         hoursAgg.reset(); // and reset this aggregator
     }
 
+    // CHECKSTYLE OFF: ParameterNumber
     private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
@@ -281,6 +282,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   @Nonnull final Double max,
                                                   @Nonnull final TimeInstant timestamp,
                                                   @Nonnull final Duration interval) throws ArchiveDaoException {
+        // CHECKSTYLE ON: ParameterNumber
 
         SampleAggregator agg =  map.get(channelId);
         if (agg == null) {
@@ -313,7 +315,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                        @Nonnull final TimeInstant timestamp,
                                                        @Nonnull final Duration duration) {
 
-        final TimeInstant lastWriteTime = agg.getSampleTimestamp();
+        final TimeInstant lastWriteTime = agg.getResetTimestamp();
         final TimeInstant dueTime = lastWriteTime.plusMillis(duration.getMillis());
         if (timestamp.isBefore(dueTime)) {
             return false; // not yet due, don't write
