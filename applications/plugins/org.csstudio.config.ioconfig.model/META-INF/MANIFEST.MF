@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Model Plug-in
 Bundle-SymbolicName: org.csstudio.config.ioconfig.model;singleton:=true
-Bundle-Version: 1.2.1
+Bundle-Version: 1.2.1.qualifier
 Bundle-Activator: org.csstudio.config.ioconfig.model.IOConifgActivator
 Bundle-Localization: plugin
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.hibernate
