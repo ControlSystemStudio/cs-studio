@@ -44,7 +44,7 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
-import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.platform.data.ITimestamp;
 
@@ -90,7 +90,7 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        AbstractIValueConversionTypeSupport.install();
+        EpicsIValueTypeSupport.install();
     }
 
     /**

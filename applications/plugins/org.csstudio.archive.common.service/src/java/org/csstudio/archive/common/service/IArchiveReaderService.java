@@ -46,7 +46,7 @@ public interface IArchiveReaderService {
      * @return
      * @throws ArchiveServiceException
      */
-    Iterable<IValue> readSamples(int channelId,
+    Iterable<IValue> readSamples(@Nonnull final String channelName,
                                  @Nonnull final ITimestamp start,
                                  @Nonnull final ITimestamp end) throws ArchiveServiceException;
 

@@ -32,7 +32,6 @@ import org.csstudio.archive.common.service.sample.ArchiveSampleDTO;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -58,7 +57,7 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        AbstractIValueConversionTypeSupport.install();
+        EpicsIValueTypeSupport.install();
         ArchiveTypeConversionSupport.install();
     }
 

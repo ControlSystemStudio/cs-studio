@@ -59,6 +59,35 @@ import com.google.common.primitives.Longs;
 public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmValueType<?>, T extends IValue>
     extends EpicsIValueTypeSupport<T> {
 
+    static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
+
+    private static boolean INSTALLED = false;
+
+    /**
+     * Constructor.
+     */
+    AbstractIValueConversionTypeSupport() {
+        // Don't instantiate outside this class
+    }
+
+    public static void install() {
+        if (INSTALLED) {
+            return;
+        }
+        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
+                                           new IDoubleValueConversionTypeSupport());
+        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
+                                           new IEnumeratedValueConversionTypeSupport());
+        AbstractTypeSupport.addTypeSupport(ILongValue.class,
+                                           new ILongValueConversionTypeSupport());
+        AbstractTypeSupport.addTypeSupport(IStringValue.class,
+                                           new IStringValueConversionTypeSupport());
+
+        INSTALLED = true;
+    }
+
+
     /**
      * IStringIValue converstion support
      *
@@ -228,35 +257,6 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
             return new CssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
         }
-    }
-
-
-    static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
-
-    private static boolean INSTALLED = false;
-
-    /**
-     * Constructor.
-     */
-    AbstractIValueConversionTypeSupport() {
-        // Don't instantiate outside this class
-    }
-
-    public static void install() {
-        if (INSTALLED) {
-            return;
-        }
-        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport());
-
-        INSTALLED = true;
     }
 
     @CheckForNull

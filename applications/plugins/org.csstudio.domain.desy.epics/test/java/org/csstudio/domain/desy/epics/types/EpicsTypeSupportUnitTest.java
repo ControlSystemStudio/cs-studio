@@ -42,7 +42,7 @@ public class EpicsTypeSupportUnitTest {
 
     @Before
     public void setup() {
-        AbstractIValueConversionTypeSupport.install();
+        EpicsIValueTypeSupport.install();
     }
 
 

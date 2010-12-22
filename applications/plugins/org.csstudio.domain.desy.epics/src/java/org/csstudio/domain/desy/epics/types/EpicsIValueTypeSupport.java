@@ -47,6 +47,10 @@ import org.csstudio.platform.data.ValueFactory;
 public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
+    public static void install() {
+        AbstractIValueConversionTypeSupport.install();
+    }
+
     /**
      * Tries to convert the given IValue type and its accompanying parms to the css value type.
      * @param value the value to be converted

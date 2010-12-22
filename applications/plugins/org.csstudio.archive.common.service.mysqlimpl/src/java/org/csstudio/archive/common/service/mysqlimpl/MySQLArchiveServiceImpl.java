@@ -33,7 +33,6 @@ import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -46,7 +45,7 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsCssValueConversionTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -97,7 +96,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         @Override
          public IValue apply(final IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> from) {
              try {
-                return EpicsCssValueConversionTypeSupport.toIValue(from.getData());
+                return EpicsCssValueTypeSupport.toIValue(from.getData());
             } catch (final TypeSupportException e) {
                 return null;
             }
@@ -319,7 +318,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Iterable<IValue> readSamples(final int channelId,
+    public Iterable<IValue> readSamples(@Nonnull final String channelName,
                                         @Nonnull final ITimestamp start,
                                         @Nonnull final ITimestamp end) throws ArchiveServiceException {
 
@@ -327,11 +326,10 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
         final Duration d = new Duration(s.getInstant(), e.getInstant());
 
-        final ArchiveChannelId id = new ArchiveChannelId(channelId);
         try {
-            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelById(id);
+            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
-                throw new ArchiveDaoException("Information for channel " + id.longValue() + " could not be retrieved.", null);
+                throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
         Iterable<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> samples;
 //        if (d.isLongerThan(Duration.standardDays(45))) {

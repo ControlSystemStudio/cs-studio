@@ -19,39 +19,23 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
-
-import java.util.Dictionary;
-import java.util.Hashtable;
+package org.csstudio.archive.common.reader;
 
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveReaderService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-/**
- * Activator.
- * Registers two service impls: {@link IArchiveEngineConfigService} and
- * {@link IArchiveWriterService}.
- *
- * @author bknerr
- * @since 22.11.2010
- */
 public class Activator implements BundleActivator {
 
-    public static final String PLUGIN_ID = "org.csstudio.archive.common.service.mysqlimpl";
+    public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
 
     private static Activator INSTANCE;
-
-
+    private static BundleContext CONTEXT;
 
     /**
      * Don't instantiate.
@@ -74,39 +58,22 @@ public class Activator implements BundleActivator {
         return INSTANCE;
     }
 
+    /**
+     * Is nonnull if the framework doesn't freak it out.
+     * @return
+     */
+	@Nonnull
+	static BundleContext getContext() {
+		return CONTEXT;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void start(final BundleContext context) throws Exception {
-
-        final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
-        propsCfg.put("service.vendor", "DESY");
-        propsCfg.put("service.description", "MySQL archive engine config service implementation");
-        LOG.info("Register MySQL archive engine config service");
-
-        context.registerService(IArchiveEngineConfigService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
-                                propsCfg);
-
-        final Dictionary<String, Object> propsWr = new Hashtable<String, Object>();
-        propsWr.put("service.vendor", "DESY");
-        propsWr.put("service.description", "MySQL archive writer service implementation");
-        LOG.info("Register MySQL archive writer service");
-
-        context.registerService(IArchiveWriterService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
-                                propsWr);
-
-        final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
-        propsWr.put("service.vendor", "DESY");
-        propsWr.put("service.description", "MySQL archive reader service implementation");
-        LOG.info("Register MySQL archive reader service");
-
-        context.registerService(IArchiveReaderService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
-                                propsRd);
+    public void start(@Nonnull final BundleContext bundleContext) throws Exception {
+		Activator.CONTEXT = bundleContext;
 	}
 
 	/*
@@ -114,9 +81,8 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void stop(final BundleContext bundleContext) throws Exception {
-
-	    // Services are automatically unregistered
-	    ArchiveDaoManager.INSTANCE.disconnect();
+    public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
+		Activator.CONTEXT = null;
 	}
+
 }
