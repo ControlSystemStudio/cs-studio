@@ -19,42 +19,35 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.IValue;
 
 /**
- * Type conversion necessary as long as there are these other classes around.
+ * Archive reader methods.
+ *
+ * TODO (bknerr): all database access methods should definitely return explicit immutables.
+ *                Note, guavas immutable collections are implement 'mutable' interfaces with
+ *                throwing UOEs. mmh.
  *
  * @author bknerr
- * @since 17.12.2010
- * CHECKSTYLE OFF: AbstractClassName
- *                 This class statically is accessed, hence the name should be short and descriptive!
- *
+ * @since 21.12.2010
  */
-public abstract class BaseTypeConversionSupport {
-    // CHECKSTYLE ON : AbstractClassName
+public interface IArchiveReaderService {
+
     /**
-     * Constructor.
+     * Retrieves the samples from the archive for the given channel and time interval
+     * @param channel_id
+     * @param start
+     * @param end
+     * @return
+     * @throws ArchiveServiceException
      */
-    private BaseTypeConversionSupport() {
-        // Empty
-    }
-
-    @Nonnull
-    public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
-        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
-    }
-
-    @Nonnull
-    public static ITimestamp toTimestamp(@Nonnull final TimeInstant ti) {
-        return TimestampFactory.createTimestamp(ti.getSeconds(), ti.getFractalSecondsInNanos());
-    }
-
+    Iterable<IValue> readSamples(int channelId,
+                                 @Nonnull final ITimestamp start,
+                                 @Nonnull final ITimestamp end) throws ArchiveServiceException;
 
 }

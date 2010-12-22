@@ -19,42 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * Type conversion necessary as long as there are these other classes around.
+ * The service tracker for the archive reader service.
  *
  * @author bknerr
- * @since 17.12.2010
- * CHECKSTYLE OFF: AbstractClassName
- *                 This class statically is accessed, hence the name should be short and descriptive!
- *
+ * @since 21.12.2010
  */
-public abstract class BaseTypeConversionSupport {
-    // CHECKSTYLE ON : AbstractClassName
+public class ArchiveReaderServiceTracker extends ServiceTracker {
     /**
      * Constructor.
      */
-    private BaseTypeConversionSupport() {
-        // Empty
+    public ArchiveReaderServiceTracker(@Nonnull final BundleContext context) {
+        super(context, IArchiveReaderService.class.getName(), null);
     }
-
-    @Nonnull
-    public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
-        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
-    }
-
-    @Nonnull
-    public static ITimestamp toTimestamp(@Nonnull final TimeInstant ti) {
-        return TimestampFactory.createTimestamp(ti.getSeconds(), ti.getFractalSecondsInNanos());
-    }
-
-
 }

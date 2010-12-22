@@ -19,42 +19,73 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.sample;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 
 /**
- * Type conversion necessary as long as there are these other classes around.
+ * Data transfer object for sample.
  *
  * @author bknerr
- * @since 17.12.2010
- * CHECKSTYLE OFF: AbstractClassName
- *                 This class statically is accessed, hence the name should be short and descriptive!
- *
+ * @since 21.12.2010
  */
-public abstract class BaseTypeConversionSupport {
-    // CHECKSTYLE ON : AbstractClassName
+public class ArchiveSampleDTO<V,
+                              T extends ICssAlarmValueType<V>,
+                              A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
+
+    private final ArchiveChannelId _channelId;
+    private final T _value;
+    private final TimeInstant _timestamp;
+    private final A _alarm;
+
     /**
      * Constructor.
      */
-    private BaseTypeConversionSupport() {
-        // Empty
+    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId channelId,
+                            @Nonnull final T  data,
+                            @Nonnull final TimeInstant ts,
+                            @Nonnull final A alarm) {
+        _channelId = channelId;
+        _value = data;
+        _timestamp = ts;
+        _alarm = alarm;
     }
 
-    @Nonnull
-    public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
-        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
     }
 
-    @Nonnull
-    public static ITimestamp toTimestamp(@Nonnull final TimeInstant ti) {
-        return TimestampFactory.createTimestamp(ti.getSeconds(), ti.getFractalSecondsInNanos());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public T getData() {
+        return _value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public A getAlarm() {
+        return _alarm;
+    }
 
 }

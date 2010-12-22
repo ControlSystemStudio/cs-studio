@@ -207,9 +207,9 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
             // Due to the internal service call, the transformation can't be hidden in the ArchiveEngineAdapter, (or
             // alternatively, the archive.service plugin would need an activator and register for its own service)
             final Function<ChannelConfig, IArchiveChannel> channelCfg2ArchChannel = new ChannelCfg2ArchiveChannelFunction();
-            final Collection<IArchiveChannel> moreChannels = Collections2.filter(Collections2.transform(channels,
-                                                                                                        channelCfg2ArchChannel),
-                                                                                 Predicates.<IArchiveChannel>notNull());
+            final Collection<IArchiveChannel> moreChannels =
+                Collections2.filter(Collections2.transform(channels, channelCfg2ArchChannel),
+                                    Predicates.<IArchiveChannel>notNull());
             if (moreChannels.size() != channels.size()) {
                 throw new Exception("Conversion from ChannelGroupConfig to IArchiveChannel failed. ");
             }

@@ -50,7 +50,7 @@ public class EpicsTypeSupportUnitTest {
     public void testIValue2CssValueConversionReturnsNull() {
         try {
             final ICssAlarmValueType<List<Double>> cssV =
-                EpicsTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
+                EpicsIValueTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
                                                                           ValueFactory.createMinorSeverity(),
                                                                           "HIHI",
                                                                           null,
@@ -66,7 +66,7 @@ public class EpicsTypeSupportUnitTest {
     public void testDoubleValue2CssValueConversion() {
         try {
             final ICssAlarmValueType<List<Double>> cssV =
-                EpicsTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
+                EpicsIValueTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
                                                                           ValueFactory.createMinorSeverity(),
                                                                           "HIHI",
                                                                           null,
@@ -85,7 +85,7 @@ public class EpicsTypeSupportUnitTest {
     public void testLongValue2CssValueConversion() {
         try {
             final ICssAlarmValueType<List<Long>> cssV =
-                EpicsTypeSupport.toCssType(ValueFactory.createLongValue(TimestampFactory.now(),
+                EpicsIValueTypeSupport.toCssType(ValueFactory.createLongValue(TimestampFactory.now(),
                                                                         ValueFactory.createMinorSeverity(),
                                                                         "HIHI",
                                                                         null,
@@ -110,7 +110,7 @@ public class EpicsTypeSupportUnitTest {
                                                                              null,
                                                                              new int[]{2});
 
-            final ICssAlarmValueType<EpicsEnumTriple> cssV = EpicsTypeSupport.toCssType(eVal);
+            final ICssAlarmValueType<EpicsEnumTriple> cssV = EpicsIValueTypeSupport.toCssType(eVal);
             Assert.assertNotNull(cssV);
             Assert.assertEquals(Integer.valueOf(2), cssV.getValueData().getIndex());
             Assert.assertEquals("part", cssV.getValueData().getState());
@@ -124,7 +124,7 @@ public class EpicsTypeSupportUnitTest {
     public void testStringValue2CssValueConversion() {
         try {
             final ICssAlarmValueType<List<String>> cssV =
-                EpicsTypeSupport.toCssType(ValueFactory.createStringValue(TimestampFactory.now(),
+                EpicsIValueTypeSupport.toCssType(ValueFactory.createStringValue(TimestampFactory.now(),
                                                                           ValueFactory.createMinorSeverity(),
                                                                           "HIHI",
                                                                           null,

@@ -45,8 +45,7 @@ import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.platform.data.ITimestamp;
 
 import com.google.common.base.Function;
@@ -64,6 +63,28 @@ import com.google.common.collect.Lists;
 public enum ArchiveEngineAdapter {
 
     INSTANCE;
+
+    /**
+     * @author bknerr
+     * @since 22.12.2010
+     */
+    private static final class ArchiveChannel2ChannelCfgFunction implements
+            Function<ChannelGroupConfig, IArchiveChannelGroup> {
+        /**
+         * Constructor.
+         */
+        public ArchiveChannel2ChannelCfgFunction() {
+            // Empty
+        }
+        @Override
+        @Nonnull
+        public IArchiveChannelGroup apply(final ChannelGroupConfig from) {
+            return adapt(from);
+        }
+    }
+    private static final ArchiveChannel2ChannelCfgFunction ARCH_CHAN_2_CHAN_CFG_FUNC =
+        new ArchiveChannel2ChannelCfgFunction();
+
 
     /**
      * Constructor.
@@ -110,34 +131,22 @@ public enum ArchiveEngineAdapter {
 
         final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
                                                           channel.getName(),
+                                                          "<not set>",
                                                           new ArchiveChannelGroupId(channel.getGroupId()),
                                                           new ArchiveSampleModeId(channel.getSampleMode().getId()),
-                                                          channel.getSampleValue(),
                                                           channel.getSamplePeriod(),
-                                                          adapt(lastTimestamp));
+                                                          BaseTypeConversionSupport.toTimeInstant(lastTimestamp),
+                                                          channel.getSampleValue());
 
         return cfg;
     }
 
     /**
-     * @param time the archive.rdb timestamp
-     * @return the service interface type for a time instant
-     */
-    @CheckForNull
-    public TimeInstant adapt(@CheckForNull final ITimestamp time) {
-        if (time != null) {
-            return TimeInstantBuilder.buildFromSeconds(time.seconds()).plusNanosPerSecond(time.nanoseconds());
-        }
-        return null;
-    }
-
-    /**
-     *
      * @param cfg cfg the archive.rdb channel group config
      * @return the service interface for this config
      */
     @Nonnull
-    public IArchiveChannelGroup adapt(@Nonnull final ChannelGroupConfig cfg) {
+    public static IArchiveChannelGroup adapt(@Nonnull final ChannelGroupConfig cfg) {
         return new IArchiveChannelGroup() {
             @Override
             @Nonnull
@@ -162,20 +171,13 @@ public enum ArchiveEngineAdapter {
      * @return the list of service interfaces for the group configs
      */
     @Nonnull
-    public List<IArchiveChannelGroup> adapt(@CheckForNull final ChannelGroupConfig[] groups) {
+    public static List<IArchiveChannelGroup> adapt(@CheckForNull final ChannelGroupConfig[] groups) {
         if (groups == null) {
             return Collections.emptyList();
         }
         final List<ChannelGroupConfig> list = Lists.newArrayList(groups);
 
-        return Lists.transform(list,
-                               new Function<ChannelGroupConfig, IArchiveChannelGroup>() {
-                                @Override
-                                @Nonnull
-                                public IArchiveChannelGroup apply(final ChannelGroupConfig from) {
-                                    return adapt(from);
-                                }
-                               });
+        return Lists.transform(list, ARCH_CHAN_2_CHAN_CFG_FUNC);
     }
 
 

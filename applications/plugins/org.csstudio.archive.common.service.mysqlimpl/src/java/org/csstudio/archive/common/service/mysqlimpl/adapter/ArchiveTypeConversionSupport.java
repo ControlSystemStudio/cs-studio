@@ -45,10 +45,37 @@ import com.google.common.collect.Collections2;
  * @param <T> the supported class type
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
-
+ *
  */
 public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
+
+    /**
+     * TODO (bknerr) :
+     *
+     * @author bknerr
+     * @since 22.12.2010
+     */
+    private final class Type2StringFunction implements Function<T, String> {
+        /**
+         * Constructor.
+         */
+        public Type2StringFunction() {
+            // Empty
+        }
+
+        @Override
+        @CheckForNull
+        public String apply(@Nonnull final T from) {
+            try {
+                return ArchiveTypeConversionSupport.toArchiveString(from);
+            } catch (final TypeSupportException e) {
+                LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
+                return null;
+            }
+        }
+    }
+    private final Type2StringFunction _type2StringFunc = new Type2StringFunction();
 
     protected static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
@@ -168,8 +195,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
      */
     @CheckForNull
     public static <T> Collection<T>
-        fromMultiScalarArchiveString(@Nonnull final Class<T> elemClass,
-                                     @Nonnull final String values) throws TypeSupportException {
+    fromMultiScalarArchiveString(@Nonnull final Class<T> elemClass,
+                                 @Nonnull final String values) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(elemClass);
         if (support == null) {
@@ -200,21 +227,44 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return support.convertToDouble(value);
     }
 
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> T fromArchiveString(@Nonnull final String datatype,
+                                          @Nonnull final String value) throws TypeSupportException {
+        // Parse for generic type
+
+        // Extract the surrounding generic type (recursively)
+
+        // try Class creation:
+        Class<T> typeClass;
+        try {
+            typeClass = (Class<T>) Class.forName("java.lang." + datatype);
+        } catch (final ClassNotFoundException ce) {
+            // Ignore first
+        }
+        try {
+            typeClass = (Class<T>) Class.forName("java.util." + datatype);
+        } catch (final ClassNotFoundException ce) {
+            // Ignore second
+        }
+        try {
+            typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + datatype);
+        } catch (final ClassNotFoundException ce) {
+            throw new TypeSupportException("Class not found for " + datatype, null);
+        }
+
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
+        if (support == null) {
+            throw new TypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertFromArchiveString(value);
+    }
+
     @Nonnull
     protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
         final Collection<String> items =
-            Collections2.filter(Collections2.transform(values, new Function<T, String>() {
-                                    @Override
-                                    @CheckForNull
-                                    public String apply(@Nonnull final T from) {
-                                        try {
-                                            return ArchiveTypeConversionSupport.toArchiveString(from);
-                                        } catch (final TypeSupportException e) {
-                                            LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
-                                            return null;
-                                        }
-                                    }
-                                }),
+            Collections2.filter(Collections2.transform(values, _type2StringFunc),
                                 Predicates.<String>notNull());
         if (values.size() != items.size()) {
             throw new TypeSupportException("Number of transformed elements (" + items.size() +

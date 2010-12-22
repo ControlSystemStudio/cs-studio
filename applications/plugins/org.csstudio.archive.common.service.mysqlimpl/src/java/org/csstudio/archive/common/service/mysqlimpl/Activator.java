@@ -26,6 +26,7 @@ import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
@@ -94,6 +95,15 @@ public class Activator implements BundleActivator {
         context.registerService(IArchiveWriterService.class.getName(),
                                 MySQLArchiveServiceImpl.INSTANCE,
                                 propsWr);
+
+        final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
+        propsWr.put("service.vendor", "DESY");
+        propsWr.put("service.description", "MySQL archive reader service implementation");
+        LOG.info("Register MySQL archive reader service");
+
+        context.registerService(IArchiveReaderService.class.getName(),
+                                MySQLArchiveServiceImpl.INSTANCE,
+                                propsRd);
 	}
 
 	/*
