@@ -24,7 +24,6 @@ public class ChangeTabIndexAction extends AbstractWidgetTargetAction {
 				null, "Change Tab Index", "New Index", "" + activeTabIndex,
 				new IInputValidator() {
 					
-					@Override
 					public String isValid(String newText) {
 						try {
 							int newIndex = Integer.parseInt(newText);

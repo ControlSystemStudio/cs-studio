@@ -47,13 +47,11 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
 	}
 
     /** {@inheritDoc} */
-	@Override
-    final public int[] getValues()
+	final public int[] getValues()
 	{	return values;	}
 
     /** {@inheritDoc} */
-	@Override
-    final public int getValue()
+	final public int getValue()
 	{	return values[0];  }
 
     /** {@inheritDoc} */

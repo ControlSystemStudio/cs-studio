@@ -67,12 +67,10 @@ public class TabEditPart extends AbstractContainerEditpart {
 	public void activate() {
 		getWidgetModel().setTabItemHandler(new ITabItemHandler() {
 			
-			@Override
 			public void addTab(int index, TabItem tabItem) {
 				TabEditPart.this.addTab(index, tabItem);
 			}
 			
-			@Override
 			public void removeTab(int index) {
 				TabEditPart.this.removeTab(index);
 			}
