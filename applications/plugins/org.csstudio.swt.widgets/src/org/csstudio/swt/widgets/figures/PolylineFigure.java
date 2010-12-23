@@ -32,6 +32,8 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Geometry;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -125,7 +127,8 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	private ArrowType arrowType;
 	
 	private int arrowLineLength = 30;
-
+	
+	private static final Rectangle LINEBOUNDS = Rectangle.SINGLETON;
 	/**
 	 * Constructor.
 	 */
@@ -251,7 +254,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	 * {@inheritDoc}
 	 */
 	public Rectangle getHandleBounds() {
-		return getBounds();
+		return getPoints().getBounds();
 	}
 
 	/**
@@ -415,6 +418,33 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 		this.transparent = transparent;
 		repaint();
 	}
+	
+	@Override
+	public Dimension getMinimumSize(int wHint, int hHint) {
+		if(wHint == -1 && hHint == -1)
+			return new Dimension(1,1);
+		return super.getMinimumSize(wHint, hHint);
+	}
+	
+	/**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
+	 * @see org.eclipse.draw2d.IFigure#containsPoint(int, int)
+	 */
+	public boolean containsPoint(int x, int y) {
+		int tolerance = (int) Math.max(getLineWidthFloat() / 2.0f,
+				2);
+		LINEBOUNDS.setBounds(getBounds());
+		LINEBOUNDS.expand(tolerance, tolerance);
+		if (!LINEBOUNDS.contains(x, y))
+			return false;
+		return shapeContainsPoint(x, y, tolerance) || childrenContainsPoint(x, y);
+	}
+	
+	/**Override this to fix a bug in draw2d polyline: the polyline width should be considered.
+	*/
+	protected boolean shapeContainsPoint(int x, int y, int tolerance) {
+		return Geometry.polylineContainsPoint(getPoints(), x, y, tolerance);
+	}
+	
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new PolyWidgetIntrospector().getBeanInfo(this.getClass());
 	}
