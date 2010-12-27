@@ -43,14 +43,15 @@ public class OpenOPIProbeAction extends ProcessVariablePopupAction {
 		}
 		
 		LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
-		if(pv_names.length ==1){
+		if(pv_names.length >0)
 			macros.put(MACRO_NAME, pv_names[0].getName());
-		}else{
-			int i=0;
-			for(IProcessVariable pv : pv_names){
-				macros.put(MACRO_NAME + "_" + Integer.toString(i), pv.getName()); //$NON-NLS-1$
-			}
+	
+		int i=0;
+		for(IProcessVariable pv : pv_names){
+			macros.put(MACRO_NAME + "_" + Integer.toString(i), pv.getName()); //$NON-NLS-1$
+			i++;
 		}
+		
 		
 		MacrosInput macrosInput = new MacrosInput(macros, true);
 		

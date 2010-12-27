@@ -54,10 +54,10 @@
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <tab_0_title>Main</tab_0_title>
+    <tab_0_title>Value</tab_0_title>
     <border_width>1</border_width>
     <tab_1_font>
-      <opifont.name>Default</opifont.name>
+      <fontdata fontName="Arial" height="14" style="0" />
     </tab_1_font>
     <macros>
       <include_parent_macros>true</include_parent_macros>
@@ -70,9 +70,9 @@
     <tab_0_foreground_color>
       <color red="0" green="0" blue="0" />
     </tab_0_foreground_color>
-    <tab_1_title>XY Graph</tab_1_title>
+    <tab_1_title>Trend</tab_1_title>
     <tab_0_font>
-      <opifont.name>Default</opifont.name>
+      <fontdata fontName="Arial" height="14" style="0" />
     </tab_0_font>
     <enabled>true</enabled>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
@@ -91,7 +91,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <height>256</height>
+      <height>253</height>
       <widget_type>Grouping Container</widget_type>
       <enabled>true</enabled>
       <background_color>
@@ -339,7 +339,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <height>256</height>
+      <height>253</height>
       <widget_type>Grouping Container</widget_type>
       <enabled>true</enabled>
       <background_color>
@@ -481,7 +481,7 @@ $(trace_0_y_pv_value)</tooltip>
     <font>
       <fontdata fontName="Arial" height="24" style="0" />
     </font>
-    <text>BOY OPI Probe</text>
+    <text>OPI Probe</text>
     <widget_type>Label</widget_type>
     <height>43</height>
     <background_color>
@@ -514,7 +514,7 @@ $(trace_0_y_pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <text>This OPI comes with BOY binary build. You can define your own probe OPI from BOY preference page. For how to create a probe OPI, please see BOY online help -&gt; OPI Probe.</text>
+    <text>This probe OPI is built in BOY. You can define your own probe OPI from BOY preference page. For how to create a probe OPI, please see BOY online help -&gt; OPI Probe.</text>
     <widget_type>Label</widget_type>
     <height>55</height>
     <background_color>

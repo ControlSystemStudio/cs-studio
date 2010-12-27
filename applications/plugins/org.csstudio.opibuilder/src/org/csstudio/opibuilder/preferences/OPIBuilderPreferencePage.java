@@ -142,7 +142,7 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		
 		WorkspaceFileFieldEditor probeOPIEditor =
 			new WorkspaceFileFieldEditor(PreferencesHelper.PROBE_OPI, 
-				"probe OPI: ", new String[]{"opi"}, parent);//$NON-NLS-2$
+				"Probe OPI: ", new String[]{"opi"}, parent);//$NON-NLS-2$
 		addField(probeOPIEditor);
 	}
 
