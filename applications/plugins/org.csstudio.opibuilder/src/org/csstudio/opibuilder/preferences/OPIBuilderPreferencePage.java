@@ -139,6 +139,11 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		StringFieldEditor topOPIsEditor = 
 			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);
 		addField(topOPIsEditor);
+		
+		WorkspaceFileFieldEditor probeOPIEditor =
+			new WorkspaceFileFieldEditor(PreferencesHelper.PROBE_OPI, 
+				"probe OPI: ", new String[]{"opi"}, parent);//$NON-NLS-2$
+		addField(probeOPIEditor);
 	}
 
 	public void init(IWorkbench workbench) {

@@ -220,6 +220,44 @@
             </objectState>
          </visibility>
       </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.opibuilder.CSSpopupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIProbeAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.openOPIProbeAction"
+               label="OPI Probe"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Send PV name to OPI Probe">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.showMacros"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.ShowMacrosAction"
+               enablesFor="1"
+               icon="icons/macro.png"
+               id="org.csstudio.opibuilder.showMacrosAction"
+               label="Show Macros"
+               menubarPath="print"
+               tooltip="Show detail infomation of PV">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          point="org.csstudio.platform.ui.openDisplay">
