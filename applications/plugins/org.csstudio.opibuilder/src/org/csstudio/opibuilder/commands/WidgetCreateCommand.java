@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractLayoutModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /**The command to add a widget to a container.
  * @author Xihui Chen
@@ -52,6 +54,12 @@ public class WidgetCreateCommand extends Command {
 	
 	@Override
 	public void redo() {
+		if(newWidget instanceof AbstractLayoutModel && container.getLayoutWidget() != null){
+			MessageDialog.openError(null, "Creating widget failed", 
+					"There is already a layout widget in the container. " +
+					"Please delete it before you can add a new layout widget.");
+			return;
+		}
 		boolean autoName = false; 
 		for(AbstractWidgetModel child :container.getChildren()){
 			if(child.getName().equals(newWidget.getName()))

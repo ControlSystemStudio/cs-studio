@@ -73,6 +73,12 @@
             id="org.csstudio.opibuilder.actions.STEP_BACK"
             name="Step Back">
       </command>
+      <command
+            defaultHandler="org.csstudio.opibuilder.actions.LayoutWidgetsHandler"
+            description="Layout Widgets"
+            id="org.csstudio.opibuilder.actions.layoutWidgets"
+            name="Layout Widgets">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -105,6 +111,12 @@
             contextId="org.csstudio.opibuilder.opiEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+ARROW_RIGHT">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.layoutWidgets"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+L">
       </key>
       <scheme
             description="OPIBuilder Key Binding Scheme"
@@ -257,6 +269,27 @@
                menubarPath="print"
                tooltip="Show detail infomation of PV">
          </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.layoutWidgets"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractLayoutEditpart">
+         <action
+               class="org.csstudio.opibuilder.actions.LayoutWidgetsAction"
+               definitionId="org.csstudio.opibuilder.actions.layoutWidgets"
+               enablesFor="1"
+               icon="icons/layout_widgets.png"
+               id="org.csstudio.opibuilder.layoutWidgetsAction"
+               label="Layout Widgets"
+               menubarPath="group"
+               tooltip="Layout widgets in the container">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
       </objectContribution>
    </extension>
    <extension

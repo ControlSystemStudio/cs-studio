@@ -54,6 +54,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -334,6 +335,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
 	}
 	
+	public Rectangle getBounds(){
+		return new Rectangle(getLocation(), getSize());
+	}
+	
 	public RGB getForegroundColor(){
 		return getRGBFromColorProperty(PROP_COLOR_FOREGROUND);
 	}
@@ -488,6 +493,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void setBorderWidth(int width){
 		setPropertyValue(PROP_BORDER_WIDTH, width);
+	}
+	
+	public void setBounds(Rectangle bounds){
+		setLocation(bounds.getLocation());
+		setSize(bounds.getSize());
+	}
+	
+	public void setBounds(int x, int y, int width, int height){
+		setLocation(x, y);
+		setSize(width, height);
 	}
 	
 	public void setForegroundColor(RGB color){

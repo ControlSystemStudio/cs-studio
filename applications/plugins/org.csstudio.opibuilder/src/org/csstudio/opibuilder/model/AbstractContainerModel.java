@@ -37,6 +37,8 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	private LinkedHashMap<String, String> macroMap;
 	
+	private AbstractLayoutModel layoutWidget;
+	
 	
 	public AbstractContainerModel() {
 		super();
@@ -100,11 +102,19 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 * @param changeParent true if the widget's parent should be changed.
 	 */
 	public synchronized void addChild(AbstractWidgetModel child, boolean changeParent){
-		if(child != null && !childrenList.contains(child)){
-			childrenList.add(child);
+		if(child != null && !childrenList.contains(child)){		
+			int newIndex = -1;
+			if(layoutWidget != null){
+				newIndex = childrenList.size() -1;
+				childrenList.add(newIndex, child);
+			}
+			else 
+				childrenList.add(child);
+			if(child instanceof AbstractLayoutModel)
+				layoutWidget = (AbstractLayoutModel) child;
 			if(changeParent)
 				child.setParent(this);
-			childrenProperty.firePropertyChange(-1, child);
+			childrenProperty.firePropertyChange(newIndex, child);
 		}
 		
 	}
@@ -115,14 +125,26 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	public synchronized void addChild(int index, AbstractWidgetModel child){
 		if(child != null && !childrenList.contains(child)){
+			if(child instanceof AbstractLayoutModel){
+				layoutWidget = (AbstractLayoutModel) child;
+				index = childrenList.size();
+			}else if(layoutWidget != null && index == childrenList.size()){
+				index -=1;
+			}
 			childrenList.add(index, child);
 			child.setParent(this);
 			childrenProperty.firePropertyChange(index, child);
 		}
 	}
 	
+	public AbstractLayoutModel getLayoutWidget() {
+		return layoutWidget;
+	}
+	
 	public synchronized void removeChild(AbstractWidgetModel child){
 		if(child != null && childrenList.remove(child)) {
+			if(child instanceof AbstractLayoutModel)
+				layoutWidget = null;
 			child.setParent(null);
 			childrenProperty.firePropertyChange(child, null);
 		}
