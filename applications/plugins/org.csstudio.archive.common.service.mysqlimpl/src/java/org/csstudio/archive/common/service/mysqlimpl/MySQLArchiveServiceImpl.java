@@ -298,7 +298,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
         // TODO Auto-generated method stub
 
     }

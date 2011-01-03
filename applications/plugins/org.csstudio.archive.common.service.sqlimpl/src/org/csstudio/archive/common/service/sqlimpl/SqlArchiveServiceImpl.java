@@ -283,7 +283,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
         try {
             _archive.get().batchSample(channelId, value);
         } catch (final Exception e) {

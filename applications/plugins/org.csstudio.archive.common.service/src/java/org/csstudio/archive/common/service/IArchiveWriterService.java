@@ -77,7 +77,7 @@ public interface IArchiveWriterService {
      * @param value
      * @throws ArchiveServiceException
      */
-    void commitSample(int channelId, IValue value) throws ArchiveServiceException;
+    void submitSample(int channelId, IValue value) throws ArchiveServiceException;
 
     /**
      * TODO (kasemir) : committing or persisting?
