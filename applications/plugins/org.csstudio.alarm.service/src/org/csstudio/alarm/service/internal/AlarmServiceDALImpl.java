@@ -59,7 +59,6 @@ public class AlarmServiceDALImpl implements IAlarmService {
      */
     @Override
     public final IAlarmConnection newAlarmConnection() {
-//        return new AlarmConnectionDALImpl(_alarmConfigService, DalPlugin.getDefault().getSimpleDALBroker());
         return new AlarmConnectionDALImpl(_alarmConfigService, SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
     }
 
