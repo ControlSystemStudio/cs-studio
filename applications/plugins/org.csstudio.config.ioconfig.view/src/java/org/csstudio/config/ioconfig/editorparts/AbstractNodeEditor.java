@@ -57,8 +57,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -279,10 +281,13 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		private void doFileAdd() {
 			setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer
 					.getSelection()).getFirstElement());
-			if (fill(getGsdFile())) {
-				_tSelected.setText(getGsdFile().getName());
-				setSavebuttonEnabled("GSDFile", true);
-			}
+			GSDFileDBO gsdFile = getGsdFile();
+            if (gsdFile != null) {
+                if (fill(gsdFile)) {
+                    _tSelected.setText(gsdFile.getName());
+                    setSavebuttonEnabled("GSDFile", true);
+                }
+            }
 		}
 
 		@Override
@@ -716,7 +721,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 			private void docTabSelectionAction(@Nonnull final SelectionEvent e) {
 				if (e.item.equals(item)) {
-					getDocumentationManageView().onActivate();
+					DocumentationManageView documentationManageView = getDocumentationManageView();
+					if(documentationManageView!=null) {
+					    documentationManageView.onActivate();
+					}
 				}
 			}
 
@@ -753,8 +761,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		getNode().setUpdatedOn(now);
 
 		getNode().setDescription(getDesc());
-		if (getDescText() != null) {
-			getDescText().setData(getDesc());
+		Text descText = getDescText();
+        if (descText != null) {
+			descText.setData(getDesc());
 		}
 
 		// update Header
@@ -1155,34 +1164,54 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	 * Save or Update the Node to the Data Base.
 	 */
 	final void save() {
-		try {
-			if (getNode().getParent() == null) {
-				getNode().localSave();
-			} else {
-				getNode().getParent().localSave();
-			}
-		} catch (final PersistenceException e) {
-			openErrorDialog(e);
-		}
-
-		setSaveButtonSaved();
-		Button saveButton = getSaveButton();
-		if(saveButton!=null) {
-		    saveButton.setText("&Save");
-		}
-
-		if (isNew() && !getNode().isRootNode()) {
-			getProfiBusTreeView().refresh(getNode().getParent());
-		} else if (isNew() && getNode().isRootNode()) {
-			getProfiBusTreeView().addFacility(getNode());
-			getProfiBusTreeView().refresh(getNode());
-			getProfiBusTreeView().refresh();
-		} else {
-			// refresh the View
-			getProfiBusTreeView().refresh(getNode());
-		}
-		setNew(false);
-
+	    
+	    ProgressMonitorDialog dia = new ProgressMonitorDialog(getShell());
+	    dia.open();
+	    IProgressMonitor progressMonitor = dia.getProgressMonitor();
+	    try {
+            progressMonitor.beginTask("Save " + getNode(), 3);
+            AbstractNodeDBO parent = getNode().getParent();
+            progressMonitor.worked(1);
+            try {
+                if (parent == null) {
+                    getNode().localSave();
+                } else {
+                    parent.localSave();
+                }
+            } catch (final PersistenceException e) {
+                openErrorDialog(e);
+            }
+            progressMonitor.worked(2);
+            setSaveButtonSaved();
+            Button saveButton = getSaveButton();
+            if (saveButton != null) {
+                saveButton.setText("&Save");
+            }
+            
+            getHeaderField(HeaderFields.DB_ID).setText(getNode().getId() + "");
+            progressMonitor.worked(3);
+            
+            if (isNew() && !getNode().isRootNode()) {
+                getProfiBusTreeView().refresh(parent);
+                getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(),
+                                                                    AbstractTreeViewer.ALL_LEVELS);
+                getProfiBusTreeView().getTreeViewer()
+                        .setSelection(new StructuredSelection(getNode()));
+            } else if (isNew() && getNode().isRootNode()) {
+                getProfiBusTreeView().addFacility(getNode());
+//			getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(), AbstractTreeViewer.ALL_LEVELS);
+                getProfiBusTreeView().refresh(getNode());
+                getProfiBusTreeView().refresh();
+                
+            } else {
+                // refresh the View
+                getProfiBusTreeView().refresh(getNode());
+            }
+            setNew(false);
+        } finally {
+            progressMonitor.done();
+            dia.close();
+        }
 	}
 
 	/**
@@ -1332,19 +1361,25 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		// -Footer
 		new Label(getParent(), SWT.NONE);
 		setSaveButton(new Button(getParent(), SWT.PUSH));
-		if (isNew()) {
-			getSaveButton().setText("Create");
-		} else {
-			getSaveButton().setText("&Save");
-		}
-		setSavebuttonEnabled(null, !isNew());
-		getSaveButton().setLayoutData(labelGridData.create());
-		setSaveButtonSelectionListener(new SaveSelectionListener());
+		Button saveButton = getSaveButton();
+        if (saveButton != null) {
+            if (isNew()) {
+                saveButton.setText("Create");
+            } else {
+                saveButton.setText("&Save");
+            }
+            setSavebuttonEnabled(null, !isNew());
+            saveButton.setLayoutData(labelGridData.create());
+            setSaveButtonSelectionListener(new SaveSelectionListener());
+        }
 		new Label(getParent(), SWT.NONE);
 		setCancelButton(new Button(getParent(), SWT.PUSH));
-		getCancelButton().setText("&Cancel");
-		getCancelButton().setLayoutData(labelGridData.create());
-		getCancelButton().addSelectionListener(new CancelSelectionListener());
+		Button cancelButton = getCancelButton();
+        if (cancelButton != null) {
+            cancelButton.setText("&Cancel");
+            cancelButton.setLayoutData(labelGridData.create());
+            cancelButton.addSelectionListener(new CancelSelectionListener());
+        }
 		new Label(getParent(), SWT.NONE);
 		header.setTabList(new Control[0]);
 	}
@@ -1380,7 +1415,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 	public void setDesc(@CheckForNull final String desc) {
 		String temp = desc != null ? desc : "";
-		getDescText().setText(temp);
+		Text descText = getDescText();
+		if(descText!=null) {
+		    descText.setText(temp);
+		}
 	}
 
 	protected void setDescText(@Nullable final Text descText) {
