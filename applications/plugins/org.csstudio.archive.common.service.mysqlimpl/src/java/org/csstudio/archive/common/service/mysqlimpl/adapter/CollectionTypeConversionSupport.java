@@ -47,7 +47,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     private ArchiveTypeConversionSupport<?> getScalarTypeSupport(@Nonnull final Collection values) throws TypeSupportException {
         final Class typeClass = values.iterator().next().getClass();
         final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass);
+            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
