@@ -6,12 +6,11 @@
 
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.adl2boy.utilities.TextUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.TextWidget;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 public class Text2Model extends AbstractADL2Model {
@@ -33,15 +32,9 @@ public class Text2Model extends AbstractADL2Model {
 			}
 		}
 		widgetModel.setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
-		OPIFont font = ((LabelModel)widgetModel).getFont();
-		int fontSize = TranslatorUtils.convertTextHeightToFontSize(widgetModel.getHeight());
-		FontData fontData = font.getFontData();
-		FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), fontData.getStyle());
-		newFontData.setHeight(fontSize);
-		widgetModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
-		
-		//TODO Add Alignment to Text2Model
-		TranslatorUtils.printNotHandledWarning(className, "Text alingnment" );
+		TextUtilities.setWidgetFont((LabelModel)widgetModel);
+		TextUtilities.setAlignment((LabelModel)widgetModel, textWidget);
+
 	}
 
 	@Override

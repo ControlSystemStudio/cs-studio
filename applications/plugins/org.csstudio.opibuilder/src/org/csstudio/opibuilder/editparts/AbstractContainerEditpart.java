@@ -112,7 +112,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		super.activate();
 		
-		
+		layout();
 		
 		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -193,9 +193,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		selectionPropertyChangeListener = null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	protected List getModelChildren() {
+	protected List<AbstractWidgetModel> getModelChildren() {
 		return ((AbstractContainerModel)getModel()).getChildren();
 	}
 
@@ -203,6 +202,26 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	public AbstractContainerModel getWidgetModel() {
 		return (AbstractContainerModel)getModel();
 	}
+	
+	public AbstractLayoutEditpart getLayoutWidget(){
+		for(Object child : getChildren()){
+			if(child instanceof AbstractLayoutEditpart){
+				return (AbstractLayoutEditpart)child;
+			}
+		}
+		return null;
+	}
+	
+	public void layout(){
+		AbstractLayoutEditpart layoutter = getLayoutWidget();
+		if(layoutter != null && layoutter.getWidgetModel().isEnabled()){
+			List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();
+			modelChildren.addAll(getModelChildren());
+			modelChildren.remove(layoutter.getWidgetModel());
+			layoutter.layout(modelChildren, getFigure().getClientArea());
+		}
+	}
+	
 
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)

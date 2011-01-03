@@ -49,6 +49,5 @@ public interface IEnumeratedValue extends IValue
     /**
      * {@inheritDoc}
      */
-    @Override
     public IEnumeratedMetaData getMetaData();
 }

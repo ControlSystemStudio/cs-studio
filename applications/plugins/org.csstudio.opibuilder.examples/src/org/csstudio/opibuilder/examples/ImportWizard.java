@@ -28,7 +28,6 @@ public class ImportWizard extends Wizard implements IImportWizard {
 		return true;
 	}
 
-	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 
 	}
@@ -40,7 +39,6 @@ public class ImportWizard extends Wizard implements IImportWizard {
 		setWindowTitle("Import BOY Examples");
 		addPage(new WizardPage("BOY Examples") {				
 			
-			@Override
 			public void createControl(Composite parent) {
 				setTitle("Import BOY Examples");
 				setDescription("Import the OPI Examples come with BOY");

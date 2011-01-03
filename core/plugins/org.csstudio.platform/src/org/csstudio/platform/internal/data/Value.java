@@ -65,36 +65,29 @@ abstract public class Value implements IValue
     }
 
     /** {@inheritDoc} */
-    @Override
     final public ITimestamp getTime()
     {   return time;   }
 
     /** {@inheritDoc} */
-	@Override
     final public ISeverity getSeverity()
 	{	return severity;	}
 
     /** {@inheritDoc} */
-	@Override
     final public String getStatus()
 	{	return status; 	 }
 
     /** {@inheritDoc} */
-    @Override
     final public Quality getQuality()
     {   return quality; }
 
     /** {@inheritDoc} */
-    @Override
     public IMetaData getMetaData()
     {   return meta_data;    }
 
     /** {@inheritDoc} */
-    @Override
     abstract public String format(Format how, int precision);
 
     /** {@inheritDoc} */
-	@Override
     final public String format()
     {   return format(Format.Default, -1); }
 

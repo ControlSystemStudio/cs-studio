@@ -257,5 +257,39 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 		return originalPoints;
 	}
 	
+	@Override
+	public void flipHorizontally() {	
+		setPoints(RotationUtil.flipPointsHorizontally(getPoints()), true);		
+	}
+	
+	@Override
+	public void flipHorizontally(int centerX) {
+		setPoints(RotationUtil.flipPointsHorizontally(getPoints(), centerX), true);		
+	}
+	
+	
+	@Override
+	public void flipVertically() {	
+		setPoints(RotationUtil.flipPointsVertically(getPoints()), true);		
+	}
+	
+	@Override
+	public void flipVertically(int centerY) {
+		setPoints(RotationUtil.flipPointsVertically(getPoints(), centerY), true);
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPoints(RotationUtil.rotatePoints(getPoints(), clockwise? 90:270), true);
+	}
+
+	
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		setPoints(RotationUtil.rotatePoints(getPoints(), clockwise? 90:270, center), true);
+	}
+
+	
+	
 	
 }

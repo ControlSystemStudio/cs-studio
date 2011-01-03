@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -140,5 +141,16 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 		return (Boolean)getPropertyValue(PROP_INDICATOR_MODE);
 	}
 	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		super.rotate90(clockwise, center);
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+		super.rotate90(true);
+	}
 	
 }

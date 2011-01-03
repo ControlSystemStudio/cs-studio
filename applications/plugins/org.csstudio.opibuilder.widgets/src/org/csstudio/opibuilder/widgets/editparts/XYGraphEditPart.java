@@ -346,6 +346,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			case Y_AXIS:
 				axis.setYAxis((Boolean)newValue);
 				break;
+			case NUMERIC_FORMAT_PATTERN:
+				if(((String)newValue).trim().equals(""))
+					axis.setAutoFormat(true);
+				else{
+					axis.setAutoFormat(false);
+					axis.setFormatPattern((String)newValue);
+				}
+				break;
 			default:
 				break;
 			}		
