@@ -18,8 +18,6 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id: TestSuiteFactory.java,v 1.1.2.1 2010/07/23 15:33:02 bknerr Exp $
  */
 package org.csstudio.testsuite;
 
@@ -51,7 +49,7 @@ public final class TestSuiteFactory {
     public static final String COMMON_TEST_SUFFIX = "Test";
 
     // Get site specific test data provider
-    public static TestDataProvider PROV = createTestDataProvider();
+    private static TestDataProvider PROV = createTestDataProvider();
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(Activator.PLUGIN_ID);
@@ -113,8 +111,4 @@ public final class TestSuiteFactory {
 
         return suite;
     }
-
-
-
 }
-
