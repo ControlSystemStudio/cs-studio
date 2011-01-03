@@ -84,8 +84,6 @@ public class RDBArchiveReader implements ArchiveReader
         sql = new SQL(rdb.getDialect(), schema);
         stati = getStatusValues();
         severities = getSeverityValues();
-        
-        
     }
 
     /** @return Map of all status ID/Text mappings

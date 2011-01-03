@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archivereader.rdb;
+package org.csstudio.archive.common.reader;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,44 +34,44 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * Reduced value set iterator for service infrastructure. 
- * 
+ * Reduced value set iterator for service infrastructure.
+ *
  * @author bknerr
  * @since 21.12.2010
  */
 public class ServiceUsingValueIterator implements ValueIterator {
 
-    private static final Logger LOG = 
+    private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ServiceUsingValueIterator.class);
-    
+
     // Anti pattern galore - but minimally invasive
-    private static ArchiveReaderServiceTracker TRACKER = 
-        new ArchiveReaderServiceTracker(Activator.getInstance().getBundle().getBundleContext());
+    private static ArchiveReaderServiceTracker TRACKER =
+        new ArchiveReaderServiceTracker(Activator.getDefault().getContext());
     static {
         TRACKER.open();
     }
-    
+
     private Iterable<IValue> _values;
-    private Iterator<IValue> _iterator;
-    
+    private final Iterator<IValue> _iterator;
+
     /**
      * Constructor.
      */
-    ServiceUsingValueIterator(String channelName,
+    ServiceUsingValueIterator(final String channelName,
                               final ITimestamp start,
                               final ITimestamp end) {
-        
-        IArchiveReaderService service = (IArchiveReaderService) TRACKER.getService();
-        
+
+        final IArchiveReaderService service = (IArchiveReaderService) TRACKER.getService();
+
         try {
             _values = service.readSamples(channelName, start, end);
-        } catch (ArchiveServiceException e) {
+        } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
             _values = Collections.emptyList();
         }
         _iterator = _values.iterator();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -95,5 +95,5 @@ public class ServiceUsingValueIterator implements ValueIterator {
     public void close() {
         // Useless here
     }
-    
+
 }

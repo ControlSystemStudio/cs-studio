@@ -70,6 +70,7 @@ public final class LdapTestHelper {
             final Map<String, String> map = createLdapTestServicePrefs();
 
             final ILdapService service = LdapActivator.getDefault().getLdapService();
+            Assert.assertNotNull(service);
             Assert.assertTrue(service.reInitializeLdapConnection(map));
 
             return service;

@@ -44,13 +44,12 @@ public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      */
     @Override
     public ArchiveReader getArchiveReader(@Nonnull final String url) throws Exception {
-        // TODO Auto-generated method stub
         return new ArchiveReader() {
 
             @Override
             public String getServerName() {
                 // TODO Auto-generated method stub
-                return null;
+                return "Isn't this a preference?";
             }
 
             @Override
