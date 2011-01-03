@@ -76,13 +76,13 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             return;
         }
         AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport());
+                                           new IDoubleValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport());
+                                           new IEnumeratedValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport());
+                                           new ILongValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport());
+                                           new IStringValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
 
         INSTALLED = true;
     }

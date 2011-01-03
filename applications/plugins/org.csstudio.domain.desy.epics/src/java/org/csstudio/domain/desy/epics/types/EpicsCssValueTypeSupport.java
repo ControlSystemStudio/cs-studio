@@ -22,6 +22,8 @@
 package org.csstudio.domain.desy.epics.types;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -37,6 +39,7 @@ import org.csstudio.platform.data.ValueFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
@@ -51,6 +54,11 @@ import com.google.common.primitives.Longs;
  */
 public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
+
+    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
+        Maps.newHashMap();
+    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
+        new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
 
     /**
      * @author bknerr
@@ -397,16 +405,16 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         if (INSTALLED) {
             return;
         }
-        AbstractTypeSupport.addTypeSupport(Double.class, new CssDoubleValueTypeSupport());
-        AbstractTypeSupport.addTypeSupport(Float.class, new CssFloatValueTypeSupport());
-        AbstractTypeSupport.addTypeSupport(Long.class, new CssLongValueTypeSupport());
-        AbstractTypeSupport.addTypeSupport(Integer.class, new CssIntegerValueTypeSupport());
-        AbstractTypeSupport.addTypeSupport(String.class, new CssStringValueTypeSupport());
-        AbstractTypeSupport.addTypeSupport(Byte.class, new CssByteValueTypeSupport());
+        AbstractTypeSupport.addTypeSupport(Double.class, new CssDoubleValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(Float.class, new CssFloatValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(Long.class, new CssLongValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(Integer.class, new CssIntegerValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(String.class, new CssStringValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(Byte.class, new CssByteValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
 
-        AbstractTypeSupport.addTypeSupport(EpicsEnumTriple.class, new CssEpicsEnumValueTypeSupport());
+        AbstractTypeSupport.addTypeSupport(EpicsEnumTriple.class, new CssEpicsEnumValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
 
-        AbstractTypeSupport.addTypeSupport(Collection.class, new CssCollectionValueTypeSupport());
+        AbstractTypeSupport.addTypeSupport(Collection.class, new CssCollectionValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
 
         INSTALLED = true;
     }
@@ -418,7 +426,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsCssValueTypeSupport<T> support =
-            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass);
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
@@ -433,7 +441,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                               @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsCssValueTypeSupport<T> support =
-            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass);
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }

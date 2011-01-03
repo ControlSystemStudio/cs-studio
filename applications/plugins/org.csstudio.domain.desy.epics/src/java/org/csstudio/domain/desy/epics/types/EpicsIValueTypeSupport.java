@@ -21,6 +21,9 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,6 +38,8 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
+import com.google.common.collect.Maps;
+
 /**
  * TODO (bknerr) :
  *
@@ -46,6 +51,11 @@ import org.csstudio.platform.data.ValueFactory;
  */
 public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
+
+    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
+        Maps.newHashMap();
+    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
+        new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
 
     public static void install() {
         AbstractIValueConversionTypeSupport.install();
@@ -66,7 +76,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
-            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass);
+            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
