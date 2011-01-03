@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
@@ -40,9 +39,8 @@ public class ChangeTabIndexAction extends AbstractWidgetTargetAction {
 			int newIndex = Integer.parseInt(newIndexDialog.getValue());
 			if( newIndex != activeTabIndex){
 				Command command = new ChangeTabIndexCommand(getSelectedTabWidget(), newIndex);
-				if(targetPart instanceof OPIEditor){
 					execute(command);
-				}
+				
 			}
 		}
 		

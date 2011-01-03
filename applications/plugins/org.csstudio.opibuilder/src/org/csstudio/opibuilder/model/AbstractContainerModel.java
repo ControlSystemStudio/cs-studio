@@ -124,6 +124,10 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	}
 	
 	public synchronized void addChild(int index, AbstractWidgetModel child){
+		if(index < 0){
+			addChild(child);
+			return;
+		}
 		if(child != null && !childrenList.contains(child)){
 			if(child instanceof AbstractLayoutModel){
 				layoutWidget = (AbstractLayoutModel) child;
@@ -152,6 +156,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	public synchronized void removeAllChildren(){
 		childrenList.clear();
+		layoutWidget = null;
 		childrenProperty.firePropertyChange(childrenList, null);
 	}
 	
@@ -236,5 +241,12 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 			return getParent().getMacroMap();
 		else
 			return PreferencesHelper.getMacros();
+	}
+	
+	/**This is a flag to show if children operation edit policies should be installed.
+	 * @return true if children operation allowable.
+	 */
+	public boolean isChildrenOperationAllowable(){
+		return true;
 	}
 }

@@ -3,9 +3,7 @@ package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
-import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
@@ -35,14 +33,12 @@ public class RemoveGroupAction extends AbstractWidgetTargetAction{
 		
 		Point leftCorner = containerModel.getLocation();
 		for(AbstractWidgetModel widget : containerModel.getChildren()){			
-			compoundCommand.add(new AddWidgetCommand(containerModel.getParent(), widget));
-			compoundCommand.add(new SetBoundsCommand(widget, 
-					new Rectangle(widget.getLocation(), widget.getSize()).translate(leftCorner)));		
+			compoundCommand.add(new AddWidgetCommand(containerModel.getParent(), widget,
+					new Rectangle(widget.getLocation(), widget.getSize()).translate(leftCorner)));	
 		}		
 		compoundCommand.add(new WidgetDeleteCommand(containerModel.getParent(), containerModel));
-		if(targetPart instanceof OPIEditor){
-			execute(compoundCommand);
-		}
+		execute(compoundCommand);
+		
 	}
 
 	

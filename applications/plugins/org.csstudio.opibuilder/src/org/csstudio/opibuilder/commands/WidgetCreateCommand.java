@@ -24,6 +24,10 @@ public class WidgetCreateCommand extends Command {
 
 	private boolean append;
 	
+	private Rectangle oldBounds;
+	
+	private int index = -1;
+	
 
 	/**
 	 * @param newWidget The new Widget to be added.
@@ -41,14 +45,12 @@ public class WidgetCreateCommand extends Command {
 		
 	@Override
 	public boolean canExecute() {
-		return newWidget != null && container != null && bounds != null;
+		return newWidget != null && container != null;
 	}
 	
 	@Override
 	public void execute() {
-		newWidget.setLocation(bounds.x, bounds.y);
-		if (bounds.width > 0 && bounds.height > 0)
-		newWidget.setSize(bounds.width, bounds.height);			
+		oldBounds = newWidget.getBounds();
 		redo();
 	}
 	
@@ -59,6 +61,11 @@ public class WidgetCreateCommand extends Command {
 					"There is already a layout widget in the container. " +
 					"Please delete it before you can add a new layout widget.");
 			return;
+		}
+		if(bounds != null){
+			newWidget.setLocation(bounds.x, bounds.y);
+			if (bounds.width > 0 && bounds.height > 0)
+			newWidget.setSize(bounds.width, bounds.height);
 		}
 		boolean autoName = false; 
 		for(AbstractWidgetModel child :container.getChildren()){
@@ -78,12 +85,18 @@ public class WidgetCreateCommand extends Command {
 					+ (typeIDMap.get(newWidget.getTypeID())==null?
 							0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
 		}
-		container.addChild(newWidget);
+		container.addChild(index, newWidget);
 		container.selectWidget(newWidget, append);
 	}
 	
 	@Override
 	public void undo() {
+		newWidget.setBounds(oldBounds);
 		container.removeChild(newWidget);
 	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 }

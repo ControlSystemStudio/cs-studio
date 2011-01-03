@@ -30,7 +30,6 @@ import java.util.List;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
-import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -181,8 +180,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		AbstractWidgetModel widget = (AbstractWidgetModel)child.getModel();
 		CompoundCommand result = new CompoundCommand("Adding widgets to container");
 		
-		result.add(new AddWidgetCommand(container, widget));
-		result.add(new SetBoundsCommand(widget, (Rectangle) constraint));
+		result.add(new AddWidgetCommand(container, widget, (Rectangle) constraint));
 		return result;		
 	}
 	

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.ChangeOrientationAction;
@@ -49,8 +50,10 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
 import org.csstudio.opibuilder.dnd.TextTransferDropPVTargetListener;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
+import org.csstudio.opibuilder.editparts.WidgetTreeEditpartFactory;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.RulerModel;
 import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
@@ -65,20 +68,31 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.FigureCanvas;
+import org.eclipse.draw2d.LightweightSystem;
+import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.draw2d.parts.ScrollableThumbnail;
+import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
+import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.dnd.TemplateTransferDragSourceListener;
 import org.eclipse.gef.dnd.TemplateTransferDropTargetListener;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
@@ -104,23 +118,38 @@ import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.palette.PaletteViewerProvider;
+import org.eclipse.gef.ui.parts.ContentOutlinePage;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
+import org.eclipse.gef.ui.parts.SelectionSynchronizer;
+import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -131,6 +160,8 @@ import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.IPageSite;
+import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -161,7 +192,12 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 	private OverviewOutlinePage overviewOutlinePage;
 	
+	private OutlinePage outlinePage;
+	
 	private Clipboard clipboard;
+
+	
+	private SelectionSynchronizer synchronizer;
 
 	
 	public OPIEditor() {
@@ -298,9 +334,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 					((ActionBarContributor)getEditorSite().getActionBarContributor()).
 					getActionBars().getStatusLineManager();
 			public void selectionChanged(SelectionChangedEvent event) {				
+				updateStatusLine(statusLine);
+			}			
+		});
+	}
+	private void updateStatusLine(IStatusLineManager statusLine) {
 				List<AbstractBaseEditPart> selectedWidgets = new ArrayList<AbstractBaseEditPart>();
 				for(Object editpart : getGraphicalViewer().getSelectedEditParts()){
-					if(editpart instanceof AbstractBaseEditPart)
+					if(editpart instanceof AbstractBaseEditPart && !(editpart instanceof DisplayEditpart))
 						selectedWidgets.add((AbstractBaseEditPart) editpart);
 				}
 				if(selectedWidgets.size() == 1)
@@ -311,9 +352,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 				else
 					statusLine.setMessage("No widget was selected");
 			}
-		});
-	}
-	
 	/**
 	 * Configure the properties for the rulers.
 	 */
@@ -580,15 +618,18 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class type) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
 		if(type == IPropertySheetPage.class)
 			return getPropertySheetPage();
 		else if (type == ZoomManager.class)
 			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
 				.getRootEditPart()).getZoomManager();
-		else if (type == IContentOutlinePage.class) 
-			return getOverviewOutlinePage();
-			
+//		else if (type == IContentOutlinePage.class) 
+//			return getOverviewOutlinePage();
+		else if (type == IContentOutlinePage.class) {			
+			outlinePage = new OutlinePage(new TreeViewer());
+			return outlinePage;
+		}
 		return super.getAdapter(type);
 	}
 	
@@ -731,6 +772,22 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		return undoablePropertySheetPage;
 	}
 	
+	//Override this to make unselectable widgets won't be selected.
+	@Override
+	protected SelectionSynchronizer getSelectionSynchronizer() {
+		if (synchronizer == null)
+			synchronizer = new SelectionSynchronizer(){
+			protected EditPart convert(EditPartViewer viewer,  EditPart part) {
+				EditPart editPart = super.convert(viewer, part);
+				if(editPart.isSelectable()){
+					return editPart;
+				}
+				return null;
+			};
+		};
+		return synchronizer;
+	}
+	
 	/**
 	 * 
 	 */
@@ -856,6 +913,224 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		CentralLogger.getInstance().error(this, e);
 		ConsoleService.getInstance().writeError("Save Failed! " + e);
 	}
-
 	
+
+	protected FigureCanvas getFigureCanvas(){
+		return (FigureCanvas)getGraphicalViewer().getControl();
+	}
+
+	/**The outline page provide both tree view and overview.
+	 * @author Xihui Chen
+	 *
+	 */
+class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
+	
+	private PageBook pageBook;
+	private Control outline;
+	private Canvas overview;
+	private IAction showOutlineAction, showOverviewAction;
+	static final int ID_OUTLINE  = 0;
+	static final int ID_OVERVIEW = 1;
+	private Thumbnail thumbnail;
+	private DisposeListener disposeListener;
+	
+	public OutlinePage(EditPartViewer viewer){
+		super(viewer);
+	}
+	public void init(IPageSite pageSite) {
+		super.init(pageSite);
+		ActionRegistry registry = getActionRegistry();
+		IActionBars bars = pageSite.getActionBars();
+		String id = ActionFactory.UNDO.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		id = ActionFactory.REDO.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		id = ActionFactory.DELETE.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		id = ActionFactory.COPY.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		id = ActionFactory.PASTE.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		id = ActionFactory.PRINT.getId();
+		bars.setGlobalActionHandler(id, registry.getAction(id));
+		
+		bars.updateActionBars();
+	}
+
+	protected void configureOutlineViewer(){
+		getViewer().setEditDomain(getEditDomain());
+		getViewer().setEditPartFactory(new WidgetTreeEditpartFactory());
+		ContextMenuProvider provider = new OPIEditorContextMenuProvider(
+				OPIEditor.this.getGraphicalViewer(), getActionRegistry());
+		getViewer().setContextMenu(provider);
+		getSite().registerContextMenu(
+			"org.csstudio.opibuilder.outline.contextmenu", //$NON-NLS-1$
+			provider, this);
+		getSite().setSelectionProvider(getViewer());
+		getViewer().setKeyHandler(getCommonKeyHandler());
+		getViewer().addDropTargetListener((TransferDropTargetListener)
+			new TemplateTransferDropTargetListener(getViewer()));
+		
+		// status line listener
+		addSelectionChangedListener(new ISelectionChangedListener() {
+			private IStatusLineManager statusLine =getSite().getActionBars().getStatusLineManager();
+			public void selectionChanged(SelectionChangedEvent event) {
+				Display.getCurrent().asyncExec(new Runnable() {
+					
+					public void run() {
+						updateStatusLine(statusLine);
+						
+					}
+				});
+			}			
+		});
+		
+		IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
+		showOutlineAction = new Action() {
+			public void run() {
+				showPage(ID_OUTLINE);
+			}
+		};
+		showOutlineAction.setImageDescriptor(
+				OPIBuilderPlugin.imageDescriptorFromPlugin(
+						OPIBuilderPlugin.PLUGIN_ID, "icons/treeview.gif")); //$NON-NLS-1$
+		showOutlineAction.setToolTipText("Show Tree View ");
+		tbm.add(showOutlineAction);
+		showOverviewAction = new Action() {
+			public void run() {
+				showPage(ID_OVERVIEW);
+			}
+		};
+		showOverviewAction.setImageDescriptor(
+				OPIBuilderPlugin.imageDescriptorFromPlugin(
+				OPIBuilderPlugin.PLUGIN_ID, "icons/overview.gif")); //$NON-NLS-1$
+		showOverviewAction.setToolTipText("Show Overview");
+		tbm.add(showOverviewAction);
+		showPage(ID_OUTLINE);
+	}
+
+	public void createControl(Composite parent){
+		pageBook = new PageBook(parent, SWT.NONE);
+		outline = getViewer().createControl(pageBook);
+		//a hack to make unselectable widgets in editor unselectable too in the tree viewer.
+		Tree tree = ((Tree)getViewer().getControl());		
+		tree.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ISelection selection = getViewer().getSelection();
+				if(selection instanceof IStructuredSelection){
+					for(Object o : ((IStructuredSelection)selection).toArray()){
+						if(o instanceof EditPart){
+							EditPart editPart = 
+								(EditPart) getGraphicalViewer().getEditPartRegistry().get(((EditPart)o).getModel());
+							if(editPart != null && !(editPart.isSelectable())){								
+								getViewer().deselect((EditPart)o);
+							}
+						}
+					}
+				}
+			}
+		});
+
+		overview = new Canvas(pageBook, SWT.NONE);
+		pageBook.showPage(outline);
+		configureOutlineViewer();
+		hookOutlineViewer();
+		initializeOutlineViewer();
+	}
+	
+	public void dispose(){
+		unhookOutlineViewer();
+		if (thumbnail != null) {
+			thumbnail.deactivate();
+			thumbnail = null;
+		}
+		super.dispose();
+		OPIEditor.this.outlinePage = null;
+		outlinePage = null;
+	}
+	
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+		if (type == ZoomManager.class)
+			return getGraphicalViewer().getProperty(ZoomManager.class.toString());
+		if (type == CommandStack.class)
+			return getCommandStack();
+		return null;
+	}
+
+	public Control getControl() {
+		return pageBook;
+	}
+
+	protected void hookOutlineViewer(){
+		getSelectionSynchronizer().addViewer(getViewer());
+	}
+
+	protected void initializeOutlineViewer(){
+		setContents(getDisplayModel());
+	}
+	
+	protected void initializeOverview() {
+		LightweightSystem lws = new LightweightSystem(overview);
+		RootEditPart rep = getGraphicalViewer().getRootEditPart();
+		if (rep instanceof ScalableFreeformRootEditPart) {
+			ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart)rep;
+			thumbnail = new ScrollableThumbnail((Viewport)root.getFigure());
+			thumbnail.setBorder(new MarginBorder(3));
+			thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
+			lws.setContents(thumbnail);
+			disposeListener = new DisposeListener() {
+				public void widgetDisposed(DisposeEvent e) {
+					if (thumbnail != null) {
+						thumbnail.deactivate();
+						thumbnail = null;
+					}
+				}
+			};
+			getFigureCanvas().addDisposeListener(disposeListener);
+		}
+	}
+	
+	public void setContents(Object contents) {
+		getViewer().setContents(contents);
+	}
+	
+	protected void showPage(int id) {
+		if (id == ID_OUTLINE) {
+			showOutlineAction.setChecked(true);
+			showOverviewAction.setChecked(false);
+			pageBook.showPage(outline);
+			if (thumbnail != null)
+				thumbnail.setVisible(false);
+		} else if (id == ID_OVERVIEW) {
+			if (thumbnail == null)
+				initializeOverview();
+			showOutlineAction.setChecked(false);
+			showOverviewAction.setChecked(true);
+			pageBook.showPage(overview);
+			thumbnail.setVisible(true);
+		}
+	}
+	
+	protected void unhookOutlineViewer(){
+		getSelectionSynchronizer().removeViewer(getViewer());
+		if (disposeListener != null && getFigureCanvas() != null && !getFigureCanvas().isDisposed())
+			getFigureCanvas().removeDisposeListener(disposeListener);
+	}
+	
+	public GraphicalViewer getGraphicalViewer(){
+		return OPIEditor.this.getGraphicalViewer();
+	}
+	
+		/* Override this function, so the selection if actually provided by OPIEditor graphical viewer.
+		 * (non-Javadoc)
+		 * @see org.eclipse.gef.ui.parts.ContentOutlinePage#getSelection()
+		 */
+		@Override
+		public ISelection getSelection() {
+		if (getGraphicalViewer() == null)
+			return StructuredSelection.EMPTY;
+		return getGraphicalViewer().getSelection();
+		}
+}
 }

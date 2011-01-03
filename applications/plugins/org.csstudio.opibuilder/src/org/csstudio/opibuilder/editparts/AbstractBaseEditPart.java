@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.opibuilder.commands.WidgetDeleteCommand;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.editpolicies.WidgetComponentEditPolicy;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -64,10 +63,7 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.editpolicies.ComponentEditPolicy;
-import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.progress.UIJob;
@@ -125,20 +121,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	}
 	@Override
 	protected void createEditPolicies() {
-		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy(){
-			@Override
-			protected Command createDeleteCommand(GroupRequest deleteRequest) {
-				Object containerModel = getHost().getParent().getModel();
-				Object widget = getHost().getModel();
-				
-				if(containerModel instanceof AbstractContainerModel && 
-						widget instanceof AbstractWidgetModel)
-					return new WidgetDeleteCommand((AbstractContainerModel)containerModel,
-							(AbstractWidgetModel)widget);				
-				return super.createDeleteCommand(deleteRequest);
-			}
-	
-		});	
+		installEditPolicy(EditPolicy.COMPONENT_ROLE, new WidgetComponentEditPolicy());	
 	}
 	
 

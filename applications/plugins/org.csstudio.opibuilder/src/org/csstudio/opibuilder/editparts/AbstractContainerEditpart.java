@@ -9,6 +9,7 @@ import java.util.List;
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.dnd.DropPVtoContainerEditPolicy;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
+import org.csstudio.opibuilder.editpolicies.WidgetContainerEditPolicy;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -43,29 +44,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		
-		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ContainerEditPolicy(){
-
-			@Override
-			protected Command getCreateCommand(CreateRequest request) {
-				return null;
-			}
-			
-			@SuppressWarnings("unchecked")
-			@Override
-			protected Command getOrphanChildrenCommand(GroupRequest request) {
-				List parts = request.getEditParts();
-				CompoundCommand result = new CompoundCommand("Orphan Children");
-				for(int i=0; i<parts.size(); i++){					
-					OrphanChildCommand orphan = new OrphanChildCommand((AbstractContainerModel)(getModel()),
-							(AbstractWidgetModel)((EditPart)parts.get(i)).getModel());
-					orphan.setLabel("Reparenting widget");
-					result.add(orphan);
-				}
-				
-				return result.unwrap();
-			}
-			
-		});
+		installEditPolicy(EditPolicy.CONTAINER_ROLE, new WidgetContainerEditPolicy());
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, 
 				getExecutionMode() == ExecutionMode.EDIT_MODE ? new WidgetXYLayoutEditPolicy() : null);
 		

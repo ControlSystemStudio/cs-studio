@@ -62,11 +62,11 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 		if(!pvModel){
 			setTooltip("");
-			removeProperty(PROP_PVNAME);
-			removeProperty(PROP_PVVALUE);
-			removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
-			removeProperty(PROP_BORDER_ALARMSENSITIVE);
-			removeProperty(PROP_FORECOLOR_ALARMSENSITIVE);
+			setPropertyVisible(PROP_PVNAME, false);
+			setPropertyVisible(PROP_PVVALUE, false);
+			setPropertyVisible(PROP_BACKCOLOR_ALARMSENSITIVE, false);
+			setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, false);
+			setPropertyVisible(PROP_FORECOLOR_ALARMSENSITIVE, false);
 		}		
 	}
 

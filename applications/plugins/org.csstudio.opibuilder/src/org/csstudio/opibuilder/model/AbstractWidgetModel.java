@@ -631,6 +631,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	/**
+	 * @return the index of the widget in its parent's children list
+	 */
+	public int getIndex(){
+		if(getParent() == null)
+			return 0;
+		return getParent().getChildren().indexOf(this);
+	}
+	
+	/**
 	 * @param executionMode the executionMode to set
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
