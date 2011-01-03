@@ -561,11 +561,11 @@ public class ModuleEditor extends AbstractNodeEditor {
         GsdModuleModel gsdModuleModel = _module.getGsdModuleModel();
         String[] values = {};
         // if (_module.getConfigurationData() != null) {
-        if (_module.getGsdModuleModel().getValue() != null) {
-            values = _module.getGsdModuleModel().getValue().split(",");
-        }
         String cfgData = _module.getConfigurationData();
         if (gsdModuleModel != null) {
+            if (gsdModuleModel.getValue() != null) {
+                values = gsdModuleModel.getValue().split(",");
+            }
             if ( (gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length)
                     || (values.length % 2 != 0)) {
                 if ( (cfgData != null) && (gsdModuleModel.getExtUserPrmDataConst() != null)) {
@@ -581,7 +581,7 @@ public class ModuleEditor extends AbstractNodeEditor {
                     String[] configurationDatas = _module.getConfigurationData().split(",");
                     for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
                         Integer value = null;
-                        String extUserPrmDataRef = _module.getGsdModuleModel()
+                        String extUserPrmDataRef = gsdModuleModel
                                 .getExtUserPrmDataRef(extUserPrmData.getIndex());
                         int index = Integer.parseInt(extUserPrmDataRef);
                         if (configurationDatas.length > index) {
