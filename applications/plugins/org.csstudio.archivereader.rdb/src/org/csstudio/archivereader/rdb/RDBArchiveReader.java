@@ -273,12 +273,6 @@ public class RDBArchiveReader implements ArchiveReader
             throw new Exception("Count must be positive");
         if (stored_procedure.length() > 0)
         {
-            if ("willnichtweiterstoeren".equals(stored_procedure)) { 
-                // switch via stored procedure name is nonsense, but minimally invasive...
-                ServiceUsingValueIterator servIter = new ServiceUsingValueIterator(name, start, end);
-                final double seconds = (end.toDouble() - start.toDouble()) / count;
-                return new AveragedValueIterator(servIter, seconds);
-            }
             final int channel_id = getChannelID(name);
             return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
         }
