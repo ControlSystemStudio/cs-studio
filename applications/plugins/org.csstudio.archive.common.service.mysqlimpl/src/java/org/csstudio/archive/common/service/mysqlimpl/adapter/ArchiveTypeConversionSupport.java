@@ -24,6 +24,8 @@ package org.csstudio.archive.common.service.mysqlimpl.adapter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -213,7 +215,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
-        return support.convertMultiScalarFromArchiveString(values);
+        return support.convertFromArchiveStringToMultiScalar(values);
     }
 
     /**
@@ -239,44 +241,54 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @CheckForNull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
-        // Parse for generic types: e.g. "Collection<Byte>", "List<Set<EnumTriple>>", ..
-        // That's hard...
-
-        // FIXME (bknerr) : Extract the surrounding generic type (recursively)
-
-        // try Class creation:
-        Class<T> typeClass;
+        Class<T> typeClass = null;
         try {
             typeClass = (Class<T>) Class.forName("java.lang." + datatype);
         } catch (final ClassNotFoundException ce) {
-            // Ignore first
+            try {
+                typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + datatype);
+            } catch (final ClassNotFoundException ce2) {
+                // Ignore
+            }
         }
-        try {
-            typeClass = (Class<T>) Class.forName("java.util." + datatype);
-        } catch (final ClassNotFoundException ce) {
-            // Ignore second
-        }
-        try {
-            typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + datatype);
-        } catch (final ClassNotFoundException ce) {
-            // Don't ignore third
-            throw new TypeSupportException("Class not found for " + datatype, ce);
+        if (typeClass != null) {
+            return fromScalarArchiveString(typeClass, value);
         }
 
-        final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
+        return multiScalarSupport(datatype, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T multiScalarSupport(final String datatype,
+                                            final String value) throws TypeSupportException {
+        // Check datatype for generic part and extract first level:
+        final Pattern p = Pattern.compile("^(List|Set|Vector)<(.+)>$");
+        final Matcher m = p.matcher(datatype);
+        if (m.matches()) {
+            Class<T> typeClass = null;
+            final String elementType = m.group(2); // e.g. Byte from List<Byte>
+            try {
+                typeClass = (Class<T>) Class.forName("java.lang." + elementType);
+            } catch (final ClassNotFoundException ce) {
+                try {
+                    typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + elementType);
+                } catch (final ClassNotFoundException ce2) {
+                    // Ignore
+                }
+            }
+            if (typeClass != null) {
+                return (T) fromMultiScalarArchiveString(typeClass, value);
+            }
         }
-        return support.convertFromArchiveString(value);
+        throw new TypeSupportException("Either class unknown or conversion type support not registered for " + datatype, null);
     }
 
 
     @Nonnull
-    protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
+    protected String convertFromMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
         if (values.isEmpty()) {
             return "";
         }
@@ -303,7 +315,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     @CheckForNull
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @CheckForNull
-    protected abstract Collection<T> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException;
+    protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException;
     @Nonnull
     protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
 }

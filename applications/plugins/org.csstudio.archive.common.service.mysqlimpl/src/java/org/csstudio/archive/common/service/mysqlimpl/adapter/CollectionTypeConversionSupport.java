@@ -57,7 +57,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
             throw new TypeSupportException("No conversion type support registered.", null);
         }
 
-        return convertMultiScalarToArchiveString(values);
+        return convertFromMultiScalarToArchiveString(values);
     }
 
     /**
@@ -84,7 +84,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    protected Collection convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+    protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
                                        " Use .class type of T for a Collection<T>! as parameter." , null);
     }

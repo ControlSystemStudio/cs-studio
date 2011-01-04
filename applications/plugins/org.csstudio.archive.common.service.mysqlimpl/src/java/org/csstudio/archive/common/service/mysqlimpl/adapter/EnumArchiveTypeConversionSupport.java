@@ -126,7 +126,7 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
      */
     @Override
     @Nonnull
-    public Collection<EpicsEnumTriple> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+    public Collection<EpicsEnumTriple> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease(values));
         final Iterable<EpicsEnumTriple> enums =
             Iterables.filter(Iterables.transform(strings, _archiveString2EpicsEnumFunc),
