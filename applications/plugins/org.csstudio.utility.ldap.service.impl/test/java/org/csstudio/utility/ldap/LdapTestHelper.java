@@ -49,13 +49,12 @@ public final class LdapTestHelper {
     public static ILdapService LDAP_SERVICE = createLdapTestConnection();
 
 
-
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(LdapActivator.PLUGIN_ID);
         } catch (final Exception e) {
-            Assert.fail("Unexpected exception");
+            Assert.fail("Unexpected exception: " + e.getMessage());
         }
         return null; // Nonnull annotation is correct, due to assertion failure on provider == null.
     }
