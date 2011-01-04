@@ -243,7 +243,10 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
     @Override
     public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
-            _archive.get().writeMetaData(getChannelConfig(channelName), sample);
+            final ChannelConfig cfg = getChannelConfig(channelName);
+            if (cfg.getMetaData() == null) {
+                _archive.get().writeMetaData(cfg, sample);
+            }
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Committing of meta data failed.", e);
