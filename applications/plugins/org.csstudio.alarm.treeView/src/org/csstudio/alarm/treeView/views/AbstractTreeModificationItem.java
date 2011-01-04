@@ -36,14 +36,12 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractTreeModificationItem implements ITreeModificationItem {
 
-    private boolean _applied = false;
-
     /**
      * {@inheritDoc}
      * @throws AlarmTreeModificationException
      */
     @Override
-    public abstract boolean apply() throws AlarmTreeModificationException;
+    public abstract void apply() throws AlarmTreeModificationException;
 
     /**
      * {@inheritDoc}
@@ -52,19 +50,4 @@ public abstract class AbstractTreeModificationItem implements ITreeModificationI
     @Nonnull
     public abstract String getDescription();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean hasBeenApplied() {
-        return _applied;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setApplied(final boolean applied) {
-        _applied = applied;
-    }
 }
