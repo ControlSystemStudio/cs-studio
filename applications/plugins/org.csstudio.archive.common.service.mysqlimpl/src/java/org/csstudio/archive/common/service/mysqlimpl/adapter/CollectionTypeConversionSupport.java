@@ -43,28 +43,22 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
-    private ArchiveTypeConversionSupport<?> getScalarTypeSupport(@Nonnull final Collection values) throws TypeSupportException {
-        final Class typeClass = values.iterator().next().getClass();
-        final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
-        return support;
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     protected String convertToArchiveString(@Nonnull final Collection values) throws TypeSupportException {
         if (values.isEmpty()) {
             return "";
         }
-        return getScalarTypeSupport(values).convertMultiScalarToArchiveString(values);
+        // TODO (bknerr) : couldn't it be recursive until the non-collection type is met with
+        final Class typeClass = values.iterator().next().getClass();
+        final ArchiveTypeConversionSupport<?> support =
+            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        if (support == null) {
+            throw new TypeSupportException("No conversion type support registered.", null);
+        }
+
+        return convertMultiScalarToArchiveString(values);
     }
-
-
 
     /**
      * {@inheritDoc}

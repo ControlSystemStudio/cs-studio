@@ -23,6 +23,8 @@ package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.types.TypeSupportException;
+
 /**
  * Type conversions for {@link Integer}.
  *
@@ -36,33 +38,11 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Integer convertFromArchiveString(@Nonnull final String value) {
-        return Integer.parseInt(value);
+    public Integer convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+        try {
+            return Integer.parseInt(value);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Parsing failed.", e);
+        }
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Collection<Integer> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
-//        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-//        final Iterable<Integer> ints = Iterables.transform(strings, new Function<String, Integer>() {
-//            @Override
-//            @CheckForNull
-//            public Integer apply(@Nonnull final String from) {
-//                return convertFromArchiveString(from);
-//            }
-//        });
-//        int size;
-//        try {
-//            size = Iterables.size(ints);
-//        } catch (final NumberFormatException e) {
-//            throw new TypeSupportException("Values representation is not convertible to Integer.", e);
-//        }
-//        if (Iterables.size(strings) != size) {
-//            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
-//        }
-//        return Lists.newArrayList(ints);
-//    }
 }

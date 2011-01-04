@@ -60,31 +60,33 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
 
 
     /**
-     * TODO (bknerr) :
+     * Type to archive string converter function for guava collection transforming.
      *
      * @author bknerr
      * @since 22.12.2010
      */
     private final class Type2StringFunction implements Function<T, String> {
+        private final ArchiveTypeConversionSupport<T> _support;
+
         /**
          * Constructor.
+         * @param support
          */
-        public Type2StringFunction() {
-            // Empty
+        public Type2StringFunction(@Nonnull final ArchiveTypeConversionSupport<T> support) {
+            _support = support;
         }
 
         @Override
         @CheckForNull
         public String apply(@Nonnull final T from) {
             try {
-                return ArchiveTypeConversionSupport.toArchiveString(from);
+                return _support.convertToArchiveString(from);
             } catch (final TypeSupportException e) {
                 LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
                 return null;
             }
         }
     }
-    private final Type2StringFunction _type2StringFunc = new Type2StringFunction();
 
     protected static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
@@ -240,9 +242,10 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     @Nonnull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
-        // Parse for generic type
+        // Parse for generic types: e.g. "Collection<Byte>", "List<Set<EnumTriple>>", ..
+        // That's hard...
 
-        // Extract the surrounding generic type (recursively)
+        // FIXME (bknerr) : Extract the surrounding generic type (recursively)
 
         // try Class creation:
         Class<T> typeClass;
@@ -259,7 +262,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         try {
             typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + datatype);
         } catch (final ClassNotFoundException ce) {
-            throw new TypeSupportException("Class not found for " + datatype, null);
+            // Don't ignore third
+            throw new TypeSupportException("Class not found for " + datatype, ce);
         }
 
         final ArchiveTypeConversionSupport<T> support =
@@ -270,10 +274,20 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return support.convertFromArchiveString(value);
     }
 
+
     @Nonnull
     protected String convertMultiScalarToArchiveString(@Nonnull final Collection<T> values) throws TypeSupportException {
+        if (values.isEmpty()) {
+            return "";
+        }
+        @SuppressWarnings("unchecked")
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(values.iterator().next().getClass(),
+                                                                   TYPE_SUPPORTS,
+                                                                   CALC_TYPE_SUPPORTS);
+
         final Collection<String> items =
-            Collections2.filter(Collections2.transform(values, _type2StringFunc),
+            Collections2.filter(Collections2.transform(values,  new Type2StringFunction(support)),
                                 Predicates.<String>notNull());
         if (values.size() != items.size()) {
             throw new TypeSupportException("Number of transformed elements (" + items.size() +
@@ -282,6 +296,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         final String result = Joiner.on(ARCHIVE_COLLECTION_ELEM_SEP).join(items);
         return collectionEmbrace(result);
     }
+
 
     @Nonnull
     protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;

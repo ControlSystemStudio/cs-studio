@@ -23,6 +23,8 @@ package org.csstudio.archive.common.service.mysqlimpl.adapter;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.types.TypeSupportException;
+
 /**
  * Type conversions for {@link Float}.
  *
@@ -36,34 +38,11 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
      */
     @Override
     @Nonnull
-    public Float convertFromArchiveString(@Nonnull final String value) {
-        return Float.parseFloat(value);
+    public Float convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+        try {
+            return Float.parseFloat(value);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Parsing failed.", e);
+        }
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Collection<Float> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
-//        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-//        final Iterable<Float> floats = Iterables.transform(strings, new Function<String, Float>() {
-//            @Override
-//            @CheckForNull
-//            public Float apply(@Nonnull final String from) {
-//                return convertFromArchiveString(from);
-//            }
-//        });
-//        int size;
-//        try {
-//            size = Iterables.size(floats);
-//        } catch (final NumberFormatException e) {
-//            throw new TypeSupportException("Values representation is not convertible to Float.", e);
-//        }
-//        if (Iterables.size(strings) != size) {
-//            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
-//        }
-//        return Lists.newArrayList(floats);
-//    }
-
 }
