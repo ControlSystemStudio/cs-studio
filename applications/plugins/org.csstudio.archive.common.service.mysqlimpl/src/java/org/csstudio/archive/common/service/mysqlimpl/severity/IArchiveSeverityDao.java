@@ -54,4 +54,11 @@ public interface IArchiveSeverityDao {
     @CheckForNull
     IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException;
 
+    /**
+     * @param id
+     * @return
+     * @throws ArchiveDaoException
+     */
+    IArchiveSeverity retrieveSeverityById(ArchiveSeverityId id) throws ArchiveDaoException;
+
 }

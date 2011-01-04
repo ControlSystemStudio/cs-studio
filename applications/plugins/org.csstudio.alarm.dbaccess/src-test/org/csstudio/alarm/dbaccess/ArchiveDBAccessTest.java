@@ -23,13 +23,13 @@ import org.mockito.stubbing.Answer;
  */
 public class ArchiveDBAccessTest {
 
-	private final List<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
-	private final List<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
-	private final List<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
-	private final List<FilterItem> testFilterItemList = new ArrayList<FilterItem>();
+	private static final List<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
+	private static final List<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
+	private static final List<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
+	private static final List<FilterItem> testFilterItemList = new ArrayList<FilterItem>();
 
 	@BeforeClass
-	public void setUp() {
+	public static void setUp() {
 		FilterItem severityItem = new FilterItem("severity", "high", "and");
 		FilterItem typeItem = new FilterItem("type", "event", "and");
 		FilterItem hostItem = new FilterItem("host", "berndTest", "and");

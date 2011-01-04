@@ -28,11 +28,11 @@ import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.sample.ArchiveSampleDTO;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.AbstractIValueConversionTypeSupport;
-import org.csstudio.domain.desy.epics.types.EpicsTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
@@ -57,7 +57,7 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        AbstractIValueConversionTypeSupport.install();
+        EpicsIValueTypeSupport.install();
         ArchiveTypeConversionSupport.install();
     }
 
@@ -111,41 +111,18 @@ public enum ArchiveEngineAdapter {
      * @throws TypeSupportException
      */
     @CheckForNull
-    public <T extends ICssAlarmValueType<?>>
+    public <V, T extends ICssAlarmValueType<V>>
         IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws TypeSupportException {
 
         final IValue value = valueWithId.getValue();
 
         final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
-        final T data = EpicsTypeSupport.toCssType(value);
+        final T data = EpicsIValueTypeSupport.toCssType(value);
 
         if (data == null) {
             return null;
         }
 
-        final IArchiveSample<T, EpicsAlarm> sample = new IArchiveSample<T, EpicsAlarm>() {
-            @Nonnull
-            @Override
-            public ArchiveChannelId getChannelId() {
-                return id;
-            }
-            @Nonnull
-            @Override
-            public T getData() {
-                return data;
-            }
-            @Override
-            @Nonnull
-            public TimeInstant getTimestamp() {
-                return data.getTimestamp();
-            }
-            @Override
-            @CheckForNull
-            public EpicsAlarm getAlarm() {
-                return (EpicsAlarm) data.getAlarm();
-            }
-        };
-
-        return sample;
+        return new ArchiveSampleDTO<V, T, EpicsAlarm>(id, data, data.getTimestamp(), (EpicsAlarm) data.getAlarm());
     }
 }

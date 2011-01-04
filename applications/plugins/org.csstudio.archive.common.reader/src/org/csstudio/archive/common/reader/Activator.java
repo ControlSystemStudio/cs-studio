@@ -19,68 +19,70 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
+package org.csstudio.archive.common.reader;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
+public class Activator implements BundleActivator {
 
-/**
- * Abstract implementation of an archive DAO.
- *
- * @author bknerr
- * @since 10.11.2010
- */
-public abstract class AbstractArchiveDao {
+    public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
 
-    private final ArchiveDaoManager _mgr;
-
+    private static Activator INSTANCE;
+    private static BundleContext CONTEXT;
 
     /**
-     * Constructor.
+     * Don't instantiate.
+     * Called by framework.
      */
-    public AbstractArchiveDao(@Nonnull final ArchiveDaoManager mgr) {
-        _mgr = mgr;
-    }
-
-    /**
-     * Returns the current connection for the dao implementation and its subclasses.
-     * @return the connection
-     * @throws ArchiveConnectionException
-     */
-    @Nonnull
-    protected Connection getConnection() throws ArchiveConnectionException {
-        return _mgr.getConnection();
-    }
-
-    @Nonnull
-    protected ArchiveDaoManager getDaoMgr() {
-        return _mgr;
-    }
-
-    /**
-     * Tries to close the passed statement and logs the given message on closing error.
-     * @param stmt
-     * @param logMsg
-     */
-    protected void closeStatement(@CheckForNull final Statement stmt, @Nonnull final String logMsg) {
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (final SQLException e) {
-                LOG.warn(logMsg);
-            }
+    public Activator() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
+        INSTANCE = this; // Antipattern is required by the framework!
     }
+
+    /**
+     * Returns the singleton instance.
+     *
+     * @return the instance
+     */
+    @Nonnull
+    public static Activator getDefault() {
+        return INSTANCE;
+    }
+
+    /**
+     * Is nonnull if the framework doesn't freak it out.
+     * @return
+     */
+	@Nonnull
+	static BundleContext getContext() {
+		return CONTEXT;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	@Override
+    public void start(@Nonnull final BundleContext bundleContext) throws Exception {
+		Activator.CONTEXT = bundleContext;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	@Override
+    public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
+		Activator.CONTEXT = null;
+	}
+
 }

@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -44,16 +45,21 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
+import org.joda.time.Duration;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 
 /**
@@ -66,9 +72,38 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
+public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
+                                               IArchiveWriterService,
+                                               IArchiveReaderService {
 
     INSTANCE;
+
+    /**
+     * Static converter function.
+     *
+     * @author bknerr
+     * @since 22.12.2010
+     */
+    private static final class ArchiveSampleToIValueFunction implements
+            Function<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
+        /**
+         * Constructor.
+         */
+        public ArchiveSampleToIValueFunction() {
+            // Empty
+        }
+
+        @Override
+         public IValue apply(final IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> from) {
+             try {
+                return EpicsCssValueTypeSupport.toIValue(from.getData());
+            } catch (final TypeSupportException e) {
+                return null;
+            }
+         }
+    }
+    private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
+        new ArchiveSampleToIValueFunction();
 
     /**
      * Converter function with email error.
@@ -76,7 +111,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * @author bknerr
      * @since 20.12.2010
      */
-    private final class IValueWithId2ICssAlarmValueFunction implements
+    private static final class IValueWithId2ICssAlarmValueFunction implements
             Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> {
         /**
          * Constructor.
@@ -109,6 +144,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
             }
         }
     }
+    private static final IValueWithId2ICssAlarmValueFunction IVALUE_2_CSS_VALUE_FUNC =
+        new IValueWithId2ICssAlarmValueFunction();
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
@@ -122,12 +159,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
-       //                   And apparently the type insafeness leads to Object instead of generic type...damn
+       //                   And apparently the type leads to Object instead of generic type...damn
         try {
-            final Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> func =
-                new IValueWithId2ICssAlarmValueFunction();
             final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
-                Collections2.filter(Collections2.transform(samples, func), Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
+                Collections2.filter(Collections2.transform(samples, IVALUE_2_CSS_VALUE_FUNC),
+                                    Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveDaoException e) {
@@ -262,7 +298,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
         // TODO Auto-generated method stub
 
     }
@@ -276,4 +312,39 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws ArchiveDaoException
+     */
+    @Override
+    @Nonnull
+    public Iterable<IValue> readSamples(@Nonnull final String channelName,
+                                        @Nonnull final ITimestamp start,
+                                        @Nonnull final ITimestamp end) throws ArchiveServiceException {
+
+        final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+        final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+        final Duration d = new Duration(s.getInstant(), e.getInstant());
+
+        try {
+            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
+            if (channel == null) {
+                throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
+            }
+        Iterable<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> samples;
+//        if (d.isLongerThan(Duration.standardDays(45))) {
+//            samples = DAO_MGR.getSampleDao().retrieveSamplesPerHour(id, s, e);
+//        } else if (d.isLongerThan(Duration.standardDays(1))) {
+//            samples = DAO_MGR.getSampleDao().retrieveSamplesPerMinute(id, s, e);
+//        } else {
+            samples = DAO_MGR.getSampleDao().retrieveSamples(channel, s, e);
+
+            final Iterable<IValue> iValues =
+                Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
+                                 Predicates.<IValue>notNull());
+            return iValues;
+        } catch (final ArchiveDaoException ade) {
+            throw new ArchiveServiceException("Sample retrieval failed.", ade);
+        }
+    }
 }

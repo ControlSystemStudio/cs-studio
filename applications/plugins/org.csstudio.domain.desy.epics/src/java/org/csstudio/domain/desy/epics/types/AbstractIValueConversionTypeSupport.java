@@ -57,7 +57,36 @@ import com.google.common.primitives.Longs;
  * @param <T> the type of the system variable
  */
 public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmValueType<?>, T extends IValue>
-    extends EpicsTypeSupport<T> {
+    extends EpicsIValueTypeSupport<T> {
+
+    static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
+
+    private static boolean INSTALLED = false;
+
+    /**
+     * Constructor.
+     */
+    AbstractIValueConversionTypeSupport() {
+        // Don't instantiate outside this class
+    }
+
+    public static void install() {
+        if (INSTALLED) {
+            return;
+        }
+        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
+                                           new IDoubleValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
+                                           new IEnumeratedValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(ILongValue.class,
+                                           new ILongValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        AbstractTypeSupport.addTypeSupport(IStringValue.class,
+                                           new IStringValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+
+        INSTALLED = true;
+    }
+
 
     /**
      * IStringIValue converstion support
@@ -83,7 +112,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                 return null;
             }
 
-            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<String>(values[0],
@@ -120,7 +149,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                 return null;
             }
 
-            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<Long>(Long.valueOf(values[0]),
@@ -155,7 +184,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                 return null;
             }
 
-            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
                 return new CssAlarmValueType<Double>(Double.valueOf(values[0]),
@@ -223,39 +252,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
             final EpicsEnumTriple eVal = EpicsEnumTriple.createInstance(index, state, null);
 
-            final EpicsAlarm alarm = EpicsTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
+            final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
 
             return new CssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
         }
-    }
-
-
-    static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
-
-    private static boolean INSTALLED = false;
-
-    /**
-     * Constructor.
-     */
-    AbstractIValueConversionTypeSupport() {
-        // Don't instantiate outside this class
-    }
-
-    public static void install() {
-        if (INSTALLED) {
-            return;
-        }
-        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport());
-        AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport());
-        INSTALLED = true;
     }
 
     @CheckForNull
