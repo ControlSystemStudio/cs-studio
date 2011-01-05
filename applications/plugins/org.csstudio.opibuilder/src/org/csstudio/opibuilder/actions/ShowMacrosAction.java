@@ -2,10 +2,10 @@ package org.csstudio.opibuilder.actions;
 
 import java.util.Map;
 
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
+import org.eclipse.gef.EditPart;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,13 +26,16 @@ public class ShowMacrosAction implements IObjectActionDelegate {
 
 
 	public void run(IAction action) {
-		AbstractWidgetModel widget = getSelectedWidget().getWidgetModel();
+		AbstractWidgetModel widget = (AbstractWidgetModel) getSelectedWidget().getModel();
 		String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
 		StringBuilder sb = new StringBuilder(message);
 		Map<String, String> macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widget);
 		for(final Map.Entry<String, String> entry: macroMap.entrySet()){
 			sb.append(entry.getKey() + "=" + entry.getValue() + "\n");
 		}
+		sb.append("\n");
+		sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
+				"To reflect the latest changes, please reopen the OPI and show macros again.");
 		ConsoleService.getInstance().writeInfo(sb.toString());
 		MessageDialog.openInformation(targetPart.getSite().getShell(),
 				"Predefined Macros", sb.toString());		
@@ -50,9 +53,9 @@ public class ShowMacrosAction implements IObjectActionDelegate {
 	}
 
 	
-	private AbstractBaseEditPart getSelectedWidget(){ 
-		if(selection.getFirstElement() instanceof AbstractBaseEditPart){
-			return (AbstractBaseEditPart)selection.getFirstElement();
+	private EditPart getSelectedWidget(){ 
+		if(selection.getFirstElement() instanceof EditPart){
+			return (EditPart)selection.getFirstElement();
 		}else
 			return null;
 	}
