@@ -38,8 +38,12 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Byte convertFromArchiveString(@Nonnull final String value) {
-        return Byte.parseByte(value);
+    public Byte convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+        try {
+            return Byte.parseByte(value);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Parsing failed.", e);
+        }
     }
 
     /**
@@ -50,30 +54,4 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
     public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
         throw new TypeSupportException("Byte shall not be converted to Double.", null);
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Collection<Byte> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
-//        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-//        final Iterable<Byte> bytes = Iterables.transform(strings, new Function<String, Byte>() {
-//            @Override
-//            @CheckForNull
-//            public Byte apply(@Nonnull final String from) {
-//                return convertFromArchiveString(from);
-//            }
-//        });
-//        int size;
-//        try {
-//            size = Iterables.size(bytes);
-//        } catch (final NumberFormatException e) {
-//            throw new TypeSupportException("Values representation is not convertible to Byte.", e);
-//        }
-//        if (Iterables.size(strings) != size) {
-//            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
-//        }
-//        return Lists.newArrayList(bytes);
-//    }
 }

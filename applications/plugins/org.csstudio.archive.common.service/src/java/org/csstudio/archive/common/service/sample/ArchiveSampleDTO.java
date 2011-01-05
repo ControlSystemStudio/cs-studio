@@ -33,6 +33,9 @@ import org.csstudio.domain.desy.types.ICssAlarmValueType;
  *
  * @author bknerr
  * @since 21.12.2010
+ * @param <V>
+ * @param <T>
+ * @param <A>
  */
 public class ArchiveSampleDTO<V,
                               T extends ICssAlarmValueType<V>,
@@ -47,7 +50,7 @@ public class ArchiveSampleDTO<V,
      * Constructor.
      */
     public ArchiveSampleDTO(@Nonnull final ArchiveChannelId channelId,
-                            @Nonnull final T  data,
+                            @Nonnull final T data,
                             @Nonnull final TimeInstant ts,
                             @Nonnull final A alarm) {
         _channelId = channelId;

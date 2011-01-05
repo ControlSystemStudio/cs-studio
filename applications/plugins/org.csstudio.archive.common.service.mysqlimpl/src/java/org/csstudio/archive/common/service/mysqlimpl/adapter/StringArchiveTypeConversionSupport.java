@@ -74,7 +74,7 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
      */
     @Override
     @Nonnull
-    public Collection<String> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
     }
 

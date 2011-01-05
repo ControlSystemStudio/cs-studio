@@ -152,6 +152,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
     private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
+
+
     /**
      * {@inheritDoc}
      */
@@ -200,6 +202,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
     }
+
 
     /**
      * {@inheritDoc}
