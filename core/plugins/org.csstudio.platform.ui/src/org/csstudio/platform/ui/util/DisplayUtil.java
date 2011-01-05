@@ -51,7 +51,7 @@ public class DisplayUtil
                 final IOpenDisplayAction action =
                         (IOpenDisplayAction) element.createExecutableExtension("class");
                 actions.put(ext, action);
-                System.out.println("OPI: '" + ext + "' -> " + action.getClass().getName());
+                // System.out.println("OPI: '" + ext + "' -> " + action.getClass().getName());
             }
             catch (CoreException ex)
             {
