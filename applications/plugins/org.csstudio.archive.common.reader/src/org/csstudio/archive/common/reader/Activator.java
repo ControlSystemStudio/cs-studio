@@ -24,6 +24,8 @@ package org.csstudio.archive.common.reader;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
+import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -90,4 +92,18 @@ public class Activator implements BundleActivator {
 		_tracker.close();
 	}
 
+    /**
+     * Returns the archive reader service from the service tracker.
+     * @return the archive service or <code>null</code> if not available.
+     * @throws OsgiServiceUnavailableException
+     */
+    public IArchiveReaderService getArchiveReaderService() throws OsgiServiceUnavailableException
+    {
+        final IArchiveReaderService service =
+            (IArchiveReaderService) _tracker.getService();
+        if (service == null) {
+            throw new OsgiServiceUnavailableException("Archive reader service unavailable.");
+        }
+        return service;
+    }
 }

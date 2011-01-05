@@ -117,4 +117,11 @@ public abstract class AbstractTypeSupport<T> {
         return support;
     }
 
+    /**
+     * Returns the installed type support or <code>null</code> if none yet present.
+     * @param clazz
+     * @return
+     */
+    //@CheckForNull
+    //public abstract <T> AbstractTypeSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass);
 }

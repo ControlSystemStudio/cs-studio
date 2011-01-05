@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.data.ITimestamp;
@@ -39,6 +41,14 @@ import org.csstudio.platform.data.IValue;
 public interface IArchiveReaderService {
 
     /**
+     * Returns the supported request types.
+     * If only a single one, then empty set should be returned.
+     * @return the set of supported request types.
+     */
+    @Nonnull
+    Set<IArchiveRequestType> getRequestTypes();
+
+    /**
      * Retrieves the samples from the archive for the given channel and time interval
      * @param channel_id
      * @param start
@@ -46,8 +56,24 @@ public interface IArchiveReaderService {
      * @return
      * @throws ArchiveServiceException
      */
+    @Nonnull
     Iterable<IValue> readSamples(@Nonnull final String channelName,
                                  @Nonnull final ITimestamp start,
                                  @Nonnull final ITimestamp end) throws ArchiveServiceException;
+
+    /**
+     * Retrieves the samples from the archive for the given channel and time interval
+     * @param channel_id
+     * @param start
+     * @param end
+     * @param requestType
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    Iterable<IValue> readSamples(@Nonnull final String channelName,
+                                 @Nonnull final ITimestamp start,
+                                 @Nonnull final ITimestamp end,
+                                 @Nonnull final IArchiveRequestType type) throws ArchiveServiceException;
 
 }

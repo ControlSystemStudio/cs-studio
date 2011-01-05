@@ -321,6 +321,15 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return collectionEmbrace(result);
     }
 
+    @CheckForNull
+    public static <T> ArchiveTypeConversionSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass) {
+        try {
+            return (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        } catch (final TypeSupportException e) {
+            return null;
+        }
+    }
+
 
     @Nonnull
     protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
