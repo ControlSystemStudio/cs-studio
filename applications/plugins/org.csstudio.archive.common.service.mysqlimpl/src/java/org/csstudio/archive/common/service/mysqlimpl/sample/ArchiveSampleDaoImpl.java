@@ -58,7 +58,6 @@ import org.csstudio.domain.desy.types.CssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -123,38 +122,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final Map<ArchiveChannelId, SampleAggregator> hoursMap = Maps.newHashMap();
         _reducedDataMapForHours.set(hoursMap);
     }
-
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @CheckForNull
-//    public TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
-//
-//        PreparedStatement stmt = null;
-//        try {
-//            stmt = getConnection().prepareStatement(_selectLastSmplTimeByChannelIdStmt);
-//            stmt.setInt(1, id.intValue());
-//
-//            final ResultSet result = stmt.executeQuery();
-//            if (result.next()) {
-//
-//                final Timestamp ltstSmplTime = result.getTimestamp(1);
-//                return TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime());
-//            }
-//
-//        } catch (final ArchiveConnectionException e) {
-//            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
-//        } catch (final SQLException e) {
-//            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
-//        } finally {
-//            closeStatement(stmt, "Closing of statement " + _selectLastSmplTimeByChannelIdStmt + " failed.");
-//        }
-//        return null;
-//    }
-
-
 
     /**
      * {@inheritDoc}
@@ -422,30 +389,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public Iterable<IValue> retrieveSamplesPerHour(final ArchiveChannelId id,
-                                                   final TimeInstant s,
-                                                   final TimeInstant e) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Iterable<IValue> retrieveSamplesPerMinute(final ArchiveChannelId id,
-                                                     final TimeInstant s,
-                                                     final TimeInstant e) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+    @Nonnull
     public <V, T extends ICssAlarmValueType<V>>
     Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamples(@Nonnull final IArchiveChannel channel,
                                                             @Nonnull final TimeInstant s,
@@ -484,10 +428,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
 
-    private <V, T extends ICssAlarmValueType<V>> ArchiveSampleDTO<V, T, EpicsAlarm>
-    createSampleFromQueryResult(@Nonnull final String dataType,
-                                @Nonnull final ArchiveChannelId channelId,
-                                @Nonnull final ResultSet result) throws SQLException, ArchiveDaoException, TypeSupportException {
+    private <V, T extends ICssAlarmValueType<V>>
+    ArchiveSampleDTO<V, T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final String dataType,
+                                                                   @Nonnull final ArchiveChannelId channelId,
+                                                                   @Nonnull final ResultSet result) throws SQLException,
+                                                                                                           ArchiveDaoException,
+                                                                                                           TypeSupportException {
         // (sample_time, nanosecs, severity_id, status_id, value)
         final Timestamp timestamp = result.getTimestamp(1);
         final long nanosecs = result.getLong(2);
@@ -516,6 +462,32 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         @SuppressWarnings("unchecked")
         final ArchiveSampleDTO<V, T, EpicsAlarm> sample = new ArchiveSampleDTO<V, T, EpicsAlarm>(channelId, (T) data, timeInstant, alarm);
         return sample;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <T extends ICssValueType<?> & IHasAlarm>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamplesPerHour(@Nonnull final IArchiveChannel channel,
+                                                                   @Nonnull final TimeInstant s,
+                                                                   @Nonnull final TimeInstant e) throws ArchiveDaoException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <T extends ICssValueType<?> & IHasAlarm>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamplesPerMinute(@Nonnull final IArchiveChannel channel,
+                                                                     @Nonnull final TimeInstant s,
+                                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

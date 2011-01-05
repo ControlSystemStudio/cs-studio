@@ -49,17 +49,16 @@ import com.google.common.collect.Maps;
  * @since 15.12.2010
  * @param <T> the supported class type
  * CHECKSTYLE OFF: AbstractClassName
- *                 This class statically is accessed, hence the name should be short and descriptive!
+ *                 This class is accessed statically, hence the name should be short and descriptive!
  *
  */
 public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
+    private static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
         Maps.newHashMap();
-    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
+    private static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
         new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
-
 
     /**
      * Type to archive string converter function for guava collection transforming.
@@ -131,6 +130,15 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                                    input.length() - suffix.length());
         }
         return null;
+    }
+
+    @Nonnull
+    public static Map<Class<?>, AbstractTypeSupport<?>> getTypeSupports() {
+        return TYPE_SUPPORTS;
+    }
+    @Nonnull
+    public static Map<Class<?>, AbstractTypeSupport<?>> getCalcTypeSupports() {
+        return CALC_TYPE_SUPPORTS;
     }
 
     /**
@@ -250,8 +258,10 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         } catch (final ClassNotFoundException ce) {
             try {
                 typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + datatype);
+                // CHECKSTYLE OFF: EmptyBlock
             } catch (final ClassNotFoundException ce2) {
                 // Ignore
+                // CHECKSTYLE ON: EmptyBlock
             }
         }
         if (typeClass != null) {
@@ -275,8 +285,10 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
             } catch (final ClassNotFoundException ce) {
                 try {
                     typeClass = (Class<T>) Class.forName("org.csstudio.domain.desy.epics.types." + elementType);
+                    // CHECKSTYLE OFF: EmptyBlock
                 } catch (final ClassNotFoundException ce2) {
                     // Ignore
+                    // CHECKSTYLE ON: EmptyBlock
                 }
             }
             if (typeClass != null) {

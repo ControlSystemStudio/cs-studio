@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.util.Collection;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -63,8 +62,8 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
-    <T extends ICssValueType<?> & IHasAlarm> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamplesPerHour(ArchiveChannelId id, TimeInstant s, TimeInstant e);
+    <T extends ICssValueType<?> & IHasAlarm>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamplesPerHour(IArchiveChannel channel, TimeInstant s, TimeInstant e) throws ArchiveDaoException;
 
     /**
      * @param id
@@ -72,8 +71,8 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
-    <T extends ICssValueType<?> & IHasAlarm> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamplesPerMinute(ArchiveChannelId id, TimeInstant s, TimeInstant e);
+    <T extends ICssValueType<?> & IHasAlarm>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamplesPerMinute(IArchiveChannel channel, TimeInstant s, TimeInstant e) throws ArchiveDaoException;
 
     /**
      * @param id
@@ -81,6 +80,6 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
-    <V, T extends ICssAlarmValueType<V>> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamples(IArchiveChannel channel, TimeInstant s, TimeInstant e) throws ArchiveDaoException;
+    <V, T extends ICssAlarmValueType<V>>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamples(IArchiveChannel channel, TimeInstant s, TimeInstant e) throws ArchiveDaoException;
 }

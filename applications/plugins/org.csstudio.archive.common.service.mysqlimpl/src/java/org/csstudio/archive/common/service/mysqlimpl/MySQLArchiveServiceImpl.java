@@ -54,7 +54,6 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.joda.time.Duration;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -327,7 +326,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
 
         final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
         final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-        final Duration d = new Duration(s.getInstant(), e.getInstant());
+        //final Duration d = new Duration(s.getInstant(), e.getInstant());
 
         try {
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
