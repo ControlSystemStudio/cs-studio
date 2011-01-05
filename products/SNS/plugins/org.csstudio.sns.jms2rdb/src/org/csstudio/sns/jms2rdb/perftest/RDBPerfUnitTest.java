@@ -1,4 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.perftest;
+
+import static org.junit.Assert.*;
 
 import java.net.InetAddress;
 import java.util.Calendar;
@@ -6,57 +15,58 @@ import java.util.Calendar;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 import org.junit.Test;
 
-/** Simple RDB 'write' performance test.
+/** JUnit test of simple RDB 'write' performance.
  *  <p>
  *  Log messages have 10 properties;
  *  3 in message table, 7 as message content.
  *  One message insert really means:
  *  SELECT new message id
- *  SELECT new message_content id
  *  INSERT message row
  *  bulk INSERT of 7 message_content rows
- *  
+ *
  *  Using 'batched' inserts for the properties.
- *  
- *  Local or networked MySQL: about 150 msg/sec.
+ *
+ *  Local or networked MySQL: about 300 msg/sec after update to 'auto increment'.
  *  SNS Oracle 'devl': about 90 msg/sec.
  *
- *  For a similar 'read' test, see org.csstudio.sns.msghist 
- *  
+ *  For a similar 'read' test, see org.csstudio.sns.msghist
+ *
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
-public class RDBPerfTest
+public class RDBPerfUnitTest
 {
-    /** JMS Server URL */
-    // TODO Don't put the epics_mon PW into CVS!
-    final private static String URL =
-        "jdbc:oracle:thin:epics_mon/PASSWORD@//snsdb1.sns.ornl.gov:1521/prod";
-    final private static String SCHEMA = "EPICS";
+    private static final String MSG_LOG_URL = "msg_log_url";
 
-//    final private static String URL =
-//    "jdbc:mysql://titan-terrier.sns.ornl.gov/log?user=log&password=$log";
-//    final private static String SCHEMA = ""; 
-    
     /** Test runtime */
-    final private static int SECONDS = 60;
+    final private static int SECONDS = 30;
 
     @Test
     public void perfTest() throws Exception
     {
+        final TestProperties settings = new TestProperties();
+        final String url = settings.getString(MSG_LOG_URL);
+        final String schema = settings.getString("msg_log_schema");
+        if (url == null)
+        {
+            System.out.println("Skipping test, need " + MSG_LOG_URL);
+            return;
+        }
+
         // Log4j
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.WARN);
 
-        final RDBWriter rdb_writer = new RDBWriter(URL, SCHEMA);
+        final RDBWriter rdb_writer = new RDBWriter(url, schema);
 
         // Run for some time
-        System.out.println("URL    : " + URL);
+        System.out.println("URL    : " + url);
         System.out.println("Runtime: " + SECONDS + " seconds");
 
         final String host = InetAddress.getLocalHost().getHostName();
@@ -79,5 +89,6 @@ public class RDBPerfTest
         // Stats
         System.out.format("Wrote %d messages = %.1f msg/sec\n",
                 count, ((double) count)/SECONDS);
+        assertTrue(count > 1000);
     }
 }

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb;
 
 import java.net.InetAddress;
@@ -45,10 +52,10 @@ public class LogClientThread extends Thread
 
     /** JMS Server URL */
     final private String jms_url;
-    
+
     /** JMS topic */
     final private String jms_topic;
-    
+
     /** RDB Server URL */
     final private String rdb_url;
 
@@ -57,19 +64,22 @@ public class LogClientThread extends Thread
 
     /** Message filters */
     final private Filter filters[];
-    
+
     /** Log4j Logger */
     final private Logger logger;
 
     /** Flag that tells thread to run or stop. */
     private volatile boolean run = true;
 
+    /** Flag that tells thread main loop to wait. */
+    private boolean do_wait;
+
     /** RDB Writer for log messages */
     private RDBWriter rdb_writer;
 
     /** Counter for received JMS messages */
     private int message_count = 0;
-    
+
     /** Last JMS Message */
     private MapMessage last_message = null;
 
@@ -93,17 +103,17 @@ public class LogClientThread extends Thread
         this.rdb_schema = rdb_schema;
         this.filters = filters;
         logger = CentralLogger.getInstance().getLogger(this);
-        
+
         for (Filter filter : filters)
             logger.info(filter);
     }
-    
+
     /** @return Number of messages received */
     public synchronized int getMessageCount()
     {
         return message_count;
     }
-    
+
     /** @return Last messages received or <code>null</code> */
     public synchronized MapMessage getLastMessage()
     {
@@ -130,14 +140,17 @@ public class LogClientThread extends Thread
                 rdb_writer = new RDBWriter(rdb_url, rdb_schema);
                 logger.info("Connected to RDB " + rdb_url);
                 jms_connection = connectJMS();
-                
+
                 addStartMessage();
-                
+
                 // Incoming JMS messages are handled in onMessage,
                 // so nothing to do here but wait...
                 synchronized (this)
                 {
-                    wait();
+                    do_wait = true;
+                    // Check some condition to please FindBugs
+                    while (do_wait)
+                        wait();
                 }
             }
             catch (Exception ex)
@@ -175,7 +188,10 @@ public class LogClientThread extends Thread
             {   // Error. Wait a little before trying again
                 try
                 {
-                    Thread.sleep(RETRY_DELAY_MS);
+                    synchronized (this)
+                    {
+                        wait(RETRY_DELAY_MS);
+                    }
                 }
                 catch (InterruptedException ex)
                 {
@@ -225,20 +241,23 @@ public class LogClientThread extends Thread
     /** Ask thread to stop. Does not block for thread to actually exit */
     public void cancel()
     {
-        run  = false;
+        run = false;
         synchronized (this)
         {
+            do_wait = false;
             notifyAll();
         }
     }
-    
+
     /** @see JMS ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
         logger.error("JMS Exception", ex);
     }
 
     /** @see JMS MessageListener */
+    @Override
     public void onMessage(final Message message)
     {
         try
@@ -257,7 +276,7 @@ public class LogClientThread extends Thread
                 rdb_writer.write(map);
             }
             else
-                logger.debug("Received " + message.getClass().getName());                
+                logger.debug("Received " + message.getClass().getName());
         }
         catch (Exception ex)
         {
@@ -267,9 +286,11 @@ public class LogClientThread extends Thread
             }
             logger.error("Message handling error", ex);
             ex.printStackTrace();
+            // Leave run == true, toggle a restart
+            run = true;
             synchronized (this)
             {
-                // Leave run == true, toggle a restart
+                do_wait = false;
                 notifyAll();
             }
         }

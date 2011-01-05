@@ -7,14 +7,17 @@ import java.sql.ResultSet;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Patch alarm messages: Attach a 'CONFIG' property unless there is one already.
- *  
+ *
+ *  One-time manual patch tool for SNS, left here in case something similar is needed later on.
+ *
  *  This cannot run while another process like JMS2RDB is inserting
  *  messages since they'll collide with duplicate MSG_LOG.MESSAGE_CONTENT.ID
  *  values.
- *  
+ *
  *  @author Kay Kasemir
  */
-public class patchAlarmMessages
+@SuppressWarnings("nls")
+public class PatchAlarmMessages
 {
     private static PreparedStatement next_prop_id_sel;
     private static PreparedStatement insert_prop;
@@ -25,17 +28,17 @@ public class patchAlarmMessages
         final String url = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
         final String user = "ics_msg_log_app";
         final String password = "SET ME";
-        
+
         rdb = RDBUtil.connect(url, user, password, false);
         try
         {
             final Connection connection = rdb.getConnection();
             connection.setAutoCommit(false);
-            
+
             next_prop_id_sel = connection.prepareStatement("SELECT MAX(ID) FROM MSG_LOG.MESSAGE_CONTENT");
 
             insert_prop = connection.prepareStatement("INSERT INTO MSG_LOG.MESSAGE_CONTENT(ID,MESSAGE_ID,MSG_PROPERTY_TYPE_ID,VALUE) VALUES(?,?,?,?)");
-            
+
             // Get all 'alarm' messages
             final PreparedStatement msg_sel =
                 connection.prepareStatement("SELECT ID FROM MSG_LOG.MESSAGE WHERE TYPE=? AND ID > 12872 AND ID < 50000");
@@ -60,6 +63,8 @@ public class patchAlarmMessages
                 }
                 prop_res.close();
             }
+            prop_sel.close();
+            msg_sel.close();
         }
         finally
         {
@@ -74,7 +79,7 @@ public class patchAlarmMessages
             throw new Exception("No new ID");
         final int prop_id = result.getInt(1) + 1;
         result.close();
-        
+
         insert_prop.setInt(1, prop_id);
         insert_prop.setInt(2, msg_id);
         insert_prop.setInt(3, 16);
