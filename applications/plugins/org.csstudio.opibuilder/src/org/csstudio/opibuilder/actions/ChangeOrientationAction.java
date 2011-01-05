@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.ChangeOrientationCommand;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -74,9 +74,9 @@ public class ChangeOrientationAction extends SelectionAction {
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	
 		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getWidgetModel());
+			if (o instanceof EditPart) {
+				selectedWidgetModels.add(
+						(AbstractWidgetModel) ((EditPart) o).getModel());
 			}
 		}
 		return selectedWidgetModels;

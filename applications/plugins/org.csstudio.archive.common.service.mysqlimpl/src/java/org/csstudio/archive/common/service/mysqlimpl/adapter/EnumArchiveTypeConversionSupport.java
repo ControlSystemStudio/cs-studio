@@ -46,6 +46,33 @@ import com.google.common.collect.Lists;
 public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<EpicsEnumTriple> {
 
     /**
+     * guava converter function
+     *
+     * @author bknerr
+     * @since 22.12.2010
+     */
+    private final class ArchiveString2EpicsEnumFunction implements
+            Function<String, EpicsEnumTriple> {
+        /**
+         * Constructor.
+         */
+        public ArchiveString2EpicsEnumFunction() {
+            // Empty
+        }
+
+        @Override
+          @CheckForNull
+          public EpicsEnumTriple apply(@Nonnull final String from) {
+              try {
+                  return convertFromArchiveString(from);
+              } catch (final TypeSupportException e) {
+                  return null;
+              }
+          }
+    }
+    private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc = new ArchiveString2EpicsEnumFunction();
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -102,18 +129,8 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     public Collection<EpicsEnumTriple> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease(values));
         final Iterable<EpicsEnumTriple> enums =
-            Iterables.filter(Iterables.transform(strings, new Function<String, EpicsEnumTriple>() {
-                                                              @Override
-                                                              @CheckForNull
-                                                              public EpicsEnumTriple apply(@Nonnull final String from) {
-                                                                  try {
-                                                                      return convertFromArchiveString(from);
-                                                                  } catch (final TypeSupportException e) {
-                                                                      return null;
-                                                                  }
-                                                              }
-                                                }),
-                                                Predicates.<EpicsEnumTriple>notNull());
+            Iterables.filter(Iterables.transform(strings, _archiveString2EpicsEnumFunc),
+                             Predicates.<EpicsEnumTriple>notNull());
         int size;
         try {
             size = Iterables.size(enums);

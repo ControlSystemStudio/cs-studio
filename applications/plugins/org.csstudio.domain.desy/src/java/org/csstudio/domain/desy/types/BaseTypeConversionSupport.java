@@ -26,25 +26,35 @@ import javax.annotation.Nonnull;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
  *
  * @author bknerr
  * @since 17.12.2010
+ * CHECKSTYLE OFF: AbstractClassName
+ *                 This class statically is accessed, hence the name should be short and descriptive!
+ *
  */
-public final class BaseTypeConversionSupport {
-
+public abstract class BaseTypeConversionSupport {
+    // CHECKSTYLE ON : AbstractClassName
     /**
      * Constructor.
      */
     private BaseTypeConversionSupport() {
-        // may later inherit {@link org.csstudio.domain.desy.types.TypeSupport}
+        // Empty
     }
 
     @Nonnull
     public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
         return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
     }
+
+    @Nonnull
+    public static ITimestamp toTimestamp(@Nonnull final TimeInstant ti) {
+        return TimestampFactory.createTimestamp(ti.getSeconds(), ti.getFractalSecondsInNanos());
+    }
+
 
 }

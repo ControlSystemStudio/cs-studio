@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -41,7 +42,6 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 import com.google.common.base.Predicate;
@@ -57,17 +57,21 @@ import com.google.common.collect.Maps;
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
 
+    private static final String EXC_MSG = "Channel configuration retrieval from archive failed.";
     /**
      * Archive channel configuration cache.
      */
-    private final Map<String, IArchiveChannel> _channelCache = Maps.newHashMap();
+    private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
+    private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE name=?";
+        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE name=?";
+    private final String _selectChannelByIdStmt =
+        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE id=?";
     private final String _selectChannelsByGroupId =
-        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE group_id=? ORDER BY name";
+        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time FROM archive_new.channel WHERE group_id=? ORDER BY name";
 
     /**
      * Constructor.
@@ -77,6 +81,47 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         super(mgr);
     }
 
+
+    private void handleExceptions(@Nonnull final Exception inE) throws ArchiveDaoException {
+        try {
+            throw inE;
+        } catch (final SQLException e) {
+            throw new ArchiveDaoException(EXC_MSG, e);
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveDaoException(EXC_MSG, e);
+        } catch (final ClassNotFoundException e) {
+            throw new ArchiveDaoException(EXC_MSG + " Type class unknown.", e);
+        } catch (final Exception re) {
+            throw new RuntimeException(re);
+        }
+    }
+
+    private IArchiveChannel getChannelFromResult(final ResultSet result) throws SQLException,
+    ClassNotFoundException {
+        // id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time
+        final ArchiveChannelId id = new ArchiveChannelId(result.getLong(1));
+        final String name = result.getString(2);
+        final String datatype = result.getString(3);
+        final long groupId = result.getLong(4);
+        final int sampleMode = result.getInt(5);
+        final double samplePeriod = result.getDouble(6);
+        final Timestamp lastSampleTime = result.getTimestamp(7);
+
+        final IArchiveChannel channel =
+            new ArchiveChannelDTO(id,
+                                  name,
+                                  datatype,
+                                  new ArchiveChannelGroupId(groupId),
+                                  new ArchiveSampleModeId(sampleMode),
+                                  samplePeriod,
+                                  TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime()),
+                                  0.0);
+
+        _channelCacheByName.put(name, channel);
+        _channelCacheById.put(id, channel);
+        return channel;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -84,7 +129,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     @CheckForNull
     public IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveDaoException {
 
-        IArchiveChannel channel = _channelCache.get(name);
+        IArchiveChannel channel = _channelCacheByName.get(name);
         if (channel != null) {
             return channel;
         }
@@ -96,31 +141,42 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
-                // id, group_id, sample_mode_id, sample_period, last_sample_time
-                final long id = result.getLong(1);
-                final long groupId = result.getLong(2);
-                final int sampleMode = result.getInt(3);
-                //final double sampleVal = result.getDouble(4);
-                final double samplePeriod = result.getDouble(4);
-                final Timestamp ltstSmplTime = result.getTimestamp(5);
-
-                channel = new ArchiveChannelDTO(new ArchiveChannelId(id),
-                                                name,
-                                                new ArchiveChannelGroupId(groupId),
-                                                new ArchiveSampleModeId(sampleMode),
-                                                0.0, // we need that for DeltaArchiveChannel (if != 0.0)?
-                                                samplePeriod,
-                                                TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime()));
-
-                _channelCache.put(name, channel);
+                channel = getChannelFromResult(result);
             }
-
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
+        } catch (final Exception e) {
+            handleExceptions(e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelByNameStmt + " failed.");
+        }
+        return channel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
+
+        IArchiveChannel channel = _channelCacheById.get(id);
+        if (channel != null) {
+            return channel;
+        }
+
+        PreparedStatement stmt = null;
+        try {
+            stmt = getConnection().prepareStatement(_selectChannelByIdStmt);
+            stmt.setInt(1, id.intValue());
+
+            final ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                channel = getChannelFromResult(result);
+            }
+
+        } catch (final Exception e) {
+            handleExceptions(e);
+        } finally {
+            closeStatement(stmt, "Closing of statement " + _selectChannelByIdStmt + " failed.");
         }
         return channel;
     }
@@ -138,50 +194,39 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         }
         // Nothing yet in the cache? Ask the database:
         final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
+        final Map<ArchiveChannelId, IArchiveChannel> tempCacheById = Maps.newHashMap();
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
             stmt.setInt(1, groupId.intValue());
+
             final ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                // id, name, sample_mode_id, sample_period, last_sample_time
-                final long id = result.getInt(1);
-                final String name = result.getString(2);
-                final int sampleModeId = result.getInt(3);
-                //final double sampleVal = result.getDouble(4);
-                final double samplePer = result.getDouble(4);
-                final Timestamp ltstSmplTime = result.getTimestamp(5);
-                final TimeInstant instant = ltstSmplTime == null ? null :
-                                                                   TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime());
-                final IArchiveChannel channel =
-                    new ArchiveChannelDTO(new ArchiveChannelId(id),
-                                          name,
-                                          groupId,
-                                          new ArchiveSampleModeId(sampleModeId),
-                                          0.0, // we need that for DeltaArchiveChannel (if != 0.0)?
-                                          samplePer,
-                                          instant);
+                final IArchiveChannel channel = getChannelFromResult(result);
 
-                tempCache.put(name, channel);
+                tempCache.put(channel.getName(), channel);
+                tempCacheById.put(channel.getId(), channel);
             }
-            _channelCache.putAll(tempCache); // cache the overall result
+
+            _channelCacheByName.putAll(tempCache); // cache the overall result
+            _channelCacheById.putAll(tempCacheById); // cache the overall result
+
             return tempCache.values();
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
+        } catch (final Exception e) {
+            handleExceptions(e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
         }
+        return Collections.emptyList();
     }
 
     @Nonnull
     private Collection<IArchiveChannel> getChannelsByGroupIdFromCache(@Nonnull final ArchiveChannelGroupId groupId) {
         final Collection<IArchiveChannel> filteredList =
-            Collections2.filter(_channelCache.values(), new Predicate<IArchiveChannel>() {
+            Collections2.filter(_channelCacheByName.values(), new Predicate<IArchiveChannel>() {
                 @Override
-                public boolean apply(@Nonnull final IArchiveChannel input) {
-                    return input.getGroupId().equals(groupId);
+                public boolean apply(@Nonnull final IArchiveChannel cacheElem) {
+                    return cacheElem.getGroupId().equals(groupId);
                 }
             });
         return filteredList;

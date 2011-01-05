@@ -22,12 +22,9 @@
 package org.csstudio.domain.desy.types;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.Maps;
 
 /**
  * Type support after carcassi's pattern: {@link org.epics.pvmanager.TypeSupport}
@@ -45,9 +42,6 @@ public abstract class AbstractTypeSupport<T> {
         // To be invoked by implementing classes only
     }
 
-    private static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS = Maps.newHashMap();
-    private static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS = new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
-
     /**
      * Adds support for a new type.
      *
@@ -56,9 +50,11 @@ public abstract class AbstractTypeSupport<T> {
      * @param typeSupport the support for the type
      */
     public static <T> void addTypeSupport(@Nonnull final Class<T> typeClass,
-                                          @Nonnull final AbstractTypeSupport<T> typeSupport) {
-        TYPE_SUPPORTS.put(typeClass, typeSupport);
-        CALC_TYPE_SUPPORTS.remove(typeClass);
+                                          @Nonnull final AbstractTypeSupport<T> typeSupport,
+                                          @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> supportMap,
+                                          @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> calcSupportMap) {
+        supportMap.put(typeClass, typeSupport);
+        calcSupportMap.remove(typeClass);
     }
 
     /**
@@ -72,14 +68,16 @@ public abstract class AbstractTypeSupport<T> {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    protected static <T> AbstractTypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass) throws TypeSupportException {
-        AbstractTypeSupport<T> support = (AbstractTypeSupport<T>) CALC_TYPE_SUPPORTS.get(typeClass);
+    protected static <T> AbstractTypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass,
+                                                                     @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> supportMap,
+                                                                     @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> calcSupportMap) throws TypeSupportException {
+        AbstractTypeSupport<T> support = (AbstractTypeSupport<T>) calcSupportMap.get(typeClass);
         if (support == null) {
-            support = recursiveTypeSupportFor(typeClass);
+            support = recursiveTypeSupportFor(typeClass, supportMap);
             if (support == null) {
                 Class<? super T> superClass = typeClass.getSuperclass();
                 while (!superClass.equals(Object.class)) {
-                    support = (AbstractTypeSupport<T>) TYPE_SUPPORTS.get(superClass);
+                    support = (AbstractTypeSupport<T>) supportMap.get(superClass);
                     if (support != null) {
                         break;
                     }
@@ -89,7 +87,7 @@ public abstract class AbstractTypeSupport<T> {
             if (support == null) {
                 throw new TypeSupportException("No type support found for type " + typeClass, null);
             }
-            CALC_TYPE_SUPPORTS.put(typeClass, support);
+            calcSupportMap.put(typeClass, support);
         }
         return support;
     }
@@ -105,11 +103,12 @@ public abstract class AbstractTypeSupport<T> {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    static <T> AbstractTypeSupport<T> recursiveTypeSupportFor(@Nonnull final Class<T> typeClass) {
-        AbstractTypeSupport<T> support = (AbstractTypeSupport<T>) TYPE_SUPPORTS.get(typeClass);
+    static <T> AbstractTypeSupport<T> recursiveTypeSupportFor(@Nonnull final Class<T> typeClass,
+                                                              @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> supportMap) {
+        AbstractTypeSupport<T> support = (AbstractTypeSupport<T>) supportMap.get(typeClass);
         if (support == null) {
             for (@SuppressWarnings("rawtypes") final Class clazz : typeClass.getInterfaces()) {
-                support = recursiveTypeSupportFor(clazz);
+                support = recursiveTypeSupportFor(clazz, supportMap);
                 if (support != null) {
                     return support;
                 }

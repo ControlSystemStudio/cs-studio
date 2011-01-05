@@ -29,7 +29,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -38,7 +37,6 @@ import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Maps;
 
@@ -50,9 +48,6 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchiveStatusDao {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveStatusDaoImpl.class);
-
     private static final String RETRIEVAL_FAILED = "Status retrieval from archive failed.";
 
     /**
@@ -60,9 +55,12 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
      */
     private final Map<EpicsAlarmStatus, IArchiveStatus> _statusCache = Maps.newEnumMap(EpicsAlarmStatus.class);
 
+    private final Map<ArchiveStatusId, IArchiveStatus> _statusCacheById = Maps.newHashMap();
+
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectStatusByNameStmt = "SELECT id FROM archive_new.status WHERE name=?";
+    private final String _selectStatusByIdStmt = "SELECT name FROM archive_new.status WHERE id=?";
 
     /**
      * Constructor.
@@ -108,6 +106,8 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
                 final IArchiveStatus newStts = new ArchiveStatusDTO(id, stts.name());
 
                 _statusCache.put(stts, newStts);
+                _statusCacheById.put(id, newStts);
+
                 return newStts;
             }
         } catch (final ArchiveConnectionException e) {
@@ -115,13 +115,43 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final SQLException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectStatusByNameStmt + " failed.");
-                }
+            closeStatement(stmt, "Closing of statement " + _selectStatusByNameStmt + " failed.");
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveStatus retrieveStatusById(@Nonnull final ArchiveStatusId id) throws ArchiveDaoException {
+
+        final IArchiveStatus status = _statusCacheById.get(id);
+        if (status != null) {
+            return status;
+        }
+        PreparedStatement stmt = null;
+        try {
+            stmt = getConnection().prepareStatement(_selectStatusByIdStmt);
+            stmt.setLong(1, id.longValue());
+
+            final ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                final String name = result.getString(1);
+                final IArchiveStatus newStts = new ArchiveStatusDTO(id, name);
+
+                _statusCache.put(EpicsAlarmStatus.parseStatus(name), newStts);
+                _statusCacheById.put(id, newStts);
+
+                return newStts;
             }
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } catch (final SQLException e) {
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } finally {
+            closeStatement(stmt, "Closing of statement " + _selectStatusByNameStmt + " failed.");
         }
         return null;
     }

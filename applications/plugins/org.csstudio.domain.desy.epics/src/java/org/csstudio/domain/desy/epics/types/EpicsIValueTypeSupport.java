@@ -21,6 +21,9 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +36,9 @@ import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
+
+import com.google.common.collect.Maps;
 
 /**
  * TODO (bknerr) :
@@ -43,8 +49,17 @@ import org.csstudio.platform.data.IValue;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
+public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
+
+    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
+        Maps.newHashMap();
+    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
+        new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
+
+    public static void install() {
+        AbstractIValueConversionTypeSupport.install();
+    }
 
     /**
      * Tries to convert the given IValue type and its accompanying parms to the css value type.
@@ -61,7 +76,7 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
-            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass);
+            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
@@ -83,13 +98,19 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
     @CheckForNull
     public static EpicsAlarm toEpicsAlarm(@CheckForNull final ISeverity sev,
                                           @Nullable final String status) {
+        final EpicsAlarmSeverity severity = toEpicsSeverity(sev);
+        return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
+    }
+
+    @CheckForNull
+    public static EpicsAlarmSeverity toEpicsSeverity(@CheckForNull final ISeverity sev) {
         // once before...
         if (sev == null) {
             return null;
         }
         EpicsAlarmSeverity severity = null;
-        // Unfortunately ISeverity is not an enum (if it were, I would have used it)
-        // so dispatch - btw from the interface the mutual exclusion of these states is not ensured
+        // Unfortunately ISeverity is not an enum (if it were, I would have used it) so dispatch
+        // btw from the interface the mutual exclusion of these states is not ensured
         if (sev.isOK()) {
             severity = EpicsAlarmSeverity.NO_ALARM;
         } else if (sev.isMinor()) {
@@ -103,6 +124,18 @@ public abstract class EpicsTypeSupport<T> extends AbstractTypeSupport<T> {
         if (severity == null) {
             return null;
         }
-        return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
+        return severity;
+    }
+
+    @CheckForNull
+    public static ISeverity toSeverity(@Nonnull final EpicsAlarmSeverity sev) {
+        switch (sev) {
+            case UNKNOWN : // unknown->no alarm is apparently wrong, but once you use ISeverity, well, you're wrong.
+            case NO_ALARM : return ValueFactory.createOKSeverity();
+            case MINOR :    return ValueFactory.createMinorSeverity();
+            case MAJOR :    return ValueFactory.createMajorSeverity();
+            case INVALID :  return ValueFactory.createInvalidSeverity();
+        }
+        return null;
     }
 }

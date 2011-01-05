@@ -27,12 +27,12 @@ import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editor.OPIEditor;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.visualparts.PropertiesSelectDialog;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.dnd.Transfer;
@@ -117,9 +117,9 @@ public class CopyPropertiesAction extends SelectionAction {
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	
 		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getWidgetModel());
+			if (o instanceof EditPart) {
+				selectedWidgetModels.add((AbstractWidgetModel) ((EditPart) o)
+						.getModel());
 			}
 		}
 		return selectedWidgetModels;

@@ -70,7 +70,7 @@ public final class RenameModificationItem extends AbstractTreeModificationItem {
      * {@inheritDoc}
      */
     @Override
-    public boolean apply() throws AlarmTreeModificationException {
+    public void apply() throws AlarmTreeModificationException {
         try {
             _newLdapName.remove(_newLdapName.size() - 1);
             final Rdn rdn = new Rdn(_node.getTreeNodeConfiguration().getNodeTypeName(), _newName);
@@ -81,13 +81,11 @@ public final class RenameModificationItem extends AbstractTreeModificationItem {
                 throw new AlarmTreeModificationException("Rename failed.", null);
             }
             service.rename(_oldLdapName, _newLdapName);
-            setApplied(true);
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final NamingException e) {
             throw new AlarmTreeModificationException("LDAP rename action failed.", e);
         }
-        return true;
     }
 
     /**

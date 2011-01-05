@@ -8,12 +8,11 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.ChangeOrderCommand;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
-import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -126,7 +125,9 @@ public class ChangeOrderAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {		
-		if(getSelectedObjects().size() == 0 || getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof DisplayEditpart)
+		if(getSelectedObjects().size() == 0 || 
+				getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
+				&& ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
 			return false;
 		Map<AbstractContainerModel, List<IndexedWidget>> widgetMap = 
 			new HashMap<AbstractContainerModel, List<IndexedWidget>>();
@@ -228,12 +229,12 @@ public class ChangeOrderAction extends SelectionAction {
 			Map<AbstractContainerModel, List<IndexedWidget>> widgetMap) {
 		
 		for(Object selection : getSelectedObjects()){
-			if(selection instanceof AbstractBaseEditPart){
-				AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
-				AbstractWidgetModel widgetModel = widgetEditpart.getWidgetModel();
-				if(widgetEditpart.getParent() instanceof AbstractContainerEditpart){
+			if(selection instanceof EditPart){
+				EditPart widgetEditpart = (EditPart)selection;
+				AbstractWidgetModel widgetModel = (AbstractWidgetModel) widgetEditpart.getModel();
+				if(widgetEditpart.getParent() != null){
 					AbstractContainerModel containerModel = 
-						((AbstractContainerEditpart)widgetEditpart.getParent()).getWidgetModel();
+						(AbstractContainerModel) widgetEditpart.getParent().getModel();
 					
 					if(!widgetMap.containsKey(containerModel)){
 						widgetMap.put(containerModel, new LinkedList<IndexedWidget>());

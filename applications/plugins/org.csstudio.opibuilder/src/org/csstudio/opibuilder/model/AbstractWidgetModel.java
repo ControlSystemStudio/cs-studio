@@ -232,9 +232,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new IntegerProperty(PROP_HEIGHT, "Height", 
 				WidgetPropertyCategory.Position, 100, 1, 10000));		
 		addProperty(new IntegerProperty(PROP_XPOS, "X", 
-				WidgetPropertyCategory.Position, 100));
+				WidgetPropertyCategory.Position, 0));
 		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
-				WidgetPropertyCategory.Position, 100));			
+				WidgetPropertyCategory.Position, 0));			
 		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
 				WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
 		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",

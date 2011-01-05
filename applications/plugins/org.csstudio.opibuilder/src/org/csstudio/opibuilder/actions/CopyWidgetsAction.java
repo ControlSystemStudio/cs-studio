@@ -6,12 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.csstudio.opibuilder.editor.OPIEditor;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.ISharedImages;
@@ -45,9 +45,9 @@ public class CopyWidgetsAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(getSelectedObjects().size() <=0 || 
-				((getSelectedObjects().size() == 1)&& 
-						getSelectedObjects().get(0) instanceof DisplayEditpart))
+		if(getSelectedObjects().size() == 0 || 
+				getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
+				&& ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
 			return false;
 		return true;
 	}
@@ -84,9 +84,9 @@ public class CopyWidgetsAction extends SelectionAction {
 		List<AbstractWidgetModel> result = new ArrayList<AbstractWidgetModel>();
 		AbstractContainerModel parent = null;
 		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
+			if (o instanceof EditPart && !(o instanceof DisplayEditpart)) {
 				AbstractWidgetModel widgetModel = 
-					((AbstractBaseEditPart) o).getWidgetModel();
+					(AbstractWidgetModel) ((EditPart) o).getModel();
 				if(parent == null)
 					parent = widgetModel.getParent();
 				if(widgetModel.getParent() == parent)
