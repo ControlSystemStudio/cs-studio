@@ -23,8 +23,7 @@ package org.csstudio.archive.common.reader;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -32,10 +31,12 @@ public class Activator implements BundleActivator {
 
     public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
-
     private static Activator INSTANCE;
     private static BundleContext CONTEXT;
+
+
+    // Anti pattern galore - but minimally invasive
+    private ArchiveReaderServiceTracker _tracker;
 
     /**
      * Don't instantiate.
@@ -74,6 +75,9 @@ public class Activator implements BundleActivator {
 	@Override
     public void start(@Nonnull final BundleContext bundleContext) throws Exception {
 		Activator.CONTEXT = bundleContext;
+
+		_tracker = new ArchiveReaderServiceTracker(bundleContext);
+		_tracker.open();
 	}
 
 	/*
@@ -83,6 +87,7 @@ public class Activator implements BundleActivator {
 	@Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 		Activator.CONTEXT = null;
+		_tracker.close();
 	}
 
 }

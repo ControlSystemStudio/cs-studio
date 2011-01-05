@@ -46,7 +46,7 @@ public class ServiceUsingValueIterator implements ValueIterator {
 
     // Anti pattern galore - but minimally invasive
     private static ArchiveReaderServiceTracker TRACKER =
-        new ArchiveReaderServiceTracker(Activator.getDefault().getContext());
+        new ArchiveReaderServiceTracker(Activator.getContext());
     static {
         TRACKER.open();
     }
