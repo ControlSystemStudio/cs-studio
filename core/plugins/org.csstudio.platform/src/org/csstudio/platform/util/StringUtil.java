@@ -159,7 +159,10 @@ public final class StringUtil {
 			while(pos < trimmedSource.length() && trimmedSource.charAt(pos) !=splitChar) {
 				//in case of quote, go to the end of next quote
 				if(trimmedSource.charAt(pos) == QUOTE) {
-					final int end = trimmedSource.indexOf(QUOTE, pos+1);
+				    // When locating the ending quote, ignore escaped quotes
+					int end = trimmedSource.indexOf(QUOTE, pos+1);
+					while (end > 0  &&  trimmedSource.charAt(end-1) == '\\')
+					    end = trimmedSource.indexOf(QUOTE, end+1);
 					if(end < 0) {
                         throw new Exception("Missing end of quoted text in '" +
 								trimmedSource + "'");
