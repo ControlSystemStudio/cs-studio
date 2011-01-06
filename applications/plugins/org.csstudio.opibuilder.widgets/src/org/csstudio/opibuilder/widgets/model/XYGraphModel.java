@@ -49,7 +49,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		SHOW_GRID("show_grid", "Show Grid"),
 		GRID_COLOR("grid_color", "Grid Color"),
 		DASH_GRID("dash_grid_line", "Dash Grid Line"),
-		NUMERIC_FORMAT_PATTERN("numeric_format_pattern", "Numeric Format Pattern");		
+		SCALE_FORMAT("scale_format", "Scale Format");		
 		
 		public String propIDPre;
 		public String description;
@@ -285,7 +285,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case VISIBLE:
 			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
 			break;
-		case NUMERIC_FORMAT_PATTERN:
+		case SCALE_FORMAT:
 			addProperty(new StringProperty(propID, axisProperty.toString(), category, "")); //$NON-NLS-1$
 			break;
 		default:

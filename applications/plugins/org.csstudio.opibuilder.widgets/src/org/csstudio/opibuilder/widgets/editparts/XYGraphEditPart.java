@@ -9,6 +9,7 @@ import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
@@ -346,12 +347,19 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			case Y_AXIS:
 				axis.setYAxis((Boolean)newValue);
 				break;
-			case NUMERIC_FORMAT_PATTERN:
-				if(((String)newValue).trim().equals(""))
+			case SCALE_FORMAT:
+				if(((String)newValue).trim().equals("")) //$NON-NLS-1$
 					axis.setAutoFormat(true);
 				else{
 					axis.setAutoFormat(false);
-					axis.setFormatPattern((String)newValue);
+					try {
+						axis.setFormatPattern((String)newValue);
+					} catch (Exception e) {
+						ConsoleService.getInstance().writeError((String)newValue + 
+								" is illegal Numeric Format." + 
+								" The axis will be auto formatted.");
+						axis.setAutoFormat(true);
+					}
 				}
 				break;
 			default:
