@@ -78,6 +78,7 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
 				newBounds.height = getHeightFromWidth(newBounds.width, widgetModel);
 			}
 		}		
+		feedbackFigure.translateToRelative(newBounds);
 		feedbackFigure.setBounds(newBounds);
 	}
 
@@ -96,7 +97,7 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
 						getWidthFromHeight(size.height, (AbstractWidgetModel) request.getNewObject()));
 			size.height = getHeightFromWidth(size.width, (AbstractWidgetModel) request.getNewObject());
 		}
-		feedback.setBounds(new Rectangle(p, size));
+		feedback.setBounds(new Rectangle(p, size).expand(insets));
 	}
 
 	
