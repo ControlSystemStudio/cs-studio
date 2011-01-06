@@ -246,7 +246,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			feedbackFactory.showSizeOnDropFeedback(request, feedbackFigure,
 				getCreationFeedbackOffset(request));
 
-			feedbackFigure.repaint();
+			//feedbackFigure.repaint();
 		}else{
 			super.showSizeOnDropFeedback(request);
 		}
