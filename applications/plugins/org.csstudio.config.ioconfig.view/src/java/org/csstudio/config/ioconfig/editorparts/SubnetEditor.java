@@ -28,15 +28,19 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -70,6 +74,9 @@ import org.eclipse.swt.widgets.Text;
 public class SubnetEditor extends AbstractNodeEditor {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.subnet";
+    
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(SubnetEditor.class);
 
     /**
      * An array with all kinds of Baudrates.
@@ -157,45 +164,6 @@ public class SubnetEditor extends AbstractNodeEditor {
     private ComboViewer _facilityViewer;
 
     /**
-     * @param parent
-     *            The Parent Composite.
-     * @param profiBusTreeView
-     *            The Tree of all node from the IO Config.
-     * @param subnet
-     *            to Configure. Is NULL create a new one.
-     */
-    //    public SubNetConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
-    //            final ProfibusSubnet subnet) {
-    //        super(parent, profiBusTreeView, "Profibus Subnet Configuration", subnet, subnet == null);
-    //        profiBusTreeView.setConfiguratorName("Subnet Configuration");
-    //        _subnet = subnet;
-    //
-    //        // No Subnet, create a new one.
-    //        if (_subnet == null) {
-    //            newNode();
-    //            _subnet.setTtr(750000);
-    //            _subnet.setWatchdog(1000);
-    //        }
-    //        setSavebuttonEnabled(null, getNode().isPersistent());
-    //        parent.addControlListener(new ControlListener() {
-    //
-    //            public void controlMoved(final ControlEvent e) {
-    //            }
-    //
-    //            public void controlResized(final ControlEvent e) {
-    //                SubNetConfigComposite.this.pack();
-    //            }
-    //        });
-    //
-    //        // Headline for the different Tab's.
-    //        String[] heads = { "General", "Net Settings" };
-    //        general(heads[0]);
-    //        netSetting(heads[1]);
-    //        documents();
-    //        getTabFolder().pack();
-    //    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -274,12 +242,16 @@ public class SubnetEditor extends AbstractNodeEditor {
         Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
         _subnet.setDocuments(docs);
 
-        if(updateChildrens) {
-            _subnet.update();
-//            updateChildens();
+        
+        try {
+            if (updateChildrens) {
+                _subnet.update();
+            }
+            save();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            DeviceDatabaseErrorDialog.open(null, "Can't save Subnet! Database error.", e);
         }
-
-        save();
     }
 
     /**

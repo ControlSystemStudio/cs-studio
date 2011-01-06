@@ -44,6 +44,7 @@ import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
@@ -147,11 +148,11 @@ public class SlaveDBO extends AbstractNodeDBO {
     public SlaveDBO() {
     }
 
-    public SlaveDBO(final MasterDBO master) {
+    public SlaveDBO(final MasterDBO master) throws PersistenceException {
         this(master, -1);
     }
 
-    public SlaveDBO(final MasterDBO master, final int stationAddress) {
+    public SlaveDBO(final MasterDBO master, final int stationAddress) throws PersistenceException {
         setParent(master);
         master.addChild(this);
         moveSortIndex(stationAddress);
@@ -460,9 +461,10 @@ public class SlaveDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof MasterDBO) {
             MasterDBO master = (MasterDBO) parentNode;
             SlaveDBO copy = new SlaveDBO(master);
@@ -497,9 +499,10 @@ public class SlaveDBO extends AbstractNodeDBO {
      *
      * @param index
      *            the new sortIndex for this node.
+     * @throws PersistenceException 
      */
     @Override
-    public void moveSortIndex(final int toIndex) {
+    public void moveSortIndex(final int toIndex) throws PersistenceException {
     	short index = (short) toIndex;
         if (index == getSortIndex()) {
             // no new Address don't move

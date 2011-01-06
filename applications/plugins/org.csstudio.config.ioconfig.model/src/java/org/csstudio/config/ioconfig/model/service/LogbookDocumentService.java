@@ -34,6 +34,7 @@ import java.util.List;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.platform.logging.CentralLogger;
@@ -48,9 +49,10 @@ public class LogbookDocumentService implements DocumentService {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public void openDocument(final String id) {
+    public void openDocument(final String id) throws PersistenceException {
         DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
         File createTempFile = null;
         try {
@@ -65,9 +67,9 @@ public class LogbookDocumentService implements DocumentService {
                     }
                 }
             }
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+//        } catch (SQLException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -87,8 +89,9 @@ public class LogbookDocumentService implements DocumentService {
 
     /**
      * Get all Document from a Node.
+     * @throws PersistenceException 
      */
-    List<IDocument> getAllDocumentsFromNode(final int nodeId){
+    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException{
         List<IDocument> docList = new ArrayList<IDocument>();
         AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class, nodeId);
         while(load!=null) {

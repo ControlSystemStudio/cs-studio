@@ -54,8 +54,9 @@ public class IocDBO extends AbstractNodeDBO {
     /**
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
+     * @throws PersistenceException 
      */
-    public IocDBO(@Nonnull final FacilityDBO facility) {
+    public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
         this(facility, DEFAULT_MAX_STATION_ADDRESS);
 
     }
@@ -64,8 +65,9 @@ public class IocDBO extends AbstractNodeDBO {
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
      * @param maxStationAddress the highest possible Station Address.
+     * @throws PersistenceException 
      */
-    public IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) {
+    public IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
         setParent(facility);
         facility.addChild(this);
     }
@@ -101,9 +103,10 @@ public class IocDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(@Nonnull final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof FacilityDBO) {
             final FacilityDBO facility = (FacilityDBO) parentNode;
             final IocDBO copy = new IocDBO(facility);
@@ -116,9 +119,10 @@ public class IocDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
         final AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);

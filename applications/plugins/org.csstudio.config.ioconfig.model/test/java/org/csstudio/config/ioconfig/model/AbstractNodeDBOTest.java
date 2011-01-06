@@ -27,7 +27,7 @@ public class AbstractNodeDBOTest {
 
     @Test
     @Ignore("Need a correct TEST DB")
-    public void loadNode() {
+    public void loadNode() throws PersistenceException {
 
         final Collection<FacilityDBO> result = Repository.load(FacilityDBO.class);
 
@@ -46,7 +46,7 @@ public class AbstractNodeDBOTest {
 
     @Test
     @Ignore("Need a correct TEST DB")
-    public void loadIoc() {
+    public void loadIoc() throws PersistenceException {
 
         final Collection<IocDBO> result = Repository.load(IocDBO.class);
 

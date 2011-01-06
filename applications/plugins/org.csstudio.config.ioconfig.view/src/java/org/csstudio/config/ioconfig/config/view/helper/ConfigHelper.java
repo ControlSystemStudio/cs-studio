@@ -40,13 +40,16 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -145,13 +148,19 @@ public final class ConfigHelper {
             if (_doIt) {
                 // TODO: Hier gibt es noch ein GDI Object leak.
                 short index = (short) _indexSpinner.getSelection();
-                _node.moveSortIndex(index);
-                if (_node.getParent() != null) {
-                    _profiBusTreeView.refresh(_node.getParent());
-                } else {
-                    _profiBusTreeView.refresh();
+                
+                try {
+                    _node.moveSortIndex(index);
+                    if (_node.getParent() != null) {
+                        _profiBusTreeView.refresh(_node.getParent());
+                    } else {
+                        _profiBusTreeView.refresh();
+                    }
+                    _lastValue = index;
+                } catch (PersistenceException e1) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't move node!", e1);
+                    CentralLogger.getInstance().error(this, e1);
                 }
-                _lastValue = index;
             }
         }
 

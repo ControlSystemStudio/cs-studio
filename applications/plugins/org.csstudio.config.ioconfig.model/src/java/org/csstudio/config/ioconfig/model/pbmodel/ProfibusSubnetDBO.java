@@ -13,6 +13,7 @@ import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /***********************************************************
  * Data model for Profibus-DP Subnet *
@@ -96,12 +97,13 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
 
     /**
      * The default Constructor.
+     * @throws PersistenceException 
      */
-    public ProfibusSubnetDBO(final IocDBO ioc) {
+    public ProfibusSubnetDBO(final IocDBO ioc) throws PersistenceException {
         this(ioc, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) {
+    public ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) throws PersistenceException {
         setParent(ioc);
         // setSortIndex(ioc.getfirstFreeStationAddress(maxStationAddress));
         ioc.addChild(this);
@@ -444,9 +446,10 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parent) throws PersistenceException {
         if (parent instanceof IocDBO) {
             IocDBO ioc = (IocDBO) parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
@@ -478,7 +481,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);

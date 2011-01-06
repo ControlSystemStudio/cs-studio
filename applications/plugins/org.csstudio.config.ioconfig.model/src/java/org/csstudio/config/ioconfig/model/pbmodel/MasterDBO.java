@@ -40,6 +40,7 @@ import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 /*******************************************************************************
@@ -144,12 +145,13 @@ public class MasterDBO extends AbstractNodeDBO {
 
     /**
      * The default Constructor.
+     * @throws PersistenceException 
      */
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet) {
+    public MasterDBO(final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
         this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) {
+    public MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -316,7 +318,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public SortedSet<Short> getFreeStationAddress(){
+    public SortedSet<Short> getFreeStationAddress() throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -331,7 +333,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public SortedSet<Short> getFreeMStationAddress(final boolean redunant){
+    public SortedSet<Short> getFreeMStationAddress(final boolean redunant) throws PersistenceException{
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -350,15 +352,16 @@ public class MasterDBO extends AbstractNodeDBO {
 
 
     @Transient
-    public short getfirstFreeStationAddress(final int maxStationAddress) {
+    public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         return getFreeStationAddress().first();
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof ProfibusSubnetDBO) {
             ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
 
@@ -382,7 +385,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);

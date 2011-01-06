@@ -40,9 +40,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -96,7 +99,12 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
         _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ArrayList<StyleRange> styleRanges = new ArrayList<StyleRange>();
         
-        createChildren(text, styleRanges);
+        try {
+            createChildren(text, styleRanges);
+        } catch (PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
+            CentralLogger.getInstance().error(this, e.getLocalizedMessage());
+        }
         
         _ioNameList.addModifyListener(getMLSB());
         _ioNameList.setFocus();
@@ -106,9 +114,10 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
 	/**
 	 * @param text
 	 * @param styleRanges
+	 * @throws PersistenceException 
 	 */
 	private void createChildren(@Nonnull StyledText text,
-			@Nonnull ArrayList<StyleRange> styleRanges) {
+			@Nonnull ArrayList<StyleRange> styleRanges) throws PersistenceException {
 		if (_channelStructure.hasChildren()) {
             StringBuilder sbIOName = new StringBuilder();
             StringBuilder sbDesc = new StringBuilder();
@@ -169,12 +178,19 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
         super.doSave(monitor);
         String text = _ioNameList.getText();
         String[] ioNames = text.split(LS);
-        ChannelDBO[] channels = _channelStructure.getChildrenAsMap().values().toArray(new ChannelDBO[0]);
-        for (int i = 0; (i < channels.length) && (i < ioNames.length); i++) {
-            channels[i].setIoName(ioNames[i]);
+        
+        ChannelDBO[] channels;
+        try {
+            channels = _channelStructure.getChildrenAsMap().values().toArray(new ChannelDBO[0]);
+            for (int i = 0; (i < channels.length) && (i < ioNames.length); i++) {
+                channels[i].setIoName(ioNames[i]);
+            }
+            _ioNameList.setData(_ioNameList.getText());
+            save();
+        } catch (PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't node save. Database error.", e);
+            CentralLogger.getInstance().error(this, e.getLocalizedMessage());
         }
-        _ioNameList.setData(_ioNameList.getText());
-        save();
     }
 
     /**

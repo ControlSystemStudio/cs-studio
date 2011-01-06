@@ -30,7 +30,10 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -72,7 +75,12 @@ public class FacilityEditor extends AbstractNodeEditor{
         super(true);
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();
-        getNode().moveSortIndex(sortIndex);
+        try {
+            getNode().moveSortIndex(sortIndex);
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+            DeviceDatabaseErrorDialog.open(null, "Can't create Facility. Database Error.", e);
+        }
         buildGui();
     }
 

@@ -48,5 +48,5 @@ public interface IDocument {
 
     Date getEntrydate();
 
-    InputStream getImageData() throws SQLException;
+    InputStream getImageData() throws PersistenceException;
 }

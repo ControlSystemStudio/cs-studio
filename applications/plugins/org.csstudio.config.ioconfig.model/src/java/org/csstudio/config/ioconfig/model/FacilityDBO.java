@@ -71,9 +71,10 @@ public class FacilityDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         final AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);

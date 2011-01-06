@@ -26,6 +26,8 @@ package org.csstudio.config.ioconfig.model.service;
 
 import java.io.File;
 
+import org.csstudio.config.ioconfig.model.PersistenceException;
+
 /**
  * This Service handle Documents from the DESY eLogbook.
  *
@@ -44,8 +46,9 @@ public interface DocumentService {
     /**
      * Open the Document with the OS default Application.
      * @param id The ID of the Document.
+     * @throws PersistenceException 
      */
-    void openDocument(String id);
+    void openDocument(String id) throws PersistenceException;
 
     /**
      * Save the a Document to the File-System.

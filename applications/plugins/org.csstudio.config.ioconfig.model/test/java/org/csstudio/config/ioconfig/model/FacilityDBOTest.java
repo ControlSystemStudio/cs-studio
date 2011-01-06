@@ -77,8 +77,9 @@ public class FacilityDBOTest {
      * @param string
      * @param docs
      * @return
+     * @throws PersistenceException 
      */
-    private FacilityDBO CreateFacility(String string, Set<DocumentDBO> docs) {
+    private FacilityDBO CreateFacility(String string, Set<DocumentDBO> docs) throws PersistenceException {
         final FacilityDBO facility = new FacilityDBO();
         facility.setCreatedBy("Creater");
         facility.setCreatedOn(Date.valueOf("2011-11-11"));

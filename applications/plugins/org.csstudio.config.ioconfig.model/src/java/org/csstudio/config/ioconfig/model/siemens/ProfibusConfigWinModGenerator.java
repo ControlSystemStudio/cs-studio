@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
@@ -77,8 +78,9 @@ public class ProfibusConfigWinModGenerator {
     *
     * @param subnet
     *            The Profibus Subnet.
+     * @throws PersistenceException 
     */
-    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
         _winModSlaveAdr.append(",'Treibersignal','Adresse','Symbol','Typ','Default Wert','Kommentar'").append(LINE_END);
         _lineNr++;
         Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
@@ -97,9 +99,10 @@ public class ProfibusConfigWinModGenerator {
     }
 
     /**
+     * @throws PersistenceException 
      *
      */
-    private void createSlave(@Nonnull final SlaveDBO slave) {
+    private void createSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
     	_id = slave.getSortIndex();
     	_slot = 1;
         int normslaveParamDataSize = 0;
@@ -155,8 +158,9 @@ public class ProfibusConfigWinModGenerator {
 
     /**
      * @param module
+     * @throws PersistenceException 
      */
-    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) {
+    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
 		String slaveCfgData = module.getGsdModuleModel().getValue()
 				.replaceAll("0x", "");
@@ -184,8 +188,9 @@ public class ProfibusConfigWinModGenerator {
 
 	/**
 	 * @param channelStructureDBO
+	 * @throws PersistenceException 
 	 */
-	private void createChannel(ChannelStructureDBO channelStructureDBO) {
+	private void createChannel(ChannelStructureDBO channelStructureDBO) throws PersistenceException {
 		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChannelsAsMap();
 		Set<Short> keySet = channelsAsMap.keySet();
 		for (Short key : keySet) {

@@ -33,14 +33,15 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -428,7 +429,13 @@ public class SearchDialog extends Dialog {
 		// SWT.PRIMARY_MODAL);
 		setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE
 				| SWT.PRIMARY_MODAL);
-		_load = Repository.load(SearchNodeDBO.class);
+		try {
+            _load = Repository.load(SearchNodeDBO.class);
+        } catch (PersistenceException e) {
+            _load = null;
+            DeviceDatabaseErrorDialog.open(null, "Can't read from Datebase!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
 	}
 
 	/**
@@ -806,8 +813,15 @@ public class SearchDialog extends Dialog {
 			// "Nicht geladen",
 			// "Ihre Auswahl wurde noch nicht geladen. Soll sie jetzt geladen werden?");
 			// if (openQuestion) {
-			setSelectedNode(Repository.load(AbstractNodeDBO.class,
-					getSelectedId()));
+			try {
+                AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class,
+                		getSelectedId());
+                setSelectedNode(load);
+            } catch (PersistenceException e) {
+                _searchNode=null;
+                DeviceDatabaseErrorDialog.open(null, "Can't load seleceted node! Database Error.", e);
+                CentralLogger.getInstance().error(this, e);
+            }
 			if (_searchNode != null) {
 				AbstractNodeDBO parentNode = _selectedNode;
 				while (!parentNode.isRootNode()) {

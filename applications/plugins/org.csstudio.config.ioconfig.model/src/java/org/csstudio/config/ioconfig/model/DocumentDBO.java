@@ -182,8 +182,14 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     }
 
     @Transient
-    public InputStream getImageData() throws SQLException {
-        return _image.getBinaryStream();
+    public InputStream getImageData() throws PersistenceException {
+        try {
+            return _image.getBinaryStream();
+        } catch (SQLException e) {
+            PersistenceException persistenceException = new PersistenceException();
+            persistenceException.setStackTrace(e.getStackTrace());
+            throw persistenceException;
+        }
     }
     
     
