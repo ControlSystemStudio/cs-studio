@@ -8,9 +8,7 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 
 import de.desy.aapi.AapiClient;
-import de.desy.aapi.AapiReductionMethod;
-import de.desy.aapi.AnswerData;
-import de.desy.aapi.RequestData;
+import de.desy.aapi.AapiException;
 
 /**
  * Access to aapi server.
@@ -32,46 +30,27 @@ public class AapiArchiveReader implements ArchiveReader {
 		_aapiClient = createAapiClient(url);
 	}
 
-	private AapiClient createAapiClient(String url) {
-		String[] urlParts = url.split("//");
-		String[] hostAndPort = urlParts[1].split(":");
-		_host = hostAndPort[0];
-		_port = null;
-		try {
-			_port = Integer.parseInt(hostAndPort[1]);
-		} catch (NumberFormatException e) {
-			CentralLogger.getInstance().getLogger(this).error("invalid url format");
-		}
-		return new AapiClient(_host, _port);
-	}
 
 	/** 
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getServerName() {
-		System.out.println();
 		return "Aapi Server";
 	}
 
 	@Override
 	public String getURL() {
-		System.out.println();
 		return _url;
 	}
 
 	@Override
 	public String getDescription() {
-		System.out.println();
-		System.out.println();
-		// TODO Auto-generated method stub
-		return null;
+		return _aapiClient.getDescription();
 	}
 
 	@Override
 	public int getVersion() {
-		System.out.println();
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -84,37 +63,33 @@ public class AapiArchiveReader implements ArchiveReader {
 	@Override
 	public String[] getNamesByPattern(int key, String glob_pattern)
 			throws Exception {
-		System.out.println();
-		// TODO Auto-generated method stub
+		//SDDS as long term archive does not support a name service, use channelarchiver instead.
 		return null;
 	}
 
 	@Override
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
-		System.out.println();
-		// TODO Auto-generated method stub
+		//SDDS as long term archive does not support a name service, use channelarchiver instead.
 		return null;
 	}
 
 	@Override
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
-		return null;
+		AapiValueIterator valueIterator = new RawAapiValueIterator(_aapiClient, key, name,
+				start, end);
+		valueIterator.getData();
+		return valueIterator;
 	}
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name,
 			ITimestamp start, ITimestamp end, int count)
 			throws UnknownChannelException, Exception {
-		RequestData requestData = new RequestData();
-		requestData.setFromTime((int) start.seconds());
-		requestData.setToTime((int) end.seconds());
-		requestData.setNum(500);
-		requestData.setPV(new String[] {name});
-		requestData.setConversParam(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD.getMethodNumber());
-		AnswerData data = _aapiClient.getData(requestData);
-			System.out.println();
-		return null;
+		AapiValueIterator valueIterator = new MinMaxAapiValueIterator(_aapiClient, key, name,
+				start, end, count);
+		valueIterator.getData();
+		return valueIterator;
 	}
 
 	@Override
@@ -123,6 +98,28 @@ public class AapiArchiveReader implements ArchiveReader {
 
 	@Override
 	public void close() {
+		//TODO (jhatje): Add cancel option for aapi request.
+		cancel();
+		_aapiClient = null;
 	}
 
+	/**
+	 * Create the Aapi server for the url
+	 * 
+	 * TODO (jhatje) aapiClient in factory erzeugen.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws Exception
+	 */
+	private AapiClient createAapiClient(String url) throws Exception {
+		String[] urlParts = url.split("//");
+		if (!urlParts[0].equalsIgnoreCase("aapi:")) {
+			throw new AapiException("Invalid prefix for aapi server");
+		}
+		String[] hostAndPort = urlParts[1].split(":");
+		_host = hostAndPort[0];
+		_port = Integer.parseInt(hostAndPort[1]);
+		return new AapiClient(_host, _port);
+	}
 }
