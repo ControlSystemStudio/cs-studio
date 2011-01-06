@@ -19,6 +19,7 @@ import javax.naming.NamingException;
  *
  * @author <code>splitIgnoreInQuotes</code> by Xihui Chen
  */
+@SuppressWarnings("nls")
 public final class StringUtil {
 
     /**
@@ -28,7 +29,7 @@ public final class StringUtil {
         // Don't instantiate
     }
 
-	public static String printArrays(final Object value) {
+    public static String printArrays(final Object value) {
 		String result = null;
 
 		if (value == null) {
