@@ -23,11 +23,12 @@ public class WidgetTreeEditPolicy extends AbstractEditPolicy {
 	protected Command getMoveCommand(ChangeBoundsRequest req){
 		EditPart parent = getHost().getParent();
 		if(parent != null){
-			req.setType(REQ_MOVE_CHILDREN);
-//			ChangeBoundsRequest request = new ChangeBoundsRequest(REQ_MOVE_CHILDREN);
-//			request.setEditParts(getHost());
-//			request.setLocation(req.getLocation());
-			return parent.getCommand(req);
+			ChangeBoundsRequest request = new ChangeBoundsRequest(REQ_MOVE_CHILDREN);
+			//request.setEditParts(getHost());
+			request.setEditParts(req.getEditParts());
+			request.setLocation(req.getLocation());
+			req.setType(""); //$NON-NLS-1$
+			return parent.getCommand(request);
 		}
 		return UnexecutableCommand.INSTANCE;
 	}

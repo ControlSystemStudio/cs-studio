@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.opibuilder.actions.ShowIndexInTreeViewAction;
 import org.csstudio.opibuilder.editpolicies.WidgetComponentEditPolicy;
 import org.csstudio.opibuilder.editpolicies.WidgetTreeEditPolicy;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -76,10 +77,13 @@ public class WidgetTreeEditpart extends AbstractTreeEditPart {
 	
 	@Override
 	protected String getText() {
-//		StringBuilder sb = new StringBuilder(Integer.toString(getWidgetModel().getIndex()));
-//		sb.append("_"); //$NON-NLS-1$
+
 		StringBuilder sb = new StringBuilder();
-		
+		Object obj = getViewer().getProperty(ShowIndexInTreeViewAction.SHOW_INDEX_PROPERTY);
+		if(obj != null && obj instanceof Boolean && (Boolean)obj){
+			sb.append(Integer.toString(getWidgetModel().getIndex()));
+			sb.append("_"); //$NON-NLS-1$
+		}
 		sb.append(getWidgetModel().getName());
 		if(getWidgetModel() instanceof AbstractPVWidgetModel){
 			 AbstractPVWidgetModel pvWidgetModel = (AbstractPVWidgetModel)getWidgetModel();
