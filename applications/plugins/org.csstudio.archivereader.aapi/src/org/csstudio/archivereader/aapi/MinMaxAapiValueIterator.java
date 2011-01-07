@@ -18,39 +18,36 @@ import de.desy.aapi.AnswerData;
 public class MinMaxAapiValueIterator extends AapiValueIterator {
 
 	private INumericMetaData _meta;
-	private AnswerData _data;
+
 	//TODO (jhatje) paramter hochreichen.
 	public MinMaxAapiValueIterator(AapiClient aapiClient, int key, String name,
 			ITimestamp start, ITimestamp end, int count) {
 		super(aapiClient, key, name, start, end);
 		setCount(count);
-		_requestData.setConversParam(AAPI.DEADBAND_PARAM);
-		_requestData
-				.setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
-
+		setConversionParam(AAPI.DEADBAND_PARAM);
+		setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
 	}
 
 	@Override
 	void dataConversion(AnswerData answerData, List<IMinMaxDoubleValue> result) {
-		_meta = ValueFactory.createNumericMetaData(_data.getDisplayLow(),
-				_data.getDisplayHigh(), _data.getLowAlarm(),
-				_data.getHighWarning(), _data.getLowAlarm(),
-				_data.getHighAlarm(), _data.getPrecision(), _data.getEgu());
-		for (int i = 0; i+2 < _data.getData().length; i = i+3) {
+		_meta = ValueFactory.createNumericMetaData(answerData.getDisplayLow(),
+				answerData.getDisplayHigh(), answerData.getLowAlarm(),
+				answerData.getHighWarning(), answerData.getLowAlarm(),
+				answerData.getHighAlarm(), answerData.getPrecision(), answerData.getEgu());
+		for (int i = 0; i+2 < answerData.getData().length; i = i+3) {
 			
 			ITimestamp time = TimestampFactory.createTimestamp(
-					_data.getTime()[i],
-					_data.getUTime()[i]);
+					answerData.getTime()[i],
+					answerData.getUTime()[i]);
 			double[] value = new double[1];
-			value[0] = _data.getData()[i+2];
+			value[0] = answerData.getData()[i+2];
 			ISeverity sevr = new SeverityImpl("NO_ALARM", true, true);
 			String stat = "ok";
-			Double min = _data.getData()[i];
-			Double max = _data.getData()[i+1];
+			Double min = answerData.getData()[i];
+			Double max = answerData.getData()[i+1];
 			result.add(ValueFactory.createMinMaxDoubleValue(time, sevr, stat,
 					(INumericMetaData) _meta, IValue.Quality.Interpolated,
 					value, min, max));
-		// TODO Auto-generated method stub
 		}	
 	}
 	

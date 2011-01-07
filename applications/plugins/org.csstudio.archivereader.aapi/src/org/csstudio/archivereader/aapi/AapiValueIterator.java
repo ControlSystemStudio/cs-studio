@@ -9,20 +9,20 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
 import de.desy.aapi.AapiClient;
+import de.desy.aapi.AapiReductionMethod;
 import de.desy.aapi.AnswerData;
 import de.desy.aapi.RequestData;
 
 public abstract class AapiValueIterator implements ValueIterator {
 
 	private final AapiClient _aapiClient;
-	RequestData _requestData;
+	private RequestData _requestData = new RequestData();
 	
 	private List<IMinMaxDoubleValue> _result = new ArrayList<IMinMaxDoubleValue>();
 
 	public AapiValueIterator(AapiClient aapiClient, int key, String name,
 			ITimestamp start, ITimestamp end) {
 		_aapiClient = aapiClient;
-		_requestData = new RequestData();
 		_requestData.setFromTime((int) start.seconds());
 		_requestData.setToTime((int) end.seconds());
 		_requestData.setPvList(new String[]{name});
@@ -32,6 +32,13 @@ public abstract class AapiValueIterator implements ValueIterator {
 		_requestData.setNumberOfSamples(count);
 	}
 	
+	public void setConversionParam(double deadbandParam) {
+		_requestData.setConversParam(deadbandParam);
+	}
+	
+	public void setConversionMethod(AapiReductionMethod minMaxAverageMethod) {
+		_requestData.setConversionMethod(minMaxAverageMethod);
+	}
 	
 	@Override
 	public boolean hasNext() {
@@ -67,4 +74,5 @@ public abstract class AapiValueIterator implements ValueIterator {
 	}
 
 	abstract void dataConversion(AnswerData answerData, List<IMinMaxDoubleValue> result);
+
 }

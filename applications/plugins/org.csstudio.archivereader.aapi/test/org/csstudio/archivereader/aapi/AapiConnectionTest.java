@@ -27,16 +27,24 @@ public class AapiConnectionTest {
 	public void testGetData() {
 		RequestData requestData = new RequestData();
 		requestData.setFromTime(1267350000);
-		requestData.setToTime(1267350060);
+		requestData.setToTime(1267355000);
 		requestData.setUFromTime(0);
 		requestData.setUToTime(0);
-		requestData.setNumberOfSamples(20);
-		requestData.setPvList(new String[] {"krykWeather:Temp_ai"});
+		requestData.setNumberOfSamples(10);
+		requestData.setPvList(new String[] {"krykWeather:vWindBoe_ai"});
 		requestData.setConversParam(AAPI.DEADBAND_PARAM);
-//		requestData.setConversionMethod(AapiReductionMethod.NO_FILTERING_METHOD);
 		requestData.setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
 		AnswerData data = _aapiClient.getData(requestData);
 		assertNotNull(data);
+		//assert fourth sample 
+		//time
+		assertEquals(1267351500, data.getTime()[9]);
+		//min
+		assertEquals(3.5462508, data.getData()[9], 0.0000001);
+		//max
+		assertEquals(5.204016, data.getData()[10], 0.0000001);
+		//avr
+		assertEquals(4.279712, data.getData()[11], 0.0000001);
 		printout(data);
 	}
 	
@@ -53,6 +61,7 @@ public class AapiConnectionTest {
 
 	@After
 	public void tearDown() throws Exception {
+		_aapiClient = null;
 	}
 
 }
