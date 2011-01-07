@@ -54,6 +54,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -231,9 +232,9 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new IntegerProperty(PROP_HEIGHT, "Height", 
 				WidgetPropertyCategory.Position, 100, 1, 10000));		
 		addProperty(new IntegerProperty(PROP_XPOS, "X", 
-				WidgetPropertyCategory.Position, 100));
+				WidgetPropertyCategory.Position, 0));
 		addProperty(new IntegerProperty(PROP_YPOS, "Y", 
-				WidgetPropertyCategory.Position, 100));			
+				WidgetPropertyCategory.Position, 0));			
 		addProperty(new ColorProperty(PROP_COLOR_BACKGROUND, "Background Color",
 				WidgetPropertyCategory.Display, new RGB(240, 240, 240)));
 		addProperty(new ColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color",
@@ -332,6 +333,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public ActionsInput getActionsInput(){
 		return (ActionsInput)getCastedPropertyValue(PROP_ACTIONS);
+	}
+	
+	public Rectangle getBounds(){
+		return new Rectangle(getLocation(), getSize());
 	}
 	
 	public RGB getForegroundColor(){
@@ -490,6 +495,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		setPropertyValue(PROP_BORDER_WIDTH, width);
 	}
 	
+	public void setBounds(Rectangle bounds){
+		setLocation(bounds.getLocation());
+		setSize(bounds.getSize());
+	}
+	
+	public void setBounds(int x, int y, int width, int height){
+		setLocation(x, y);
+		setSize(width, height);
+	}
+	
 	public void setForegroundColor(RGB color){
 		setPropertyValue(PROP_COLOR_FOREGROUND, color);
 	}
@@ -616,6 +631,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 
 	/**
+	 * @return the index of the widget in its parent's children list
+	 */
+	public int getIndex(){
+		if(getParent() == null)
+			return 0;
+		return getParent().getChildren().indexOf(this);
+	}
+	
+	/**
 	 * @param executionMode the executionMode to set
 	 */
 	public void setExecutionMode(ExecutionMode executionMode) {
@@ -628,4 +652,84 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
 	}	
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 */
+	public void flipHorizontally(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerX the center X coordinate
+	 */
+	public void flipHorizontally(int centerX){
+		setX(2*centerX-getX()-getWidth());
+	}
+	
+	/**
+	 * Flip the widget figure vertically.
+	 */
+	public void flipVertically(){
+	}
+	
+	/**
+	 * Flip the widget figure horizontally.
+	 * @param centerY the center Y coordinate
+	 */
+	public void flipVertically(int centerY){
+		setY(2*centerY - getY() - getHeight());
+	}
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise){
+		int x = getX();
+		int y = getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+
+		newX = x+w/2-h/2;
+		newY = y+h/2-w/2;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);
+		
+	}	
+	
+	/**
+	 * Rotate the widget figure 90 degree.
+	 * @param clockwise true if rotate clockwise. false if counterclockwise.
+	 */
+	public void rotate90(boolean clockwise, Point center){
+		//Point shiftedPoint = moveCoordinateToCenter(getLocation(), center);
+		int x = getX() - center.x;
+		int y = center.y - getY();
+		int h = getHeight();
+		int w = getWidth();
+		
+		int newX, newY, newH, newW;		
+		if(clockwise){
+			newX = y-h;
+			newY = -x;
+		}else{
+			newX = -y ;
+			newY = x+w;
+		}
+	//	Point rotatedPoint = recoverFromCenterCoordinate(new Point(newX, newY), center);
+		newX = newX + center.x;
+		newY = center.y - newY;
+		newH = w;
+		newW = h;
+		
+		setLocation(newX, newY);
+		setSize(newW, newH);		
+	}		
+
 }

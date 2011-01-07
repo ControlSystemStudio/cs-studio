@@ -114,4 +114,9 @@ public class LinkingContainerModel extends AbstractContainerModel {
 		//Its children should be dynamically loaded from opi file.
 		return new LinkedList<AbstractWidgetModel>();
 	}
+	
+	@Override
+	public boolean isChildrenOperationAllowable() {
+		return false;
+	}
 }

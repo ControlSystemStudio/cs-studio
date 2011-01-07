@@ -345,6 +345,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setTitle(final String title) {
 		this.title = title;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -381,6 +383,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setShowMajorGrid(final boolean showMajorGrid) {
 		this.showMajorGrid = showMajorGrid;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -395,6 +399,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setShowMinorGrid(final boolean showMinorGrid) {
 		this.showMinorGrid = showMinorGrid;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -409,6 +415,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setMajorGridColor(final Color majorGridColor) {
 		this.majorGridColor = majorGridColor;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -423,6 +431,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setMinorGridColor(final Color minorGridColor) {
 		this.minorGridColor = minorGridColor;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -446,6 +456,8 @@ public class Axis extends LinearScale{
 	 */
 	public void setDashGridLine(final boolean dashGridLine) {
 		this.dashGridLine = dashGridLine;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**

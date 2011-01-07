@@ -22,8 +22,8 @@
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -74,7 +74,7 @@ public abstract class AbstractArchiveDao {
      * @param stmt
      * @param logMsg
      */
-    protected void closeStatement(@CheckForNull final PreparedStatement stmt, @Nonnull final String logMsg) {
+    protected void closeStatement(@CheckForNull final Statement stmt, @Nonnull final String logMsg) {
         if (stmt != null) {
             try {
                 stmt.close();

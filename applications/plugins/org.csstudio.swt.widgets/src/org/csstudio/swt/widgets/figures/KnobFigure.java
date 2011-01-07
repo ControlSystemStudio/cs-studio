@@ -167,7 +167,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					double difference = currentPP.theta * 180.0/Math.PI - oldValuePosition;	
 					double valueChange = calcValueChange(difference, value);
 					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
-						manualSetValue = true;
+//						manualSetValue = true;
 						if(increment > 0)
 							manualSetValue(value + increment * Math.round(valueChange/increment));		
 						else 
@@ -257,7 +257,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	
 	private double increment = 1;
 	
-	private boolean manualSetValue = false;
+//	private boolean manualSetValue = false;
 	private Thumb thumb;
 	
 	private Bulb bulb;
@@ -451,8 +451,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);		
-		valueLabel.setText(scale.format(manualSetValue? this.value : value));
-		manualSetValue = false;
+		valueLabel.setText(getValueText());
+//		manualSetValue = false;
 	}
 	
 

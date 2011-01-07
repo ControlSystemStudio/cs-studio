@@ -67,6 +67,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
             }
         }
     }
+    private final String2NumberFunction _string2NumberFunc = new String2NumberFunction();
 
     /**
      * {@inheritDoc}
@@ -98,7 +99,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
         }
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(releasedStr);
 
-        final Iterable<N> typedValues = Iterables.filter(Iterables.transform(strings, new String2NumberFunction()),
+        final Iterable<N> typedValues = Iterables.filter(Iterables.transform(strings, _string2NumberFunc),
                                                          Predicates.<N>notNull());
         int size;
         try {

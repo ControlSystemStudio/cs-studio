@@ -1,9 +1,12 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
+import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -163,6 +166,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
+				layout();
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
 		});
@@ -191,4 +195,19 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		return ((LinkingContainerFigure)getFigure()).getContentPane();
 	}
 
+	@Override
+	public void layout() {
+		AbstractLayoutEditpart layoutter = getLayoutWidget();
+		if(layoutter != null && layoutter.getWidgetModel().isEnabled()){
+			List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();
+			for(Object child : getChildren()){
+				if(child instanceof AbstractBaseEditPart && 
+						!(child instanceof AbstractLayoutEditpart)){
+					modelChildren.add(((AbstractBaseEditPart)child).getWidgetModel());
+				}
+			}
+			layoutter.layout(modelChildren, getFigure().getClientArea());
+		}
+	}
+	
 }

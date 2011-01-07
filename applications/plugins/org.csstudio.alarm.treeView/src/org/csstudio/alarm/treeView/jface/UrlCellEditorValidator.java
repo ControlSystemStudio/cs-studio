@@ -43,12 +43,16 @@ final class UrlCellEditorValidator implements ICellEditorValidator {
             return null;
         }
         if (value instanceof String) {
-            try {
-                @SuppressWarnings("unused")
-                final URL url = new URL((String) value);
+            if ( ((String) value).isEmpty()) {
                 return null;
-            } catch (final MalformedURLException e) {
-                return "Malformed URL! Please enter a valid file or web path.";
+            } else {
+                try {
+                    @SuppressWarnings("unused")
+                    final URL url = new URL((String) value);
+                    return null;
+                } catch (final MalformedURLException e) {
+                    return "Malformed URL! Please enter a valid file or web path.";
+                }
             }
         }
         return "Entered value is not valid. Please enter a String representation of a URL.";

@@ -6,13 +6,13 @@
 
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import org.csstudio.opibuilder.adl2boy.utilities.TextUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.TextEntryWidget;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 public class TextEntry2Model extends AbstractADL2Model {
@@ -29,16 +29,11 @@ public class TextEntry2Model extends AbstractADL2Model {
 			setADLObjectProps(textEntryWidget, widgetModel);
 			setADLControlProps(textEntryWidget, widgetModel);
 		}
-		OPIFont font = ((TextInputModel)widgetModel).getFont();
-		int fontSize = TranslatorUtils.convertTextHeightToFontSize(widgetModel.getHeight());
-		FontData fontData = font.getFontData();
-		FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), fontData.getStyle());
-		newFontData.setHeight(fontSize);
-		widgetModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
-		//TODO Add limits to TextEntry2Model
-		TranslatorUtils.printNotHandledWarning(className, "Text alingnment" );
-		//TODO Add format to TextEntry2Model
-		TranslatorUtils.printNotHandledWarning(className, "format" );
+		TextUtilities.setWidgetFont((LabelModel)widgetModel);
+		
+
+		TextUtilities.setAlignment((LabelModel)widgetModel, textEntryWidget);
+		TextUtilities.setFormat((TextIndicatorModel)widgetModel, textEntryWidget);
 		//TODO Add color mode to TextEntry2Model
 		TranslatorUtils.printNotHandledWarning(className, "color mode" );
 	}

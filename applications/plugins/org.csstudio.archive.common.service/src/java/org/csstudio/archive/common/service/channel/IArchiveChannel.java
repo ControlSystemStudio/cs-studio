@@ -60,14 +60,21 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     double getSamplePeriod();
 
     /**
-     * @return Sample mode configuration value, e.g. 'delta' for Monitor
-     */
-    double getSampleValue();
-
-    /**
      * @return the timestamp of the latest archived sample for this channel
      */
     @Nonnull
     TimeInstant getLatestTimestamp();
+
+
+    /**
+     * @return
+     */
+    String getDataType();
+
+
+    /**
+     * @return
+     */
+    double getSampleValue();
 
 }

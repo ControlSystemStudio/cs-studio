@@ -6,7 +6,9 @@
          <meta.schema plugin="org.csstudio.platform.ui" id="openDisplay" name="Open Display"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point that allows generic operator interface tools to register so that programs like an alarm interface can open operator interface panels.
+
+Extensions register the file extension that they handle, and will then receive that file name and a generic string parameter for additional parameters like macros that are specific to the implementation of an operator interface tool. 
       </documentation>
    </annotation>
 
@@ -52,14 +54,14 @@
          <attribute name="file_extension" type="string" use="required">
             <annotation>
                <documentation>
-                  The file extension for the display
+                  The file extension that identifies this type of display tool
                </documentation>
             </annotation>
          </attribute>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Class that can open this type of display
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":org.csstudio.platform.ui.display.IOpenDisplayAction"/>
@@ -74,7 +76,7 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         [Enter the first release in which this extension point appears.]
+         Since 2010-06-08
       </documentation>
    </annotation>
 
@@ -83,7 +85,15 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+         &lt;pre&gt;
+      &lt;extension
+         point=&quot;org.csstudio.platform.ui.openDisplay&quot;&gt;
+      &lt;openDisplay
+            class=&quot;org.csstudio.myopi.OpenMyDisplayFile&quot;
+            file_extension=&quot;mopi&quot;&gt;
+      &lt;/openDisplay&gt;   
+   &lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
@@ -92,7 +102,7 @@
          <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
-         [Enter API information here.]
+         See org.csstudio.platform.ui.display.IOpenDisplayAction
       </documentation>
    </annotation>
 
@@ -101,9 +111,22 @@
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         [Enter information about supplied implementation of this extension point.]
+         org.csstudio.opibuilder implements this for *.opi files
       </documentation>
    </annotation>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2010 Oak Ridge National Laboratory.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
+
+      </documentation>
+   </annotation>
 
 </schema>

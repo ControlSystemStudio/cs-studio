@@ -3,11 +3,13 @@ package org.csstudio.opibuilder.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.datadefinition.PropertiesCopyData;
 import org.csstudio.opibuilder.editor.OPIEditor;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -26,6 +28,8 @@ public class PastePropertiesAction extends SelectionAction {
 		super(part);
 		setText("Paste Properties");
 		setId(ID);
+		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+				OPIBuilderPlugin.PLUGIN_ID, "icons/paste_properties.png"));
 	}
 
 	@Override
@@ -99,9 +103,8 @@ public class PastePropertiesAction extends SelectionAction {
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	
 		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getWidgetModel());
+			if (o instanceof EditPart) {
+				selectedWidgetModels.add((AbstractWidgetModel) ((EditPart) o).getModel());
 			}
 		}
 		return selectedWidgetModels;

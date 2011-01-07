@@ -74,7 +74,7 @@ public class ModifyLdapAttributeModificationItem extends AbstractTreeModificatio
      * {@inheritDoc}
      */
     @Override
-    public boolean apply() throws AlarmTreeModificationException {
+    public void apply() throws AlarmTreeModificationException {
         final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
         if (service == null) {
             throw new AlarmTreeModificationException("Attribute modification failed.",
@@ -86,8 +86,6 @@ public class ModifyLdapAttributeModificationItem extends AbstractTreeModificatio
 
         try {
             service.modifyAttributes(_ldapName, new ModificationItem[] {item});
-            setApplied(true);
-            return true;
         } catch (final NamingException e) {
             throw new AlarmTreeModificationException("MODIFY LDAP ATTRIBUTE FAILED: " + _propId.getLdapAttribute() + "=" + _attrValue + " for node " + _ldapName,
                                                      null);

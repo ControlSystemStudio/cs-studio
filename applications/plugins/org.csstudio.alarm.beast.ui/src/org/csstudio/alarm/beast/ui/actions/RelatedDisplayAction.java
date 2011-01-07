@@ -13,6 +13,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.platform.ui.util.DisplayUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -36,10 +37,10 @@ public class RelatedDisplayAction extends AbstractExecuteAction
     public RelatedDisplayAction(final Shell shell,
             final AlarmTreePosition tree_position,
             final GDCDataStructure related_display)
-    {       
+    {
     	super(shell,
               AlarmTreeActionIcon.createIcon("icons/related_display.gif",  //$NON-NLS-1$
-                        tree_position),  
+                        tree_position),
               related_display.getTeaser(), related_display.getDetails());
     }
 
@@ -48,6 +49,24 @@ public class RelatedDisplayAction extends AbstractExecuteAction
     @Override
     public void run()
     {
+        // Is command to be handled by open-display extension point mechanism?
+        try
+        {
+            final DisplayReference display = new DisplayReference(command);
+            if (display.isValid())
+            {
+                DisplayUtil.getInstance().openDisplay(display.getFilename(), display.getData());
+                return;
+            }
+        }
+        catch (Throwable ex)
+        {
+            MessageDialog.openError(shell,
+                Messages.Error,
+                NLS.bind("Error opening {0}:\n{1}", command, ex.getMessage()));
+            return;
+        }
+
         // Open workspace file in default editor?
         if (command.startsWith("file:"))
         {
@@ -74,7 +93,8 @@ public class RelatedDisplayAction extends AbstractExecuteAction
             }
             return;
         }
-        // Open URL?
+
+        // Open URL in browser?
         if (command.startsWith("http:") ||
             command.startsWith("https:"))
         {
@@ -91,7 +111,52 @@ public class RelatedDisplayAction extends AbstractExecuteAction
             }
             return;
         }
+
         // else: Execute command as received
         super.run();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

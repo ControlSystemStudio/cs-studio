@@ -241,12 +241,24 @@ public abstract class AbstractScale extends Figure{
      * 
      * @param format
      *            the format
+	 * @exception NullPointerException if <code>pattern</code> is null
+     * @exception IllegalArgumentException if the given pattern is invalid.
      */
     public void setFormatPattern(String formatPattern) {
+    	 try {
+ 			new DecimalFormat(formatPattern);
+ 		} catch (NullPointerException e) {
+ 			throw e;
+ 		} catch (IllegalArgumentException e){
+ 			throw e;
+ 		}
+ 		
         this.formatPattern = formatPattern;
+       
         autoFormat = false;
         setDirty(true);
         revalidate();
+        repaint();
     }
 
 	/**

@@ -406,7 +406,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void drawLine(Graphics graphics, Point p1, Point p2){
 		graphics.pushState();
-		
+		graphics.setLineWidth(lineWidth);
 		switch (traceType) {
 		case SOLID_LINE:
 			graphics.setLineStyle(SWT.LINE_SOLID);
@@ -859,6 +859,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		this.traceColor = traceColor;
 		if(!errorBarColorSetFlag)
 			errorBarColor = traceColor;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 	
 	/**
@@ -873,6 +875,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setTraceType(TraceType traceType) {
 		this.traceType = traceType;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -880,6 +884,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setBaseLine(BaseLine baseLine) {
 		this.baseLine = baseLine;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -887,6 +893,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setPointStyle(PointStyle pointStyle) {
 		this.pointStyle = pointStyle;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -894,6 +902,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setLineWidth(int lineWidth) {
 		this.lineWidth = lineWidth;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -901,6 +911,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setPointSize(int pointSize) {
 		this.pointSize = pointSize;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -908,6 +920,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setAreaAlpha(int areaAlpha) {
 		this.areaAlpha = areaAlpha;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**
@@ -915,6 +929,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public void setAntiAliasing(boolean antiAliasing) {
 		this.antiAliasing = antiAliasing;
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 	
 	/**

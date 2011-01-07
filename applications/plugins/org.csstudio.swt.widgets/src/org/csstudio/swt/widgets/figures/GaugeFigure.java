@@ -95,7 +95,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
-		valueLabel.setText(scale.format(value));			
+		valueLabel.setText(getValueText());			
 	}
 	
 	@Override

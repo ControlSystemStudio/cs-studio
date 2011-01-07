@@ -48,6 +48,7 @@ public class SampleAggregator {
     private Double _maxVal;
     private Double _lastWrittenValue;
     private TimeInstant _lastSampleTimeStamp;
+    private TimeInstant _resetTimeStamp;
     private EpicsAlarm _highestAlarm;
     private EpicsAlarm _lowestAlarm;
 
@@ -71,6 +72,7 @@ public class SampleAggregator {
         _highestAlarm = firstAlarm;
         _lowestAlarm = firstAlarm;
         _lastSampleTimeStamp = timestamp;
+        _resetTimeStamp = _lastSampleTimeStamp;
     }
 
     void aggregateNewVal(@Nonnull final Double newVal,
@@ -99,6 +101,7 @@ public class SampleAggregator {
      * (not necessarily the minimum alarm possible).
      */
     void reset() {
+        _resetTimeStamp = _lastSampleTimeStamp;
         _lastSampleTimeStamp = null;
         _lastWrittenValue = _avg.getValue();
         _minVal = null;
@@ -128,8 +131,12 @@ public class SampleAggregator {
     public Double getAverageBeforeReset() {
         return _lastWrittenValue;
     }
-    @Nonnull
+    @CheckForNull
     public TimeInstant getSampleTimestamp() {
         return _lastSampleTimeStamp;
+    }
+    @CheckForNull
+    public TimeInstant getResetTimestamp() {
+        return _resetTimeStamp;
     }
 }

@@ -54,6 +54,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 	 */
 	public static GroupingContainerModel createGroupingContainer() {
 		GroupingContainerModel groupingContainerModel =  new GroupingContainerModel();
+		groupingContainerModel.setName("Tab"); 
 		groupingContainerModel.setLocation(1,1);
 		groupingContainerModel.setBorderStyle(BorderStyle.NONE);
 		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_TRANSPARENT, true);
@@ -67,12 +68,10 @@ public class TabEditPart extends AbstractContainerEditpart {
 	public void activate() {
 		getWidgetModel().setTabItemHandler(new ITabItemHandler() {
 			
-			@Override
 			public void addTab(int index, TabItem tabItem) {
 				TabEditPart.this.addTab(index, tabItem);
 			}
 			
-			@Override
 			public void removeTab(int index) {
 				TabEditPart.this.removeTab(index);
 			}

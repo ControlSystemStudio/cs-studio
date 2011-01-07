@@ -190,4 +190,9 @@ public class TabModel extends AbstractContainerModel {
 	public ITabItemHandler getTabItemHandler() {
 		return tabItemHandler;
 	}
+	
+	@Override
+	public boolean isChildrenOperationAllowable() {
+		return false;
+	}
 }

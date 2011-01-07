@@ -46,6 +46,9 @@ public class TabItem {
 
 	
 	public void setPropertyValue(TabProperty tabProperty, Object value){
+		if(tabProperty == TabProperty.TITLE){
+			groupingContainerModel.setName((String)value);
+		}
 		propertyMap.put(tabProperty, value);
 	}
 	

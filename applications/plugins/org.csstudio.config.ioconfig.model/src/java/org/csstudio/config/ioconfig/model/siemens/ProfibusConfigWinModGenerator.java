@@ -121,8 +121,9 @@ public class ProfibusConfigWinModGenerator {
                   .append("  PNO_IDENT_NO ").append("\"")
                   .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
                   .append("\"").append(LINE_END);
-        if (!slave.getPrmUserData().equals("Property not found")) {
-			String cleanPrmUserData = slave.getPrmUserData()
+        String prmUserData = slave.getPrmUserData();
+        if (!prmUserData.equals("Property not found")) {
+			String cleanPrmUserData = prmUserData
 					.replaceAll("(0x)", "")
 					.replaceAll(",", " ").replaceAll("  ", " ").trim();
 			_winModConfig.append("  NORMSLAVE_PARAM_DATA ").append("\"");
@@ -193,6 +194,7 @@ public class ProfibusConfigWinModGenerator {
 			String io2="";
 			String def;
 			String convertedChannelType;
+			String mbbChannelType;
 			String desc = "";
 			int lines = 1;
 			DataType channelType = channelDBO.getChannelType();
@@ -226,9 +228,11 @@ public class ProfibusConfigWinModGenerator {
 			if(channelDBO.isInput()) {
 					io1 = 'E';              // Eingang
 					convertedChannelType += "I"; // Input
+					mbbChannelType = "DI";
 			} else {
 					io1 = 'A';              // Ausgang
 					convertedChannelType += "O"; // Output
+					mbbChannelType = "DO";
 			}
 
 			if(channelDBO.isDigital()) {
@@ -279,12 +283,15 @@ public class ProfibusConfigWinModGenerator {
 			}
 			
 			String io = io1+""+io2;
-			appendLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
 			if(lines>1) {
+			    appendLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			    def = "0";
 			    io = io1+"B";
     			for (int i = 0; i < lines; i++) {
-    				appendLine(i, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+    				appendAddLine(i, io, bytee, channelDBO, bit, mbbChannelType, def, desc);
     			}
+			} else { 
+			    appendAddLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
 			}
 		}
 	}
@@ -300,11 +307,40 @@ public class ProfibusConfigWinModGenerator {
 	 * @param desc 
 	 */
 	private void appendLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
+	    _winModSlaveAdr.append(_lineNr++).append(",");
+	    // Treibersignal
+	    addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+	       // Adresse
+        _winModSlaveAdr.append(",");
+        // Symbol
+        _winModSlaveAdr.append(",");
+        if(channelDBO.getIoName()==null) {
+            addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+        }else {
+            _winModSlaveAdr.append("'").append(channelDBO.getIoName());
+//          if(lineNr>0) {
+            if(channelType.startsWith("D")&&io.endsWith("B")) {
+                if(lineNr==4) {
+                    _winModSlaveAdr.append("_Stat");
+                }else {
+                    _winModSlaveAdr.append("_Byte").append(lineNr);
+                }
+            }
+            _winModSlaveAdr.append("'");
+        }
+        _winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
+        if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
+            _winModSlaveAdr.append("'").append(desc).append("'");
+        }
+        _winModSlaveAdr.append(LINE_END);
+	}
+	
+	private void appendAddLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
 		_winModSlaveAdr.append(_lineNr++).append(",");
 		// Treibersignal
 		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
-		// Adresse
 
+		// Adresse
 		_winModSlaveAdr.append(",");
 		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
 		
@@ -315,8 +351,12 @@ public class ProfibusConfigWinModGenerator {
 		}else {
 			_winModSlaveAdr.append("'").append(channelDBO.getIoName());
 //			if(lineNr>0) {
-			if(channelType.startsWith("A")&&io.endsWith("B")) {
-				_winModSlaveAdr.append("_Byte").append(lineNr);
+			if(channelType.startsWith("D")&&io.endsWith("B")) {
+			    if(lineNr==4) {
+			        _winModSlaveAdr.append("_Stat");
+			    }else {
+			        _winModSlaveAdr.append("_Byte").append(lineNr);
+			    }
 			}
 			_winModSlaveAdr.append("'");
 		}
