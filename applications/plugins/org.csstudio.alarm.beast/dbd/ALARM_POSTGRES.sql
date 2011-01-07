@@ -147,6 +147,7 @@ CREATE TABLE PV(
     CUR_SEVERITY_ID    INT                                 ,
     PV_VALUE           VARCHAR(100)                        ,
     ALARM_TIME         TIMESTAMP                           ,
+    ACT_GLOBAL_ALARM_IND  boolean    DEFAULT false NOT NULL,
     PRIMARY KEY (COMPONENT_ID)
 );
 
@@ -191,6 +192,9 @@ COMMENT ON COLUMN PV.PV_VALUE  IS  'Process Variable Value: PV value that caused
 ;
 
 COMMENT ON COLUMN PV.ALARM_TIME  IS  'Alarm Time: The time of the most recent alarm.'
+;
+
+COMMENT ON COLUMN PV.ACT_GLOBAL_ALARM_IND  IS  'Indicates if PV has an active global alarm.'
 ;
 
 -- 

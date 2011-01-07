@@ -48,6 +48,7 @@ public class SQL
 
     final public String update_pv_config;
     final public String update_pv_state;
+    final public String update_global_state;
     final public String update_pv_enablement;
     final public String delete_pv_by_id;
     final public String rename_item;
@@ -167,6 +168,8 @@ public class SQL
             "UPDATE " + schema_prefix + "PV SET DESCR=?,ENABLED_IND=?,ANNUNCIATE_IND=?,LATCH_IND=?, DELAY=?,DELAY_COUNT=?,FILTER=? WHERE COMPONENT_ID=?";
         update_pv_state =
             "UPDATE " + schema_prefix + "PV SET CUR_SEVERITY_ID=?,CUR_STATUS_ID=?,SEVERITY_ID=?,STATUS_ID=?,PV_VALUE=?,ALARM_TIME=?  WHERE COMPONENT_ID=?";
+        update_global_state =
+            "UPDATE " + schema_prefix + "PV SET ACT_GLOBAL_ALARM_IND=? WHERE COMPONENT_ID=?";
         update_pv_enablement =
             "UPDATE " + schema_prefix + "PV SET ENABLED_IND=?  WHERE COMPONENT_ID=?";
         delete_pv_by_id = "DELETE FROM " + schema_prefix + "PV WHERE COMPONENT_ID = ?";

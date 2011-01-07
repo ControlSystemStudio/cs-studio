@@ -368,27 +368,26 @@ public class AlarmServer
     {
         // Send to JMS
         messenger.sendGlobalUpdate(pv, severity, message, value, timestamp);
-//        // TODO Persist global alarm state change
-//        //Move the persistence of states into separate queue & thread
-//        // so that it won't delay the alarm server from updating
-//        work_queue.add(new Runnable()
-//        {
-//            public void run()
-//            {
-//                try
-//                {
-//                    rdb.writeStateUpdate(pv, current_severity, current_message,
-//                            severity, message, value, timestamp);
-//                    recoverFromRDBErrors();
-//                }
-//                catch (Exception ex)
-//                {
-//                    // Remember that there was an error
-//                    had_RDB_error = true;
-//                    CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
-//                }
-//            }
-//        });
+        // Persist global alarm state change in separate queue & thread
+        // so that it won't delay the alarm server from updating
+        work_queue.execute(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    rdb.writeGlobalUpdate(pv, severity.isActive());
+                    recoverFromRDBErrors();
+                }
+                catch (Exception ex)
+                {
+                    // Remember that there was an error
+                    had_RDB_error = true;
+                    CentralLogger.getInstance().getLogger(this).error("Exception during global alarm update", ex);
+                }
+            }
+        });
     }
 
     /** Update JMS clients and RDB about 'enabled' state of PV

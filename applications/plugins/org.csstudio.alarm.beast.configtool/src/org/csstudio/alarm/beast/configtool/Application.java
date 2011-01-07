@@ -17,6 +17,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
+import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -30,7 +31,7 @@ public class Application implements IApplication
     private String root;
     private enum Mode
     {
-        MODIFY, IMPORT, EXPORT, CONVERT_ALH
+        LIST, MODIFY, IMPORT, EXPORT, CONVERT_ALH
     }
     private Mode mode;
     private String filename;
@@ -42,9 +43,11 @@ public class Application implements IApplication
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
                "Display Help");
         final StringOption url = new StringOption(parser, "-rdb_url",
-               "Alarm config database URL", Preferences.getRDB_Url());
+               "Alarm config database URL (with user/password)", Preferences.getRDB_Url());
+        final BooleanOption do_list = new BooleanOption(parser, "-list",
+                "List available configurations");
         final StringOption root = new StringOption(parser, "-root",
-                "Alarm config root element", Preferences.getAlarmTreeRoot());
+                "Alarm configuraton name (root element)", Preferences.getAlarmTreeRoot());
         final BooleanOption do_export = new BooleanOption(parser, "-export",
                 "Export XML config file");
         final BooleanOption do_modify = new BooleanOption(parser, "-modify",
@@ -70,11 +73,23 @@ public class Application implements IApplication
         }
         if (help_opt.get())
             return parser.getHelp();
-        if (file.get().length() <= 0)
-            return "Missing file name\n" + parser.getHelp();
 
         this.url = url.get();
+        if (do_list.get())
+        {
+            mode = Mode.LIST;
+            return null;
+        }
+
+        // Except when listing configs, require root and file name
+        if (root.get().isEmpty())
+            return "Missing configuration root name\n" + parser.getHelp();
         this.root = root.get();
+
+        if (file.get().isEmpty())
+            return "Missing file name\n" + parser.getHelp();
+        this.filename = file.get();
+
         if (do_export.get())
             mode = Mode.EXPORT;
         else if (do_modify.get())
@@ -85,7 +100,6 @@ public class Application implements IApplication
             mode = Mode.CONVERT_ALH;
         else
             return "Specify import or export or alh conversion\n" + parser.getHelp();
-        this.filename = file.get();
         return null;
     }
 
@@ -105,24 +119,67 @@ public class Application implements IApplication
             return EXIT_OK;
         }
 
-        if (mode == Mode.CONVERT_ALH)
+        switch (mode)
+        {
+        case LIST:
+            listConfigs();
+            break;
+        case CONVERT_ALH:
             convertAlh();
-        else
+            break;
+        default:
             importExport();
+        }
         return EXIT_OK;
     }
 
+    /** Dump available configuration names */
+    private void listConfigs()
+    {
+        // Connect to configuration database
+        final AlarmConfiguration config;
+        try
+        {
+            config = new AlarmConfiguration(url, root, mode == Mode.IMPORT);
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Error connecting to alarm config database: " +
+                    ex.getMessage());
+            return;
+        }
+        // List configs
+        try
+        {
+            final String[] configs = config.listConfigurations();
+            for (String name : configs)
+                System.out.println("'" + name + "'");
+        }
+        catch (Exception ex)
+        {
+            System.err.println("Error listing alarm configurations: " +
+                    ex.getMessage());
+        }
+        finally
+        {
+            config.close();
+        }
+    }
+
+    /** Convert ALH config file to alarm system XML file */
     private void convertAlh()
     {
         try
         {
             final ALHConverter converter = new ALHConverter(filename);
             final PrintWriter out = new PrintWriter(System.out);
-            out.println("<!-- Generated from ALH config file");
-            out.println(" -   File name: '" + filename + "'");
-            out.println(" -->");
             final AlarmTreeRoot config = converter.getAlarmTree();
-            config.writeXML(out);
+            config.writeXML(out, new String[]
+            {
+                "Generated from ALH config file",
+                "File name: '" + filename + "'",
+                "Date     : " + TimestampFactory.now(),
+            });
             out.flush();
         }
         catch (Exception ex)
@@ -135,7 +192,7 @@ public class Application implements IApplication
     private void importExport()
     {
         // Connect to configuration database
-        AlarmConfiguration config;
+        final AlarmConfiguration config;
         try
         {
             config = new AlarmConfiguration(url, root, mode == Mode.IMPORT);
@@ -156,11 +213,12 @@ public class Application implements IApplication
                     System.out.println("Writing configuration '" + root + "' to " + filename);
                     final FileWriter file = new FileWriter(filename);
                     final PrintWriter out = new PrintWriter(file);
-                    out.println("<!-- Alarm configuration snapshot");
-                    out.println("     URL : " + url);
-                    out.println("     Root: " + root);
-                    out.println("  -->");
-                    config.getAlarmTree().writeXML(out);
+                    config.getAlarmTree().writeXML(out, new String[]
+                    {
+                        "Alarm configuration snapshot " + TimestampFactory.now(),
+                        "URL : " + url,
+                        "Root: " + root,
+                    });
                     out.flush();
                     file.close();
                 }
