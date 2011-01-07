@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -46,6 +48,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.HibernateManager;
 import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -128,7 +131,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
  * @author $Author: hrickens $
  * @since 19.06.2007
  */
-public class ProfiBusTreeView extends Composite {
+public class ProfiBusTreeView extends Composite implements Observer {
     
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ProfiBusTreeView.class);
     
@@ -252,6 +255,7 @@ public class ProfiBusTreeView extends Composite {
                             final int style,
                             @Nonnull final IViewSite site) {
         super(parent, style);
+//        HibernateManager.getInstance().addObserver(this);
         new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
@@ -1496,6 +1500,28 @@ public class ProfiBusTreeView extends Composite {
              * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
              */
             return false;
+        }
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(Observable arg0, Object arg1) {
+        ImageDescriptor base = CustomMediaFactory.getInstance()
+        .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                      "icons/addrepo_rep.gif");
+        if (arg1 instanceof PersistenceException) {
+            ImageDescriptor overlay = CustomMediaFactory.getInstance()
+            .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+            "icons/error_co.gif");
+            DecorationOverlayIcon doi = new DecorationOverlayIcon(base.createImage(), new ImageDescriptor[] {null,null,null,overlay,null} );
+            _reconnectDBAction.setImageDescriptor(doi);
+            _reconnectDBAction.setToolTipText("Database is NOT connectet!");
+        } else {
+            _reconnectDBAction.setImageDescriptor(base);
+            _reconnectDBAction.setToolTipText("Database is connectet");
         }
         
     }

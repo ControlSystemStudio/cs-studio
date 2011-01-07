@@ -186,7 +186,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         try {
             return _image.getBinaryStream();
         } catch (SQLException e) {
-            PersistenceException persistenceException = new PersistenceException();
+            PersistenceException persistenceException = new PersistenceException(e);
             persistenceException.setStackTrace(e.getStackTrace());
             throw persistenceException;
         }

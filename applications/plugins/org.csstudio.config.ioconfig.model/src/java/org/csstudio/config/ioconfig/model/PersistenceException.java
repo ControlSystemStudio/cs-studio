@@ -37,4 +37,26 @@ public class PersistenceException extends Exception {
      */
     private static final long serialVersionUID = -7788496152990006052L;
 
+    /**
+     * Constructor.
+     */
+    public PersistenceException() {
+        super();
+    }
+    
+    public PersistenceException(String msg) {
+        super(msg);
+    }
+    
+    public PersistenceException(Throwable t) {
+        super(t);
+    }
+    
+    public PersistenceException(String msg, Throwable t) {
+        super(msg, t);
+    }
+    
+    
+    
+    
 }

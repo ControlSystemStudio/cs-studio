@@ -258,8 +258,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
 	    try {
 	        return (_children != null) && (_children.size() > 0);
         } catch (Exception e) {
-            PersistenceException persistenceException = new PersistenceException();
-            persistenceException.setStackTrace(e.getStackTrace());
+            PersistenceException persistenceException = new PersistenceException(e);
             throw persistenceException;
         }
 	}

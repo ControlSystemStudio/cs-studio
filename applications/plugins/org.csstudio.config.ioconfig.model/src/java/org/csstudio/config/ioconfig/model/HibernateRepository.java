@@ -115,7 +115,7 @@ public class HibernateRepository implements IRepository {
             return gsdModule;
         } catch (HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
-            throw new PersistenceException();
+            throw new PersistenceException(he);
         }
     }
 
@@ -138,8 +138,7 @@ public class HibernateRepository implements IRepository {
             return dbClass;
         } catch (HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
-            PersistenceException persistenceException = new PersistenceException();
-            persistenceException.setStackTrace(he.getStackTrace());
+            PersistenceException persistenceException = new PersistenceException(he);
             throw persistenceException;
         }
     }

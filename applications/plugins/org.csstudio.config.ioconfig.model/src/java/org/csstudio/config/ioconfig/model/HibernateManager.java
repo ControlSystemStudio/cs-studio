@@ -32,6 +32,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -60,7 +61,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
  * @version $Revision: 1.14 $
  * @since 03.06.2009
  */
-public final class HibernateManager {
+public final class HibernateManager extends Observable {
 
     private static HibernateManager _INSTANCE;
 
@@ -171,6 +172,7 @@ public final class HibernateManager {
 		try {
 		    SessionFactory buildSessionFactory = _cfg.buildSessionFactory();
             setSessionFactory(buildSessionFactory);
+            notifyObservers();
 		} catch (HibernateException e) {
 		    CentralLogger.getInstance().error(HibernateManager.class.getName(), e);
         }
@@ -307,6 +309,7 @@ public final class HibernateManager {
 			_trx.commit();
 			return result;
 		} catch (HibernateException ex) {
+		    notifyObservers(ex);
 			if (_trx != null) {
 				try {
 					_trx.rollback();
@@ -324,7 +327,7 @@ public final class HibernateManager {
             }
 			CentralLogger.getInstance().error(
 					HibernateManager.class.getSimpleName(), ex);
-			throw new PersistenceException();
+			throw new PersistenceException(ex);
 		} 
 	}
 
