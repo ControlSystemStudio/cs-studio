@@ -111,10 +111,31 @@ public class AlarmTreeRoot extends AlarmTreeItem
      *  @param out Stream to which to send XML output
      *  @throws Exception on error
      */
-    @SuppressWarnings("nls")
     final public void writeXML(final PrintWriter out)  throws Exception
     {
+        writeXML(out, null);
+    }
+
+    /** Write XML representation of alarm tree
+     *  @param out Stream to which to send XML output
+     *  @param comments Comments to add to the header of the file, one line per array element
+     *  @throws Exception on error
+     */
+    @SuppressWarnings("nls")
+    final public void writeXML(final PrintWriter out, final String comments[])  throws Exception
+    {
         XMLWriter.header(out);
+        if (comments != null)
+        {
+            out.append("<!--\n");
+            for (String comment : comments)
+            {
+                out.append("     ");
+                out.append(comment);
+                out.append("\n");
+            }
+            out.append("  -->\n");
+        }
         out.append("<config name=\"" + getName() +"\">\n");
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
@@ -124,6 +145,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
         }
         out.append("</config>\n");
     }
+
 
     /** Locate alarm tree item by path
      *  @param path Path to item
