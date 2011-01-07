@@ -71,9 +71,10 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public INode getNode(final String pvName) {
+    public INode getNode(final String pvName) throws PersistenceException {
         final ArrayList<String> list = new ArrayList<String>();
         list.add(pvName);
         final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(list);
@@ -93,21 +94,22 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
     @Nonnull
-    public Map<String, INode> getNodes(final Collection<String> pvName) {
+    public Map<String, INode> getNodes(final Collection<String> pvName) throws PersistenceException {
         final Map<String, INode> nodes = new HashMap<String, INode>();
         final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(pvName);
         if(pv2ioNameMatchers!=null) {
             for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
                 ChannelDBO value;
-                try {
+//                try {
                     value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
                     nodes.put(pv2ioNameMatcher.getEpicsName(), value);
-                } catch (PersistenceException e) {
-                    CentralLogger.getInstance().error(this, e);
-                }
+//                } catch (PersistenceException e) {
+//                    CentralLogger.getInstance().error(this, e);
+//                }
             }
         }
         return nodes;
@@ -132,15 +134,15 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
          return null;
     }
     @CheckForNull
-    private List<PV2IONameMatcherModelDBO> getPV2IONameMatchers(final Collection<String> pvName){
+    private List<PV2IONameMatcherModelDBO> getPV2IONameMatchers(final Collection<String> pvName) throws PersistenceException{
         List<PV2IONameMatcherModelDBO> matchers;
-        try {
+//        try {
             matchers = Repository.loadPV2IONameMatcher(pvName);
             return matchers;
-        } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
-        }
-        return null;
+//        } catch (PersistenceException e) {
+//            CentralLogger.getInstance().error(this, e);
+//        }
+//        return null;
     }
 
 }

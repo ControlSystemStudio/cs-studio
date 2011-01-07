@@ -107,7 +107,14 @@ public class DocumentTableBuilder {
         column.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(@Nonnull final ViewerCell cell) {
-                cell.setText( ((HierarchyDocument) cell.getElement()).getNode().getNodeType().getName());
+                
+                Object element = cell.getElement();
+                if (element instanceof String) {
+                    String msg = (String) element;
+                    cell.setText(msg);
+                } else if (element instanceof HierarchyDocument) {
+                    cell.setText( ((HierarchyDocument) element).getNode().getNodeType().getName());
+                }
             }
         });
         AbstractColumnViewerSorter columnViewerSorter = new AbstractColumnViewerSorter(tableViewer, column) {
@@ -142,7 +149,10 @@ public class DocumentTableBuilder {
         column.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(@Nonnull final ViewerCell cell) {
-                cell.setText( ((HierarchyDocument) cell.getElement()).getNode().getName());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    cell.setText( ((HierarchyDocument) element).getNode().getName());
+                }
             }
         });
         new AbstractColumnViewerSorter(tableViewer, column) {
@@ -176,7 +186,10 @@ public class DocumentTableBuilder {
         column.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(@Nonnull final ViewerCell cell) {
-                cell.setText(((HierarchyDocument) cell.getElement()).getDocument().getSubject());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    cell.setText(((HierarchyDocument) element).getDocument().getSubject());
+                }
             }
         });
         new AbstractColumnViewerSorter(tableViewer, column) {
@@ -202,7 +215,10 @@ public class DocumentTableBuilder {
         column.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(@Nonnull final ViewerCell cell) {
-                cell.setText(((HierarchyDocument) cell.getElement()).getDocument().getMimeType());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    cell.setText(((HierarchyDocument) element).getDocument().getMimeType());
+                }
             }
         });
 
@@ -234,7 +250,10 @@ public class DocumentTableBuilder {
         column.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(final ViewerCell cell) {
-                cell.setText(((HierarchyDocument) cell.getElement()).getDocument().getCreatedDate().toString());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    cell.setText(((HierarchyDocument) element).getDocument().getCreatedDate().toString());
+                }
             }
         });
 
@@ -254,8 +273,11 @@ public class DocumentTableBuilder {
         column2.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(final ViewerCell cell) {
-                HierarchyDocument document = (HierarchyDocument) cell.getElement();
-                cell.setText(document.getDocument().getDesclong());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    HierarchyDocument document = (HierarchyDocument) element;
+                    cell.setText(document.getDocument().getDesclong());
+                }
             }
         });
         new AbstractColumnViewerSorter(tableViewer, column2) {
@@ -282,8 +304,11 @@ public class DocumentTableBuilder {
         column2.setLabelProvider(new CellLabelProvider() {
             @Override
             public void update(final ViewerCell cell) {
-                HierarchyDocument document = (HierarchyDocument) cell.getElement();
-                cell.setText(document.getDocument().getKeywords());
+                Object element = cell.getElement();
+                if (element instanceof HierarchyDocument) {
+                    HierarchyDocument document = (HierarchyDocument) element;
+                    cell.setText(document.getDocument().getKeywords());
+                }
             }
         });
         new AbstractColumnViewerSorter(tableViewer, column2) {
@@ -411,9 +436,15 @@ public class DocumentTableBuilder {
         public final Object[] getElements(final Object arg0) {
             if (arg0 instanceof List) {
                 List<HierarchyDocument> list = (List<HierarchyDocument>) arg0;
+                if(list.isEmpty()) {
+                    return new String[] {"Kein Dokument gefundne!"};
+                }
                 return list.toArray(new HierarchyDocument[list.size()]);
             } else if (arg0 instanceof Set) {
                 Set docSet = (Set) arg0;
+                if(docSet.isEmpty()) {
+                    return new String[] {"Kein Dokument gefundne!"};
+                    }
                 return docSet.toArray(new HierarchyDocument[docSet.size()]);
 
             }

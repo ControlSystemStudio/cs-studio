@@ -22,7 +22,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.dialect.MckoiDialect;
 
 /**
  * Implementation for a Hibernate Repository.
@@ -91,7 +90,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public GSDModuleDBO saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
                 private Session _session;
 
                 @Override
@@ -126,7 +125,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
                 @Override
 				public T execute(@Nonnull final Session session) {
@@ -150,7 +149,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public T execute(@Nonnull final Session session) {
@@ -183,7 +182,7 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
@@ -206,7 +205,7 @@ public class HibernateRepository implements IRepository {
                 return nodes.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
@@ -215,7 +214,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
 	public <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public Object execute(@Nonnull final Session session) {
@@ -233,7 +232,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public GSDFileDBO execute(@Nonnull final Session session) {
@@ -251,7 +250,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
 	public void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public Object execute(@Nonnull final Session session) {
@@ -268,7 +267,7 @@ public class HibernateRepository implements IRepository {
      */
     @Override
 	public List<DocumentDBO> loadDocument() throws PersistenceException {
-        return HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
             public List<DocumentDBO> execute(@Nonnull final Session session) {
@@ -291,7 +290,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public DocumentDBO execute(@Nonnull final Session session) {
@@ -311,7 +310,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public DocumentDBO execute(@Nonnull final Session session) {
@@ -337,7 +336,7 @@ public class HibernateRepository implements IRepository {
     @Override
 	public String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     /**
@@ -356,7 +355,7 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     /**
@@ -376,7 +375,7 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
@@ -404,7 +403,7 @@ public class HibernateRepository implements IRepository {
                 return split[0];
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
@@ -421,7 +420,7 @@ public class HibernateRepository implements IRepository {
                 return sensors;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
@@ -441,7 +440,7 @@ public class HibernateRepository implements IRepository {
                 return sensors.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @CheckForNull
@@ -467,7 +466,7 @@ public class HibernateRepository implements IRepository {
                 return rootPath;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     @Override
@@ -486,7 +485,7 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
@@ -521,7 +520,7 @@ public class HibernateRepository implements IRepository {
                 }
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override

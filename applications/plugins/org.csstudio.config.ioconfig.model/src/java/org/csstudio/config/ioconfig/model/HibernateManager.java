@@ -143,7 +143,7 @@ public final class HibernateManager extends Observable {
 	private  Transaction _trx;
 	private  SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
     private  List<Class<?>> _classes = new ArrayList<Class<?>>();
-    private Session _session;
+    private Session _sessionLazy;
 
 	/**
 	 *
@@ -283,6 +283,42 @@ public final class HibernateManager extends Observable {
         }
     }
 
+    public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+        initSessionFactoryDevDB();
+        _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+        _sessionWatchDog.schedule(30000);
+        _sessionWatchDog.useSession();
+        _trx = null;
+        Session sessionEager = _sessionFactoryDevDB.openSession();
+        try {
+            _trx = sessionEager.getTransaction();
+            _trx.setTimeout(_timeout);
+            _trx.begin();
+            T result = execute( hibernateCallback, sessionEager);
+            _trx.commit();
+            return result;
+        } catch (HibernateException ex) {
+            notifyObservers(ex);
+            if (_trx != null) {
+                try {
+                    _trx.rollback();
+                } catch (HibernateException exRb) {
+                    CentralLogger.getInstance().error(
+                            HibernateManager.class.getSimpleName(), exRb);
+                }
+            }
+            CentralLogger.getInstance().error(
+                    HibernateManager.class.getSimpleName(), ex);
+            throw new PersistenceException(ex);
+        } finally {
+            if(sessionEager != null) {
+                sessionEager.close();
+                sessionEager = null;
+            }
+        }
+        
+    }
+    
 	/**
 	 *
 	 * @param <T>
@@ -292,20 +328,20 @@ public final class HibernateManager extends Observable {
 	 * @return the Session resulte.
 	 */
     @CheckForNull
-	public <T> T doInDevDBHibernate(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+	public <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
 		_sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
         _sessionWatchDog.schedule(30000);
         _sessionWatchDog.useSession();
 		_trx = null;
-        if (_session == null) {
-            _session = _sessionFactoryDevDB.openSession();
+        if (_sessionLazy == null) {
+            _sessionLazy = _sessionFactoryDevDB.openSession();
         }
 		try {
-			_trx = _session.getTransaction();
+			_trx = _sessionLazy.getTransaction();
 			_trx.setTimeout(_timeout);
 			_trx.begin();
-			T result = execute( hibernateCallback, _session);
+			T result = execute( hibernateCallback, _sessionLazy);
 			_trx.commit();
 			return result;
 		} catch (HibernateException ex) {
@@ -319,11 +355,11 @@ public final class HibernateManager extends Observable {
 				}
 			}
 			try {
-                if (_session != null && _session.isOpen()) {
-                    _session.close();
+                if (_sessionLazy != null && _sessionLazy.isOpen()) {
+                    _sessionLazy.close();
                 }
             } finally {
-                _session = null;
+                _sessionLazy = null;
             }
 			CentralLogger.getInstance().error(
 					HibernateManager.class.getSimpleName(), ex);
