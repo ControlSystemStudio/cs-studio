@@ -57,7 +57,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
         assertEquals("Demo2", alarm.getMessage());
     }
 
-    private boolean received_rdb_info = false;
+    private int received_rdb_info = 0;
 
     // ReadInfoJobListener
     @Override
@@ -65,7 +65,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
     {
         synchronized (this)
         {
-            received_rdb_info = true;
+            ++received_rdb_info;
             notifyAll();
         }
     }
@@ -104,12 +104,13 @@ public class GlobalAlarmTest implements ReadInfoJobListener
 
         // Read RDB info in background job
         BenchmarkTimer timer = new BenchmarkTimer();
-        new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm, this).schedule();
         synchronized (this)
         {
-            for (int i=0; !received_rdb_info  &&  i<10; ++i)
+            received_rdb_info = 0;
+            new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm, this).schedule();
+            for (int i=0; received_rdb_info == 0  &&  i<10; ++i)
                 wait(1000);
-            assertTrue(received_rdb_info);
+            assertEquals(1, received_rdb_info);
         }
         timer.stop();
         System.out.println("After reading GUI info (" + timer.toString() + "):");
@@ -117,5 +118,57 @@ public class GlobalAlarmTest implements ReadInfoJobListener
 
         assertTrue(alarm.getID() >= 0);
         assertTrue(alarm.getGuidance().length > 0);
+    }
+
+    @Test
+    public void testConcurrentAlarmCompletionFromRDB() throws Exception
+    {
+        // Get test settings, abort if incomplete
+        final TestProperties settings = new TestProperties();
+
+        // Create global alarm for some path
+        final String full_path = settings.getString("alarm_test_path");
+        final String full_path2 = settings.getString("alarm_test_path2");
+        final String rdb_url = settings.getString("alarm_rdb_url");
+        final String rdb_user = settings.getString("alarm_rdb_user");
+        final String rdb_password = settings.getString("alarm_rdb_password");
+        if (rdb_url == null)
+        {
+            System.out.println("Need test RDB URL, skipping test");
+            return;
+        }
+        if (full_path == null  ||  full_path2 == null)
+        {
+            System.out.println("Need two test paths, skipping test");
+            return;
+        }
+        // Start with 2 'global' alarms
+        final GlobalAlarm alarm1 = GlobalAlarm.fromPath(configurations, full_path,
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations, full_path2,
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        // Same root, no detail from RDB, yet
+        final AlarmTreeRoot root = alarm1.getClientRoot();
+        assertNotSame(alarm1, alarm2);
+        assertSame(root, alarm2.getClientRoot());
+        assertEquals(-1, root.getID());
+
+        // Read RDB info for both in background jobs
+        synchronized (this)
+        {
+            received_rdb_info = 0;
+            final ReadInfoJob job1 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm1, this);
+            final ReadInfoJob job2 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm2, this);
+            job1.schedule();
+            job2.schedule();
+            for (int i=0; received_rdb_info != 2 &&  i<10; ++i)
+                wait(1000);
+            assertEquals(2, received_rdb_info);
+        }
+        root.dump(System.out);
+
+        assertTrue(root.getID() >= 0);
+        assertTrue(alarm1.getID() >= 0);
+        assertTrue(alarm1.getGuidance().length > 0);
     }
 }

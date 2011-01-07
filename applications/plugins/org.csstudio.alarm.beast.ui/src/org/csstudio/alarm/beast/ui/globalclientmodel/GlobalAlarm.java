@@ -166,7 +166,20 @@ public class GlobalAlarm extends AlarmTreeLeaf
         // Item names are not necessarily unique,
         // so name & ID-of-parent are required for lookup.
         // To get all parent IDs, start at the root
-        completeGuiInfo(reader, getClientRoot());
+        final AlarmTreeRoot root = getClientRoot();
+        // Lock the root
+        // When several global alarms for the same root trigger at about the same time,
+        // multiple ReadInfoJob instances will try to complete the GUI info.
+        // If they concurrently try to update the 'root' and other higher-level
+        // elements, multiple jobs will try to set the ID of these elements,
+        // but it is not permitted to update the ID once set.
+        // By locking on the root, we assert that the ReadInfoJob instances for one alarm
+        // tree run in sequence, not parallel, which also prevents double-lookup of the
+        // same info.
+        synchronized (root)
+        {
+            completeGuiInfo(reader, root);
+        }
         reader.closeStatements();
     }
 
