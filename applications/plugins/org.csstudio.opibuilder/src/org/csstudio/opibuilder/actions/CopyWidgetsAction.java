@@ -12,8 +12,11 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.actions.ActionFactory;
 
@@ -67,6 +70,18 @@ public class CopyWidgetsAction extends SelectionAction {
 		((OPIEditor)getWorkbenchPart()).getClipboard()
 			.setContents(new Object[]{xml}, 
 				new Transfer[]{OPIWidgetsTransfer.getInstance()});
+		Display.getCurrent().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				IAction pasteAction = ((ActionRegistry)((OPIEditor)getWorkbenchPart()).getAdapter(ActionRegistry.class)).
+				getAction(ActionFactory.PASTE.getId());
+				if(pasteAction != null){
+					((PasteWidgetsAction)pasteAction).refreshEnable();
+				}
+				
+			}
+		});
 	}
 	
 	/**
