@@ -373,6 +373,15 @@
             id="org.csstudio.opibuilder.widgets.removeGroup"
             objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
          <action
+               class="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction"
+               enablesFor="1"
+               icon="icons/unlock.png"
+               id="org.csstudio.opibuilder.widgets.lockUnlockChildrenAction"
+               label="Lock/Unlock Children"
+               menubarPath="group"
+               tooltip="Lock/Unlock children in the grouping container.">
+         </action>
+         <action
                class="org.csstudio.opibuilder.widgets.actions.RemoveGroupAction"
                enablesFor="1"
                icon="icons/removeGroup.png"
