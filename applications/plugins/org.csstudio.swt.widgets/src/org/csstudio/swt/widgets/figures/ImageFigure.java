@@ -139,6 +139,9 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private long lastUpdateTime;
 	private long interval_ms;
 	private ScheduledFuture<?> scheduledFuture;
+	
+	private boolean startAnimationRequested = false;
+	
 	/**
 	 * dispose the resources used by this figure
 	 */
@@ -355,6 +358,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			return;
 				
 		if(animated) {   //draw refreshing image
+			if(startAnimationRequested)
+				realStartAnimation();
 			ImageData imageData = imageDataArray[showIndex];
 			Image refresh_image = new Image(Display.getDefault(), imageData);
 			switch (imageData.disposalMethod) {
@@ -569,9 +574,18 @@ public final class ImageFigure extends Figure implements Introspectable {
 	}
 	
 	/**
+	 * Start animation. The request will be pended until figure painted for the first time.
+	 */
+	public synchronized void startAnimation(){
+		startAnimationRequested = true;
+		repaint();
+	}
+	
+	/**
 	 * start the animation if the image is an animated GIF image.
 	 */
-	public synchronized void startAnimation(){		
+	public synchronized void realStartAnimation(){	
+		startAnimationRequested = false;
 		if(animated && !refreshing && !animationDisabled) {
 			repeatCount = loader.repeatCount;
 			//animationIndex = 0;
@@ -626,7 +640,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * stop the animation if the image is an animated GIF image.
 	 */
 	public synchronized void stopAnimation(){		
-		
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;
