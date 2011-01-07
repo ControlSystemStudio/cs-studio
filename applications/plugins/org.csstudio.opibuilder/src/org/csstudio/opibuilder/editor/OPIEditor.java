@@ -1005,7 +1005,7 @@ class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
 		};
 		showOutlineAction.setImageDescriptor(
 				OPIBuilderPlugin.imageDescriptorFromPlugin(
-						OPIBuilderPlugin.PLUGIN_ID, "icons/treeview.gif")); //$NON-NLS-1$
+						OPIBuilderPlugin.PLUGIN_ID, "icons/tree_mode.gif")); //$NON-NLS-1$
 		showOutlineAction.setToolTipText("Show Tree View ");
 		tbm.add(showOutlineAction);
 		showOverviewAction = new Action() {

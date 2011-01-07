@@ -278,6 +278,13 @@ public final class PasteWidgetsAction extends WorkbenchPartAction {
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Refresh the action's enable state hence the action bars.
+	 */
+	public void refreshEnable() {
+		refresh();
 	}	
 
 }
