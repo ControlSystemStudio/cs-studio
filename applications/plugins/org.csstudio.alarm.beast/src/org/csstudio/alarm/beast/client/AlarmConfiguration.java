@@ -84,7 +84,7 @@ public class AlarmConfiguration
      *  @param url RDB URL
      *  @param user	RDB user name
      *  @param password RDB password
-     *  @param root_name Name of root element
+     *  @param root_name Name of root element. When <code>null</code>, only <code>listConfigurations()</code> is supported.
      *  @param create Set true to create new tree if nothing found
      *  @throws Exception on error
      */
@@ -102,7 +102,10 @@ public class AlarmConfiguration
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
         config_reader = new AlarmConfigurationReader(rdb, sql);
-        config_tree = readAlarmTree(root_name, create);
+        if (root_name != null)
+            config_tree = readAlarmTree(root_name, create);
+        else
+            config_tree = null;
         closeStatements();
         // Re-enable auto-connect
         rdb.setAutoReconnect(true);
