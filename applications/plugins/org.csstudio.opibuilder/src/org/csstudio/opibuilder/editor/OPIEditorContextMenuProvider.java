@@ -25,7 +25,7 @@ import org.eclipse.ui.actions.ActionFactory;
  * @author Xihui Chen
  * 
  */
-public final class OPIEditorContextMenuProvider extends ContextMenuProvider {
+public class OPIEditorContextMenuProvider extends ContextMenuProvider {
 	/**
 	 * The action registry.
 	 */

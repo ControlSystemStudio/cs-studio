@@ -46,6 +46,7 @@ import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
+import org.csstudio.opibuilder.actions.ShowIndexInTreeViewAction;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
 import org.csstudio.opibuilder.dnd.TextTransferDropPVTargetListener;
@@ -128,6 +129,7 @@ import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -960,8 +962,18 @@ class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
 	protected void configureOutlineViewer(){
 		getViewer().setEditDomain(getEditDomain());
 		getViewer().setEditPartFactory(new WidgetTreeEditpartFactory());
-		ContextMenuProvider provider = new OPIEditorContextMenuProvider(
-				OPIEditor.this.getGraphicalViewer(), getActionRegistry());
+		final ShowIndexInTreeViewAction showIndexInTreeViewAction = 
+				new ShowIndexInTreeViewAction(getViewer());
+			ContextMenuProvider provider = new OPIEditorContextMenuProvider(
+				OPIEditor.this.getGraphicalViewer(), getActionRegistry()){
+			@Override
+			public void buildContextMenu(IMenuManager menu) {
+				super.buildContextMenu(menu);
+				menu.appendToGroup(
+						GEFActionConstants.GROUP_EDIT,
+						showIndexInTreeViewAction);
+			}
+		};
 		getViewer().setContextMenu(provider);
 		getSite().registerContextMenu(
 			"org.csstudio.opibuilder.outline.contextmenu", //$NON-NLS-1$

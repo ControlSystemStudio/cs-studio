@@ -55,10 +55,7 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
 						removeChild(child);
 				}else							
 					refreshChildren();			
-				for(Object child : getChildren()){
-					if(child instanceof WidgetTreeEditpart)
-						((WidgetTreeEditpart)child).refreshVisuals();
-				}
+				refreshVisuals();
 			}
 		};
 		getWidgetModel().getChildrenProperty().
@@ -74,6 +71,15 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
 	@Override
 	protected List<AbstractWidgetModel> getModelChildren() {
 		return getWidgetModel().getChildren();
+	}
+	
+	@Override
+	protected void refreshVisuals() {
+		super.refreshVisuals();
+		for(Object child : getChildren()){
+			if(child instanceof WidgetTreeEditpart)
+				((WidgetTreeEditpart)child).refreshVisuals();
+		}
 	}
 	
 }
