@@ -17,24 +17,42 @@ public class AapiConnectionTest {
 	private static final String HOST = "kryksdds.desy.de";
 	private static final int PORT = 4056;
 	private AapiClient _aapiClient;
+	private RequestData _requestData;
 
 	@Before
 	public void setUp() throws Exception {
 		_aapiClient = new AapiClient(HOST, PORT);
+		_requestData = new RequestData();
+		_requestData.setUFromTime(0);
+		_requestData.setUToTime(0);
+		_requestData.setPvList(new String[] {"krykWeather:vWindBoe_ai"});
 	}
 
 	@Test
-	public void testGetData() {
-		RequestData requestData = new RequestData();
-		requestData.setFromTime(1267350000);
-		requestData.setToTime(1267355000);
-		requestData.setUFromTime(0);
-		requestData.setUToTime(0);
-		requestData.setNumberOfSamples(10);
-		requestData.setPvList(new String[] {"krykWeather:vWindBoe_ai"});
-		requestData.setConversParam(AAPI.DEADBAND_PARAM);
-		requestData.setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
-		AnswerData data = _aapiClient.getData(requestData);
+	public void testGetRawData() {
+		_requestData.setFromTime(1267350000);
+		_requestData.setToTime(1267351000);
+		_requestData.setConversParam(AAPI.DEADBAND_PARAM);
+		_requestData.setConversionMethod(AapiReductionMethod.TAIL_RAW_METHOD);
+		AnswerData data = _aapiClient.getData(_requestData);
+		assertNotNull(data);
+		printoutRaw(data);
+	}
+
+	
+	private void printoutRaw(AnswerData data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Test
+	public void testGetMinMaxData() {
+		_requestData.setFromTime(1267350000);
+		_requestData.setToTime(1267355000);
+		_requestData.setNumberOfSamples(10);
+		_requestData.setConversParam(AAPI.DEADBAND_PARAM);
+		_requestData.setConversionMethod(AapiReductionMethod.MIN_MAX_AVERAGE_METHOD);
+		AnswerData data = _aapiClient.getData(_requestData);
 		assertNotNull(data);
 		//assert fourth sample 
 		//time
@@ -45,10 +63,10 @@ public class AapiConnectionTest {
 		assertEquals(5.204016, data.getData()[10], 0.0000001);
 		//avr
 		assertEquals(4.279712, data.getData()[11], 0.0000001);
-		printout(data);
+		printoutMinMax(data);
 	}
 	
-	private void printout(AnswerData data) {
+	private void printoutMinMax(AnswerData data) {
 		int j = 0;
 		for (int i = 0; i+2 < data.getData().length; i = i+3) {
 			j++;
@@ -62,6 +80,6 @@ public class AapiConnectionTest {
 	@After
 	public void tearDown() throws Exception {
 		_aapiClient = null;
+		_requestData = null;
 	}
-
 }
