@@ -34,10 +34,12 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.OverviewLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -53,6 +55,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -103,6 +107,8 @@ import org.eclipse.swt.widgets.Text;
 public class SlaveEditor extends AbstractNodeEditor {
 
 	public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
+	
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(SlaveEditor.class);
 
 	private Text _aktUserPrmData;
 	private Group _currentUserParamDataGroup;
@@ -208,20 +214,24 @@ public class SlaveEditor extends AbstractNodeEditor {
 					button.setSelection(Short.parseShort(button.getText()) == _groupIdentStored + 1);
 				}
 			}
-
-			if (_slave != null) {
-				if (_slave.getGSDFile() != null) {
-					fill(_slave.getGSDFile());
-				} else {
-					getHeaderField(HeaderFields.VERSION).setText("");
-					_vendorText.setText("");
-					// getNameWidget().setText("");
-					_revisionsText.setText("");
-				}
-			} else {
-				_gsdFile = null;
-				fill(_gsdFile);
-			}
+            try {
+                if (_slave != null) {
+                    if (_slave.getGSDFile() != null) {
+                        fill(_slave.getGSDFile());
+                    } else {
+                        getHeaderField(HeaderFields.VERSION).setText("");
+                        _vendorText.setText("");
+                        // getNameWidget().setText("");
+                        _revisionsText.setText("");
+                    }
+                } else {
+                    _gsdFile = null;
+                    fill(_gsdFile);
+                }
+            } catch (PersistenceException e) {
+                LOG.error(e);
+                DeviceDatabaseErrorDialog.open(null, "Can't undo. Database error", e);
+            }
 		}
 	}
 
@@ -232,12 +242,18 @@ public class SlaveEditor extends AbstractNodeEditor {
 	public void createPartControl(@Nonnull final Composite parent) {
 		_slave = (SlaveDBO) getNode();
 		super.createPartControl(parent);
-		makeSlaveKonfiguration();
-		selecttTabFolder(0);
+		try {
+            makeSlaveKonfiguration();
+            selecttTabFolder(0);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            DeviceDatabaseErrorDialog.open(null, "Can't open Slave Edior! Database error", e);
+        }
 	}
 
 	/**
 	 * {@inheritDoc}
+	 * @throws PersistenceException 
 	 */
 	@Override
 	public void doSave(@Nullable final IProgressMonitor monitor) {
@@ -249,7 +265,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 		// _slave.moveSortIndex((short) getIndexSpinner().getSelection());
 		Short stationAddress = (Short) ((StructuredSelection) _indexCombo
 				.getSelection()).getFirstElement();
-		_slave.setSortIndexNonHibernate(stationAddress);
+		
+		try {
+            _slave.setSortIndexNonHibernate(stationAddress);
 		_slave.setFdlAddress(stationAddress);
 		_indexCombo.getCombo().setData(
 				_indexCombo.getCombo().getSelectionIndex());
@@ -285,11 +303,16 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 		_slave.update();
 		save();
+		} catch (PersistenceException e1) {
+            DeviceDatabaseErrorDialog.open(null, "Can't save Slave. Database error", e1);
+            CentralLogger.getInstance().error(this, e1.getLocalizedMessage());
+		}
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws PersistenceException */
 	@Override
-	public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
+	public final boolean fill(@Nullable final GSDFileDBO gsdFile) throws PersistenceException {
 		// Read GSD-File
 		if (gsdFile == null) {
 			return false;
@@ -440,8 +463,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 	/**
 	 * @param head
 	 *            The Tab text.
+	 * @throws PersistenceException 
 	 */
-	private void makeBasics(@Nonnull final String head) {
+	private void makeBasics(@Nonnull final String head) throws PersistenceException {
 
 		Composite comp = getNewTabItem(head, 2);
 
@@ -509,8 +533,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	/**
 	 * @param comp
+	 * @throws PersistenceException 
 	 */
-	private void makeBasicsIO(@Nonnull Composite comp) {
+	private void makeBasicsIO(@Nonnull Composite comp) throws PersistenceException {
 		Group ioGroup = new Group(comp, SWT.NONE);
 		ioGroup.setText("Inputs / Outputs");
 		ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
@@ -548,8 +573,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	/**
 	 * @param comp
+	 * @throws PersistenceException 
 	 */
-	private void makeBasicsName(@Nonnull Composite comp) {
+	private void makeBasicsName(@Nonnull Composite comp) throws PersistenceException {
 		Group gName = new Group(comp, SWT.NONE);
 		gName.setText("Name");
 		gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
@@ -583,23 +609,25 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_indexCombo.getCombo().setData(
 				_indexCombo.getCombo().getSelectionIndex());
 		_indexCombo.getCombo().addModifyListener(getMLSB());
-		_indexCombo
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					@Override
-					public void selectionChanged(
-							@Nonnull final SelectionChangedEvent event) {
-						short index = (Short) ((StructuredSelection) _indexCombo
-								.getSelection()).getFirstElement();
-						getNode().moveSortIndex(index);
-						if (getNode().getParent() != null) {
-							getProfiBusTreeView()
-									.refresh(getNode().getParent());
-						} else {
-							getProfiBusTreeView().refresh();
-						}
-					}
-				});
+        _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+            @Override
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                        .getFirstElement();
+                try {
+                    getNode().moveSortIndex(index);
+                    if (getNode().getParent() != null) {
+                        getProfiBusTreeView().refresh(getNode().getParent());
+                    } else {
+                        getProfiBusTreeView().refresh();
+                    }
+                } catch (PersistenceException e) {
+                    LOG.error("Deveice Database Error. Cant't move node.",e);
+                    DeviceDatabaseErrorDialog.open(null, "Cant't move node.", e);
+                }
+            }
+        });
 	}
 
 	/**
@@ -873,7 +901,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void makeOverview(@Nonnull final String headline) {
+	private void makeOverview(@Nonnull final String headline) throws PersistenceException {
 		Composite comp = getNewTabItem(headline, 1);
 		comp.setLayout(new GridLayout(1, false));
 		List<TableColumn> columns = new ArrayList<TableColumn>();
@@ -994,8 +1022,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 *            Style of the Composite.
 	 * @param slave
 	 *            the Profibus Slave to Configer.
+	 * @throws PersistenceException 
 	 */
-	private void makeSlaveKonfiguration() {
+	private void makeSlaveKonfiguration() throws PersistenceException {
 		boolean nevv = false;
 		String[] heads = {"Basics", "Settings", "Overview" };
 		makeOverview(heads[2]);

@@ -127,4 +127,12 @@ public class DummyRepository implements IRepository {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConnected() {
+        return true;
+    }
+
 }

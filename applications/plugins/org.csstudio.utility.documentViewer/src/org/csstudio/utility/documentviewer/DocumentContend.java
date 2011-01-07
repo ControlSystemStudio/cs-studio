@@ -40,10 +40,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.INode;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -73,6 +77,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DocumentContend {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(DocumentContend.class);
+    
     private ListViewer _pvList;
 
     private Collection<IProcessVariable> _processVariables = new HashSet<IProcessVariable>();
@@ -132,6 +139,7 @@ public class DocumentContend {
     }
 
     /**
+     * @throws PersistenceException 
      *
      */
     public void update() {
@@ -161,6 +169,7 @@ public class DocumentContend {
 
     /**
      * @param processVariables
+     * @throws PersistenceException 
      */
     private void callIoNameService(final Collection<IProcessVariable> processVariables) {
         ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
@@ -168,11 +177,19 @@ public class DocumentContend {
         for (IProcessVariable iProcessVariable : processVariables) {
             pcNames.add(iProcessVariable.getName());
         }
-        Collection<INode> nodes = pv2IOName.getNodes(pcNames).values();
-        Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
+        
+        Collection<INode> nodes;
+        try {
+            nodes = pv2IOName.getNodes(pcNames).values();
+            Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
 
-        addNodes(hierarchyDocuments, nodes);
-        _crateDocumentTable.setInput(hierarchyDocuments);
+            addNodes(hierarchyDocuments, nodes);
+            _crateDocumentTable.setInput(hierarchyDocuments);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            // TODO (hrickens) 07.01.2011: Fehlermeldung auf die Shell bringen statt noch einen Dialog zu öffen.   
+            MessageDialog.openError(null, "Device Database error!", "TODO!");
+        }
     }
 
     /**

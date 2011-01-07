@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +28,7 @@ public class ChannelStructureTest {
 
 
     @Before
-    public void setUp() {
+    public void setUp() throws PersistenceException {
         Repository.injectIRepository(new DummyRepository());
         _profibusSubnet = new ProfibusSubnetDBO(new IocDBO());
         _master = new MasterDBO(_profibusSubnet);
@@ -40,7 +41,7 @@ public class ChannelStructureTest {
     }
 
     @Test
-    public void testModule() {
+    public void testModule() throws PersistenceException {
         ChannelStructureDBO out = new ChannelStructureDBO();
         assertNull(out.getModule());
         assertNull(out.getParent());
@@ -58,7 +59,7 @@ public class ChannelStructureTest {
 
     @Ignore("not change the code yet")
     @Test
-    public void testChannelStructs() {
+    public void testChannelStructs() throws PersistenceException {
         ModuleDBO module = new ModuleDBO(_slave);
         ChannelStructureDBO out = new ChannelStructureDBO();
         module.addChild(out);

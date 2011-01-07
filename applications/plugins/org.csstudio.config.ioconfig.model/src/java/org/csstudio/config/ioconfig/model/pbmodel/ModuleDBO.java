@@ -37,6 +37,7 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.hibernate.annotations.BatchSize;
 
@@ -80,8 +81,9 @@ public class ModuleDBO extends AbstractNodeDBO {
     /**
      * The default Constructor.
      * @param slave the parent Slave.
+     * @throws PersistenceException 
      */
-    public ModuleDBO(final SlaveDBO slave) {
+    public ModuleDBO(final SlaveDBO slave) throws PersistenceException {
         this(slave,null);
     }
 
@@ -89,8 +91,9 @@ public class ModuleDBO extends AbstractNodeDBO {
      * This Constructor set the parent and the name of this node.
      * @param slave The parent Salve
      * @param name the name of this Module.
+     * @throws PersistenceException 
      */
-    public ModuleDBO(final SlaveDBO slave, final String name) {
+    public ModuleDBO(final SlaveDBO slave, final String name) throws PersistenceException {
         setParent(slave);
         setName(name);
         slave.addChild(this);
@@ -114,9 +117,10 @@ public class ModuleDBO extends AbstractNodeDBO {
     /**
      *
      * @return the input offset
+     * @throws PersistenceException 
      */
     @Transient
-    public int getInputOffsetNH() {
+    public int getInputOffsetNH() throws PersistenceException {
         if (getSlave() != null) {
             ModuleDBO module = null;
             int sub = 1;
@@ -151,7 +155,7 @@ public class ModuleDBO extends AbstractNodeDBO {
 
 
     @Transient
-    public int getOutputOffsetNH() {
+    public int getOutputOffsetNH() throws PersistenceException {
         if (getSlave() != null) {
             ModuleDBO module = null;
             int sub = 1;
@@ -216,7 +220,7 @@ public class ModuleDBO extends AbstractNodeDBO {
 
     @Transient
     @SuppressWarnings("unchecked")
-    public Map<Short, ChannelStructureDBO> getChannelStructsAsMap() {
+    public Map<Short, ChannelStructureDBO> getChannelStructsAsMap() throws PersistenceException {
         return (Map<Short, ChannelStructureDBO>) getChildrenAsMap();
     }
 
@@ -289,7 +293,7 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
@@ -297,9 +301,10 @@ public class ModuleDBO extends AbstractNodeDBO {
     
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof SlaveDBO) {
             SlaveDBO slave = (SlaveDBO) parentNode;
             ModuleDBO copy = new ModuleDBO(slave);
@@ -352,7 +357,7 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Override
-    public void update() {
+    public void update() throws PersistenceException {
             super.update();
     }
 

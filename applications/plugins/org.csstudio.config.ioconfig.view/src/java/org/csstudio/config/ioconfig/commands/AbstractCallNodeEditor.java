@@ -39,11 +39,14 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
@@ -81,12 +84,16 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
                 openNodeEditor(obj, page);
             } catch (PartInitException e1) {
                 LOG.error(e1);
+                MessageDialog.openError(null, "ERROR", e1.getMessage());
+            } catch (PersistenceException e2) {
+                LOG.error(e2);
+                DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
             }
         }
         return null;
     }
 
-    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO parentNode,@Nonnull IWorkbenchPage page) throws PartInitException;
+    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO parentNode,@Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
 
     /**
      * @return

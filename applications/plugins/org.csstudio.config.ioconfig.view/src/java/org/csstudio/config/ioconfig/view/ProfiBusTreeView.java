@@ -27,9 +27,12 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_DRIVER_CLASS;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -45,6 +48,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.HibernateManager;
 import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -83,6 +87,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -126,7 +131,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
  * @author $Author: hrickens $
  * @since 19.06.2007
  */
-public class ProfiBusTreeView extends Composite {
+public class ProfiBusTreeView extends Composite implements Observer {
     
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ProfiBusTreeView.class);
     
@@ -213,11 +218,15 @@ public class ProfiBusTreeView extends Composite {
      */
     private List<FacilityDBO> _load;
     private Action _infoDialogAction;
-     /**
-     * The actual open Node Config Editor.
-     */
+    /**
+    * The actual open Node Config Editor.
+    */
     private AbstractNodeEditor _openNodeEditor;
     private Action _createNewSiemensConfigFile;
+
+    Action _reconnectDBAction;
+
+    private Job _dbMinderJob;
     
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
@@ -246,6 +255,7 @@ public class ProfiBusTreeView extends Composite {
                             final int style,
                             @Nonnull final IViewSite site) {
         super(parent, style);
+//        HibernateManager.getInstance().addObserver(this);
         new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
@@ -283,6 +293,8 @@ public class ProfiBusTreeView extends Composite {
         hookDoubleClickAction();
         contributeToActionBars();
         
+        runDataBaseConnectionMinder();
+        
         _viewer.addSelectionChangedListener(new NodeSelcetionChangedListener());
         
         this.addDisposeListener(new DisposeListener() {
@@ -294,6 +306,54 @@ public class ProfiBusTreeView extends Composite {
         });
     }
     
+    /**
+     * 
+     */
+    private void runDataBaseConnectionMinder() {
+        _dbMinderJob = new Job("DeviceDataBaseMinder") {
+            
+            @Override
+            protected IStatus run(@Nullable IProgressMonitor monitor) {
+                System.out.println("Start DeviceDataBaseMinder");
+                boolean dbConnected = Repository.isConnected();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // is wake up;
+                }
+
+                while(true) {
+                    if(dbConnected != Repository.isConnected()) {
+                        dbConnected = Repository.isConnected();
+                        ImageDescriptor base = CustomMediaFactory.getInstance()
+                        .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                                      "icons/addrepo_rep.gif");
+                        if(dbConnected) {
+                            _reconnectDBAction.setImageDescriptor(base);
+                            _reconnectDBAction.setToolTipText("Database is connectet");
+                        } else {
+                            ImageDescriptor overlay = CustomMediaFactory.getInstance()
+                            .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                                          "icons/error_co.gif");
+                            DecorationOverlayIcon doi = new DecorationOverlayIcon(base.createImage(), new ImageDescriptor[] {null,null,null,overlay,null} );
+//                            OverlayIcon oi = new OverlayIcon(base, overlay,new Point(18,18));
+                            _reconnectDBAction.setImageDescriptor(doi);
+                            _reconnectDBAction.setToolTipText("Database is NOT connectet!");
+                        }
+                    }
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        continue;
+                    }
+                }
+//                return null;
+            }
+        };
+        
+        _dbMinderJob.schedule();
+    }
+
     /**
      * 
      */
@@ -318,9 +378,15 @@ public class ProfiBusTreeView extends Composite {
                         public void run() {
                             getViewer().getTree().setEnabled(false);
                             Repository.close();
-                            setLoad(Repository.load(FacilityDBO.class));
-                            getViewer().setInput(getLoad());
-                            getViewer().getTree().setEnabled(true);
+                            try {
+                                setLoad(Repository.load(FacilityDBO.class));
+                                getViewer().setInput(getLoad());
+                                getViewer().getTree().setEnabled(true);
+                                _dbMinderJob.getThread().interrupt();
+                            } catch (PersistenceException e) {
+                                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
+                                CentralLogger.getInstance().error(this, e);
+                            }
                         }
                     });
                     monitor.done();
@@ -488,6 +554,9 @@ public class ProfiBusTreeView extends Composite {
         
         getViewer().getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, getViewer());
+        
+        makeDatabaseReconnectAction();
+        
         ImageDescriptor iDesc = CustomMediaFactory
                 .getInstance()
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
@@ -519,6 +588,22 @@ public class ProfiBusTreeView extends Composite {
         ToolBarManager tBM = new ToolBarManager(tB);
         tBM.add(collapseAllAction);
         tBM.createControl(getViewer().getTree());
+    }
+    
+    /**
+     * 
+     */
+    private void makeDatabaseReconnectAction() {
+        _reconnectDBAction = new Action() {
+            
+        };
+        
+        ImageDescriptor iDesc = CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                              "icons/addrepo_rep_dis.gif");
+        _reconnectDBAction.setImageDescriptor(iDesc);
+        _reconnectDBAction.setToolTipText("DB Connection state UNKNOWN");
+        _site.getActionBars().getToolBarManager().add(_reconnectDBAction);
     }
     
     private void hookDoubleClickAction() {
@@ -1027,12 +1112,17 @@ public class ProfiBusTreeView extends Composite {
             }
             
             for (AbstractNodeDBO node2Copy : _copiedNodesReferenceList) {
-                if (node2Copy instanceof FacilityDBO) {
-                    copyFacility(selectedNode);
-                } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
-                    copy2Parent(selectedNode, node2Copy);
-                } else if (selectedNode.getClass().isInstance(node2Copy)) {
-                    copy2Sibling(selectedNode, node2Copy);
+                try {
+                    if (node2Copy instanceof FacilityDBO) {
+                        copyFacility(selectedNode);
+                    } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
+                        copy2Parent(selectedNode, node2Copy);
+                    } else if (selectedNode.getClass().isInstance(node2Copy)) {
+                        copy2Sibling(selectedNode, node2Copy);
+                    }
+                } catch (PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't copy Node! Database Error.", e);
+                    LOG.error("Can't copy Node. Device Database Error", e);
                 }
             }
         }
@@ -1040,9 +1130,10 @@ public class ProfiBusTreeView extends Composite {
         /**
          * @param selectedNode
          * @param node2Copy
+         * @throws PersistenceException 
          */
         private void copy2Parent(@Nonnull AbstractNodeDBO selectedNode,
-                                 @Nonnull AbstractNodeDBO node2Copy) {
+                                 @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
             AbstractNodeDBO copy = null;
             if (_move) {
                 AbstractNodeDBO oldParent = node2Copy.getParent();
@@ -1076,9 +1167,10 @@ public class ProfiBusTreeView extends Composite {
         /**
          * @param selectedNode
          * @param node2Copy
+         * @throws PersistenceException 
          */
         private void copy2Sibling(@Nonnull AbstractNodeDBO selectedNode,
-                                  @Nonnull AbstractNodeDBO node2Copy) {
+                                  @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
             AbstractNodeDBO nodeCopy = null;
             if (_move) {
                 AbstractNodeDBO oldParent = node2Copy.getParent();
@@ -1106,10 +1198,11 @@ public class ProfiBusTreeView extends Composite {
         
         /**
          * @param selectedNode
+         * @throws PersistenceException 
          */
-        private void copyFacility(@Nonnull AbstractNodeDBO selectedNode) {
+        private void copyFacility(@Nonnull AbstractNodeDBO selectedNode) throws PersistenceException {
             final FacilityDBO copy = (FacilityDBO) selectedNode.copyThisTo(null);
-            copy.setSortIndexNonHibernate(selectedNode.getSortIndex()+1);
+            copy.setSortIndexNonHibernate(selectedNode.getSortIndex() + 1);
             List<FacilityDBO> load = getLoad();
             load.add(copy);
             getViewer().setInput(load);
@@ -1289,7 +1382,14 @@ public class ProfiBusTreeView extends Composite {
                     || property.equals(DIALECT)
                     || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
                     || property.equals(HIBERNATE_CONNECTION_URL)) {
-                setLoad(Repository.load(FacilityDBO.class));
+                try {
+                    List<FacilityDBO> load = Repository.load(FacilityDBO.class);
+                    setLoad(load);
+                } catch (PersistenceException e) {
+                    setLoad(new ArrayList<FacilityDBO>());
+                    DeviceDatabaseErrorDialog.open(null, "Can't read from Database! Database Error.", e);
+                    CentralLogger.getInstance().error(this, e);
+                }
                 getViewer().getTree().removeAll();
                 getViewer().setInput(getLoad());
                 getViewer().refresh(false);
@@ -1400,6 +1500,28 @@ public class ProfiBusTreeView extends Composite {
              * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
              */
             return false;
+        }
+        
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(Observable arg0, Object arg1) {
+        ImageDescriptor base = CustomMediaFactory.getInstance()
+        .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+                                      "icons/addrepo_rep.gif");
+        if (arg1 instanceof PersistenceException) {
+            ImageDescriptor overlay = CustomMediaFactory.getInstance()
+            .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
+            "icons/error_co.gif");
+            DecorationOverlayIcon doi = new DecorationOverlayIcon(base.createImage(), new ImageDescriptor[] {null,null,null,overlay,null} );
+            _reconnectDBAction.setImageDescriptor(doi);
+            _reconnectDBAction.setToolTipText("Database is NOT connectet!");
+        } else {
+            _reconnectDBAction.setImageDescriptor(base);
+            _reconnectDBAction.setToolTipText("Database is connectet");
         }
         
     }

@@ -46,6 +46,7 @@ import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -77,10 +78,11 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     /**
      * {@inheritDoc}
      * @throws PartInitException
+     * @throws PersistenceException 
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException, PersistenceException {
         AbstractNodeDBO node = null;
         String id = null;
 

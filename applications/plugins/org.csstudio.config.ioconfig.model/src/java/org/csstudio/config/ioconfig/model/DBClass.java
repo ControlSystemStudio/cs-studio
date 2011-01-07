@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.net.ConnectException;
 import java.util.Date;
 
 import javax.persistence.GeneratedValue;
@@ -158,6 +159,7 @@ public class DBClass {
     /**
      * Save or Update the Class to the Repository.
      * @throws PersistenceException was thrown when the class can not be persistence.
+     * @throws ConnectException 
      */
     public void save() throws PersistenceException{
         Repository.saveOrUpdate(this);

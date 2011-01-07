@@ -46,6 +46,7 @@ import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
@@ -242,12 +243,17 @@ public abstract class AbstractNodeEditor extends EditorPart implements
                                                "Lösche Datei aus der Datenbank",
                                                "Sind sie sicher das sie die Datei "
                                                        + removeFile.getName() + " löschen möchten")) {
-                    Repository.removeGSDFiles(removeFile);
-                    List<GSDFileDBO> gsdFiles = getGsdFiles();
-                    if (gsdFiles != null) {
-                        gsdFiles.remove(removeFile);
+                    try {
+                        Repository.removeGSDFiles(removeFile);
+                        List<GSDFileDBO> gsdFiles = getGsdFiles();
+                        if (gsdFiles != null) {
+                            gsdFiles.remove(removeFile);
+                        }
+                        _tableViewer.setInput(gsdFiles);
+                    } catch (PersistenceException pE) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't remove file from Database!", pE);
+                        CentralLogger.getInstance().error(this, pE);
                     }
-                    _tableViewer.setInput(gsdFiles);
                 }
             }
 
@@ -278,17 +284,22 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			_tSelected = tSelected;
 		}
 
-		private void doFileAdd() {
-			setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer
-					.getSelection()).getFirstElement());
-			GSDFileDBO gsdFile = getGsdFile();
-            if (gsdFile != null) {
-                if (fill(gsdFile)) {
-                    _tSelected.setText(gsdFile.getName());
-                    setSavebuttonEnabled("GSDFile", true);
+        private void doFileAdd() {
+            setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer.getSelection())
+                    .getFirstElement());
+            GSDFileDBO gsdFile = getGsdFile();
+            try {
+                if (gsdFile != null) {
+                    if (fill(gsdFile)) {
+                        _tSelected.setText(gsdFile.getName());
+                        setSavebuttonEnabled("GSDFile", true);
+                    }
                 }
+            } catch (PersistenceException e) {
+                LOG.error(e);
+                DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
             }
-		}
+        }
 
 		@Override
 		public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
@@ -646,7 +657,13 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		GridDataFactory.fillDefaults().grab(true, true)
 				.applyTo(gsdFileTableViewer.getTable());
 
-		setGsdFiles(Repository.load(GSDFileDBO.class));
+        try {
+            List<GSDFileDBO> load = Repository.load(GSDFileDBO.class);
+            setGsdFiles(load);
+        } catch (PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't read GSDFiles from Database!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
 		List<GSDFileDBO> gsdFiles = getGsdFiles();
         if (gsdFiles == null) {
 			setGsdFiles(new ArrayList<GSDFileDBO>());
@@ -793,8 +810,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	 * @param gsdFile
 	 *            the GSDFile whit the data.
 	 * @return true when set the data ok.
+	 * @throws PersistenceException 
 	 */
-	public abstract boolean fill(@Nullable GSDFileDBO gsdFile);
+	public abstract boolean fill(@Nullable GSDFileDBO gsdFile) throws PersistenceException;
 
 	/**
 	 * @return the cancelButton
@@ -1084,63 +1102,59 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 				+ nodeType, "Enter the name of the " + nodeType, nameOffer,
 				null);
 		id.setBlockOnOpen(true);
-		if (id.open() == Window.OK) {
-			getNode().setName(id.getValue());
-			final User user = SecurityFacade.getInstance().getCurrentUser();
-			String name = "Unknown";
-			if (user != null) {
-				name = user.getUsername();
-			}
-
-			getNode().setCreatedBy(name);
-			getNode().setCreatedOn(new Date());
-			getNode().setVersion(-2);
-			id.close();
-
-			final Object obj = ((StructuredSelection) getProfiBusTreeView()
-					.getTreeViewer().getSelection()).getFirstElement();
-
-			if (getNode() instanceof FacilityDBO || obj == null) {
-				getProfiBusTreeView().getTreeViewer().setInput(getNode());
-				// TODO neue facility erstellen und speichern..
-			} else if (obj instanceof AbstractNodeDBO) {
-				if (getNode().getParent() == null) {
-					final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
-
-					getNode()
-							.moveSortIndex(
-									nodeParent
-											.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
-					nodeParent.addChild(getNode());
-				}
-			}
-			return true;
-		}
+        try {
+            if (id.open() == Window.OK) {
+                getNode().setName(id.getValue());
+                String name = getUserName(); 
+                getNode().setCreatedBy(name);
+                getNode().setCreatedOn(new Date());
+                getNode().setVersion(-2);
+                id.close();
+                
+                final Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer()
+                        .getSelection()).getFirstElement();
+                
+                if (getNode() instanceof FacilityDBO || obj == null) {
+                    getProfiBusTreeView().getTreeViewer().setInput(getNode());
+                    // TODO neue facility erstellen und speichern..
+                } else if (obj instanceof AbstractNodeDBO) {
+                    if (getNode().getParent() == null) {
+                        final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
+                        
+                        getNode()
+                                .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
+                        nodeParent.addChild(getNode());
+                    }
+                }
+                return true;
+            }
+        } catch (PersistenceException e) {
+            LOG.error(e.getMessage());
+            DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
+        }
 		return false;
 	}
 
 	/**
+     * @return
+     */
+	@Nonnull
+    private String getUserName() {
+        final User user = SecurityFacade.getInstance().getCurrentUser();
+        String name = "Unknown";
+        if (user != null) {
+            name = user.getUsername();
+        }
+        return name;
+    }
+
+    /**
 	 * @param exception
 	 *            A exception to show in a Dialog,
 	 */
 	protected void openErrorDialog(@Nonnull final Exception exception) {
 		LOG.error(exception);
-		final Formatter f = new Formatter();
-		String message = exception.getLocalizedMessage();
-		if (message == null) {
-			message = exception.getMessage();
-			if (message == null) {
-				message = "Unknown Exception";
-			}
-		}
-
-		f.format("The Settings not saved!\n\nDataBase Failure:\n%s", message);
-
-		final ErrorDialog errorDialog = new ErrorDialog(Display.getCurrent()
-				.getActiveShell(), "Data Base Error", f.toString(),
-				Status.CANCEL_STATUS, 0);
-		errorDialog.open();
-		f.close();
+		DeviceDatabaseErrorDialog.open(null, "The Settings not saved!\n\nDataBase Failure:", exception);
 	}
 
 	public void perfromClose() {

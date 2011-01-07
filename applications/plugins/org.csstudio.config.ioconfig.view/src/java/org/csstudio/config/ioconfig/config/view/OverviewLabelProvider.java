@@ -4,6 +4,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -71,7 +72,11 @@ public class OverviewLabelProvider implements ITableLabelProvider, IColorProvide
             case 0:
                 return "  ";
             case 1:
-                return channel.getFullChannelNumber()+"";
+                try {
+                    return channel.getFullChannelNumber()+"";
+                } catch (PersistenceException e) {
+                    return "DB Error!"; 
+                }
             case 2:
                 return channel.getName();
             case 3:

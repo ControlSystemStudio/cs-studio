@@ -32,6 +32,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -60,7 +61,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
  * @version $Revision: 1.14 $
  * @since 03.06.2009
  */
-public final class HibernateManager {
+public final class HibernateManager extends Observable {
 
     private static HibernateManager _INSTANCE;
 
@@ -129,6 +130,7 @@ public final class HibernateManager {
 		public long getTimeToCloseSession() {
 			return _timeToCloseSession;
 		}
+
 	}
 
 	private  SessionFactory _sessionFactoryDevDB;
@@ -138,10 +140,10 @@ public final class HibernateManager {
 	 * The timeout in sec.
 	 */
 	private  int _timeout = 10;
-	private  Session _session;
 	private  Transaction _trx;
 	private  SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
     private  List<Class<?>> _classes = new ArrayList<Class<?>>();
+    private Session _sessionLazy;
 
 	/**
 	 *
@@ -168,7 +170,9 @@ public final class HibernateManager {
 		}
 		buildConifg();
 		try {
-		    setSessionFactory(_cfg.buildSessionFactory());
+		    SessionFactory buildSessionFactory = _cfg.buildSessionFactory();
+            setSessionFactory(buildSessionFactory);
+            notifyObservers();
 		} catch (HibernateException e) {
 		    CentralLogger.getInstance().error(HibernateManager.class.getName(), e);
         }
@@ -209,11 +213,12 @@ public final class HibernateManager {
 			.setProperty("hibernate.cache.use_minimal_puts", "true")
 			.setProperty("hibernate.cache.use_query_cache", "true")
 				// connection Pool
+			.setProperty("hibernate.connection.provider_class", "org.hibernate.connection.C3P0ConnectionProvider")
 			.setProperty("c3p0.min_size", "1")
 			.setProperty("c3p0.max_size", "3")
 			.setProperty("c3p0.timeout", "1800")
 			.setProperty("c3p0.acquire_increment", "1")
-			.setProperty("c3p0.idel_test_period", "100") // sec
+			.setProperty("c3p0.idle_test_period", "100") // sec
 			.setProperty("c3p0.max_statements", "1")
 			.setProperty("hibernate.hbm2ddl.auto", "update")
 				.setProperty("hibernate.show_sql", "false");
@@ -278,6 +283,42 @@ public final class HibernateManager {
         }
     }
 
+    public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+        initSessionFactoryDevDB();
+        _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
+        _sessionWatchDog.schedule(30000);
+        _sessionWatchDog.useSession();
+        _trx = null;
+        Session sessionEager = _sessionFactoryDevDB.openSession();
+        try {
+            _trx = sessionEager.getTransaction();
+            _trx.setTimeout(_timeout);
+            _trx.begin();
+            T result = execute( hibernateCallback, sessionEager);
+            _trx.commit();
+            return result;
+        } catch (HibernateException ex) {
+            notifyObservers(ex);
+            if (_trx != null) {
+                try {
+                    _trx.rollback();
+                } catch (HibernateException exRb) {
+                    CentralLogger.getInstance().error(
+                            HibernateManager.class.getSimpleName(), exRb);
+                }
+            }
+            CentralLogger.getInstance().error(
+                    HibernateManager.class.getSimpleName(), ex);
+            throw new PersistenceException(ex);
+        } finally {
+            if(sessionEager != null) {
+                sessionEager.close();
+                sessionEager = null;
+            }
+        }
+        
+    }
+    
 	/**
 	 *
 	 * @param <T>
@@ -287,24 +328,24 @@ public final class HibernateManager {
 	 * @return the Session resulte.
 	 */
     @CheckForNull
-	public <T> T doInDevDBHibernate(@Nonnull final HibernateCallback hibernateCallback) {
-
-		handleSession();
+	public <T> T doInDevDBHibernateLazy(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
+        initSessionFactoryDevDB();
 		_sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
         _sessionWatchDog.schedule(30000);
         _sessionWatchDog.useSession();
 		_trx = null;
+        if (_sessionLazy == null) {
+            _sessionLazy = _sessionFactoryDevDB.openSession();
+        }
 		try {
-			CentralLogger.getInstance().debug(
-					HibernateManager.class.getSimpleName(),
-					"session is " + _session);
-			_trx = _session.getTransaction();
+			_trx = _sessionLazy.getTransaction();
 			_trx.setTimeout(_timeout);
 			_trx.begin();
-			T result = execute( hibernateCallback, _session);
+			T result = execute( hibernateCallback, _sessionLazy);
 			_trx.commit();
 			return result;
 		} catch (HibernateException ex) {
+		    notifyObservers(ex);
 			if (_trx != null) {
 				try {
 					_trx.rollback();
@@ -313,45 +354,31 @@ public final class HibernateManager {
 							HibernateManager.class.getSimpleName(), exRb);
 				}
 			}
+			try {
+                if (_sessionLazy != null && _sessionLazy.isOpen()) {
+                    _sessionLazy.close();
+                }
+            } finally {
+                _sessionLazy = null;
+            }
 			CentralLogger.getInstance().error(
 					HibernateManager.class.getSimpleName(), ex);
-			throw ex;
-		}
+			throw new PersistenceException(ex);
+		} 
 	}
 
-    /**
-     * 
-     */
-    private void handleSession() {
-        if ((_session == null) ||!_session.isConnected() || !_session.isOpen()) {
-		    if (_sessionWatchDog == null) {
-	            _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-	            _sessionWatchDog.setSystem(true);
-	        }
-		    initSessionFactoryDevDB();
-			_session = _sessionFactoryDevDB.openSession();
-		}
-    }
 
 	@CheckForNull
     private <T> T execute(@Nonnull final HibernateCallback callback,@Nonnull final Session sess) {
         return callback.execute(sess);
     }
 
-    public  void closeSession() {
-	    if((_session!=null)&&_session.isOpen()) {
-	        _session.close();
-	        _session=null;
-	    }
+    public void closeSession() {
 	    if((_sessionFactoryDevDB!=null)&&!_sessionFactoryDevDB.isClosed()) {
 	        _sessionFactoryDevDB.close();
 	        _sessionFactoryDevDB=null;
 	    }
-	    if(_sessionWatchDog!=null) {
-	        _sessionWatchDog.cancel();
-	        _sessionWatchDog=null;
-	    }
-	    CentralLogger.getInstance().info(HibernateManager.class, "DB Session closed");
+	    CentralLogger.getInstance().info(HibernateManager.class, "DB Session  Factory closed");
 
     }
     
@@ -366,6 +393,13 @@ public final class HibernateManager {
     @Nonnull
     protected AnnotationConfiguration getCfg() {
         return _cfg;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isConnected() {
+        return _sessionFactoryDevDB!=null ? _sessionFactoryDevDB.isClosed() : false;
     }
 
 }

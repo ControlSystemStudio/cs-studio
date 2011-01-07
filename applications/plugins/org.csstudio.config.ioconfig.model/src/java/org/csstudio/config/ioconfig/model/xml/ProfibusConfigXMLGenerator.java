@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -104,8 +105,9 @@ public class ProfibusConfigXMLGenerator {
      *
      * @param subnet
      *            The Profibus Subnet.
+     * @throws PersistenceException 
      */
-    public final void setSubnet(final ProfibusSubnetDBO subnet) {
+    public final void setSubnet(final ProfibusSubnetDBO subnet) throws PersistenceException {
         Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
         if ((masterTree == null) || (masterTree.size() < 1)) {
             return;

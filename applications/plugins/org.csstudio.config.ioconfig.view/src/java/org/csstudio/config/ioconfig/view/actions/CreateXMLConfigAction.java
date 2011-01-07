@@ -30,11 +30,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -67,38 +69,43 @@ public class CreateXMLConfigAction extends Action {
 			@Nullable final ProfibusSubnetDBO subnet) {
 		final ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator(
 				subnet.getName());
-		xml.setSubnet(subnet);
-		final File xmlFile = new File(path, subnet.getName() + ".xml");
-		if (xmlFile.exists()) {
-			final MessageBox box = new MessageBox(Display.getDefault()
-					.getActiveShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-			box.setMessage("The file " + xmlFile.getName()
-					+ " exist! Overwrite?");
-			final int erg = box.open();
-			if (erg == SWT.YES) {
-				try {
-					xml.getXmlFile(xmlFile);
-				} catch (final IOException e) {
-					final MessageBox abortBox = new MessageBox(Display
-							.getDefault().getActiveShell(), SWT.ICON_WARNING
-							| SWT.ABORT);
-					abortBox.setMessage("The file " + xmlFile.getName()
-							+ " can not created!");
-					abortBox.open();
-				}
-			}
-		} else {
-			try {
-				xmlFile.createNewFile();
-				xml.getXmlFile(xmlFile);
-			} catch (final IOException e) {
-				final MessageBox abortBox = new MessageBox(Display.getDefault()
-						.getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
-				abortBox.setMessage("The file " + xmlFile.getName()
-						+ " can not created!");
-				abortBox.open();
-			}
-		}
+		try {
+            xml.setSubnet(subnet);
+            final File xmlFile = new File(path, subnet.getName() + ".xml");
+            if (xmlFile.exists()) {
+                final MessageBox box = new MessageBox(Display.getDefault()
+                                                      .getActiveShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+                box.setMessage("The file " + xmlFile.getName()
+                               + " exist! Overwrite?");
+                final int erg = box.open();
+                if (erg == SWT.YES) {
+                    try {
+                        xml.getXmlFile(xmlFile);
+                    } catch (final IOException e) {
+                        final MessageBox abortBox = new MessageBox(Display
+                                                                   .getDefault().getActiveShell(), SWT.ICON_WARNING
+                                                                   | SWT.ABORT);
+                        abortBox.setMessage("The file " + xmlFile.getName()
+                                            + " can not created!");
+                        abortBox.open();
+                    }
+                }
+            } else {
+                try {
+                    xmlFile.createNewFile();
+                    xml.getXmlFile(xmlFile);
+                } catch (final IOException e) {
+                    final MessageBox abortBox = new MessageBox(Display.getDefault()
+                                                               .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
+                    abortBox.setMessage("The file " + xmlFile.getName()
+                                        + " can not created!");
+                    abortBox.open();
+                }
+            }
+        } catch (PersistenceException e1) {
+            LOG.error("Database Error! Files not created.", e1);
+            DeviceDatabaseErrorDialog.open(null, "Can't remove node", e1);
+        }
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
 
 /**
@@ -91,8 +92,9 @@ public class ChannelDBO extends AbstractNodeDBO {
      *            only if true then is the channel a Input otherwise a Output channel.
      * @param digital
      *            only if true then is the channel a Digital otherwise a Analog channel.
+     * @throws PersistenceException 
      */
-    public ChannelDBO(final ChannelStructureDBO channelStructure, final boolean input, final boolean digital) {
+    public ChannelDBO(final ChannelStructureDBO channelStructure, final boolean input, final boolean digital) throws PersistenceException {
         this(channelStructure, null, input, digital, (short) -1);
     }
 
@@ -113,9 +115,10 @@ public class ChannelDBO extends AbstractNodeDBO {
      *            only if true then is the channel a Digital otherwise a Analog channel.
      * @param sortIndex
      *            the sort posiotion for this Channel.
+     * @throws PersistenceException 
      */
     public ChannelDBO(final ChannelStructureDBO channelStructure, final String name, final boolean input, final boolean digital,
-            final int sortIndex) {
+            final int sortIndex) throws PersistenceException {
         setName(name);
         setInput(input);
         setDigital(digital);
@@ -128,9 +131,10 @@ public class ChannelDBO extends AbstractNodeDBO {
     /**
      *
      * @return The Channel number inclusive offset.
+     * @throws PersistenceException 
      */
     @Transient
-    public int getFullChannelNumber() {
+    public int getFullChannelNumber() throws PersistenceException {
         int value = 0;
         if (isInput()) {
             value = getModule().getInputOffsetNH();
@@ -256,7 +260,7 @@ public class ChannelDBO extends AbstractNodeDBO {
         _channelType = type.ordinal();
     }
 
-    public void setChannelTypeNonHibernate(final DataType type) {
+    public void setChannelTypeNonHibernate(final DataType type) throws PersistenceException {
         if (getChannelType() != type) {
             setChannelType(type);
             setDirty(true);
@@ -292,7 +296,7 @@ public class ChannelDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public int getStatusAddress() {
+    public int getStatusAddress() throws PersistenceException {
         return getModule().getInputOffsetNH() + _statusAddressOffset;
     }
 
@@ -371,8 +375,9 @@ public class ChannelDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
-    protected void localUpdate() {
+    protected void localUpdate() throws PersistenceException {
         NodeMap.countlocalUpdate();
         int channelNumber = 0;
         short channelSortIndex = getSortIndex();
@@ -457,10 +462,11 @@ public class ChannelDBO extends AbstractNodeDBO {
 
     /**
      * Assemble the Epics Address String.
+     * @throws PersistenceException 
      */
     @Transient
     @Override
-    public void assembleEpicsAddressString() {
+    public void assembleEpicsAddressString() throws PersistenceException {
         NodeMap.countAssembleEpicsAddressString();
         String oldAdr = getEpicsAddressString();
         try {
@@ -545,9 +551,10 @@ public class ChannelDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public void update() {
+    public void update() throws PersistenceException {
         localUpdate();
         if (_isUpdated) {
             _isUpdated = false;
@@ -565,24 +572,31 @@ public class ChannelDBO extends AbstractNodeDBO {
 
     /**
      * @return The Name of this Node.
+     * @throws PersistenceException 
      */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(getFullChannelNumber());
-        sb.append(": ");
-        sb.append(getName());
-        if ((getIoName() != null) && (getIoName().length() > 0)) {
-            sb.append(" [" + getIoName() + "]");
+        try {
+            sb.append(getFullChannelNumber());
+            sb.append(": ");
+            sb.append(getName());
+            if ((getIoName() != null) && (getIoName().length() > 0)) {
+                sb.append(" [" + getIoName() + "]");
+            }
+        } catch (PersistenceException e) {
+            sb.append("Device Database ERROR: ").append(e.getMessage());
+            CentralLogger.getInstance().error(this, e);
         }
         return sb.toString();
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
@@ -590,9 +604,10 @@ public class ChannelDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    protected AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    protected AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof ChannelStructureDBO) {
             ChannelStructureDBO channelStructure = (ChannelStructureDBO) parentNode;
             ChannelDBO copy = new ChannelDBO(channelStructure, getName(), isInput(), isDigital(),

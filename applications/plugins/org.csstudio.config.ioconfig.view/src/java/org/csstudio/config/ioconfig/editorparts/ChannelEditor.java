@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
@@ -38,7 +39,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -79,10 +82,10 @@ public class ChannelEditor extends AbstractNodeEditor {
 	 * @author $Author: $
 	 * @since 30.09.2010
 	 */
-    private final class SelectionListenerImplementation implements
+    private final class AssembleEpicsAddSelectionListener implements
 			SelectionListener {
     	
-    	public SelectionListenerImplementation() {
+    	public AssembleEpicsAddSelectionListener() {
 			// Default Constructor.
 		}
     	
@@ -119,12 +122,17 @@ public class ChannelEditor extends AbstractNodeEditor {
 		    }
 	        channel.setName(moduleChannelPrototype.getName());
 		    String oldAdr = channel.getEpicsAddressStringNH();
-		    channel.assembleEpicsAddressString();
-		    String newAdr = channel.getEpicsAddressStringNH();
-		    Text addressText = getAddressText();
-		    if (addressText!=null&&!newAdr.equals(oldAdr)) {
-				addressText.setText(newAdr);
-		    }
+		    try {
+                channel.assembleEpicsAddressString();
+                String newAdr = channel.getEpicsAddressStringNH();
+                Text addressText = getAddressText();
+                if (addressText!=null&&!newAdr.equals(oldAdr)) {
+                    addressText.setText(newAdr);
+                }
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't calulate Epics Address. Database error!", e);
+                CentralLogger.getInstance().error(this, e);
+            }
 		}
 
 		@Override
@@ -218,7 +226,7 @@ public class ChannelEditor extends AbstractNodeEditor {
         assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
                 "icons/refresh.gif").createImage());
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
-        assembleButton.addSelectionListener(new SelectionListenerImplementation());
+        assembleButton.addSelectionListener(new AssembleEpicsAddSelectionListener());
 	}
 
 	/**
@@ -290,7 +298,13 @@ public class ChannelEditor extends AbstractNodeEditor {
 	 */
 	private void createSensorField(@Nonnull final Composite comp) {
 		if ((getChannel().getIoName() != null) && !getChannel().getIoName().isEmpty()) {
-            List<SensorsDBO> loadSensors = Repository.loadSensors(getChannel().getIoName());
+            List<SensorsDBO> loadSensors = null;
+            try {
+                loadSensors = Repository.loadSensors(getChannel().getIoName());
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't read sensor ID's from Database", e);
+                CentralLogger.getInstance().error(this, e);
+            }
             if (((loadSensors != null) && (loadSensors.size() > 0))) {
                 makeSensorField(comp, loadSensors);
             }

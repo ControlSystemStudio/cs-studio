@@ -90,7 +90,7 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public GSDModuleDBO saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
                 private Session _session;
 
                 @Override
@@ -114,17 +114,18 @@ public class HibernateRepository implements IRepository {
             return gsdModule;
         } catch (HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
-            throw new PersistenceException();
+            throw new PersistenceException(he);
         }
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
 	public <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         try {
-            HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+            HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
                 @Override
 				public T execute(@Nonnull final Session session) {
@@ -136,19 +137,19 @@ public class HibernateRepository implements IRepository {
             return dbClass;
         } catch (HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
-            PersistenceException persistenceException = new PersistenceException();
-            persistenceException.setStackTrace(he.getStackTrace());
+            PersistenceException persistenceException = new PersistenceException(he);
             throw persistenceException;
         }
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public <T extends DBClass> T update(@Nonnull final T dbClass) {
+	public <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public T execute(@Nonnull final Session session) {
@@ -164,9 +165,10 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public <T> List<T> load(@Nonnull final Class<T> clazz) {
+	public <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -180,14 +182,15 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public <T> T load(@Nonnull final Class<T> clazz,@Nonnull  final Serializable id) {
+	public <T> T load(@Nonnull final Class<T> clazz,@Nonnull  final Serializable id) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -202,15 +205,16 @@ public class HibernateRepository implements IRepository {
                 return nodes.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public <T extends DBClass> void removeNode(@Nonnull final T dbClass) {
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+	public <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public Object execute(@Nonnull final Session session) {
@@ -223,11 +227,12 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) {
+	public GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public GSDFileDBO execute(@Nonnull final Session session) {
@@ -241,10 +246,11 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) {
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+	public void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public Object execute(@Nonnull final Session session) {
@@ -257,10 +263,11 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public List<DocumentDBO> loadDocument() {
-        return HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+	public List<DocumentDBO> loadDocument() throws PersistenceException {
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
             public List<DocumentDBO> execute(@Nonnull final Session session) {
@@ -278,11 +285,12 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public DocumentDBO save(@Nonnull final DocumentDBO document) {
+	public DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public DocumentDBO execute(@Nonnull final Session session) {
@@ -297,11 +305,12 @@ public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public DocumentDBO update(@Nonnull final DocumentDBO document) {
+	public DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
 
-        HibernateManager.getInstance().doInDevDBHibernate(new HibernateCallback() {
+        HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
 
             @Override
 			public DocumentDBO execute(@Nonnull final Session session) {
@@ -322,18 +331,20 @@ public class HibernateRepository implements IRepository {
      * @param ioName
      *            the IO-Name.
      * @return the Epics Adress for the given IO-Name.
+     * @throws PersistenceException 
      */
     @Override
-	public String getEpicsAddressString(@Nonnull final String ioName) {
+	public String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public List<String> getIoNames() {
+	public List<String> getIoNames() throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -344,14 +355,15 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-	public List<String> getIoNames(@Nonnull final String iocName) {
+	public List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -363,11 +375,11 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
-    public String getShortChannelDesc(@Nonnull final String ioName) {
+    public String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -391,11 +403,11 @@ public class HibernateRepository implements IRepository {
                 return split[0];
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
-	public List<SensorsDBO> loadSensors(@Nonnull final String ioName) {
+	public List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -408,11 +420,11 @@ public class HibernateRepository implements IRepository {
                 return sensors;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
-	public SensorsDBO loadSensor(@Nonnull final String ioName,@Nonnull  final String selection) {
+	public SensorsDBO loadSensor(@Nonnull final String ioName,@Nonnull  final String selection) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			@SuppressWarnings("unchecked")
@@ -428,11 +440,11 @@ public class HibernateRepository implements IRepository {
                 return sensors.get(0);
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @CheckForNull
-    public List<Integer> getRootPath(final int id) {
+    public List<Integer> getRootPath(final int id) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			public List<Integer> execute(@Nonnull final Session session) {
@@ -454,12 +466,12 @@ public class HibernateRepository implements IRepository {
                 return rootPath;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     @Override
     @CheckForNull
-    public ChannelDBO loadChannel(@Nullable final String ioName) {
+    public ChannelDBO loadChannel(@Nullable final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
 			public ChannelDBO execute(@Nonnull final Session session) {
@@ -473,15 +485,16 @@ public class HibernateRepository implements IRepository {
                 return nodes;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateLazy(hibernateCallback);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
     @CheckForNull
-    public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) {
+    public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
@@ -507,12 +520,20 @@ public class HibernateRepository implements IRepository {
                 }
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernate(hibernateCallback);
+        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
 
     @Override
     public void close() {
         HibernateManager.getInstance().closeSession();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isConnected() {
+        return HibernateManager.getInstance().isConnected();
     }
 
 }

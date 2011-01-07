@@ -36,7 +36,6 @@ package org.csstudio.config.ioconfig.config.view.helper;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -45,8 +44,12 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -459,18 +462,28 @@ public class DocumentTableViewerBuilder {
         return new AddFile2DBSelectionListener(viewer);
     }
 
+    /**
+     * 
+     * TODO (Rickens Helge) : 
+     * 
+     * @author Rickens Helge
+     * @author $Author: $
+     * @since 06.01.2011
+     */
     private static class SaveFileSelectionListener implements SelectionListener {
         private final TableViewer _parentViewer;
 
-        public SaveFileSelectionListener(final TableViewer parentViewer) {
+        public SaveFileSelectionListener(@Nonnull final TableViewer parentViewer) {
             _parentViewer = parentViewer;
         }
 
-        public void widgetSelected(final SelectionEvent e) {
+        @Override
+        public void widgetSelected(@Nullable final SelectionEvent e) {
             saveFileWithDialog();
         }
 
-        public void widgetDefaultSelected(final SelectionEvent e) {
+        @Override
+        public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
             saveFileWithDialog();
         }
 
@@ -485,27 +498,39 @@ public class DocumentTableViewerBuilder {
                 File outFile = new File(open);
                 try {
                     Helper.writeDocumentFile(outFile, firstElement);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e);
+                    CentralLogger.getInstance().error(this, e);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    MessageDialog.openError(null, "Can't File write!", e.getMessage());
+                    CentralLogger.getInstance().error(this, e);
                 }
             }
         }
     }
 
+    /**
+     * 
+     * TODO (Rickens Helge) : 
+     * 
+     * @author Rickens Helge
+     * @author $Author: $
+     * @since 06.01.2011
+     */
     private static class AddFile2DBSelectionListener implements SelectionListener {
         private final TableViewer _viewer;
 
-        public AddFile2DBSelectionListener(final TableViewer viewer) {
+        public AddFile2DBSelectionListener(@Nullable final TableViewer viewer) {
             _viewer = viewer;
         }
 
-        public void widgetDefaultSelected(final SelectionEvent e) {
+        @Override
+        public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
             addDocDialog();
         }
 
-        public void widgetSelected(final SelectionEvent e) {
+        @Override
+        public void widgetSelected(@Nullable final SelectionEvent e) {
             addDocDialog();
         }
 
@@ -518,7 +543,12 @@ public class DocumentTableViewerBuilder {
             AddDocDialog addDocDialog = new AddDocDialog(new Shell(), firstElement);
             if (addDocDialog.open() == 0) {
                 DocumentDBO document = addDocDialog.getDocument();
-                Repository.save(document);
+                try {
+                    Repository.save(document);
+                } catch (PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't add File to Node", e);
+                    CentralLogger.getInstance().error(this, e);
+                }
             }
         }
     }

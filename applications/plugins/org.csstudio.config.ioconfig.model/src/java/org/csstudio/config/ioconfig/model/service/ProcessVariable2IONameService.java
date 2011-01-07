@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.csstudio.config.ioconfig.model.INode;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
  * TODO (hrickens) :
@@ -51,7 +52,7 @@ public interface ProcessVariable2IONameService {
 
     String getIOName(final String pvName);
 
-    INode getNode(final String pvName);
+    INode getNode(final String pvName) throws PersistenceException;
 
-    Map<String, INode> getNodes(final Collection<String> pvName);
+    Map<String, INode> getNodes(final Collection<String> pvName) throws PersistenceException;
 }
