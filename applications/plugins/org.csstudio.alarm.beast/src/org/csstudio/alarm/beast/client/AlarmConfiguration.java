@@ -95,7 +95,12 @@ public class AlarmConfiguration
     {
         // Allow auto-reconnect...
         rdb = RDBUtil.connect(url, user, password, true);
-        // .. but disable it while reading initial config. because that
+
+        // For now assert auto-commit
+        // TODO Commit as needed, disable auto-commit.
+        rdb.getConnection().setAutoCommit(true);
+
+        // Disable it while reading initial config. because that
         // can be 10% faster
         rdb.setAutoReconnect(false);
         sql = new SQL(rdb);
