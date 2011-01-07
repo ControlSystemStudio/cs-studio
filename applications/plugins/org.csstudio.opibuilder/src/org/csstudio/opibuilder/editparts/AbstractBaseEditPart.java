@@ -249,13 +249,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 						UIBundlingThread.getInstance().addRunnable(new Runnable(){
 							public void run() {
 							for(PV pv : pvArray)
-								try {
-									pv.start();									
-								} catch (Exception e) {
-									CentralLogger.getInstance().error(this, "Unable to start PV:" +
-											pv.getName());
-								}
-							
+								if(pv != null)
+									try {
+										pv.start();									
+									} catch (Exception e) {
+										CentralLogger.getInstance().error(this, "Unable to start PV:" +
+												pv.getName());
+									}							
 							}
 						});							
 						 
@@ -271,6 +271,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								//attempt to connect with all PVs repeatedly
 								StringBuilder s = new StringBuilder();
 								for(int i=0; i<pvArray.length; i++){
+									if(pvArray[i] == null)
+										continue;
 									s.append(pvArray[i].getName());
 									if(i!= pvArray.length-1)
 										s.append(", "); //$NON-NLS-1$
@@ -280,7 +282,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 									monitor.subTask(connectAttempts + " seconds left.");
 									pvsConnected = true;
 									for(PV pv : pvArray){
-										if(!pv.isConnected()){
+										if(pv != null && !pv.isConnected()){
 											if(connectAttempts == 0){											
 												disconnectedPVs += pv.getName() + ", "; //$NON-NLS-1$
 											}
