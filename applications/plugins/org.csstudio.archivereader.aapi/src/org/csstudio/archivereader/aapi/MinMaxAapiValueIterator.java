@@ -17,9 +17,6 @@ import de.desy.aapi.AnswerData;
 
 public class MinMaxAapiValueIterator extends AapiValueIterator {
 
-	private INumericMetaData _meta;
-
-	//TODO (jhatje) paramter hochreichen.
 	public MinMaxAapiValueIterator(AapiClient aapiClient, int key, String name,
 			ITimestamp start, ITimestamp end, int count) {
 		super(aapiClient, key, name, start, end);
@@ -29,8 +26,8 @@ public class MinMaxAapiValueIterator extends AapiValueIterator {
 	}
 
 	@Override
-	void dataConversion(AnswerData answerData, List<IMinMaxDoubleValue> result) {
-		_meta = ValueFactory.createNumericMetaData(answerData.getDisplayLow(),
+	void dataConversion(AnswerData answerData, List<IValue> result) {
+		INumericMetaData meta = ValueFactory.createNumericMetaData(answerData.getDisplayLow(),
 				answerData.getDisplayHigh(), answerData.getLowAlarm(),
 				answerData.getHighWarning(), answerData.getLowAlarm(),
 				answerData.getHighAlarm(), answerData.getPrecision(), answerData.getEgu());
@@ -46,7 +43,7 @@ public class MinMaxAapiValueIterator extends AapiValueIterator {
 			Double min = answerData.getData()[i];
 			Double max = answerData.getData()[i+1];
 			result.add(ValueFactory.createMinMaxDoubleValue(time, sevr, stat,
-					(INumericMetaData) _meta, IValue.Quality.Interpolated,
+					(INumericMetaData) meta, IValue.Quality.Interpolated,
 					value, min, max));
 		}	
 	}

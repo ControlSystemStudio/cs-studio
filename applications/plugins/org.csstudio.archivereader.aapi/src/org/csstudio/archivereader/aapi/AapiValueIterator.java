@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IMinMaxDoubleValue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -18,7 +17,7 @@ public abstract class AapiValueIterator implements ValueIterator {
 	private final AapiClient _aapiClient;
 	private RequestData _requestData = new RequestData();
 	
-	private List<IMinMaxDoubleValue> _result = new ArrayList<IMinMaxDoubleValue>();
+	private List<IValue> _result = new ArrayList<IValue>();
 
 	public AapiValueIterator(AapiClient aapiClient, int key, String name,
 			ITimestamp start, ITimestamp end) {
@@ -42,24 +41,24 @@ public abstract class AapiValueIterator implements ValueIterator {
 	
 	@Override
 	public boolean hasNext() {
-		System.out.println(">>>>> AapiValueIterator.hasNext");
+//		System.out.println(">>>>> AapiValueIterator.hasNext");
 		if (_result.size() > 0) {
 			return true;
 		}
-		System.out.println(">>>>> AapiValueIterator.hasNext no next value");
+//		System.out.println(">>>>> AapiValueIterator.hasNext no next value");
 		return false;
 	}
 
 	@Override
 	public IValue next() throws Exception {
-		System.out.println(">>>>> AapiValueIterator.next");
+//		System.out.println(">>>>> AapiValueIterator.next");
 		if (_result.size() > 0) {
 			IValue val = _result.remove(0);
-			IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
-			System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
+//			IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
+//			System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
 			return val;
 		}
-		System.out.println(">>>>> AapiValueIterator.next return null");
+//		System.out.println(">>>>> AapiValueIterator.next return null");
 		return null;
 	}
 	
@@ -73,6 +72,6 @@ public abstract class AapiValueIterator implements ValueIterator {
 		_result = null;
 	}
 
-	abstract void dataConversion(AnswerData answerData, List<IMinMaxDoubleValue> result);
+	abstract void dataConversion(AnswerData answerData, List<IValue> result);
 
 }
