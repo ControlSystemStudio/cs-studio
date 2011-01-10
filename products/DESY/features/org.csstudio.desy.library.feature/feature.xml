@@ -31,20 +31,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archive.channelarchiver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.email"
          download-size="0"
          install-size="0"
@@ -159,5 +145,17 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archivereader"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.csstudio.archivereader.channelarchiver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
