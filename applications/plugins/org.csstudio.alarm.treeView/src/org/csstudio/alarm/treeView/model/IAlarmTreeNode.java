@@ -127,7 +127,7 @@ public interface IAlarmTreeNode {
 
     /**
      * Returns the severity of the highest unacknowledged alarm for this node.
-     * If there is no unacknowledged alarm for this node, returns NO_ALARM.
+     * If there is no unacknowledged alarm for this node, returns UNKNOWN.
      *
      * @return the severity of the highest unacknowledged alarm for this node.
      */

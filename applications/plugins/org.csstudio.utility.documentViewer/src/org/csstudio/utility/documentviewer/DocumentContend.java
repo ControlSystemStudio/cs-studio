@@ -40,14 +40,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -61,9 +65,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -88,6 +95,8 @@ public class DocumentContend {
      * A List with all Process Variables to show the Documents
      */
     private TableViewer _crateDocumentTable;
+
+    private MessageArea _messageArea;
 
     /**
      * @param parent
@@ -125,7 +134,6 @@ public class DocumentContend {
     }
 
     public void createDocumentView(final Composite parent) {
-        //      _documentTree = new TreeViewer(parent);
         _crateDocumentTable = DocumentTableBuilder.crateDocumentTable(parent);
         DocumentTableBuilder.makeMenus(_crateDocumentTable);
     }
@@ -136,6 +144,15 @@ public class DocumentContend {
     public void setProcessVariables(final IProcessVariable[] processVariables) {
         _processVariables = new HashSet<IProcessVariable>(Arrays.asList(processVariables));
 
+    }
+    
+    /**
+     * Creation of the message area. This must be called by each subclass in createPartControl.
+     *
+     * @param parent
+     */
+    public void createMessageArea(final Composite parent) {
+        _messageArea = new MessageArea(parent);
     }
 
     /**
@@ -182,13 +199,16 @@ public class DocumentContend {
         try {
             nodes = pv2IOName.getNodes(pcNames).values();
             Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
-
             addNodes(hierarchyDocuments, nodes);
+            _crateDocumentTable.getTable().setEnabled(true);
             _crateDocumentTable.setInput(hierarchyDocuments);
+            _messageArea.hide();
         } catch (PersistenceException e) {
             LOG.error(e);
-            // TODO (hrickens) 07.01.2011: Fehlermeldung auf die Shell bringen statt noch einen Dialog zu öffen.   
-            MessageDialog.openError(null, "Device Database error!", "TODO!");
+            _messageArea.showMessage(SWT.ERROR, "Device Database Error", e.getLocalizedMessage());
+            _messageArea.show();
+            _crateDocumentTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
+            _crateDocumentTable.getTable().setEnabled(false);
         }
     }
 
@@ -209,7 +229,7 @@ public class DocumentContend {
      * @param iNode
      */
     private void addDocuments(final Collection<HierarchyDocument> all, final INode iNode) {
-        Set documents = iNode.getDocuments();
+        Set<DocumentDBO> documents = iNode.getDocuments();
         for (Object object : documents) {
             IDocument d = (IDocument) object;
             all.add(new HierarchyDocument(iNode, d));
@@ -298,5 +318,119 @@ public class DocumentContend {
             remove();
         }
 
+    }
+    
+    private void createAndRegisterMessageAreaToggleAction(@Nonnull final IActionBars bars) {
+        final Action displayMessageAreaAction = new Action() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void run() {
+                if (_messageArea.isVisible()) {
+                    _messageArea.hide();
+                } else {
+                    _messageArea.show();
+                }
+            }
+        };
+        displayMessageAreaAction.setText("Test1");
+        displayMessageAreaAction.setToolTipText("Test2");
+        
+        displayMessageAreaAction.setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/details_view.gif"));
+        bars.getToolBarManager().add(displayMessageAreaAction);
+    }
+    
+    /**
+     * Encapsulation of the message area. It is located below the tree view.<br>
+     * FIXME (hrickens) This is a copy of the inner class of the AlarmTreeView.
+     */
+    private static final class MessageArea {
+        /**
+         * The message area which can display error messages inside the view part.
+         */
+        private final Composite _messageAreaComposite;
+
+        /**
+         * The icon displayed in the message area.
+         */
+        private final Label _messageAreaIcon;
+
+        /**
+         * The message displayed in the message area.
+         */
+        private final Label _messageAreaMessage;
+
+        /**
+         * The description displayed in the message area.
+         */
+        private final Label _messageAreaDescription;
+
+        public MessageArea(final Composite parent) {
+            _messageAreaComposite = new Composite(parent, SWT.NONE);
+            final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false,3,1);
+            messageAreaLayoutData.exclude = true;
+            _messageAreaComposite.setVisible(false);
+            _messageAreaComposite.setLayoutData(messageAreaLayoutData);
+            _messageAreaComposite.setLayout(new GridLayout(2, false));
+
+            _messageAreaIcon = new Label(_messageAreaComposite, SWT.NONE);
+            _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING,
+                                                        SWT.BEGINNING,
+                                                        false,
+                                                        false,
+                                                        1,
+                                                        2));
+            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+
+            _messageAreaMessage = new Label(_messageAreaComposite, SWT.WRAP);
+            _messageAreaMessage.setText("Test3");
+            // Be careful if changing the GridData below! The label will not wrap
+            // correctly for some settings.
+            _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+            _messageAreaDescription = new Label(_messageAreaComposite, SWT.WRAP);
+            _messageAreaDescription.setText("Test4");
+            // Be careful if changing the GridData below! The label will not wrap
+            // correctly for some settings.
+            _messageAreaDescription
+                    .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        }
+
+        /**
+         * Sets the message displayed in the message area of this view part.
+         *
+         * @param icon the icon to be displayed next to the message. Must be one of
+         *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
+         *            <code>SWT.ICON_WARNING</code>, <code>SWT.ICON_QUESTION</code>.
+         * @param message the message.
+         * @param description a descriptive text.
+         */
+        public void showMessage(final int icon, final String message, final String description) {
+            _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
+            _messageAreaMessage.setText(message);
+            _messageAreaDescription.setText(description);
+            _messageAreaComposite.layout();
+
+            show();
+        }
+
+        public void show() {
+            _messageAreaComposite.setVisible(true);
+            ((GridData) _messageAreaComposite.getLayoutData()).exclude = false;
+            _messageAreaComposite.getParent().layout();
+        }
+
+        /**
+         * Hides the message displayed in this view part.
+         */
+        public void hide() {
+            _messageAreaComposite.setVisible(false);
+            ((GridData) _messageAreaComposite.getLayoutData()).exclude = true;
+            _messageAreaComposite.getParent().layout();
+        }
+
+        public boolean isVisible() {
+            return _messageAreaComposite.isVisible();
+        }
     }
 }
