@@ -34,8 +34,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 
 /**
@@ -161,16 +159,6 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         final EpicsAlarmSeverity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
         final String[] iconNames = getIconNames(activeAlarmSeverity, unacknowledgedAlarmSeverity);
         return createImage(iconNames);
-    }
-
-    /**
-     * Returns the image for a leaf node that does not have any alarms set.
-     *
-     * @return the image.
-     */
-    @CheckForNull
-    private Image getDefaultImageForNode() {
-        return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
     }
 
     /**

@@ -87,8 +87,7 @@ public final class ConnectionJob extends Job {
 
         } catch (final AlarmConnectionException e) {
             throw new RuntimeException("Could not connect via alarm service", e);
-        }
-        finally {
+        } finally {
             monitor.done();
         }
         return Status.OK_STATUS;

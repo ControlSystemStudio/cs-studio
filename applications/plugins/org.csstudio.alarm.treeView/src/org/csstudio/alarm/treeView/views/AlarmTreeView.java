@@ -494,7 +494,7 @@ public final class AlarmTreeView extends ViewPart {
         //viewer.setComparator(new ViewerComparator());
 
         final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
-            @SuppressWarnings({"synthetic-access" })
+            @SuppressWarnings("synthetic-access")
             @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 AlarmTreeView.this.selectionChanged(event);

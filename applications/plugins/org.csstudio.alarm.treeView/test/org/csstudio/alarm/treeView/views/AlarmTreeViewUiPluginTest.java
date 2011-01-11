@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
@@ -217,6 +216,7 @@ public class AlarmTreeViewUiPluginTest {
      *
      * @throws InterruptedException
      */
+    // CHECKSTYLE OFF: MethodLength
     @Test
     public void testRenameAndSaveInLdapAction() throws InterruptedException {
         final TreeViewer viewer = VIEW.getViewer();
@@ -274,6 +274,7 @@ public class AlarmTreeViewUiPluginTest {
             Assert.fail("Rename action had not been persisted.\n" + e.getMessage());
         }
     }
+    // CHECKSTYLE ON: MethodLength
 
     @Nonnull
     public Dialog findDialog() {
