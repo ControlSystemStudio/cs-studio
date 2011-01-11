@@ -422,9 +422,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             final List<IArchiveSample<T, EpicsAlarm>> iterable = Lists.newArrayList();
 
             if (result.next()) {
-                final IArchiveMinMaxSample<T, EpicsAlarm> sample =
+                final IArchiveMinMaxSample<ICssAlarmValueType<Object>, EpicsAlarm> sample =
                     createSampleFromQueryResult(reqType, dataType, channelId, result);
-                iterable.add(sample);
+                iterable.add((IArchiveSample<T, EpicsAlarm>) sample);
             }
             return iterable;
 
@@ -489,13 +489,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(2));
         final IArchiveSeverity sev = getDaoMgr().getSeverityDao().retrieveSeverityById(sevId);
 
+        long nanosecs = 0L;
+        V value;
         IArchiveStatus st = null;
         switch (type) {
             case RAW :
                 // (..., nanosecs, status_id, value)
-                final long nanosecs = result.getLong(3);
+                nanosecs = result.getLong(3);
                 final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt(4));
-                final String value = result.getString(4);
+                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(4));
 
                 st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
                 break;
@@ -505,7 +507,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 final Double avg = result.getDouble(3);
                 final Double min = result.getDouble(4);
                 final Double max = result.getDouble(5);
-
                 st = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
             default:
                 break;
@@ -523,7 +524,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         @SuppressWarnings("unchecked")
         final ICssAlarmValueType<V> data =
-            new CssAlarmValueType<V>((V) ArchiveTypeConversionSupport.fromArchiveString(dataType, value),
+            new CssAlarmValueType<V>(value,
                                      alarm,
                                      timeInstant);
         @SuppressWarnings("unchecked")
