@@ -53,6 +53,19 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final double _sampleValue;
 
+    /**
+     * Constructor.
+     * @param id
+     * @param name
+     * @param type
+     * @param grpId
+     * @param sampleModeId
+     * @param smplPer
+     * @param ltstTimestamp
+     * @param sampleValue
+     *
+     * CHECKSTYLE OFF: ParameterNumber
+     */
     public ArchiveChannelDTO(@Nonnull final ArchiveChannelId id,
                              @Nonnull final String name,
                              @Nonnull final String type,
@@ -61,6 +74,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
                              final double smplPer,
                              @Nullable final TimeInstant ltstTimestamp,
                              final double sampleValue) {
+        // CHECKSTYLE  ON : ParameterNumber
         _id = id;
         _name = name;
         _groupId = grpId;

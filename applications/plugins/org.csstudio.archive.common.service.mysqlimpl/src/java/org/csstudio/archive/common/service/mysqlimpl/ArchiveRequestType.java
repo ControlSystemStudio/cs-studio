@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,76 +19,56 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 
 /**
- * Data transfer object for sample.
+ * Archive request abstraction for optimized MySQL implementation.
  *
  * @author bknerr
- * @since 21.12.2010
- * @param <V>
- * @param <T>
- * @param <A>
+ * @since 05.01.2011
  */
-public class ArchiveSampleDTO<V,
-                              T extends ICssAlarmValueType<V>,
-                              A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
+public enum ArchiveRequestType implements IArchiveRequestType {
+    RAW("Raw values."),
+    AVG_PER_MINUTE("Averaged over the time period of one minute."),
+    AVG_PER_HOUR("Averaged over the time period of one hour.");
 
-    private final ArchiveChannelId _channelId;
-    private final T _value;
-    private final TimeInstant _timestamp;
-    private final A _alarm;
+    private final String _desc;
 
     /**
      * Constructor.
      */
-    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId channelId,
-                            @Nonnull final T data,
-                            @Nonnull final TimeInstant ts,
-                            @Nonnull final A alarm) {
-        _channelId = channelId;
-        _value = data;
-        _timestamp = ts;
-        _alarm = alarm;
+    private ArchiveRequestType(@Nonnull final String desc) {
+        _desc = desc;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    @Nonnull
+    public String getDescription() {
+        return _desc;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public T getData() {
-        return _value;
+    @Nonnull
+    public String getTypeName() {
+        return name();
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the default/natural request type.
+     * @return the default/natural request type for this implementation.
      */
-    @Override
-    public TimeInstant getTimestamp() {
-        return _timestamp;
+    @Nonnull
+    public static ArchiveRequestType getDefault() {
+        return RAW;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public A getAlarm() {
-        return _alarm;
-    }
-
 }

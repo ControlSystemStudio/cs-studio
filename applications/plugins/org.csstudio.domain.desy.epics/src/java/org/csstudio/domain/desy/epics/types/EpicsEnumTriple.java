@@ -42,9 +42,9 @@ import com.google.common.base.Joiner;
    <br>
    Resulting EpicsEnumTriples:<br>
    (0, "val of 33", 33)<br>
-   (0, "val of 21", 21)<br>
-   (0, "val of 12", 12)<br>
-   (0, "val of 45", 45)<br>
+   (1, "val of 21", 21)<br>
+   (2, "val of 12", 12)<br>
+   (3, "val of 45", 45)<br>
  *
  * @author bknerr
  * @since 15.12.2010

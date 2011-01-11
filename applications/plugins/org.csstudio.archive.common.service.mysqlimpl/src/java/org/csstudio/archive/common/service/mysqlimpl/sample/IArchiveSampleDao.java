@@ -23,7 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.util.Collection;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -41,13 +41,6 @@ import org.csstudio.domain.desy.types.ICssValueType;
  */
 public interface IArchiveSampleDao {
 
-//    /**
-//     * Retrieves the sample for the given channel with the latest timestamp from sample table.
-//     * @param id the channel id
-//     * @throws ArchiveSampleDaoException
-//     */
-//    @CheckForNull
-//    TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
     /**
      * Inserts the collection of sample objects into the db.
@@ -57,14 +50,6 @@ public interface IArchiveSampleDao {
     <T extends ICssValueType<?> & IHasAlarm>
     void createSamples(Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException;
 
-    /**
-     * @param id
-     * @param s
-     * @param e
-     * @return
-     */
-    <T extends ICssValueType<?> & IHasAlarm> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamplesPerHour(ArchiveChannelId id, TimeInstant s, TimeInstant e);
 
     /**
      * @param id
@@ -72,15 +57,9 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
-    <T extends ICssValueType<?> & IHasAlarm> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamplesPerMinute(ArchiveChannelId id, TimeInstant s, TimeInstant e);
-
-    /**
-     * @param id
-     * @param s
-     * @param e
-     * @return
-     */
-    <V, T extends ICssAlarmValueType<V>> Iterable<IArchiveSample<T, EpicsAlarm>>
-    retrieveSamples(IArchiveChannel channel, TimeInstant s, TimeInstant e) throws ArchiveDaoException;
+    <V, T extends ICssAlarmValueType<V>>
+    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamples(IArchiveRequestType type,
+                                                            IArchiveChannel channel,
+                                                            TimeInstant s,
+                                                            TimeInstant e) throws ArchiveDaoException;
 }

@@ -91,7 +91,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      */
     @Override
     @Nonnull
-    public Collection<N> convertMultiScalarFromArchiveString(@Nonnull final String archiveValues) throws TypeSupportException {
+    public Collection<N> convertFromArchiveStringToMultiScalar(@Nonnull final String archiveValues) throws TypeSupportException {
 
         final String releasedStr = collectionRelease(archiveValues);
         if (releasedStr == null) {

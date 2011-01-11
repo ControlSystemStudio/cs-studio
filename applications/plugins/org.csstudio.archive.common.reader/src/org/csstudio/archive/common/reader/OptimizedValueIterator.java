@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -24,50 +24,45 @@ package org.csstudio.archive.common.reader;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 /**
- * Reduced value set iterator for service infrastructure.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 21.12.2010
+ * @since 05.01.2011
  */
-public class ServiceUsingValueIterator implements ValueIterator {
-
+public class OptimizedValueIterator implements ValueIterator {
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ServiceUsingValueIterator.class);
+        CentralLogger.getInstance().getLogger(OptimizedValueIterator.class);
 
-    // Anti pattern galore - but minimally invasive
-    private static ArchiveReaderServiceTracker TRACKER =
-        new ArchiveReaderServiceTracker(Activator.getDefault().getContext());
-    static {
-        TRACKER.open();
-    }
-
-    private Iterable<IValue> _values;
-    private final Iterator<IValue> _iterator;
+    private Iterable<IValue> _values = Collections.emptyList();
+    private Iterator<IValue> _iterator = _values.iterator();
 
     /**
      * Constructor.
      */
-    ServiceUsingValueIterator(final String channelName,
-                              final ITimestamp start,
-                              final ITimestamp end) {
+    OptimizedValueIterator(@Nonnull final String channelName,
+                           @Nonnull final ITimestamp start,
+                           @Nonnull final ITimestamp end) {
 
-        final IArchiveReaderService service = (IArchiveReaderService) TRACKER.getService();
-
+        IArchiveReaderService service;
         try {
+            service = Activator.getDefault().getArchiveReaderService();
             _values = service.readSamples(channelName, start, end);
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
-            _values = Collections.emptyList();
+        } catch (final OsgiServiceUnavailableException e1) {
+            LOG.error("Archive service not present - forgot to (auto-)start?", e1);
         }
         _iterator = _values.iterator();
     }
@@ -84,6 +79,7 @@ public class ServiceUsingValueIterator implements ValueIterator {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public IValue next() throws Exception {
         return _iterator.next();
     }
@@ -95,5 +91,4 @@ public class ServiceUsingValueIterator implements ValueIterator {
     public void close() {
         // Useless here
     }
-
 }

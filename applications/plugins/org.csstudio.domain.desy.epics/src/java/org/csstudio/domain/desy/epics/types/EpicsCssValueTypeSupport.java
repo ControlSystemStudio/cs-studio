@@ -65,6 +65,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
      * @since 22.12.2010
      */
     private static final class CssStringValueTypeSupport extends EpicsCssValueTypeSupport<String> {
+
         /**
          * Constructor.
          */
@@ -101,6 +102,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
      * @author bknerr
      * @since 22.12.2010
      */
+    @SuppressWarnings("rawtypes")
     private static final class CssCollectionValueTypeSupport extends EpicsCssValueTypeSupport<Collection> {
         /**
          * Constructor.
@@ -419,6 +421,14 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         INSTALLED = true;
     }
 
+    @CheckForNull
+    public static <T> EpicsCssValueTypeSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass) {
+        try {
+            return (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        } catch (final TypeSupportException e) {
+            return null;
+        }
+    }
 
     @CheckForNull
     public static <T> IValue toIValue(@Nonnull final ICssAlarmValueType<T> cssValue) throws TypeSupportException {

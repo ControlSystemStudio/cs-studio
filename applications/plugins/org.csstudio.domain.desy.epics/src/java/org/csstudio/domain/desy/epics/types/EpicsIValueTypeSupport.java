@@ -138,4 +138,14 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         }
         return null;
     }
+
+
+    @CheckForNull
+    public static <T> EpicsIValueTypeSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass) {
+        try {
+            return (EpicsIValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        } catch (final TypeSupportException e) {
+            return null;
+        }
+    }
 }
