@@ -34,7 +34,7 @@ import org.csstudio.platform.data.ValueFactory;
  *  <p>
  *  JCA provides up to "...Int", returning an int/Integer.
  *  IValue uses long for future protocol support.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class DBR_Helper
@@ -46,11 +46,21 @@ public class DBR_Helper
      *  <p>
      *  In case this is called with data from a CTRL_... request,
      *  the null timestamp is replaced with the current host time.
+     *  <p>
+     *  The EPICS start of epoch as returned by IOCs for records that have never
+     *  processed is mapped to 0 in the 1970 epoch so that ITimestamp.isValid()
+     *  can be used to catch it.
+     *  This "works", bad time stamps are identified. But it's not ideal because the
+     *  original time stamp is lost. Better would be an implementation that passes 1990+0secs on,
+     *  yet makes isValid() return false by using an EPICS-specific ITimestamp override of isValid().
+     *  Not implemented at this time.
      */
     private static ITimestamp createTimeFromEPICS(final TimeStamp t)
     {
         if (t == null)
             return TimestampFactory.now();
+        if (t.secPastEpoch() == 0  &&  t.nsec() == 0)
+            return TimestampFactory.createTimestamp(0, 0);
         return TimestampFactory.createTimestamp(
                         t.secPastEpoch() + 631152000L, t.nsec());
     }
@@ -129,7 +139,7 @@ public class DBR_Helper
         // default: get as string
         return plain ? DBRType.STRING : DBRType.TIME_STRING;
     }
-    
+
     /** Convert short array to int array. */
     private static int[] short2int(final short[] v)
     {
@@ -165,7 +175,7 @@ public class DBR_Helper
             result[i] = v[i];
         return result;
     }
-    
+
     /** Convert float array to a double array. */
     private static double[] float2double(final float[] v)
     {
@@ -173,7 +183,7 @@ public class DBR_Helper
         for (int i = 0; i < result.length; i++)
             result[i] = v[i];
         return result;
-    }    
+    }
 
     /** @return Value extracted from dbr */
     @SuppressWarnings("nls")
@@ -306,7 +316,7 @@ public class DBR_Helper
             // handle many more types!!
             throw new Exception("Cannot decode " + dbr);
     }
-    
+
     /** @return String for Status */
     final private static String decodeStatus(final Status status)
     {
