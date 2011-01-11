@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 2.0.5.qualifier
+Bundle-Version: 2.0.6.qualifier
 Bundle-Activator: org.csstudio.trends.databrowser.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
@@ -21,6 +21,6 @@ Require-Bundle: org.junit4,
  org.csstudio.logbook;bundle-version="1.0.2",
  org.csstudio.email.ui;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
