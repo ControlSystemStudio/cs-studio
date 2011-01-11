@@ -172,12 +172,6 @@ public final class DirectoryEditor {
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
             copy = copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
-            try {
-                AlarmTreeNodeModifier.setAlarmState((IAlarmProcessVariableNode) copy, attrs);
-            } catch (final NamingException e) {
-                throw new DirectoryEditException("Alarm state attributes of " +
-                                                 node.getName() + " could not be retrieved.", e);
-            }
         } else if (node instanceof IAlarmSubtreeNode) {
             copy = copySubtreeNode(node, target);
         } else {
