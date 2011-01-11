@@ -30,6 +30,8 @@ public class SubtreeNodeUnitTestTest {
     
     @Test
     public void testProcessVariableListener() throws Exception {
+        // ensures that the wasAdded / wasRemoved callbacks are called
+        
         IProcessVariableNodeListener mockListener = mock(IProcessVariableNodeListener.class);
         _node0.setListener(mockListener);
         _node1.setListener(mockListener);

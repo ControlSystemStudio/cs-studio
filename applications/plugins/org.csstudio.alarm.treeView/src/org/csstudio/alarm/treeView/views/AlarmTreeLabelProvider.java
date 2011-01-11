@@ -104,6 +104,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 
     /**
      * Returns the names of the two icons that should be displayed for the given severities.
+     * package-scoped for testing.
      *
      * @param activeAlarmSeverity
      *            the severity of the currently active alarm.
@@ -112,7 +113,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the names of the icons.
      */
     @Nonnull
-    private String[] getIconNames(@Nonnull final EpicsAlarmSeverity activeAlarmSeverity,
+    String[] getIconNames(@Nonnull final EpicsAlarmSeverity activeAlarmSeverity,
                                   @Nonnull final EpicsAlarmSeverity unacknowledgedAlarmSeverity) {
 
         final String iconName = getIconName(activeAlarmSeverity);
@@ -122,7 +123,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // alarm is displayed.
             return new String[] {iconName};
         } else if (activeAlarmSeverity != EpicsAlarmSeverity.NO_ALARM &&
-                   unacknowledgedAlarmSeverity == EpicsAlarmSeverity.NO_ALARM) {
+                   unacknowledgedAlarmSeverity == EpicsAlarmSeverity.UNKNOWN) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {

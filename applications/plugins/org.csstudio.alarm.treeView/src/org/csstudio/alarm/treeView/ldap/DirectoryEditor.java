@@ -225,10 +225,11 @@ public final class DirectoryEditor {
                                                           @Nonnull final IAlarmSubtreeNode target)
     throws DirectoryEditException {
 
-        final IAlarmProcessVariableNode copy =
-            new ProcessVariableNode.Builder(node.getName(), target.getSource()).setParent(target).build();
+        final IAlarmProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName(),
+                                                                               target.getSource())
+                .setParent(target)
+                .setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm()).build();
         copy.updateAlarm(node.getAlarm());
-        copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
         copyProperties(node, copy);
         return copy;
     }

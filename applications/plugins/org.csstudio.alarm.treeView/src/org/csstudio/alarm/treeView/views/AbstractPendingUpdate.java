@@ -63,7 +63,7 @@ public abstract class AbstractPendingUpdate {
             @Override
             public void apply() {
                 for (final IAlarmProcessVariableNode node : treeRoot.findProcessVariableNodes(name)) {
-                    node.removeHighestUnacknowledgedAlarm();
+                    node.acknowledgeAlarm();
                 }
                 refreshView();
 
