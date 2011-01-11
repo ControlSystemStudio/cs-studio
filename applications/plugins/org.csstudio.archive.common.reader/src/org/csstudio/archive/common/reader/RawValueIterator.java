@@ -36,12 +36,20 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 /**
- * Reduced value set iterator for service infrastructure.
+ * Raw value iterator for service infrastructure.
  *
  * @author bknerr
  * @since 21.12.2010
  */
 public class RawValueIterator implements ValueIterator {
+
+    /**
+     * TODO (bknerr) :
+     *
+     * @author bknerr
+     * @since 11.01.2011
+     */
+
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(RawValueIterator.class);
@@ -59,7 +67,7 @@ public class RawValueIterator implements ValueIterator {
         IArchiveReaderService service;
         try {
             service = Activator.getDefault().getArchiveReaderService();
-            _values = service.readSamples(channelName, start, end);
+            _values = service.readSamples(channelName, start, end, OptimizedValueIterator.RAW_TYPE);
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
         } catch (final OsgiServiceUnavailableException e1) {

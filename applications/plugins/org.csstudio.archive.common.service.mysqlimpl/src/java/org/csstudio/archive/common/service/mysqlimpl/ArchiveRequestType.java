@@ -59,7 +59,7 @@ public enum ArchiveRequestType implements IArchiveRequestType {
      */
     @Override
     @Nonnull
-    public String getTypeName() {
+    public String getTypeIdentifier() {
         return name();
     }
 

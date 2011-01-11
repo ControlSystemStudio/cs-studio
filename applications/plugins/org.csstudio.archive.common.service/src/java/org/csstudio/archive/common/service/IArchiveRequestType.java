@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (bknerr) :
  *
@@ -29,7 +31,9 @@ package org.csstudio.archive.common.service;
  */
 public interface IArchiveRequestType {
 
+    @Nonnull
     String getDescription();
 
-    String getTypeName();
+    @Nonnull
+    String getTypeIdentifier();
 }

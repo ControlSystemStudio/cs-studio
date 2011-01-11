@@ -97,7 +97,7 @@ public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
                                                     final ITimestamp end,
                                                     final int count) throws UnknownChannelException,
                                                               Exception {
-                return new OptimizedValueIterator(name, start, end);
+                return new OptimizedValueIterator(name, start, end, count);
             }
 
             @Override

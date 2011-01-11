@@ -29,11 +29,13 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.joda.time.Duration;
 
 /**
  * TODO (bknerr) :
@@ -42,6 +44,57 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  * @since 05.01.2011
  */
 public class OptimizedValueIterator implements ValueIterator {
+
+    // FIXME (bknerr with kasemir) :
+    // the available archive request types should be obtained over the extpoint/service from the
+    // implementation, offered to the client. then the client decides for a specific one, and asks for the
+    // data with the 'typed' request type information
+    private static final class AvgPerHourType implements IArchiveRequestType {
+        @Override
+        public String getTypeIdentifier() {
+            return "AVG_PER_HOUR";
+        }
+
+        @Override
+        public String getDescription() {
+            return "blubb";
+        }
+    }
+    private static final AvgPerHourType APH_TYPE = new AvgPerHourType();
+
+    private static final class AvgPerMinType implements IArchiveRequestType {
+        @Override
+        public String getTypeIdentifier() {
+            return "AVG_PER_MINUTE";
+        }
+
+        @Override
+        public String getDescription() {
+            return "blubb";
+        }
+    }
+    private static final AvgPerMinType APM_TYPE = new AvgPerMinType();
+
+    public static final class RawType implements IArchiveRequestType {
+        // TODO (bknerr with kasemir) :
+        // the available archive request types can be obtained over the service from the
+        // implementation, offered to the client, the client decides for a specific one, and asks for the
+        // data with the 'typed' request type information
+        @Override
+        @Nonnull
+        public String getTypeIdentifier() {
+            return "RAW";
+        }
+
+        @Override
+        @Nonnull
+        public String getDescription() {
+            return "Complete set of existing (raw) values in the time interval.";
+        }
+    }
+    public static final RawType RAW_TYPE = new RawType();
+
+
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(OptimizedValueIterator.class);
 
@@ -53,12 +106,30 @@ public class OptimizedValueIterator implements ValueIterator {
      */
     OptimizedValueIterator(@Nonnull final String channelName,
                            @Nonnull final ITimestamp start,
-                           @Nonnull final ITimestamp end) {
+                           @Nonnull final ITimestamp end,
+                           @Nonnull final int bins) {
 
         IArchiveReaderService service;
         try {
             service = Activator.getDefault().getArchiveReaderService();
-            _values = service.readSamples(channelName, start, end);
+
+            // TODO (bknerr with kasemir) :
+            // the available archive request types can be obtained over the service from the
+            // implementation, offered to the client, the client decides for a specific one, and asks for the
+            // data with the 'typed' request type information
+
+            // Decide which value set is best
+            final long interval = end.seconds() - start.seconds();
+            if (Duration.standardSeconds(interval).isLongerThan(Duration.standardDays(30))) {
+                // Longer than a month, use the 'per hour'-aggregation
+                _values = service.readSamples(channelName, start, end, APH_TYPE);
+            } else if (Duration.standardSeconds(interval).isLongerThan(Duration.standardDays(1))) {
+                // Longer than a month, use the 'per hour'-aggregation
+                _values = service.readSamples(channelName, start, end, APM_TYPE);
+            } else {
+                // Others
+                _values = service.readSamples(channelName, start, end, RAW_TYPE);
+            }
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
         } catch (final OsgiServiceUnavailableException e1) {

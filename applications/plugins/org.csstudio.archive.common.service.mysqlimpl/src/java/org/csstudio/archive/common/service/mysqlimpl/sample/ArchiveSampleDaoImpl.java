@@ -44,11 +44,12 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversi
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.sample.ArchiveSampleDTO;
+import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
+import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
@@ -99,7 +100,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         "INSERT INTO archive_new.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
 
     private final String _selectSamplesStmt =
-        "SELECT (sample_time, nanosecs, severity_id, status_id, value) " +
+        "SELECT (sample_time, severity_id, nanosecs, status_id, value) " +
         "FROM ? WHERE channel_id=? " +
         "AND sample_time BETWEEN ? AND ?";
     private final String _selectOptSamplesStmt =
@@ -407,7 +408,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         PreparedStatement stmt = null;
         try {
-            ArchiveRequestType reqType = ArchiveRequestType.valueOf(type.getTypeName());
+            ArchiveRequestType reqType = ArchiveRequestType.valueOf(type.getTypeIdentifier());
             if (reqType == null) {
                 reqType = determineRequestType(s, e);
             }
@@ -421,7 +422,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             final List<IArchiveSample<T, EpicsAlarm>> iterable = Lists.newArrayList();
 
             if (result.next()) {
-                final IArchiveMinMaxSample<V, T, EpicsAlarm> sample = createSampleFromQueryResult(reqType, dataType, channelId, result);
+                final IArchiveMinMaxSample<T, EpicsAlarm> sample =
+                    createSampleFromQueryResult(reqType, dataType, channelId, result);
                 iterable.add(sample);
             }
             return iterable;
@@ -482,21 +484,37 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                     @Nonnull final ResultSet result) throws SQLException,
                                                                                        ArchiveDaoException,
                                                                                        TypeSupportException {
-        // (sample_time, nanosecs, severity_id, status_id, value)
+        // (sample_time, severity_id, ...) or (sample_time, highest_severity_id, ...)
         final Timestamp timestamp = result.getTimestamp(1);
-
-        final long nanosecs = result.getLong(2);
-        final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(3));
-        final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt(4));
-        final String value = result.getString(4);
-
+        final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(2));
         final IArchiveSeverity sev = getDaoMgr().getSeverityDao().retrieveSeverityById(sevId);
-        final IArchiveStatus st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
+
+        IArchiveStatus st = null;
+        switch (type) {
+            case RAW :
+                // (..., nanosecs, status_id, value)
+                final long nanosecs = result.getLong(3);
+                final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt(4));
+                final String value = result.getString(4);
+
+                st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
+                break;
+            case AVG_PER_MINUTE :
+            case AVG_PER_HOUR :
+                // (..., avg_val, min_val, max_val)
+                final Double avg = result.getDouble(3);
+                final Double min = result.getDouble(4);
+                final Double max = result.getDouble(5);
+
+                st = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
+            default:
+                break;
+        }
 
         if (sev == null || st == null) {
             throw new ArchiveDaoException("Severity or status could not be retrieved for sample.", null);
         }
-
+        // TODO (bknerr) : Epics specific, refactor this into a generic alarm for all control system types
         final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
                                                 EpicsAlarmStatus.parseStatus(st.getName()));
 
@@ -509,7 +527,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                      alarm,
                                      timeInstant);
         @SuppressWarnings("unchecked")
-        final ArchiveSampleDTO<V, T, EpicsAlarm> sample = new ArchiveSampleDTO<V, T, EpicsAlarm>(channelId, (T) data, timeInstant, alarm);
+        final ArchiveMinMaxSample<V, T, EpicsAlarm> sample =
+            new ArchiveMinMaxSample<V, T, EpicsAlarm>(channelId, (T) data, timeInstant, alarm, min, max);
         return sample;
     }
 

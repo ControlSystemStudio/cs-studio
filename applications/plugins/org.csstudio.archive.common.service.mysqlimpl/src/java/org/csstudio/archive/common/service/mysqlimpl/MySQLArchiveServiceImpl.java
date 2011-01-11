@@ -358,7 +358,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
             return iValues;
 
         } catch (final IllegalArgumentException iae) {
-            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeName(), iae);
+            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeIdentifier(), iae);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
         }
