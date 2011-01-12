@@ -332,7 +332,7 @@ public final class AlarmTreeViewActionFactory {
      */
     @Nonnull
     public static Action createAcknowledgeAction(@Nonnull final TreeViewer viewer) {
-        final Action acknowledgeAction = new AcknowledgeAction(viewer);
+        final Action acknowledgeAction = new AcknowledgeSecureAction(viewer);
         acknowledgeAction.setText("Send Acknowledgement");
         acknowledgeAction.setToolTipText("Send alarm acknowledgement");
         acknowledgeAction.setEnabled(false);
@@ -411,7 +411,7 @@ public final class AlarmTreeViewActionFactory {
                                                 @Nonnull final TreeViewer viewer,
                                                 @Nonnull final Queue<ITreeModificationItem> modifications) {
 
-        final Action saveInLdapAction = new SaveInLdapAction(site, modifications);
+        final Action saveInLdapAction = new SaveInLdapSecureAction(site, modifications);
         saveInLdapAction.setToolTipText("Save in LDAP");
         saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
                                                                                "/saveinldap.gif"));

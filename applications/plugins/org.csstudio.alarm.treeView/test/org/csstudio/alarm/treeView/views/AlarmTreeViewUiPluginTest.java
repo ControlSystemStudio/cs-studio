@@ -45,7 +45,7 @@ import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.views.actions.AcknowledgeAction;
+import org.csstudio.alarm.treeView.views.actions.AcknowledgeSecureAction;
 import org.csstudio.alarm.treeView.views.actions.CreateComponentAction;
 import org.csstudio.alarm.treeView.views.actions.CreateRecordAction;
 import org.csstudio.alarm.treeView.views.actions.CssStripChartAction;
@@ -110,7 +110,7 @@ public class AlarmTreeViewUiPluginTest {
     private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
 
     private static Set<Class<? extends IAction>> COMMON_CONTEXT_MENU_ACTIONS =
-        ImmutableSet.<Class<? extends IAction>>builder().add(AcknowledgeAction.class)
+        ImmutableSet.<Class<? extends IAction>>builder().add(AcknowledgeSecureAction.class)
                                                         .add(RunCssAlarmDisplayAction.class)
                                                         .add(RunCssDisplayAction.class)
                                                         .add(CssStripChartAction.class)
