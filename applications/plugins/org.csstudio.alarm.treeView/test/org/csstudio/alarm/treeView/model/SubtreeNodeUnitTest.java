@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author jpenning
  * @since 11.01.2011
  */
-public class SubtreeNodeUnitTestTest {
+public class SubtreeNodeUnitTest {
     
     private ProcessVariableNode _node0;
     private ProcessVariableNode _node1;

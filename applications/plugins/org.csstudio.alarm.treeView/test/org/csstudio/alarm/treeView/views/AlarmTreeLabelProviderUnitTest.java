@@ -41,7 +41,7 @@ import org.junit.Test;
  * @author jpenning
  * @since 11.01.2011
  */
-public class AlarmTreeLabelProviderTest {
+public class AlarmTreeLabelProviderUnitTest {
     
     private static long DATE_PARAM = 0L;
     private AlarmTreeLabelProvider _labelProvider; // object under test
