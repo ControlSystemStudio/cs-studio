@@ -75,19 +75,21 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
     public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
 
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        IWorkbenchPage page = window.getActivePage();
-
-        AbstractNodeDBO obj = getCallerNode(page);
-        
-        if (obj != null) {
-            try {
-                openNodeEditor(obj, page);
-            } catch (PartInitException e1) {
-                LOG.error(e1);
-                MessageDialog.openError(null, "ERROR", e1.getMessage());
-            } catch (PersistenceException e2) {
-                LOG.error(e2);
-                DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
+        if (window != null) {
+            IWorkbenchPage page = window.getActivePage();
+            
+            AbstractNodeDBO obj = getCallerNode(page);
+            
+            if (obj != null) {
+                try {
+                    openNodeEditor(obj, page);
+                } catch (PartInitException e1) {
+                    LOG.error(e1);
+                    MessageDialog.openError(null, "ERROR", e1.getMessage());
+                } catch (PersistenceException e2) {
+                    LOG.error(e2);
+                    DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
+                }
             }
         }
         return null;
