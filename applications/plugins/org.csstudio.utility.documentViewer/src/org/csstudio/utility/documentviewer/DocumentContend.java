@@ -40,8 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
@@ -50,8 +48,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -70,7 +66,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -84,7 +79,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DocumentContend {
 
-    private static final Logger LOG = CentralLogger.getInstance()
+    protected static final Logger LOG = CentralLogger.getInstance()
             .getLogger(DocumentContend.class);
     
     private ListViewer _pvList;
@@ -124,9 +119,10 @@ public class DocumentContend {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                _processVariables.add(new ProcessVariable(text.getText()));
-                _pvList.setInput(_processVariables);
-                callIoNameService(_processVariables);
+                Collection<IProcessVariable> processVariables = getProcessVariables();
+                processVariables.add(new ProcessVariable(text.getText()));
+                _pvList.setInput(processVariables);
+                callIoNameService(processVariables);
             }
 
         });
@@ -144,6 +140,9 @@ public class DocumentContend {
     public void setProcessVariables(final IProcessVariable[] processVariables) {
         _processVariables = new HashSet<IProcessVariable>(Arrays.asList(processVariables));
 
+    }
+    protected Collection<IProcessVariable> getProcessVariables() {
+        return _processVariables;
     }
     
     /**
@@ -188,35 +187,44 @@ public class DocumentContend {
      * @param processVariables
      * @throws PersistenceException 
      */
-    private void callIoNameService(final Collection<IProcessVariable> processVariables) {
-        ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
-        Collection<String> pcNames = new HashSet<String>(processVariables.size());
-        for (IProcessVariable iProcessVariable : processVariables) {
-            pcNames.add(iProcessVariable.getName());
-        }
-        
-        Collection<INode> nodes;
-        try {
-            nodes = pv2IOName.getNodes(pcNames).values();
-            Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
-            addNodes(hierarchyDocuments, nodes);
-            _crateDocumentTable.getTable().setEnabled(true);
-            _crateDocumentTable.setInput(hierarchyDocuments);
-            _messageArea.hide();
-        } catch (PersistenceException e) {
-            LOG.error(e);
-            _messageArea.showMessage(SWT.ERROR, "Device Database Error", e.getLocalizedMessage());
-            _messageArea.show();
-            _crateDocumentTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
-            _crateDocumentTable.getTable().setEnabled(false);
-        }
+    protected void callIoNameService(final Collection<IProcessVariable> processVariables) {
+        Thread thread = new Thread() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void run() {
+                ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
+                Collection<String> pcNames = new HashSet<String>(processVariables.size());
+                for (IProcessVariable iProcessVariable : processVariables) {
+                    pcNames.add(iProcessVariable.getName());
+                }
+                Collection<INode> nodes;
+                try {
+                    nodes = pv2IOName.getNodes(pcNames).values();
+                    Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
+                    addNodes(hierarchyDocuments, nodes);
+                    _crateDocumentTable.getTable().setEnabled(true);
+                    _crateDocumentTable.setInput(hierarchyDocuments);
+                    _messageArea.hide();
+                } catch (PersistenceException e) {
+                    LOG.error(e);
+                    _messageArea.showMessage(SWT.ERROR, "Device Database Error", e.getLocalizedMessage());
+                    _messageArea.show();
+                    _crateDocumentTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
+                    _crateDocumentTable.getTable().setEnabled(false);
+                }
+            }
+            
+        };
+        Display.getCurrent().asyncExec(thread);
     }
 
     /**
      * @param all
      * @param nodes
      */
-    private void addNodes(final Collection<HierarchyDocument> all, final Collection<INode> nodes) {
+    protected void addNodes(final Collection<HierarchyDocument> all, final Collection<INode> nodes) {
         for (INode iNode : nodes) {
             addDocuments(all, iNode);
             INode parent = iNode.getParent();
@@ -265,8 +273,7 @@ public class DocumentContend {
          */
         @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
-            _processVariables.clear();
-            _viewer.setInput(_processVariables);
+            setProcessVariables();
         }
 
         /**
@@ -274,8 +281,16 @@ public class DocumentContend {
          */
         @Override
         public void widgetSelected(final SelectionEvent e) {
-            _processVariables.clear();
-            _viewer.setInput(_processVariables);
+            setProcessVariables();
+        }
+
+        /**
+         * 
+         */
+        private void setProcessVariables() {
+            Collection<IProcessVariable> processVariables = getProcessVariables();
+            processVariables.clear();
+            _viewer.setInput(processVariables);
         }
 
     }
@@ -302,12 +317,12 @@ public class DocumentContend {
         /**
          *
          */
-        @SuppressWarnings("unchecked")
         private void remove() {
             StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
             List list = selection.toList();
-            _processVariables.removeAll(list);
-            _viewer.setInput(_processVariables);
+            Collection<IProcessVariable> processVariables = getProcessVariables();
+            processVariables.removeAll(list);
+            _viewer.setInput(processVariables);
         }
 
         /**
@@ -319,27 +334,7 @@ public class DocumentContend {
         }
 
     }
-    
-    private void createAndRegisterMessageAreaToggleAction(@Nonnull final IActionBars bars) {
-        final Action displayMessageAreaAction = new Action() {
 
-            @SuppressWarnings("synthetic-access")
-            @Override
-            public void run() {
-                if (_messageArea.isVisible()) {
-                    _messageArea.hide();
-                } else {
-                    _messageArea.show();
-                }
-            }
-        };
-        displayMessageAreaAction.setText("Test1");
-        displayMessageAreaAction.setToolTipText("Test2");
-        
-        displayMessageAreaAction.setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/details_view.gif"));
-        bars.getToolBarManager().add(displayMessageAreaAction);
-    }
-    
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
      * FIXME (hrickens) This is a copy of the inner class of the AlarmTreeView.
@@ -427,10 +422,6 @@ public class DocumentContend {
             _messageAreaComposite.setVisible(false);
             ((GridData) _messageAreaComposite.getLayoutData()).exclude = true;
             _messageAreaComposite.getParent().layout();
-        }
-
-        public boolean isVisible() {
-            return _messageAreaComposite.isVisible();
         }
     }
 }
