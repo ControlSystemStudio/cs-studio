@@ -18,7 +18,7 @@
    </license>
 
    <includes
-         id="org.csstudio.desy.platform.eclipse.ecf.feature"
+         id="org.csstudio.desy.platform.base.feature"
          version="0.0.0"/>
 
    <includes
@@ -27,6 +27,22 @@
 
    <includes
          id="org.csstudio.desy.platform.eclipse.team.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.platform.eclipse.ecf.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.library.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.librarydesy.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.sds.feature"
          version="0.0.0"/>
 
    <includes
@@ -43,10 +59,6 @@
 
    <includes
          id="org.csstudio.desy.pv.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.desy.sds.feature"
          version="0.0.0"/>
 
    <includes
@@ -71,18 +83,6 @@
 
    <includes
          id="org.csstudio.desy.management.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.desy.platform.base.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.desy.library.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.desy.librarydesy.feature"
          version="0.0.0"/>
 
    <plugin
