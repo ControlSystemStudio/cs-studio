@@ -57,7 +57,7 @@ import org.eclipse.ui.PlatformUI;
  * @since 17.08.2010
  */
 public class DocumentTableBuilder {
-    public static TableViewer crateDocumentTable(@Nonnull final Composite group) {
+    public static TableViewer createDocumentTable(@Nonnull final Composite group) {
         TableColumnLayout tableColumnLayout = new TableColumnLayout();
         Composite tableComposite = new Composite(group, SWT.BORDER);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
