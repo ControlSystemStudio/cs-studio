@@ -164,12 +164,12 @@ public class SQL
         sel_global_alarm_pvs =
             //        1                  2
             "SELECT t.PARENT_CMPNT_ID, t.NAME," +
-            //        3                  4          5           6
-            " s.NAME 'SEVERITY', m.NAME 'STATUS', p.PV_VALUE, p.ALARM_TIME" +
+            //       3                4          5           6
+            " s.NAME SEVERITY, m.NAME STATUS, p.PV_VALUE, p.ALARM_TIME" +
             " FROM " + schema_prefix + "PV p" +
-            " JOIN ALARM_TREE t on t.COMPONENT_ID=p.COMPONENT_ID" +
-            " JOIN SEVERITY s on s.SEVERITY_ID=p.SEVERITY_ID" +
-            " JOIN STATUS m on m.STATUS_ID=p.STATUS_ID" +
+            " JOIN " + schema_prefix + "ALARM_TREE t on t.COMPONENT_ID=p.COMPONENT_ID" +
+            " JOIN " + schema_prefix + "SEVERITY s on s.SEVERITY_ID=p.SEVERITY_ID" +
+            " JOIN " + schema_prefix + "STATUS m on m.STATUS_ID=p.STATUS_ID" +
             " WHERE ACT_GLOBAL_ALARM_IND=?";
 
         sel_item_by_id = "SELECT PARENT_CMPNT_ID, NAME FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID=?";
