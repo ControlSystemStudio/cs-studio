@@ -92,11 +92,8 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 		removeProperty(PROP_ACTIONS);		
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
-		//addProperty(new ComboProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", 
-		//		WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		
 		setPropertyVisible(PROP_ACTIONS, !DEFAULT_ACTIONS_FROM_PV);
-		setPropertyVisible(PROP_PVNAME, DEFAULT_ACTIONS_FROM_PV);
 		
 	}
 	
