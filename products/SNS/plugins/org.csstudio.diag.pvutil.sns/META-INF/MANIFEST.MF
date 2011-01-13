@@ -15,4 +15,5 @@ Require-Bundle: org.eclipse.swt,
  org.junit4,
  org.csstudio.platform.utility.rdb,
  org.csstudio.diag.pvutil
-Bundle-Vendor: Dave Purcell
+Bundle-Vendor: Dave Purcell <purcelljd@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -16,4 +16,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.diag.pvfields,
  org.csstudio.diag.pvfields.model
 Bundle-Vendor: Dave Purcell <purcelljd@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
