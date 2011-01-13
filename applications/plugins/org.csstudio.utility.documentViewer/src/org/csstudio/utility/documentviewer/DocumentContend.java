@@ -89,7 +89,7 @@ public class DocumentContend {
     /**
      * A List with all Process Variables to show the Documents
      */
-    private TableViewer _crateDocumentTable;
+    private TableViewer _foundsDocumentsTable;
 
     private MessageArea _messageArea;
 
@@ -130,8 +130,8 @@ public class DocumentContend {
     }
 
     public void createDocumentView(final Composite parent) {
-        _crateDocumentTable = DocumentTableBuilder.crateDocumentTable(parent);
-        DocumentTableBuilder.makeMenus(_crateDocumentTable);
+        _foundsDocumentsTable = DocumentTableBuilder.createDocumentTable(parent);
+        DocumentTableBuilder.makeMenus(_foundsDocumentsTable);
     }
 
     /**
@@ -202,17 +202,22 @@ public class DocumentContend {
                 Collection<INode> nodes;
                 try {
                     nodes = pv2IOName.getNodes(pcNames).values();
-                    Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
-                    addNodes(hierarchyDocuments, nodes);
-                    _crateDocumentTable.getTable().setEnabled(true);
-                    _crateDocumentTable.setInput(hierarchyDocuments);
+                    if(nodes == null || nodes.isEmpty()) {
+                        _foundsDocumentsTable.getTable().setEnabled(true);
+                        _foundsDocumentsTable.setInput(new String[] {"Channel nicht gefunden"});
+                    } else {
+                        Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
+                        addNodes(hierarchyDocuments, nodes);
+                        _foundsDocumentsTable.getTable().setEnabled(true);
+                        _foundsDocumentsTable.setInput(hierarchyDocuments);
+                    }
                     _messageArea.hide();
                 } catch (PersistenceException e) {
                     LOG.error(e);
                     _messageArea.showMessage(SWT.ERROR, "Device Database Error", e.getLocalizedMessage());
                     _messageArea.show();
-                    _crateDocumentTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
-                    _crateDocumentTable.getTable().setEnabled(false);
+                    _foundsDocumentsTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
+                    _foundsDocumentsTable.getTable().setEnabled(false);
                 }
             }
             
