@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -86,7 +84,6 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -130,7 +127,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
  * @author $Author: hrickens $
  * @since 19.06.2007
  */
-public class ProfiBusTreeView extends Composite implements Observer {
+public class ProfiBusTreeView extends Composite {
     
     static final Logger LOG = CentralLogger.getInstance().getLogger(ProfiBusTreeView.class);
     
@@ -215,16 +212,11 @@ public class ProfiBusTreeView extends Composite implements Observer {
      * A List of all loaded {@link FacilityDBO}'s
      */
     private List<FacilityDBO> _load;
-    private Action _infoDialogAction;
     /**
     * The actual open Node Config Editor.
     */
     private AbstractNodeEditor _openNodeEditor;
     private Action _createNewSiemensConfigFile;
-    
-    private Action _reconnectDBAction;
-    
-    private Job _dbMinderJob;
     
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
@@ -286,8 +278,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
         hookDoubleClickAction();
         contributeToActionBars();
         
-        runDataBaseConnectionMinder();
-        
         _viewer.addSelectionChangedListener(new NodeSelcetionChangedListener());
         
         this.addDisposeListener(new DisposeListener() {
@@ -297,14 +287,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
                 Repository.close();
             }
         });
-    }
-    
-    /**
-     * 
-     */
-    private void runDataBaseConnectionMinder() {
-        _dbMinderJob = new DeviceDatabaseMinderJob("DeviceDatabaseMinder");
-        _dbMinderJob.schedule();
     }
     
     /**
@@ -439,7 +421,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
     }
     
     private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
-        manager.add(_infoDialogAction);
         manager.add(new Separator());
         manager.add(makeNewFacilityAction());
         manager.add(_refreshAction);
@@ -473,23 +454,7 @@ public class ProfiBusTreeView extends Composite implements Observer {
         getViewer().getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, getViewer());
         
-        makeDatabaseReconnectAction();
-        
-        ImageDescriptor iDesc = CustomMediaFactory
-                .getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
-        Action expandAllAction = new Action() {
-            @Override
-            public void run() {
-                expandAll();
-            }
-        };
-        expandAllAction.setText("Expand All");
-        expandAllAction.setToolTipText("Expand All");
-        expandAllAction.setImageDescriptor(iDesc);
-        _site.getActionBars().getToolBarManager().add(expandAllAction);
-        
-        iDesc = CustomMediaFactory.getInstance()
+        ImageDescriptor iDesc = CustomMediaFactory.getInstance()
                 .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
                                               "icons/collapse_all.gif");
         Action collapseAllAction = new Action() {
@@ -506,22 +471,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
         ToolBarManager tBM = new ToolBarManager(tB);
         tBM.add(collapseAllAction);
         tBM.createControl(getViewer().getTree());
-    }
-    
-    /**
-     * 
-     */
-    private void makeDatabaseReconnectAction() {
-        _reconnectDBAction = new Action() {
-            // TODO: make start reconnect!
-        };
-        
-        ImageDescriptor iDesc = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                              "icons/addrepo_rep_dis.gif");
-        _reconnectDBAction.setImageDescriptor(iDesc);
-        _reconnectDBAction.setToolTipText("DB Connection state UNKNOWN");
-        _site.getActionBars().getToolBarManager().add(_reconnectDBAction);
     }
     
     private void hookDoubleClickAction() {
@@ -553,22 +502,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
         makeCreateNewSiemensConfigFile();
         makeTreeNodeRenameAction();
         makeRefreshAction();
-        makeInfoDialogAction();
-    }
-    
-    private void makeInfoDialogAction() {
-        _infoDialogAction = new Action() {
-            @Override
-            public void run() {
-                openInfoDialog();
-            }
-            
-        };
-        _infoDialogAction.setText("Info");
-        _infoDialogAction.setToolTipText("Action 1 tooltip");
-        _infoDialogAction.setAccelerator('i');
-        _infoDialogAction
-                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
     }
     
     /**
@@ -953,7 +886,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
                             getViewer().setInput(getLoad());
                             getViewer().getTree().setEnabled(true);
                         }
-                        _dbMinderJob.getThread().interrupt();
                     } catch (PersistenceException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
                         CentralLogger.getInstance().error(this, e);
@@ -962,64 +894,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
             });
             monitor.done();
             return Status.OK_STATUS;
-        }
-    }
-    
-    /**
-     * TODO (Rickens Helge) : 
-     * 
-     * @author Rickens Helge
-     * @author $Author: $
-     * @since 12.01.2011
-    
-     */
-    private final class DeviceDatabaseMinderJob extends Job {
-        /**
-         * Constructor.
-         * @param name
-         */
-        private DeviceDatabaseMinderJob(@Nonnull String name) {
-            super(name);
-        }
-        
-        @Override
-        protected IStatus run(@Nullable IProgressMonitor monitor) {
-            boolean dbConnected = Repository.isConnected();
-            try {
-                Thread.sleep(5000);
-            } catch (Exception e) {
-                // ignore!
-            }
-            
-            while (true) {
-                if (dbConnected != Repository.isConnected()) {
-                    dbConnected = Repository.isConnected();
-                    ImageDescriptor base = CustomMediaFactory.getInstance()
-                            .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                                          "icons/addrepo_rep.gif");
-                    if (dbConnected) {
-                        _reconnectDBAction.setImageDescriptor(base);
-                        _reconnectDBAction.setToolTipText("Database is connectet");
-                    } else {
-                        ImageDescriptor overlay = CustomMediaFactory.getInstance()
-                                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                                              "icons/error_co.gif");
-                        DecorationOverlayIcon doi = new DecorationOverlayIcon(
-                                                                              base.createImage(),
-                                                                              new ImageDescriptor[] {
-                                                                                      null, null,
-                                                                                      null,
-                                                                                      overlay, null });
-                        _reconnectDBAction.setImageDescriptor(doi);
-                        _reconnectDBAction.setToolTipText("Database is NOT connectet!");
-                    }
-                }
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    continue;
-                }
-            }
         }
     }
     
@@ -1160,7 +1034,7 @@ public class ProfiBusTreeView extends Composite implements Observer {
                         .get(node2Copy.getSortIndex());
                 if (node != null) {
                     int freeStationAddress = selectedNode
-                            .getfirstFreeStationAddress(selectedNode.MAX_STATION_ADDRESS);
+                            .getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS);
                     node2Copy.setSortIndex(freeStationAddress);
                 }
                 selectedNode.addChild(node2Copy);
@@ -1176,7 +1050,7 @@ public class ProfiBusTreeView extends Composite implements Observer {
                 copy = node2Copy.copyThisTo(selectedNode);
                 copy.setDirty(true);
                 copy.setSortIndexNonHibernate(selectedNode
-                        .getfirstFreeStationAddress(copy.MAX_STATION_ADDRESS));
+                        .getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
             }
             getViewer().refresh();
             getViewer().setSelection(new StructuredSelection(copy));
@@ -1279,7 +1153,8 @@ public class ProfiBusTreeView extends Composite implements Observer {
          * @param dbClass
          * @return
          */
-        private AbstractNodeDBO deleteNode(String errMsg, String errMsgHead, NamedDBClass dbClass) {
+        @CheckForNull
+        private AbstractNodeDBO deleteNode(@Nonnull String errMsg,@Nullable String errMsgHead,@Nonnull NamedDBClass dbClass) {
             AbstractNodeDBO parent;
             AbstractNodeDBO node = (AbstractNodeDBO) dbClass;
             parent = node.getParent();
@@ -1287,7 +1162,7 @@ public class ProfiBusTreeView extends Composite implements Observer {
             try {
                 parent.save();
             } catch (PersistenceException e) {
-                ProfibusHelper.openErrorDialog(_site.getShell(), errMsgHead, errMsg,
+                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
                                                node, e);
                 return null;
             }
@@ -1299,14 +1174,14 @@ public class ProfiBusTreeView extends Composite implements Observer {
          * @param errMsgHead
          * @param dbClass
          */
-        private void deleteFacility(String errMsg, String errMsgHead, NamedDBClass dbClass) {
+        private void deleteFacility(@Nonnull String errMsg,@Nullable String errMsgHead,@Nonnull NamedDBClass dbClass) {
             FacilityDBO fac = (FacilityDBO) dbClass;
             try {
                 Repository.removeNode(fac);
                 getLoad().remove(fac);
                 getViewer().remove(getLoad());
             } catch (Exception e) {
-                ProfibusHelper.openErrorDialog(_site.getShell(), errMsgHead, errMsg,
+                ProfibusHelper.openErrorDialog(getSite().getShell(), errMsgHead, errMsg,
                                                fac, e);
                 return;
             }
@@ -1531,31 +1406,6 @@ public class ProfiBusTreeView extends Composite implements Observer {
              * && doc.getSubject().startsWith("Projekt:")) { return true; } } }
              */
             return false;
-        }
-        
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void update(@Nullable Observable arg0, @Nullable Object arg1) {
-        ImageDescriptor base = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                              "icons/addrepo_rep.gif");
-        if (arg1 instanceof PersistenceException) {
-            ImageDescriptor overlay = CustomMediaFactory.getInstance()
-                    .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
-                                                  "icons/error_co.gif");
-            DecorationOverlayIcon doi = new DecorationOverlayIcon(
-                                                                  base.createImage(),
-                                                                  new ImageDescriptor[] { null,
-                                                                          null, null, overlay, null });
-            _reconnectDBAction.setImageDescriptor(doi);
-            _reconnectDBAction.setToolTipText("Database is NOT connectet!");
-        } else {
-            _reconnectDBAction.setImageDescriptor(base);
-            _reconnectDBAction.setToolTipText("Database is connectet");
         }
         
     }
