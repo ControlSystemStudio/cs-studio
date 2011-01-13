@@ -34,8 +34,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 
 /**
@@ -104,6 +102,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 
     /**
      * Returns the names of the two icons that should be displayed for the given severities.
+     * package-scoped for testing.
      *
      * @param activeAlarmSeverity
      *            the severity of the currently active alarm.
@@ -112,7 +111,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the names of the icons.
      */
     @Nonnull
-    private String[] getIconNames(@Nonnull final EpicsAlarmSeverity activeAlarmSeverity,
+    String[] getIconNames(@Nonnull final EpicsAlarmSeverity activeAlarmSeverity,
                                   @Nonnull final EpicsAlarmSeverity unacknowledgedAlarmSeverity) {
 
         final String iconName = getIconName(activeAlarmSeverity);
@@ -122,7 +121,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // alarm is displayed.
             return new String[] {iconName};
         } else if (activeAlarmSeverity != EpicsAlarmSeverity.NO_ALARM &&
-                   unacknowledgedAlarmSeverity == EpicsAlarmSeverity.NO_ALARM) {
+                   unacknowledgedAlarmSeverity == EpicsAlarmSeverity.UNKNOWN) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {
@@ -160,16 +159,6 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         final EpicsAlarmSeverity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
         final String[] iconNames = getIconNames(activeAlarmSeverity, unacknowledgedAlarmSeverity);
         return createImage(iconNames);
-    }
-
-    /**
-     * Returns the image for a leaf node that does not have any alarms set.
-     *
-     * @return the image.
-     */
-    @CheckForNull
-    private Image getDefaultImageForNode() {
-        return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
     }
 
     /**

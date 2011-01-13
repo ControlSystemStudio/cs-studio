@@ -52,6 +52,7 @@ public class PVNodeItem implements IAlarmInitItem {
         _pvNode = pvNode;
     }
 
+    @Override
     @Nonnull
     public String getPVName() {
         return _pvNode.getName();
@@ -60,6 +61,7 @@ public class PVNodeItem implements IAlarmInitItem {
     /**
      * The alarm tag of the PV node will be updated when the initial state was retrieved.
      */
+    @Override
     public void init(@Nonnull final IAlarmMessage alarmMessage) {
         // TODO (jpenning) Review access to alarm message properties
         final String name = alarmMessage.getString(AlarmMessageKey.NAME);

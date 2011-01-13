@@ -51,11 +51,13 @@ public final class AlarmTreeProcessVariableDragListener implements TransferDragS
         _alarmTreeView = alarmTreeView;
     }
 
+    @Override
     @Nonnull
     public Transfer getTransfer() {
         return ProcessVariableNameTransfer.getInstance();
     }
 
+    @Override
     public void dragStart(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -67,6 +69,7 @@ public final class AlarmTreeProcessVariableDragListener implements TransferDragS
         }
     }
 
+    @Override
     public void dragSetData(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -78,6 +81,7 @@ public final class AlarmTreeProcessVariableDragListener implements TransferDragS
         }
     }
 
+    @Override
     public void dragFinished(@Nonnull final DragSourceEvent event) {
         // EMPTY
     }

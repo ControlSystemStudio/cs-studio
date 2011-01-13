@@ -20,6 +20,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -28,6 +29,7 @@ import org.eclipse.osgi.util.NLS;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class GlobalAlarmModel
 {
     /** Singleton instance */
@@ -131,6 +133,8 @@ public class GlobalAlarmModel
     public void addListener(final GlobalAlarmModelListener listener)
     {
         listeners.add(listener);
+        // Send initial update
+        listener.globalAlarmsChanged(this);
     }
 
     /** @param listener Listener to remove
@@ -199,10 +203,30 @@ public class GlobalAlarmModel
             }
         }
 
-        // TODO Read global alarms from RDB
+        // Read global alarms from RDB
+        List<AlarmTreeRoot> alarms = null;
+        GlobalAlarmReader reader = null;
+        try
+        {
+            reader = new GlobalAlarmReader();
+            alarms = reader.readGlobalAlarms();
+        }
+        catch (Exception ex)
+        {
+            CentralLogger.getInstance().getLogger(this).error(
+                    "GlobalAlarmModel cannot read existing alarms", ex);
+        }
+        finally
+        {
+            if (reader != null)
+                reader.close();
+        }
+
         synchronized (configurations)
         {
             configurations.clear();
+            if (alarms != null)
+                configurations.addAll(alarms);
         }
 
         // Apply queued updates

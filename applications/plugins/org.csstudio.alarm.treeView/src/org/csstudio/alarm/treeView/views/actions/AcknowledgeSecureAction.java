@@ -32,22 +32,25 @@ import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.action.Action;
+import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 
 /**
- * Achknowledge action.
+ * Acknowledge action.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 14.06.2010
  */
-public final class AcknowledgeAction extends Action {
+public final class AcknowledgeSecureAction extends AbstractUserDependentAction {
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AcknowledgeAction.class);
+        CentralLogger.getInstance().getLogger(AcknowledgeSecureAction.class);
+
+    private static final String RIGHT_ID = "operating";
+    private static final boolean DEFAULT_PERMISSION = false;
 
     private final TreeViewer _viewer;
 
@@ -55,12 +58,13 @@ public final class AcknowledgeAction extends Action {
      * Constructor.
      * @param viewer
      */
-    AcknowledgeAction(@Nonnull final TreeViewer viewer) {
+    AcknowledgeSecureAction(@Nonnull final TreeViewer viewer) {
+        super(RIGHT_ID, DEFAULT_PERMISSION);
         _viewer = viewer;
     }
 
     @Override
-    public void run() {
+    protected void doWork() {
         final Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
 
         final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();

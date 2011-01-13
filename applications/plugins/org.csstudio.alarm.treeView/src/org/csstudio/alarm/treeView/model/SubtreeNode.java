@@ -100,7 +100,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	        return this;
 	    }
 
-	    @Nonnull
+	    @SuppressWarnings("synthetic-access")
+        @Nonnull
 	    public SubtreeNode build() {
 	        final SubtreeNode node = new SubtreeNode(_name, _configurationType, _source);
 	        if (_parent != null) {

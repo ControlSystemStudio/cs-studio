@@ -23,7 +23,6 @@ package org.csstudio.alarm.treeView.ldap;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
-import javax.naming.ServiceUnavailableException;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;

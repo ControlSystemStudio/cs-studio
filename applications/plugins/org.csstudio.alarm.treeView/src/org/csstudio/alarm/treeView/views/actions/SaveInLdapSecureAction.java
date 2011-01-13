@@ -30,7 +30,7 @@ import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.alarm.treeView.views.dialog.DetailDialog;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.action.Action;
+import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
@@ -42,9 +42,12 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @version $Revision$
  * @since 17.06.2010
  */
-public final class SaveInLdapAction extends Action {
+public final class SaveInLdapSecureAction extends AbstractUserDependentAction {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveInLdapAction.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveInLdapSecureAction.class);
+
+    private static final String RIGHT_ID = "operating";
+    private static final boolean DEFAULT_PERMISSION = false;
 
     private final IWorkbenchPartSite _site;
     private final Queue<ITreeModificationItem> _ldapModifications;
@@ -54,14 +57,15 @@ public final class SaveInLdapAction extends Action {
      * @param site
      * @param ldapModifications
      */
-    SaveInLdapAction(@Nonnull final IWorkbenchPartSite site,
+    SaveInLdapSecureAction(@Nonnull final IWorkbenchPartSite site,
                      @Nonnull final Queue<ITreeModificationItem> ldapModifications) {
+        super(RIGHT_ID, DEFAULT_PERMISSION);
         _site = site;
         _ldapModifications = ldapModifications;
     }
 
     @Override
-    public void run() {
+    protected void doWork() {
         final List<String> notAppliedMods= new ArrayList<String>();
         String failedMod = "";
         final List<String> appliedMods = new ArrayList<String>();

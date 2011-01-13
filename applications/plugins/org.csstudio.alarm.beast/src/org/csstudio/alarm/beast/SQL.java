@@ -44,6 +44,8 @@ public class SQL
     final public String delete_component_by_id;
 
     final public String sel_pv_by_id;
+    final public String sel_global_alarm_pvs;
+    final public String sel_item_by_id;
     final public String insert_pv;
 
     final public String update_pv_config;
@@ -53,6 +55,7 @@ public class SQL
     final public String delete_pv_by_id;
     final public String rename_item;
     final public String move_item;
+
 
     final public String sel_severity;
     final public String sel_last_severity;
@@ -65,6 +68,7 @@ public class SQL
     final public String message_table = "STATUS";
     final public String message_id_col = "STATUS_ID";
     final public String message_name_col = "NAME";
+
 
 	/** Initialize
      *  @param rdb RDBUtil
@@ -156,6 +160,19 @@ public class SQL
 
         sel_pv_by_id =
             "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";
+
+        sel_global_alarm_pvs =
+            //        1                  2
+            "SELECT t.PARENT_CMPNT_ID, t.NAME," +
+            //        3                  4          5           6
+            " s.NAME 'SEVERITY', m.NAME 'STATUS', p.PV_VALUE, p.ALARM_TIME" +
+            " FROM " + schema_prefix + "PV p" +
+            " JOIN ALARM_TREE t on t.COMPONENT_ID=p.COMPONENT_ID" +
+            " JOIN SEVERITY s on s.SEVERITY_ID=p.SEVERITY_ID" +
+            " JOIN STATUS m on m.STATUS_ID=p.STATUS_ID" +
+            " WHERE ACT_GLOBAL_ALARM_IND=?";
+
+        sel_item_by_id = "SELECT PARENT_CMPNT_ID, NAME FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID=?";
 
         if (rdb.getDialect() == Dialect.PostgreSQL)
         	insert_pv =

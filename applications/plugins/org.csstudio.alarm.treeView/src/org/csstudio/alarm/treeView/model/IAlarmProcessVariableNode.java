@@ -45,13 +45,7 @@ public interface IAlarmProcessVariableNode extends IAlarmTreeNode {
      * Removes the highest unacknowledged alarm from this node.
      * This happens when the alarm is acknowledged.
      */
-    void removeHighestUnacknowledgedAlarm();
-
-    /**
-     * Sets the highest unacknowledged alarm at this node.
-     * @param alarm the alarm.
-     */
-    void setHighestUnacknowledgedAlarm(@Nonnull Alarm alarm);
+    void acknowledgeAlarm();
 
     /**
      * Returns the highest unacknowledged alarm of this node.
