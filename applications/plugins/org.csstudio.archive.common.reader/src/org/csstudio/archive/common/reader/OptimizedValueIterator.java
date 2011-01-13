@@ -50,6 +50,9 @@ public class OptimizedValueIterator implements ValueIterator {
     // implementation, offered to the client. then the client decides for a specific one, and asks for the
     // data with the 'typed' request type information
     private static final class AvgPerHourType implements IArchiveRequestType {
+        public AvgPerHourType() {
+            // Empty
+        }
         @Override
         public String getTypeIdentifier() {
             return "AVG_PER_HOUR";
@@ -63,6 +66,9 @@ public class OptimizedValueIterator implements ValueIterator {
     private static final AvgPerHourType APH_TYPE = new AvgPerHourType();
 
     private static final class AvgPerMinType implements IArchiveRequestType {
+        public AvgPerMinType() {
+            // Empty
+        }
         @Override
         public String getTypeIdentifier() {
             return "AVG_PER_MINUTE";
@@ -130,6 +136,9 @@ public class OptimizedValueIterator implements ValueIterator {
                 // Others
                 _values = service.readSamples(channelName, start, end, RAW_TYPE);
             }
+
+            // TODO : check whether binning is necessary here or whether the client code can handle this already
+
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
         } catch (final OsgiServiceUnavailableException e1) {

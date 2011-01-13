@@ -98,4 +98,13 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
         throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
                                        "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected Collection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
+                                       "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
+    }
 }

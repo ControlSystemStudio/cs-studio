@@ -156,6 +156,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
             closeStatement(stmt, "Closing of statement for creating samples failed.");
         }
@@ -163,7 +165,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private <T extends ICssValueType<?> & IHasAlarm>
-        Statement composeStatements(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException {
+        Statement composeStatements(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
@@ -193,12 +195,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                     data,
                                                     timestamp));
 
-                writeReducedData(channelId,
-                                 data,
-                                 alarm,
-                                 timestamp,
-                                 valuesPerMinute,
-                                 valuesPerHour);
+                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(data.getValueData())) {
+                    writeReducedData(channelId,
+                                     data,
+                                     alarm,
+                                     timestamp,
+                                     valuesPerMinute,
+                                     valuesPerHour);
+                }
+
             }
         }
         return joinStringsToStatementBatch(values, valuesPerMinute, valuesPerHour);
@@ -403,15 +408,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                             @Nonnull final IArchiveChannel channel,
                                                             @Nonnull final TimeInstant s,
                                                             @Nonnull final TimeInstant e) throws ArchiveDaoException {
+
         final String dataType = channel.getDataType();
         final ArchiveChannelId channelId = channel.getId();
 
         PreparedStatement stmt = null;
         try {
-            ArchiveRequestType reqType = ArchiveRequestType.valueOf(type.getTypeIdentifier());
-            if (reqType == null) {
-                reqType = determineRequestType(s, e);
-            }
+            final ArchiveRequestType reqType = determineRequestType(type, dataType, s, e);
+
             stmt = dispatchRequestTypeToStatement(reqType);
             stmt.setInt(2, channelId.intValue());
             stmt.setTimestamp(3, new Timestamp(s.getMillis()));
@@ -422,9 +426,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             final List<IArchiveSample<T, EpicsAlarm>> iterable = Lists.newArrayList();
 
             if (result.next()) {
-                final IArchiveMinMaxSample<ICssAlarmValueType<Object>, EpicsAlarm> sample =
+                final IArchiveMinMaxSample<V, T, EpicsAlarm> sample =
                     createSampleFromQueryResult(reqType, dataType, channelId, result);
-                iterable.add((IArchiveSample<T, EpicsAlarm>) sample);
+                iterable.add(sample);
             }
             return iterable;
 
@@ -440,18 +444,35 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private ArchiveRequestType determineRequestType(@Nonnull final TimeInstant s, @Nonnull final TimeInstant e) {
-        @CheckForNull
-        ArchiveRequestType type;
-        final Duration d = new Duration(s.getInstant(), e.getInstant());
-        if (d.isLongerThan(Duration.standardDays(45))) {
-            type = ArchiveRequestType.AVG_PER_HOUR;
-        } else if (d.isLongerThan(Duration.standardDays(1))) {
-            type = ArchiveRequestType.AVG_PER_MINUTE;
-        } else {
-            type = ArchiveRequestType.RAW;
+    private ArchiveRequestType determineRequestType(@CheckForNull final IArchiveRequestType type,
+                                                    @Nonnull final String dataType,
+                                                    @Nonnull final TimeInstant s,
+                                                    @Nonnull final TimeInstant e) throws ArchiveDaoException, TypeSupportException {
+
+        if (!ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
+            return ArchiveRequestType.RAW;
         }
-        return type;
+
+        ArchiveRequestType reqType;
+        if (type == null) {
+            final Duration d = new Duration(s.getInstant(), e.getInstant());
+            if (d.isLongerThan(Duration.standardDays(45))) {
+                reqType = ArchiveRequestType.AVG_PER_HOUR;
+            } else if (d.isLongerThan(Duration.standardDays(1))) {
+                reqType = ArchiveRequestType.AVG_PER_MINUTE;
+            } else {
+                reqType = ArchiveRequestType.RAW;
+            }
+        } else {
+            try {
+                reqType = ArchiveRequestType.valueOf(type.getTypeIdentifier());
+            } catch (final IllegalArgumentException iae) {
+                throw new ArchiveDaoException("Archive request type " + type.getTypeIdentifier() +
+                                              " unknown for this implementation.", iae);
+            }
+        }
+
+        return reqType;
     }
 
     @Nonnull
@@ -477,13 +498,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
 
+    @SuppressWarnings("unchecked")
     private <V, T extends ICssAlarmValueType<V>>
-    IArchiveMinMaxSample<T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final ArchiveRequestType type,
-                                                                    @Nonnull final String dataType,
-                                                                    @Nonnull final ArchiveChannelId channelId,
-                                                                    @Nonnull final ResultSet result) throws SQLException,
-                                                                                       ArchiveDaoException,
-                                                                                       TypeSupportException {
+    IArchiveMinMaxSample<V, T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final ArchiveRequestType type,
+                                                                       @Nonnull final String dataType,
+                                                                       @Nonnull final ArchiveChannelId channelId,
+                                                                       @Nonnull final ResultSet result) throws SQLException,
+                                                                                                               ArchiveDaoException,
+                                                                                                               TypeSupportException {
         // (sample_time, severity_id, ...) or (sample_time, highest_severity_id, ...)
         final Timestamp timestamp = result.getTimestamp(1);
         final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(2));
@@ -491,46 +513,56 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         long nanosecs = 0L;
         V value;
-        IArchiveStatus st = null;
+
         switch (type) {
-            case RAW :
+            case RAW : {
                 // (..., nanosecs, status_id, value)
                 nanosecs = result.getLong(3);
                 final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt(4));
                 value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(4));
 
-                st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
-                break;
+                final IArchiveStatus st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
+
+                if (sev == null || st == null) {
+                    throw new ArchiveDaoException("Severity or status could not be retrieved for sample.", null);
+                }
+                // TODO (bknerr) : Epics specific, refactor this into a generic alarm for all control system types
+                final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
+                                                        EpicsAlarmStatus.parseStatus(st.getName()));
+                final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
+
+                final T data = (T) new CssAlarmValueType<V>(value, alarm, timeInstant);
+
+                final ArchiveMinMaxSample<V, T, EpicsAlarm> sample =
+                    new ArchiveMinMaxSample<V, T, EpicsAlarm>(channelId, data, timeInstant, alarm, null, null);
+                return sample;
+            }
             case AVG_PER_MINUTE :
-            case AVG_PER_HOUR :
+            case AVG_PER_HOUR : {
                 // (..., avg_val, min_val, max_val)
-                final Double avg = result.getDouble(3);
-                final Double min = result.getDouble(4);
-                final Double max = result.getDouble(5);
-                st = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
+                final V avg = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(3));
+                final V min = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(4));
+                final V max = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(5));
+                final IArchiveStatus status = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
+
+                if (sev == null || status == null) {
+                    throw new ArchiveDaoException("Severity or status could not be retrieved for sample.", null);
+                }
+                // TODO (bknerr) : Epics specific, refactor this into a generic alarm for all control system types
+                final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
+                                                        EpicsAlarmStatus.parseStatus(status.getName()));
+                final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
+
+                final T data = (T) new CssAlarmValueType<V>(avg, alarm, timeInstant);
+
+                final ArchiveMinMaxSample<V, T, EpicsAlarm> sample =
+                    new ArchiveMinMaxSample<V, T, EpicsAlarm>(channelId, data, timeInstant, alarm, min, max);
+                return sample;
+            }
             default:
                 break;
         }
-
-        if (sev == null || st == null) {
-            throw new ArchiveDaoException("Severity or status could not be retrieved for sample.", null);
-        }
-        // TODO (bknerr) : Epics specific, refactor this into a generic alarm for all control system types
-        final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
-                                                EpicsAlarmStatus.parseStatus(st.getName()));
-
-
-        final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
-
-        @SuppressWarnings("unchecked")
-        final ICssAlarmValueType<V> data =
-            new CssAlarmValueType<V>(value,
-                                     alarm,
-                                     timeInstant);
-        @SuppressWarnings("unchecked")
-        final ArchiveMinMaxSample<V, T, EpicsAlarm> sample =
-            new ArchiveMinMaxSample<V, T, EpicsAlarm>(channelId, (T) data, timeInstant, alarm, min, max);
-        return sample;
+        return null;
     }
 
 }

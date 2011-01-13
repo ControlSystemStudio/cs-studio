@@ -42,7 +42,7 @@ public interface IArchiveReaderService {
 
     /**
      * Returns the supported request types.
-     * If only a single one, then empty set should be returned.
+     * If there isn't any choice offered by the implementation, then empty set should be returned.
      * @return the set of supported request types.
      */
     @Nonnull

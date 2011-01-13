@@ -45,4 +45,13 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
             throw new TypeSupportException("Parsing failed.", e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Integer convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.intValue();
+    }
 }

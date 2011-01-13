@@ -43,10 +43,10 @@ public class ArchiveMinMaxSample<V,
                                  T extends ICssAlarmValueType<V>,
                                  A extends IAlarm & Comparable<? super A>>
                                 extends ArchiveSampleDTO<V, T, A>
-                                implements IArchiveMinMaxSample<T, A> {
+                                implements IArchiveMinMaxSample<V, T, A> {
 
-    private final Double _minimum;
-    private final Double _maximum;
+    private final V _minimum;
+    private final V _maximum;
 
     /**
      * Constructor.
@@ -55,8 +55,8 @@ public class ArchiveMinMaxSample<V,
                                @Nonnull final T data,
                                @Nonnull final TimeInstant ts,
                                @Nonnull final A alarm,
-                               @Nullable final Double min,
-                               @Nullable final Double max) {
+                               @Nullable final V min,
+                               @Nullable final V max) {
         super(channelId, data, ts, alarm);
         _minimum = min;
         _maximum = max;
@@ -78,7 +78,7 @@ public class ArchiveMinMaxSample<V,
      */
     @Override
     @CheckForNull
-    public Double getMinimum() {
+    public V getMinimum() {
         return _minimum;
     }
 
@@ -87,7 +87,7 @@ public class ArchiveMinMaxSample<V,
      */
     @Override
     @CheckForNull
-    public Double getMaximum() {
+    public V getMaximum() {
         return _maximum;
     }
 

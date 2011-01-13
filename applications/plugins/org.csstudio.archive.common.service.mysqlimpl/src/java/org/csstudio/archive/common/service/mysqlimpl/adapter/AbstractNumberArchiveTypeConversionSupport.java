@@ -85,6 +85,15 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
     public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
         return d.doubleValue();
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean isOptimizableByAveraging() {
+        return Boolean.TRUE;
+    }
+
+
 
     /**
      * {@inheritDoc}

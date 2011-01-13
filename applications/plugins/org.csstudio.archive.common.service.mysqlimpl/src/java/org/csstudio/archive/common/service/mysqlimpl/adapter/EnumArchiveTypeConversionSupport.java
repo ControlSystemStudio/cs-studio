@@ -85,6 +85,14 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
      */
     @Override
     @Nonnull
+    public EpicsEnumTriple convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        throw new TypeSupportException("Enum shall not be converted from Double.", null);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
     public String convertToArchiveString(@Nonnull final EpicsEnumTriple value) throws TypeSupportException {
         return tupleEmbrace(Joiner.on(ARCHIVE_TUPLE_SEP).join(value.getIndex(),
                                                               value.getState(),

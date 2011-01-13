@@ -45,4 +45,13 @@ public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
             throw new TypeSupportException("Parsing failed.", e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Long convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.longValue();
+    }
 }

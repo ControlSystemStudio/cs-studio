@@ -51,7 +51,16 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
-        throw new TypeSupportException("Byte shall not be converted to Double.", null);
+    public Byte convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.byteValue();
     }
+
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
+//        throw new TypeSupportException("Byte shall not be converted to Double.", null);
+//    }
 }

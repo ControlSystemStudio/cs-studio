@@ -45,4 +45,13 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
             throw new TypeSupportException("Parsing failed.", e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Float convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.floatValue();
+    }
 }

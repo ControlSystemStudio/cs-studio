@@ -32,16 +32,19 @@ import org.csstudio.domain.desy.types.ICssValueType;
  *
  * @author bknerr
  * @since 05.01.2011
+ *
+ * @param <V> the base type of the data of the composite system value
  * @param <T> the type of the composite system value (with alarm and timestamp)
  * @param <A> the comparable alarm type
  */
-public interface IArchiveMinMaxSample<T extends ICssValueType<?> & IHasAlarm,
+public interface IArchiveMinMaxSample<V,
+                                      T extends ICssValueType<V> & IHasAlarm,
                                       A extends IAlarm & Comparable<? super A>>
     extends IArchiveSample<T, A> {
 
     @Nonnull
-    Double getMinimum();
+    V getMinimum();
 
     @Nonnull
-    Double getMaximum();
+    V getMaximum();
 }

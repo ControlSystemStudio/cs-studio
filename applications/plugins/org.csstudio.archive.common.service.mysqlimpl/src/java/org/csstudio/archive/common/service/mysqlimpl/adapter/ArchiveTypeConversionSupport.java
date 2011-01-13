@@ -248,10 +248,60 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         return support.convertToDouble(value);
     }
 
-    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> T fromDouble(@Nonnull final String dataType, @Nonnull final Double value) throws TypeSupportException {
+        final Class<?> typeClass = createTypeClassFromString(dataType);
+        @SuppressWarnings("unchecked")
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        if (support == null) {
+            throw new TypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertFromDouble(value);
+    }
+
+
+    /**
+     * Returns whether the given data type as contained in the archive db is optimizable by averaging.
+     * This datatype has to have a registered type support with convertibility to Double type.
+     * @return true if optimizable by averaging, false otherwise
+     * @throws TypeSupportException
+     */
+    @Nonnull
+    public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
+        final Class<?> typeClass = createTypeClassFromString(dataType);
+        return isDataTypeOptimizable(typeClass);
+    }
+    /**
+     * Returns whether the given data type is optimizable by averaging.
+     * This datatype has to have a registered type support with convertibility to Double type.
+     * @return true if optimizable by averaging, false otherwise
+     * @throws TypeSupportException
+     */
+    @Nonnull
+    public static <T> Boolean isDataTypeOptimizable(@Nonnull final T dataType) throws TypeSupportException {
+        final ArchiveTypeConversionSupport<?> support =
+            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(dataType.getClass(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        if (support == null) {
+            throw new TypeSupportException("No conversion type support registered.", null);
+        }
+        return support.isOptimizableByAveraging();
+    }
+
+
     @CheckForNull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
+        final Class<T> typeClass = createTypeClassFromString(datatype);
+        if (typeClass != null) {
+            return fromScalarArchiveString(typeClass, value);
+        }
+
+        return multiScalarSupport(datatype, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> createTypeClassFromString(final String datatype) {
         Class<T> typeClass = null;
         try {
             typeClass = (Class<T>) Class.forName("java.lang." + datatype);
@@ -264,11 +314,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                 // CHECKSTYLE ON: EmptyBlock
             }
         }
-        if (typeClass != null) {
-            return fromScalarArchiveString(typeClass, value);
-        }
-
-        return multiScalarSupport(datatype, value);
+        return typeClass;
     }
 
     @SuppressWarnings("unchecked")
@@ -339,4 +385,16 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException;
     @Nonnull
     protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
+    @Nonnull
+    protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
+    /**
+     * A type support overriding this method with return value <code>Boolean.TRUE</code> has to
+     * implement a valid 'convertToDouble' method.
+     *
+     * @return true if the data type is optimizable by averaging (i.e. convertible to Double)
+     */
+    @Nonnull
+    protected Boolean isOptimizableByAveraging() {
+        return Boolean.FALSE;
+    }
 }

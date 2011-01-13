@@ -44,4 +44,13 @@ public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTyp
             throw new TypeSupportException("Parsing failed.", e);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Double convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value;
+    }
 }
