@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
 import java.util.ArrayList;
@@ -29,7 +36,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     private volatile Connection connection = null;
     private volatile Session session = null;
     private volatile MessageConsumer consumer[] = new MessageConsumer[0];
-    
+
     /** Run flag.
      *  In principle we try to close the model properly.
      *  But in case the main thread was still hung in the connection,
@@ -44,10 +51,10 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
 
     final private ArrayList<ReceivedMessage> messages =
         new ArrayList<ReceivedMessage>();
-    
+
     private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
-    
+
     private volatile String server_name = Messages.Disconnected;
 
     /** Initialize
@@ -68,6 +75,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
             throw new Exception(Messages.ErrorNoTopic);
         final Runnable connector = new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -93,13 +101,13 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
         thread.start();
     }
 
-    /** Connect to JMS; run in background thread 
+    /** Connect to JMS; run in background thread
      *  @param url JMS server URL
      *  @param user JMS user name or <code>null</code>
      *  @param password JMS password or <code>null</code>
      *  @throws Exception on error
      */
-    private void connect(final String url, final String user, final String password) 
+    private void connect(final String url, final String user, final String password)
     	throws Exception
     {
         connection = JMSConnectionFactory.connect(url, user, password);
@@ -108,7 +116,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
         connection.start();
         session = connection.createSession(/* transacted */ false,
                                            Session.AUTO_ACKNOWLEDGE);
-        
+
         final String[] names = topic_names.split(", *"); //$NON-NLS-1$
         consumer = new MessageConsumer[names.length];
         for (int i=0; i<names.length; ++i)
@@ -123,7 +131,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
         }
         fireModelChanged();
     }
-    
+
     /** Disconnect JMS. Called in background thread */
 	private void disconnect()
 	{
@@ -168,14 +176,14 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     {
         return server_name;
     }
-    
+
     /** @return Array of received messages */
     public ReceivedMessage[] getMessages()
     {
         synchronized (messages)
         {
             final ReceivedMessage retval[] =
-                new ReceivedMessage[messages.size()]; 
+                new ReceivedMessage[messages.size()];
             return messages.toArray(retval);
         }
     }
@@ -188,6 +196,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     }
 
     /** @see JMSConnectionListener */
+    @Override
     public void linkDown()
     {
         server_name = Messages.Disconnected;
@@ -195,6 +204,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     }
 
     /** @see JMSConnectionListener */
+    @Override
     public void linkUp(final String server)
     {
         this.server_name = server;
@@ -202,6 +212,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     }
 
     /** @see MessageListener */
+    @Override
     public void onMessage(final Message message)
     {
         if (! run)
@@ -289,6 +300,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     }
 
     /** @see ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
         CentralLogger.getInstance().getLogger(this).error(
