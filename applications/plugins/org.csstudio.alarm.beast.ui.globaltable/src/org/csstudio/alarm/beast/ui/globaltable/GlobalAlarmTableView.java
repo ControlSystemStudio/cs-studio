@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui.globaltable;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModel;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModelListener;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -23,7 +24,6 @@ import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse 'View' for global alarms
  *
- *  TODO Tooltip with detail
  *  TODO Context menu to select configuration, show guidance etc.
  *
  *  @author Kay Kasemir
@@ -105,6 +105,8 @@ public class GlobalAlarmTableView extends ViewPart
         table.setLinesVisible(true);
         createColumns(table_viewer, table_layout);
         table_viewer.setContentProvider(new GlobalAlarmContentProvider());
+
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
 
         return table_viewer;
     }
