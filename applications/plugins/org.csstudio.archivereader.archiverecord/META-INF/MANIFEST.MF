@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.pv;bundle-version="1.1.1",
  org.csstudio.utility.pv.epics;bundle-version="1.1.1",
  org.csstudio.archivereader;bundle-version="2.0.2",
- org.csstudio.nams.common
+ org.junit4;bundle-version="4.8.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

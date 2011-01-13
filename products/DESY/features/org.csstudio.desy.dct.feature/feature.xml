@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import feature="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
+   </requires>
+
    <plugin
          id="org.csstudio.dct"
          download-size="0"
@@ -40,13 +44,6 @@
 
    <plugin
          id="org.csstudio.utility.epicsDataBaseCompare"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.alarm.service"
          download-size="0"
          install-size="0"
          version="0.0.0"
