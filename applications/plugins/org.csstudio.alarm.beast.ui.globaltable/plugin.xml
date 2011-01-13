@@ -20,10 +20,11 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:alarm">
+            locationURI="menu:alarm?after=org.csstudio.alarm.beast.msghist">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/alarmtable.gif"
+               id="org.csstudio.alarm.beast.globaltable"
                label="%GlobalAlarmTable"
                mnemonic="%GlobalAlarmTableMnemonic"
                style="push"
