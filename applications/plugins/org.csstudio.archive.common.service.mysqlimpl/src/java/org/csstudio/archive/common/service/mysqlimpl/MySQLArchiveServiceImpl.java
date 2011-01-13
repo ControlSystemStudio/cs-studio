@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
@@ -42,6 +43,7 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
+import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -80,6 +82,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                                                IArchiveReaderService {
 
     INSTANCE;
+
+    /**
+     * Constructor.
+     */
+    private MySQLArchiveServiceImpl() {
+        ArchiveTypeConversionSupport.install();
+        EpicsCssValueTypeSupport.install();
+    }
 
     /**
      * Static converter function.
@@ -338,7 +348,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     public Iterable<IValue> readSamples(@Nonnull final String channelName,
                                         @Nonnull final ITimestamp start,
                                         @Nonnull final ITimestamp end,
-                                        @Nonnull final IArchiveRequestType type) throws ArchiveServiceException {
+                                        @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
         final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
         final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);

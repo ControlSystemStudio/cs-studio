@@ -25,15 +25,19 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Raw value iterator for service infrastructure.
@@ -41,18 +45,35 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  * @author bknerr
  * @since 21.12.2010
  */
-public class RawValueIterator implements ValueIterator {
+public class DesyArchiveValueIterator implements ValueIterator {
 
-    /**
-     * TODO (bknerr) :
-     *
-     * @author bknerr
-     * @since 11.01.2011
-     */
+    // FIXME (bknerr with kasemir) :
+    // the available archive request types should be obtained over the extpoint/service from the
+    // implementation, offered to the client. then the client decides for a specific one, and asks for the
+    // data with the 'typed' request type information
+    private static final class ART implements IArchiveRequestType {
+        String _type;
+        public ART(@Nonnull final String type) {
+            _type = type;
+        }
+        @Override
+        public String getTypeIdentifier() {
+            return _type;
+        }
+
+        @Override
+        public String getDescription() {
+            return "blubb";
+        }
+    }
+    public static final ART APH_TYPE = new ART("AVG_PER_HOUR");
+    public static final ART APM_TYPE = new ART("AVG_PER_MINUTE");
+    public static final ART RAW_TYPE = new ART("RAW");
+
 
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(RawValueIterator.class);
+        CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
 
     private Iterable<IValue> _values = Collections.emptyList();
     private Iterator<IValue> _iterator = _values.iterator();
@@ -60,14 +81,22 @@ public class RawValueIterator implements ValueIterator {
     /**
      * Constructor.
      */
-    RawValueIterator(@Nonnull final String channelName,
-                     @Nonnull final ITimestamp start,
-                     @Nonnull final ITimestamp end) {
+    DesyArchiveValueIterator(@Nonnull final String channelName,
+                             @Nonnull final ITimestamp start,
+                             @Nonnull final ITimestamp end,
+                             @Nullable final IArchiveRequestType type) {
 
         IArchiveReaderService service;
         try {
             service = Activator.getDefault().getArchiveReaderService();
-            _values = service.readSamples(channelName, start, end, OptimizedValueIterator.RAW_TYPE);
+            // TODO (bknerr with kasemir) :
+            // the available archive request types can be obtained over the service from the
+            // implementation, offered to the client, the client decides for a specific one, and asks for the
+            // data with the 'typed' request type information
+            _values = service.readSamples(channelName, start, end, type);
+
+            LOG.error("Samples: " + Iterables.size(_values));
+
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
         } catch (final OsgiServiceUnavailableException e1) {

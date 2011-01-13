@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -74,6 +75,6 @@ public interface IArchiveReaderService {
     Iterable<IValue> readSamples(@Nonnull final String channelName,
                                  @Nonnull final ITimestamp start,
                                  @Nonnull final ITimestamp end,
-                                 @Nonnull final IArchiveRequestType type) throws ArchiveServiceException;
+                                 @Nullable final IArchiveRequestType type) throws ArchiveServiceException;
 
 }

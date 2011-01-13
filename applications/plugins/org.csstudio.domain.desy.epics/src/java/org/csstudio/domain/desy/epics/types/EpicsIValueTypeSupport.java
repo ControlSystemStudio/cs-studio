@@ -77,9 +77,6 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
             (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
         return support.convertToCssType(value);
     }
 
