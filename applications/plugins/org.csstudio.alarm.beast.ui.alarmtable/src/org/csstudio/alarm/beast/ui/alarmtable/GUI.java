@@ -37,7 +37,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -325,7 +324,7 @@ public class GUI implements AlarmClientModelListener
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
 
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new AlarmTableContentProvider());
