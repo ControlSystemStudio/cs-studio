@@ -119,6 +119,6 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     @Override
     public String toString()
     {
-        return super.toString() +  " @ " + timestamp;
+        return super.toString() + ": '" + getDescription() + "' @ " + timestamp;
     }
 }

@@ -31,7 +31,7 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
         final AlarmTreeRoot trees[] = model.getAlarmRoots();
         final AlarmTreeLeaf alarms[] = model.getAlarms();
         for (AlarmTreeLeaf alarm : alarms)
-            System.out.println(alarm.getPathName());
+            System.out.println(alarm.getPathName() + ", Description: " + alarm.getDescription());
 
         // Delayed printout that would (usually) have GUI detail
         delayed_update.schedule(new TimerTask()
