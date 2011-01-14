@@ -6,7 +6,6 @@ Bundle-Version: 0.3.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.Activator
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - Brookhaven National Lab
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
  org.csstudio.platform.libs.epics;bundle-version="1.1.3";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.epics.pvmanager,
