@@ -252,9 +252,10 @@ public class AlarmTreePV extends AlarmTreeLeaf
     /** @return Verbose, multi-line description of the current alarm
      *          meant for elog entry or usage as drag/drop text
      */
+    @Override
     public synchronized String getVerboseDescription()
     {
-        return NLS.bind(Messages.VerboseAlarmDescriptionFmt,
+        return NLS.bind(Messages.VerboseAlarmPVDescriptionFmt,
                 new Object[]
                 {
                     getDescription(),

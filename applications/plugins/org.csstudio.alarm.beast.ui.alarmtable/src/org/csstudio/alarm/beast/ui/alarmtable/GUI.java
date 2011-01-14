@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** Alarm table GUI
@@ -377,16 +378,17 @@ public class GUI implements AlarmClientModelListener
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
                 new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
-                // Placeholder for CSS PV contributions
-                manager.add(new GroupMarker("additions")); //$NON-NLS-1$
-                manager.add(new Separator());
                 // Add edit items
                 if (items.size() == 1 && model.isWriteAllowed())
                 {
                     final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
+                manager.add(new Separator());
                 manager.add(new AlarmPerspectiveAction());
+                manager.add(new Separator());
+                // Placeholder for CSS PV contributions
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         table.setMenu(manager.createContextMenu(table));

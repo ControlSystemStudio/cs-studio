@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.client;
 
+import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ITimestamp.Format;
 import org.csstudio.platform.model.IProcessVariable;
+import org.eclipse.osgi.util.NLS;
 
 /** Alarm tree 'leaf' that has time of alarm, tool tip info,
  *  CSS PV name
@@ -62,6 +64,23 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     public synchronized String getDescription()
     {
         return description;
+    }
+
+    /** @return Verbose, multi-line description of the current alarm
+     *          meant for elog entry or usage as drag/drop text
+     */
+    public synchronized String getVerboseDescription()
+    {
+        return NLS.bind(Messages.VerboseAlarmDescriptionFmt,
+                new Object[]
+                {
+                    getDescription(),
+                    getName(),
+                    getTimestamp(),
+                    getDuration(),
+                    getSeverity().getDisplayName(),
+                    getMessage()
+                });
     }
 
     /** @return Time stamp of last status/severity update */

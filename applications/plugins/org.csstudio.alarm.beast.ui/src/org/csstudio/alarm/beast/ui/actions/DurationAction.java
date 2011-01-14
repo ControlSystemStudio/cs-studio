@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.actions;
 
-import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.eclipse.jface.action.Action;
@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.Shell;
 public class DurationAction extends Action
 {
     final private Shell shell;
-    final private AlarmTreePV pv;
+    final private AlarmTreeLeaf pv;
 
     /** Initialize
      *  @param shell Shell to use for displayed dialog
      *  @param pv Alarm PV
      */
-    public DurationAction(final Shell shell, final AlarmTreePV pv)
+    public DurationAction(final Shell shell, final AlarmTreeLeaf pv)
     {
         this.shell = shell;
         this.pv = pv;
