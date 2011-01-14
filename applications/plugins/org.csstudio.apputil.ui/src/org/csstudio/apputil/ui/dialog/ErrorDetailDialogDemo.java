@@ -24,7 +24,7 @@ public class ErrorDetailDialogDemo
         final ErrorDetailDialog dlg = new ErrorDetailDialog(shell,
                 "Error",
                 "Some problem.\nGo figure!",
-                "The problem was caused by something that failed,\nand it is a good question what exactly happened.\nException code: 0x1234");
+                "The problem was caused by something that failed,\nand it is a good question what exactly happened.\nException code: 0x1234\ndsufhiufghiudshg ifduhgoisdfu hgiufdsh giudfh goisudfhgoiudsfhgoisudhfgoiudshfioughsdfoiuh");
 
         dlg.open();
         display.dispose(); // !

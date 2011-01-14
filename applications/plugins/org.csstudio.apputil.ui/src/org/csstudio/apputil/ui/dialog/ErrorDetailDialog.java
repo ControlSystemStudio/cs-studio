@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /** Dialog for error messages that uses a tray to optionally
  *  display more detail
@@ -37,7 +38,7 @@ public class ErrorDetailDialog  extends TrayDialog
      *  @param message Main message, multi-line but brief
      *  @param detail Detailed message, multi-line and possibly longer
      */
-    protected ErrorDetailDialog(final Shell shell,
+    public ErrorDetailDialog(final Shell shell,
             final String title, final String message, final String detail)
     {
         super(shell);
@@ -61,6 +62,7 @@ public class ErrorDetailDialog  extends TrayDialog
         shell.setText(title);
     }
 
+    /** Create message and button to show detail */
     @Override
     protected Control createDialogArea(final Composite parent)
     {
@@ -86,6 +88,7 @@ public class ErrorDetailDialog  extends TrayDialog
         return composite;
     }
 
+    /** Open tray to display detail */
     protected void showDetail()
     {
         final DialogTray tray = new DialogTray()
@@ -97,9 +100,13 @@ public class ErrorDetailDialog  extends TrayDialog
                 container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
                 container.setLayout(new GridLayout());
 
-                Label l = new Label(container, SWT.WRAP);
-                l.setText(detail);
-                l.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+                final Text info = new Text(container, SWT.READ_ONLY | SWT.MULTI | SWT.WRAP);
+                info.setText(detail);
+                // Use width hint to limit growth of dialog for long texts.
+                // User can then manually resize as desired.
+                final GridData data = new GridData(SWT.FILL, SWT.FILL, true, false);
+                data.widthHint = 500;
+                info.setLayoutData(data);
 
                 return container;
             }
