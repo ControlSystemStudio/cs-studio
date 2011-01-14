@@ -641,7 +641,8 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	@Override
 	public void dispose() {
-		pv.close();
+		if (pv != null)
+			pv.close();
 		super.dispose();
 	}
 
