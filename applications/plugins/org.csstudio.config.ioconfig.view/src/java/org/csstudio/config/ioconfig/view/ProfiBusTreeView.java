@@ -107,6 +107,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -875,23 +876,25 @@ public class ProfiBusTreeView extends Composite {
             monitor.setTaskName("Load \t-\tStart Time: " + new Date());
             
             PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                
                 @Override
                 public void run() {
                     getViewer().getTree().setEnabled(false);
-                    Repository.close();
-                    try {
-                        synchronized (monitor) {
-                            setLoad(Repository.load(FacilityDBO.class));
-                            getViewer().setInput(getLoad());
-                            getViewer().getTree().setEnabled(true);
-                        }
-                    } catch (PersistenceException e) {
-                        DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
-                        CentralLogger.getInstance().error(this, e);
-                    }
                 }
             });
+            Repository.close();
+            try {
+                setLoad(Repository.load(FacilityDBO.class));
+                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        getViewer().setInput(getLoad());
+                        getViewer().getTree().setEnabled(true);
+                    }
+                });
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
+                CentralLogger.getInstance().error(this, e);
+            }
             monitor.done();
             return Status.OK_STATUS;
         }
