@@ -32,12 +32,17 @@ import org.w3c.dom.Element;
 /** Data Browser model
  *  <p>
  *  Maintains a list of {@link ModelItem}s
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Model
 {
+    /** File extension for data browser config files.
+     *  plugin.xml registers the editor for this file extension
+     */
+    final public static String FILE_EXTENSION = "plt"; //$NON-NLS-1$
+
     // XML file tags
     final public static String TAG_DATABROWSER = "databrowser";
     final public static String TAG_SCROLL = "scroll";
@@ -71,7 +76,7 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
-   
+
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
      *  Very hard to find a long list of distinct colors.
@@ -94,58 +99,58 @@ public class Model
     };
     /** Listeners to model changes */
     final private ArrayList<ModelListener> listeners = new ArrayList<ModelListener>();
-    
+
     /** Axes configurations */
     final private ArrayList<AxisConfig> axes = new ArrayList<AxisConfig>();
-    
+
     /** All the items in this model */
     final private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
-    
+
     /** 'run' flag
      *  @see #start()
      *  @see #stop()
      */
     private boolean is_running = false;
-    
+
     /** Period in seconds for scrolling or refreshing */
     private double update_period = Preferences.getUpdatePeriod();
-    
+
     /** Timer used to scan PVItems */
-    final private Timer scanner = new Timer("ScanTimer", true); 
-    
+    final private Timer scanner = new Timer("ScanTimer", true);
+
     /** <code>true</code> if scrolling is enabled */
     private boolean scroll_enabled = true;
-    
+
     /** Time span of data in seconds */
     private double time_span = Preferences.getTimeSpan();
-    
+
     /** End time of the data range */
     private ITimestamp end_time = TimestampFactory.now();
-    
+
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
-    
+
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
-    
+
     /** @param listener New listener to notify */
     public void addListener(final ModelListener listener)
     {
         listeners.add(listener);
     }
-    
+
     /** @param listener Listener to remove */
     public void removeListener(final ModelListener listener)
     {
         listeners.remove(listener);
     }
-    
+
     /** @return Number of axes in model */
     public int getAxisCount()
     {
         return axes.size();
     }
-    
+
     /** @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
      *  @return {@link AxisConfig}
      */
@@ -153,7 +158,7 @@ public class Model
     {
         return axes.get(axis_index);
     }
-    
+
     /** Locate index of value axis
      *  @param axis Value axis configuration
      *  @return Index of axis (0, ...) or -1 if not in Model
@@ -174,7 +179,7 @@ public class Model
                 return item;
         return null;
     }
-    
+
     /** @return First unused axis (no items on axis),
      *          <code>null</code> if none found
      */
@@ -197,7 +202,7 @@ public class Model
         addAxis(axis);
         return axis;
     }
-    
+
     /** @param axis New axis to add */
     public void addAxis(final AxisConfig axis)
     {
@@ -218,7 +223,7 @@ public class Model
         axis.setModel(this);
         fireAxisChangedEvent(null);
     }
-    
+
     /** @param axis Axis to remove
      *  @throws Error when axis not in model, or axis in use by model item
      */
@@ -255,7 +260,7 @@ public class Model
     {
         return items.size();
     }
-    
+
     /** Get one {@link ModelItem}
      *  @param i 0... getItemCount()-1
      *  @return {@link ModelItem}
@@ -264,7 +269,7 @@ public class Model
     {
         return items.get(i);
     }
-    
+
     /** Locate item by name
      *  @param name
      *  @return ModelItem by that name or <code>null</code>
@@ -284,14 +289,14 @@ public class Model
     {
         return default_colors[items.size() % default_colors.length];
     }
-    
+
     /** Add item to the model.
      *  <p>
      *  If the item has no color, this will define its color based
      *  on the model's next available color.
      *  <p>
      *  If the model is already 'running', the item will be 'start'ed.
-     *  
+     *
      *  @param item {@link ModelItem} to add
      *  @throws RuntimeException if item is already in model
      *  @throws Exception on error trying to start a PV Item that's added to a
@@ -305,7 +310,7 @@ public class Model
         // Assign default color
         if (item.getColor() == null)
             item.setColor(getNextItemColor());
-        
+
         // Force item to be on an axis
         if (item.getAxis() == null)
         {
@@ -316,7 +321,7 @@ public class Model
         // Check item axis
         if (! axes.contains(item.getAxis()))
             throw new Exception("Item " + item.getName() + " added with invalid axis " + item.getAxis());
-        
+
         // Add to model
         items.add(item);
         item.setModel(this);
@@ -326,7 +331,7 @@ public class Model
         for (ModelListener listener : listeners)
             listener.itemAdded(item);
     }
-    
+
     /** Remove item from the model.
      *  <p>
      *  If the model and thus item are 'running',
@@ -455,7 +460,7 @@ public class Model
     {
         return TimestampFactory.fromDouble(getEndTime().toDouble() - time_span);
     }
-    
+
     /** @return End time of the data range
      *  @see #isScrollEnabled()
      */
@@ -476,7 +481,7 @@ public class Model
         else
             return getStartTime().toString();
     }
-    
+
     /** @return String representation of end time. While scrolling, this is
      *          a relative time, otherwise an absolute date/time.
      */
@@ -487,7 +492,7 @@ public class Model
         else
             return end_time.toString();
     }
-    
+
     /** @return Background color */
     public RGB getPlotBackground()
     {
@@ -579,7 +584,7 @@ public class Model
         for (ModelListener listener : listeners)
             listener.changedItemVisibility(item);
     }
-    
+
     /** Notify listeners of changed item configuration
      *  @param item Item that changed
      */
@@ -633,7 +638,7 @@ public class Model
         XMLWriter.end(writer, level, tag_name);
         writer.println();
     }
-    
+
     /** Load RGB color from XML document
      *  @param node Parent node of the color
      *  @param color_tag Name of tag that contains the color
@@ -666,7 +671,7 @@ public class Model
     public void write(final OutputStream out)
     {
         final PrintWriter writer = new PrintWriter(out);
-        
+
         XMLWriter.header(writer);
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
@@ -726,16 +731,16 @@ public class Model
     {
         if (is_running || items.size() > 0)
             throw new RuntimeException("Model was already in use");
-        
+
         // Check if it's a <databrowser/>.
         doc.getDocumentElement().normalize();
         final Element root_node = doc.getDocumentElement();
-        if (!root_node.getNodeName().equals(TAG_DATABROWSER)) 
+        if (!root_node.getNodeName().equals(TAG_DATABROWSER))
             throw new Exception("Wrong document type");
-        
+
         scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
         update_period = DOMHelper.getSubelementDouble(root_node, TAG_PERIOD, update_period);
-        
+
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);
         final String end = DOMHelper.getSubelementString(root_node, TAG_END);
         if (start.length() > 0  &&  end.length() > 0)
@@ -744,11 +749,11 @@ public class Model
             setTimerange(TimestampFactory.fromCalendar(times.getStart()),
                          TimestampFactory.fromCalendar(times.getEnd()));
         }
-        
+
         RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
         if (color != null)
             background = color;
-        
+
         try
         {
             archive_rescale = ArchiveRescale.valueOf(
@@ -772,11 +777,11 @@ public class Model
                 item = DOMHelper.findNextElementNode(item, TAG_AXIS);
             }
         }
-        
+
         // Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);
-        
+
         // Load PVs/Formulas
         list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_PVLIST);
         if (list != null)
