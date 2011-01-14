@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apputil UI
 Bundle-SymbolicName: org.csstudio.apputil.ui;singleton:=true
-Bundle-Version: 1.1.5.qualifier
+Bundle-Version: 1.1.6.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
