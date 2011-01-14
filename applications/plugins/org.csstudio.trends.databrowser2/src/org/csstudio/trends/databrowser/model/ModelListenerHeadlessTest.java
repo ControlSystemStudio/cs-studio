@@ -15,11 +15,9 @@ import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the ModelListener
  *  @author Kay Kasemir
- *
- *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
-public class ModelListenerTest
+public class ModelListenerHeadlessTest
 {
     private int additions = 0;
 
@@ -29,67 +27,78 @@ public class ModelListenerTest
 
     final private ModelListener listener = new ModelListener()
     {
+        @Override
         public void changedUpdatePeriod()
         {
-            //System.out.println("Update period changed");
+            System.out.println("Update period changed");
             ++changes;
         }
 
+        @Override
         public void changedArchiveRescale()
         {
-            ++changes;            
+            ++changes;
         }
 
+        @Override
         public void changedColors()
         {
-            //System.out.println("Colors changed");
+            System.out.println("Colors changed");
             ++changes;
         }
 
+        @Override
         public void changedTimerange()
         {
-            //System.out.println("Time range changed");
+            System.out.println("Time range changed");
             ++changes;
         }
 
+        @Override
         public void changedAxis(final AxisConfig axis)
         {
-            //System.out.println("Axis changed: " + axis);
+            System.out.println("Axis changed: " + axis);
         }
 
+        @Override
         public void itemAdded(final ModelItem item)
         {
-            //System.out.println("Added " + item.getName());
+            System.out.println("Added " + item.getName());
             ++additions;
         }
 
+        @Override
         public void itemRemoved(final ModelItem item)
         {
-            //System.out.println("Removed " + item.getName());
+            System.out.println("Removed " + item.getName());
             ++removals;
         }
 
+        @Override
         public void changedItemVisibility(final ModelItem item)
         {
-            //System.out.println(item.getName() + " became " + (item.isVisible() ? "visible" : "invisible"));
+            System.out.println(item.getName() + " became " + (item.isVisible() ? "visible" : "invisible"));
             ++changes;
         }
 
+        @Override
         public void changedItemLook(final ModelItem item)
         {
-            //System.out.println("Change in look of " + item.getName());
+            System.out.println("Change in look of " + item.getName());
             ++changes;
         }
 
+        @Override
         public void changedItemDataConfig(final PVItem item)
         {
-            //System.out.println("Change in data config of " + item.getName());
+            System.out.println("Change in data config of " + item.getName());
             ++changes;
         }
 
+        @Override
         public void scrollEnabled(final boolean scroll_enabled)
         {
-            //System.out.println("Scrolling turned " + (scroll_enabled ? "on" : "off"));
+            System.out.println("Scrolling turned " + (scroll_enabled ? "on" : "off"));
             ++changes;
         }
     };

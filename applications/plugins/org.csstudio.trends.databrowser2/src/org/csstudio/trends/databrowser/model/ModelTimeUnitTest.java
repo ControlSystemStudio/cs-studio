@@ -17,7 +17,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelTimeTest
+public class ModelTimeUnitTest
 {
     @Test
     public void testTimes() throws InterruptedException
@@ -37,7 +37,7 @@ public class ModelTimeTest
         assertEquals(now.toDouble(), end.toDouble(), 5.0);
         assertEquals(now.toDouble() - hour, start.toDouble(), 5.0);
 
-//        System.out.println("Scroll starts OK, waiting 5 seconds...");
+        System.out.println("Scroll starts OK, waiting 5 seconds...");
         Thread.sleep(5*1000);
 
         // Still 1 hour ago ... now, but 'now' has changed?
@@ -50,7 +50,7 @@ public class ModelTimeTest
         assertEquals(now.toDouble(), end.toDouble(), 5.0);
         assertEquals(now.toDouble() - hour, start.toDouble(), 5.0);
 
-//        System.out.println("Scroll updated OK, waiting 5 seconds...");
+        System.out.println("Scroll updated OK, waiting 5 seconds...");
         Thread.sleep(5*1000);
 
         // Turn scrolling off
@@ -60,6 +60,6 @@ public class ModelTimeTest
         // Start/end should no longer change
         assertEquals(start.toDouble(), model.getStartTime().toDouble(), 1.0);
         assertEquals(end.toDouble(),   model.getEndTime().toDouble(), 1.0);
-//        System.out.println("Start/end stayed constant in no-scroll mode");
+        System.out.println("Start/end stayed constant in no-scroll mode");
     }
 }
