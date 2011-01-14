@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.epics.pvmanager,
  org.epics.pvmanager.data,
+ org.epics.pvmanager.extra,
  org.epics.pvmanager.jca,
  org.epics.pvmanager.sim,
  org.epics.pvmanager.types,
