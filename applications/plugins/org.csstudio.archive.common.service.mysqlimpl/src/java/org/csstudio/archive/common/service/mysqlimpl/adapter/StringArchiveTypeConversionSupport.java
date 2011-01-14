@@ -56,6 +56,7 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
         return value;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -74,8 +75,16 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
      */
     @Override
     @Nonnull
-    public Collection<String> convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
-        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
+    public String convertFromDouble(@Nonnull final Double value) {
+        return value.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
+        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
+    }
 }

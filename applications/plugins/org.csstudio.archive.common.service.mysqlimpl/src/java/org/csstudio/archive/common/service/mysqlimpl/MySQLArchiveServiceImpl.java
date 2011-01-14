@@ -23,14 +23,18 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -39,6 +43,7 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
+import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -54,12 +59,12 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.joda.time.Duration;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -79,6 +84,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     INSTANCE;
 
     /**
+     * Constructor.
+     */
+    private MySQLArchiveServiceImpl() {
+        ArchiveTypeConversionSupport.install();
+        EpicsCssValueTypeSupport.install();
+    }
+
+    /**
      * Static converter function.
      *
      * @author bknerr
@@ -96,6 +109,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         @Override
          public IValue apply(final IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> from) {
              try {
+                 // TODO (bknerr) : support lookup for every single value... check performance
                 return EpicsCssValueTypeSupport.toIValue(from.getData());
             } catch (final TypeSupportException e) {
                 return null;
@@ -152,6 +166,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
     private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
+
+
     /**
      * {@inheritDoc}
      */
@@ -200,6 +216,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
     }
+
 
     /**
      * {@inheritDoc}
@@ -314,37 +331,56 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
 
     /**
      * {@inheritDoc}
-     * @throws ArchiveDaoException
+     */
+    @Override
+    @Nonnull
+    public Iterable<IValue> readSamples(final String channelName,
+                                        final ITimestamp start,
+                                        final ITimestamp end) throws ArchiveServiceException {
+        return readSamples(channelName, start, end, null);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     @Nonnull
     public Iterable<IValue> readSamples(@Nonnull final String channelName,
                                         @Nonnull final ITimestamp start,
-                                        @Nonnull final ITimestamp end) throws ArchiveServiceException {
+                                        @Nonnull final ITimestamp end,
+                                        @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
         final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
         final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-        final Duration d = new Duration(s.getInstant(), e.getInstant());
 
         try {
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
-        Iterable<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> samples;
-//        if (d.isLongerThan(Duration.standardDays(45))) {
-//            samples = DAO_MGR.getSampleDao().retrieveSamplesPerHour(id, s, e);
-//        } else if (d.isLongerThan(Duration.standardDays(1))) {
-//            samples = DAO_MGR.getSampleDao().retrieveSamplesPerMinute(id, s, e);
-//        } else {
-            samples = DAO_MGR.getSampleDao().retrieveSamples(channel, s, e);
+
+            final Iterable<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> samples =
+                DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
 
             final Iterable<IValue> iValues =
                 Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
                                  Predicates.<IValue>notNull());
             return iValues;
+
+        } catch (final IllegalArgumentException iae) {
+            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeIdentifier(), iae);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Set<IArchiveRequestType> getRequestTypes() {
+        return Sets.<IArchiveRequestType>newHashSet(EnumSet.allOf(ArchiveRequestType.class));
+    }
+
 }

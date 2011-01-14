@@ -57,7 +57,6 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        EpicsIValueTypeSupport.install();
         ArchiveTypeConversionSupport.install();
     }
 

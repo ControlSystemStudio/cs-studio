@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -21,7 +21,9 @@
  */
 package org.csstudio.archive.common.service.sample;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IAlarm;
@@ -29,66 +31,64 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 
 /**
- * Data transfer object for sample.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 21.12.2010
+ * @since 11.01.2011
  * @param <V> the data value type
  * @param <T> the css value type
  * @param <A> the alarm type
  */
-public class ArchiveSampleDTO<V,
-                              T extends ICssAlarmValueType<V>,
-                              A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
+public class ArchiveMinMaxSample<V,
+                                 T extends ICssAlarmValueType<V>,
+                                 A extends IAlarm & Comparable<? super A>>
+                                extends ArchiveSampleDTO<V, T, A>
+                                implements IArchiveMinMaxSample<V, T, A> {
 
-    private final ArchiveChannelId _channelId;
-    private final T _value;
-    private final TimeInstant _timestamp;
-    private final A _alarm;
+    private final V _minimum;
+    private final V _maximum;
 
     /**
      * Constructor.
      */
-    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId channelId,
-                            @Nonnull final T data,
-                            @Nonnull final TimeInstant ts,
-                            @Nonnull final A alarm) {
-        _channelId = channelId;
-        _value = data;
-        _timestamp = ts;
-        _alarm = alarm;
+    public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
+                               @Nonnull final T data,
+                               @Nonnull final TimeInstant ts,
+                               @Nonnull final A alarm,
+                               @Nullable final V min,
+                               @Nullable final V max) {
+        super(channelId, data, ts, alarm);
+        _minimum = min;
+        _maximum = max;
+    }
+    /**
+     * Constructor.
+     */
+    public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
+                               @Nonnull final T data,
+                               @Nonnull final TimeInstant ts,
+                               @Nonnull final A alarm) {
+        super(channelId, data, ts, alarm);
+        _minimum = null;
+        _maximum = null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    @CheckForNull
+    public V getMinimum() {
+        return _minimum;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public T getData() {
-        return _value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public A getAlarm() {
-        return _alarm;
+    @CheckForNull
+    public V getMaximum() {
+        return _maximum;
     }
 
 }

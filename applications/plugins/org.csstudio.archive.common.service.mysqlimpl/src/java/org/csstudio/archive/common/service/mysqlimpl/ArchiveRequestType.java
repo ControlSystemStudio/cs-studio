@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,31 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 
 /**
- * Type conversions for {@link Byte}.
+ * Archive request abstraction for optimized MySQL implementation.
  *
  * @author bknerr
- * @since 14.12.2010
+ * @since 05.01.2011
  */
-public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
+public enum ArchiveRequestType implements IArchiveRequestType {
+    RAW("Raw values."),
+    AVG_PER_MINUTE("Averaged over the time period of one minute."),
+    AVG_PER_HOUR("Averaged over the time period of one hour.");
+
+    private final String _desc;
 
     /**
-     * {@inheritDoc}
+     * Constructor.
      */
-    @Override
-    @Nonnull
-    public Byte convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Byte.parseByte(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
+    private ArchiveRequestType(@Nonnull final String desc) {
+        _desc = desc;
     }
 
     /**
@@ -51,16 +50,25 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Byte convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.byteValue();
+    public String getDescription() {
+        return _desc;
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
-//        throw new TypeSupportException("Byte shall not be converted to Double.", null);
-//    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getTypeIdentifier() {
+        return name();
+    }
+
+    /**
+     * Returns the default/natural request type.
+     * @return the default/natural request type for this implementation.
+     */
+    @Nonnull
+    public static ArchiveRequestType getDefault() {
+        return RAW;
+    }
 }

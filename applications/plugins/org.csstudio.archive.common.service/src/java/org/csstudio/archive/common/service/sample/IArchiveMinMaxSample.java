@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,48 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.sample;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
- * Type conversions for {@link Byte}.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 14.12.2010
+ * @since 05.01.2011
+ *
+ * @param <V> the base type of the data of the composite system value
+ * @param <T> the type of the composite system value (with alarm and timestamp)
+ * @param <A> the comparable alarm type
  */
-public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
+public interface IArchiveMinMaxSample<V,
+                                      T extends ICssValueType<V> & IHasAlarm,
+                                      A extends IAlarm & Comparable<? super A>>
+    extends IArchiveSample<T, A> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public Byte convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Byte.parseByte(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
+    V getMinimum();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public Byte convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.byteValue();
-    }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
-//        throw new TypeSupportException("Byte shall not be converted to Double.", null);
-//    }
+    V getMaximum();
 }
