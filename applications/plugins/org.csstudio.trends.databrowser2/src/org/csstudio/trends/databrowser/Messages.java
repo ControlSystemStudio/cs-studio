@@ -88,6 +88,7 @@ public class Messages extends NLS
     public static String ExportDigits;
     public static String ExportDigitsError;
     public static String ExportDigitsTT;
+    public static String ExportEnterFilenameError;
     public static String ExportErrorFmt;
     public static String ExportFileExists;
     public static String ExportFileExistsFmt;
