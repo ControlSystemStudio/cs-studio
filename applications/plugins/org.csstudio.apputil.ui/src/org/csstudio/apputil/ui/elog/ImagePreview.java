@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.elog;
 
 import org.eclipse.osgi.util.NLS;
@@ -28,7 +35,7 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
         super(parent, 0);
         addDisposeListener(this);
         setToolTipText(image_filename);
-        
+
         try
         {
             image = new Image(parent.getDisplay(), image_filename);
@@ -43,6 +50,7 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
     }
 
     /** @see PaintListener */
+    @Override
     public void paintControl(final PaintEvent e)
     {
         final Rectangle bounds = getBounds();
@@ -64,6 +72,7 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
     }
 
     /** @see DisposeListener */
+    @Override
     public void widgetDisposed(final DisposeEvent e)
     {
         if (image != null)
