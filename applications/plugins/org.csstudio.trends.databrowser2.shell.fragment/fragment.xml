@@ -42,5 +42,11 @@
          </action>
       </objectContribution>
    </extension>
+         <extension
+            point="org.csstudio.platform.ui.striptool">
+         <striptool
+               class="org.csstudio.trends.databrowser.StripToolService">
+         </striptool>
+      </extension>
 
 </fragment>
