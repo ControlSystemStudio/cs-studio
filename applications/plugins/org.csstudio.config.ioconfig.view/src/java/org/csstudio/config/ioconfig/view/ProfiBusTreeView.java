@@ -300,6 +300,7 @@ public class ProfiBusTreeView extends Composite {
             openEditor.perfromClose();
         }
         try {
+            getViewer().getTree().setEnabled(false);
             Job loadJob = new DBLoderJob("DBLoader");
             loadJob.setUser(true);
             loadJob.schedule();
@@ -874,13 +875,6 @@ public class ProfiBusTreeView extends Composite {
         protected IStatus run(@Nonnull final IProgressMonitor monitor) {
             monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
             monitor.setTaskName("Load \t-\tStart Time: " + new Date());
-            
-            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    getViewer().getTree().setEnabled(false);
-                }
-            });
             Repository.close();
             try {
                 setLoad(Repository.load(FacilityDBO.class));
