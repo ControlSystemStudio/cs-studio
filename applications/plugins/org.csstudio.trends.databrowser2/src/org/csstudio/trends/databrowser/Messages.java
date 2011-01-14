@@ -35,7 +35,8 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
-    public static String ArchiveAccessErrorFmt;
+    public static String ArchiveAccessDetailFmt;
+    public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
     public static String ArchiveFetchJobFmt;
@@ -44,7 +45,7 @@ public class Messages extends NLS
     public static String ArchiveFetchDetailFmt;
     public static String ArchiveKey;
     public static String ArchiveListGUI_NoArchives;
-    public static String ArchiveName;   
+    public static String ArchiveName;
     public static String ArchiveRescale_AUTOZOOM;
     public static String ArchiveRescale_Label;
     public static String ArchiveRescale_NONE;
@@ -72,7 +73,6 @@ public class Messages extends NLS
     public static String DeleteItem;
     public static String DuplicateItemFmt;
     public static String EMailDefaultSender;
-
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -129,6 +129,7 @@ public class Messages extends NLS
     public static String FormulaLabelEditTT;
     public static String HideTraceWarning;
     public static String HideTraceWarningDetail;
+    public static String Information;
     public static String InspectSamples;
     public static String InvalidScanPeriodError;
     public static String InvalidStartEndTimeError;
@@ -225,7 +226,7 @@ public class Messages extends NLS
     public static String TraceType_Circles;
     public static String TraceType_Diamonds;
     public static String TraceType_Crosses;
-    public static String TraceType_Triangles;    
+    public static String TraceType_Triangles;
     public static String TracesTab;
     public static String TraceVisibility;
     public static String UpdatePeriodLbl;

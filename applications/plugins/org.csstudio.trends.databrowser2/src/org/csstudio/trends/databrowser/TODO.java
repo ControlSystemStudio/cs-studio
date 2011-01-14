@@ -14,9 +14,7 @@ public interface TODO
 {
 /**
  * TODO 'Lines' plot type, separate lines for min, max avg.
- * 
- * TODO Option to hide value axes.
- * 
+ *
  * TODO Option to plot PV limits.
  * Do this via syntax PV{low_warning}?
  */
