@@ -52,7 +52,9 @@ class Notifier<T> {
      * @return true if new notification should be performed
      */
     boolean isActive() {
-        if (pvRef.get() != null && !pvRef.get().isClosed()) {
+        // Making sure to get the reference once for thread safety
+        final PV<T> pv = pvRef.get();
+        if (pv != null && !pv.isClosed()) {
             return true;
         } else {
             if (pvRecipe != null) {

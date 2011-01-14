@@ -379,7 +379,7 @@ public class ValueFactory {
                 oldValue.getLowerCtrlLimit(), oldValue.getUpperCtrlLimit());
     }
 
-    static VDoubleArray newVDoubleArray(final double[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
+    public static VDoubleArray newVDoubleArray(final double[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
             final AlarmStatus alarmStatus, final TimeStamp timeStamp,
             final Integer timeUserTag,
             final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
@@ -389,6 +389,10 @@ public class ValueFactory {
         return new IVDoubleArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag,
                 lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat,
                 upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
+    }
+
+    public static VImage newVImage(int height, int width, byte[] data) {
+        return new IVImage(height, width, data);
     }
 
     static VIntArray newVIntArray(final int[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,

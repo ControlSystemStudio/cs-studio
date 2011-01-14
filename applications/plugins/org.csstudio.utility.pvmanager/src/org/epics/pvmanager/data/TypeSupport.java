@@ -51,6 +51,7 @@ public class TypeSupport {
         addStatistics();
         addArray();
         addList();
+        addImage();
 
         installed = true;
     }
@@ -73,6 +74,11 @@ public class TypeSupport {
     private static void addStatistics() {
         // Add support for statistics: simply return the new value
         org.epics.pvmanager.TypeSupport.addTypeSupport(Statistics.class, immutableTypeSupport(Statistics.class));
+    }
+
+    private static void addImage() {
+        // Add support for statistics: simply return the new value
+        org.epics.pvmanager.TypeSupport.addTypeSupport(VImage.class, immutableTypeSupport(VImage.class));
     }
 
     private static void addList() {
@@ -102,6 +108,11 @@ public class TypeSupport {
                             oldValue.set(index, itemNotification.getNewValue());
                         }
                     }
+                }
+
+                // Shrink the list if more elements are there
+                while (oldValue.size() > newValue.size()) {
+                    oldValue.remove(oldValue.size() - 1);
                 }
 
                 return new Notification<List>(notificationNeeded, oldValue);
