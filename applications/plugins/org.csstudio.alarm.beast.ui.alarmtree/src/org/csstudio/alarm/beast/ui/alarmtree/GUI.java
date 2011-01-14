@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the alarm tree viewer
@@ -234,11 +235,12 @@ public class GUI implements AlarmClientModelListener
 	        {   // Allow removal of one or more selected items
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
-	            manager.add(new Separator());
 	        }
 		}
+        manager.add(new Separator());
         manager.add(new AlarmPerspectiveAction());
-        manager.add(new GroupMarker("additions")); //$NON-NLS-1$
+        manager.add(new Separator());
+        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
     /** Set focus to desired element in GUI */

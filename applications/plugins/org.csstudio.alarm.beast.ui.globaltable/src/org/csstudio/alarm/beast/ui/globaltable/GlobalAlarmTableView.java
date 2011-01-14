@@ -7,10 +7,21 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globaltable;
 
+import java.util.List;
+
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.ui.ContextMenuHelper;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModel;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarmModelListener;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -20,12 +31,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse 'View' for global alarms
- *
- *  TODO Context menu to select configuration, show guidance etc.
- *
  *  @author Kay Kasemir
  */
 public class GlobalAlarmTableView extends ViewPart
@@ -78,6 +88,42 @@ public class GlobalAlarmTableView extends ViewPart
                 model.release();
             }
         });
+
+        addContextMenu(table_viewer, getSite());
+    }
+
+    /** Add context menu
+     *  @param table_viewer
+     *  @param site Workbench site or <code>null</code>
+     */
+    private void addContextMenu(final TableViewer table_viewer,
+            final IWorkbenchPartSite site)
+    {
+        final Table table = table_viewer.getTable();
+
+        final MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(new IMenuListener()
+        {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void menuAboutToShow(final IMenuManager manager)
+            {
+                // TODO 'Select configuration' action
+                final List<AlarmTreeItem> items =
+                    ((IStructuredSelection)table_viewer.getSelection()).toList();
+                new ContextMenuHelper(manager, table.getShell(), items, false);
+                manager.add(new Separator());
+                manager.add(new AlarmPerspectiveAction());
+                manager.add(new Separator());
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+            }
+        });
+        table.setMenu(manager.createContextMenu(table));
+
+        // Allow extensions to add to the context menu
+        if (site != null)
+            site.registerContextMenu(manager, table_viewer);
     }
 
     // ViewPart

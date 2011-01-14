@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui.actions;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Shell;
 public class SendToElogAction extends SendToElogActionHelper
 {
     final private Shell shell;
-    final private List<AlarmTreePV> alarms;
+    final private List<AlarmTreeLeaf> alarms;
 
     /** Initialize action
      *  @param alarms Alarms to acknowledge when action runs
      */
-    public SendToElogAction(final Shell shell, final List<AlarmTreePV> alarms)
+    public SendToElogAction(final Shell shell, final List<AlarmTreeLeaf> alarms)
     {
         this.shell = shell;
         this.alarms = alarms;
@@ -40,8 +40,11 @@ public class SendToElogAction extends SendToElogActionHelper
     public void run()
     {
         final StringBuilder selected_alarms = new StringBuilder();
-        for (AlarmTreePV alarm : alarms)
+        for (AlarmTreeLeaf alarm : alarms)
+        {
             selected_alarms.append(alarm.getVerboseDescription());
+            selected_alarms.append("\n\n"); //$NON-NLS-1$
+        }
 
         try
         {
