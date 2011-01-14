@@ -13,12 +13,12 @@ import org.csstudio.archive.rdb.RDBArchive;
 public class SampleEngineHelper
 {
     final private RDBArchive archive;
-    
+
     public SampleEngineHelper(final RDBArchive archive)
     {
         this.archive = archive;
     }
-    
+
     /** Add sample engine info to RDB.
      *  Existing info is cleared!
      *  @param name
@@ -35,7 +35,8 @@ public class SampleEngineHelper
         final int id;
         if (found != null)
         {   // Delete existing entries, then re-use the ID
-            deleteEngineInfo(found);
+            // Do not commit the deletion until the addition also works out OK
+            deleteEngineInfo(found, false);
             id = found.getId();
         }
         else
@@ -61,9 +62,10 @@ public class SampleEngineHelper
     /** Delete engine info, all the groups under it, and clear all links
      *  from channels to those groups.
      *  @param engine Engine info to remove
+     *  @param commit Commit the transaction?
      *  @throws Exception on error
      */
-    public void deleteEngineInfo(final SampleEngineConfig engine)
+    public void deleteEngineInfo(final SampleEngineConfig engine, boolean commit)
             throws Exception
     {
         // Unlink all channels from engine's groups
@@ -102,6 +104,8 @@ public class SampleEngineHelper
         {
             statement.close();
         }
+        if (commit)
+            connection.commit();
     }
 
     /** @return Next available engine ID */

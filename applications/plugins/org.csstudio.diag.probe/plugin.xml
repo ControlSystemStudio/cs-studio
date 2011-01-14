@@ -43,52 +43,22 @@
                tooltip="%PopupMenuTooltip"/>
       </objectContribution>
    </extension>
-   <!-- <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.probe"
-            label="CSS Action Set"
-            visible="true">
-         <menu
-               id="org.csstudio"
-               label="%CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <menu
-               id="org.csstudio.diag"
-               label="%Diagnostics"
-               path="org.csstudio/additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.probe.ShowProbeAction"
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.showprobeaction"
                label="%Probe"
-               menubarPath="org.csstudio/org.csstudio.diag/content"
                style="push"
-               tooltip="%MenuTooltip"/>
-      </actionSet>
-   </extension> -->
-    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.probe"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.probe.ShowProbeAction"
-               icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.showprobeaction"
-               label="%Probe"
-               menubarPath="css/diag/"
-               style="push"
-               tooltip="%MenuTooltip"/>
-      </actionSet>
+               tooltip="%MenuTooltip">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.probe.Probe">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 </plugin>

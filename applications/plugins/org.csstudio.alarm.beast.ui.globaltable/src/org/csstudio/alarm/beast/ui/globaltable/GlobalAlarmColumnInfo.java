@@ -12,7 +12,6 @@ import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarm;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ViewerCell;
 
 /** Helper that defines the columns for a table of global alarms
  *  @author Kay Kasemir
@@ -21,15 +20,13 @@ public enum GlobalAlarmColumnInfo
 {
     /** Alarm PV Name/Path */
     PV(Messages.AlarmPV, 100, 100,
-        new CellLabelProvider()
+        new GlobalAlarmCellLabelProvider()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected String getCellText(final GlobalAlarm alarm)
             {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getPathName());
+                return alarm.getPathName();
             }
-
         },
         new GlobalAlarmComparator()
         {
@@ -46,13 +43,12 @@ public enum GlobalAlarmColumnInfo
     //      Delay display until RDB info available?
     /** Alarm Time */
     TIME(Messages.AlarmTime, 50, 80,
-        new CellLabelProvider()
+        new GlobalAlarmCellLabelProvider()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected String getCellText(final GlobalAlarm alarm)
             {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getTimestampText());
+                return alarm.getTimestampText();
             }
         },
         new GlobalAlarmComparator()
@@ -65,13 +61,12 @@ public enum GlobalAlarmColumnInfo
         }),
     /** Alarm Severity */
     SEVERITY(Messages.AlarmSeverity, 30, 50,
-        new CellLabelProvider()
+        new GlobalAlarmCellLabelProvider()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected String getCellText(final GlobalAlarm alarm)
             {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getSeverity().getDisplayName());
+                return alarm.getSeverity().getDisplayName();
             }
         },
         new GlobalAlarmComparator()
@@ -84,13 +79,12 @@ public enum GlobalAlarmColumnInfo
         }),
     /** Alarm Message */
     MESSAGE(Messages.AlarmMessage, 30, 45,
-        new CellLabelProvider()
+        new GlobalAlarmCellLabelProvider()
         {
             @Override
-            public void update(final ViewerCell cell)
+            protected String getCellText(final GlobalAlarm alarm)
             {
-                final GlobalAlarm alarm = (GlobalAlarm) cell.getElement();
-                cell.setText(alarm.getMessage());
+                return alarm.getMessage();
             }
         },
         new GlobalAlarmComparator()

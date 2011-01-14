@@ -27,6 +27,7 @@ public class EngineConfigImportApp implements IApplication
     /** "Main" Routine
      *  @see IApplication#start(IApplicationContext)
      */
+    @Override
     @SuppressWarnings("nls")
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -150,11 +151,10 @@ public class EngineConfigImportApp implements IApplication
         catch (final Throwable ex)
         {
             final String error = ex.getMessage();
-            if ((error != null)  &&  (error.length() > 0)) {
+            if ((error != null)  &&  (error.length() > 0))
                 LOG.fatal(error, ex);
-            } else {
+            else
                 LOG.fatal(ex);
-            }
         }
         return IApplication.EXIT_OK;
     }
@@ -175,12 +175,12 @@ public class EngineConfigImportApp implements IApplication
             final SampleEngineHelper engines =
                 new SampleEngineHelper(archive);
             final SampleEngineConfig engine = engines.find(engine_name);
-            if (engine == null) {
+            if (engine == null)
                 LOG.warn(engine_name + " not found");
-            } else
+            else
             {
                 LOG.info("Deleting " + engine);
-                engines.deleteEngineInfo(engine);
+                engines.deleteEngineInfo(engine, true);
             }
         }
         finally
@@ -190,6 +190,7 @@ public class EngineConfigImportApp implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         // NOP

@@ -16,6 +16,7 @@ import org.csstudio.alarm.beast.client.AlarmConfigurationReader;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.osgi.util.NLS;
@@ -29,7 +30,6 @@ import org.eclipse.osgi.util.NLS;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class GlobalAlarm extends AlarmTreeLeaf
 {
     /** Create global alarm with path and alarm info,
@@ -53,7 +53,7 @@ public class GlobalAlarm extends AlarmTreeLeaf
     {
         final String path[] = AlarmTreePath.splitPath(full_path);
         if (path.length <= 1)
-            throw new Error("Incomplete path " + full_path);
+            throw new Error("Incomplete path " + full_path); //$NON-NLS-1$
 
         AlarmTreeItem parent = findOrCreateRoot(configurations, path[0]);
         for (int i=1; i<path.length-1; ++i)
@@ -141,6 +141,9 @@ public class GlobalAlarm extends AlarmTreeLeaf
     {
         super(parent, name, -1);
         setAlarmState(severity, severity, message, timestamp);
+
+        // Description is fetched in background thread, initialize to 'unknown'
+        setDescription(Messages.AlarmDescriptionUnknown);
     }
 
     /** @return Text (multi-line) that can be used as a tool-tip to
@@ -149,10 +152,11 @@ public class GlobalAlarm extends AlarmTreeLeaf
     @Override
     public synchronized String getToolTipText()
     {
-        return NLS.bind("Global Alarm: {0}\nTime since event: {1}\nAlarm Severity: {2}\nAlarm Message: {3}",
+        return NLS.bind(Messages.GlobalAlarm_ToolTipFmt,
             new Object[]
             {
                 getPathName(),
+                getDescription(),
                 getDuration(),
                 getSeverity().getDisplayName(),
                 getMessage()

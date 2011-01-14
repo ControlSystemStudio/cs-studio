@@ -33,7 +33,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -129,7 +128,7 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
 
-        ColumnViewerToolTipSupport.enableFor(tree_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
 
     /** Set or clear error message.

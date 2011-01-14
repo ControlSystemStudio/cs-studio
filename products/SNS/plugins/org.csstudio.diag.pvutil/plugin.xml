@@ -12,26 +12,26 @@
             id="org.csstudio.diag.pvutil.view.PVUtilView"
             category="org.csstudio"
             class="org.csstudio.diag.pvutil.view.PVUtilView"
-            icon="icons/PVU.JPG"
+            icon="icons/pvu.jpg"
             name="PV Utility">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.pvutil"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.pvutil.view.NewPVUtilityAction"
-               icon="icons/PVU.JPG"
-               id="org.csstudio.pvutil.view.NewPVUtilityAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/pvu.jpg"
                label="PV Utility"
-               menubarPath="css/diag/"
                style="push">
-         </action>
-      </actionSet>
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.pvutil.view.PVUtilView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -46,7 +46,7 @@
          <action
                class="org.csstudio.diag.pvutil.view.PVpopupAction"
                enablesFor="1"
-               icon="icons/PVU.JPG"
+               icon="icons/pvu.jpg"
                id="org.csstudio.pvutil.view.PVpopupAction"
                label="PV Utility"
                menubarPath="org.csstudio.popmenu/content"

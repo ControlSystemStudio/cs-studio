@@ -10,4 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.swt.chart,
  org.junit4;bundle-version="4.3.1"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

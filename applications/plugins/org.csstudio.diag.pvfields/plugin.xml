@@ -11,28 +11,28 @@
       <view
             category="org.csstudio"
             class="org.csstudio.diag.pvfields.view.PVFieldsView"
-            icon="icons/Fields.JPG"
+            icon="icons/fields.jpg"
             id="org.csstudio.diag.pvfields.view.PVFieldsView"
             name="PV Fields Viewer"
             restorable="true">
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.pvfields"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.pvfields.view.NewPVFieldsAction"
-               icon="icons/Fields.JPG"
-               id="org.csstudio.diag.pvfields.view.NewPVFieldsAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/fields.jpg"
                label="PV Fields Viewer"
-               menubarPath="css/diag/"
                style="push">
-         </action>
-      </actionSet>
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.pvfields.view.PVFieldsView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -47,7 +47,7 @@
          <action
                class="org.csstudio.diag.pvfields.view.PVFieldpopupAction"
                enablesFor="1"
-               icon="icons/Fields.JPG"
+               icon="icons/fields.jpg"
                id="org.csstudio.diag.pvfields.view.PVFieldpopupAction"
                label="PV Fields Viewer"
                menubarPath="org.csstudio.popmenu/content"

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
 import org.csstudio.platform.ui.swt.AutoSizeColumn;
@@ -58,9 +65,9 @@ public class GUI implements ModelListener
         this.url = url;
         this.user = user;
         this.password = password;
-        
+
         createGUI(parent);
-        
+
         topic.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -69,7 +76,7 @@ public class GUI implements ModelListener
                 setTopic(getTopic());
             }
         });
-        
+
         clear.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -79,10 +86,11 @@ public class GUI implements ModelListener
                     model.clear();
             }
         });
-        
+
         parent.addDisposeListener(new DisposeListener()
         {
-			public void widgetDisposed(DisposeEvent e)
+			@Override
+            public void widgetDisposed(DisposeEvent e)
 			{
 				if (model != null)
 					model.close();
@@ -98,8 +106,8 @@ public class GUI implements ModelListener
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         parent.setLayout(layout);
-        
-        // URL:   ____url ____ 
+
+        // URL:   ____url ____
         Label l = new Label(parent, 0);
         l.setText(Messages.URLLabel);
         l.setLayoutData(new GridData());
@@ -107,21 +115,21 @@ public class GUI implements ModelListener
         l = new Label(parent, 0);
         l.setText(NLS.bind(Messages.URLLabelFmt, new Object[] { url, user, password }));
         l.setLayoutData(new GridData(SWT.LEFT, 0, true, false, 2, 1));
-        
+
         // Topic: ____topic ____ [Clear]
         l = new Label(parent, 0);
         l.setText(Messages.TopicLabel);
         l.setLayoutData(new GridData());
-        
+
         topic = new Text(parent, SWT.BORDER);
         topic.setToolTipText(Messages.Topic_TT);
         topic.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         clear = new Button(parent, SWT.PUSH);
         clear.setText(Messages.Clear);
         clear.setToolTipText(Messages.ClearTT);
         clear.setLayoutData(new GridData());
-        
+
         // Server: ____server_name____
         l = new Label(parent, 0);
         l.setText(Messages.Server);
@@ -130,7 +138,7 @@ public class GUI implements ModelListener
         server_name = new Label(parent, 0);
         server_name.setText(Messages.Disconnected);
         server_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
-        
+
         // Message table
         table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
@@ -145,7 +153,7 @@ public class GUI implements ModelListener
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
-        
+
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
 
         table_viewer.setContentProvider(new ReceivedMessageProvider());
@@ -159,7 +167,7 @@ public class GUI implements ModelListener
 
         final Action autosize =
             new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
-        
+
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()
         {
@@ -169,16 +177,16 @@ public class GUI implements ModelListener
                 new OpenViewAction(IPageLayout.ID_PROP_SHEET).run();
             }
         });
-        
+
         // Context menu
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.ShowProperties));
         manager.add(autosize);
         table.setMenu(manager.createContextMenu(table));
-        
+
         clear();
     }
-    
+
     /** Set initial focus */
     public void setFocus()
     {
@@ -226,7 +234,7 @@ public class GUI implements ModelListener
     {
         table_viewer.setInput(new ReceivedMessage[0]);
     }
-    
+
     /** Set messages to something that show error message
      *  @param message Error message text
      */
@@ -239,10 +247,12 @@ public class GUI implements ModelListener
     }
 
     /** @see ModelListener */
+    @Override
     public void modelChanged(final Model model)
     {
         table_viewer.getTable().getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (server_name.isDisposed())
