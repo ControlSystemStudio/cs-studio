@@ -48,18 +48,17 @@ public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             @Override
             public String getServerName() {
-                // TODO Auto-generated method stub
-                return "Isn't this a preference?";
+                return "Which is not in ArchiveInfo already?";
             }
 
             @Override
             public String getURL() {
-                return url;
+                return "The URL should not be read-only at most by the ArchiveReader client!";
             }
 
             @Override
             public String getDescription() {
-                return "What?";
+                return "Description of what now?";
             }
 
             @Override
@@ -85,8 +84,10 @@ public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             }
 
             @Override
-            public ValueIterator getRawValues(final int key, final String name, final ITimestamp start, final ITimestamp end) throws UnknownChannelException,
-                                                                                                     Exception {
+            public ValueIterator getRawValues(final int key, 
+                                              final String name, 
+                                              final ITimestamp start, 
+                                              final ITimestamp end) throws UnknownChannelException, Exception {
                 return new DesyArchiveValueIterator(name, start, end, DesyArchiveValueIterator.RAW_TYPE);
             }
 
