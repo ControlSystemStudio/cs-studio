@@ -67,7 +67,7 @@ public abstract class AbstractTypeSupport<T> {
      * @throws TypeSupportException
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @Nonnull
     protected static <T> AbstractTypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass,
                                                                      @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> supportMap,
                                                                      @Nonnull final Map<Class<?>, AbstractTypeSupport<?>> calcSupportMap) throws TypeSupportException {
@@ -116,5 +116,4 @@ public abstract class AbstractTypeSupport<T> {
         }
         return support;
     }
-
 }

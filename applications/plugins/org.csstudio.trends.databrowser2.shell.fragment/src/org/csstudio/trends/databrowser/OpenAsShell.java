@@ -19,7 +19,6 @@ public class OpenAsShell implements IObjectActionDelegate {
 			Object element = _selection.getFirstElement();
 			if (element instanceof IFile) {
 				IFile file = (IFile) element;
-				System.out.println(file.getName());
 				DB2Shell dbshell = new DB2Shell(file);
 				dbshell.openShell();
 			}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.diag.epics.pvtree;
 
@@ -30,8 +30,8 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     private PVTreeItem root;
 
     final private HashMap<String, List<String>> field_info;
-    
-    /** @param view 
+
+    /** @param view
      *  @throws Exception on error in preferences
      */
     PVTreeModel(final TreeViewer viewer) throws Exception
@@ -48,7 +48,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         return field_info;
     }
-    
+
     /** Re-initialize the model with a new root PV. */
     public void setRootPV(final String name)
     {
@@ -56,11 +56,11 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         {
             root.dispose();
             root = null;
-        }        
+        }
         root = new PVTreeItem(this, null, Messages.PV, name);
         itemChanged(root);
     }
-    
+
     /** @return Returns a model item with given PV name or <code>null</code>. */
     public PVTreeItem findPV(final String pv_name)
     {
@@ -85,13 +85,15 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         }
         return null;
     }
-    
+
     // IStructuredContentProvider
+    @Override
     public void inputChanged(Viewer v, Object oldInput, Object newInput)
     {
         // NOP
     }
 
+    @Override
     public void dispose()
     {
         if (root != null)
@@ -104,6 +106,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     // IStructuredContentProvider
+    @Override
     public Object[] getElements(final Object parent)
     {
         if (parent instanceof PVTreeItem)
@@ -114,14 +117,16 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     // ITreeContentProvider
+    @Override
     public Object getParent(final Object child)
     {
         if (child instanceof PVTreeItem)
             return ((PVTreeItem) child).getParent();
         return null;
     }
-    
+
     // ITreeContentProvider
+    @Override
     public Object[] getChildren(final Object parent)
     {
         if (parent instanceof PVTreeItem)
@@ -130,6 +135,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     }
 
     // ITreeContentProvider
+    @Override
     public boolean hasChildren(final Object parent)
     {
         if (parent instanceof PVTreeItem)

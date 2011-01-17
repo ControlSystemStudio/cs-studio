@@ -48,7 +48,9 @@ public class RhinoScriptStore {
 
 	private Map<PV, Boolean> pvConnectStatusMap;	
 	
-	public RhinoScriptStore(ScriptData scriptData, final AbstractBaseEditPart editpart, 
+	private boolean triggerSuppressed = false; 
+	
+	public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart, 
 			final PV[] pvArray) throws Exception {
 		errorInScript = false;
 		scriptContext = ScriptService.getInstance().getScriptContext();		
@@ -90,11 +92,29 @@ public class RhinoScriptStore {
 		//register pv listener
 		int i=0;
 		for(PV pv : pvArray){
-			if(pv == null || !scriptData.getPVList().get(i++).trigger)
+			if(pv == null)
 				continue;	
+			if(!scriptData.getPVList().get(i++).trigger){
+				pv.addListener(new PVListener() {
+					
+					@Override
+					public synchronized void pvValueUpdate(PV pv) {
+						if(triggerSuppressed && checkPVsConnected(scriptData, pvArray)){
+							executeScript();
+							triggerSuppressed = false;
+						}
+					}
+					
+					@Override
+					public void pvDisconnected(PV pv) {
+						
+					}
+				});
+				continue;
+			};
 			pvConnectStatusMap.put(pv, true);
-			PVListener pvListener = new PVListener() {			
-				public void pvValueUpdate(PV pv) {
+			PVListener triggerPVListener = new PVListener() {			
+				public synchronized void pvValueUpdate(PV pv) {
 					//if pv connection is restored from connection
 					if(!pvConnectStatusMap.get(pv)){
 						ConsoleService.getInstance().writeInfo(
@@ -104,32 +124,20 @@ public class RhinoScriptStore {
 					
 					//execute script only if all input pvs are connected
 					if(pvArray.length > 1){
-						for(PV pv2 : pvArray){
-							if(!pv2.isConnected()){
-								String message = NLS.bind(
-										"{0} did not executed because the input PV: {1} is disconnected", 
-										errorSource, pv2.getName());
-								ConsoleService.getInstance().writeWarning(message);
+						if(!checkPVsConnected(scriptData, pvArray)){
+								triggerSuppressed = true;
+//								String message = NLS.bind(
+//										"{0} did not executed because the input PV: {1} is disconnected", 
+//										errorSource, pv2.getName());
+//								ConsoleService.getInstance().writeWarning(message);
 								return;
-							}
+							
 						}					
 					}
 					
-					UIBundlingThread.getInstance().addRunnable(new Runnable() {						
-						public void run() {
-							if(!errorInScript){
-								try {								
-									script.exec(scriptContext, scriptScope);
-								} catch (Exception e) {
-									errorInScript = true;
-									final String message = NLS.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
-										errorSource, e.getMessage());									
-									ConsoleService.getInstance().writeError(message);
-								}
-							}
-						}
-					});
-				}			
+					executeScript();
+				}
+				
 				public void pvDisconnected(PV pv) {
 					if(pv.isRunning()){
 						pvConnectStatusMap.put(pv, false);
@@ -141,9 +149,38 @@ public class RhinoScriptStore {
 					
 				}
 			};
-			pvListenerMap.put(pv, pvListener);
-			pv.addListener(pvListener);
+			pvListenerMap.put(pv, triggerPVListener);
+			pv.addListener(triggerPVListener);
 		}
+	}
+	
+	private void executeScript() {
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				if (!errorInScript) {
+					try {
+						script.exec(scriptContext, scriptScope);
+					} catch (Exception e) {
+						errorInScript = true;
+						final String message = NLS
+								.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
+										errorSource, e.getMessage());
+						ConsoleService.getInstance().writeError(message);
+					}
+				}
+			}
+		});
+	}	
+	
+	private boolean checkPVsConnected(ScriptData scriptData, PV[] pvArray){
+		if(!scriptData.isCheckConnectivity())
+			return true;
+		for(PV pv : pvArray){
+			if(!pv.isConnected())
+				return false;
+		}
+		return true;
+		
 	}
 	
 	public void dispose() {

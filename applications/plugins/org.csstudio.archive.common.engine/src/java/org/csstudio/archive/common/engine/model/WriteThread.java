@@ -319,6 +319,7 @@ public class WriteThread implements Runnable
 
             final int channelId = writerService.getChannelId(channelName);
 
+            // REfactor to buffer drainTo in service
             while ((sample = buffer.poll()) != null) {
                 // sample handling
                 samples.add(new ValueWithChannelId(sample, channelId));

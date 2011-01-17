@@ -59,7 +59,7 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
  * @param <T> the object class type for which a tree shall be created
  */
 public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T>
-        implements ILdapContentModelBuilder {
+        implements ILdapContentModelBuilder<T> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapContentModelBuilder.class);
 

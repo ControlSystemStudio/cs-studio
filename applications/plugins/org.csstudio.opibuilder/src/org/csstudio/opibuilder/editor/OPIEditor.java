@@ -911,9 +911,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	 */
 	private void processSaveFailedError(Exception e) {
 		MessageDialog.openError(getSite().getShell(),
-				"Save Failed!\n", e.getMessage());
+				"Save Failed!", e.getMessage() + 
+				"\nThe original file might be deleted, moved or renamed. " +
+				"Please use File->Save as... to save this file.");
 		CentralLogger.getInstance().error(this, e);
-		ConsoleService.getInstance().writeError("Save Failed! " + e);
 	}
 	
 

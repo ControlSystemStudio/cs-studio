@@ -6,7 +6,7 @@
       <ArchiveReader
             class="org.csstudio.archivereader.archiverecord.ArchiveRecordReaderFactory"
             name="org.csstudio.archivereader.archiverecord.archivereader"
-            prefix="archRec">
+            prefix="archiveRecord">
       </ArchiveReader>
    </extension>
 

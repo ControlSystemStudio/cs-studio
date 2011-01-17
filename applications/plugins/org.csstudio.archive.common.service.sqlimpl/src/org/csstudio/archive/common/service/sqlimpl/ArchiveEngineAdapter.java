@@ -97,7 +97,7 @@ public enum ArchiveEngineAdapter {
      * @param cfg the archive.rdb type for sample engine config
      * @return the service interface type for the engine
      */
-    public IArchiveEngine adapt(@Nonnull final SampleEngineConfig cfg) {
+    public static IArchiveEngine adapt(@Nonnull final SampleEngineConfig cfg) {
 
         return new IArchiveEngine() {
 
@@ -126,7 +126,7 @@ public enum ArchiveEngineAdapter {
      * @return the service interface for the channel configuration
      */
     @Nonnull
-    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel,
+    public static IArchiveChannel adapt(@Nonnull final ChannelConfig channel,
                                  @Nullable final ITimestamp lastTimestamp) {
 
         final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
@@ -187,7 +187,7 @@ public enum ArchiveEngineAdapter {
      * @return
      */
     @CheckForNull
-    public IArchiveSampleMode adapt(@Nonnull final SampleMode sampleMode) {
+    public static IArchiveSampleMode adapt(@Nonnull final SampleMode sampleMode) {
         for (final ArchiveSampleMode mode : ArchiveSampleMode.values()) {
             if (sampleMode.getName().toUpperCase().equals(mode.name())) {
                 return mode;

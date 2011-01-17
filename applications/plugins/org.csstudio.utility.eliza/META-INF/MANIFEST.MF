@@ -7,4 +7,4 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.platform.ui
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

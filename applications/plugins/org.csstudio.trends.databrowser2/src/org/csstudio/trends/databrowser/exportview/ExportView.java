@@ -29,6 +29,7 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -51,7 +52,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
 {
     /** View ID (same ID as original Data Browser) registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.exportview.ExportView"; //$NON-NLS-1$
-    
+
     /** Model of the currently selected Data Browser or <code>null</code> */
     private Model model;
 
@@ -72,7 +73,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     private Text format_digits;
 
     private Button sel_times;
-    
+
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite real_parent)
@@ -80,38 +81,38 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         final Composite parent =
             ScrolledContainerHelper.create(real_parent, 700, 320);
         parent.setLayout(new GridLayout());
-        
+
         // * Samples To Export *
         // Start:  ___start_______________________________________________________________ [select]
         // End  :  ___end_________________________________________________________________ [x] Use start/end time of Plot
         // Source: ( ) Plot  (*) Raw Archived Data  (*) Averaged Archived Data  __time__   {ghost}
-        
+
         // * Format *
         // (*) Spreadsheet ( ) Matlab
         // [x] Tabular [x] ... with Severity/Status
         // (*) Default format  ( ) decimal notation  ( ) exponential notation _digits_ fractional digits
-        
-        // * Output *                                       
+
+        // * Output *
         // Filename: ______________ [Browse] [EXPORT]
-        
+
         // * Samples To Export *
         Group group = new Group(parent, 0);
         group.setText(Messages.ExportGroupSource);
         group.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         GridLayout layout = new GridLayout(6, false);
         group.setLayout(layout);
-        
+
         // Start:  ___start____________________________________________________ [select]
         Label l = new Label(group, 0);
         l.setText(Messages.StartTimeLbl);
         l.setLayoutData(new GridData());
-        
+
         start = new Text(group, SWT.BORDER);
         start.setToolTipText(Messages.StartTimeTT);
         start.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
         start.setText(new RelativeTime(- Preferences.getTimeSpan()).toString());
         start.setEnabled(false);
-        
+
         sel_times = new Button(group, SWT.PUSH);
         sel_times.setText(Messages.StartEndDialogBtn);
         sel_times.setToolTipText(Messages.StartEndDialogTT);
@@ -125,7 +126,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 promptForTimerange();
             }
         });
-        
+
         // End  :  ___end______________________________________________________ [x] Use start/end time of Plot
         l = new Label(group, 0);
         l.setText(Messages.EndTimeLbl);
@@ -146,7 +147,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         {
             @Override
             public void widgetSelected(SelectionEvent e)
-            {   
+            {
                 updateStartEnd();
             }
         });
@@ -155,7 +156,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         l = new Label(group, 0);
         l.setText(Messages.ExportSource);
         l.setLayoutData(new GridData());
-        
+
         final Button source_plot = new Button(group, SWT.RADIO);
         source_plot.setText(Messages.ExportSource_Plot);
         source_plot.setToolTipText(Messages.ExportSource_PlotTT);
@@ -171,7 +172,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         source_opt.setText(Messages.ExportSource_OptimizedArchive);
         source_opt.setToolTipText(Messages.ExportSource_OptimizedArchiveTT);
         source_opt.setLayoutData(new GridData());
-        
+
         optimize = new Text(group, SWT.BORDER);
         optimize.setText(Messages.ExportDefaultOptimization);
         optimize.setToolTipText(Messages.ExportOptimizationTT);
@@ -183,14 +184,17 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                optimize.setEnabled(source_opt.getSelection());
+                final boolean use_optimized = source_opt.getSelection();
+                optimize.setEnabled(use_optimized);
+                if (use_optimized)
+                    optimize.setFocus();
             }
         });
 
         // Ghost label to fill the last column
         l = new Label(group, 0);
         l.setLayoutData(new GridData());
-        
+
         // * Format *
         // Since there are actually 2 sets of radio buttons, use
         // one Composite per row.
@@ -210,7 +214,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         type_matlab = new Button(box, SWT.RADIO);
         type_matlab.setText(Messages.ExportTypeMatlab);
         type_matlab.setToolTipText(Messages.ExportTypeMatlabTT);
-                
+
         // [x] Tabular [x] ... with Severity/Status
         box = new Composite(group, 0);
         box.setLayout(new RowLayout());
@@ -235,11 +239,11 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         format_decimal = new Button(box, SWT.RADIO);
         format_decimal.setText(Messages.Format_Decimal);
         format_decimal.setToolTipText(Messages.ExportFormat_DecimalTT);
-        
+
         format_expo = new Button(box, SWT.RADIO);
         format_expo.setText(Messages.Format_Exponential);
         format_expo.setToolTipText(Messages.ExportFormat_ExponentialTT);
-        
+
         format_digits = new Text(box, SWT.BORDER);
         format_digits.setText(Messages.ExportDefaultDigits);
         format_digits.setToolTipText(Messages.ExportDigitsTT);
@@ -247,7 +251,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
 
         l = new Label(box, 0);
         l.setText(Messages.ExportDigits);
-        
+
         // Selection and enablement handling of the buttons
         type_spreadsheet.addSelectionListener(new SelectionAdapter()
         {
@@ -280,13 +284,16 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                format_digits.setEnabled(!format_default.getSelection());
+                final boolean use_digits = !format_default.getSelection();
+                format_digits.setEnabled(use_digits);
+                if (use_digits)
+                    format_digits.setFocus();
             }
         };
         format_default.addSelectionListener(digit_enabler);
         format_decimal.addSelectionListener(digit_enabler);
         format_expo.addSelectionListener(digit_enabler);
-        
+
         // * Output *
         group = new Group(parent, 0);
         group.setText(Messages.ExportGroupOutput);
@@ -298,12 +305,12 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         l = new Label(group, 0);
         l.setText(Messages.ExportFilename);
         l.setLayoutData(new GridData());
-        
+
         filename = new Text(group, SWT.BORDER);
         filename.setToolTipText(Messages.ExportFilenameTT);
         filename.setText(Messages.ExportDefaultFilename);
         filename.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         final Button sel_filename = new Button(group, SWT.PUSH);
         sel_filename.setText(Messages.ExportBrowse);
         sel_filename.setToolTipText(Messages.ExportBrowseTT);
@@ -319,7 +326,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                     filename.setText(name.trim());
             }
         });
-        
+
         export = new Button(group, SWT.PUSH);
         export.setText(Messages.ExportStartExport);
         export.setToolTipText(Messages.ExportStartExportTT);
@@ -338,7 +345,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     @Override
     public void setFocus()
     {
-        filename.setFocus();    
+        filename.setFocus();
     }
 
     /** {@inheritDoc} */
@@ -368,7 +375,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         final String end_time = end.getText();
         final StartEndDialog dlg = new StartEndDialog(start.getShell(),
                 start_time, end_time);
-        if (dlg.open() != StartEndDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         start.setText(dlg.getStartSpecification());
         end.setText(dlg.getEndSpecification());
@@ -422,7 +429,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 return;
             }
         }
-        
+
         // Determine source: Plot, archive, ...
         final Source source;
         int optimize_count = -1;
@@ -447,13 +454,19 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
 
         // Get remaining export parameters
         final String filename = this.filename.getText().trim();
+        if (filename.equalsIgnoreCase(Messages.ExportDefaultFilename))
+        {
+            MessageDialog.openConfirm(optimize.getShell(), Messages.Error, Messages.ExportEnterFilenameError);
+            this.filename.setFocus();
+            return;
+        }
         if (new File(filename).exists())
         {
             if (!MessageDialog.openConfirm(optimize.getShell(), Messages.ExportFileExists,
                     NLS.bind(Messages.ExportFileExistsFmt, filename)))
                 return;
         }
-        
+
         // Construct appropriate export job
         final Job export;
         if (type_matlab.getSelection())
@@ -504,12 +517,14 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     /** Display error. Can be called from non-GUI thread
      *  @see ExportErrorHandler
      */
+    @Override
     public void handleExportError(final Exception ex)
     {
         if (start.isDisposed())
             return;
         start.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (start.isDisposed())

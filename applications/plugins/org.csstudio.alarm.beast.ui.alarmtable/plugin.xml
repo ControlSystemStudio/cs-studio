@@ -17,20 +17,23 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.alarm.beast.ui.alarmtable.cssmenu"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.alarm.beast.ui.alarmtable.ShowAlarmTableAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:alarm">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/alarmtable.gif"
-               id="org.csstudio.alarm.ui.alarmtable.ShowAlarmTableAction"
+               id="org.csstudio.alarm.beast.alarmtable"
                label="%AlarmTable"
-               menubarPath="css/alarm/"
+               mnemonic="%AlarmTableMnemonic"
                style="push"
-               tooltip="%AlarmTable"/>
-      </actionSet>
+               tooltip="%AlarmTableTT">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.alarm.beast.ui.alarmtable.view">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 </plugin>

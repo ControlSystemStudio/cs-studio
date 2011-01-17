@@ -64,10 +64,10 @@ public class GUI implements ModelListener, AlgorithmJobListener
     private static final int GAP = 10;
 
     private static final String AUTO_ZOOM_X = "autozoom_x"; //$NON-NLS-1$
-    
+
     /** Data Model */
     final private Model model;
-    
+
     // GUI elements
     private InteractiveChart ichart;
     private ImageRegistry images = new ImageRegistry();
@@ -76,17 +76,17 @@ public class GUI implements ModelListener, AlgorithmJobListener
     private Label fft_window_label, alt_channel_label, message;
 
     private AlgorithmJob algorithm_job = null;
-    
+
     /** Construct GUI for model under parent */
     GUI(final Model model, final Composite parent)
     {
         this.model = model;
         createGUI(parent);
         createContextMenu();
-        
+
         // Initial selections
         updateConditionalGUIElements();
-        
+
         hookActions();
 
         // Fill GUI with model channels via fake event;
@@ -117,7 +117,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         ichart.setLayoutData(gd);
-        
+
         Button autozoom_x = new Button(ichart.getButtonBar(), SWT.CENTER);
         final ImageDescriptor image =
             Activator.getImageDescriptor("icons/autozoom_x.gif"); //$NON-NLS-1$
@@ -137,20 +137,20 @@ public class GUI implements ModelListener, AlgorithmJobListener
                 autozoom_x();
             }
         });
-        
+
         // Lower box: Algorithm control elements
         final Group control_frame = new Group(parent, 0);
         control_frame.setText(Messages.GUI_Algorithm);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        control_frame.setLayoutData(gd);    
+        control_frame.setLayoutData(gd);
         final FormLayout form_layout = new FormLayout();
         form_layout.marginWidth = 3;
-        form_layout.marginHeight = 3;        
-        control_frame.setLayout(form_layout);    
+        form_layout.marginHeight = 3;
+        control_frame.setLayout(form_layout);
         FormData fd;
-        
+
         algorithm_name = new Combo(control_frame, SWT.DROP_DOWN | SWT.READ_ONLY);
         fd = new FormData();
         fd.top = new FormAttachment(0, 0);
@@ -172,7 +172,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         fd.top = new FormAttachment(0, 0);
         fd.left = new FormAttachment(l);
         channel_name.setLayoutData(fd);
-        
+
         fft_window_label = new Label(control_frame, 0);
         fft_window_label.setText(Messages.GUI_Window_);
         fd = new FormData();
@@ -185,12 +185,12 @@ public class GUI implements ModelListener, AlgorithmJobListener
         fd.top = new FormAttachment(0, 0);
         fd.left = new FormAttachment(fft_window_label);
         fft_window.setLayoutData(fd);
-        
+
         // Fill with filter types
         for (Filter.Type type : Filter.Type.values())
             fft_window.add(type.toString());
         fft_window.select(0);
-        
+
         alt_channel_label = new Label(control_frame, 0);
         alt_channel_label.setText(Messages.GUI_SecondChannel_);
         fd = new FormData();
@@ -219,7 +219,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         fd.top = new FormAttachment(0, 0);
         fd.left = new FormAttachment(crop, GAP);
         baseline.setLayoutData(fd);
-        
+
         message = new Label(control_frame, 0);
         fd = new FormData();
         fd.top = new FormAttachment(algorithm_name, GAP);
@@ -227,7 +227,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         fd.right = new FormAttachment(100, 0);
         message.setLayoutData(fd);
     }
-    
+
     /** Create and connect the context menu. */
     private void createContextMenu()
     {
@@ -235,7 +235,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
 
         final RemoveSelectedMarkersAction remove_marker_action
             = new RemoveSelectedMarkersAction(chart);
-        
+
         final MenuManager context_menu = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         context_menu.add(new ShowButtonBarAction(ichart));
         context_menu.add(new RemoveMarkersAction(chart));
@@ -250,16 +250,17 @@ public class GUI implements ModelListener, AlgorithmJobListener
 
         context_menu.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 remove_marker_action.updateEnablement();
             }
         });
-        
+
         final Menu menu = context_menu.createContextMenu(chart);
         chart.setMenu(menu);
     }
-    
+
     /** @return Main control of the GUI (for drop target) */
     Control getMainControl()
     {
@@ -269,6 +270,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
     /** Model has new channels
      *  @see ModelListener
      */
+    @Override
     public void newChannels()
     {
         setChannelsFromModel(channel_name);
@@ -292,13 +294,13 @@ public class GUI implements ModelListener, AlgorithmJobListener
         final Algorithm algorithm = getCurrentAlgorithm();
 
         boolean show_crop = true;
-        
+
         boolean show = algorithm instanceof FFTAlgorithm;
         fft_window_label.setVisible(show);
         fft_window.setVisible(show);
         if (show)
             show_crop = false;
-        
+
         show = algorithm instanceof CorrelationAlgorithm;
         alt_channel_label.setVisible(show);
         alt_channel.setVisible(show);
@@ -307,7 +309,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
 
         crop.setVisible(show_crop);
         baseline.setVisible(show_crop);
-        
+
         alt_channel.getParent().layout();
     }
 
@@ -316,25 +318,29 @@ public class GUI implements ModelListener, AlgorithmJobListener
     {
         algorithm_name.addSelectionListener(new SelectionListener()
         {
+            @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {
                 updateConditionalGUIElements();
                 performAlgorithm();
             }
         });
-        
+
         final SelectionListener update = new SelectionListener()
         {
+            @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 widgetDefaultSelected(e);
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {
                 performAlgorithm();
@@ -343,7 +349,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         channel_name.addSelectionListener(update);
         alt_channel.addSelectionListener(update);
         fft_window.addSelectionListener(update);
-        
+
         crop.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -377,7 +383,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         performAlgorithm();
     }
 
-    
+
     /** Set X axis range to cover all traces in the plot. */
     private void autozoom_x()
     {
@@ -464,11 +470,13 @@ public class GUI implements ModelListener, AlgorithmJobListener
     /** Algorithm started in <code>performAlgorithm</code> completed
      *  @see AlgorithmJobListener
      */
+    @Override
     public void algorithmDone(final Algorithm algorithm)
     {
         // Handle response from background thread in GUI thread
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -502,7 +510,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
                 {
                     algorithmFailed(algorithm, ex);
                 }
-                
+
             }
         });
     }
@@ -510,11 +518,13 @@ public class GUI implements ModelListener, AlgorithmJobListener
     /** Algorithm started in <code>performAlgorithm</code> failed
      *  @see AlgorithmJobListener
      */
+    @Override
     public void algorithmFailed(final Algorithm algorithm, final Throwable ex)
     {
         // Handle response from background thread in GUI thread
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 // TODO show error in message. getMessage still gives less
@@ -551,7 +561,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
                         alt_channel_text, fft_window_text, message_text);
                 return Status.OK_STATUS;
             }
-            
+
         };
         job.schedule();
     }
@@ -569,14 +579,14 @@ public class GUI implements ModelListener, AlgorithmJobListener
             out.println("#");
             out.println("# Algorithm   : " + algorithm.getName());
             out.println("# Channel     : " + channel_text);
-            
+
             if (algorithm instanceof CorrelationAlgorithm)
                 out.println("# 2nd Channel :" + alt_channel_text);
             if (algorithm instanceof FFTAlgorithm)
                 out.println("# Window      :" + fft_window_text);
             out.println("# Message     : " + message_text);
             out.println();
-    
+
             final Chart chart = ichart.getChart();
             final boolean time_axis = chart.getXAxis() instanceof TimeAxis;
             final int traces = chart.getNumTraces();

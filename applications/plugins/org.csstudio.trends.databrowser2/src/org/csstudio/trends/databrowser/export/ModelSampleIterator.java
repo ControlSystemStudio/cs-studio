@@ -20,16 +20,16 @@ public class ModelSampleIterator implements ValueIterator
 {
     /** Samples from which to return values from 'start' to 'end' */
     final private PlotSamples samples;
-    
+
     /** End time */
     final private ITimestamp end;
-    
+
     /** The value returned by 'next' or undefined for 'index' < 0 */
     private IValue value;
-    
+
     /** Index of 'value' in 'samples', -1 for end-of-sequence */
     private int index;
-    
+
     /** Initialize
      *  @param item Item from which to get samples
     /** @param start Start time
@@ -75,7 +75,7 @@ public class ModelSampleIterator implements ValueIterator
         int mid = -1;
         while (low <= high)
         {
-            mid = (low + high) / 2;  
+            mid = (low + high) / 2;
             // Compare 'mid' sample to goal
             final ITimestamp time = samples.getSample(mid).getTime();
             if (time.isGreaterThan(start))
@@ -91,7 +91,7 @@ public class ModelSampleIterator implements ValueIterator
             else
             {
                 cmp = 0;
-                return mid; // found exact time 
+                return mid; // found exact time
             }
         }
         // Didn't find exact match.
@@ -105,12 +105,14 @@ public class ModelSampleIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return index >= 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue next() throws Exception
     {
         if (index < 0)
@@ -133,6 +135,7 @@ public class ModelSampleIterator implements ValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         // NOP

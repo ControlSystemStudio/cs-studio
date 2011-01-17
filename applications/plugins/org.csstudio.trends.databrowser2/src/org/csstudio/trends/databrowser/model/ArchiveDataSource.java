@@ -24,7 +24,7 @@ public class ArchiveDataSource extends AbstractControlSystemItem implements
 
     /** Description of the data source. */
     private String description;
-    
+
     /** Initialize
      *  @param url Data server URL.
      *  @param key Archive key.
@@ -57,18 +57,21 @@ public class ArchiveDataSource extends AbstractControlSystemItem implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getTypeId()
     {
         return TYPE_ID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getUrl()
     {
         return url;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getKey()
     {
         return key;
@@ -93,7 +96,7 @@ public class ArchiveDataSource extends AbstractControlSystemItem implements
         final ArchiveDataSource other = (ArchiveDataSource) obj;
         return key == other.key && url.equals(other.url);
     }
-    
+
     /** Hash on URL and key, ignoring the description
      *  {@inheritDoc}
      */

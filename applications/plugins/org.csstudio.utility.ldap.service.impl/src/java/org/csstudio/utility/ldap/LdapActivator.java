@@ -42,7 +42,10 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public final class LdapActivator extends AbstractCssPlugin {
-    // The plug-in ID
+
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldap.service.impl";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);

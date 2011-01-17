@@ -33,7 +33,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractCssUiPlugin {
 
-	// The plug-in ID
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
 	public static final String PLUGIN_ID = "org.csstudio.utility.ldap.nameSpaceBrowser";
 
 	// The shared instance

@@ -97,17 +97,13 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectStatusByNameStmt);
-
             stmt.setString(1, stts.name());
-
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final ArchiveStatusId id = new ArchiveStatusId(result.getInt(1));
                 final IArchiveStatus newStts = new ArchiveStatusDTO(id, stts.name());
-
-                _statusCache.put(stts, newStts);
                 _statusCacheById.put(id, newStts);
-
+                _statusCache.put(stts, newStts);
                 return newStts;
             }
         } catch (final ArchiveConnectionException e) {
@@ -119,6 +115,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
         }
         return null;
     }
+
 
     /**
      * {@inheritDoc}
@@ -135,15 +132,12 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             stmt = getConnection().prepareStatement(_selectStatusByIdStmt);
             stmt.setLong(1, id.longValue());
-
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final String name = result.getString(1);
                 final IArchiveStatus newStts = new ArchiveStatusDTO(id, name);
-
-                _statusCache.put(EpicsAlarmStatus.parseStatus(name), newStts);
                 _statusCacheById.put(id, newStts);
-
+                _statusCache.put(EpicsAlarmStatus.parseStatus(name), newStts);
                 return newStts;
             }
         } catch (final ArchiveConnectionException e) {
@@ -155,5 +149,4 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
         }
         return null;
     }
-
 }

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.clock;
 
 import java.util.Calendar;
@@ -27,7 +34,7 @@ public class ClockWidget extends Canvas implements DisposeListener,
     /** The total hours in a day.
      *  24 gives the usual clock, but one can also use 25.
      */
-    private final int hours; 
+    private final int hours;
 
 	/** Constructor */
 	public ClockWidget(int hours, Composite parent, int style)
@@ -56,7 +63,8 @@ public class ClockWidget extends Canvas implements DisposeListener,
 	}
 
 	/** @see org.eclipse.swt.events.DisposeListener */
-	public void widgetDisposed(DisposeEvent e)
+	@Override
+    public void widgetDisposed(DisposeEvent e)
 	{
 		pointer.dispose();
 		face.dispose();
@@ -64,11 +72,12 @@ public class ClockWidget extends Canvas implements DisposeListener,
 	}
 
 	/** @see org.eclipse.swt.events.PaintListener */
+    @Override
     public void paintControl(PaintEvent e)
     {
         GC gc = e.gc;
         Rectangle client_rect = getClientArea();
-        
+
         // Determine the rectangle used by the clock face
         Rectangle r;
         int cx, cy; // center coordinates
@@ -90,7 +99,7 @@ public class ClockWidget extends Canvas implements DisposeListener,
             cx = cy + r.x;
         }
         int radius = diameter / 2;
-        
+
         // Clock face
         gc.setForeground(face);
         gc.setLineWidth(OVAL_WIDTH);
@@ -107,11 +116,11 @@ public class ClockWidget extends Canvas implements DisposeListener,
         gc.setLineWidth(3);
         gc.setLineCap(SWT.CAP_ROUND);
         FontMetrics fm = gc.getFontMetrics();
-        
+
         int tick_radius = radius*9/10;
         int text_radius = tick_radius - 2 * fm.getAverageCharWidth();
         int pointer_radius = text_radius - fm.getAverageCharWidth() * 3/2;
-        
+
         // Some horribly arbitrary criteria as to what to draw,
         // depending on the avaialble space.
         // Determined by trial and error, could be replaced
@@ -149,7 +158,7 @@ public class ClockWidget extends Canvas implements DisposeListener,
                 gc.drawText(text,
                     cx + (int)(text_radius*c)
                     - (fm.getAverageCharWidth() * text.length())/2,
-                    cy + (int)(text_radius*s) 
+                    cy + (int)(text_radius*s)
                     - fm.getHeight()/2, true);
             }
         }
@@ -173,11 +182,11 @@ public class ClockWidget extends Canvas implements DisposeListener,
         gc.drawLine(cx, cy,
                 cx + (int)(pointer_radius*c),
                 cy + (int)(pointer_radius*s));
-        
+
         // Schedule another redraw
         scheduleRedraw();
     }
-	
+
 	/** Start a UI timer for updating the clock widget. */
 	private void scheduleRedraw()
 	{
@@ -185,7 +194,8 @@ public class ClockWidget extends Canvas implements DisposeListener,
         int delay = 30;
 		Display.getDefault().timerExec(1000 * delay, new Runnable()
 		{
-			public void run()
+			@Override
+            public void run()
 			{
 				// Mark for redraw.
 				if (! isDisposed())

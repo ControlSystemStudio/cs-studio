@@ -107,7 +107,7 @@ public class PVTupleTableEditor extends Composite {
 		final TableViewerColumn pvColumn = new TableViewerColumn(viewer, SWT.NONE);		
 		pvColumn.getColumn().setText("PV Name");
 		pvColumn.getColumn().setMoveable(false);
-		pvColumn.getColumn().setWidth(200);
+		pvColumn.getColumn().setWidth(220);
 		pvColumn.setEditingSupport(new PVColumnEditingSupport(viewer, viewer.getTable()));	
 		
 		

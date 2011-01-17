@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
@@ -31,7 +38,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -50,7 +56,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
@@ -107,7 +112,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 	private static final String VALUE_PARAMETER_ID =
 		"org.csstudio.platform.ui.commands.saveValue.value"; //$NON-NLS-1$
 
-    private static final String SECURITY_ID = "operating";
+    private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
 	/** Instance number, used to create a unique ID
      *  @see #createNewInstance()
@@ -138,6 +143,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
     final Runnable update_value = new Runnable()
     {
+        @Override
         public void run()
         {   // Might run after the view is already disposed...
             if (lbl_value.isDisposed()) {
@@ -446,6 +452,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
         cbo_name.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(final DisposeEvent e)
             {
                 setPV(null);
@@ -494,7 +501,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         // the availability of a command handler.
         saveToIocCmdListener = new ICommandListener()
         {
-			public void commandChanged(final CommandEvent commandEvent)
+			@Override
+            public void commandChanged(final CommandEvent commandEvent)
 			{
 				if (commandEvent.isEnabledChanged())
 				{
@@ -663,6 +671,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(final IMenuManager manager)
             {
                 manager.add(new Separator(
@@ -706,7 +715,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         // Update displayed name, unless it's already current
         if (! (cbo_name.getText().equals(pv_name)))
             cbo_name.setText(pv_name);
-        
+
         // Create a new channel
         try
         {
@@ -727,16 +736,18 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     }
 
     // PVListener
+    @Override
     public void pvDisconnected(final PV pv)
     {
         updateStatus(Messages.S_Disconnected);
     }
 
     // PVListener
+    @Override
     public void pvValueUpdate(final PV pv)
     {
     	CentralLogger.getInstance().getLogger(this).debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
-    	
+
         // We might receive events after the view is already disposed or we're already looking at a different PV ....
         if (pv != this.pv  ||  lbl_value.isDisposed())
             return;
@@ -778,6 +789,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         {   // Make it run in the SWT UI thread
             Display.getDefault().asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     if (! lbl_status.isDisposed()) {
@@ -853,13 +865,15 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     }
 
     /** Minimal ISelectionProvider */
-	public void addSelectionChangedListener(ISelectionChangedListener listener)
+	@Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener)
     {
 	    // Not implemented
     }
 
     /** Minimal ISelectionProvider */
-	public void removeSelectionChangedListener(
+	@Override
+    public void removeSelectionChangedListener(
             ISelectionChangedListener listener)
     {
 	    // Not implemented
@@ -868,14 +882,16 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Provide PV name for context menu object contributions
      *  ISelectionProvider
      */
-	public ISelection getSelection()
+	@Override
+    public ISelection getSelection()
     {
 		return new StructuredSelection(
                         CentralItemFactory.createProcessVariable(cbo_name.getText()));
     }
 
     /** ISelectionProvider */
-	public void setSelection(ISelection selection)
+	@Override
+    public void setSelection(ISelection selection)
     {
 	    // Not implemented
     }

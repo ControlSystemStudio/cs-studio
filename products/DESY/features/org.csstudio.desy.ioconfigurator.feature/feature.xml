@@ -17,6 +17,11 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import feature="org.csstudio.desy.dct.feature" version="1.0.0.qualifier"/>
+      <import feature="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
+   </requires>
+
    <plugin
          id="org.csstudio.config.ioconfig.model"
          download-size="0"
@@ -32,28 +37,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.dct"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.dct.desy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.documentService"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.documentViewer"
          download-size="0"
          install-size="0"
          version="0.0.0"

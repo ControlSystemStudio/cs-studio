@@ -33,7 +33,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -45,6 +44,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the alarm tree viewer
@@ -129,7 +129,7 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
 
-        ColumnViewerToolTipSupport.enableFor(tree_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
 
     /** Set or clear error message.
@@ -235,11 +235,12 @@ public class GUI implements AlarmClientModelListener
 	        {   // Allow removal of one or more selected items
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
-	            manager.add(new Separator());
 	        }
 		}
+        manager.add(new Separator());
         manager.add(new AlarmPerspectiveAction());
-        manager.add(new GroupMarker("additions")); //$NON-NLS-1$
+        manager.add(new Separator());
+        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
     /** Set focus to desired element in GUI */

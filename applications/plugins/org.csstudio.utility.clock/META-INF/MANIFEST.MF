@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Clock Plug-in
 Bundle-SymbolicName: org.csstudio.utility.clock; singleton:=true
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Bundle-Activator: org.csstudio.utility.clock.Plugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

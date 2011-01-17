@@ -38,10 +38,15 @@ public class TestSampleBuilder
     {
         final ISeverity no_value = new ISeverity()
         {
+            @Override
             public boolean hasValue()  { return false; }
+            @Override
             public boolean isInvalid() { return true;  }
+            @Override
             public boolean isMajor()   { return false; }
+            @Override
             public boolean isMinor()   { return false; }
+            @Override
             public boolean isOK()      { return false; }
             @Override
             public String toString()   { return "INVALID"; }
@@ -52,7 +57,7 @@ public class TestSampleBuilder
                 new double[] { Double.NaN });
     }
 
-    
+
     /** @param i Numeric value as well as pseudo-timestamp
      *  @return IValue sample that has value and time based on input parameter
      */

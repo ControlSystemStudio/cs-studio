@@ -95,7 +95,6 @@ public class ArchiveTypeConversionSupportUnitTest {
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
-
     }
 
     @Test
@@ -209,7 +208,6 @@ public class ArchiveTypeConversionSupportUnitTest {
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
-
     }
 
     @Test
@@ -241,6 +239,12 @@ public class ArchiveTypeConversionSupportUnitTest {
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesF);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
+
+            final Collection<Float> coll = ArchiveTypeConversionSupport.fromArchiveString("Set<Float>", archiveString);
+
+            final Iterator<Float> iterator = coll.iterator();
+            Assert.assertTrue(iterator.next().equals(1.0F));
+            Assert.assertTrue(iterator.next().equals(2.0F));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -253,6 +257,35 @@ public class ArchiveTypeConversionSupportUnitTest {
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
+
+
+            final Collection<Byte> coll = ArchiveTypeConversionSupport.fromArchiveString("List<Byte>", archiveString);
+
+            final Iterator<Byte> iterator = coll.iterator();
+            Assert.assertEquals(Byte.valueOf("127"), iterator.next());
+            Assert.assertEquals(Byte.valueOf("-128"), iterator.next());
+
+        } catch (final TypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testMultiScalarCollectionConversion() {
+        final Collection<Byte> valuesB1 = Lists.newArrayList(Byte.valueOf("127"),
+                                                             Byte.valueOf("-128"));
+        final Collection<Byte> valuesB2 = Lists.newArrayList(Byte.valueOf("0"),
+                                                             Byte.valueOf("1"));
+
+        @SuppressWarnings("unchecked")
+        final Collection<Collection<Byte>> valuesB = Lists.newArrayList(valuesB1, valuesB2);
+        try {
+            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesB);
+            final String valuesB1String = ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX;
+            final String valuesB2String = ARCHIVE_COLLECTION_PREFIX + "0\\,1" + ARCHIVE_COLLECTION_SUFFIX;
+            Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + valuesB1String +  "\\," +
+                                                            valuesB2String +
+                                ARCHIVE_COLLECTION_SUFFIX, archiveString);
         } catch (final TypeSupportException e) {
             Assert.fail();
         }

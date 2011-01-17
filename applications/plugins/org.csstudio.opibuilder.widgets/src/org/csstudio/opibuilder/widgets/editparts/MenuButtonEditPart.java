@@ -220,8 +220,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if(getWidgetModel().isActionsFromPV() && 
-						newValue != null && newValue instanceof IValue)
+				if(newValue != null && newValue instanceof IValue)
 					((Label)refreshableFigure).setText(ValueUtil.getString((IValue)newValue));
 				return true;
 			}
@@ -286,9 +285,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	private void updatePropSheet(final boolean actionsFromPV) {
 		getWidgetModel().setPropertyVisible(
 					MenuButtonModel.PROP_ACTIONS, !actionsFromPV);
-		getWidgetModel().setPropertyVisible(
-					MenuButtonModel.PROP_PVNAME, actionsFromPV);
-	
 	}
 
 	

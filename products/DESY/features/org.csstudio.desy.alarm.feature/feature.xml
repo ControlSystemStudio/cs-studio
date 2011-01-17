@@ -17,15 +17,13 @@
       [Enter License Description here.]
    </license>
 
-   <plugin
-         id="org.csstudio.alarm.dbaccess"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+   <requires>
+      <import feature="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
+      <import feature="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
+   </requires>
 
    <plugin
-         id="org.csstudio.alarm.service"
+         id="org.csstudio.alarm.dbaccess"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -39,20 +37,6 @@
 
    <plugin
          id="org.csstudio.alarm.treeView"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

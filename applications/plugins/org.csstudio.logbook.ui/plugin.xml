@@ -2,21 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.logbook.ui.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.logbook.ui.MakeLogEntry"
-               icon="icons/elog.gif"
-               id="org.csstudio.logbook.ui.makelogentry"
-               label="%MakeLogEntry"
-               menubarPath="css/utility/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             id="org.csstudio"
@@ -30,6 +15,23 @@
             name="%MakeLogEntry"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:utility">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/elog.gif"
+               label="%MakeLogEntry"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.logbook.ui.ELogEntryView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.help.toc">
