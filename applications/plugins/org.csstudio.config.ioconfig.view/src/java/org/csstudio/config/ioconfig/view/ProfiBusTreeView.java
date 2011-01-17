@@ -57,6 +57,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.config.ioconfig.view.actions.CreateStatisticAction;
 import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
 import org.csstudio.platform.logging.CentralLogger;
@@ -218,6 +219,8 @@ public class ProfiBusTreeView extends Composite {
     */
     private AbstractNodeEditor _openNodeEditor;
     private Action _createNewSiemensConfigFile;
+
+    private CreateStatisticAction _createNewStatisticFile;
     
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
@@ -375,6 +378,7 @@ public class ProfiBusTreeView extends Composite {
                 manager.add(new Separator());
                 manager.add(_createNewXMLConfigFile);
                 manager.add(_createNewSiemensConfigFile);
+                manager.add(_createNewStatisticFile);
             } else if (selectedNode instanceof IocDBO) {
                 setContriebutionActions("New Subnet", IocDBO.class, ProfibusSubnetDBO.class,
                                         manager);
@@ -502,6 +506,7 @@ public class ProfiBusTreeView extends Composite {
         makeDeletNodeAction();
         makeCreateNewXMLConfigFile();
         makeCreateNewSiemensConfigFile();
+        makeCreateNewStatisticFile();
         makeTreeNodeRenameAction();
         makeRefreshAction();
     }
@@ -545,6 +550,13 @@ public class ProfiBusTreeView extends Composite {
         _createNewSiemensConfigFile = new CreateWinModAction("Create WinMod", this);
         _createNewSiemensConfigFile.setToolTipText("Action Create tooltip");
         _createNewSiemensConfigFile
+                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    }
+    
+    private void makeCreateNewStatisticFile() {
+        _createNewStatisticFile = new CreateStatisticAction("Create Statistik", this);
+        _createNewStatisticFile.setToolTipText("Action Create tooltip");
+        _createNewStatisticFile
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
     }
     
