@@ -65,6 +65,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
      * @since 22.12.2010
      */
     private static final class CssStringValueTypeSupport extends EpicsCssValueTypeSupport<String> {
+
         /**
          * Constructor.
          */
@@ -101,6 +102,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
      * @author bknerr
      * @since 22.12.2010
      */
+    @SuppressWarnings("rawtypes")
     private static final class CssCollectionValueTypeSupport extends EpicsCssValueTypeSupport<Collection> {
         /**
          * Constructor.
@@ -230,7 +232,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssIntegerValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // Empty
         }
 
         @Override
@@ -419,6 +421,14 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         INSTALLED = true;
     }
 
+    @CheckForNull
+    public static <T> EpicsCssValueTypeSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass) {
+        try {
+            return (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        } catch (final TypeSupportException e) {
+            return null;
+        }
+    }
 
     @CheckForNull
     public static <T> IValue toIValue(@Nonnull final ICssAlarmValueType<T> cssValue) throws TypeSupportException {
@@ -427,9 +437,6 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsCssValueTypeSupport<T> support =
             (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
         // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
         return support.convertToIValue(valueData, (EpicsAlarm) cssValue.getAlarm(), cssValue.getTimestamp());
     }
@@ -442,9 +449,6 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         @SuppressWarnings("unchecked")
         final EpicsCssValueTypeSupport<T> support =
             (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 

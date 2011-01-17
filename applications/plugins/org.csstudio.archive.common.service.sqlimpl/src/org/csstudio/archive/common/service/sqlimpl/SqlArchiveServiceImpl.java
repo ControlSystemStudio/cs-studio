@@ -107,7 +107,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
                     throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
                                                       " could not be retrieved.", e);
                 }
-                return ADAPT_MGR.adapt(from, lastTimestamp);
+                return ArchiveEngineAdapter.adapt(from, lastTimestamp);
 
             } catch (final ArchiveServiceException e) {
                 // FIXME (bknerr) : How to propagate an exception from here???
@@ -120,7 +120,6 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(SqlArchiveServiceImpl.class);
 
-    static final ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
     public static final String ARCHIVE_PREF_KEY = "archive";
     public static final String PREFIX_PREF_KEY = "prefix";
@@ -170,7 +169,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
         // FIXME (bknerr) : data access object is created anew on every invocation?!
         final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            return ADAPT_MGR.adapt(engines.find(name));
+            return ArchiveEngineAdapter.adapt(engines.find(name));
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of engine for " + name + " failed.", e);
@@ -188,7 +187,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
         final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
             final ChannelGroupConfig[] groups = groupHelper.get(id.intValue());
-            return ADAPT_MGR.adapt(groups);
+            return ArchiveEngineAdapter.adapt(groups);
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel group configurations for engine " + id .intValue() + " failed.", e);
@@ -234,7 +233,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
         } catch (final Exception e) {
             throw new ArchiveServiceException("Retrieval of sample mode for " + sampleModeId.intValue() + " failed.", e);
         }
-        return ADAPT_MGR.adapt(sampleMode);
+        return ArchiveEngineAdapter.adapt(sampleMode);
     }
 
     /**
@@ -243,7 +242,10 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
     @Override
     public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
-            _archive.get().writeMetaData(getChannelConfig(channelName), sample);
+            final ChannelConfig cfg = getChannelConfig(channelName);
+            if (cfg.getMetaData() == null) {
+                _archive.get().writeMetaData(cfg, sample);
+            }
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Committing of meta data failed.", e);

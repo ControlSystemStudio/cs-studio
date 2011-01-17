@@ -2,6 +2,7 @@ package org.csstudio.utility.ldap.service;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.builder.IContentModelBuilder;
 
 /**
@@ -12,7 +13,8 @@ import org.csstudio.utility.treemodel.builder.IContentModelBuilder;
  * @version $Revision: 1.7 $
  * @since 07.09.2010
  */
-public interface ILdapContentModelBuilder extends IContentModelBuilder {
+public interface ILdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>>
+    extends IContentModelBuilder<T> {
 
     /**
      * Sets the current search result for which a new model should be build or

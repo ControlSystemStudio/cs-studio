@@ -24,50 +24,83 @@ package org.csstudio.archive.common.reader;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+
+import com.google.common.collect.Iterables;
 
 /**
- * Reduced value set iterator for service infrastructure.
+ * Raw value iterator for service infrastructure.
  *
  * @author bknerr
  * @since 21.12.2010
  */
-public class ServiceUsingValueIterator implements ValueIterator {
+public class DesyArchiveValueIterator implements ValueIterator {
+
+    // FIXME (bknerr with kasemir) :
+    // the available archive request types should be obtained over the extpoint/service from the
+    // implementation, offered to the client. then the client decides for a specific one, and asks for the
+    // data with the 'typed' request type information
+    private static final class ART implements IArchiveRequestType {
+        String _type;
+        public ART(@Nonnull final String type) {
+            _type = type;
+        }
+        @Override
+        public String getTypeIdentifier() {
+            return _type;
+        }
+
+        @Override
+        public String getDescription() {
+            return "blubb";
+        }
+    }
+    public static final ART APH_TYPE = new ART("AVG_PER_HOUR");
+    public static final ART APM_TYPE = new ART("AVG_PER_MINUTE");
+    public static final ART RAW_TYPE = new ART("RAW");
+
+
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ServiceUsingValueIterator.class);
+        CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
 
-    // Anti pattern galore - but minimally invasive
-    private static ArchiveReaderServiceTracker TRACKER =
-        new ArchiveReaderServiceTracker(Activator.getDefault().getContext());
-    static {
-        TRACKER.open();
-    }
-
-    private Iterable<IValue> _values;
-    private final Iterator<IValue> _iterator;
+    private Iterable<IValue> _values = Collections.emptyList();
+    private Iterator<IValue> _iterator = _values.iterator();
 
     /**
      * Constructor.
      */
-    ServiceUsingValueIterator(final String channelName,
-                              final ITimestamp start,
-                              final ITimestamp end) {
+    DesyArchiveValueIterator(@Nonnull final String channelName,
+                             @Nonnull final ITimestamp start,
+                             @Nonnull final ITimestamp end,
+                             @Nullable final IArchiveRequestType type) {
 
-        final IArchiveReaderService service = (IArchiveReaderService) TRACKER.getService();
-
+        IArchiveReaderService service;
         try {
-            _values = service.readSamples(channelName, start, end);
+            service = Activator.getDefault().getArchiveReaderService();
+            // TODO (bknerr with kasemir) :
+            // the available archive request types can be obtained over the service from the
+            // implementation, offered to the client, the client decides for a specific one, and asks for the
+            // data with the 'typed' request type information
+            _values = service.readSamples(channelName, start, end, type);
+
+            LOG.error("Samples: " + Iterables.size(_values));
+
         } catch (final ArchiveServiceException e) {
             LOG.error("Failure on retrieving samples from service layer.", e);
-            _values = Collections.emptyList();
+        } catch (final OsgiServiceUnavailableException e1) {
+            LOG.error("Archive service not present - forgot to (auto-)start?", e1);
         }
         _iterator = _values.iterator();
     }
@@ -84,6 +117,7 @@ public class ServiceUsingValueIterator implements ValueIterator {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public IValue next() throws Exception {
         return _iterator.next();
     }
