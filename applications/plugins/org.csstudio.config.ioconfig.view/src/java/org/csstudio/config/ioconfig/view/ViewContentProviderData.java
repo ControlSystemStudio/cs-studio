@@ -45,6 +45,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
 		} else if (newInput instanceof List) {
 			_facilities = (List<FacilityDBO>) newInput;
 		} else if (newInput instanceof String) {
+		    _facilities = null;
 			_wait = (String) newInput;
 		}
 
