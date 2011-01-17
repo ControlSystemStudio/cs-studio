@@ -110,7 +110,12 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         @Override
          public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> from) {
              try {
-                // TODO (bknerr) : support lookup for every single value... check performance
+                 // TODO (bknerr) : support lookup for every single value... check performance
+                 Object min = from.getMinimum();
+                 Object max = from.getMaximum();
+                 if (min != null && max != null) {
+                     return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
+                 }
                 return EpicsCssValueTypeSupport.toIValue(from.getData());
             } catch (final TypeSupportException e) {
                 return null;
