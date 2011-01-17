@@ -520,17 +520,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         switch (type) {
             case RAW : {
                 // (..., nanosecs, status_id, value)
-                nanosecs = result.getLong(3);
-                final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt(4));
-                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(4));
+                nanosecs = result.getLong("nanosecs");
+                final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt("status_id"));
+                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString("value"));
                 st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
             } break;
             case AVG_PER_MINUTE :
             case AVG_PER_HOUR : {
                 // (..., avg_val, min_val, max_val)
-                value = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(3));
-                min = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(4));
-                max = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble(5));
+                value = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("avg_val"));
+                min = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("min_val"));
+                max = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("max_val"));
                 st = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
             } break;
             default:

@@ -31,6 +31,9 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code>.
+     */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.reader";
 
     private static Activator INSTANCE;
