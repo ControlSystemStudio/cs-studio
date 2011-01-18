@@ -24,13 +24,21 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 
@@ -204,6 +212,30 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         _byteOrdering = byteOrdering;
     }
 
+    // TODO (hrickens) : Prototype mit Dokumenten verbindne.
+//    /**
+//     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
+//     *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
+//     *  -  Für MIME_FILES ist das Grand: select.
+//     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
+//     *
+//     * @return Documents for the Node.
+//     */
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+////    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+//    public Set<DocumentDBO> getDocuments() {
+//        return _documents;
+//    }
+//
+//    /**
+//     *
+//     * @param documents set the Documents for this node.
+//     */
+//    public void setDocuments(final Set<DocumentDBO> documents) {
+//        _documents = documents;
+//    }
+    
 
     // Transients
 
