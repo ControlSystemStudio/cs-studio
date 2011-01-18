@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
@@ -55,10 +56,21 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
  * @version $Revision$
  * @since 07.05.2007
  */
-public class NameSpaceLDAP extends NameSpace {
+public class LdapNameSpace extends NameSpace {
+    
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(NameSpaceLDAP.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapNameSpace.class);
 
+    private LdapSearchResult _resultList = new LdapSearchResult();
+
+    /**
+     * Constructor.
+     */
+    public LdapNameSpace() {
+        // Empty
+    }
+    
+    
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
@@ -66,7 +78,7 @@ public class NameSpaceLDAP extends NameSpace {
 	@Override
 	public void start() {
 		try{
-            final NameSpaceSearchResult nameSpaceResultList = getNameSpaceResultList();
+            final NameSpaceSearchResult nameSpaceResultList = getSearchResult();
             if (nameSpaceResultList instanceof LdapSearchResult) {
                 final ILdapService service = Activator.getDefault().getLdapService();
                 if (service == null) {
@@ -88,8 +100,9 @@ public class NameSpaceLDAP extends NameSpace {
                                                                        SearchControls.ONELEVEL_SCOPE);
                 }
                 if (result != null) {
-                    final List<ControlSystemItem> csiResultList = getCSIResultList(result);
-                    updateResultList(csiResultList);
+                    NameSpaceSearchResult searchResult = getSearchResult();
+                    searchResult.setCSIResultList(createCSIResultList(result));
+                    searchResult.notifyView();
                 }
 
             } else{
@@ -105,7 +118,7 @@ public class NameSpaceLDAP extends NameSpace {
 
 
 	@Nonnull
-	private List<ControlSystemItem> getCSIResultList(@Nonnull final ILdapSearchResult result) {
+	private List<ControlSystemItem> createCSIResultList(@Nonnull final ILdapSearchResult result) {
 
 	    final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
 	    final Set<SearchResult> answerSet = result.getAnswerSet();
@@ -142,4 +155,27 @@ public class NameSpaceLDAP extends NameSpace {
 	    return tmpList;
 
 	}
+
+
+    @Override
+    @CheckForNull
+    public LdapSearchResult getSearchResult() {
+        return _resultList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NameSpace createNew() {
+        return new LdapNameSpace();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop() {
+        LOG.warn("LDAP lookup is synchronous and thus not cancellable.");
+    }
 }

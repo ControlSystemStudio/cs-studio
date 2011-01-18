@@ -37,7 +37,7 @@ import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
  * @version $Revision$
  * @since 15.05.2007
  */
-public class NameSpaceResultListTine extends NameSpaceSearchResult {
+public class TineSearchResult extends NameSpaceSearchResult {
 
     /** The list with results from Tine namespace server.*/
     private List<ControlSystemItem> _csiResult = Collections.emptyList();
@@ -46,7 +46,7 @@ public class NameSpaceResultListTine extends NameSpaceSearchResult {
     /** {@inheritDoc}*/
     @Override
     public final NameSpaceSearchResult getNew() {
-        return new NameSpaceResultListTine();
+        return new TineSearchResult();
     }
 
     /** {@inheritDoc}*/
@@ -69,6 +69,5 @@ public class NameSpaceResultListTine extends NameSpaceSearchResult {
     @Override
     public final void setCSIResultList(final List<ControlSystemItem> resultList) {
         _csiResult = new ArrayList<ControlSystemItem>(resultList);
-        notifyView();
     }
 }
