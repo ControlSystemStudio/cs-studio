@@ -18,7 +18,9 @@ public class SWTUtil {
         @Override
         public void post(Runnable task) {
             try {
-            	PlatformUI.getWorkbench().getDisplay().asyncExec(task);
+            	if (!PlatformUI.getWorkbench().getDisplay().isDisposed()) {
+            	    PlatformUI.getWorkbench().getDisplay().asyncExec(task);
+            	}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
