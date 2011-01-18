@@ -5,6 +5,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.data.VImage;
@@ -17,11 +18,21 @@ public class VImageDisplay extends Canvas {
 	}
 	
 	private VImage vImage;
+	private boolean stretched;
+	
+	public boolean isStretched() {
+		return stretched;
+	}
+	
+	public void setStretched(boolean stretched) {
+		this.stretched = stretched;
+	}
 	
 	public void setVImage(VImage vImage) {
-		this.vImage = vImage;
-		setSize(vImage.getWidth(), vImage.getHeight());
-		redraw();
+		if (!isDisposed()) {
+			this.vImage = vImage;
+			redraw();
+		}
 	}
 	
 	public VImage getVImage() {
@@ -33,8 +44,21 @@ public class VImageDisplay extends Canvas {
 		@Override
 		public void paintControl(PaintEvent e) {
 			GC gc = e.gc;
+			
 			if (vImage != null) {
-				gc.drawImage(SWTUtil.toImage(gc, vImage), 0, 0);
+				Image image = SWTUtil.toImage(gc, vImage);
+				if (stretched) {
+					gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
+							0, 0, getClientArea().width, getClientArea().height);
+				} else {
+					gc.drawImage(image, 0, 0);
+					// draw the background on the right of the image
+					drawBackground(gc, image.getBounds().width, 0,
+							Math.max(0, getClientArea().width - image.getBounds().width), image.getBounds().height);
+					// draw the background below the image
+					drawBackground(gc, 0, image.getBounds().height,
+							getClientArea().width, Math.max(0, getClientArea().height - image.getBounds().height));
+				}
 			} else {
 				drawBackground(gc, 0, 0, getSize().x, getSize().y);
 			}
