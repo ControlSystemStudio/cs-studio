@@ -49,7 +49,7 @@ else
   cd ext
   if [[ ! -f eclipse-rcp-helios-SR1-linux-gtk.tar.gz ]]
     then
-    wget  wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/helios/SR1/eclipse-rcp-helios-SR1-linux-gtk.tar.gz
+    wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/helios/SR1/eclipse-rcp-helios-SR1-linux-gtk.tar.gz
     fi
   if [[ ! -f eclipse-3.6.1-delta-pack.zip ]]
   then
