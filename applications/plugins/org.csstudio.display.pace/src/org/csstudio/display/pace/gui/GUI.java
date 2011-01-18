@@ -2,14 +2,14 @@ package org.csstudio.display.pace.gui;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pace.Messages;
 import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
+import org.csstudio.platform.ui.swt.AutoSizeColumn;
+import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,35 +49,35 @@ import org.eclipse.ui.IWorkbenchPartSite;
  *  selected Cell (PV).
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *  
- *  
+ *
+ *
  *    reviewed by Delphy 01/28/09
  */
 public class GUI implements ModelListener, IMenuListener, ISelectionProvider
 {
     /** Minimum column width */
     private static final int MIN_SIZE = 100;
-    
+
     /** Model handed by this GUI */
     final private Model model;
 
     /** Table Viewer for Model's "Instance" rows */
     private TableViewer table_viewer;
-    
+
     /** Currently selected Cell in Model or <code>null</code> */
     private Cell selected_cell = null;
-    
+
     /** Listeners that registered for this ISelectionProvider */
     final private ArrayList<ISelectionChangedListener> listeners =
         new ArrayList<ISelectionChangedListener>();
-    
+
     /** Throttle for cell updates.
      *  The model will 'trigger' this throttle in <code>cellUpdate</code>.
      *  For individual cell changes, the throttle causes an <code>update</code>
      *  after a small delay, but bursts of cell changes get combined into a
      *  delayed overall refresh of the table, since that is more efficient
      *  than many individual cell updates.
-     *  
+     *
      *  Statistics are always iffy, but with the "LLRF_HPM_ADC_Limits"
      *  config file which contains about 7 * 97 * 2Hz, i.e. about 1000
      *  updates per second, the CPU load dropped from near 100% to about
@@ -93,9 +94,10 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             if (table.isDisposed())
                 return;
             // Call can originate from non-UI thread in case of PV updates,
-            // so transfer to UI thread when accessing the SWT table 
+            // so transfer to UI thread when accessing the SWT table
             table.getDisplay().asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     if (table.isDisposed())
@@ -127,21 +129,24 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
             site.setSelectionProvider(this);
     }
 
-    // @see ISelectionProvider  
+    // @see ISelectionProvider
+    @Override
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
         listeners.add(listener);
     }
 
-    // @see ISelectionProvider  
+    // @see ISelectionProvider
+    @Override
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener)
     {
         listeners.remove(listener);
     }
 
-    // @see ISelectionProvider  
+    // @see ISelectionProvider
+    @Override
     public void setSelection(final ISelection selection)
     {
         // NOP, don't allow outside code to change selection
@@ -150,13 +155,14 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
     /** Provide selected Cells of model or <code>null</code>
      *  @see ISelectionProvider
      */
+    @Override
     public ISelection getSelection()
     {
         if (selected_cell == null)
             return null;
         return new StructuredSelection(selected_cell);
     }
-    
+
     /** Create GUI elements
      *  @param parent Parent widget
      *  @param model Model to display
@@ -166,7 +172,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         final GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         parent.setLayout(layout);
-        
+
         // Create TableViewer that displays Model in Table
         table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.VIRTUAL |
@@ -181,12 +187,12 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
-        
+
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
-    
+
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new ModelInstanceProvider());
-    
+
         // Create table columns
         TableViewerColumn col =
             AutoSizeColumn.make(table_viewer, Messages.SystemColumn, MIN_SIZE, 100);
@@ -235,7 +241,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                             Messages.SetValue_Title,
                             message,
                             model.getInstance(0).getCell(column).getValue(), null);
-        if (input.open() != InputDialog.OK)
+        if (input.open() != Window.OK)
             return;
         // Update value of selected cells
         final String user_value = input.getValue();
@@ -258,6 +264,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         // this then leads to all selected Cells.
         table_viewer.getTable().addListener(SWT.MouseDown, new Listener()
         {
+            @Override
             public void handleEvent(final Event event)
             {
                 // Get cell in SWT Table from mouse position
@@ -277,7 +284,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                     return;
                 }
                 selected_cell = instance.getCell(col_idx-1);
- 
+
                 // Update selection listeners about newly selected cells
                 for (ISelectionChangedListener listener : listeners)
                     listener.selectionChanged(new SelectionChangedEvent(GUI.this, getSelection()));
@@ -305,6 +312,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      *  @param manager Menu manager
      *  @see IMenuListener
      */
+    @Override
     public void menuAboutToShow(final IMenuManager manager)
     {
         final Cell cells[] = getSelectedCells();
@@ -327,7 +335,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
 
         return getSelectedCells(selected_cell.getColumn());
     }
-    
+
     /** @param column Column from which to get the cells
      *  @return Currently selected editable(!) cells or <code>null</code>
      */
@@ -357,7 +365,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      *  Could be called by cell after we edited it, or maybe in the
      *  future other forces will change the cell.
      *  In any case: A cell changed, and we have to update the GUI.
-     *  
+     *
      *  @see ModelListener
      */
     public void cellUpdate(final Cell cell)
