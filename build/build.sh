@@ -47,16 +47,16 @@ then
 else
   mkdir -p ext
   cd ext
-  if [[ ! -f eclipse-rcp-galileo-SR2-linux-gtk.tar.gz ]]
+  if [[ ! -f eclipse-rcp-helios-SR1-linux-gtk.tar.gz ]]
     then
-    wget http://carroll.aset.psu.edu/pub/eclipse/technology/epp/downloads/release/galileo/SR2/eclipse-rcp-galileo-SR2-linux-gtk.tar.gz
+    wget  wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/helios/SR1/eclipse-rcp-helios-SR1-linux-gtk.tar.gz
     fi
-  if [[ ! -f eclipse-3.5.2-delta-pack.zip ]]
+  if [[ ! -f eclipse-3.6.1-delta-pack.zip ]]
   then
-    wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.5.2-201002111343/eclipse-3.5.2-delta-pack.zip
+    wget http://download.eclipse.org/eclipse/downloads/drops/R-3.6.1-201009090800/eclipse-3.6.1-delta-pack.zip
   fi
-  tar -xzvf eclipse-rcp-galileo-SR2-linux-gtk.tar.gz
-  unzip -o eclipse-3.5.2-delta-pack.zip
+  tar -xzvf eclipse-rcp-helios-SR1-linux-gtk.tar.gz
+  unzip -o eclipse-3.6.1-delta-pack.zip
   cd ..
 fi
 
