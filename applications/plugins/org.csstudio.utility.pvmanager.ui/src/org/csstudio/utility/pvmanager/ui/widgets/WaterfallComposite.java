@@ -9,6 +9,10 @@ import org.epics.pvmanager.data.VImage;
 
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class WaterfallComposite extends Composite {
 	
@@ -21,9 +25,16 @@ public class WaterfallComposite extends Composite {
 	 */
 	public WaterfallComposite(Composite parent, int style) {
 		super(parent, style);
+		setLayout(new FormLayout());
 		
 		imageDisplay = new VImageDisplay(this);
-		imageDisplay.setBounds(0, 0, 450, 300);
+		imageDisplay.setStretched(true);
+		FormData fd_imageDisplay = new FormData();
+		fd_imageDisplay.bottom = new FormAttachment(100);
+		fd_imageDisplay.right = new FormAttachment(100);
+		fd_imageDisplay.top = new FormAttachment(0);
+		fd_imageDisplay.left = new FormAttachment(0);
+		imageDisplay.setLayoutData(fd_imageDisplay);
 
 	}
 	

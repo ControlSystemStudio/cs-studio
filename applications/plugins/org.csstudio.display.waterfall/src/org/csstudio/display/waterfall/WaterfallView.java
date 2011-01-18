@@ -17,7 +17,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
 import org.csstudio.utility.pvmanager.ui.widgets.WaterfallComposite;
 
-
 /**
  * This sample class demonstrates how to plug-in a new
  * workbench view. The view shows data obtained from the
@@ -76,10 +75,10 @@ public class WaterfallView extends ViewPart {
 		
 		final WaterfallComposite waterfallComposite = new WaterfallComposite(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.right = new FormAttachment(combo, 0, SWT.RIGHT);
-		fd_waterfallComposite.bottom = new FormAttachment(combo, 421, SWT.BOTTOM);
-		fd_waterfallComposite.top = new FormAttachment(combo, 6);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
+		fd_waterfallComposite.top = new FormAttachment(combo, 6);
+		fd_waterfallComposite.right = new FormAttachment(combo, 0, SWT.RIGHT);
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
 		
 		ComboHistoryHelper name_helper = new ComboHistoryHelper(Activator.getDefault()
