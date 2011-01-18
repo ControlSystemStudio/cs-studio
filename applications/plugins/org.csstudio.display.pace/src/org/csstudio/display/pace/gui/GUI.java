@@ -8,15 +8,15 @@ import org.csstudio.display.pace.model.Column;
 import org.csstudio.display.pace.model.Instance;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -33,12 +33,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the Model
@@ -56,7 +55,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public class GUI implements ModelListener, IMenuListener, ISelectionProvider
 {
     /** Minimum column width */
-    private static final int MIN_SIZE = 100;
+    private static final int MIN_SIZE = 80;
 
     /** Model handed by this GUI */
     final private Model model;
@@ -169,9 +168,10 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      */
     private void createComponents(final Composite parent, final Model model)
     {
-        final GridLayout layout = new GridLayout();
-        layout.numColumns = 1;
-        parent.setLayout(layout);
+        // Note: TableColumnLayout requires the TableViewer to be in its
+        // own Composite!
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        parent.setLayout(table_layout);
 
         // Create TableViewer that displays Model in Table
         table_viewer = new TableViewer(parent,
@@ -181,34 +181,47 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        GridData gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
+        createColumns(table_viewer, table_layout);
 
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
 
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new ModelInstanceProvider());
 
-        // Create table columns
-        TableViewerColumn col =
-            AutoSizeColumn.make(table_viewer, Messages.SystemColumn, MIN_SIZE, 100);
-        col.setLabelProvider(new InstanceLabelProvider(-1));
+        // table viewer is set up to handle data of type Model.
+        // Connect to specific model
+        table_viewer.setInput(model);
+    }
+
+    /** @param table_viewer {@link TableViewer} to which to add columns for GlobalAlarm display
+     *  @param table_layout {@link TableColumnLayout} to use for column auto-sizing
+     */
+    private void createColumns(final TableViewer table_viewer, final TableColumnLayout table_layout)
+    {
+        // Fixed 'System' column
+        TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+        TableColumn col = view_col.getColumn();
+        col.setText(Messages.SystemColumn);
+        table_layout.setColumnData(col, new ColumnWeightData(100, MIN_SIZE));
+//        col.setMoveable(true);
+        view_col.setLabelProvider(new InstanceLabelProvider(-1));
+
+        // Model-driven data columns
         for (int c=0;  c<model.getColumnCount();  ++c)
         {
             final Column model_col = model.getColumn(c);
-            col = AutoSizeColumn.make(table_viewer,
-                                model_col.getName(), MIN_SIZE, 100);
+
+            view_col = new TableViewerColumn(table_viewer, 0);
+            col = view_col.getColumn();
+            col.setText(model_col.getName());
+            table_layout.setColumnData(col, new ColumnWeightData(100, MIN_SIZE));
+            col.setMoveable(true);
             // Tell column how to display the model elements
-            col.setLabelProvider(new InstanceLabelProvider(c));
+            view_col.setLabelProvider(new InstanceLabelProvider(c));
             if (! model_col.isReadonly())
-                col.setEditingSupport(new ModelCellEditor(table_viewer, c));
-            // Clicking on column header allows entry into _all_ cells of
-            // model
-            col.getColumn().addSelectionListener(new SelectionAdapter()
+                view_col.setEditingSupport(new ModelCellEditor(table_viewer, c));
+            // Clicking on column header allows entry into _all_ cells of model
+            col.addSelectionListener(new SelectionAdapter()
             {
                 @Override
                 public void widgetSelected(SelectionEvent e)
@@ -217,10 +230,6 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                 }
             });
         }
-        new AutoSizeControlListener(table);
-        // table viewer is set up to handle data of type Model.
-        // Conenct to specific model
-        table_viewer.setInput(model);
     }
 
     /** Set all cells in column to a user-entered value
@@ -368,6 +377,7 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
      *
      *  @see ModelListener
      */
+    @Override
     public void cellUpdate(final Cell cell)
     {
         // Notify the throttle mechanism of changed cell
