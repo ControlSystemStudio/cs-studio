@@ -9,32 +9,42 @@ import org.eclipse.swt.graphics.Image;
  * @author Rok Povsic
  */
 public class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvider {
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public Image getColumnImage(Object element, int columnIndex) {
-		return null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getColumnText(Object element, int columnIndex) {
-		
-		if(element instanceof AuthorizeIdEntry) {
-			AuthorizeIdEntry entry = (AuthorizeIdEntry) element;
-			switch(columnIndex) {
-			case AuthorizeIdView.COL_EAIG:
-				return entry.getEaig();
-			case AuthorizeIdView.COL_EAIR:
-				return entry.getEair();
-			default:
-				return null;
-			}
-		}
-		return null;
-	}
-
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    public Image getColumnImage(Object element, int columnIndex) {
+        return null;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getColumnText(Object element, int columnIndex) {
+        
+        String result = null;
+        
+        if (element instanceof AuthorizeIdEntry) {
+            AuthorizeIdEntry entry = (AuthorizeIdEntry) element;
+            switch (columnIndex) {
+                case 0: // Group
+                    result = entry.getEaig();
+                    break;
+                case 1: // Role
+                    result = entry.getEair();
+                    break;
+                case 2: // Users
+                    result = getUsers(entry);
+                    break;
+                default:
+                    // ok
+            }
+        }
+        return result;
+    }
+    
+    private String getUsers(AuthorizeIdEntry entry) {
+        return "unknown";
+    }
+    
 }
