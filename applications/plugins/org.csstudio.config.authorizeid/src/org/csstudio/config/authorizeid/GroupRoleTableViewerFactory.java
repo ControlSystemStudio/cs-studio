@@ -40,7 +40,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-class GroupRoleTableViewerFactory {
+enum GroupRoleTableViewerFactory {
+    
+    INSTANCE;
     
     enum GroupRoleTableColumns {
         GROUP, ROLE, USER
@@ -53,7 +55,7 @@ class GroupRoleTableViewerFactory {
      * @param parent a composite
      */
     @Nonnull
-    public static TableViewer createGroupRoleTableViewer(@Nonnull final Composite parent) {
+    public TableViewer createTableViewer(@Nonnull final Composite parent) {
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         parent.setLayout(tableColumnLayout);
         
@@ -84,7 +86,7 @@ class GroupRoleTableViewerFactory {
     }
     
     @Nonnull
-    private static TableColumn createGroupColumn(@Nonnull final TableViewer viewer,
+    private TableColumn createGroupColumn(@Nonnull final TableViewer viewer,
                                                  @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
@@ -96,7 +98,7 @@ class GroupRoleTableViewerFactory {
     }
     
     @Nonnull
-    private static TableColumn createRoleColumn(@Nonnull final TableViewer viewer,
+    private TableColumn createRoleColumn(@Nonnull final TableViewer viewer,
                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
@@ -109,7 +111,7 @@ class GroupRoleTableViewerFactory {
     }
     
     @Nonnull
-    private static TableColumn createUsersColumn(@Nonnull final TableViewer viewer,
+    private TableColumn createUsersColumn(@Nonnull final TableViewer viewer,
                                                  @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();

@@ -34,8 +34,6 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * Defines cell contents for the authorize id table (the topmost one).
@@ -83,9 +81,6 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
             case REGISTERED_AS_EXTENSION:
                 // no string here, see getColumnImage
                 break;
-            case ORIGINATING_PLUGIN:
-                result = getOriginatingPlugin(authorizationId);
-                break;
         }
         return result;
     }
@@ -109,12 +104,6 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
         RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
         return registeredAuthorizationId == null ? null : registeredAuthorizationId
                 .getDescription();
-    }
-    
-    @CheckForNull
-    private String getOriginatingPlugin(@Nonnull final String authorizationId) {
-        RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-        return registeredAuthorizationId == null ? null : registeredAuthorizationId.getContributor();
     }
     
 }

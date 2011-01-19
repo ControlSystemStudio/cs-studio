@@ -22,6 +22,8 @@
 package org.csstudio.config.authorizeid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
@@ -34,6 +36,7 @@ import org.csstudio.config.authorizeid.ldap.LdapAccess;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.security.RegisteredAuthorizationId;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -65,13 +68,13 @@ import org.eclipse.ui.part.ViewPart;
 public class AuthorizeIdView extends ViewPart {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AuthorizeIdView.class);
     
-    
     public static final String ID = "org.csstudio.config.authorizeid";//$NON-NLS-1$
     
     private Combo _categoryCombo;
     
     private TableViewer _authorizeIdTableViewer;
     private TableViewer _groupRoleTableViewer;
+    private TableViewer _registeredAuthorizeIdTableViewer;
     
     //    private static final String SECURITY_ID = "AuthorizeId";
     private static final String SECURITY_ID = "remoteManagement";
@@ -86,13 +89,26 @@ public class AuthorizeIdView extends ViewPart {
         final Composite authIDPanel = new Composite(parent, SWT.FILL);
         authIDPanel.setLayout(new GridLayout(3, false));
         authIDPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
+        
         final Composite groupRolePanel = new Composite(parent, SWT.FILL);
         groupRolePanel.setLayout(new GridLayout(2, false));
         groupRolePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
+        final Composite registeredAuthIdPanel = new Composite(parent, SWT.FILL);
+        registeredAuthIdPanel.setLayout(new GridLayout(1, false));
+        registeredAuthIdPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
         createAuthIdPanel(authIDPanel);
         createGroupRolePanel(groupRolePanel);
+        createRegisteredAuthIdPanel(registeredAuthIdPanel);
+        
+        showRegisteredAuthIds();
+    }
+    
+    private void showRegisteredAuthIds() {
+        Collection<RegisteredAuthorizationId> authIds = SecurityFacade.getInstance()
+                .getRegisteredAuthorizationIds();
+        _registeredAuthorizeIdTableViewer.setInput(authIds.toArray());
     }
     
     private void createAuthIdPanel(@Nonnull final Composite authIDPanel) {
@@ -129,11 +145,11 @@ public class AuthorizeIdView extends ViewPart {
             }
             
         });
-
+        
         final Composite authIdTablePanel = new Composite(authIDPanel, SWT.NONE);
         authIdTablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        _authorizeIdTableViewer = AuthorizeIdTableViewerFactory
-                .createAuthorizeIdTableViewer(authIdTablePanel);
+        _authorizeIdTableViewer = AuthorizeIdTableViewerFactory.INSTANCE
+                .createTableViewer(authIdTablePanel);
         getAuthorizeIdTable().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
@@ -147,11 +163,11 @@ public class AuthorizeIdView extends ViewPart {
         createButtons1(authIdButtonPanel);
     }
     
-    
     private void createGroupRolePanel(@Nonnull final Composite groupRolePanel) {
         final Composite groupRoleTablePanel = new Composite(groupRolePanel, SWT.NONE);
         groupRoleTablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        _groupRoleTableViewer = GroupRoleTableViewerFactory.createGroupRoleTableViewer(groupRoleTablePanel);
+        _groupRoleTableViewer = GroupRoleTableViewerFactory.INSTANCE
+                .createTableViewer(groupRoleTablePanel);
         getGroupRoleTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         final Composite groupRoleButtonPanel = new Composite(groupRolePanel, SWT.NONE);
@@ -159,11 +175,18 @@ public class AuthorizeIdView extends ViewPart {
         groupRoleButtonPanel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         createButtons2(groupRoleButtonPanel);
     }
-
+    
+    private void createRegisteredAuthIdPanel(@Nonnull final Composite registeredAuthIdPanel) {
+        final Composite tablePanel = new Composite(registeredAuthIdPanel, SWT.NONE);
+        tablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        _registeredAuthorizeIdTableViewer = RegisteredAuthorizationIdTableViewerFactory.INSTANCE
+                .createTableViewer(tablePanel);
+        getRegisteredAuthorizeIdTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    }
     
     /**
      * Creates first set of buttons.
-     * @param parenta composite
+     * @param parent a composite
      */
     private void createButtons1(final Composite parent) {
         /**
@@ -490,8 +513,8 @@ public class AuthorizeIdView extends ViewPart {
      * Deletes all data and fills the group / role table again.
      */
     private void refreshGroupRoleTable() {
-        final GroupRoleTableEntry[] entries = LdapAccess.getProp(getAuthorizeIdTable().getSelection()[0]
-                .getText(), _categoryCombo.getText());
+        final GroupRoleTableEntry[] entries = LdapAccess.getProp(getAuthorizeIdTable()
+                .getSelection()[0].getText(), _categoryCombo.getText());
         
         _groupRoleTableViewer.setInput(entries);
     }
@@ -536,6 +559,11 @@ public class AuthorizeIdView extends ViewPart {
     @Nonnull
     public Table getGroupRoleTable() {
         return _groupRoleTableViewer.getTable();
+    }
+    
+    @Nonnull
+    public Table getRegisteredAuthorizeIdTable() {
+        return _registeredAuthorizeIdTableViewer.getTable();
     }
     
     @Override
