@@ -18,10 +18,12 @@ org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
+org.csstudio.display.channelfinderviewer
 org.csstudio.display.pvtable
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
+org.csstudio.multichannelViewer
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
@@ -36,6 +38,9 @@ org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.utility.adlParser
+org.csstudio.utility.channel
+org.csstudio.utility.channelfinder
+org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.ldap
 org.csstudio.utility.namespace.utility
@@ -52,6 +57,8 @@ org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jdom
+org.csstudio.platform.libs.jersey
+org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
