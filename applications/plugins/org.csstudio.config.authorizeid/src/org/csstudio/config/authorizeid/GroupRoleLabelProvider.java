@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  * Provides data for group / role table
  * @author Rok Povsic / Jörg Penning
  */
-public class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvider {
+class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvider {
     
     /**
      * {@inheritDoc}
@@ -39,8 +39,8 @@ public class AuthorizeIdLabelProvider extends LabelProvider implements ITableLab
         
         String result = null;
         
-        if (element instanceof AuthorizeIdEntry) {
-            AuthorizeIdEntry entry = (AuthorizeIdEntry) element;
+        if (element instanceof GroupRoleTableEntry) {
+            GroupRoleTableEntry entry = (GroupRoleTableEntry) element;
             switch (columnIndex) {
                 case 0: // Group
                     result = entry.getEaig();
@@ -58,7 +58,7 @@ public class AuthorizeIdLabelProvider extends LabelProvider implements ITableLab
         return result;
     }
     
-    private String getUsers(AuthorizeIdEntry entry) {
+    private String getUsers(GroupRoleTableEntry entry) {
         String result = "unknown";
         
         try {
