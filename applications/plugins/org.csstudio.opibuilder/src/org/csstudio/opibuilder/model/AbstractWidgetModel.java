@@ -226,6 +226,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		pvMap.put(pvNameProperty, pvValueProperty);
 	}
 	
+	private void checkPropertyExist(Object propID) {
+		if(!propertyMap.containsKey(propID))
+			throw new NonExistPropertyException(getName(), propID.toString());
+	}
+	
 	protected void configureBaseProperties() {
 		addProperty(new IntegerProperty(PROP_WIDTH, "Width", 
 				WidgetPropertyCategory.Position, 100, 1, 10000));
@@ -376,7 +381,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public Object getPropertyValue(Object id) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);
 		return propertyMap.get(id).getPropertyValue();
 	}
 	
@@ -533,17 +538,18 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	}
 	
 	public void setPropertyValue(Object id, Object value) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);		
 		propertyMap.get(id).setPropertyValue(value);
+		
 	}
 	
 	public void setPropertyValue(Object id, Object value, boolean forceFire) {
-		Assert.isTrue(propertyMap.containsKey(id));
+		checkPropertyExist(id);
 		propertyMap.get(id).setPropertyValue(value, forceFire);
 	}
 	
 	public void setPropertyVisible(final String prop_id, final boolean visible){
-		Assert.isTrue(propertyMap.containsKey(prop_id));
+		checkPropertyExist(prop_id);
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		if(property.setVisibleInPropSheet(visible)){
 			if(visible)
