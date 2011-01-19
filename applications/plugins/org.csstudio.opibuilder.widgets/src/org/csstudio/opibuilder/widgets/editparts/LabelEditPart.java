@@ -91,7 +91,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((WrappableTextFigure)figure).setSelectable(
-						!((ActionsInput)newValue).getActionsList().isEmpty() || 
+						!getWidgetModel().getActionsInput().getActionsList().isEmpty() || 
 						getWidgetModel().getTooltip().trim().length() > 0);
 				return false;
 			}
