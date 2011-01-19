@@ -55,6 +55,8 @@ org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
+org.csstudio.platform.libs.glazedlists
+org.csstudio.platform.libs.guava
 org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jdom
 org.csstudio.platform.libs.jersey
