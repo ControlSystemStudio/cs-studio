@@ -62,7 +62,6 @@ public class DalPlugin extends Plugin {
 	 */
 	public DalPlugin() {
 		plugin = this;
-		applicationContext = new CssApplicationContext("CSS");
 	}
 
 	/**
@@ -84,9 +83,9 @@ public class DalPlugin extends Plugin {
 	 * 
 	 * @return the simple dal broker
 	 */
-	public SimpleDALBroker getSimpleDALBroker() {
+	public synchronized SimpleDALBroker getSimpleDALBroker() {
 		if (broker == null) {
-			broker = SimpleDALBroker.newInstance(applicationContext);
+			broker = SimpleDALBroker.newInstance(getApplicationContext());
 		}
 		return broker;
 	}
@@ -96,7 +95,9 @@ public class DalPlugin extends Plugin {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		applicationContext.destroy();
+		if (applicationContext!=null) {
+			applicationContext.destroy();
+		}
 		super.stop(context);
 	}
 
@@ -105,7 +106,10 @@ public class DalPlugin extends Plugin {
 	 * 
 	 * @return the context
 	 */
-	public AbstractApplicationContext getApplicationContext() {
+	public synchronized AbstractApplicationContext getApplicationContext() {
+		if (applicationContext==null) {
+			applicationContext = new CssApplicationContext("CSS");
+		}
 		return applicationContext;
 	}
 }
