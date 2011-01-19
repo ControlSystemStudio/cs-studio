@@ -38,7 +38,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * Defines cell contents for the authorize id table (the upper one).
+ * Defines cell contents for the authorize id table (the topmost one).
  * If changes are made, make sure it corresponds to the column layout as defined in the viewer factory.
  * 
  * @author jpenning
@@ -53,7 +53,7 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
             .getImageFromPlugin(AuthorizeIdActivator.PLUGIN_ID, "/res/icons/disabled_co.gif");
     
     @Override
-    @Nullable
+    @CheckForNull
     public Image getColumnImage(@Nullable Object element, int columnIndex) {
         Image result = null;
         
@@ -82,19 +82,12 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
                 break;
             case REGISTERED_AS_EXTENSION:
                 // no string here, see getColumnImage
-                // result = getIsRegisteredAsExtension(authorizationId);
                 break;
             case ORIGINATING_PLUGIN:
                 result = getOriginatingPlugin(authorizationId);
                 break;
         }
         return result;
-    }
-    
-    @Nonnull
-    private String getIsRegisteredAsExtension(@Nonnull final String authorizationId) {
-        RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-        return registeredAuthorizationId == null ? "no" : "yes";
     }
     
     @CheckForNull
@@ -121,7 +114,7 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
     @CheckForNull
     private String getOriginatingPlugin(@Nonnull final String authorizationId) {
         RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-        return registeredAuthorizationId == null ? null : "unknown";
+        return registeredAuthorizationId == null ? null : registeredAuthorizationId.getContributor();
     }
     
 }
