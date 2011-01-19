@@ -30,7 +30,15 @@ public class ScriptData implements IAdaptable {
 	 */
 	protected List<PVTuple> pvList;
 	
+	/**
+	 * Check PVs connectivity before executing the script. 
+	 */
 	private boolean checkConnectivity = true;
+	
+	/**
+	 * Skip the executions triggered by PVs first connection.
+	 */
+	private boolean skipPVsFirstConnection = false;
 	
 	
 	public ScriptData() {
@@ -92,6 +100,7 @@ public class ScriptData implements IAdaptable {
 		ScriptData copy = new ScriptData();
 		copy.setPath(path);
 		copy.setCheckConnectivity(checkConnectivity);
+		copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
 		for(PVTuple pv : pvList){
 			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
 		}
@@ -123,6 +132,20 @@ public class ScriptData implements IAdaptable {
 			};
 		
 		return null;
+	}
+
+	/**
+	 * @param skipPVsFirstConnection Skip the executions triggered by PVs first connection.
+	 */
+	public void setSkipPVsFirstConnection(boolean skipPVsFirstConnection) {
+		this.skipPVsFirstConnection = skipPVsFirstConnection;
+	}
+
+	/**
+	 * @return Skip the executions triggered by PVs first connection if it is true.
+	 */
+	public boolean isSkipPVsFirstConnection() {
+		return skipPVsFirstConnection;
 	}
 
 	

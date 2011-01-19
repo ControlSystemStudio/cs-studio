@@ -45,7 +45,7 @@ public class PVTupleTableEditor extends Composite {
 	private List<PVTuple> pvTupleList;
 
 	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.None);
 		this.pvTupleList = pvTupleList;
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginLeft = 0;
