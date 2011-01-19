@@ -39,6 +39,7 @@ import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
@@ -118,6 +119,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		if(allPropIds.contains(AbstractWidgetModel.PROP_COLOR_FOREGROUND))
 			figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				getWidgetModel().getForegroundColor()));
+		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
+			figure.setFont(getWidgetModel().getFont().getSWTFont());
 		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_VISIBLE))
 			figure.setVisible(getExecutionMode() == ExecutionMode.RUN_MODE ? 
@@ -344,6 +348,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);
+		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(((OPIFont)newValue).getSWTFont());	
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
+		
 		
 		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
