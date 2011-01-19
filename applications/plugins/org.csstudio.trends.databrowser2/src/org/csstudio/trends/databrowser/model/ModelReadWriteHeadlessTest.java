@@ -22,7 +22,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ModelReadWriteTest
+public class ModelReadWriteHeadlessTest
 {
     @Test
     public void testModelReadWrite() throws Exception
@@ -33,7 +33,8 @@ public class ModelReadWriteTest
         final InputStream xml_reader = new PipedInputStream(original_xml);
         new Thread(new Runnable()
         {
-              public void run()
+              @Override
+            public void run()
               {
                   try
                   {
@@ -43,13 +44,13 @@ public class ModelReadWriteTest
                   {
                       ex.printStackTrace();
                   }
-//                  System.out.println("** Done writing model");
+                  System.out.println("** Done writing model");
               }
         }).start();
 
         final Model readback_model = new Model();
         readback_model.read(xml_reader);
-//        System.out.println("** Done reading model back");
+        System.out.println("** Done reading model back");
 
         // Trivial equality check
         assertEquals(original_model.getAxisCount(), readback_model.getAxisCount());
@@ -60,7 +61,8 @@ public class ModelReadWriteTest
         final InputStream console = new PipedInputStream(dumper);
         new Thread(new Runnable()
         {
-              public void run()
+              @Override
+            public void run()
               {
                   try
                   {
@@ -70,12 +72,12 @@ public class ModelReadWriteTest
                   {
                       ex.printStackTrace();
                   }
-//                  System.out.println("** Done dumping to console");
+                  System.out.println("** Done dumping to console");
               }
         }).start();
 
         dumpStreamToConsole(console);
-//        System.out.println("** Done copying to console");
+        System.out.println("** Done copying to console");
     }
 
     /** @return Dummy model
@@ -109,7 +111,7 @@ public class ModelReadWriteTest
         String line = buf.readLine();
         while (line != null)
         {
-//            System.out.println(line);
+            System.out.println(line);
             line = buf.readLine();
         }
         in.close();

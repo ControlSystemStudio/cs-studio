@@ -37,7 +37,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator extends AbstractCssPlugin {
 
     /**
-     *  The plug-in ID
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
 

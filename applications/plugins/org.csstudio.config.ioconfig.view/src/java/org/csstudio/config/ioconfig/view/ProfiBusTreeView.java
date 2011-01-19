@@ -57,6 +57,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
+import org.csstudio.config.ioconfig.view.actions.CreateStatisticAction;
 import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
 import org.csstudio.platform.logging.CentralLogger;
@@ -107,6 +108,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -217,6 +219,8 @@ public class ProfiBusTreeView extends Composite {
     */
     private AbstractNodeEditor _openNodeEditor;
     private Action _createNewSiemensConfigFile;
+
+    private CreateStatisticAction _createNewStatisticFile;
     
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
@@ -299,6 +303,7 @@ public class ProfiBusTreeView extends Composite {
             openEditor.perfromClose();
         }
         try {
+            getViewer().getTree().setEnabled(false);
             Job loadJob = new DBLoderJob("DBLoader");
             loadJob.setUser(true);
             loadJob.schedule();
@@ -373,6 +378,7 @@ public class ProfiBusTreeView extends Composite {
                 manager.add(new Separator());
                 manager.add(_createNewXMLConfigFile);
                 manager.add(_createNewSiemensConfigFile);
+                manager.add(_createNewStatisticFile);
             } else if (selectedNode instanceof IocDBO) {
                 setContriebutionActions("New Subnet", IocDBO.class, ProfibusSubnetDBO.class,
                                         manager);
@@ -500,6 +506,7 @@ public class ProfiBusTreeView extends Composite {
         makeDeletNodeAction();
         makeCreateNewXMLConfigFile();
         makeCreateNewSiemensConfigFile();
+        makeCreateNewStatisticFile();
         makeTreeNodeRenameAction();
         makeRefreshAction();
     }
@@ -543,6 +550,13 @@ public class ProfiBusTreeView extends Composite {
         _createNewSiemensConfigFile = new CreateWinModAction("Create WinMod", this);
         _createNewSiemensConfigFile.setToolTipText("Action Create tooltip");
         _createNewSiemensConfigFile
+                .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    }
+    
+    private void makeCreateNewStatisticFile() {
+        _createNewStatisticFile = new CreateStatisticAction("Create Statistik", this);
+        _createNewStatisticFile.setToolTipText("Action Create tooltip");
+        _createNewStatisticFile
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
     }
     
@@ -873,25 +887,20 @@ public class ProfiBusTreeView extends Composite {
         protected IStatus run(@Nonnull final IProgressMonitor monitor) {
             monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
             monitor.setTaskName("Load \t-\tStart Time: " + new Date());
-            
-            PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-                
-                @Override
-                public void run() {
-                    getViewer().getTree().setEnabled(false);
-                    Repository.close();
-                    try {
-                        synchronized (monitor) {
-                            setLoad(Repository.load(FacilityDBO.class));
-                            getViewer().setInput(getLoad());
-                            getViewer().getTree().setEnabled(true);
-                        }
-                    } catch (PersistenceException e) {
-                        DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
-                        CentralLogger.getInstance().error(this, e);
+            Repository.close();
+            try {
+                setLoad(Repository.load(FacilityDBO.class));
+                PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        getViewer().setInput(getLoad());
+                        getViewer().getTree().setEnabled(true);
                     }
-                }
-            });
+                });
+            } catch (PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't read from Database!", e);
+                CentralLogger.getInstance().error(this, e);
+            }
             monitor.done();
             return Status.OK_STATUS;
         }

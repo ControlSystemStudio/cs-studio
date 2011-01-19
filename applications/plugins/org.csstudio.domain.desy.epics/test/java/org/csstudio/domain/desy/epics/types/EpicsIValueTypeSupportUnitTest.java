@@ -38,7 +38,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 15.12.2010
  */
-public class EpicsTypeSupportUnitTest {
+public class EpicsIValueTypeSupportUnitTest {
 
     @Before
     public void setup() {

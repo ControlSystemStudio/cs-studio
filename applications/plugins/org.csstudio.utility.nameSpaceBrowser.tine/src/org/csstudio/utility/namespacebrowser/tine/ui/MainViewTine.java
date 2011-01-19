@@ -24,9 +24,9 @@ package org.csstudio.utility.namespacebrowser.tine.ui;
 import org.csstudio.utility.namespacebrowser.tine.Activator;
 import org.csstudio.utility.namespacebrowser.tine.Messages;
 import org.csstudio.utility.namespacebrowser.tine.utility.AutomatTine;
-import org.csstudio.utility.namespacebrowser.tine.utility.NameSpaceTine;
+import org.csstudio.utility.namespacebrowser.tine.utility.TineNameSpace;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
-import org.csstudio.utility.tine.reader.NameSpaceResultListTine;
+import org.csstudio.utility.tine.reader.TineSearchResult;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyEvent;
@@ -51,9 +51,6 @@ public class MainViewTine extends ViewPart {
 
 	// @Override
 	public void createPartControl(Composite parent) {
-	    System.out.println("View "+Activator.PLUGIN_ID);
-        int lalalal =1;
-        System.out.println(lalalal++);
 		automat = new AutomatTine();
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite composite = new Composite(sc,SWT.NONE);
@@ -73,26 +70,24 @@ public class MainViewTine extends ViewPart {
 
 			public void keyPressed(KeyEvent e) {}
 		});
-        System.out.println(lalalal++);
 		String[] headlines = {	Messages.getString("CSSView_Facility"),
 								Messages.getString("CSSView_Controller"),
 								Messages.getString("CSSView_Server"),
 								Messages.getString("CSSView_Device"),
 								Messages.getString("CSSView_Record")
 		};
-        System.out.println(lalalal++);
+		
 		// Namend the Records
 		cssview = 
 			new CSSView(
 					composite, 
 					automat,
-					new NameSpaceTine(), 
+					new TineNameSpace(), 
 					getSite(),
 					defaultPVFilter,
 					"Context", 
 					headlines, 
 					0,
-					new NameSpaceResultListTine(),
 					Messages.getString("MainViewTine.Default"));
 	}
 

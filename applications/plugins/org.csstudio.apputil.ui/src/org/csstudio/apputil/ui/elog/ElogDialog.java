@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.elog;
 
 import org.csstudio.apputil.ui.Activator;
@@ -39,7 +46,7 @@ abstract public class ElogDialog extends TitleAreaDialog
      *  @param message Message, explanation of entry
      *  @param initial_title Initial title for new entry
      *  @param initial_body Initial body text for new entry
-     *  @param image_filename Name of image file or <code>null</code> 
+     *  @param image_filename Name of image file or <code>null</code>
      *  @throws Exception on error
      */
     public ElogDialog(final Shell shell,
@@ -56,12 +63,15 @@ abstract public class ElogDialog extends TitleAreaDialog
         this.logbooks = logbook_factory.getLogbooks();
         this.default_logbook = logbook_factory.getDefaultLogbook();
         this.image_filename = image_filename;
-
-        // Try to allow resize, because the 'text' section could
-        // use more or less space depending on use.
-        setShellStyle(getShellStyle() | SWT.RESIZE);
     }
-    
+
+    /** Allow resize */
+    @Override
+    protected boolean isResizable()
+    {
+        return true;
+    }
+
     /** Set default logbook.
      *  <p>
      *  Initially, the dialog will use the default suggested by
@@ -70,7 +80,7 @@ abstract public class ElogDialog extends TitleAreaDialog
      *  that opens the dialog might prefer.
      *  <p>
      *  Has no effect if the suggested logbook is not on the list
-     *  of available logbooks.  
+     *  of available logbooks.
      *  @param new_default_logbook New default logbook.
      */
     public void setDefaultLogbook(final String new_default_logbook)
@@ -98,7 +108,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.ELog_Dialog_WindowTitle);
     }
-    
+
     /** Create the GUI. */
     @Override
     protected Control createDialogArea(final Composite parent)
@@ -111,7 +121,8 @@ abstract public class ElogDialog extends TitleAreaDialog
         setTitleImage(title_image);
         parent.addDisposeListener(new DisposeListener()
         {
-            public void widgetDisposed(DisposeEvent e)
+            @Override
+            public void widgetDisposed(final DisposeEvent e)
             {
                 title_image.dispose();
             }
@@ -119,17 +130,17 @@ abstract public class ElogDialog extends TitleAreaDialog
 
         // From peeking at super.createDialogArea we happen to expect a Compos.
         final Composite area = (Composite) super.createDialogArea(parent);
-        
+
         final SashForm sash = new SashForm(area, SWT.VERTICAL);
         sash.setLayout(new FillLayout());
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
-        // Put our widgets in another box to have own layout in there 
+
+        // Put our widgets in another box to have own layout in there
         final Composite box = new Composite(sash, 0);
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         box.setLayout(layout);
-        
+
         // User:     ____user_______
         // Password: ___password____
         // Logbook:  ___logbook____
@@ -158,25 +169,25 @@ abstract public class ElogDialog extends TitleAreaDialog
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         password.setLayoutData(gd);
-        
+
         // New Row
         if (logbooks.length > 0)
         {
             l = new Label(box, 0);
             l.setText(Messages.ELog_Dialog_Logbook);
             l.setLayoutData(new GridData());
-    
+
             logbook = new Combo(box, SWT.READ_ONLY | SWT.DROP_DOWN);
             logbook.setToolTipText(Messages.ELog_Dialog_Logbook_TT);
             gd = new GridData();
             gd.grabExcessHorizontalSpace = true;
             gd.horizontalAlignment = SWT.FILL;
             logbook.setLayoutData(gd);
-            
+
             logbook.setItems(logbooks);
             logbook.setText(default_logbook);
         }
-        
+
         // New Row
         l = new Label(box, 0);
         l.setText(Messages.ELog_Dialog_Title);
@@ -210,7 +221,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         body.setLayoutData(gd);
-        
+
         // Maybe add image
         if (image_filename != null)
         {
@@ -219,7 +230,7 @@ abstract public class ElogDialog extends TitleAreaDialog
         }
         return area;
     }
-    
+
     /** Make the elog entry, display errors. */
     @Override
     protected void okPressed()

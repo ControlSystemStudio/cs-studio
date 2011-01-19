@@ -85,13 +85,22 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
     public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
         return d.doubleValue();
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean isOptimizableByAveraging() {
+        return Boolean.TRUE;
+    }
+
+
 
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Collection<N> convertMultiScalarFromArchiveString(@Nonnull final String archiveValues) throws TypeSupportException {
+    public Collection<N> convertFromArchiveStringToMultiScalar(@Nonnull final String archiveValues) throws TypeSupportException {
 
         final String releasedStr = collectionRelease(archiveValues);
         if (releasedStr == null) {

@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
@@ -50,19 +52,19 @@ public class Controller implements ArchiveFetchJobListener
 
     /** Model with data to display */
     final Model model;
-    
+
     /** GUI for displaying the data */
     final Plot plot;
-    
+
     /** Timer that triggers scrolling or trace redraws */
     final Timer update_timer = new Timer("Update Timer", true); //$NON-NLS-1$
-    
+
     /** Task executed by update_timer */
     private TimerTask update_task = null;
 
     /** Was scrolling off, i.e. we have not scrolled for a while? */
     private boolean scrolling_was_off = true;
-    
+
     /** Delay to avoid flurry of archive requests
      *  @see #scheduleArchiveRetrieval(ITimestamp, ITimestamp)
      */
@@ -84,7 +86,7 @@ public class Controller implements ArchiveFetchJobListener
 
     /** Should we perform redraws, or is the window hidden and we should suppress them? */
     private boolean suppress_redraws = false;
-    
+
     /** Is there any Y axis that's auto-scaled? */
     private volatile boolean have_autoscale_axis = false;
 
@@ -98,46 +100,54 @@ public class Controller implements ArchiveFetchJobListener
         this.shell = shell;
         this.model = model;
         this.plot = plot;
-        
+
         // Update 'iconized' state from shell
         shell.addShellListener(new ShellListener()
         {
+            @Override
             public void shellIconified(ShellEvent e)
             {
                 window_is_iconized = true;
             }
-            
+
+            @Override
             public void shellDeiconified(ShellEvent e)
             {
                 window_is_iconized = false;
             }
-            
+
+            @Override
             public void shellDeactivated(ShellEvent e) { /* Ignore */  }
+            @Override
             public void shellClosed(ShellEvent e)      { /* Ignore */  }
+            @Override
             public void shellActivated(ShellEvent e)   { /* Ignore */  }
         });
         window_is_iconized = shell.getMinimized();
-        
+
         checkAutoscaleAxes();
         createPlotTraces();
-        
+
         // Listen to user input from Plot UI, update model
         plot.addListener(new PlotListener()
         {
+            @Override
             public void scrollRequested(final boolean enable_scrolling)
             {
                 model.enableScrolling(enable_scrolling);
             }
- 
+
+            @Override
             public void timeConfigRequested()
             {
                 StartEndTimeAction.run(shell, model, plot.getOperationsManager());
             }
 
+            @Override
             public void timeAxisChanged(final long start_ms, final long end_ms)
             {
                 if (model.isScrollEnabled())
-                {   
+                {
                     final long dist = Math.abs(end_ms - System.currentTimeMillis());
                     final long range = end_ms - start_ms;
                     // Iffy range?
@@ -158,7 +168,7 @@ public class Controller implements ArchiveFetchJobListener
                         // the user zoomed vertically, and the plot now tells
                         // us about a new time range that resulted from scrolling.
                         return;
-                    }   
+                    }
                 }
                 final ITimestamp start_time = TimestampFactory.fromMillisecs(start_ms);
                 final ITimestamp end_time = TimestampFactory.fromMillisecs(end_ms);
@@ -167,14 +177,16 @@ public class Controller implements ArchiveFetchJobListener
                 // Controller's ModelListener will fetch new archived data
             }
 
+            @Override
             public void valueAxisChanged(final int index, final double lower, final double upper)
             {   // Update axis range in model
                 final AxisConfig axis = model.getAxis(index);
                 axis.setRange(lower, upper);
             }
 
+            @Override
             public void droppedName(final String name)
-            { 
+            {
                 // Offer potential PV name in dialog so user can edit/cancel
                 final AddPVAction add = new AddPVAction(plot.getOperationsManager(), shell, model, false);
                 // Allow passing in many names, assuming that white space separates them
@@ -184,6 +196,7 @@ public class Controller implements ArchiveFetchJobListener
                         break;
             }
 
+            @Override
             public void droppedPVName(final String name, final IArchiveDataSource archive)
             {
                 if (name == null)
@@ -206,14 +219,14 @@ public class Controller implements ArchiveFetchJobListener
                 {   // Received PV name
                     final ModelItem item = model.getItem(name);
                     if (item == null)
-                    { 
+                    {
                         final OperationsManager operations_manager = plot.getOperationsManager();
-                        
+
                         // Add to first empty axis, or create new axis
                         AxisConfig axis = model.getEmptyAxis();
                         if (axis == null)
                             axis = new AddAxisCommand(operations_manager, model).getAxis();
-                            
+
                         // Add new PV
                         AddModelItemCommand.forPV(shell, operations_manager,
                                 model, name, Preferences.getScanPeriod(),
@@ -233,26 +246,30 @@ public class Controller implements ArchiveFetchJobListener
                 }
             }
         });
-        
+
         // Listen to Model changes, update Plot
         model.addListener(new ModelListener()
         {
+            @Override
             public void changedUpdatePeriod()
             {
                 if (update_task != null)
                     createUpdateTask();
             }
 
+            @Override
             public void changedArchiveRescale()
             {
                 // NOP
             }
 
+            @Override
             public void changedColors()
             {
                 plot.setBackgroundColor(model.getPlotBackground());
             }
 
+            @Override
             public void changedTimerange()
             {
                 // Get matching archived data
@@ -266,6 +283,7 @@ public class Controller implements ArchiveFetchJobListener
                 plot.setTimeRange(start_ms, end_ms);
             }
 
+            @Override
             public void changedAxis(final AxisConfig axis)
             {
                 checkAutoscaleAxes();
@@ -286,6 +304,7 @@ public class Controller implements ArchiveFetchJobListener
                 }
             }
 
+            @Override
             public void itemAdded(final ModelItem item)
             {
                 if (item.isVisible())
@@ -293,13 +312,15 @@ public class Controller implements ArchiveFetchJobListener
                 // Get archived data for new item (NOP for non-PVs)
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
-            
+
+            @Override
             public void itemRemoved(final ModelItem item)
             {
                 if (item.isVisible())
                     plot.removeTrace(item);
             }
 
+            @Override
             public void changedItemVisibility(final ModelItem item)
             {   // Add/remove from plot, but don't need to get archived data
                 if (item.isVisible())
@@ -309,16 +330,19 @@ public class Controller implements ArchiveFetchJobListener
                     plot.removeTrace(item);
             }
 
+            @Override
             public void changedItemLook(final ModelItem item)
             {
                 plot.updateTrace(item);
             }
 
+            @Override
             public void changedItemDataConfig(final PVItem item)
             {
                 getArchivedData(item, model.getStartTime(), model.getEndTime());
             }
 
+            @Override
             public void scrollEnabled(final boolean scroll_enabled)
             {
                 plot.updateScrollButton(scroll_enabled);
@@ -380,7 +404,7 @@ public class Controller implements ArchiveFetchJobListener
             throw new IllegalStateException("Already started"); //$NON-NLS-1$
         createUpdateTask();
         model.start();
-        
+
         // In scroll mode, the first scroll will update the plot and get data
         if (model.isScrollEnabled())
             return;
@@ -410,10 +434,10 @@ public class Controller implements ArchiveFetchJobListener
                         return;
                     // Check if anything changed, which also updates formulas
                     final boolean anything_new = model.updateItemsAndCheckForNewSamples();
-                    
+
                     if (anything_new  &&   have_autoscale_axis )
                         plot.updateAutoscale();
-                    
+
                     if (model.isScrollEnabled())
                         performScroll();
                     else
@@ -426,7 +450,8 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 catch (Throwable ex)
                 {
-                    // TODO Remove when no more errors caught in Update Timer
+                    CentralLogger.getInstance().getLogger(this).
+                        error("Error in timer task", ex); //$NON-NLS-1$
                     ex.printStackTrace();
                 }
             }
@@ -434,7 +459,7 @@ public class Controller implements ArchiveFetchJobListener
         final long update_delay = (long) (model.getUpdatePeriod() * 1000);
         update_timer.schedule(update_task, update_delay, update_delay);
     }
-    
+
     /** Stop scrolling and model items */
     public void stop()
     {
@@ -452,7 +477,7 @@ public class Controller implements ArchiveFetchJobListener
         update_task.cancel();
         update_task = null;
     }
-    
+
     /** (Re-) create traces in plot for each item in the model */
     public void createPlotTraces()
     {
@@ -468,7 +493,7 @@ public class Controller implements ArchiveFetchJobListener
                 plot.addTrace(item);
         }
     }
-    
+
     /** Scroll the plot to 'now' */
     protected void performScroll()
     {
@@ -485,7 +510,7 @@ public class Controller implements ArchiveFetchJobListener
             getArchivedData();
         }
     }
-    
+
     /** Initiate archive data retrieval for all model items
      *  @param start Start time
      *  @param end End time
@@ -514,7 +539,7 @@ public class Controller implements ArchiveFetchJobListener
             return;
 
         ArchiveFetchJob job;
-        
+
         // Stop ongoing jobs for this item
         synchronized (archive_fetch_jobs)
         {
@@ -535,6 +560,7 @@ public class Controller implements ArchiveFetchJobListener
     }
 
     /** @see ArchiveFetchJobListener */
+    @Override
     public void fetchCompleted(final ArchiveFetchJob job)
     {
         synchronized (archive_fetch_jobs)
@@ -552,12 +578,13 @@ public class Controller implements ArchiveFetchJobListener
             return;
         shell.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (shell.isDisposed())
                     return;
                 switch (rescale)
-                {       
+                {
                 case AUTOZOOM:
                     plot.getXYGraph().performAutoScale();
                     break;
@@ -572,26 +599,23 @@ public class Controller implements ArchiveFetchJobListener
     }
 
     /** @see ArchiveFetchJobListener */
+    @Override
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        // TODO Remove when done debugging
-        error.printStackTrace();
         if (shell.isDisposed())
             return;
         shell.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
-                final String question = NLS.bind(Messages.ArchiveAccessErrorFmt,
-                       new Object[]
-                       {
-                            job.getPVItem().getDisplayName(),
-                            archive.getUrl(),
-                            error.getMessage()
-                       });
-                if (MessageDialog.openQuestion(shell, Messages.Error, question))
-                    job.getPVItem().removeArchiveDataSource(archive);
+                final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
+                            job.getPVItem().getDisplayName());
+                final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
+                        error.getMessage(), archive.getUrl());
+                new ErrorDetailDialog(shell, Messages.Information, message, detail).open();
+                job.getPVItem().removeArchiveDataSource(archive);
             }
         });
     }

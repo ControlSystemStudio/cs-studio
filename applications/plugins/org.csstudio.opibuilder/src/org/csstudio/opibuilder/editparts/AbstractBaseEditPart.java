@@ -34,7 +34,6 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
-import org.csstudio.opibuilder.script.RuleScriptData;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
@@ -53,7 +52,6 @@ import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
@@ -96,29 +94,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object getAdapter(Class key) {
-		if(key == IActionFilter.class)
-			return new IActionFilter(){
-
-				public boolean testAttribute(Object target, String name,
-						String value) {
-					if(name.equals("executionMode") &&  //$NON-NLS-1$
-							value.equals("EDIT_MODE") && //$NON-NLS-1$
-							getExecutionMode() == ExecutionMode.EDIT_MODE)
-						return true;
-					if(name.equals("executionMode") && //$NON-NLS-1$
-							value.equals("RUN_MODE") && //$NON-NLS-1$
-							getExecutionMode() == ExecutionMode.RUN_MODE)
-						return true;
-					
-					return false;
-				}
-			
-		};
-		return super.getAdapter(key);
-	}
 	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new WidgetComponentEditPolicy());	
@@ -245,6 +220,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							i++;							
 						}	
 						
+						ScriptService.getInstance().registerScript(
+								scriptData, AbstractBaseEditPart.this, pvArray);
 						
 						UIBundlingThread.getInstance().addRunnable(new Runnable(){
 							public void run() {
@@ -259,68 +236,69 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							}
 						});							
 						 
-						//register scripts
-						Job job = new Job("Connecting to PV"){							
-							private boolean pvsConnected = true;
-							private String disconnectedPVs = ""; //$NON-NLS-1$
-							//attempt to connect with all PVs repeatedly
-							private int connectAttempts = 30;//		
-							
-							@Override
-							protected IStatus run(IProgressMonitor monitor) {
-								//attempt to connect with all PVs repeatedly
-								StringBuilder s = new StringBuilder();
-								for(int i=0; i<pvArray.length; i++){
-									if(pvArray[i] == null)
-										continue;
-									s.append(pvArray[i].getName());
-									if(i!= pvArray.length-1)
-										s.append(", "); //$NON-NLS-1$
-								}
-								monitor.beginTask("Connecting to PVs: " + s, connectAttempts);
-								while (connectAttempts-->=0) {
-									monitor.subTask(connectAttempts + " seconds left.");
-									pvsConnected = true;
-									for(PV pv : pvArray){
-										if(pv != null && !pv.isConnected()){
-											if(connectAttempts == 0){											
-												disconnectedPVs += pv.getName() + ", "; //$NON-NLS-1$
-											}
-											pvsConnected = false;
-										}
-									}
-									if(pvsConnected){
-										ScriptService.getInstance().registerScript(
-											scriptData, AbstractBaseEditPart.this, pvArray);
-										return Status.OK_STATUS;
-									}
-									else if (connectAttempts == 0){  //give up
-										String name = scriptData instanceof RuleScriptData ? 
-												((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
-										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of {1},  which is attached to {2}.\n" +
-												"The script will still be executed once the PV was connected.",
-												new String[]{
-												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
-												name, 
-												AbstractBaseEditPart.this.getWidgetModel().getName()});
-										ConsoleService.getInstance().writeWarning(message);
-										ScriptService.getInstance().registerScript(
-											scriptData, AbstractBaseEditPart.this, pvArray);
-										return Status.OK_STATUS;
-									}
-									try {										
-										Thread.sleep(1000);
-										monitor.worked(1);
-										if(monitor.isCanceled() || deactiveTriggered)
-											return Status.CANCEL_STATUS;
-									} catch (InterruptedException e) {
-										
-									}	
-								}
-								return Status.OK_STATUS;
-							}
-						};	
-						job.schedule(100);		
+						
+//						//register scripts
+//						Job job = new Job("Connecting to PV"){							
+//							private boolean pvsConnected = true;
+//							private String disconnectedPVs = ""; //$NON-NLS-1$
+//							//attempt to connect with all PVs repeatedly
+//							private int connectAttempts = 10;//		
+//							
+//							@Override
+//							protected IStatus run(IProgressMonitor monitor) {
+//								//attempt to connect with all PVs repeatedly
+//								StringBuilder s = new StringBuilder();
+//								for(int i=0; i<pvArray.length; i++){
+//									if(pvArray[i] == null)
+//										continue;
+//									s.append(pvArray[i].getName());
+//									if(i!= pvArray.length-1)
+//										s.append(", "); //$NON-NLS-1$
+//								}
+//								monitor.beginTask("Connecting to PVs: " + s, connectAttempts);
+//								while (connectAttempts-->=0) {
+//									monitor.subTask(connectAttempts + " seconds left.");
+//									pvsConnected = true;
+//									for(PV pv : pvArray){
+//										if(pv != null && !pv.isConnected()){
+//											if(connectAttempts == 0){											
+//												disconnectedPVs += pv.getName() + ", "; //$NON-NLS-1$
+//											}
+//											pvsConnected = false;
+//										}
+//									}
+//									if(pvsConnected){
+//										ScriptService.getInstance().registerScript(
+//											scriptData, AbstractBaseEditPart.this, pvArray);
+//										return Status.OK_STATUS;
+//									}
+//									else if (connectAttempts == 0){  //give up
+//										String name = scriptData instanceof RuleScriptData ? 
+//												((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
+//										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of {1},  which is attached to {2}.\n" +
+//												"The script will still be executed once the PV was connected.",
+//												new String[]{
+//												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
+//												name, 
+//												AbstractBaseEditPart.this.getWidgetModel().getName()});
+//										ConsoleService.getInstance().writeWarning(message);
+//										ScriptService.getInstance().registerScript(
+//											scriptData, AbstractBaseEditPart.this, pvArray);
+//										return Status.OK_STATUS;
+//									}
+//									try {										
+//										Thread.sleep(1000);
+//										monitor.worked(1);
+//										if(monitor.isCanceled() || deactiveTriggered)
+//											return Status.CANCEL_STATUS;
+//									} catch (InterruptedException e) {
+//										
+//									}	
+//								}
+//								return Status.OK_STATUS;
+//							}
+//						};	
+//						job.schedule(100);		
 						
 				}
 			}
@@ -698,6 +676,31 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		}
 	}
 	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+		if(key == IActionFilter.class)
+			return new IActionFilter(){
+	
+				public boolean testAttribute(Object target, String name,
+						String value) {
+					if(name.equals("executionMode") &&  //$NON-NLS-1$
+							value.equals("EDIT_MODE") && //$NON-NLS-1$
+							getExecutionMode() == ExecutionMode.EDIT_MODE)
+						return true;
+					if(name.equals("executionMode") && //$NON-NLS-1$
+							value.equals("RUN_MODE") && //$NON-NLS-1$
+							getExecutionMode() == ExecutionMode.RUN_MODE)
+						return true;
+					
+					return false;
+				}
+			
+		};
+		return super.getAdapter(key);
+	}
+
+
+
 		@Override
 	public String toString() {
 		return getWidgetModel().getName();

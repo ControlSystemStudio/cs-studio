@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -32,7 +39,7 @@ public abstract class ComboHistoryHelper
     private final String tag;
     private final Combo combo;
     private final int max;
-   
+
     /** Attach helper to given combo box, using max list length.
      *  @param settings         Where to persist the combo box list
      *  @param tag              Tag used for persistence
@@ -49,7 +56,7 @@ public abstract class ComboHistoryHelper
      *  @param tag              Tag used for persistence
      *  @param combo            The combo box
      *  @param max              Number of elements to keep in history
-     *  @param save_on_dispose  Set <code>true</code> if you want 
+     *  @param save_on_dispose  Set <code>true</code> if you want
      *                          to save current values on widget disposal
      */
     public ComboHistoryHelper(IDialogSettings settings, String tag,
@@ -59,31 +66,34 @@ public abstract class ComboHistoryHelper
         this.tag = tag;
         this.combo = combo;
         this.max = max;
-    
+
         // React whenever an existing entry is selected,
         // or a new name is entered.
         // New names are also added to the list.
         combo.addSelectionListener(new SelectionListener()
         {
             // Called after <Return> was pressed
+            @Override
             public void widgetDefaultSelected(SelectionEvent e)
             {
                 String new_entry = ComboHistoryHelper.this.combo.getText();
                 addEntry(new_entry);
                 newSelection(new_entry);
             }
-    
+
             // Called after existing entry was picked from list
+            @Override
             public void widgetSelected(SelectionEvent e)
             {
                 String name = ComboHistoryHelper.this.combo.getText();
                 newSelection(name);
             }
         });
-        
+
         if (save_on_dispose)
             combo.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {   saveSettings();  }
         });
@@ -105,10 +115,10 @@ public abstract class ComboHistoryHelper
         // Add at end
         combo.add(new_entry);
     }
-    
+
     /** Invoked whenever a new entry was entered or selected. */
     public abstract void newSelection(String entry);
-    
+
     /** Load persisted list values. */
     public void loadSettings()
     {

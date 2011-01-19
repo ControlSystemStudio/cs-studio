@@ -27,18 +27,18 @@ public class PlotSample implements ISample
 {
     final public static INumericMetaData dummy_meta = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 1, "a.u."); //$NON-NLS-1$
     final public static ISeverity ok_severity = ValueFactory.createOKSeverity();
-    
+
     /** Value contained in this sample */
     final private IValue value;
 
     /** Source of the data */
     final private String source;
-    
+
     /** Info string.
      *  @see #getInfo()
      */
     private String info;
-    
+
 
     /** Initialize with valid control system value
      *  @param source Info about the source of this sample
@@ -71,7 +71,7 @@ public class PlotSample implements ISample
                ok_severity, ok_severity.toString(), dummy_meta,
                IValue.Quality.Original, new double[] { y }));
     }
-    
+
     /** @return Source of the data */
     public String getSource()
     {
@@ -89,18 +89,20 @@ public class PlotSample implements ISample
     {
         return value.getTime();
     }
-    
+
     /** Since the 'X' axis is used as a 'Time' axis, this
      *  returns the time stamp of the control system sample.
      *  The XYGraph expects it to be milliseconds(!) since 1970.
      *  @return Time as milliseconds since 1970
      */
+    @Override
     public double getXValue()
     {
         return value.getTime().toDouble()*1000.0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getYValue()
     {
         if (value.getSeverity().hasValue())
@@ -112,6 +114,7 @@ public class PlotSample implements ISample
     /** Get sample's info text.
      *  If not set on construction, the value's text is used.
      *  @return Sample's info text. */
+    @Override
     public String getInfo()
     {
         if (info == null)
@@ -120,18 +123,21 @@ public class PlotSample implements ISample
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getXMinusError()
     {
         return 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getXPlusError()
     {
         return 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getYMinusError()
     {
         if (!(value instanceof IMinMaxDoubleValue))
@@ -141,6 +147,7 @@ public class PlotSample implements ISample
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getYPlusError()
     {
         if (!(value instanceof IMinMaxDoubleValue))

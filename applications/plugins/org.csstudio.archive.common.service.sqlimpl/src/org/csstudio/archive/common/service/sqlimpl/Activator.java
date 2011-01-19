@@ -43,6 +43,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.service.sqlimpl";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);

@@ -15,17 +15,16 @@ import org.junit.Test;
 
 /** JUnit test of PlotSampleMerger
  *  @author Kay Kasemir
- *  // FIXME (kasemir) : Test with sysos?! Use assertions for expected prefixes
  */
 @SuppressWarnings("nls")
-public class PlotSampleMergerTest
+public class PlotSampleMergerUnitTest
 {
     /** Check if samples are monotonous in time */
     private boolean check(final PlotSample samples[])
     {
         for (int i = 0; i < samples.length; i++)
         {
-            //System.out.println(String.format("%3d: ", i) + samples[i]);
+            System.out.println(String.format("%3d: ", i) + samples[i]);
             if ((i > 0)  &&
                 samples[i].getTime().isLessThan(samples[i-1].getTime())) {
                 return false;
@@ -37,7 +36,6 @@ public class PlotSampleMergerTest
     @Test
     public void addToNothing()
     {
-        //System.out.println("addToNothing()");
         // Start with nothing, add new samples
         final PlotSample orig[] = null;
         final PlotSample add[] = TestSampleBuilder.makePlotSamples(0, 10);
@@ -54,7 +52,6 @@ public class PlotSampleMergerTest
     @Test
     public void addBeforeOrAfter()
     {
-        //System.out.println("addBeforeOrAfter()");
         final PlotSample earlier[] = TestSampleBuilder.makePlotSamples(0, 10);
         final PlotSample later[] = TestSampleBuilder.makePlotSamples(10, 20);
         // Time line: old ... new
@@ -75,7 +72,6 @@ public class PlotSampleMergerTest
     @Test
     public void addOverlapsStartOfOldData()
     {
-        //System.out.println("addOverlapsStartOfOldData()");
         // 0, 1, ...10
         final PlotSample add[] = TestSampleBuilder.makePlotSamples(0, 10);
         // 5, 10, 15, 20, ..
@@ -122,7 +118,6 @@ public class PlotSampleMergerTest
     @Test
     public void addWithinExistingData()
     {
-        //System.out.println("addWithinExistingData()");
         // 15, 16, ..., 21
         final PlotSample add[] = TestSampleBuilder.makePlotSamples(14, 22);
         // 5, 10, 15, 20, .., 50
@@ -148,7 +143,6 @@ public class PlotSampleMergerTest
     @Test
     public void newDataCompletelyReplacesOld()
     {
-        //System.out.println("newDataCompletelyReplacesOld()");
         final PlotSample existing[] = TestSampleBuilder.makePlotSamples(15, 21);
         final PlotSample add[] = TestSampleBuilder.makePlotSamples(1, 30);
 

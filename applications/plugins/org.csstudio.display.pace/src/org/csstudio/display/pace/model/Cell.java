@@ -22,10 +22,10 @@ import org.csstudio.utility.pv.PVListener;
  *  In addition, a cell might have "meta PVs" that contain the name
  *  of the user, date, and a comment regarding the last change
  *  of the "main" PV.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Delphy Nypaver Armstrong
- *  
+ *
  *   reviewed by Delphy 01/29/09
  */
 public class Cell implements PVListener, IProcessVariable
@@ -37,28 +37,28 @@ public class Cell implements PVListener, IProcessVariable
     final private Instance instance;
 
     final private Column column;
-    
+
     /** Name of the cell's PV.
      *  Matches pv.getName() except for possible 'decoration'
      *  like "ca://" that the PV adds.
      */
     final private String pv_name;
-    
+
     /** Control system PV for 'live' value */
     final private PV pv;
-    
+
     /** Most recent value received from PV */
     private volatile String current_value = null;
 
     /** Value that the user entered. */
     private volatile String user_value = null;
-    
+
     /** Optional PVs for the name of the person who made the last change,
      *  the date of the change, and a comment.
      *  Either may be <code>null</code>
      */
     private PV last_name_pv, last_date_pv, last_comment_pv;
-    
+
     /** Initialize
      *  @param instance Instance (row) that holds this cell
      *                  and provides the macro substitutions for the cell
@@ -84,13 +84,13 @@ public class Cell implements PVListener, IProcessVariable
             last_name_pv = null;
         else
             last_name_pv = PVFactory.createPV(name);
-        
+
         name = MacroUtil.replaceMacros(column.getDatePvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
             last_date_pv = null;
         else
             last_date_pv = PVFactory.createPV(name);
-        
+
         name = MacroUtil.replaceMacros(column.getCommentPvWithMacros(), instance.getMacros());
         if (name.length() <= 0)
             last_comment_pv = null;
@@ -109,15 +109,15 @@ public class Cell implements PVListener, IProcessVariable
     {
         return column;
     }
-    
+
     /** @return <code>true</code> for read-only cell */
     public boolean isReadOnly()
     {
         return column.isReadonly();
     }
-    
+
     /** Even though a cell may be configured as writable,
-     *  the underlying PV might still prohibit write access. 
+     *  the underlying PV might still prohibit write access.
      *  @return <code>true</code> for PVs that can be written.
      */
     public boolean isPVWriteAllowed()
@@ -145,7 +145,7 @@ public class Cell implements PVListener, IProcessVariable
     {
         return current_value;
     }
-    
+
     /** Set a user-specified value.
      *  <p>
      *  If this value matches the PV's value, we revert to the PV's value.
@@ -176,7 +176,7 @@ public class Cell implements PVListener, IProcessVariable
         user_value = null;
         instance.getModel().fireCellUpdate(this);
     }
-    
+
     /** Save value entered by user to PV
      *  @param user_name Name of the user to be logged for cells with
      *                   a last user meta PV
@@ -211,25 +211,25 @@ public class Cell implements PVListener, IProcessVariable
         return last_name_pv != null || last_date_pv != null ||
               last_comment_pv != null;
     }
-    
+
     /** @return User name for last change to the main PV */
     public String getLastUser()
-    { 
+    {
         return getOptionalValue(last_name_pv);
     }
-    
+
     /** @return Date of last change to the main PV */
     public String getLastDate()
-    { 
+    {
         return getOptionalValue(last_date_pv);
     }
-    
+
     /** @return Comment for last change to the main PV */
     public String getLastComment()
-    { 
+    {
         return getOptionalValue(last_comment_pv);
     }
-    
+
     /** Get value of optional PV
      *  @param optional_pv PV to check, may be <code>null</code>
      *  @return Last value, never <code>null</code>
@@ -269,6 +269,7 @@ public class Cell implements PVListener, IProcessVariable
     }
 
     // PVListener
+    @Override
     public void pvDisconnected(final PV pv)
     {
         current_value = null;
@@ -276,6 +277,7 @@ public class Cell implements PVListener, IProcessVariable
     }
 
     // PVListener
+    @Override
     public void pvValueUpdate(final PV pv)
     {
         current_value = ValueUtil.getString(pv.getValue());
@@ -283,7 +285,8 @@ public class Cell implements PVListener, IProcessVariable
     }
 
     // IProcessVariable
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(final Class adapter)
     {
         return null;
@@ -292,6 +295,7 @@ public class Cell implements PVListener, IProcessVariable
     /** @return PV name
      *  @see IProcessVariable
      */
+    @Override
     public String getName()
     {
         return pv_name;
@@ -306,6 +310,7 @@ public class Cell implements PVListener, IProcessVariable
     }
 
     // IProcessVariable
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
@@ -318,5 +323,5 @@ public class Cell implements PVListener, IProcessVariable
     {
         return "Cell " + pv.getName() + " = " + getValue();
     }
-    
+
 }

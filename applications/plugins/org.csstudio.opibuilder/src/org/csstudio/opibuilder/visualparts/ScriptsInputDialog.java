@@ -21,8 +21,11 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +49,7 @@ public class ScriptsInputDialog extends Dialog {
 	
 	private TableViewer scriptsViewer;
 	private PVTupleTableEditor pvsEditor;
+	private Button checkConnectivityButton;
 	
 	
 	private List<ScriptData> scriptDataList;
@@ -174,9 +178,35 @@ public class ScriptsInputDialog extends Dialog {
 		pvsEditor = new PVTupleTableEditor(rightComposite, new ArrayList<PVTuple>());
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
-		
-		if(scriptDataList.size() > 0)
+			
+		checkConnectivityButton = new Button(rightComposite, SWT.CHECK);
+		checkConnectivityButton.setSelection(false);
+		checkConnectivityButton.setText(
+				"Execute anyway even if some PVs are disconnected.");
+		checkConnectivityButton.setEnabled(false);
+		checkConnectivityButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setCheckConnectivity(
+							!checkConnectivityButton.getSelection());
+				}
+				if(checkConnectivityButton.getSelection()){
+					MessageDialog.openWarning(getShell(), "Warning", 
+							"If this option is checked, " +
+							"the script itself is responsible for checking PV's connectivity before using that PV in the script.\n" +
+							"Otherwise, you will probably get an error message with java.lang.NullPointerException. \n" +
+							"PV's connectivity can be checked via this method: pvArray[#].isConnected()");
+				}
+			}
+		});
+		if(scriptDataList.size() > 0){
 			setScriptsViewerSelection(scriptDataList.get(0));
+			checkConnectivityButton.setSelection(
+					!scriptDataList.get(0).isCheckConnectivity());
+		}
 		return parent_Composite;
 	}
 	
@@ -196,12 +226,17 @@ public class ScriptsInputDialog extends Dialog {
 			pvsEditor.updateInput(((ScriptData) selection
 					.getFirstElement()).getPVList());
 			pvsEditor.setEnabled(true);
+			checkConnectivityButton.setSelection(!((ScriptData) selection
+					.getFirstElement()).isCheckConnectivity());
+			checkConnectivityButton.setEnabled(true);
+			
 		} else {
 			removeAction.setEnabled(false);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
 			pvsEditor.setEnabled(false);
 			editAction.setEnabled(false);
+			checkConnectivityButton.setEnabled(false);
 		}
 	}
 	

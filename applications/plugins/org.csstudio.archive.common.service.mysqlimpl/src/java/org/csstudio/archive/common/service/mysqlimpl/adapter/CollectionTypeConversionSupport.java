@@ -43,28 +43,22 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     }
 
     @SuppressWarnings("unchecked")
-    @Nonnull
-    private ArchiveTypeConversionSupport<?> getScalarTypeSupport(@Nonnull final Collection values) throws TypeSupportException {
-        final Class typeClass = values.iterator().next().getClass();
-        final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        if (support == null) {
-            throw new TypeSupportException("No conversion type support registered.", null);
-        }
-        return support;
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     protected String convertToArchiveString(@Nonnull final Collection values) throws TypeSupportException {
         if (values.isEmpty()) {
             return "";
         }
-        return getScalarTypeSupport(values).convertMultiScalarToArchiveString(values);
+        // TODO (bknerr) : couldn't it be recursive until the non-collection type is met with
+        final Class typeClass = values.iterator().next().getClass();
+        final ArchiveTypeConversionSupport<?> support =
+            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, getTypeSupports(), getCalcTypeSupports());
+        if (support == null) {
+            throw new TypeSupportException("No conversion type support registered.", null);
+        }
+
+        return convertFromMultiScalarToArchiveString(values);
     }
-
-
 
     /**
      * {@inheritDoc}
@@ -90,7 +84,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @SuppressWarnings("unchecked")
     @Override
     @Nonnull
-    protected Collection convertMultiScalarFromArchiveString(@Nonnull final String values) throws TypeSupportException {
+    protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
                                        " Use .class type of T for a Collection<T>! as parameter." , null);
     }
@@ -101,6 +95,15 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @Override
     @Nonnull
     protected Double convertToDouble(@Nonnull final Collection values) throws TypeSupportException {
+        throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
+                                       "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected Collection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
         throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
                                        "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
     }

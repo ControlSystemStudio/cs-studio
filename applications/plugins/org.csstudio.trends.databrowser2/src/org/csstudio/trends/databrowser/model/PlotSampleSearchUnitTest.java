@@ -16,11 +16,9 @@ import org.junit.Test;
 
 /** JUnit test of PlotSampleSearch
  *  @author Kay Kasemir
- *
- *  FIXME (kasemir) : commented sysos
  */
 @SuppressWarnings("nls")
-public class PlotSampleSearchTest
+public class PlotSampleSearchUnitTest
 {
     private PlotSample samples[];
 
@@ -61,7 +59,7 @@ public class PlotSampleSearchTest
         // Exact find
         x = 4.0;
         i = PlotSampleSearch.findClosestSample(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertEquals(x, samples[i].getTime().toDouble(), 0.01);
@@ -107,7 +105,7 @@ public class PlotSampleSearchTest
         // Exact find
         x = 4.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertEquals(x, samples[i].getTime().toDouble(), 0.01);
@@ -115,7 +113,7 @@ public class PlotSampleSearchTest
         // Samples contain 4 and 6, but not 5
         x = 5.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() < x);
@@ -123,7 +121,7 @@ public class PlotSampleSearchTest
         // Lower end
         x = 2.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() == x);
@@ -131,7 +129,7 @@ public class PlotSampleSearchTest
         // Upper end
         x = 18.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() == x);
@@ -140,12 +138,12 @@ public class PlotSampleSearchTest
         x = 1.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
         assertEquals(-1, i);
-        //System.out..println("Looking for " + x + ", found nothing");
+        System.out.println("Looking for " + x + ", found nothing");
 
         // Beyond upper end
         x = 20.0;
         i = PlotSampleSearch.findSampleLessOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() < x);
@@ -160,7 +158,7 @@ public class PlotSampleSearchTest
         // Exact find
         x = 4.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() == x);
@@ -169,7 +167,7 @@ public class PlotSampleSearchTest
         // Samples contain 4 and 6, but not 5
         x = 5.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() > x);
@@ -177,7 +175,7 @@ public class PlotSampleSearchTest
         // Lower end
         x = 2.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() == x);
@@ -185,7 +183,7 @@ public class PlotSampleSearchTest
         // Upper end
         x = 18.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() == x);
@@ -193,7 +191,7 @@ public class PlotSampleSearchTest
         // Below lower end
         x = 1.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
-        //System.out..println("Looking for " + x + ", found " + samples[i].getXValue());
+        System.out.println("Looking for " + x + ", found " + samples[i].getXValue());
         assertTrue(i >= 0);
         assertTrue(i < samples.length);
         assertTrue(samples[i].getTime().toDouble() > x);
@@ -202,20 +200,20 @@ public class PlotSampleSearchTest
         x = 20.0;
         i = PlotSampleSearch.findSampleGreaterOrEqual(samples, TimestampFactory.fromDouble(x));
         assertEquals(-1, i);
-        //System.out..println("Looking for " + x + ", found nothing");
+        System.out.println("Looking for " + x + ", found nothing");
    }
 
     @Test
     public void testFindSampleLessThan() throws Exception
     {
-        //System.out..println("testFindSampleLessThan()");
+        System.out.println("testFindSampleLessThan()");
 
         // Patch samples so times are 2, 4, 6, 6, 6, 12, 14
         samples[3] = new PlotSample(6.0, 4);
         samples[4] = new PlotSample(6.0, 5);
 
-        //for (int i=0; i<samples.length; ++i)
-            //System.out..println(i + " " + samples[i]);
+        for (int i=0; i<samples.length; ++i)
+            System.out.println(i + " " + samples[i]);
 
         int i = PlotSampleSearch.findSampleLessThan(samples, TimestampFactory.fromDouble(4.5));
         assertEquals(1, i);
@@ -238,14 +236,14 @@ public class PlotSampleSearchTest
     @Test
     public void findSampleGreaterThan() throws Exception
     {
-        //System.out..println("findSampleGreaterThan()");
+        System.out.println("findSampleGreaterThan()");
 
         // Patch samples so times are 2, 4, 6, 8, 8, 8, 14
         samples[4] = new PlotSample(8.0, 5);
         samples[5] = new PlotSample(8.0, 6);
 
-        //for (int i=0; i<samples.length; ++i)
-            //System.out..println(i + " " + samples[i]);
+        for (int i=0; i<samples.length; ++i)
+            System.out.println(i + " " + samples[i]);
 
         int i = PlotSampleSearch.findSampleGreaterThan(samples, TimestampFactory.fromDouble(4.5));
         assertEquals(2, i);

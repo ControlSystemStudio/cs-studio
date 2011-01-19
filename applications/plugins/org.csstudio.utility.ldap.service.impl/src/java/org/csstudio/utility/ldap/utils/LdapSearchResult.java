@@ -122,8 +122,6 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
      */
     @Override
     public final void setCSIResultList(@Nonnull final List<ControlSystemItem> resultList) {
-        // FIXME (bknerr) : Deprecated structure for css view
         _csiResult = new ArrayList<ControlSystemItem>(resultList);
-        notifyView();
     }
 }
