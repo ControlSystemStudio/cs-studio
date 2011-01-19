@@ -22,23 +22,16 @@
 package org.csstudio.config.authorizeid;
 
 import java.text.Collator;
-import java.util.Collection;
 import java.util.Locale;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.security.RegisteredAuthorizationId;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -47,17 +40,22 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-class AuthorizeIdTableFactory {
+class AuthorizeIdTableViewerFactory {
+    
+    enum AuthorizeIdTableColumns {
+        AUTH_ID, DESCRIPTION, REGISTERED_AS_EXTENSION, ORIGINATING_PLUGIN
+    }
     
     /**
      * @param parent a composite
      */
-    public static TableViewer createAuthorizeIdTableViewer(final Composite parent) {
+    @Nonnull
+    public static TableViewer createAuthorizeIdTableViewer(@Nonnull final Composite parent) {
         final TableViewer authorizeIdTableViewer = new TableViewer(parent, SWT.SINGLE
                 | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         parent.setLayout(tableColumnLayout);
-
+        
         Table authorizeIdTable = authorizeIdTableViewer.getTable();
         authorizeIdTable.setHeaderVisible(true);
         authorizeIdTable.setLinesVisible(true);
@@ -65,12 +63,15 @@ class AuthorizeIdTableFactory {
         gridData.widthHint = 600;
         gridData.heightHint = 200;
         authorizeIdTable.setLayoutData(gridData);
-
         
+        // watch out for correct sequence
         createAuthorizeIdColumn(authorizeIdTableViewer, tableColumnLayout);
-        createIsRegisteredColumn(authorizeIdTableViewer, tableColumnLayout);
         createDescriptionColumn(authorizeIdTableViewer, tableColumnLayout);
+        createIsRegisteredColumn(authorizeIdTableViewer, tableColumnLayout);
         createOriginatingPluginColumn(authorizeIdTableViewer, tableColumnLayout);
+        
+        // Consistency check
+        assert authorizeIdTable.getColumnCount() == AuthorizeIdTableColumns.values().length;
         
         authorizeIdTableViewer.setContentProvider(ArrayContentProvider.getInstance());
         authorizeIdTableViewer.setLabelProvider(new AuthorizeIdLabelProvider());
@@ -78,12 +79,14 @@ class AuthorizeIdTableFactory {
         return authorizeIdTableViewer;
     }
     
+    @Nonnull
     private static TableColumn createAuthorizeIdColumn(@Nonnull final TableViewer viewer,
                                                        @Nonnull final TableColumnLayout tableColumnLayout) {
-        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
-        final TableColumn column =  tableViewerColumn.getColumn();
+        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+        final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIN);
-        tableColumnLayout.setColumnData(column, new ColumnWeightData(15, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(15, ColumnWeightData.MINIMUM_WIDTH));
         
         column.addListener(SWT.Selection, new Listener() {
             @Override
@@ -111,95 +114,36 @@ class AuthorizeIdTableFactory {
         return column;
     }
     
+    @Nonnull
     private static TableColumn createIsRegisteredColumn(@Nonnull final TableViewer viewer,
                                                         @Nonnull final TableColumnLayout tableColumnLayout) {
-        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
-        final TableColumn column =  tableViewerColumn.getColumn();
+        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+        final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_IS_REGISTERED);
-        tableColumnLayout.setColumnData(column, new ColumnWeightData(15, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
         return column;
     }
     
+    @Nonnull
     private static TableColumn createDescriptionColumn(@Nonnull final TableViewer viewer,
                                                        @Nonnull final TableColumnLayout tableColumnLayout) {
-        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
-        final TableColumn column =  tableViewerColumn.getColumn();
+        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+        final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_DESCRIPTION);
-        tableColumnLayout.setColumnData(column, new ColumnWeightData(40, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(45, ColumnWeightData.MINIMUM_WIDTH));
         return column;
     }
     
+    @Nonnull
     private static TableColumn createOriginatingPluginColumn(@Nonnull final TableViewer viewer,
                                                              @Nonnull final TableColumnLayout tableColumnLayout) {
-        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
-        final TableColumn column =  tableViewerColumn.getColumn();
+        final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
+        final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_ORIGINATING_PLUGIN);
-        tableColumnLayout.setColumnData(column, new ColumnWeightData(30, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(30, ColumnWeightData.MINIMUM_WIDTH));
         return column;
-    }
-    
-    private static class AuthorizeIdLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
-        
-        @Override
-        public Image getColumnImage(Object element, int columnIndex) {
-            return null;
-        }
-        
-        @Override
-        public String getColumnText(Object element, int columnIndex) {
-            String result = null;
-            String authorizationId = element.toString();
-            
-            switch (columnIndex) {
-                case 0:
-                    result = authorizationId;
-                    break;
-                case 1:
-                    result = getIsRegisteredAsExtension(authorizationId);
-                    break;
-                case 2:
-                    result = getDescription(authorizationId);
-                    break;
-                case 3:
-                    result = getOriginatingPlugin(authorizationId);
-                    break;
-                default:
-                    result = null;
-            }
-            return result;
-        }
-        
-        @Nonnull
-        private String getIsRegisteredAsExtension(@Nonnull final String authorizationId) {
-            RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-            return registeredAuthorizationId == null ? "no" : "yes";
-        }
-        
-        @CheckForNull
-        private RegisteredAuthorizationId getRegisteredAuthorizationId(@Nonnull final String authorizationId) {
-            RegisteredAuthorizationId result = null;
-            Collection<RegisteredAuthorizationId> authIds = SecurityFacade.getInstance()
-                    .getRegisteredAuthorizationIds();
-            for (RegisteredAuthorizationId registeredAuthorizationId : authIds) {
-                if (registeredAuthorizationId.getId().equals(authorizationId)) {
-                    result = registeredAuthorizationId;
-                    break;
-                }
-            }
-            return result;
-        }
-        
-        private String getDescription(String authorizationId) {
-            RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-            return registeredAuthorizationId == null ? null : registeredAuthorizationId
-                    .getDescription();
-        }
-        
-        private String getOriginatingPlugin(String authorizationId) {
-            RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-            return registeredAuthorizationId == null ? null : "unknown";
-        }
-        
     }
 }

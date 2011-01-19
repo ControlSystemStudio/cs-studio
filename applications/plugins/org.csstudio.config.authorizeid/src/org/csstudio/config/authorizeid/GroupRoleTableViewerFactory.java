@@ -40,14 +40,20 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-class GroupRoleTableFactory {
+class GroupRoleTableViewerFactory {
     
+    enum GroupRoleTableColumns {
+        GROUP, ROLE, USER
+    }
+    
+    // TODO (jpenning) no state in singleton
     private static Table _groupRoleTable;
     
     /**
      * @param parent a composite
      */
-    public static TableViewer createGroupRoleTableViewer(final Composite parent) {
+    @Nonnull
+    public static TableViewer createGroupRoleTableViewer(@Nonnull final Composite parent) {
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         parent.setLayout(tableColumnLayout);
         
@@ -62,52 +68,57 @@ class GroupRoleTableFactory {
         gridData.widthHint = 600;
         gridData.heightHint = 200;
         _groupRoleTable.setLayoutData(gridData);
-
+        
+        // watch out for correct sequence
         createGroupColumn(groupRoleTableViewer, tableColumnLayout);
         createRoleColumn(groupRoleTableViewer, tableColumnLayout);
         createUsersColumn(groupRoleTableViewer, tableColumnLayout);
         
+        // Consistency check
+        assert _groupRoleTable.getColumnCount() == GroupRoleTableColumns.values().length;
+        
         groupRoleTableViewer.setContentProvider(ArrayContentProvider.getInstance());
         groupRoleTableViewer.setLabelProvider(new GroupRoleLabelProvider());
-
+        
         return groupRoleTableViewer;
     }
-
+    
+    @Nonnull
     private static TableColumn createGroupColumn(@Nonnull final TableViewer viewer,
                                                  @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIG);
-        tableColumnLayout
-                .setColumnData(column, new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
         column.addListener(SWT.Selection, new MyListener(0));
         return column;
     }
-
+    
+    @Nonnull
     private static TableColumn createRoleColumn(@Nonnull final TableViewer viewer,
                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIR);
         
-        tableColumnLayout
-                .setColumnData(column, new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
         column.addListener(SWT.Selection, new MyListener(1));
         return column;
     }
     
+    @Nonnull
     private static TableColumn createUsersColumn(@Nonnull final TableViewer viewer,
-                                                @Nonnull final TableColumnLayout tableColumnLayout) {
+                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_USERS);
         
-        tableColumnLayout
-                .setColumnData(column, new ColumnWeightData(80, ColumnWeightData.MINIMUM_WIDTH));
+        tableColumnLayout.setColumnData(column,
+                                        new ColumnWeightData(80, ColumnWeightData.MINIMUM_WIDTH));
         return column;
     }
-    
-    
     
     /**
      * Listener for sorting columns for second table.
@@ -121,6 +132,7 @@ class GroupRoleTableFactory {
             this.i = i;
         }
         
+        @SuppressWarnings("synthetic-access")
         @Override
         public void handleEvent(final Event event) {
             sortColumn(i);

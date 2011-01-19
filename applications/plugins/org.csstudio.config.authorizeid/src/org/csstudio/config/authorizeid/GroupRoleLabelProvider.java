@@ -14,6 +14,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.config.authorizeid.GroupRoleTableViewerFactory.GroupRoleTableColumns;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -41,25 +42,26 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
         
         if (element instanceof GroupRoleTableEntry) {
             GroupRoleTableEntry entry = (GroupRoleTableEntry) element;
-            switch (columnIndex) {
-                case 0: // Group
+            
+            GroupRoleTableColumns colIndex = GroupRoleTableColumns.values()[columnIndex];
+
+            switch (colIndex) {
+                case GROUP:
                     result = entry.getEaig();
                     break;
-                case 1: // Role
+                case ROLE:
                     result = entry.getEair();
                     break;
-                case 2: // Users
+                case USER:
                     result = getUsers(entry);
                     break;
-                default:
-                    // ok
             }
         }
         return result;
     }
     
     private String getUsers(GroupRoleTableEntry entry) {
-        String result = "unknown";
+        String result = null;
         
         try {
             DirContext ctx = new InitialDirContext(createEnvironment());

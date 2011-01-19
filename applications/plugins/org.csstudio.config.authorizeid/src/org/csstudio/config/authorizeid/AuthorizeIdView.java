@@ -71,10 +71,7 @@ public class AuthorizeIdView extends ViewPart {
     private Combo _categoryCombo;
     
     private TableViewer _authorizeIdTableViewer;
-    private Table _authorizeIdTable;
-    
     private TableViewer _groupRoleTableViewer;
-    private Table _groupRoleTable;
     
     //    private static final String SECURITY_ID = "AuthorizeId";
     private static final String SECURITY_ID = "remoteManagement";
@@ -127,18 +124,17 @@ public class AuthorizeIdView extends ViewPart {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 refreshAuthorizeIdTable();
-                _groupRoleTable.removeAll();
-                _groupRoleTable.clearAll();
+                getGroupRoleTable().removeAll();
+                getGroupRoleTable().clearAll();
             }
             
         });
 
         final Composite authIdTablePanel = new Composite(authIDPanel, SWT.NONE);
         authIdTablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        _authorizeIdTableViewer = AuthorizeIdTableFactory
+        _authorizeIdTableViewer = AuthorizeIdTableViewerFactory
                 .createAuthorizeIdTableViewer(authIdTablePanel);
-        _authorizeIdTable = _authorizeIdTableViewer.getTable();
-        _authorizeIdTable.addSelectionListener(new SelectionAdapter() {
+        getAuthorizeIdTable().addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 refreshGroupRoleTable();
@@ -155,9 +151,8 @@ public class AuthorizeIdView extends ViewPart {
     private void createGroupRolePanel(@Nonnull final Composite groupRolePanel) {
         final Composite groupRoleTablePanel = new Composite(groupRolePanel, SWT.NONE);
         groupRoleTablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        _groupRoleTableViewer = GroupRoleTableFactory.createGroupRoleTableViewer(groupRoleTablePanel);
-        _groupRoleTable = _groupRoleTableViewer.getTable();
-        _groupRoleTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        _groupRoleTableViewer = GroupRoleTableViewerFactory.createGroupRoleTableViewer(groupRoleTablePanel);
+        getGroupRoleTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         final Composite groupRoleButtonPanel = new Composite(groupRolePanel, SWT.NONE);
         groupRoleButtonPanel.setLayout(new FillLayout(SWT.VERTICAL));
@@ -237,7 +232,7 @@ public class AuthorizeIdView extends ViewPart {
         _edit.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String name = _authorizeIdTable.getSelection()[0].getText();
+                final String name = getAuthorizeIdTable().getSelection()[0].getText();
                 final String _group = _categoryCombo.getText();
                 
                 final InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(),
@@ -256,9 +251,9 @@ public class AuthorizeIdView extends ViewPart {
                     final ArrayList<String> eair = new ArrayList<String>();
                     
                     try {
-                        for (int i = 0; i < _groupRoleTable.getItemCount(); i++) {
-                            eaig.add(_groupRoleTable.getItem(i).getText(0));
-                            eair.add(_groupRoleTable.getItem(i).getText(1));
+                        for (int i = 0; i < getGroupRoleTable().getItemCount(); i++) {
+                            eaig.add(getGroupRoleTable().getItem(i).getText(0));
+                            eair.add(getGroupRoleTable().getItem(i).getText(1));
                             
                             ndGr.deleteData(name, eair.get(i), eaig.get(i), _group);
                         }
@@ -269,7 +264,7 @@ public class AuthorizeIdView extends ViewPart {
                         nd.deleteData(name, _group);
                         nd.insertNewData(_name, _group, oclass);
                         
-                        for (int i = 0; i < _groupRoleTable.getItemCount(); i++) {
+                        for (int i = 0; i < getGroupRoleTable().getItemCount(); i++) {
                             
                             ndGr.insertNewData(_name, _group, oclass2, eair.get(i), eaig.get(i));
                         }
@@ -302,7 +297,7 @@ public class AuthorizeIdView extends ViewPart {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 
-                final String _name = _authorizeIdTable.getSelection()[0].getText();
+                final String _name = getAuthorizeIdTable().getSelection()[0].getText();
                 final String _group = _categoryCombo.getText();
                 
                 final MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(),
@@ -355,7 +350,7 @@ public class AuthorizeIdView extends ViewPart {
         _new.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String _name = _authorizeIdTable.getSelection()[0].getText();
+                final String _name = getAuthorizeIdTable().getSelection()[0].getText();
                 final CustomInputDialog dialog = new CustomInputDialog(Display.getCurrent()
                                                                                .getActiveShell(),
                                                                        Messages.AuthorizeIdView_NEW,
@@ -402,9 +397,9 @@ public class AuthorizeIdView extends ViewPart {
         _edit.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String _name = _authorizeIdTable.getSelection()[0].getText();
-                final String eaigSel = _groupRoleTable.getSelection()[0].getText(0);
-                final String eairSel = _groupRoleTable.getSelection()[0].getText(1);
+                final String _name = getAuthorizeIdTable().getSelection()[0].getText();
+                final String eaigSel = getGroupRoleTable().getSelection()[0].getText(0);
+                final String eairSel = getGroupRoleTable().getSelection()[0].getText(1);
                 final CustomInputDialog dialog = new CustomInputDialog(Display.getCurrent()
                                                                                .getActiveShell(),
                                                                        Messages.AuthorizeIdView_EDIT,
@@ -451,9 +446,9 @@ public class AuthorizeIdView extends ViewPart {
         _delete.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final String _name = _authorizeIdTable.getSelection()[0].getText();
-                final String _eaig = _groupRoleTable.getSelection()[0].getText();
-                final String _eair = _groupRoleTable.getSelection()[0].getText(1);
+                final String _name = getAuthorizeIdTable().getSelection()[0].getText();
+                final String _eaig = getGroupRoleTable().getSelection()[0].getText();
+                final String _eair = getGroupRoleTable().getSelection()[0].getText(1);
                 final String _group = _categoryCombo.getText();
                 
                 final MessageBox messageBox = new MessageBox(Display.getCurrent().getActiveShell(),
@@ -495,7 +490,7 @@ public class AuthorizeIdView extends ViewPart {
      * Deletes all data and fills the group / role table again.
      */
     private void refreshGroupRoleTable() {
-        final GroupRoleTableEntry[] entries = LdapAccess.getProp(_authorizeIdTable.getSelection()[0]
+        final GroupRoleTableEntry[] entries = LdapAccess.getProp(getAuthorizeIdTable().getSelection()[0]
                 .getText(), _categoryCombo.getText());
         
         _groupRoleTableViewer.setInput(entries);
@@ -508,13 +503,13 @@ public class AuthorizeIdView extends ViewPart {
     private void deleteWholeGroupRoleTable(final String name, final String group) {
         final AuthorizationIdGRManagement aim2 = new AuthorizationIdGRManagement();
         
-        for (int i = 0; i < _groupRoleTable.getItemCount(); i++) {
-            if (_groupRoleTable.getItem(i).getText(0).equals("")) { //$NON-NLS-1$
+        for (int i = 0; i < getGroupRoleTable().getItemCount(); i++) {
+            if (getGroupRoleTable().getItem(i).getText(0).equals("")) { //$NON-NLS-1$
                 break;
             }
             
-            final String _eaig = _groupRoleTable.getItem(i).getText(0);
-            final String _eair = _groupRoleTable.getItem(i).getText(1);
+            final String _eaig = getGroupRoleTable().getItem(i).getText(0);
+            final String _eair = getGroupRoleTable().getItem(i).getText(1);
             try {
                 aim2.deleteData(name, _eair, _eaig, group);
             } catch (final ServiceUnavailableException e1) {
@@ -531,6 +526,16 @@ public class AuthorizeIdView extends ViewPart {
             }
             
         }
+    }
+    
+    @Nonnull
+    public Table getAuthorizeIdTable() {
+        return _authorizeIdTableViewer.getTable();
+    }
+    
+    @Nonnull
+    public Table getGroupRoleTable() {
+        return _groupRoleTableViewer.getTable();
     }
     
     @Override
