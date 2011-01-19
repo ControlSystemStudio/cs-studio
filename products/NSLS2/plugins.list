@@ -5,8 +5,6 @@ org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
-org.csstudio.channelfinder
-org.csstudio.channelfinder.ui
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.postanalyser
@@ -34,6 +32,8 @@ org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
+org.csstudio.utility.channelfinder
+org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.ldap
 org.csstudio.utility.namespace.utility
