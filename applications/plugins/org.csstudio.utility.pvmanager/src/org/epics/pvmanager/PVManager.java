@@ -65,8 +65,8 @@ public class PVManager {
         private DesiredRateExpression<T> aggregatedPVExpression;
         private ExceptionHandler exceptionHandler;
         // Initialize to defaults
-        private ThreadSwitch onThread = defaultOnThread;
-        private DataSource source = defaultDataSource;
+        private ThreadSwitch onThread;
+        private DataSource source;
 
         private PVManagerExpression(DesiredRateExpression<T> aggregatedPVExpression) {
             this.aggregatedPVExpression = aggregatedPVExpression;
@@ -128,11 +128,24 @@ public class PVManager {
         public PV<T> atHz(double rate) {
             long scanPeriodMs = (long) (1000.0 * (1.0 / rate));
 
+            // Get defaults
+            if (source == null)
+                source = defaultDataSource;
+            if (onThread == null)
+                onThread = defaultOnThread;
+
             // Check that a data source has been specified
             if (source == null) {
-                throw new RuntimeException("You need to specify a source either " +
+                throw new IllegalStateException("You need to specify a source either " +
                         "using PVManager.setDefaultDataSource or by using " +
                         "read(...).from(dataSource).");
+            }
+
+            // Check that thread switch has been specified
+            if (onThread == null) {
+                throw new IllegalStateException("You need to specify a thread either " +
+                        "using PVManager.setDefaultThreadSwitch or by using " +
+                        "read(...).andNotify(threadSwitch).");
             }
 
             // Create PV and connect
@@ -146,7 +159,11 @@ public class PVManager {
             Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
             Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread, dataRecipe.getExceptionHandler());
             Scanner.scan(notifier, scanPeriodMs);
-            source.connect(dataRecipe);
+            try {
+                source.connect(dataRecipe);
+            } catch (RuntimeException ex) {
+                dataRecipe.getExceptionHandler().handleException(ex);
+            }
             PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);
             notifier.setPvRecipe(recipe);
             return pv;

@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * An expression that represent a pv read at the CA rate.
  * Objects of this class are not created directly but through the operators defined
- * in {@link PVExpressionLanguage}.
+ * in {@link ExpressionLanguage}.
  *
  * @param <T> type returned by the expression
  * @author carcassi

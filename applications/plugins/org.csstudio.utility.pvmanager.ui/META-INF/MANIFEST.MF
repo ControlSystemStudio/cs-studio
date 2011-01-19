@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PVManager UI and SWT utilities
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.ui
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager;bundle-version="0.3.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - Brookhaven National Lab
+Export-Package: org.csstudio.utility.pvmanager.ui
