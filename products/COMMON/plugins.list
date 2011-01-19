@@ -23,7 +23,7 @@ org.csstudio.display.pvtable
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
-org.csstudio.multichannelViewer
+org.csstudio.multiChannelViewer
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
