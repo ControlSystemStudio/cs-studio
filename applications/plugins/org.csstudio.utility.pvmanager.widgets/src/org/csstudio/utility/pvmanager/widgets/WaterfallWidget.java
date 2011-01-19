@@ -18,17 +18,23 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
 
-public class WaterfallComposite extends Composite {
+/**
+ * A widget that connects to an array and display a waterfall plot based on it.
+ * 
+ * @author carcassi
+ */
+public class WaterfallWidget extends Composite {
 	
 	private VImageDisplay imageDisplay;
 	private WaterfallPlotParameters parameters = new WaterfallPlotParameters();
 
 	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
+	 * Creates a new widget.
+	 * 
+	 * @param parent the parent
+	 * @param style the style
 	 */
-	public WaterfallComposite(Composite parent, int style) {
+	public WaterfallWidget(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
 		
@@ -39,7 +45,7 @@ public class WaterfallComposite extends Composite {
 				if (e.button == 3) {
 					WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
 					Point position = new Point(e.x, e.y);
-					position = getDisplay().map(WaterfallComposite.this, null, position);
+					position = getDisplay().map(WaterfallWidget.this, null, position);
 					WaterfallPlotParameters newParameters = dialog.open(parameters, position.x, position.y);
 					if (newParameters != null) {
 						parameters = newParameters;
@@ -58,13 +64,25 @@ public class WaterfallComposite extends Composite {
 
 	}
 	
+	// The pv name for connection
 	private String pvName;
+	// The pv created by pvmanager
 	private PV<VImage> pv;
 	
+	/**
+	 * The pv name to connect to.
+	 * 
+	 * @return the current property value
+	 */
 	public String getPvName() {
 		return pvName;
 	}
 	
+	/**
+	 * Changes the pv name to connect to. Triggers a reconnection.
+	 * 
+	 * @param pvName the new property value
+	 */
 	public void setPvName(String pvName) {
 		this.pvName = pvName;
 		reconnect();

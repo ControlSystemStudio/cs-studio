@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
-import org.csstudio.utility.pvmanager.widgets.WaterfallComposite;
+import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -73,7 +73,7 @@ public class WaterfallView extends ViewPart {
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		final WaterfallComposite waterfallComposite = new WaterfallComposite(parent, SWT.NONE);
+		final WaterfallWidget waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
