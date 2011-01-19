@@ -36,6 +36,7 @@ org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
 org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
+org.csstudio.trends.databrowser2.shell.fragment
 org.csstudio.trends.databrowser2.intro
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
