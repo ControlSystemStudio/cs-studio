@@ -1,4 +1,4 @@
-package org.csstudio.utility.pvmanager.ui.widgets;
+package org.csstudio.utility.pvmanager.widgets;
 
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;

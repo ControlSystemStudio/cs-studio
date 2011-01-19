@@ -1,4 +1,4 @@
-package org.csstudio.utility.pvmanager.ui.widgets;
+package org.csstudio.utility.pvmanager.widgets;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.widgets.Composite;

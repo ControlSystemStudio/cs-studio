@@ -15,7 +15,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
-import org.csstudio.utility.pvmanager.ui.widgets.WaterfallComposite;
+import org.csstudio.utility.pvmanager.widgets.WaterfallComposite;
 
 /**
  * This sample class demonstrates how to plug-in a new
