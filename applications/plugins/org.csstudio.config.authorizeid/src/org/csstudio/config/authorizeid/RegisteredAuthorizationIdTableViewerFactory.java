@@ -59,7 +59,7 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = 600;
-        gridData.heightHint = 200;
+        gridData.heightHint = 100;
         _table.setLayoutData(gridData);
         
         // watch out for correct sequence

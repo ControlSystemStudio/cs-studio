@@ -22,7 +22,6 @@
 package org.csstudio.config.authorizeid;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.annotation.Nonnull;
@@ -86,21 +85,27 @@ public class AuthorizeIdView extends ViewPart {
     public void createPartControl(final Composite parent) {
         parent.setLayout(new GridLayout(1, true));
         
-        final Composite authIDPanel = new Composite(parent, SWT.FILL);
+        final Group authIdGroupPanel = new Group(parent, SWT.NONE);
+        authIdGroupPanel.setText(Messages.AuthorizeIdView_AUTH_IDS_FROM_LDAP);
+        authIdGroupPanel.setLayout(new GridLayout(1, true));
+        authIdGroupPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        final Composite authIDPanel = new Composite(authIdGroupPanel, SWT.FILL);
         authIDPanel.setLayout(new GridLayout(3, false));
         authIDPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        final Composite groupRolePanel = new Composite(parent, SWT.FILL);
+        final Composite groupRolePanel = new Composite(authIdGroupPanel, SWT.FILL);
         groupRolePanel.setLayout(new GridLayout(2, false));
         groupRolePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        final Composite registeredAuthIdPanel = new Composite(parent, SWT.FILL);
-        registeredAuthIdPanel.setLayout(new GridLayout(1, false));
-        registeredAuthIdPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final Group registeredAuthIdGroupPanel = new Group(parent, SWT.NONE);
+        registeredAuthIdGroupPanel.setText(Messages.AuthorizeIdView_AUTH_IDS_REGISTERED);
+        registeredAuthIdGroupPanel.setLayout(new GridLayout(1, false));
+        registeredAuthIdGroupPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
         createAuthIdPanel(authIDPanel);
         createGroupRolePanel(groupRolePanel);
-        createRegisteredAuthIdPanel(registeredAuthIdPanel);
+        createRegisteredAuthIdPanel(registeredAuthIdGroupPanel);
         
         showRegisteredAuthIds();
     }
