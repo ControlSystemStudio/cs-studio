@@ -9,7 +9,7 @@
    <launcherArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
-   
+
    <launcher name="css-common">
       <solaris/>
       <win useIco="false">
@@ -19,7 +19,7 @@
 
    <vm>
    </vm>
-   
+
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
@@ -46,10 +46,12 @@
       <plugin id="org.csstudio.common.product"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
+      <plugin id="org.csstudio.display.channelfinderviewer"/>
       <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.multiChannelViewer"/>
       <plugin id="org.csstudio.opibuilder"/>
       <plugin id="org.csstudio.opibuilder.adl2boy"/>
       <plugin id="org.csstudio.opibuilder.examples"/>
@@ -60,11 +62,15 @@
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
+      <plugin id="org.csstudio.platform.libs.glazedlists"/>
+      <plugin id="org.csstudio.platform.libs.guava"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jdom"/>
+      <plugin id="org.csstudio.platform.libs.jersey"/>
+      <plugin id="org.csstudio.platform.libs.jfreechart"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-	  <plugin id="org.csstudio.platform.libs.log4j"/>
+      <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
@@ -76,14 +82,20 @@
       <plugin id="org.csstudio.swt.widgets"/>
       <plugin id="org.csstudio.swt.xygraph"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
+      <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
       <plugin id="org.csstudio.utility.adlParser"/>
+      <plugin id="org.csstudio.utility.channel"/>
+      <plugin id="org.csstudio.utility.channelfinder"/>
+      <plugin id="org.csstudio.utility.channelfinder.ui"/>
       <plugin id="org.csstudio.utility.clock"/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
       <plugin id="org.csstudio.utility.pv.ui"/>
+      <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.speech"/>
+      <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -93,12 +105,22 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
+      <plugin id="org.eclipse.core.filesystem.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.net.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.net.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.net.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -121,11 +143,11 @@
       <plugin id="org.eclipse.equinox.p2.core"/>
       <plugin id="org.eclipse.equinox.p2.director"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
-      <plugin id="org.eclipse.equinox.p2.exemplarysetup"/>
-      <plugin id="org.eclipse.equinox.p2.garbagecollector" fragment=""/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
       <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
       <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
+      <plugin id="org.eclipse.equinox.p2.operations"/>
       <plugin id="org.eclipse.equinox.p2.repository"/>
       <plugin id="org.eclipse.equinox.p2.ui"/>
       <plugin id="org.eclipse.equinox.p2.ui.sdk"/>
@@ -134,6 +156,7 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.ui"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
@@ -147,14 +170,37 @@
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.ltk.core.refactoring"/>
+      <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.s390x" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.solaris.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.aix.ppc" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.hpux.ia64_32" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.linux.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.motif.solaris.sparc" fragment="true"/>
+      <plugin id="org.eclipse.swt.photon.qnx.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.team.core"/>
+      <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.browser"/>
+      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.cheatsheets"/>
+      <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.editors"/>
       <plugin id="org.eclipse.ui.forms"/>
@@ -170,6 +216,7 @@
       <plugin id="org.eclipse.ui.workbench.texteditor"/>
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.eclipse.update.core"/>
+      <plugin id="org.eclipse.update.core.linux" fragment="true"/>
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
@@ -178,5 +225,6 @@
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
    </plugins>
-</product>
 
+
+</product>
