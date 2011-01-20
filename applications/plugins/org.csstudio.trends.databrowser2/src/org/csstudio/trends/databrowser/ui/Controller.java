@@ -82,7 +82,7 @@ public class Controller implements ArchiveFetchJobListener
         new ArrayList<ArchiveFetchJob>();
 
     /** Is the window (shell) iconized? */
-    private volatile boolean window_is_iconized;
+    private volatile boolean window_is_iconized = false;
 
     /** Should we perform redraws, or is the window hidden and we should suppress them? */
     private boolean suppress_redraws = false;
@@ -102,29 +102,31 @@ public class Controller implements ArchiveFetchJobListener
         this.plot = plot;
 
         // Update 'iconized' state from shell
-        shell.addShellListener(new ShellListener()
+        if (shell != null)
         {
-            @Override
-            public void shellIconified(ShellEvent e)
+            shell.addShellListener(new ShellListener()
             {
-                window_is_iconized = true;
-            }
+                @Override
+                public void shellIconified(ShellEvent e)
+                {
+                    window_is_iconized = true;
+                }
 
-            @Override
-            public void shellDeiconified(ShellEvent e)
-            {
-                window_is_iconized = false;
-            }
+                @Override
+                public void shellDeiconified(ShellEvent e)
+                {
+                    window_is_iconized = false;
+                }
 
-            @Override
-            public void shellDeactivated(ShellEvent e) { /* Ignore */  }
-            @Override
-            public void shellClosed(ShellEvent e)      { /* Ignore */  }
-            @Override
-            public void shellActivated(ShellEvent e)   { /* Ignore */  }
-        });
-        window_is_iconized = shell.getMinimized();
-
+                @Override
+                public void shellDeactivated(ShellEvent e) { /* Ignore */  }
+                @Override
+                public void shellClosed(ShellEvent e)      { /* Ignore */  }
+                @Override
+                public void shellActivated(ShellEvent e)   { /* Ignore */  }
+            });
+            window_is_iconized = shell.getMinimized();
+        }
         checkAutoscaleAxes();
         createPlotTraces();
 
@@ -396,11 +398,12 @@ public class Controller implements ArchiveFetchJobListener
     }
 
     /** Start model items and initiate scrolling/updates
-     *  @throws Exception on error
+     *  @throws Exception on error: Already running, problem starting threads, ...
+     *  @see #isRunning()
      */
     public void start() throws Exception
     {
-        if (update_task != null)
+        if (isRunning())
             throw new IllegalStateException("Already started"); //$NON-NLS-1$
         createUpdateTask();
         model.start();
@@ -413,7 +416,17 @@ public class Controller implements ArchiveFetchJobListener
         getArchivedData();
     }
 
-    /** Create or re-schedule update task */
+    /** @return <code>true</code> while running
+     *  @see #stop()
+     */
+    public boolean isRunning()
+    {
+        return update_task != null;
+    }
+
+    /** Create or re-schedule update task
+     *  @see #start()
+     */
     private void createUpdateTask()
     {
         // Can't actually re-schedule, so stop one that might already be running
@@ -460,9 +473,13 @@ public class Controller implements ArchiveFetchJobListener
         update_timer.schedule(update_task, update_delay, update_delay);
     }
 
-    /** Stop scrolling and model items */
+    /** Stop scrolling and model items
+     *  @throws IllegalStateException when not running
+     */
     public void stop()
     {
+        if (! isRunning())
+            throw new IllegalStateException("Not started"); //$NON-NLS-1$
         // Stop ongoing archive access
         synchronized (archive_fetch_jobs)
         {
@@ -471,8 +488,6 @@ public class Controller implements ArchiveFetchJobListener
             archive_fetch_jobs.clear();
         }
         // Stop update task
-        if (update_task == null)
-            throw new IllegalStateException("Not started"); //$NON-NLS-1$
         model.stop();
         update_task.cancel();
         update_task = null;
@@ -574,7 +589,7 @@ public class Controller implements ArchiveFetchJobListener
         final ArchiveRescale rescale = model.getArchiveRescale();
         if (rescale == ArchiveRescale.NONE)
             return;
-        if (shell.isDisposed())
+        if (shell == null  ||  shell.isDisposed())
             return;
         shell.getDisplay().asyncExec(new Runnable()
         {
@@ -603,13 +618,15 @@ public class Controller implements ArchiveFetchJobListener
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        if (shell.isDisposed())
+        if (shell == null  ||  shell.isDisposed())
             return;
         shell.getDisplay().asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
+                if (shell.isDisposed())
+                    return;
                 final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
                             job.getPVItem().getDisplayName());
                 final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
