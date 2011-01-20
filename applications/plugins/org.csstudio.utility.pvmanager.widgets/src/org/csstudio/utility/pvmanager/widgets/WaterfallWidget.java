@@ -105,6 +105,11 @@ public class WaterfallWidget extends Composite {
 	 * @param pvName the new property value
 	 */
 	public void setPvName(String pvName) {
+		// Guard from double calls
+		if (this.pvName != null && this.pvName.equals(pvName)) {
+			return;
+		}
+		
 		this.pvName = pvName;
 		reconnect();
 	}

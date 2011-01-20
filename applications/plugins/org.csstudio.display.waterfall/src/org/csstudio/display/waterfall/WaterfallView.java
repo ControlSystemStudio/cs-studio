@@ -1,20 +1,15 @@
 package org.csstudio.display.waterfall;
 
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
+import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 
 /**
@@ -81,12 +76,14 @@ public class WaterfallView extends ViewPart {
 		fd_waterfallComposite.right = new FormAttachment(combo, 0, SWT.RIGHT);
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
 		
-		ComboHistoryHelper name_helper = new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), "pv_list", comboViewer) {
+		ComboHistoryHelper name_helper =
+			new ComboHistoryHelper(Activator.getDefault()
+				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
 			@Override
 			public void newSelection(final String pv_name) {
 				waterfallComposite.setPvName(pv_name);
 			}
 		};
+		name_helper.loadSettings();
 	}
 }
