@@ -58,6 +58,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         try
@@ -71,6 +72,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         try
@@ -82,7 +84,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
             ErrorDialog.open(shell, Messages.Error, ex.getMessage());
         }
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

@@ -37,17 +37,19 @@ public class ChangeTraceTypeCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setTraceType(new_trace_type);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setTraceType(old_trace_type);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

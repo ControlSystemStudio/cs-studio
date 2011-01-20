@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of Controller for Plot and Model.
@@ -38,7 +37,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ControllerTest
+public class ControllerDemo
 {
     private boolean run = true;
 
@@ -121,7 +120,7 @@ public class ControllerTest
             }
         });
 
-        plot = new Plot(plot_box);
+        plot = Plot.forCanvas(plot_box);
     }
 
     protected void debug()
@@ -156,8 +155,6 @@ public class ControllerTest
         }
     }
 
-    // FIXME (kasemir) : can we make this a test?
-    @Ignore("Does not finish - show stopper for all bundles test suite.")
     @Test
     public void controllerDemo() throws Exception
     {
