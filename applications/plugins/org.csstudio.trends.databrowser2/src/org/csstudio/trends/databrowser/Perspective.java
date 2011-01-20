@@ -26,7 +26,7 @@ public class Perspective implements IPerspectiveFactory
 {
     /** Perspective ID (same ID as original Data Browser) registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.Perspective";
-    
+
     final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
 
     /** Try to switch to the DataBrowser perspective
@@ -38,8 +38,9 @@ public class Perspective implements IPerspectiveFactory
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         workbench.showPerspective(Perspective.ID, window);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("deprecation")
     public void createInitialLayout(final IPageLayout layout)
     {
@@ -58,13 +59,13 @@ public class Perspective implements IPerspectiveFactory
         left.addView(SearchView.ID);
         left.addView(IPageLayout.ID_RES_NAV);
         left.addPlaceholder(ID_SNS_PV_UTIL);
-        
+
         // Stuff for 'bottom'
         bottom.addView(IPageLayout.ID_PROP_SHEET);
         bottom.addView(ExportView.ID);
         bottom.addPlaceholder(SampleView.ID);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        
+
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);

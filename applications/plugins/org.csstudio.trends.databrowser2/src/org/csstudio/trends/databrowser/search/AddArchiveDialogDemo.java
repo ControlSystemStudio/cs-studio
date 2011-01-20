@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.search;
 
+import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** JUnit Plug-in demo of the AddArchiveDialog
  *  @author Kay Kasemir
  */
-public class AddArchiveDialogTest
+public class AddArchiveDialogDemo
 {
     @Test
     public void testArchiveGUI() throws Exception
@@ -21,28 +23,8 @@ public class AddArchiveDialogTest
         final Shell shell = new Shell();
 
         final AddArchiveDialog dlg = new AddArchiveDialog(shell);
-
-        shell.getDisplay().asyncExec(new Runnable() {
-            /**
-             * {@inheritDoc}
-             */
-            public void run() {
-                dlg.open();
-             // FIXME (kasemir) : check with assertions and close the dialog afterwards!
-
-//                if (dlg.open() == AddArchiveDialog.OK)
-//                    for (ArchiveDataSource arch : dlg.getArchives())
-//                        System.out.println(arch);
-
-            }
-        });
-        shell.getDisplay().asyncExec(new Runnable() {
-            /**
-             * {@inheritDoc}
-             */
-            public void run() {
-                dlg.close();
-            }
-        });
+        if (dlg.open() == Window.OK)
+            for (ArchiveDataSource arch : dlg.getArchives())
+                System.out.println(arch);
     }
 }
