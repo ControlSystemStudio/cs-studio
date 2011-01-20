@@ -10,23 +10,11 @@
       </category>
       <view
             name="Waterfall View"
-            icon="icons/sample.gif"
+            icon="icons/water.png"
             category="org.csstudio"
             class="org.csstudio.display.waterfall.WaterfallView"
             id="org.csstudio.display.waterfall.WaterfallView">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.TaskList"
-               relationship="right"
-               id="org.csstudio.display.waterfall.WaterfallView">
-         </view>
-      </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
