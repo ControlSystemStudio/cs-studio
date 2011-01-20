@@ -17,6 +17,7 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.propsheet.AddAxisCommand;
 import org.csstudio.trends.databrowser.propsheet.EditFormulaDialog;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
 /** Context menu action that adds a PV or Formula to the Model
@@ -28,7 +29,7 @@ public class AddPVAction extends Action
     final private Shell shell;
     final private Model model;
     final private boolean formula;
-    
+
     /** Initialize
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param trace_table Table of ModelItems, used to get Shell
@@ -72,9 +73,9 @@ public class AddPVAction extends Action
         }
         final AddPVDialog dlg = new AddPVDialog(shell, existing_names, axes, formula);
         dlg.setName(name);
-        if (dlg.open() != AddPVDialog.OK)
+        if (dlg.open() != Window.OK)
             return false;
-        
+
         // Did user select axis?
         AxisConfig axis;
         if (dlg.getAxisIndex() >= 0)
@@ -85,7 +86,7 @@ public class AddPVAction extends Action
             if (axis == null)
                 axis = new AddAxisCommand(operations_manager, model).getAxis();
         }
-        
+
         // Create item
         if (formula)
         {

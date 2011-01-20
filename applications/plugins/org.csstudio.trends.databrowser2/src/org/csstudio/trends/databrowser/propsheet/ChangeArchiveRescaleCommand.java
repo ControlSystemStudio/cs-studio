@@ -38,17 +38,19 @@ public class ChangeArchiveRescaleCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         model.setArchiveRescale(new_rescale);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.setArchiveRescale(old_rescale);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

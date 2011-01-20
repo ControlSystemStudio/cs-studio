@@ -20,7 +20,7 @@ public class TimeConfigButton extends Button
 {
     /** Listener to invoke on button presses */
     private PlotListener listener = null;
-    
+
     /** Initialize */
     public TimeConfigButton()
     {
@@ -29,6 +29,7 @@ public class TimeConfigButton extends Button
         setToolTip(new Label(Messages.StartEndDialogTT));
         addActionListener(new ActionListener()
         {
+            @Override
             public void actionPerformed(final ActionEvent event)
             {
                 if (listener != null)

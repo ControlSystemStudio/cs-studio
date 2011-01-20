@@ -42,7 +42,7 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param archive Archive data source
      *  @return AddModelItemCommand or <code>null</code> on error
      */
-    public static AddModelItemCommand forPV(final Shell shell, 
+    public static AddModelItemCommand forPV(final Shell shell,
             final OperationsManager operations_manager,
             final Model model,
             final String pv_name,
@@ -80,7 +80,7 @@ public class AddModelItemCommand implements IUndoableCommand
      *  @param axis Axis
      *  @return AddModelItemCommand or <code>null</code> on error
      */
-    public static AddModelItemCommand forFormula(final Shell shell, 
+    public static AddModelItemCommand forFormula(final Shell shell,
             final OperationsManager operations_manager,
             final Model model,
             final String formula_name,
@@ -104,14 +104,14 @@ public class AddModelItemCommand implements IUndoableCommand
         return new AddModelItemCommand(shell, operations_manager, model, item);
     }
 
-    
+
     /** Register and perform the command
      *  @param shell Shell used for error dialogs
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param model Model were PV is to be added
      *  @param item Item to add
      */
-    public AddModelItemCommand(final Shell shell, 
+    public AddModelItemCommand(final Shell shell,
             final OperationsManager operations_manager,
             final Model model,
             final ModelItem item)
@@ -133,13 +133,14 @@ public class AddModelItemCommand implements IUndoableCommand
         }
         operations_manager.addCommand(this);
     }
-    
+
     public ModelItem getItem()
     {
         return item;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         try
@@ -155,11 +156,12 @@ public class AddModelItemCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.removeItem(item);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

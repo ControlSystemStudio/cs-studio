@@ -31,6 +31,7 @@ import org.csstudio.trends.databrowser.search.SearchView;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
+import org.csstudio.trends.databrowser.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser.waveformview.OpenWaveformAction;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -287,7 +288,7 @@ public class DataBrowserEditor extends EditorPart
         final Activator activator = Activator.getDefault();
         final Shell shell = parent.getShell();
         final MenuManager mm = new MenuManager();
-        mm.add(plot.getToggleToolbarAction());
+        mm.add(new ToggleToolbarAction(plot));
         mm.add(new Separator());
         mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, false));
         mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, true));

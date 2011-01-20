@@ -11,16 +11,13 @@ import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IMinMaxDoubleValue;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.editor.DataBrowserAwareView;
-import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
-import org.csstudio.trends.databrowser.model.ModelListener;
-import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.PlotSample;
+import org.csstudio.trends.databrowser.ui.TableHelper;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
@@ -42,7 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 
 /** A View that shows all the current Model Samples in a list.
- *        
+ *
  *  @author Kay Kasemir
  *  @author Helge Rickens contributed to the previous Data Browser SampleView
  *  @author Albert Kagarmanov changed the previous Data Browser's
@@ -56,32 +53,34 @@ public class SampleView extends DataBrowserAwareView
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
-    
+
     /** GUI elements */
     private Combo items;
     private TableViewer sample_table;
-    
+
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
     {
         final GridLayout layout = new GridLayout(3, false);
         parent.setLayout(layout);
-        
+
         // Item: pvs [Refresh]
         Label l = new Label(parent, 0);
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
-        
+
         items = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         items.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         items.addSelectionListener(new SelectionListener()
         {
+            @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 widgetDefaultSelected(e);
             }
-            
+
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {   // Configure table to display samples of the selected model item
                 if (items.getSelectionIndex() == 0)
@@ -95,7 +94,7 @@ public class SampleView extends DataBrowserAwareView
                 sample_table.setInput(item);
             }
         });
-        
+
         final Button refresh = new Button(parent, SWT.PUSH);
         refresh.setText(Messages.SampleView_Refresh);
         refresh.setToolTipText(Messages.SampleView_RefreshTT);
@@ -108,16 +107,22 @@ public class SampleView extends DataBrowserAwareView
                 updateModel(model, model);
             }
         });
-        
+
         // Sample Table
-        sample_table = new TableViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL);
+        // TableColumnLayout requires this to be in its own container
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        sample_table = new TableViewer(table_parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL);
         sample_table.setContentProvider(new SampleTableContentProvider());
         final Table table = sample_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
         // Time column
-        TableViewerColumn col = AutoSizeColumn.make(sample_table, Messages.TimeColumn, 90, 100);
+        TableViewerColumn col =
+            TableHelper.createColumn(table_layout, sample_table, Messages.TimeColumn, 90, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -128,7 +133,7 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         // Value column
-        col = AutoSizeColumn.make(sample_table, Messages.ValueColumn, 50, 100);
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.ValueColumn, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -152,19 +157,19 @@ public class SampleView extends DataBrowserAwareView
                             Double.toString(mmd.getValue()),
                             Double.toString(mmd.getMinimum()),
                             Double.toString(mmd.getMaximum())
-                        }); 
+                        });
                 }
                 else if (value instanceof IDoubleValue)
                 {
                     final IDoubleValue dbl = (IDoubleValue) value;
-                    return Double.toString(dbl.getValue()); 
+                    return Double.toString(dbl.getValue());
                 }
                 else
                     return value.toString();
             }
         });
         // Severity column
-        col = AutoSizeColumn.make(sample_table, Messages.SeverityColumn, 90, 50);
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.SeverityColumn, 90, 50);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -189,7 +194,7 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         // Status column
-        col = AutoSizeColumn.make(sample_table, Messages.StatusColumn, 90, 50);
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.StatusColumn, 90, 50);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -201,7 +206,7 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         // Sample Source column
-        col = AutoSizeColumn.make(sample_table, Messages.SampleView_Source, 90, 10);
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Source, 90, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -212,7 +217,7 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         // Data Quality column
-        col = AutoSizeColumn.make(sample_table, Messages.SampleView_Quality, 90, 10);
+        col = TableHelper.createColumn(table_layout, sample_table, Messages.SampleView_Quality, 90, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -223,8 +228,6 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         ColumnViewerToolTipSupport.enableFor(sample_table, ToolTip.NO_RECREATE);
-
-        new AutoSizeControlListener(table);
     }
 
     /** {@inheritDoc} */
@@ -240,7 +243,7 @@ public class SampleView extends DataBrowserAwareView
             sample_table.setInput(null);
             return;
         }
-        
+
         // Show PV names
         final String names[] = new String[model.getItemCount()+1];
         names[0] = Messages.SampleView_SelectItem;
@@ -273,6 +276,6 @@ public class SampleView extends DataBrowserAwareView
     @Override
     public void setFocus()
     {
-        items.setFocus();        
+        items.setFocus();
     }
 }

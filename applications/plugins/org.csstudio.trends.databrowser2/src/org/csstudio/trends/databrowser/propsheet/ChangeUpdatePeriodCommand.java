@@ -37,17 +37,19 @@ public class ChangeUpdatePeriodCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         model.setUpdatePeriod(new_period);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.setUpdatePeriod(old_period);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

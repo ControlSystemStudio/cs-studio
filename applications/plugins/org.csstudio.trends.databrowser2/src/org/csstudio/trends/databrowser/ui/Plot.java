@@ -30,7 +30,6 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -242,10 +241,16 @@ public class Plot
         return xygraph.getOperationsManager();
     }
 
-    /** @return Action to show/hide the tool bar */
-    public IAction getToggleToolbarAction()
+    /** @return <code>true</code> if toolbar is visible */
+    public boolean isToolbarVisible()
     {
-        return new ToggleToolbarAction(plot);
+        return plot.isShowToolbar();
+    }
+
+    /** @param visible <code>true</code> to display the tool bar */
+    public void setToolbarVisible(final boolean visible)
+    {
+        plot.setShowToolbar(visible);
     }
 
     /** Remove all axes and traces */

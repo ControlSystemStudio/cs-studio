@@ -44,6 +44,7 @@ public class DeleteItemsCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         for (ModelItem item : items)
@@ -51,6 +52,7 @@ public class DeleteItemsCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         for (ModelItem item : items)
@@ -67,7 +69,7 @@ public class DeleteItemsCommand implements IUndoableCommand
             }
         }
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

@@ -30,7 +30,7 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_period New value
      */
-    public ChangeSamplePeriodCommand(final Shell shell, 
+    public ChangeSamplePeriodCommand(final Shell shell,
             final OperationsManager operations_manager,
             final PVItem item, final double new_period)
     {
@@ -54,6 +54,7 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
 
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         try
@@ -68,6 +69,7 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         try
@@ -80,7 +82,7 @@ public class ChangeSamplePeriodCommand implements IUndoableCommand
                 NLS.bind(Messages.ScanPeriodChangeErrorFmt, item.getName(), ex.getMessage()));
         }
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

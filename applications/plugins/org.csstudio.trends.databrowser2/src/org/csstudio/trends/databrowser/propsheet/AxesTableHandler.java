@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.propsheet;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser.Activator;
@@ -18,9 +16,11 @@ import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
+import org.csstudio.trends.databrowser.ui.TableHelper;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -89,10 +89,11 @@ public class AxesTableHandler implements ILazyContentProvider
 
     /** Initialize
      *  @param parent
+     *  @param table_layout
      *  @param operations_manager
      */
     public AxesTableHandler(final Composite parent,
-            final OperationsManager operations_manager)
+            final TableColumnLayout table_layout, final OperationsManager operations_manager)
     {
         this.operations_manager = operations_manager;
 
@@ -103,12 +104,9 @@ public class AxesTableHandler implements ILazyContentProvider
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        createColumns();
+        createColumns(table_layout);
 
         axes_table.setContentProvider(this);
-
-        // See comment in DataBrowserPropertySheetPage.createValueAxesTab
-        // table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         createContextMenu();
     }
@@ -119,13 +117,15 @@ public class AxesTableHandler implements ILazyContentProvider
         return axes_table;
     }
 
-    /** Create table columns: Auto-sizable, with label provider and editor */
-    private void createColumns()
+    /** Create table columns: Auto-sizable, with label provider and editor
+     *  @param table_layout
+     */
+    private void createColumns(TableColumnLayout table_layout)
     {
         TableViewerColumn col;
 
         // Visible? Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AxisVisibility, 80, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisVisibility, 80, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -171,7 +171,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Axis Name Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.ValueAxisName, 100, 100);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.ValueAxisName, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -204,7 +204,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Color Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.Color, 40, 5);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.Color, 40, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -240,7 +240,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Minimum value Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AxisMin, 80, 100);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMin, 80, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -280,7 +280,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Maximum value Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AxisMax, 80, 100);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisMax, 80, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -320,7 +320,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Auto scale Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.AutoScale, 80, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AutoScale, 80, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -366,7 +366,7 @@ public class AxesTableHandler implements ILazyContentProvider
         });
 
         // Log scale Column ----------
-        col = AutoSizeColumn.make(axes_table, Messages.LinLogScaleType, 80, 10);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.LinLogScaleType, 80, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -410,8 +410,6 @@ public class AxesTableHandler implements ILazyContentProvider
                 }
             }
         });
-
-        new AutoSizeControlListener(axes_table.getTable());
     }
 
     /** Add context menu to axes_table */
@@ -461,10 +459,9 @@ public class AxesTableHandler implements ILazyContentProvider
         axes_table.replace(model.getAxis(index), index);
     }
 
-    // ILazyContentProvider
+    /** {@inheritDoc} */
     @Override
     public void dispose()
     {
         // NOP
-    }
-}
+    }}

@@ -38,17 +38,19 @@ public class ChangePlotBackgroundCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         model.setPlotBackground(new_color);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.setPlotBackground(old_color);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

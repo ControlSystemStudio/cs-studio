@@ -10,7 +10,6 @@ package org.csstudio.trends.databrowser.propsheet;
 import java.util.ArrayList;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.ArchiveRescale;
@@ -27,6 +26,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -201,8 +201,10 @@ public class DataBrowserPropertySheetPage extends Page
      */
     private void createTracesTabItemPanel(final SashForm sashform)
     {
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
-        model_item_top.setLayout(new FillLayout());
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        model_item_top.setLayout(table_layout);
         trace_table = new TableViewer(model_item_top ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
@@ -211,7 +213,7 @@ public class DataBrowserPropertySheetPage extends Page
         table.setLinesVisible(true);
 
         final TraceTableHandler tth = new TraceTableHandler();
-        tth.createColumns(operations_manager, trace_table);
+        tth.createColumns(table_layout, operations_manager, trace_table);
 
         trace_table.setContentProvider(tth);
         trace_table.setInput(model);
@@ -239,16 +241,20 @@ public class DataBrowserPropertySheetPage extends Page
         l.setText(Messages.ArchiveDataSources);
         l.setLayoutData(new GridData());
 
-        archive_table = new TableViewer(archive_panel ,
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
+        final Composite table_parent = new Composite(archive_panel, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        archive_table = new TableViewer(table_parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
         final Table table = archive_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         final ArchivesTableHandler ath = new ArchivesTableHandler();
-        ath.createColumns(operations_manager, archive_table);
+        ath.createColumns(table_layout, operations_manager, archive_table);
         archive_table.setContentProvider(ath);
 
         formula_panel = new Composite(item_detail_top, 0);
@@ -506,7 +512,7 @@ public class DataBrowserPropertySheetPage extends Page
         final TabItem axes_tab = new TabItem(tab_folder, 0);
         axes_tab.setText(Messages.ValueAxes);
 
-        final Composite parent = new Composite(tab_folder, SWT.BORDER);
+        final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout());
 
         // Rescale options
@@ -542,12 +548,13 @@ public class DataBrowserPropertySheetPage extends Page
             });
         }
 
-        // Tab is filled with 'axes' table
-        final AxesTableHandler ath = new AxesTableHandler(parent, operations_manager);
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        final AxesTableHandler ath = new AxesTableHandler(table_parent, table_layout, operations_manager);
         ath.getAxesTable().setInput(model);
-        // Unclear: When setting the layout data inside AxesTableHandler(),
-        // the whole 'parent' didn't show up?!
-        ath.getAxesTable().getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         axes_tab.setControl(parent);
     }
