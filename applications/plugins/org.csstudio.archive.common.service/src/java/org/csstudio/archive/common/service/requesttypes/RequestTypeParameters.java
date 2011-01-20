@@ -21,11 +21,8 @@
  */
 package org.csstudio.archive.common.service.requesttypes;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -88,7 +85,7 @@ public class RequestTypeParameters {
     }
     
     /**
-     * Returns a copy of the (read-only) parameters as {@link Collection}.
+     * Returns a copy of the (read-only) parameters.
      * 
      * @return a copy of the contained values.
      */
