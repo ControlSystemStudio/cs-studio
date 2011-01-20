@@ -43,31 +43,37 @@ public class PlotDemo
 
     final private PlotListener listener = new PlotListener()
     {
+        @Override
         public void scrollRequested(final boolean enable_scrolling)
         {
         	System.out.println("Scroll enabled: " + enable_scrolling);
         }
 
+        @Override
         public void timeConfigRequested()
         {
         	System.out.println("Time Config requested");
         }
 
+        @Override
         public void timeAxisChanged(final long start_ms, final long end_ms)
         {
         	System.out.println("Time axis: " + start_ms + " ... " + end_ms);
         }
 
+        @Override
         public void valueAxisChanged(final int index, final double lower, final double upper)
         {
             System.out.println("Value axis " + index + ": " + lower + " ... " + upper);
         }
 
+        @Override
         public void droppedName(final String name)
         {
             System.out.println("Name dropped: " + name);
         }
 
+        @Override
         public void droppedPVName(final String name, final IArchiveDataSource archive)
         {
             System.out.println("PV Name dropped: " + name);
@@ -96,7 +102,7 @@ public class PlotDemo
             }
         });
 
-        final Plot plot = new Plot(plot_box);
+        final Plot plot = Plot.forCanvas(plot_box);
         plot.addListener(listener);
 
         // Create demo samples
@@ -128,6 +134,7 @@ public class PlotDemo
             @Override
             public void write(final PrintWriter writer)
             {
+                // NOP
             }
         };
         item.setColor(new RGB(0, 0, 255));

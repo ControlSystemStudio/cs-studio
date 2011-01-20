@@ -219,7 +219,7 @@ public class DataBrowserEditor extends EditorPart
         final Canvas plot_box = new Canvas(parent, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        plot = new Plot(plot_box);
+        plot = Plot.forCanvas(plot_box);
 
         // Create and start controller
         controller = new Controller(parent.getShell(), model, plot);
@@ -269,13 +269,13 @@ public class DataBrowserEditor extends EditorPart
             }
             // Ignore
             @Override
-            public void partInputChanged(final IWorkbenchPartReference part) {}
+            public void partInputChanged(final IWorkbenchPartReference part) { /* NOP */ }
             @Override
-            public void partDeactivated(final IWorkbenchPartReference part)  {}
+            public void partDeactivated(final IWorkbenchPartReference part)  { /* NOP */ }
             @Override
-            public void partBroughtToTop(final IWorkbenchPartReference part) {}
+            public void partBroughtToTop(final IWorkbenchPartReference part) { /* NOP */ }
             @Override
-            public void partActivated(final IWorkbenchPartReference part)    {}
+            public void partActivated(final IWorkbenchPartReference part)    { /* NOP */ }
         });
 
         createContextMenu(plot_box);

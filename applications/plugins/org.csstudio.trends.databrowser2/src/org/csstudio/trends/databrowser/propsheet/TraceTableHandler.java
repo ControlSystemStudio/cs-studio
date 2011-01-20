@@ -11,6 +11,7 @@ import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.AxisConfig;
@@ -20,7 +21,6 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.RequestType;
 import org.csstudio.trends.databrowser.model.TraceType;
-import org.csstudio.trends.databrowser.ui.ColorRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -46,21 +46,26 @@ public class TraceTableHandler implements ILazyContentProvider
 {
     /** Prompt for the 'raw request' warning? */
     static private boolean prompt_for_raw_data_request = true;
-    
+
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
 
-    final private ColorRegistry color_registry;
+    final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
     private Model model;
     private TableViewer trace_table;
-    
+
     final private ModelListener model_listener = new ModelListener()
     {
+        @Override
         public void changedUpdatePeriod() { /* Ignored */ }
+        @Override
         public void changedArchiveRescale() { /* Ignored */ }
+        @Override
         public void changedColors() { /* Ignored */ }
+        @Override
         public void changedTimerange() { /* Ignored */ }
 
+        @Override
         public void changedAxis(AxisConfig axis)
         {
             // In case an axis _name_ changed, this needs to be shown
@@ -68,12 +73,14 @@ public class TraceTableHandler implements ILazyContentProvider
             trace_table.refresh();
         }
 
+        @Override
         public void itemAdded(final ModelItem item)
         {
             trace_table.cancelEditing();
             trace_table.setItemCount(model.getItemCount());
         }
-        
+
+        @Override
         public void itemRemoved(final ModelItem item)
         {
             // User will often click on an item,
@@ -85,28 +92,24 @@ public class TraceTableHandler implements ILazyContentProvider
             trace_table.refresh();
         }
 
+        @Override
         public void changedItemVisibility(ModelItem item)
         {   // Update the item's row in table
             changedItemLook(item);
         }
 
+        @Override
         public void changedItemLook(final ModelItem item)
         {
             trace_table.refresh(item);
         }
-        
+
+        @Override
         public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
+        @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
-    };    
-    
-    /** Initialize
-     *  @param color_registry ColorRegistry
-     */
-    public TraceTableHandler(final ColorRegistry color_registry)
-    {
-        this.color_registry = color_registry;
-    }
-    
+    };
+
     /** Create table columns: Auto-sizable, with label provider and editor
      *  @param trace_table
      */
@@ -115,7 +118,7 @@ public class TraceTableHandler implements ILazyContentProvider
     {
         final Shell shell = trace_table.getTable().getShell();
         TableViewerColumn col;
-        
+
         // Visible Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.TraceVisibility, 45, 1);
         col.setLabelProvider(new CellLabelProvider()
@@ -159,7 +162,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeVisibilityCommand(operations_manager, item, visible);
             }
         });
-        
+
         // Trace PV/Formula Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.ItemName, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
@@ -189,7 +192,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeNameCommand(shell, operations_manager, item, new_name);
             }
         });
-        
+
         // Display Name Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.TraceDisplayName, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
@@ -220,7 +223,7 @@ public class TraceTableHandler implements ILazyContentProvider
                         item, new_name);
             }
         });
-        
+
         // Color Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.Color, 40, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -253,7 +256,7 @@ public class TraceTableHandler implements ILazyContentProvider
                         (ModelItem) element, (RGB)value);
             }
         });
-        
+
         // Scan Period Column (only applies to PVItems) ----------
         col = AutoSizeColumn.make(trace_table, Messages.ScanPeriod, 70, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -314,7 +317,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 }
             }
         });
-        
+
         // Buffer size Column (only applies to PVItems) ----------
         col = AutoSizeColumn.make(trace_table, Messages.LiveSampleBufferSize, 70, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -374,7 +377,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 }
             }
         });
-        
+
         // Line Width Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.TraceLineWidth, 40, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -411,7 +414,7 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeLineWidthCommand(operations_manager, item, width);
             }
         });
-        
+
         // Axis Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.Axis, 60, 30);
         col.setLabelProvider(new CellLabelProvider()
@@ -451,7 +454,7 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeAxisCommand(operations_manager, item, axis);
             }
         });
-        
+
         // Trace Type Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.TraceType, 75, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -488,7 +491,7 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeTraceTypeCommand(operations_manager, item, trace_type);
             }
         });
-        
+
         // Request Type Column ----------
         col = AutoSizeColumn.make(trace_table, Messages.RequestType, 75, 10);
         col.setLabelProvider(new CellLabelProvider()
@@ -540,7 +543,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
             }
         });
-        
+
         ColumnViewerToolTipSupport.enableFor(trace_table, ToolTip.NO_RECREATE);
 
         new AutoSizeControlListener(trace_table.getTable());
@@ -549,11 +552,12 @@ public class TraceTableHandler implements ILazyContentProvider
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
     {
         if (old_model != null)
             ((Model)old_model).removeListener(model_listener);
-            
+
         trace_table = (TableViewer) viewer;
         model = (Model) new_model;
         if (trace_table == null  ||  model == null)
@@ -562,16 +566,18 @@ public class TraceTableHandler implements ILazyContentProvider
         trace_table.setItemCount(model.getItemCount());
         model.addListener(model_listener);
     }
-    
+
     /** Called by ILazyContentProvider to get the ModelItem for a table row
      *  {@inheritDoc}
      */
+    @Override
     public void updateElement(int index)
     {
         trace_table.replace(model.getItem(index), index);
     }
 
     // ILazyContentProvider
+    @Override
     public void dispose()
     {
         // NOP
