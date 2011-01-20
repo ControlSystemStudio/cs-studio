@@ -41,7 +41,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());	
 		figure.setTransparent(model.isTransparent());
-		figure.getScale().setFont(model.getFont().getSWTFont());
+		figure.getScale().setFont(model.getScaleFont().getSWTFont());
 		setScaleFormat(figure, model.getScaleFormat());
 		setValueLabelFormat(figure, model.getValueLabelFormat());
 	}	

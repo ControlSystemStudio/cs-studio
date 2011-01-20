@@ -4,11 +4,9 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
@@ -31,12 +29,6 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	 * Image on the button.
 	 */
 	public static final String PROP_IMAGE = "image"; //$NON-NLS-1$
-	
-	/**
-	 * Font of widget.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-
 	
 	/**
 	 * The index of the action to be executed when button is pushed. 
@@ -104,8 +96,6 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, "Default")); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
 				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		
@@ -162,14 +152,7 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 		return (String) getProperty(PROP_TEXT).getPropertyValue();
 	}
 
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public OPIFont getFont() {
-		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
-	}
+
 	
 	public IPath getImagePath(){
 		IPath absolutePath = (IPath) getProperty(PROP_IMAGE).getPropertyValue();

@@ -212,7 +212,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
-		//setPropertyVisible(PROP_PVNAME, false);
+		removeProperty(PROP_FONT);
 		
 	}
 	

@@ -61,14 +61,14 @@ public final class MediaService {
 
 	
 	private void loadPredefinedColors() {
-		colorMap.put(AlarmColorScheme.MAJOR, 
-				new OPIColor(AlarmColorScheme.MAJOR, CustomMediaFactory.COLOR_RED, true)); 
-		colorMap.put(AlarmColorScheme.MINOR, 
-				new OPIColor(AlarmColorScheme.MINOR, CustomMediaFactory.COLOR_ORANGE, true)); 
-		colorMap.put(AlarmColorScheme.INVALID, 
-				new OPIColor(AlarmColorScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
-		colorMap.put(AlarmColorScheme.DISCONNECTED, 
-				new OPIColor(AlarmColorScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
+		colorMap.put(AlarmRepresentationScheme.MAJOR, 
+				new OPIColor(AlarmRepresentationScheme.MAJOR, CustomMediaFactory.COLOR_RED, true)); 
+		colorMap.put(AlarmRepresentationScheme.MINOR, 
+				new OPIColor(AlarmRepresentationScheme.MINOR, CustomMediaFactory.COLOR_ORANGE, true)); 
+		colorMap.put(AlarmRepresentationScheme.INVALID, 
+				new OPIColor(AlarmRepresentationScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
+		colorMap.put(AlarmRepresentationScheme.DISCONNECTED, 
+				new OPIColor(AlarmRepresentationScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
 	}
 	
 	private void loadPredefinedFonts(){
