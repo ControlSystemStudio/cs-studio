@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            description="Display a Data Browser configuration"
+            editpart_class="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedEditPart"
+            icon="icons/databrowser.png"
+            model_class="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedModel"
+            name="Data Browser"
+            typeId="org.csstudio.trends.databrowser.opiwidget">
+      </widget>
+   </extension>
+
+</plugin>
