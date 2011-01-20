@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -132,6 +131,12 @@ public class TraceTableHandler implements ILazyContentProvider
                         ? Activator.getDefault().getImage(Activator.ICON_CHECKED)
                         : Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceVisibilityTT;
+            }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
@@ -174,6 +179,12 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getName());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.ItemNameTT;
+            }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
@@ -203,6 +214,12 @@ public class TraceTableHandler implements ILazyContentProvider
             {
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getDisplayName());
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceDisplayNameTT;
             }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -234,6 +251,12 @@ public class TraceTableHandler implements ILazyContentProvider
             {
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setBackground(color_registry.getColor(item.getColor()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.ColorTT;
             }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -389,6 +412,13 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(Integer.toString(item.getLineWidth()));
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceLineWidthTT;
+            }
+
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
@@ -425,6 +455,12 @@ public class TraceTableHandler implements ILazyContentProvider
             {
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getAxis().getName());
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.AxisTT;
             }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -466,6 +502,12 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getTraceType().toString());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceTypeTT;
+            }
         });
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
@@ -506,6 +548,12 @@ public class TraceTableHandler implements ILazyContentProvider
                 else
                     cell.setText(Messages.NotApplicable);
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.RequestTypeTT;
+            }
         });
         // Edit as boolean: Raw == false,  Optimized == true
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -545,7 +593,7 @@ public class TraceTableHandler implements ILazyContentProvider
             }
         });
 
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 
     /** Set input to a Model
