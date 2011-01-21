@@ -21,11 +21,9 @@
  */
 package org.csstudio.config.authorizeid;
 
-import java.text.Collator;
-import java.util.Locale;
-
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.authorizeid.SortActionFactory.TypedComparator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -34,11 +32,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 
 enum GroupRoleTableViewerFactory {
     
@@ -47,9 +42,6 @@ enum GroupRoleTableViewerFactory {
     enum GroupRoleTableColumns {
         GROUP, ROLE, USER
     }
-    
-    // TODO (jpenning) no state in singleton
-    private static Table _groupRoleTable;
     
     /**
      * @param parent a composite
@@ -62,14 +54,14 @@ enum GroupRoleTableViewerFactory {
         TableViewer groupRoleTableViewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
                 | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
         
-        _groupRoleTable = groupRoleTableViewer.getTable();
-        _groupRoleTable.setHeaderVisible(true);
-        _groupRoleTable.setLinesVisible(true);
+        final Table groupRoleTable = groupRoleTableViewer.getTable();
+        groupRoleTable.setHeaderVisible(true);
+        groupRoleTable.setLinesVisible(true);
         
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = 600;
         gridData.heightHint = 200;
-        _groupRoleTable.setLayoutData(gridData);
+        groupRoleTable.setLayoutData(gridData);
         
         // watch out for correct sequence
         createGroupColumn(groupRoleTableViewer, tableColumnLayout);
@@ -77,7 +69,7 @@ enum GroupRoleTableViewerFactory {
         createUsersColumn(groupRoleTableViewer, tableColumnLayout);
         
         // Consistency check
-        assert _groupRoleTable.getColumnCount() == GroupRoleTableColumns.values().length;
+        assert groupRoleTable.getColumnCount() == GroupRoleTableColumns.values().length;
         
         groupRoleTableViewer.setContentProvider(ArrayContentProvider.getInstance());
         groupRoleTableViewer.setLabelProvider(new GroupRoleLabelProvider());
@@ -87,32 +79,50 @@ enum GroupRoleTableViewerFactory {
     
     @Nonnull
     private TableColumn createGroupColumn(@Nonnull final TableViewer viewer,
-                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
+                                          @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIG);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
-        column.addListener(SWT.Selection, new MyListener(0));
+        SortActionFactory.connectSortActionToColumn(viewer, column, createGroupComparator());
         return column;
+    }
+    
+    private TypedComparator<GroupRoleTableEntry> createGroupComparator() {
+        return new TypedComparator<GroupRoleTableEntry>() {
+            @Override
+            public int compare(GroupRoleTableEntry entry1, GroupRoleTableEntry entry2) {
+                return SortActionFactory.robustStringCompare(entry1.getEaig(), entry2.getEaig());
+            }
+        };
     }
     
     @Nonnull
     private TableColumn createRoleColumn(@Nonnull final TableViewer viewer,
-                                                @Nonnull final TableColumnLayout tableColumnLayout) {
+                                         @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIR);
         
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
-        column.addListener(SWT.Selection, new MyListener(1));
+        SortActionFactory.connectSortActionToColumn(viewer, column, createRoleComparator());
         return column;
+    }
+    
+    private TypedComparator<GroupRoleTableEntry> createRoleComparator() {
+        return new TypedComparator<GroupRoleTableEntry>() {
+            @Override
+            public int compare(GroupRoleTableEntry entry1, GroupRoleTableEntry entry2) {
+                return SortActionFactory.robustStringCompare(entry1.getEair(), entry2.getEair());
+            }
+        };
     }
     
     @Nonnull
     private TableColumn createUsersColumn(@Nonnull final TableViewer viewer,
-                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
+                                          @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.None);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_USERS);
@@ -121,47 +131,4 @@ enum GroupRoleTableViewerFactory {
                                         new ColumnWeightData(80, ColumnWeightData.MINIMUM_WIDTH));
         return column;
     }
-    
-    /**
-     * Listener for sorting columns for second table.
-     */
-    private static class MyListener implements Listener {
-        
-        private final int i;
-        
-        public MyListener(final int i) {
-            super();
-            this.i = i;
-        }
-        
-        @SuppressWarnings("synthetic-access")
-        @Override
-        public void handleEvent(final Event event) {
-            sortColumn(i);
-        }
-    }
-    
-    /**
-     * Sorts column alphabetically, when clicking on it's "header".
-     * @param colNum the number of column in table (starts with 0)
-     */
-    private static void sortColumn(final int colNum) {
-        TableItem[] items = _groupRoleTable.getItems();
-        final Collator collator = Collator.getInstance(Locale.getDefault());
-        for (int i = 1; i < items.length; i++) {
-            final String value1 = items[i].getText(colNum);
-            for (int j = 0; j < i; j++) {
-                final String value2 = items[j].getText(colNum);
-                if (collator.compare(value1, value2) < 0) {
-                    final String[] values = { items[i].getText(0), items[i].getText(1) };
-                    items[i].dispose();
-                    final TableItem item = new TableItem(_groupRoleTable, SWT.NONE, j);
-                    item.setText(values);
-                    items = _groupRoleTable.getItems();
-                    break;
-                }
-            }
-        }
-    }
-    
 }

@@ -23,6 +23,8 @@ package org.csstudio.config.authorizeid;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.authorizeid.SortActionFactory.TypedComparator;
+import org.csstudio.platform.security.RegisteredAuthorizationId;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -84,7 +86,17 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_EAIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(15, ColumnWeightData.MINIMUM_WIDTH));
+        SortActionFactory.connectSortActionToColumn(viewer, column, createAuthorizeIdComparator());
         return column;
+    }
+    
+    private TypedComparator<RegisteredAuthorizationId> createAuthorizeIdComparator() {
+        return new TypedComparator<RegisteredAuthorizationId>() {
+            @Override
+            public int compare(RegisteredAuthorizationId entry1, RegisteredAuthorizationId entry2) {
+                return entry1.getId().compareTo(entry2.getId());
+            }
+        };
     }
     
     @Nonnull
@@ -95,9 +107,19 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_DESCRIPTION);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(50, ColumnWeightData.MINIMUM_WIDTH));
+        SortActionFactory.connectSortActionToColumn(viewer, column, createDescriptionComparator());
         return column;
     }
     
+    private TypedComparator<RegisteredAuthorizationId> createDescriptionComparator() {
+        return new TypedComparator<RegisteredAuthorizationId>() {
+            @Override
+            public int compare(RegisteredAuthorizationId entry1, RegisteredAuthorizationId entry2) {
+                return entry1.getDescription().compareTo(entry2.getDescription());
+            }
+        };
+    }
+
     @Nonnull
     private TableColumn createOriginatingPluginColumn(@Nonnull final TableViewer viewer,
                                                       @Nonnull final TableColumnLayout tableColumnLayout) {
@@ -106,7 +128,18 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_ORIGINATING_PLUGIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(35, ColumnWeightData.MINIMUM_WIDTH));
+        SortActionFactory.connectSortActionToColumn(viewer, column, createOriginatingPluginComparator());
         return column;
     }
-    
+
+    private TypedComparator<RegisteredAuthorizationId> createOriginatingPluginComparator() {
+        return new TypedComparator<RegisteredAuthorizationId>() {
+            @Override
+            public int compare(RegisteredAuthorizationId entry1, RegisteredAuthorizationId entry2) {
+                return entry1.getContributor().compareTo(entry2.getContributor());
+            }
+        };
+    }
+
+
 }

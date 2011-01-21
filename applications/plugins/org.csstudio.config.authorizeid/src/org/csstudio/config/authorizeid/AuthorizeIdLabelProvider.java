@@ -55,8 +55,8 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
             AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
             
             if (colIndex == AuthorizeIdTableColumns.REGISTERED_AS_EXTENSION) {
-                result = ((AuthorizedIdTableEntry) element).isRegisteredAtPlugin() ? UNCHECKED
-                        : CHECKED;
+                result = ((AuthorizedIdTableEntry) element).isRegisteredAtPlugin() ? CHECKED
+                        : UNCHECKED;
             }
         }
         

@@ -21,21 +21,15 @@
  */
 package org.csstudio.config.authorizeid;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.eclipse.jface.action.Action;
+import org.csstudio.config.authorizeid.SortActionFactory.TypedComparator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -83,18 +77,25 @@ enum AuthorizeIdTableViewerFactory {
     
     @Nonnull
     private TableColumn createAuthorizeIdColumn(@Nonnull final TableViewer viewer,
-                                                       @Nonnull final TableColumnLayout tableColumnLayout) {
+                                                @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_EAIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(20, ColumnWeightData.MINIMUM_WIDTH));
-
-        connectSortActionToColumn(viewer, column, createAuthorizeIdComparator());
-
+        SortActionFactory.connectSortActionToColumn(viewer, column, createAuthorizeIdComparator());
         return column;
     }
 
+    private TypedComparator<AuthorizedIdTableEntry> createAuthorizeIdComparator() {
+        return new TypedComparator<AuthorizedIdTableEntry>() {
+            @Override
+            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
+                return entry1.getAuthorizeId().compareTo(entry2.getAuthorizeId());
+            }
+        };
+    }
+    
     @Nonnull
     private TableColumn createDescriptionColumn(@Nonnull final TableViewer viewer,
                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
@@ -103,8 +104,18 @@ enum AuthorizeIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_DESCRIPTION);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(70, ColumnWeightData.MINIMUM_WIDTH));
-        connectSortActionToColumn(viewer, column, createDescriptonComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createDescriptonComparator());
         return column;
+    }
+    
+
+    private TypedComparator<AuthorizedIdTableEntry> createDescriptonComparator() {
+        return new TypedComparator<AuthorizedIdTableEntry>() {
+            @Override
+            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
+                return SortActionFactory.robustStringCompare(entry1.getDescription(), entry2.getDescription());
+            }
+        };
     }
 
     @Nonnull
@@ -115,101 +126,9 @@ enum AuthorizeIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_IS_REGISTERED);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
-        connectSortActionToColumn(viewer, column, createDescriptonComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createDescriptonComparator());
         return column;
     }
     
-    private void connectSortActionToColumn(@Nonnull final TableViewer viewer,
-                                           @Nonnull final TableColumn column,
-                                           @Nonnull final InvertableViewerComparator comparator) {
-        final Action action = new Action() {
-            @Override
-            public void run() {
-                viewer.getTable().setSortColumn(column);
-                comparator.invertSortDirection();
-                viewer.getTable().setSortDirection(comparator.getSortDirection() ? SWT.UP
-                        : SWT.DOWN);
-                viewer.setComparator(comparator);
-                viewer.refresh();
-            }
-        };
-        
-        SelectionListener listener = new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                action.run();
-            }
-        };
-        column.addSelectionListener(listener);
-    }
-
-    private static interface IAuthorizeIdComparator {
-        int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2);
-    }
-
-    private InvertableViewerComparator createAuthorizeIdComparator() {
-        return createComparator(new IAuthorizeIdComparator() {
-            @Override
-            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
-                return entry1.getAuthorizeId().compareTo(entry2.getAuthorizeId());
-            }
-        });
-    }
-
-    private InvertableViewerComparator createDescriptonComparator() {
-        return createComparator(new IAuthorizeIdComparator() {
-            @Override
-            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
-                return robustStringCompare(entry1.getDescription(), entry2.getDescription());
-            }
-        });
-    }
-
-    int robustStringCompare(@CheckForNull final String string1, @CheckForNull final String string2) {
-        int result = 0;
-        if ((string1 == null) && (string2 == null)) {
-            result = 0;
-        } else if (string1 == null) {
-            result = -1;
-        }
-        else if (string2 == null) {
-            result = 1;
-        } else {
-            result = string1.compareTo(string2);
-        }
-        return result;
-    }
-    
-    
-    private static class InvertableViewerComparator extends ViewerComparator {
-        private boolean up = false;
-
-        void invertSortDirection() {
-            up = !up;
-        }
-
-        public boolean getSortDirection() {
-            return up;
-        }
-    }
-
-    
-    @SuppressWarnings("synthetic-access")
-    private InvertableViewerComparator createComparator(final IAuthorizeIdComparator comparator) {
-        return new InvertableViewerComparator() {
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                // guard against wrong element types
-                if (!((e1 instanceof AuthorizedIdTableEntry) && (e2 instanceof AuthorizedIdTableEntry))) {
-                    return 0;
-                }
-
-                int result = comparator.compare((AuthorizedIdTableEntry) e1, (AuthorizedIdTableEntry) e2);
-                result = getSortDirection() ? result : -result;
-                return result;
-            }
-        };
-    }
-
     
 }

@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.PlatformObject;
  * @author Jörg Penning
  */
 @SuppressWarnings("serial")
-public class AuthorizedIdTableEntry extends PlatformObject implements Serializable {
+class AuthorizedIdTableEntry extends PlatformObject implements Serializable {
 
     private final String _authorizeId;
     private final String _description;
