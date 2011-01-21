@@ -30,7 +30,7 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 	@Override
 	public void handlePVs(IProcessVariable[] pv_names) {
 		Shell shell = new Shell();
-		shell.setText(pv_names.toString());
+		shell.setText(pv_names[0].getName());
 		shell.setLocation(10, 10);
 		shell.setSize(800, 600);
         Model model = new Model();
@@ -98,10 +98,10 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //            }
 //        }
 
-		model.addAxis(new AxisConfig(true, pv_names[0].toString(), new RGB(0, 0, 0), 0.0, 10.0, true, false));
+		model.addAxis(new AxisConfig(true, pv_names[0].getName(), new RGB(0, 0, 0), 0.0, 10.0, true, false));
 		PVItem item;
 		try {
-			item = new PVItem(pv_names[0].toString(), 3);
+			item = new PVItem(pv_names[0].getName(), 3);
 			item.setLiveCapacity(300);
 			item.useDefaultArchiveDataSources();
                 // Adding item creates the axis for it if not already there
