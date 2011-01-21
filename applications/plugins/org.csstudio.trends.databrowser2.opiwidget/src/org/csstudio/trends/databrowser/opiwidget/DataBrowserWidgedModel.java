@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser.opiwidget;
 import java.io.InputStream;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -25,14 +26,16 @@ import org.eclipse.core.runtime.IPath;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class DataBrowserWidgedModel extends AbstractWidgetModel
 {
     /** Widget ID registered in plugin.xml */
-    final public static String ID = "org.csstudio.trends.databrowser.opiwidget";
+    final public static String ID = "org.csstudio.trends.databrowser.opiwidget"; //$NON-NLS-1$
 
     /** Property for name of data browser configuration file */
-    final public static String PROP_FILENAME = "filename";
+    final public static String PROP_FILENAME = "filename"; //$NON-NLS-1$
+
+    /** Property to show/hide the toolbar */
+    public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
 
     /** Initialize */
     public DataBrowserWidgedModel()
@@ -52,15 +55,23 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
     @Override
     protected void configureProperties()
     {
-        addProperty(new FilePathProperty(PROP_FILENAME, "File Name",
+        addProperty(new FilePathProperty(PROP_FILENAME, Messages.FileName,
                 WidgetPropertyCategory.Basic, null,
                 new String[] { Model.FILE_EXTENSION }));
+        addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, Messages.ShowToolbar,
+                WidgetPropertyCategory.Display, false));
     }
 
     /** @return Path to data browser configuration file */
     public IPath getFilename()
     {
         return (IPath) getPropertyValue(PROP_FILENAME);
+    }
+
+    /** @return Tool bar visibility */
+    public boolean isToolbarVisible()
+    {
+        return (Boolean) getPropertyValue(PROP_SHOW_TOOLBAR);
     }
 
     /** Create a Data Browser model, loaded with the configuration file

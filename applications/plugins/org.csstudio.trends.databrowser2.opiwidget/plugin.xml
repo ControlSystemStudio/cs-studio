@@ -27,6 +27,13 @@
                label="%OpenDatabrowser"
                tooltip="%OpenDatabrowserTT">
          </action>
+         <action
+               class="org.csstudio.trends.databrowser.opiwidget.ToggleToolbarAction"
+               icon="icons/toolbar.gif"
+               id="org.csstudio.trends.databrowser.opiwidget.toggle_toolbar_action"
+               label="%ToggleToolbar"
+               tooltip="%ToggleToolbarTT">
+         </action>
       </objectContribution>
    </extension>
 

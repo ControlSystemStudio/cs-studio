@@ -41,6 +41,12 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         return (DataBrowserWidgedModel) getModel();
     }
 
+    /** @return Casted widget figure */
+    public DataBrowserWidgetFigure getWidgetFigure()
+    {
+        return (DataBrowserWidgetFigure) getFigure();
+    }
+
     /** {@inheritDoc}} */
     @Override
     protected IFigure doCreateFigure()
@@ -51,7 +57,8 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         final boolean running = getExecutionMode() == ExecutionMode.RUN_MODE;
         // In edit mode, display the file name
         final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(running ? null : model.getFilename().toString());
+            new DataBrowserWidgetFigure(running ? null : model.getFilename().toString(),
+                    model.isToolbarVisible());
 
         if (running)
         {   // In run mode, create a controller
@@ -82,10 +89,22 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             {
                 // In edit mode, display file name
                 if (getExecutionMode() == ExecutionMode.EDIT_MODE)
-                    ((DataBrowserWidgetFigure) figure).setFilename(((IPath) newValue).toString());
+                    getWidgetFigure().setFilename(((IPath) newValue).toString());
                 return false;
             }
         });
+
+        // File name
+        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_TOOLBAR, new IWidgetPropertyChangeHandler()
+        {
+            @Override
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure)
+            {
+                getWidgetFigure().setToolbarVisible((Boolean) newValue);
+                return false;
+            }
+        });
+
     }
 
     /** {@inheritDoc}} */
