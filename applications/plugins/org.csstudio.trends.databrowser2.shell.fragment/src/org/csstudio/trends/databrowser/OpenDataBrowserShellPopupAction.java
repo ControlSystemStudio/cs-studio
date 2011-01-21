@@ -1,19 +1,13 @@
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.apputil.xml.DOMHelper;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.csstudio.trends.databrowser.model.AxisConfig;
-import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -22,7 +16,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
-import org.w3c.dom.Element;
 
 public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction {
 
@@ -36,17 +29,17 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
         Model model = new Model();
         //Create a default model because there is no workspace file.
         createModel(model, pv_names);
-        
+
         // Create GUI elements (Plot)
         GridLayout layout = new GridLayout();
 		shell.setLayout(layout);
-        
+
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(shell, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        Plot plot = new Plot(plot_box);
-        
+        Plot plot = Plot.forCanvas(plot_box);
+
         // Create and start controller
         Controller controller = new Controller(shell, model, plot);
         try
@@ -68,7 +61,7 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 
 //        scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
 //        update_period = DOMHelper.getSubelementDouble(root_node, TAG_PERIOD, update_period);
-        
+
 //        final String start = DOMHelper.getSubelementString(root_node, TAG_START);
 //        final String end = DOMHelper.getSubelementString(root_node, TAG_END);
 //        if (start.length() > 0  &&  end.length() > 0)
@@ -77,11 +70,11 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //            setTimerange(TimestampFactory.fromCalendar(times.getStart()),
 //                         TimestampFactory.fromCalendar(times.getEnd()));
 //        }
-        
+
 //        RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
 //        if (color != null)
 //            background = color;
-//        
+//
 		model.setArchiveRescale(ArchiveRescale.AUTOZOOM);
 
 //        // Load Axes
@@ -123,8 +116,8 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //                item = DOMHelper.findNextElementNode(item, TAG_FORMULA);
 //            }
         }
-    
-		
-	
+
+
+
 
 }
