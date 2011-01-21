@@ -24,5 +24,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
-Export-Package: org.csstudio.trends.databrowser.model,
+Export-Package: org.csstudio.trends.databrowser.editor,
+ org.csstudio.trends.databrowser.model,
  org.csstudio.trends.databrowser.ui

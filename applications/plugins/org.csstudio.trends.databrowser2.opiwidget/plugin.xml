@@ -13,5 +13,21 @@
             typeId="org.csstudio.trends.databrowser.opiwidget">
       </widget>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.trends.databrowser.opiwidget"
+            objectClass="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedEditPart">
+         <action
+               class="org.csstudio.trends.databrowser.opiwidget.OpenDataBrowserAction"
+               enablesFor="1"
+               icon="icons/databrowser.png"
+               id="org.csstudio.trends.databrowser.opiwidget.open_databrowser_action"
+               label="%OpenDatabrowser"
+               tooltip="%OpenDatabrowserTT">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
