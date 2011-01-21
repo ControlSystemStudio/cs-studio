@@ -9,6 +9,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/aapi-2.4.jar
+Bundle-ClassPath: .
 Import-Package: org.junit
