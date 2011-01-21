@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -113,14 +114,14 @@ public class WriteThread implements Runnable
     }
 
     /** Add a channel's buffer that this thread reads */
-    public void addChannel(final ArchiveChannel channel)
-    {
-        addSampleBuffer(channel.getSampleBuffer());
+    public void addChannels(final Collection<ArchiveChannel<?>> channels) {
+        for (ArchiveChannel<?> channel : channels) {
+            addSampleBuffer(channel.getSampleBuffer());
+        }
     }
 
     /** Add a sample buffer that this thread reads */
-    void addSampleBuffer(final SampleBuffer buffer)
-    {
+    void addSampleBuffer(final SampleBuffer<?> buffer) {
         buffers.add(buffer);
     }
 

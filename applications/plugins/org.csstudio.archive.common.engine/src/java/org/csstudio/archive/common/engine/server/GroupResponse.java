@@ -65,16 +65,16 @@ class GroupResponse extends AbstractResponse
             Messages.HTTP_State,
             group.isEnabled() ? Messages.HTTP_Enabled : Messages.HTTP_Disabled
         });
-        final ArchiveChannel ena_channel = group.getEnablingChannel();
-        if (ena_channel != null)
-        {
-            html.tableLine(new String[]
-            {
-                Messages.HTTP_EnablingChannel,
-                HTMLWriter.makeLink("channel?name=" + ena_channel.getName(),
-                         ena_channel.getName())
-            });
-        }
+//        final ArchiveChannel ena_channel = group.getEnablingChannel();
+//        if (ena_channel != null)
+//        {
+//            html.tableLine(new String[]
+//            {
+//                Messages.HTTP_EnablingChannel,
+//                HTMLWriter.makeLink("channel?name=" + ena_channel.getName(),
+//                         ena_channel.getName())
+//            });
+//        }
         html.closeTable();
         
         html.h2(Messages.HTTP_Channels);
