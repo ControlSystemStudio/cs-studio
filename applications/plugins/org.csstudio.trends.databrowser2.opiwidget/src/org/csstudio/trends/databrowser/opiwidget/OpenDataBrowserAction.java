@@ -26,8 +26,12 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
     @Override
     protected void doRun(final IWorkbenchPage page, final DataBrowserWidgedEditPart edit_part)
     {
-        // TODO: In run mode, this works OK, but in edit mode, a relative path it not resolved
-        final IPath filename = edit_part.getWidgetModel().getFilename();
+        // In run mode, we always seem to receive the absolute path.
+        // In edit mode, a relative path it not resolved
+        // unless it's first converted to the absolute path.
+        IPath filename = edit_part.getWidgetModel().getFilename();
+        if(!filename.isAbsolute())
+            filename = ResourceUtil.buildAbsolutePath(edit_part.getWidgetModel(), filename);
         try
         {
             IFile input = ResourceUtil.getIFileFromIPath(filename);
