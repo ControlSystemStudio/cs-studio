@@ -16,6 +16,7 @@ import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
+import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.Perspective;
@@ -26,6 +27,7 @@ import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.propsheet.DataBrowserPropertySheetPage;
+import org.csstudio.trends.databrowser.propsheet.RemoveUnusedAxesAction;
 import org.csstudio.trends.databrowser.sampleview.InspectSamplesAction;
 import org.csstudio.trends.databrowser.search.SearchView;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
@@ -287,11 +289,13 @@ public class DataBrowserEditor extends EditorPart
     {
         final Activator activator = Activator.getDefault();
         final Shell shell = parent.getShell();
+        final OperationsManager op_manager = plot.getOperationsManager();
         final MenuManager mm = new MenuManager();
         mm.add(new ToggleToolbarAction(plot));
         mm.add(new Separator());
-        mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, false));
-        mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, true));
+        mm.add(new AddPVAction(op_manager, shell, model, false));
+        mm.add(new AddPVAction(op_manager, shell, model, true));
+        mm.add(new RemoveUnusedAxesAction(op_manager, model));
         mm.add(new Separator());
         mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,
                 activator.getImageDescriptor("icons/prop_ps.gif"))); //$NON-NLS-1$
