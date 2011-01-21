@@ -23,6 +23,8 @@ package org.csstudio.domain.desy.types;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -145,6 +147,37 @@ public abstract class TypeSupport<T> {
             calcSupportMap.put(typeClass, support);
         }
         return support;
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    @CheckForNull
+    public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype, 
+                                                         @Nonnull final String... packages) {
+        Class<T> typeClass = null;
+        for (final String pkg : packages) {
+            try {
+                typeClass = (Class<T>) Class.forName(pkg + "." + datatype);
+                break;
+                // CHECKSTYLE OFF: EmptyBlock
+            } catch (final ClassNotFoundException e) {
+                // Ignore
+                // CHECKSTYLE ON: EmptyBlock
+            }            
+        }
+        return typeClass;
+    }
+
+    @CheckForNull
+    public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype, 
+                                                                    @Nonnull final String... packages) {
+        final Pattern p = Pattern.compile("^(Collection|List|Set|Vector)<(.+)>$");
+        final Matcher m = p.matcher(datatype);
+        if (m.matches()) {
+            final String elementType = m.group(2); // e.g. Byte from List<Byte>
+            return createTypeClassFromString(elementType, packages);
+        }
+        return null;
     }
     
     @Nonnull
