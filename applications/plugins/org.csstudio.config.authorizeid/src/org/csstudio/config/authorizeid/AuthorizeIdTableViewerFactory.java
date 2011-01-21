@@ -21,24 +21,25 @@
  */
 package org.csstudio.config.authorizeid;
 
-import java.text.Collator;
-import java.util.Locale;
-
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 
 enum AuthorizeIdTableViewerFactory {
     
@@ -88,53 +89,127 @@ enum AuthorizeIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_EAIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(20, ColumnWeightData.MINIMUM_WIDTH));
-        
-        column.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event e) {
-                // sort column 1
-                TableItem[] items = viewer.getTable().getItems();
-                final Collator collator = Collator.getInstance(Locale.getDefault());
-                for (int i = 1; i < items.length; i++) {
-                    final String value1 = items[i].getText(0);
-                    for (int j = 0; j < i; j++) {
-                        final String value2 = items[j].getText(0);
-                        if (collator.compare(value1, value2) < 0) {
-                            final String[] values = { items[i].getText(0), items[i].getText(1) };
-                            items[i].dispose();
-                            final TableItem item = new TableItem(viewer.getTable(), SWT.NONE, j);
-                            item.setText(values);
-                            items = viewer.getTable().getItems();
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        
+
+        connectSortActionToColumn(viewer, column, createAuthorizeIdComparator());
+
         return column;
     }
-    
+
     @Nonnull
     private TableColumn createDescriptionColumn(@Nonnull final TableViewer viewer,
-                                                       @Nonnull final TableColumnLayout tableColumnLayout) {
+                                                @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_DESCRIPTION);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(70, ColumnWeightData.MINIMUM_WIDTH));
+        connectSortActionToColumn(viewer, column, createDescriptonComparator());
         return column;
     }
 
     @Nonnull
     private TableColumn createIsRegisteredColumn(@Nonnull final TableViewer viewer,
-                                                        @Nonnull final TableColumnLayout tableColumnLayout) {
+                                                 @Nonnull final TableColumnLayout tableColumnLayout) {
         final TableViewerColumn tableViewerColumn = new TableViewerColumn(viewer, SWT.NONE);
         final TableColumn column = tableViewerColumn.getColumn();
         column.setText(Messages.AuthorizeIdView_IS_REGISTERED);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
+        connectSortActionToColumn(viewer, column, createDescriptonComparator());
         return column;
     }
+    
+    private void connectSortActionToColumn(@Nonnull final TableViewer viewer,
+                                           @Nonnull final TableColumn column,
+                                           @Nonnull final InvertableViewerComparator comparator) {
+        final Action action = new Action() {
+            @Override
+            public void run() {
+                viewer.getTable().setSortColumn(column);
+                comparator.invertSortDirection();
+                viewer.getTable().setSortDirection(comparator.getSortDirection() ? SWT.UP
+                        : SWT.DOWN);
+                viewer.setComparator(comparator);
+                viewer.refresh();
+            }
+        };
+        
+        SelectionListener listener = new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                action.run();
+            }
+        };
+        column.addSelectionListener(listener);
+    }
+
+    private static interface IAuthorizeIdComparator {
+        int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2);
+    }
+
+    private InvertableViewerComparator createAuthorizeIdComparator() {
+        return createComparator(new IAuthorizeIdComparator() {
+            @Override
+            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
+                return entry1.getAuthorizeId().compareTo(entry2.getAuthorizeId());
+            }
+        });
+    }
+
+    private InvertableViewerComparator createDescriptonComparator() {
+        return createComparator(new IAuthorizeIdComparator() {
+            @Override
+            public int compare(AuthorizedIdTableEntry entry1, AuthorizedIdTableEntry entry2) {
+                return robustStringCompare(entry1.getDescription(), entry2.getDescription());
+            }
+        });
+    }
+
+    int robustStringCompare(@CheckForNull final String string1, @CheckForNull final String string2) {
+        int result = 0;
+        if ((string1 == null) && (string2 == null)) {
+            result = 0;
+        } else if (string1 == null) {
+            result = -1;
+        }
+        else if (string2 == null) {
+            result = 1;
+        } else {
+            result = string1.compareTo(string2);
+        }
+        return result;
+    }
+    
+    
+    private static class InvertableViewerComparator extends ViewerComparator {
+        private boolean up = false;
+
+        void invertSortDirection() {
+            up = !up;
+        }
+
+        public boolean getSortDirection() {
+            return up;
+        }
+    }
+
+    
+    @SuppressWarnings("synthetic-access")
+    private InvertableViewerComparator createComparator(final IAuthorizeIdComparator comparator) {
+        return new InvertableViewerComparator() {
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+                // guard against wrong element types
+                if (!((e1 instanceof AuthorizedIdTableEntry) && (e2 instanceof AuthorizedIdTableEntry))) {
+                    return 0;
+                }
+
+                int result = comparator.compare((AuthorizedIdTableEntry) e1, (AuthorizedIdTableEntry) e2);
+                result = getSortDirection() ? result : -result;
+                return result;
+            }
+        };
+    }
+
     
 }

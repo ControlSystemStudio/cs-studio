@@ -21,15 +21,11 @@
  */
 package org.csstudio.config.authorizeid;
 
-import java.util.Collection;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.authorizeid.AuthorizeIdTableViewerFactory.AuthorizeIdTableColumns;
-import org.csstudio.platform.security.RegisteredAuthorizationId;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -55,10 +51,13 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
     public Image getColumnImage(@Nullable Object element, int columnIndex) {
         Image result = null;
         
-        AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
-        
-        if (colIndex == AuthorizeIdTableColumns.REGISTERED_AS_EXTENSION) {
-            result = getRegisteredAuthorizationId(element.toString()) == null ? UNCHECKED : CHECKED;
+        if (element instanceof AuthorizedIdTableEntry) {
+            AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
+            
+            if (colIndex == AuthorizeIdTableColumns.REGISTERED_AS_EXTENSION) {
+                result = ((AuthorizedIdTableEntry) element).isRegisteredAtPlugin() ? UNCHECKED
+                        : CHECKED;
+            }
         }
         
         return result;
@@ -68,42 +67,24 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
     @CheckForNull
     public String getColumnText(@Nonnull Object element, int columnIndex) {
         String result = null;
-        String authorizationId = element.toString();
         
-        AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
-        switch (colIndex) {
-            case AUTH_ID:
-                result = authorizationId;
-                break;
-            case DESCRIPTION:
-                result = getDescription(authorizationId);
-                break;
-            case REGISTERED_AS_EXTENSION:
-                // no string here, see getColumnImage
-                break;
-        }
-        return result;
-    }
-    
-    @CheckForNull
-    private RegisteredAuthorizationId getRegisteredAuthorizationId(@Nonnull final String authorizationId) {
-        RegisteredAuthorizationId result = null;
-        Collection<RegisteredAuthorizationId> authIds = SecurityFacade.getInstance()
-                .getRegisteredAuthorizationIds();
-        for (RegisteredAuthorizationId registeredAuthorizationId : authIds) {
-            if (registeredAuthorizationId.getId().equals(authorizationId)) {
-                result = registeredAuthorizationId;
-                break;
+        if (element instanceof AuthorizedIdTableEntry) {
+            AuthorizedIdTableEntry entry = (AuthorizedIdTableEntry) element;
+            
+            AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
+            switch (colIndex) {
+                case AUTH_ID:
+                    result = entry.getAuthorizeId();
+                    break;
+                case DESCRIPTION:
+                    result = entry.getDescription();
+                    break;
+                case REGISTERED_AS_EXTENSION:
+                    // no string here, see getColumnImage
+                    break;
             }
         }
         return result;
-    }
-    
-    @CheckForNull
-    private String getDescription(@Nonnull final String authorizationId) {
-        RegisteredAuthorizationId registeredAuthorizationId = getRegisteredAuthorizationId(authorizationId);
-        return registeredAuthorizationId == null ? null : registeredAuthorizationId
-                .getDescription();
     }
     
 }

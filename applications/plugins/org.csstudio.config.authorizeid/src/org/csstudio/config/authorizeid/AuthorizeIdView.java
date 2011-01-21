@@ -511,7 +511,15 @@ public class AuthorizeIdView extends ViewPart {
      */
     private void refreshAuthorizeIdTable() {
         final String[] authorizeIds = LdapAccess.getEain(_categoryCombo.getText());
-        _authorizeIdTableViewer.setInput(authorizeIds);
+
+        final AuthorizedIdTableEntry[] entries = new AuthorizedIdTableEntry[authorizeIds.length];
+        int ix = 0;
+        for (String string : authorizeIds) {
+            entries[ix] = AuthorizedIdTableEntry.createEntry(string);
+            ix++;
+        }
+        
+        _authorizeIdTableViewer.setInput(entries);
     }
     
     /**
