@@ -10,10 +10,9 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
-import org.csstudio.opibuilder.util.AlarmColorScheme;
+import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPITimer;
-import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
@@ -43,62 +42,92 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	implements IProcessVariable{
 	
 	
-	private Map<String, PV> pvMap = new HashMap<String, PV>(); 
-	private Map<String, PVListener> pvListenerMap = new HashMap<String, PVListener>();
-	private Map<String, Boolean> pvConnectedStatusMap = new HashMap<String, Boolean>();
-	
-	private boolean connected = true;
-	private boolean preEnableState;
-	private boolean writeAccessMarked = false;
-	
-	private Border preBorder;
-	private String currentDisconnectPVName = "";
+	private interface AlarmSeverity extends ISeverity{
+		public void copy(ISeverity severity);
+	} 
+	private final class WidgetPVListener implements PVListener{
+		private String pvPropID;
+		
+		public WidgetPVListener(String pvPropID) {
+			this.pvPropID = pvPropID;
+		}
+		
+		public void pvDisconnected(PV pv) {
+		}
 
-	private String controlPVPropId = null;
-	private String controlPVValuePropId = null;
+		public void pvValueUpdate(PV pv) {
+//			if(pv == null)
+//				return;
+			final AbstractPVWidgetModel widgetModel = getWidgetModel();
+			
+			//write access
+			if(controlPVPropId != null && 
+					controlPVPropId.equals(pvPropID) && 
+					!writeAccessMarked){
+				if(pv.isWriteAllowed()){
+					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+						public void run() {									
+							figure.setCursor(savedCursor);
+							figure.setEnabled(widgetModel.isEnabled());
+							writeAccessMarked = true;
+											
+						}
+					});	
+				}else{
+					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+						public void run() {
+							if(figure.getCursor() != Cursors.NO)
+								savedCursor = figure.getCursor();
+							figure.setCursor(Cursors.NO);
+							figure.setEnabled(false);								
+							writeAccessMarked = true;							
+						}
+					});	
+				}
+										
+			}
+			if(ignoreOldPVValue){
+				widgetModel.getPVMap().get(widgetModel.
+					getProperty(pvPropID)).setPropertyValue_IgnoreOldValue(pv.getValue());	
+			}else
+				widgetModel.getPVMap().get(widgetModel.
+					getProperty(pvPropID)).setPropertyValue(pv.getValue());		
+			
+		}
+	}
 	
-	private Border saveBorder;
-	private Color saveForeColor, saveBackColor;
-	private Cursor savedCursor;
-	
-	private boolean isBorderAlarmSensitive;
-	private boolean isForeColorAlarmSensitive;
-	private boolean isBackColorrAlarmSensitive;
-	private AbstractPVWidgetModel widgetModel;
-	
-	//The update from PV will be suppressed for a brief time when writing was performed
-	protected OPITimer updateSuppressTimer;
-	//the task which will be executed when the updateSuppressTimer due.
-	protected Runnable timerTask;
+
+	//invisible border for no_alarm state, this can prevent the widget from resizing
+	//when alarm turn back to no_alarm state/
+	private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
+		
+		public Insets getInsets(IFigure figure) {
+			return new Insets(2);
+		}
+		
+		public void paint(IFigure figure, Graphics graphics, Insets insets) {							
+		}
+	};	
+
 	private final static int UPDATE_SUPPRESS_TIME = 1000;
+	private String controlPVPropId = null;
 	
+	private String controlPVValuePropId = null;
 	/**
 	 * In most cases, old pv value in the valueChange() method of {@link IWidgetPropertyChangeHandler}
 	 * is not useful. Ignore the old pv value will help to reduce memory usage.
 	 */
 	private boolean ignoreOldPVValue =true;
+	private boolean isBackColorrAlarmSensitive;
 	
-	private interface AlarmSeverity extends ISeverity{
-		public void copy(ISeverity severity);
-	}
-	//invisible border for no_alarm state, this can prevent the widget from resizing
-	//when alarm turn back to no_alarm state/
-	private static final AbstractBorder BORDER_NO_ALARM = new AbstractBorder() {
-		
-		public void paint(IFigure figure, Graphics graphics, Insets insets) {							
-		}
-		
-		public Insets getInsets(IFigure figure) {
-			return new Insets(2);
-		}
-	};
-	
+	private boolean isBorderAlarmSensitive;
+	private boolean isForeColorAlarmSensitive;
 	private AlarmSeverity lastAlarmSeverity = new AlarmSeverity(){
 		
-		boolean isOK = true;
+		boolean isInvalid = false;
 		boolean isMajor = false;
 		boolean isMinor = false;
-		boolean isInvalid = false;
+		boolean isOK = true;
 		
 		public void copy(ISeverity severity){
 			isOK = severity.isOK();
@@ -123,66 +152,160 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			return isOK;
 		}		
 	};
+	private Map<String, PVListener> pvListenerMap = new HashMap<String, PVListener>();
+	
+	private Map<String, PV> pvMap = new HashMap<String, PV>();
+	private PropertyChangeListener[] pvValueListeners;
+	private Border saveBorder;
+	
+	private Cursor savedCursor;
+	
+	private Color saveForeColor, saveBackColor;
+	//the task which will be executed when the updateSuppressTimer due.
+	protected Runnable timerTask;
+	
+	//The update from PV will be suppressed for a brief time when writing was performed
+	protected OPITimer updateSuppressTimer;
 
-	private PropertyChangeListener[] pvValueListeners; 
+	private AbstractPVWidgetModel widgetModel; 	
 	
-	
-	private void markWidgetAsDisconnected(final String pvName){
-		if(!connected)
-			return;
-		connected = false;
-		if(preBorder == null)
-			preBorder = figure.getBorder();
-		
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				boolean allDisconnected = true;
-				for(boolean c : pvConnectedStatusMap.values()){
-					allDisconnected &= !c;
+
+	private boolean writeAccessMarked = false;
+	@Override
+	public void activate() {
+		if(!isActive()){
+			super.activate();
+						
+			if(getExecutionMode() == ExecutionMode.RUN_MODE){
+				pvMap.clear();	
+				saveFigureOKStatus(getFigure());
+				final Map<StringProperty, PVValueProperty> pvPropertyMap = getWidgetModel().getPVMap();
+				
+				for(final StringProperty sp : pvPropertyMap.keySet()){
+					
+					if(sp.getPropertyValue() == null || 
+							((String)sp.getPropertyValue()).trim().length() <=0) 
+						continue;
+					
+					try {
+						PV pv = PVFactory.createPV((String) sp.getPropertyValue());									
+						pvMap.put(sp.getPropertyID(), pv);
+						addToConnectionHandler((String) sp.getPropertyValue(), pv);
+						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());	
+						pv.addListener(pvListener);		
+						pvListenerMap.put(sp.getPropertyID(), pvListener);
+					} catch (Exception e) {
+						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+								(String)sp.getPropertyValue());
+					}					
 				}
-				preEnableState = figure.isEnabled();
-				figure.setEnabled(preEnableState && !allDisconnected);
-				figure.setBorder(BorderFactory.createBorder(
-						BorderStyle.TITLE_BAR, 1, AlarmColorScheme.getDisconnectedColor(), 
-						allDisconnected ? "Disconnected" : pvName + ": Disconnected"));
-				currentDisconnectPVName = pvName;
-				figure.repaint();
+
+				doActivate();
+				
+				//the pv should be started at the last minute
+				for(String pvPropId : pvMap.keySet()){
+					PV pv = pvMap.get(pvPropId);
+					try {
+						pv.start();
+					} catch (Exception e) {
+						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+								pv.getName());
+					}
+				}
 			}
-		});
-		
-		
+		}
+	};
+	
+	@Override
+	protected void createEditPolicies() {		
+		super.createEditPolicies();
+		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
+				new DropPVtoPVWidgetEditPolicy());
 	}
 	
-	private void widgetConnectionRecovered(final String pvName){
-		if(connected)
-			return;
-		
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				boolean allConnected = true;
-				String nextDisconnecteName = ""; //$NON-NLS-1$
-				
-				for(String s : pvConnectedStatusMap.keySet()){
-					boolean c = pvConnectedStatusMap.get(s);
-					allConnected &= c;
-					if(!c)
-						nextDisconnecteName = 
-							(String) getWidgetModel().getProperty(s).getPropertyValue();					
-				}
-				figure.setEnabled(preEnableState);
-				if(allConnected){
-					figure.setBorder(preBorder);
-					connected = true;
-				}
-				else if(currentDisconnectPVName.equals(pvName) || currentDisconnectPVName.equals("")){ //$NON-NLS-1$
-					figure.setBorder(BorderFactory.createBorder(
-						BorderStyle.TITLE_BAR, 1, AlarmColorScheme.getDisconnectedColor(), 
-						nextDisconnecteName + " : Disconnected"));
-					currentDisconnectPVName = nextDisconnecteName;
-				}
-				figure.repaint();
+	@Override
+	protected ConnectionHandler createConnectionHandler() {
+		return new PVWidgetConnectionHandler(this);
+	}
+	
+	@Override
+	public void deactivate() {
+		if(isActive()){	
+			doDeActivate();
+			for(PV pv : pvMap.values())				
+				pv.stop();
+			
+			for(String pvPropID : pvListenerMap.keySet()){
+				pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
 			}
-		});		
+			
+			pvMap.clear();
+			pvListenerMap.clear();
+			super.deactivate();
+		}
+	}
+	
+	/**
+	 * Subclass should do the activate things in this method.
+	 */
+	protected void doActivate() {		
+	}
+	
+	/**
+	 * Subclass should do the deActivate things in this method.
+	 */
+	protected void doDeActivate() {		
+	}
+
+
+	public String getName() {		
+		 if(getWidgetModel().getPVMap().isEmpty())
+			 return "";
+		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
+			.getPropertyValue();
+	}
+	/**Get the pv.
+	 * @param pvPropId
+	 * @return the corresponding pv for the pvPropId. null if the pv desn't exist.
+	 */
+	public PV getPV(String pvPropId){
+		return pvMap.get(pvPropId);
+	}
+	
+	/**
+	 * @return the control PV. null if no control PV on this widget.
+	 */
+	public PV getControlPV(){
+		if(controlPVPropId != null)
+			return pvMap.get(controlPVPropId);
+		return null;
+	}
+	
+	/**Get value from one of the attached PVs.
+	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
+	 * @return the {@link IValue} of the PV.
+	 */
+	public IValue getPVValue(String pvPropId){
+		final PV pv = pvMap.get(pvPropId);
+		if(pv != null){
+			return pv.getValue();
+		}
+		return null;
+	}
+	
+	public String getTypeId() {
+		return TYPE_ID;
+	}
+	
+	/**Get the value of the widget. 
+	 * @return the value of the widget. It is not the value of the attached PV 
+	 * even though they are equals in most cases. {@link #getPVValue(String)}  
+	 */
+	public abstract Object getValue();
+	
+	@Override
+	public AbstractPVWidgetModel getWidgetModel() {
+		return (AbstractPVWidgetModel)getModel();
 	}
 	
 	@Override
@@ -197,135 +320,41 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		
 		if(isBorderAlarmSensitive
 				&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
-			figure.setBorder(BORDER_NO_ALARM);
-		}
-	}
-	class WidgetPVListener implements PVListener{
-		private String pvPropID;
-		
-		public WidgetPVListener(String pvPropID) {
-			this.pvPropID = pvPropID;
-		}
-		
-		public void pvDisconnected(PV pv) {
-			pvConnectedStatusMap.put(pvPropID, false);
-			markWidgetAsDisconnected(pv.getName());
-		}
-
-		public void pvValueUpdate(PV pv) {
-			if(pv == null)
-				return;
-			final AbstractPVWidgetModel widgetModel = getWidgetModel();
-			Boolean connected = pvConnectedStatusMap.get(pvPropID);
-			
-			//connection status
-			if(connected != null && !connected){
-				pvConnectedStatusMap.put(pvPropID, true);
-				widgetConnectionRecovered(pv.getName());
-			}
-			
-			//write access
-			if(controlPVPropId != null && 
-					controlPVPropId.equals(pvPropID) && 
-					!writeAccessMarked){
-				if(pv.isWriteAllowed()){
-					UIBundlingThread.getInstance().addRunnable(new Runnable(){
-						public void run() {									
-							figure.setCursor(savedCursor);
-							figure.setEnabled(widgetModel.isEnabled());
-							preEnableState = widgetModel.isEnabled();
-							writeAccessMarked = true;
-											
-						}
-					});	
-				}else{
-					UIBundlingThread.getInstance().addRunnable(new Runnable(){
-						public void run() {
-							if(figure.getCursor() != Cursors.NO)
-								savedCursor = figure.getCursor();
-							preEnableState = false;	
-							figure.setCursor(Cursors.NO);
-							figure.setEnabled(false);								
-							writeAccessMarked = true;							
-						}
-					});	
-				}
-										
-			}
-			if(ignoreOldPVValue){
-				widgetModel.getPVMap().get(widgetModel.
-					getProperty(pvPropID)).setPropertyValue_IgnoreOldValue(pv.getValue());	
-			}else
-				widgetModel.getPVMap().get(widgetModel.
-					getProperty(pvPropID)).setPropertyValue(pv.getValue());		
-			
-		}
-	};
-	
-	@Override
-	protected void createEditPolicies() {		
-		super.createEditPolicies();
-		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
-				new DropPVtoPVWidgetEditPolicy());
-	}
-	
-	@Override
-	public void activate() {
-		if(!isActive()){
-			super.activate();
-						
-			if(getExecutionMode() == ExecutionMode.RUN_MODE){
-				pvMap.clear();	
-				pvConnectedStatusMap.clear();
-				saveFigureOKStatus(getFigure());
-				final Map<StringProperty, PVValueProperty> pvPropertyMap = getWidgetModel().getPVMap();
-				
-				for(final StringProperty sp : pvPropertyMap.keySet()){
-					
-					if(sp.getPropertyValue() == null || 
-							((String)sp.getPropertyValue()).trim().length() <=0) 
-						continue;
-					
-					try {
-						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
-						pvConnectedStatusMap.put(sp.getPropertyID(), false);						
-						
-						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
-						
-						pv.addListener(pvListener);						
-						pvMap.put(sp.getPropertyID(), pv);
-						pvListenerMap.put(sp.getPropertyID(), pvListener);
-					} catch (Exception e) {
-						pvConnectedStatusMap.put(sp.getPropertyID(), false);
-						markWidgetAsDisconnected((String) sp.getPropertyValue());
-						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
-								(String)sp.getPropertyValue());
-					}					
-				}
-				if(!pvMap.isEmpty())
-					markWidgetAsDisconnected("");
-				doActivate();
-				
-				//the pv should be started at the last minute
-				for(String pvPropId : pvMap.keySet()){
-					PV pv = pvMap.get(pvPropId);
-					try {
-						pv.start();
-					} catch (Exception e) {
-						pvConnectedStatusMap.put(pvPropId, false);
-						markWidgetAsDisconnected(pv.getName());
-						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
-								pv.getName());
-					}
-				}
-			}
+			setAlarmBorder(BORDER_NO_ALARM);
 		}
 	}
 	
 	/**
-	 * Subclass should do the activate things in this method.
+	 * Initialize the updateSuppressTimer
 	 */
-	protected void doActivate() {		
+	protected synchronized void initUpdateSuppressTimer() {
+		if(updateSuppressTimer == null)
+			updateSuppressTimer = new OPITimer();
+		if(timerTask == null)
+			timerTask = new Runnable() {				
+				public void run() {
+					AbstractWidgetProperty pvValueProperty = 
+						getWidgetModel().getProperty(controlPVValuePropId);
+					//recover update
+					if(pvValueListeners != null){
+						for(PropertyChangeListener listener: pvValueListeners){
+							pvValueProperty.addPropertyChangeListener(listener);
+						}
+					}						
+					//forcefully set PV_Value property again					
+					pvValueProperty.setPropertyValue(
+							pvValueProperty.getPropertyValue(), true);
+				}
+			};
+	}
+	
+	/**For PV Control widgets, mark this PV as control PV.
+	 * @param pvPropId the propId of the PV.
+	 */
+	protected void markAsControlPV(String pvPropId, String pvValuePropId){
+		controlPVPropId  = pvPropId;
+		controlPVValuePropId = pvValuePropId;
+		initUpdateSuppressTimer();
 	}
 	
 	@Override
@@ -355,21 +384,21 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				if(severity.isInvalid() && lastAlarmSeverity.isInvalid())
 					return false;
 				
-//				if(lastAlarmSeverity.isOK()){
-//					saveFigureOKStatus(figure);
-//				}
-				
 				RGB alarmColor; 
+				Border alarmBorder;
 				if(severity.isMajor()){
-					alarmColor = AlarmColorScheme.getMajorColor();					
+					alarmColor = AlarmRepresentationScheme.getMajorColor();
+					alarmBorder = AlarmRepresentationScheme.getMajorBorder();
 				}else if(severity.isMinor()){
-					alarmColor = AlarmColorScheme.getMinorColor();
+					alarmColor = AlarmRepresentationScheme.getMinorColor();
+					alarmBorder = AlarmRepresentationScheme.getMinorBorder();
 				}else{
-					alarmColor = AlarmColorScheme.getInValidColor();
+					alarmColor = AlarmRepresentationScheme.getInValidColor();
+					alarmBorder = AlarmRepresentationScheme.getInvalidBorder();
 				}			
 								
 				if(isBorderAlarmSensitive){
-					figure.setBorder(BorderFactory.createBorder(BorderStyle.LINE, 2, alarmColor, ""));
+					setAlarmBorder(alarmBorder);
 				}
 				if(isBackColorrAlarmSensitive){
 					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
@@ -396,6 +425,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				if(newPVName.length() < 0)
 					return false;
 				PV oldPV = pvMap.get(pvNamePropID);
+				removeFromConnectionHandler((String)oldValue);
 				if(oldPV != null){
 					oldPV.stop();
 					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
@@ -403,25 +433,19 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				try {
 					PV newPV = PVFactory.createPV(newPVName);
 					writeAccessMarked = false;
-					pvConnectedStatusMap.put(pvNamePropID, false);	
 					PVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);						
 					pvMap.put(pvNamePropID, newPV);
+					addToConnectionHandler(newPVName, newPV);
 					pvListenerMap.put(pvNamePropID, pvListener);
-					markWidgetAsDisconnected(newPVName);
 					
 					try {
 						newPV.start();
 					} catch (Exception e) {
-						pvConnectedStatusMap.put(pvNamePropID, false);
-						markWidgetAsDisconnected(newPVName);
 						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 								newPVName);
-					}
-					
+					}					
 				} catch (Exception e) {
-					pvConnectedStatusMap.put(pvNamePropID, false);
-					markWidgetAsDisconnected(newPVName);
 					CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 							newPVName);
 				}
@@ -443,10 +467,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				isBorderAlarmSensitive = widgetModel.isBorderAlarmSensitve();
 				if(isBorderAlarmSensitive
 						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
-					figure.setBorder(BORDER_NO_ALARM);
+					setAlarmBorder(BORDER_NO_ALARM);
 				}else if (!isBorderAlarmSensitive
 						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE)
-					figure.setBorder(null);
+					setAlarmBorder(null);
 				return false;
 			}
 		};
@@ -477,52 +501,30 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		
 	}
 
-
 	private void restoreFigureToOKStatus(IFigure figure) {
-		figure.setBorder(saveBorder);
+		setAlarmBorder(saveBorder);
 		figure.setBackgroundColor(saveBackColor);
 		figure.setForegroundColor(saveForeColor);
 	}
+	
 	private void saveFigureOKStatus(IFigure figure) {		
 		saveBorder = figure.getBorder();
 		saveForeColor = figure.getForegroundColor();
 		saveBackColor = figure.getBackgroundColor();
 	}
 	
-	/**
-	 * Subclass should do the deActivate things in this method.
-	 */
-	protected void doDeActivate() {		
-	}
-	
-	@Override
-	public void deactivate() {
-		if(isActive()){	
-			doDeActivate();
-			for(PV pv : pvMap.values())				
-				pv.stop();
-			
-			for(String pvPropID : pvListenerMap.keySet()){
-				pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
-			}
-			
-			pvMap.clear();
-			pvListenerMap.clear();
-			pvConnectedStatusMap.clear();
-			super.deactivate();
+	private void setAlarmBorder(Border alarmBorder){
+		if(getConnectionHandler() != null && !getConnectionHandler().isConnected()){
+			return;
 		}
+		getFigure().setBorder(alarmBorder);
+	}
+
+
+	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
+		this.ignoreOldPVValue = ignoreOldValue;
 	}
 	
-	public String getName() {		
-		 if(getWidgetModel().getPVMap().isEmpty())
-			 return "";
-		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
-			.getPropertyValue();
-	}
-	
-	public String getTypeId() {
-		return TYPE_ID;
-	}
 	
 	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
 	 * @param pvPropId
@@ -556,58 +558,13 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		}
 	}
 	
-	/**Get the pv.
-	 * @param pvPropId
-	 * @return the corresponding pv for the pvPropId. null if the pv desn't exist.
+	/**Set the value of the widget. This only take effect on the visual presentation of the widget and
+	 * will not write the value to the PV attached to this widget which can be reached by calling
+	 * {@link #setPVValue(String, Object)}.
+	 * @param value the value to be set. It must be the compatible type for the widget.
+	 *  For example, a boolean widget only accept boolean or double values.
 	 */
-	public PV getPV(String pvPropId){
-		return pvMap.get(pvPropId);
-	}
-	
-	/**Get value from one of the attached PVs.
-	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
-	 * @return the {@link IValue} of the PV.
-	 */
-	public IValue getPVValue(String pvPropId){
-		final PV pv = pvMap.get(pvPropId);
-		if(pv != null){
-			return pv.getValue();
-		}
-		return null;
-	}
-	
-	/**For PV Control widgets, mark this PV as control PV.
-	 * @param pvPropId the propId of the PV.
-	 */
-	protected void markAsControlPV(String pvPropId, String pvValuePropId){
-		controlPVPropId  = pvPropId;
-		controlPVValuePropId = pvValuePropId;
-		initUpdateSuppressTimer();
-	}
-
-	/**
-	 * Initialize the updateSuppressTimer
-	 */
-	protected synchronized void initUpdateSuppressTimer() {
-		if(updateSuppressTimer == null)
-			updateSuppressTimer = new OPITimer();
-		if(timerTask == null)
-			timerTask = new Runnable() {				
-				public void run() {
-					AbstractWidgetProperty pvValueProperty = 
-						getWidgetModel().getProperty(controlPVValuePropId);
-					//recover update
-					if(pvValueListeners != null){
-						for(PropertyChangeListener listener: pvValueListeners){
-							pvValueProperty.addPropertyChangeListener(listener);
-						}
-					}						
-					//forcefully set PV_Value property again					
-					pvValueProperty.setPropertyValue(
-							pvValueProperty.getPropertyValue(), true);
-				}
-			};
-	}
+	public abstract void setValue(Object value);
 	
 	/**
 	 * Start the updateSuppressTimer. All property change listeners of PV_Value property will
@@ -619,30 +576,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		pvValueListeners = pvValueProperty.getAllPropertyChangeListeners();
 		pvValueProperty.removeAllPropertyChangeListeners();
 		updateSuppressTimer.start(timerTask, UPDATE_SUPPRESS_TIME);
-	}
-	
-	@Override
-	public AbstractPVWidgetModel getWidgetModel() {
-		return (AbstractPVWidgetModel)getModel();
-	}
-
-	/**Set the value of the widget. This only take effect on the visual presentation of the widget and
-	 * will not write the value to the PV attached to this widget which can be reached by calling
-	 * {@link #setPVValue(String, Object)}.
-	 * @param value the value to be set. It must be the compatible type for the widget.
-	 *  For example, a boolean widget only accept boolean or double values.
-	 */
-	public abstract void setValue(Object value);
-	
-	
-	/**Get the value of the widget. 
-	 * @return the value of the widget. It is not the value of the attached PV 
-	 * even though they are equals in most cases. {@link #getPVValue(String)}  
-	 */
-	public abstract Object getValue();
-	
-	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
-		this.ignoreOldPVValue = ignoreOldValue;
 	}
 	
 }

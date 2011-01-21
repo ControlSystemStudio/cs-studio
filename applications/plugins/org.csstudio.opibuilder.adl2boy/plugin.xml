@@ -108,6 +108,22 @@
                   id="org.csstudio.opibuilder.adl2boy.writeColorMapToDefaultFile"
                   style="push"
                   tooltip="Write the color map in this file to BOY&apos;s default Color Map">
+               <visibleWhen
+                     checkEnabled="false">
+                  <iterate>
+                     <or>
+                        <adapt
+                              type="org.eclipse.core.resources.IResource">
+                           <or>
+                              <test
+                                    property="org.eclipse.core.resources.name"
+                                    value="*.adl">
+                              </test>
+                           </or>
+                        </adapt>
+                     </or>
+                  </iterate>
+               </visibleWhen>
             </command>
          </menu>
       </menuContribution>

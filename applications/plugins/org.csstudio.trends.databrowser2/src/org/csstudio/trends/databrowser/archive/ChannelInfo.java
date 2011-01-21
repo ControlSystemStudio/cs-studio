@@ -30,32 +30,36 @@ public class ChannelInfo implements IProcessVariableWithArchive
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTypeId()
     {
         return IProcessVariableWithArchive.TYPE_ID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName()
     {
         return name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ArchiveDataSource getArchiveDataSource()
     {
         return archive;
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(final Class adapter)
     {
         if (adapter == IArchiveDataSource.class)
             return getArchiveDataSource();
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj)
@@ -75,7 +79,7 @@ public class ChannelInfo implements IProcessVariableWithArchive
 	    result = prime * result + archive.hashCode();
 	    return result;
     }
-    
+
     /** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override

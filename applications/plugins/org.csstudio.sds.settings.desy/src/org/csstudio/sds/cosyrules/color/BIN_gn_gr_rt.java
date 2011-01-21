@@ -53,19 +53,23 @@ public class BIN_gn_gr_rt implements IRule {
     @Override
     public Object evaluate(final Object[] arguments) {
 
-        if ( (arguments != null) && (arguments.length > 0)) {
+        if (arguments != null) {
 
-            // check for gn (green)
-            if (compare(arguments[0], arguments[1])) {
+         // check for gn (green)
+            if ((arguments.length >= 1) && compare(arguments[0], arguments[1])) {
                 return ColorAndFontUtil.toHex(30, 187, 0);
             }
             // check for gr (gray)
-            if (compare(arguments[0], arguments[2])) {
+            if ((arguments.length >= 2) && compare(arguments[0], arguments[2])) {
                 return ColorAndFontUtil.toHex(90, 90, 90);
             }
             // check for rt  (red)
-            if (compare(arguments[0], arguments[3])) {
+            if ((arguments.length >= 3) && compare(arguments[0], arguments[3])) {
                 return ColorAndFontUtil.toHex(253, 0, 0);
+            }
+            // check for gb (yellow)
+            if ((arguments.length >= 4) && compare(arguments[0], arguments[4])) {
+                return ColorAndFontUtil.toHex(251, 243, 74);
             }
         }
         return ColorAndFontUtil.toHex(138, 43, 226);
@@ -115,7 +119,7 @@ public class BIN_gn_gr_rt implements IRule {
      */
     @Override
     public String getDescription() {
-        return "Vergleicht den Wert mit den Werten für grün, grau und rot. Ist der Wert gleich einer der drei Werte wird die Entsprechende Farbe angezeit";
+        return "Vergleicht den Wert mit den Werten für grün, grau, rot und gelb. Ist der Wert gleich einer der drei Werte wird die Entsprechende Farbe angezeit";
     }
 
 }

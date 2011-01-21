@@ -34,8 +34,9 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 07.09.2010
+ * @param <T> the object class type for which a tree shall be created
  */
-public interface IContentModelBuilder {
+public interface IContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     /**
      * Builds the tree model contained in the builder object.
@@ -50,5 +51,5 @@ public interface IContentModelBuilder {
      * @return the model
      */
     @CheckForNull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ContentModel<T> getModel();
+    ContentModel<T> getModel();
 }

@@ -30,7 +30,7 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
      *  @param item Model item to configure
      *  @param new_size New value
      */
-    public ChangeLiveCapacityCommand(final Shell shell, 
+    public ChangeLiveCapacityCommand(final Shell shell,
             final OperationsManager operations_manager,
             final PVItem item, final int new_size)
     {
@@ -38,7 +38,7 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
         this.item = item;
         this.old_size = item.getLiveCapacity();
         this.new_size = new_size;
-        
+
         // Exit before registering for undo because there's nothing to undo
         if (!apply(new_size))
             return;
@@ -46,17 +46,19 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         apply(new_size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         apply(old_size);
     }
-    
+
     /** Change item's data buffer
      *  @param size Desired size
      *  @return <code>true</code> on success
@@ -76,7 +78,7 @@ public class ChangeLiveCapacityCommand implements IUndoableCommand
         }
         return true;
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

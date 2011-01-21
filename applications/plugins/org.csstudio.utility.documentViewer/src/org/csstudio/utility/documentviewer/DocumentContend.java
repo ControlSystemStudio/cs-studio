@@ -1,37 +1,24 @@
 /*
-		* Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
-		* Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
-		*
-		* THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
-		* WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT
-		NOT LIMITED
-		* TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE
-		AND
-		* NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-		BE LIABLE
-		* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-		CONTRACT,
-		* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-		SOFTWARE OR
-		* THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE
-		DEFECTIVE
-		* IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
-		REPAIR OR
-		* CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART
-		OF THIS LICENSE.
-		* NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS
-		DISCLAIMER.
-		* DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
-		ENHANCEMENTS,
-		* OR MODIFICATIONS.
-		* THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
-		MODIFICATION,
-		* USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
-		DISTRIBUTION OF THIS
-		* PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
-		MAY FIND A COPY
-		* AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
-		*/
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.utility.documentviewer;
 
 import java.util.Arrays;
@@ -42,9 +29,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
-import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.service.NodeNotFoundException;
 import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
@@ -78,21 +65,21 @@ import org.eclipse.ui.PlatformUI;
  * @since 17.08.2010
  */
 public class DocumentContend {
-
+    
     protected static final Logger LOG = CentralLogger.getInstance()
             .getLogger(DocumentContend.class);
     
     private ListViewer _pvList;
-
+    
     private Collection<IProcessVariable> _processVariables = new HashSet<IProcessVariable>();
-
+    
     /**
      * A List with all Process Variables to show the Documents
      */
     private TableViewer _foundsDocumentsTable;
-
+    
     private MessageArea _messageArea;
-
+    
     /**
      * @param parent
      */
@@ -100,49 +87,56 @@ public class DocumentContend {
         Composite pvListMain = new Composite(parent, SWT.NONE);
         pvListMain.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
         pvListMain.setLayout(new GridLayout(2, false));
-
+        
         final Text text = new Text(pvListMain, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         text.setText("");
-
+        
         Button button = new Button(pvListMain, SWT.PUSH);
         button.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
         button.setText("Add");
-
+        
         _pvList = new ListViewer(pvListMain);
         _pvList.getList().setLayoutData(GridDataFactory.fillDefaults().grab(false, true).span(2, 1)
-                .create());
+                                                .create());
         _pvList.setLabelProvider(new IProcessVariableLabelProvider());
         _pvList.setContentProvider(new ArrayContentProvider());
-
+        
         button.addSelectionListener(new SelectionAdapter() {
-
+            
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                Collection<IProcessVariable> processVariables = getProcessVariables();
-                processVariables.add(new ProcessVariable(text.getText()));
-                _pvList.setInput(processVariables);
-                callIoNameService(processVariables);
+                getProcessVariables().add(new ProcessVariable(text.getText()));
+                update();
             }
-
+            
         });
         createMenu(_pvList);
     }
-
+    
     public void createDocumentView(final Composite parent) {
         _foundsDocumentsTable = DocumentTableBuilder.createDocumentTable(parent);
         DocumentTableBuilder.makeMenus(_foundsDocumentsTable);
     }
-
+    
     /**
      * @param processVariables
      */
     public void setProcessVariables(final IProcessVariable[] processVariables) {
         _processVariables = new HashSet<IProcessVariable>(Arrays.asList(processVariables));
-
+        
     }
+    
     protected Collection<IProcessVariable> getProcessVariables() {
         return _processVariables;
+    }
+    
+    protected TableViewer getFoundsDocumentsTable() {
+        return _foundsDocumentsTable;
+    }
+    
+    protected MessageArea getMessageArea() {
+        return _messageArea;
     }
     
     /**
@@ -153,16 +147,16 @@ public class DocumentContend {
     public void createMessageArea(final Composite parent) {
         _messageArea = new MessageArea(parent);
     }
-
+    
     /**
      * @throws PersistenceException 
      *
      */
     public void update() {
-      _pvList.setInput(_processVariables);
-      callIoNameService(_processVariables);
+        _pvList.setInput(_processVariables);
+        callIoNameService(_processVariables);
     }
-
+    
     /**
      * @param pvList
      */
@@ -173,16 +167,16 @@ public class DocumentContend {
         showItem.setText("&Remove");
         showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ELCL_REMOVE));
-
+        
         MenuItem saveItem = new MenuItem(menu, SWT.PUSH);
         saveItem.addSelectionListener(new RemoveAllChannelsListener(viewer));
         saveItem.setText("Remove &All");
         saveItem.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ELCL_REMOVEALL));
-
+        
         viewer.getList().setMenu(menu);
     }
-
+    
     /**
      * @param processVariables
      * @throws PersistenceException 
@@ -202,29 +196,39 @@ public class DocumentContend {
                 Collection<INode> nodes;
                 try {
                     nodes = pv2IOName.getNodes(pcNames).values();
-                    if(nodes == null || nodes.isEmpty()) {
-                        _foundsDocumentsTable.getTable().setEnabled(true);
-                        _foundsDocumentsTable.setInput(new String[] {"Channel nicht gefunden"});
-                    } else {
-                        Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
-                        addNodes(hierarchyDocuments, nodes);
-                        _foundsDocumentsTable.getTable().setEnabled(true);
-                        _foundsDocumentsTable.setInput(hierarchyDocuments);
+                    Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
+                    addNodes(hierarchyDocuments, nodes);
+                    getFoundsDocumentsTable().getTable().setEnabled(true);
+                    getFoundsDocumentsTable().setInput(hierarchyDocuments);
+                    getMessageArea().hide();
+                } catch (NodeNotFoundException nnfe) {
+                    getFoundsDocumentsTable().getTable().setEnabled(true);
+                    switch (nnfe.getState()) {
+                        case DCT:
+                            getFoundsDocumentsTable().setInput(new String[] { nnfe
+                                                                       .getLocalizedMessage() });
+                            break;
+                        case DeviceDB:
+                            getFoundsDocumentsTable().setInput(new String[] { nnfe
+                                                                       .getLocalizedMessage() });
+                            break;
                     }
-                    _messageArea.hide();
+                    getMessageArea().hide();
                 } catch (PersistenceException e) {
                     LOG.error(e);
-                    _messageArea.showMessage(SWT.ERROR, "Device Database Error", e.getLocalizedMessage());
-                    _messageArea.show();
-                    _foundsDocumentsTable.setInput(new String[] {"Datenbank nicht erreichbar!"});
-                    _foundsDocumentsTable.getTable().setEnabled(false);
+                    getMessageArea().showMessage(SWT.ERROR, "Device Database Error",
+                                                 e.getLocalizedMessage());
+                    getMessageArea().show();
+                    getFoundsDocumentsTable()
+                            .setInput(new String[] { "Datenbank nicht erreichbar!" });
+                    getFoundsDocumentsTable().getTable().setEnabled(false);
                 }
             }
             
         };
         Display.getCurrent().asyncExec(thread);
     }
-
+    
     /**
      * @param all
      * @param nodes
@@ -236,43 +240,40 @@ public class DocumentContend {
             addParent(all, parent);
         }
     }
-
+    
     /**
      * @param all
      * @param iNode
      */
     private void addDocuments(final Collection<HierarchyDocument> all, final INode iNode) {
         Set<DocumentDBO> documents = iNode.getDocuments();
-        for (Object object : documents) {
-            IDocument d = (IDocument) object;
-            all.add(new HierarchyDocument(iNode, d));
+        for (DocumentDBO document : documents) {
+            all.add(new HierarchyDocument(iNode, document));
         }
     }
-
+    
     /**
      * @param all
      * @param parent
      */
     private void addParent(final Collection<HierarchyDocument> all, final INode parent) {
-        if(parent!=null) {
+        if (parent != null) {
             addDocuments(all, parent);
             addParent(all, parent.getParent());
         }
     }
-
-
-
+    
     private class RemoveAllChannelsListener implements SelectionListener {
-
+        
         private final ListViewer _viewer;
-
+        
         /**
          * Constructor.
          */
         public RemoveAllChannelsListener(final ListViewer viewer) {
             _viewer = viewer;
         }
-
+        
         /**
          * {@inheritDoc}
          */
@@ -280,7 +281,7 @@ public class DocumentContend {
         public void widgetDefaultSelected(final SelectionEvent e) {
             setProcessVariables();
         }
-
+        
         /**
          * {@inheritDoc}
          */
@@ -288,7 +289,7 @@ public class DocumentContend {
         public void widgetSelected(final SelectionEvent e) {
             setProcessVariables();
         }
-
+        
         /**
          * 
          */
@@ -297,20 +298,20 @@ public class DocumentContend {
             processVariables.clear();
             _viewer.setInput(processVariables);
         }
-
+        
     }
-
+    
     private class RemoveChannelListener implements SelectionListener {
-
+        
         private final ListViewer _viewer;
-
+        
         /**
          * Constructor.
          */
         public RemoveChannelListener(final ListViewer viewer) {
             _viewer = viewer;
         }
-
+        
         /**
          * {@inheritDoc}
          */
@@ -318,18 +319,18 @@ public class DocumentContend {
         public void widgetDefaultSelected(final SelectionEvent e) {
             remove();
         }
-
+        
         /**
          *
          */
         private void remove() {
             StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
-            List list = selection.toList();
+            List<?> list = selection.toList();
             Collection<IProcessVariable> processVariables = getProcessVariables();
             processVariables.removeAll(list);
             _viewer.setInput(processVariables);
         }
-
+        
         /**
          * {@inheritDoc}
          */
@@ -337,9 +338,9 @@ public class DocumentContend {
         public void widgetSelected(final SelectionEvent e) {
             remove();
         }
-
+        
     }
-
+    
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
      * FIXME (hrickens) This is a copy of the inner class of the AlarmTreeView.
@@ -349,45 +350,42 @@ public class DocumentContend {
          * The message area which can display error messages inside the view part.
          */
         private final Composite _messageAreaComposite;
-
+        
         /**
          * The icon displayed in the message area.
          */
         private final Label _messageAreaIcon;
-
+        
         /**
          * The message displayed in the message area.
          */
         private final Label _messageAreaMessage;
-
+        
         /**
          * The description displayed in the message area.
          */
         private final Label _messageAreaDescription;
-
+        
         public MessageArea(final Composite parent) {
             _messageAreaComposite = new Composite(parent, SWT.NONE);
-            final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false,3,1);
+            final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 3,
+                                                                1);
             messageAreaLayoutData.exclude = true;
             _messageAreaComposite.setVisible(false);
             _messageAreaComposite.setLayoutData(messageAreaLayoutData);
             _messageAreaComposite.setLayout(new GridLayout(2, false));
-
+            
             _messageAreaIcon = new Label(_messageAreaComposite, SWT.NONE);
-            _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING,
-                                                        SWT.BEGINNING,
-                                                        false,
-                                                        false,
-                                                        1,
-                                                        2));
+            _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false,
+                                                        1, 2));
             _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
-
+            
             _messageAreaMessage = new Label(_messageAreaComposite, SWT.WRAP);
             _messageAreaMessage.setText("Test3");
             // Be careful if changing the GridData below! The label will not wrap
             // correctly for some settings.
             _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-
+            
             _messageAreaDescription = new Label(_messageAreaComposite, SWT.WRAP);
             _messageAreaDescription.setText("Test4");
             // Be careful if changing the GridData below! The label will not wrap
@@ -395,7 +393,7 @@ public class DocumentContend {
             _messageAreaDescription
                     .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         }
-
+        
         /**
          * Sets the message displayed in the message area of this view part.
          *
@@ -410,16 +408,16 @@ public class DocumentContend {
             _messageAreaMessage.setText(message);
             _messageAreaDescription.setText(description);
             _messageAreaComposite.layout();
-
+            
             show();
         }
-
+        
         public void show() {
             _messageAreaComposite.setVisible(true);
             ((GridData) _messageAreaComposite.getLayoutData()).exclude = false;
             _messageAreaComposite.getParent().layout();
         }
-
+        
         /**
          * Hides the message displayed in this view part.
          */

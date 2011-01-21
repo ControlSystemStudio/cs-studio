@@ -37,17 +37,19 @@ public class ChangeColorCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setColor(new_color);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setColor(old_color);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

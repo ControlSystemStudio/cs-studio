@@ -54,6 +54,7 @@ public class ChangeNameCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         try
@@ -69,6 +70,7 @@ public class ChangeNameCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         try
@@ -82,7 +84,7 @@ public class ChangeNameCommand implements IUndoableCommand
                             new Object[] { new_name, old_name, ex.getMessage()}));
         }
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

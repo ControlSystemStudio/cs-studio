@@ -34,9 +34,11 @@ public class MultilineTextEditDialog extends Dialog {
 		// Making the Dialog bigger is fine, vertical scrollbars also work.
 		// But when making the Dialog smaller, no horiz. scrollbars appear.
 		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.widthHint = 220;
+		gridData.heightHint = 100;
 		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		text.setLayoutData(gridData);
 		text.setText(contents);
+		text.setLayoutData(gridData);
 		return container;
 	}
 	

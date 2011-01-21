@@ -217,19 +217,25 @@
       <objectContribution
             adaptable="false"
             id="org.csstudio.opibuilder.showPVInfo"
-            objectClass="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart">
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action
                class="org.csstudio.opibuilder.actions.ShowPVInfoAction"
                enablesFor="1"
                id="org.csstudio.opibuilder.showPVInfoAction"
                label="Show PV Info"
-               tooltip="Show detail infomation of PV">
+               tooltip="Show detail infomation of PVs on this widget">
          </action>
          <visibility>
-            <objectState
-                  name="executionMode"
-                  value="RUN_MODE">
-            </objectState>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="RUN_MODE">
+               </objectState>
+               <objectState
+                     name="hasPVs"
+                     value="true">
+               </objectState>
+            </and>
          </visibility>
       </objectContribution>
       <objectContribution

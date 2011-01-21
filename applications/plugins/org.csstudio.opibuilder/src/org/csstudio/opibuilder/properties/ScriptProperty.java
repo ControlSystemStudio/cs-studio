@@ -28,6 +28,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
 	
 	public static final String XML_ATTRIBUTE_CHECKCONNECT = "checkConnect"; //$NON-NLS-1$
 	
+	public static final String XML_ATTRIBUTE_SKIP_FIRST_EXECUTION = "sfe"; //$NON-NLS-1$
+	
 	/**
 	 * XML Element name <code>PV</code>.
 	 */
@@ -95,6 +97,9 @@ public class ScriptProperty extends AbstractWidgetProperty {
 			if(se.getAttributeValue(XML_ATTRIBUTE_CHECKCONNECT) != null)
 				sd.setCheckConnectivity(
 						Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_CHECKCONNECT)));
+			if(se.getAttributeValue(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION) != null)
+				sd.setSkipPVsFirstConnection(
+						Boolean.parseBoolean(se.getAttributeValue(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION)));					
 			for(Object o : se.getChildren(XML_ELEMENT_PV)){
 				Element pve = (Element)o;
 				boolean trig = true;
@@ -115,6 +120,8 @@ public class ScriptProperty extends AbstractWidgetProperty {
 						scriptData.getPath().toPortableString());
 				pathElement.setAttribute(XML_ATTRIBUTE_CHECKCONNECT,
 						Boolean.toString(scriptData.isCheckConnectivity()));
+				pathElement.setAttribute(XML_ATTRIBUTE_SKIP_FIRST_EXECUTION,
+						Boolean.toString(scriptData.isSkipPVsFirstConnection()));
 				for(PVTuple pv : scriptData.getPVList()){
 					Element pvElement = new Element(XML_ELEMENT_PV);
 					pvElement.setText(pv.pvName);

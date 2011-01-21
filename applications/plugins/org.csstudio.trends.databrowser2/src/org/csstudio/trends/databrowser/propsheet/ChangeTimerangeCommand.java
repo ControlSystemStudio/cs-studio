@@ -47,16 +47,18 @@ public class ChangeTimerangeCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         apply(new_scroll, new_start, new_end);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         apply(old_scroll, old_start, old_end);
-    }       
+    }
 
     /** Apply time configuration to model
      *  @param scroll
@@ -77,7 +79,7 @@ public class ChangeTimerangeCommand implements IUndoableCommand
             model.setTimerange(start, end);
         }
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

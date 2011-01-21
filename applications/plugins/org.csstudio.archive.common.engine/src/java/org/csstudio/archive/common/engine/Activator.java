@@ -21,7 +21,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends Plugin
 {
-    /** Plug-in ID defined in MANIFEST.MF */
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
     public static final String PLUGIN_ID = "org.csstudio.common.archive.engine"; //$NON-NLS-1$
 
     /** The shared instance */

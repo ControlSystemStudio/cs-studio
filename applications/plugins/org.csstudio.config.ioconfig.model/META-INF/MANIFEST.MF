@@ -20,6 +20,7 @@ Export-Package: org.csstudio.config.ioconfig.model,
  org.csstudio.config.ioconfig.model.preference,
  org.csstudio.config.ioconfig.model.service,
  org.csstudio.config.ioconfig.model.siemens,
+ org.csstudio.config.ioconfig.model.statistic,
  org.csstudio.config.ioconfig.model.tools,
  org.csstudio.config.ioconfig.model.xml
 Bundle-ClassPath: .

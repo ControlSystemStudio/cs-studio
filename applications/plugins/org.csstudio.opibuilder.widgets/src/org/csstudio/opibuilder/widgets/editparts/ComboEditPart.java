@@ -10,13 +10,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.figures.ComboFigure;
 import org.csstudio.opibuilder.widgets.model.ComboModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -25,7 +23,6 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
@@ -53,8 +50,6 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		ComboFigure comboFigure = new ComboFigure(
 				(Composite) getViewer().getControl(), getWidgetModel().getParent());
 		comboFigure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
-		comboFigure.setFont(CustomMediaFactory.getInstance().getFont(
-						model.getFont().getFontData()));
 		combo = comboFigure.getCombo();
 		//select the combo when mouse down
 		combo.addMouseListener(new org.eclipse.swt.events.MouseAdapter(){
@@ -212,21 +207,6 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ComboModel.PROP_ITEMS, itemsHandler);
-		
-		
-		
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				FontData fontData = ((OPIFont)newValue).getFontData();
-				refreshableFigure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ComboModel.PROP_FONT, fontHandler);
 		
 		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

@@ -25,8 +25,10 @@
 package org.csstudio.utility.tine.reader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
@@ -45,96 +47,100 @@ import de.desy.tine.queryUtils.TQuery;
  * @since 15.05.2007
  */
 public class TineReader extends Job {
-    
+
+    private static final String TINE_PATH_SEP = ",";
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(TineReader.class);
+
     /** The name of {@link ControlSystemItem}.*/
-    private String _name;
+    private String _simpleName;
     /** List with the read elements. */
-    private NameSpaceResultListTine _resultList;
+    private TineSearchResult _resultList;
     /** Not used !? */
     private String _type;
-    
+
     /**
-     * 
+     *
      * @param name The name of {@link ControlSystemItem}
      * @param type not used !?
-     * @param liste the list to put the result.
+     * @param result the list to put the result.
      */
-    public TineReader(final String name,final String type, final NameSpaceResultListTine liste) {
+    public TineReader(final String name, final String type, final TineSearchResult result) {
         super(name);
-        if(name!=null){
-            _name = name.split(",")[name.split(",").length-1];
+        if(name != null){
+            final String[] splittedName = name.split(TINE_PATH_SEP);
+            _simpleName = splittedName[splittedName.length - 1];
         }else{
-            _name="";
+            _simpleName = "";
         }
-        if(type!=null){
+        if (type != null) {
             _type = type;
-        }else{
-            _type="";
+        }else {
+            _type= "";
         }
-        if(liste!=null){
-            _resultList = liste;
+        if(result!=null){
+            _resultList = result;
         }else{
-            _resultList = new NameSpaceResultListTine();
+            _resultList = new TineSearchResult();
         }
-        CentralLogger.getInstance().debug(this,"name:"+_name);
-        CentralLogger.getInstance().debug(this,"Type:"+_type);
+        LOG.debug("name:"+_simpleName);
+        LOG.debug("Type:"+_type);
     }
-    
+
     /** {@inheritDoc}*/
     @Override
     protected final IStatus run(final IProgressMonitor monitor) {
         read();
         return Status.OK_STATUS;
     }
-    
+
     /**
      * Read the data from Tine Name Server.
      */
     public final void read(){
         List<ControlSystemItem> csi = new ArrayList<ControlSystemItem>();
         String[] content;
-        String[] path = _type.split(",");
-        CentralLogger.getInstance().debug(this,"Name: '"+_name+"'\t Type: '"+_type+"'\t länge: "+path.length);
+        String[] path = _type.split(TINE_PATH_SEP);
+        LOG.debug("Name: '"+_simpleName+"'\t Type: '"+_type+"'\t länge: "+path.length);
         switch (path.length) {
             case 1:
                 content = TQuery.getContexts();
                 break;
             case 2:
-                content = TQuery.getDeviceSubsystems(_name);
+                content = TQuery.getDeviceSubsystems(_simpleName);
                 break;
             case 3:
                 content = TQuery.getDeviceServers(path[path.length-2],path[path.length-1]);
                 break;
             case 4:
-                CentralLogger.getInstance().debug(this,"read: "+path[path.length-3]+","+path[path.length-1]);
+                LOG.debug("read: "+path[path.length-3]+TINE_PATH_SEP+path[path.length-1]);
                 content = TQuery.getDeviceNames(path[path.length-3],path[path.length-1]);
-                if(content==null){
-                    CentralLogger.getInstance().debug(this,"Set default #0" );
-                    content = new String[]{"#0"};
-                }
                 break;
             case 5:
-                CentralLogger.getInstance().debug(this,"read Properties: "+path[path.length-4]+","+path[path.length-2]+","+path[path.length-1]);
+                LOG.debug("read Properties: "+path[path.length-4]+TINE_PATH_SEP+path[path.length-2]+TINE_PATH_SEP+path[path.length-1]);
                 content = TQuery.getDeviceProperties(path[path.length-4],path[path.length-2],path[path.length-1]);
                 break;
-                
             default:
                 content = null;
         }
-        
+
         String tine = ControlSystemEnum.DAL_TINE.getPrefix()+"://";
-        if((content!=null)&&((path.length==4)||(path.length==5))){
+
+        if (content == null) {
+            LOG.warn("No Elements found");
+            csi = Collections.<ControlSystemItem>emptyList();
+        } else if(path.length==4 || path.length==5) {
             for (final String string : content) {
                 String name = tine;
                 String[] pathPV;
-                if(_type.endsWith(",")||string.startsWith(",")){
-                    pathPV = (_type+string).split(",");
+                if(_type.endsWith(TINE_PATH_SEP)||string.startsWith(TINE_PATH_SEP)){
+                    pathPV = (_type+string).split(TINE_PATH_SEP);
                 }else{
-                    pathPV = (_type+","+string).split(",");
+                    pathPV = (_type+TINE_PATH_SEP+string).split(TINE_PATH_SEP);
                 }
                 if(pathPV.length>1){
                     for (int i = 0; i < pathPV.length; i++) {
-                        if((i!=0)&&(i!=2)){
+                        if(i!=0&&i!=2){
                             name = name.concat(pathPV[i]);
                             name = name.concat("/");
                         }
@@ -145,31 +151,26 @@ public class TineReader extends Job {
                 if(name.endsWith("/")){
                     name = name.substring(0, name.length()-1);
                 }
-                if(_type.endsWith(",") || string.startsWith(",")){
+                if(_type.endsWith(TINE_PATH_SEP) || string.startsWith(TINE_PATH_SEP)){
                     csi.add(new ProcessVariable(name, _type + string));
                 }else{
-                    csi.add(new ProcessVariable(name, _type + "," + string));
+                    csi.add(new ProcessVariable(name, _type + TINE_PATH_SEP + string));
                 }
             }
-        }else if((content!=null)&&(path.length<4)){
-            CentralLogger.getInstance().debug(this,""+content.length);
-            for (final String string : content) {
-                if(_type.endsWith(",")||string.startsWith(",")){
-                    csi.add(new ControlSystemItem(string,_type+string));
+        }else if(path.length<4){
+            LOG.debug(content.length);
+            for (final String part : content) {
+                if(_type.endsWith(TINE_PATH_SEP) || part.startsWith(TINE_PATH_SEP)){
+                    csi.add(new ControlSystemItem(part, _type + part));
                 }else{
-                    csi.add(new ControlSystemItem(string,_type+","+string));
+                    csi.add(new ControlSystemItem(part, _type + TINE_PATH_SEP + part));
                 }
             }
-        }else{
-            CentralLogger.getInstance().warn(this,"No Elements found");
         }
         _resultList.setCSIResultList(csi);
         tine=null;
         content=null;
         path=null;
         csi = null;
-        
-        
     }
-    
 }

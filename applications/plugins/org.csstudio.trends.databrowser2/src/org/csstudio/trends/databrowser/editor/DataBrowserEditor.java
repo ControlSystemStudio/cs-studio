@@ -31,6 +31,7 @@ import org.csstudio.trends.databrowser.search.SearchView;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
+import org.csstudio.trends.databrowser.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser.waveformview.OpenWaveformAction;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -219,7 +220,7 @@ public class DataBrowserEditor extends EditorPart
         final Canvas plot_box = new Canvas(parent, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        plot = new Plot(plot_box);
+        plot = Plot.forCanvas(plot_box);
 
         // Create and start controller
         controller = new Controller(parent.getShell(), model, plot);
@@ -269,13 +270,13 @@ public class DataBrowserEditor extends EditorPart
             }
             // Ignore
             @Override
-            public void partInputChanged(final IWorkbenchPartReference part) {}
+            public void partInputChanged(final IWorkbenchPartReference part) { /* NOP */ }
             @Override
-            public void partDeactivated(final IWorkbenchPartReference part)  {}
+            public void partDeactivated(final IWorkbenchPartReference part)  { /* NOP */ }
             @Override
-            public void partBroughtToTop(final IWorkbenchPartReference part) {}
+            public void partBroughtToTop(final IWorkbenchPartReference part) { /* NOP */ }
             @Override
-            public void partActivated(final IWorkbenchPartReference part)    {}
+            public void partActivated(final IWorkbenchPartReference part)    { /* NOP */ }
         });
 
         createContextMenu(plot_box);
@@ -287,7 +288,7 @@ public class DataBrowserEditor extends EditorPart
         final Activator activator = Activator.getDefault();
         final Shell shell = parent.getShell();
         final MenuManager mm = new MenuManager();
-        mm.add(plot.getToggleToolbarAction());
+        mm.add(new ToggleToolbarAction(plot));
         mm.add(new Separator());
         mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, false));
         mm.add(new AddPVAction(plot.getOperationsManager(), shell, model, true));

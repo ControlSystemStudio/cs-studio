@@ -38,7 +38,7 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * @since 21.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> implements IContentModelBuilder {
+public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> implements IContentModelBuilder<T> {
 
     private ContentModel<T> _model;
 

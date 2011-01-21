@@ -17,7 +17,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-    // The plug-in ID
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
     public static final String PLUGIN_ID = "org.csstudio.utility.treemodel";
 
     private static Activator INSTANCE;
@@ -39,7 +41,8 @@ public class Activator implements BundleActivator {
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(@Nullable final BundleContext context) throws Exception {
+	@Override
+    public void start(@Nullable final BundleContext context) throws Exception {
 	    if (context != null) {
 	        _bundle = context.getBundle(); // for the test class
 	    }
@@ -49,7 +52,8 @@ public class Activator implements BundleActivator {
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(@Nullable final BundleContext context) throws Exception {
+	@Override
+    public void stop(@Nullable final BundleContext context) throws Exception {
 	    // EMPTY
 	}
 
