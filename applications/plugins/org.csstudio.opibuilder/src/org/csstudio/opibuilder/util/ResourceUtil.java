@@ -38,69 +38,74 @@ import org.eclipse.ui.part.FileEditorInput;
 public class ResourceUtil {
 
 
-	
+
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
 	 * specified path.
-	 * 
+	 *
 	 * @param path
 	 *            The {@link IPath} to the file
-	 * 
+	 *
 	 * @return The corresponding {@link InputStream} or null
-	 * @throws Exception 
+	 * @throws Exception
 	 */
-	public static InputStream pathToInputStream(final IPath path) throws Exception{
+	@SuppressWarnings("nls")
+    public static InputStream pathToInputStream(final IPath path) throws Exception{
 		InputStream result = null;
-		
+
 		IResource r = null;
 		try {
 			// try workspace
 			r = ResourcesPlugin.getWorkspace().getRoot().findMember(
 					path, false);
-			if (r!= null && r instanceof IFile) {			
-				result = ((IFile) r).getContents();		
+			if (r!= null && r instanceof IFile) {
+				result = ((IFile) r).getContents();
 				return result;
 			}else
 				throw new Exception();
 		} catch (Exception e) {
-			// try from local file system			
+			// try from local file system
 			try {
-				result = new FileInputStream(path.toFile());
+				File file = path.toFile();
+				// Path URL for "file:..." so that it opens as FileInputStream
+				if (file.getPath().startsWith("file:"))
+				    file = new File(file.getPath().substring(5));
+                result = new FileInputStream(file);
 				if(result != null)
 					return result;
 				else
 					throw new Exception();
 			} catch (Exception e1) {
 				try {
-					//try from URL					
+					//try from URL
 					String urlString = path.toString();
-					if(!urlString.contains("://")) //$NON-NLS-1$
-						urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+					if(!urlString.contains("://"))
+						urlString = urlString.replaceFirst(":/", "://");
 					URL url = new URL(urlString);
 					result = url.openStream();
 					return result;
 				} catch (Exception e2) {
-					throw new Exception("This exception includes three sub-exceptions:\n"+ 
+					throw new Exception("This exception includes three sub-exceptions:\n"+
 							e+ "\n" + e1 + "\n" + e2);
-				}				
+				}
 			}
 		}
 	}
-	
+
 	/**Get the IFile from IPath.
 	 * @param path
-	 * @return the IFile. null if no IFile on the path. 
+	 * @return the IFile. null if no IFile on the path.
 	 */
 	public static IFile getIFileFromIPath(final IPath path){
 		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
 				path, false);
-		if (r!= null && r instanceof IFile) {			
+		if (r!= null && r instanceof IFile) {
 				return (IFile)r;
 		}else
 			return null;
 
 	}
-	
+
 	/**Build the absolute path from the file path (without the file name part)
 	 * of the widget model and the relative path.
 	 * @param model the widget model
@@ -113,8 +118,8 @@ public class ResourceUtil {
 		return model.getRootDisplayModel().getOpiFilePath().
 			removeLastSegments(1).append(relativePath);
 	}
-	
-	
+
+
 	/**Build the relative path from a reference path.
 	 * @param refPath the reference path which does not include the file name.
 	 * @param fullPath the absolute full path which includes the file name.
@@ -125,10 +130,10 @@ public class ResourceUtil {
 			throw new NullPointerException();
 		return fullPath.makeRelativeTo(refPath);
 	}
-	
+
 	/**
 	 * @return
-	 * @throws FileNotFoundException 
+	 * @throws FileNotFoundException
 	 */
 	public static IPath getPathInEditor(IEditorInput input){
 		if(input instanceof FileEditorInput)
@@ -155,34 +160,34 @@ public class ResourceUtil {
 		else
 			return new Path(input);
 	}
-	
-	
+
+
 	public static boolean isURL(String url){
 		return url.contains(":/");
 	}
-	
+
 	/**Get screenshot image from GraphicalViewer
 	 * @param viewer the GraphicalViewer
 	 * @return the screenshot image
 	 */
-	public static Image getScreenshotImage(GraphicalViewer viewer){		
+	public static Image getScreenshotImage(GraphicalViewer viewer){
 		LayerManager lm = (LayerManager)viewer.getEditPartRegistry().get(LayerManager.ID);
 		IFigure f = lm.getLayer(LayerConstants.PRIMARY_LAYER);
-		
+
 		Rectangle bounds = f.getBounds();
 		Image image = new Image(null, bounds.width + 6, bounds.height + 6);
 		GC gc = new GC(image);
-		SWTGraphics graphics = new SWTGraphics(gc); 
+		SWTGraphics graphics = new SWTGraphics(gc);
 		graphics.translate(-bounds.x + 3, -bounds.y + 3);
-		graphics.setBackgroundColor(viewer.getControl().getBackground());	
+		graphics.setBackgroundColor(viewer.getControl().getBackground());
 		graphics.fillRectangle(bounds);
 		f.paint(graphics);
 		gc.dispose();
-		
+
 		return image;
 	}
-	
-	
+
+
 	public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
 		File file;
 		 // Get name for snapshot file
@@ -195,12 +200,12 @@ public class ResourceUtil {
         {
             throw new Exception("Cannot create tmp. file:\n" + ex.getMessage());
         }
-        
+
         // Create snapshot file
         try
         {
             final ImageLoader loader = new ImageLoader();
-            
+
             final Image image = getScreenshotImage(viewer);
             loader.data = new ImageData[]{image.getImageData()};
             image.dispose();
@@ -215,5 +220,5 @@ public class ResourceUtil {
         return file.getAbsolutePath();
     }
 
-	
+
 }
