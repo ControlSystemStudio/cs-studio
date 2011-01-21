@@ -48,7 +48,8 @@ public class ArchiveGroup
      * @param numOfChannels the initial capacity for the number of channels (for performance 
      * reasons), doesnt have to be exact.
      */
-    public ArchiveGroup(@Nonnull final String name)    {
+    public ArchiveGroup(@Nonnull final String name,
+                        @Nonnull final Long groupId)    {
         _name = name;
         // After Kay's comment, there are two threads that might work on groups.
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();

@@ -35,7 +35,9 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.FloatArchiveTypeCon
 import org.csstudio.archive.common.service.mysqlimpl.adapter.IntegerArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.LongArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.StringArchiveTypeConversionSupport;
+import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
 
@@ -64,8 +66,9 @@ public abstract class ArchiveEngineTypeSupport<T> extends TypeSupport<T> {
             protected ArchiveChannel createArchiveChannel(IArchiveChannel cfg) throws TypeSupportException {
                 
                 
-                ArchiveChannel<Double> channel = new ArchiveChannel<Double>(cfg);
-                return null;
+                ArchiveChannel<Double> channel = new ArchiveChannel<Double>(cfg.getName(),
+                                                                            cfg.getGroupId());
+                return channel;
             }
 
             @Override

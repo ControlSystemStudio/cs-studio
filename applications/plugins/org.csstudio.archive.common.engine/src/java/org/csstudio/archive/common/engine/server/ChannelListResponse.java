@@ -19,6 +19,8 @@ import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
+import com.google.common.base.Joiner;
+
 /** Provide web page with list of channels (by pattern).
  *  @author Kay Kasemir
  */
