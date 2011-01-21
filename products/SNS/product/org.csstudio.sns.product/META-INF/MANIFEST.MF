@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.workspace,
  org.csstudio.startup;bundle-version="1.1.2",
  org.csstudio.startuphelper;bundle-version="1.1.2",
- org.csstudio.sns.startuphelper;bundle-version="1.0.0"
+ org.csstudio.sns.startuphelper;bundle-version="1.0.0",
+ org.csstudio.apputil.ui;bundle-version="1.1.7"
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.sns.product.Activator

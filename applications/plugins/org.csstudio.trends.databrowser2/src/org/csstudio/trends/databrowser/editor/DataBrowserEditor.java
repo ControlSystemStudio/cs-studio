@@ -13,9 +13,9 @@ import java.io.PipedOutputStream;
 
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
@@ -28,13 +28,13 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.propsheet.DataBrowserPropertySheetPage;
 import org.csstudio.trends.databrowser.propsheet.RemoveUnusedAxesAction;
-import org.csstudio.trends.databrowser.sampleview.InspectSamplesAction;
+import org.csstudio.trends.databrowser.sampleview.SampleView;
 import org.csstudio.trends.databrowser.search.SearchView;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
 import org.csstudio.trends.databrowser.ui.ToggleToolbarAction;
-import org.csstudio.trends.databrowser.waveformview.OpenWaveformAction;
+import org.csstudio.trends.databrowser.waveformview.WaveformView;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -303,8 +303,10 @@ public class DataBrowserEditor extends EditorPart
                 activator.getImageDescriptor("icons/search.gif"))); //$NON-NLS-1$
         mm.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
                 activator.getImageDescriptor("icons/export.png"))); //$NON-NLS-1$
-        mm.add(new InspectSamplesAction());
-        mm.add(new OpenWaveformAction());
+        mm.add(new OpenViewAction(SampleView.ID, Messages.InspectSamples,
+                activator.getImageDescriptor("icons/inspect.gif"))); //$NON-NLS-1$
+        mm.add(new OpenViewAction(WaveformView.ID, Messages.OpenWaveformView,
+                activator.getImageDescriptor("icons/wavesample.gif"))); //$NON-NLS-1$
         mm.add(new OpenPerspectiveAction(
                 activator.getImageDescriptor("icons/databrowser.png"), //$NON-NLS-1$
                 Messages.OpenDataBrowserPerspective,
