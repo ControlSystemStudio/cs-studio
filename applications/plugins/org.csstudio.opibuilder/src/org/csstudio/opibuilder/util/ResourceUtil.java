@@ -32,78 +32,88 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**Utility functions for resources.
- * @author Xihui Chen, Abadie Lana
- *
+ * @author Xihui Chen, Abadie Lana, Kay Kasemir
  */
 public class ResourceUtil {
-
-
-
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
 	 * specified path.
 	 *
 	 * @param path
-	 *            The {@link IPath} to the file
+	 *            The {@link IPath} to the file in the workspace, the local
+	 *            file system, or a URL (http:, https:, ftp:, file:, platform:)
 	 *
-	 * @return The corresponding {@link InputStream} or null
+	 * @return The corresponding {@link InputStream}. Never <code>null</code>
 	 * @throws Exception
 	 */
 	@SuppressWarnings("nls")
-    public static InputStream pathToInputStream(final IPath path) throws Exception{
-		InputStream result = null;
+    public static InputStream pathToInputStream(final IPath path) throws Exception
+    {
+	    // Try workspace location
+	    final IFile workspace_file = getIFileFromIPath(path);
+	    // Valid file should either open, or give meaningful exception
+	    if (workspace_file != null  &&  workspace_file.exists())
+	        return workspace_file.getContents();
 
-		IResource r = null;
-		try {
-			// try workspace
-			r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-					path, false);
-			if (r!= null && r instanceof IFile) {
-				result = ((IFile) r).getContents();
-				return result;
-			}else
-				throw new Exception();
-		} catch (Exception e) {
-			// try from local file system
-			try {
-				File file = path.toFile();
-				// Path URL for "file:..." so that it opens as FileInputStream
-				if (file.getPath().startsWith("file:"))
-				    file = new File(file.getPath().substring(5));
-                result = new FileInputStream(file);
-				if(result != null)
-					return result;
-				else
-					throw new Exception();
-			} catch (Exception e1) {
-				try {
-					//try from URL
-					String urlString = path.toString();
-					if(!urlString.contains("://"))
-						urlString = urlString.replaceFirst(":/", "://");
-					URL url = new URL(urlString);
-					result = url.openStream();
-					return result;
-				} catch (Exception e2) {
-					throw new Exception("This exception includes three sub-exceptions:\n"+
-							e+ "\n" + e1 + "\n" + e2);
-				}
-			}
-		}
+	    // Not a workspace file. Try local file system
+        File local_file = path.toFile();
+        // Path URL for "file:..." so that it opens as FileInputStream
+        if (local_file.getPath().startsWith("file:"))
+            local_file = new File(local_file.getPath().substring(5));
+        String urlString;
+        try
+        {
+            return new FileInputStream(local_file);
+        }
+        catch (Exception ex)
+        {
+            // Could not open as local file.
+            // Does it look like a URL?
+            // Eclipse Path collapses "//" into "/", revert that:
+            urlString = path.toString();
+            if(!urlString.contains("://"))
+                urlString = urlString.replaceFirst(":/", "://");
+            // Does it now look like a URL? If not, report the original local file problem
+            if (! isURL(urlString))
+                throw new Exception("Cannot open " + ex.getMessage(), ex);
+        }
+
+        // Must be a URL
+        final URL url = new URL(urlString);
+        try
+        {
+            return url.openStream();
+        }
+        catch (Exception ex)
+        {
+            // Exception can be a FileNotFoundException where the message
+            // is just the URL, so assert that we have a "Cannot open" message:
+            throw new Exception("Cannot open " + url, ex);
+        }
 	}
 
 	/**Get the IFile from IPath.
-	 * @param path
-	 * @return the IFile. null if no IFile on the path.
+	 * @param path Path to file in workspace
+	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
 	 */
-	public static IFile getIFileFromIPath(final IPath path){
-		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-				path, false);
-		if (r!= null && r instanceof IFile) {
-				return (IFile)r;
-		}else
-			return null;
-
+	public static IFile getIFileFromIPath(final IPath path)
+	{
+	    try
+	    {
+    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+    				path, false);
+    		if (r!= null && r instanceof IFile)
+		    {
+    		    final IFile file = (IFile) r;
+    		    if (file.exists())
+    		        return file;
+		    }
+	    }
+	    catch (Exception ex)
+	    {
+	        // Ignored
+	    }
+	    return null;
 	}
 
 	/**Build the absolute path from the file path (without the file name part)
@@ -118,7 +128,6 @@ public class ResourceUtil {
 		return model.getRootDisplayModel().getOpiFilePath().
 			removeLastSegments(1).append(relativePath);
 	}
-
 
 	/**Build the relative path from a reference path.
 	 * @param refPath the reference path which does not include the file name.
@@ -161,8 +170,12 @@ public class ResourceUtil {
 			return new Path(input);
 	}
 
-
-	public static boolean isURL(String url){
+	/** Check if a URL is actually a URL
+	 *  @param url Possible URL
+	 *  @return <code>true</code> if considered a URL
+	 */
+	@SuppressWarnings("nls")
+    public static boolean isURL(final String url){
 		return url.contains(":/");
 	}
 
@@ -187,8 +200,8 @@ public class ResourceUtil {
 		return image;
 	}
 
-
-	public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
+	@SuppressWarnings("nls")
+    public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
 		File file;
 		 // Get name for snapshot file
         try
@@ -219,6 +232,4 @@ public class ResourceUtil {
         }
         return file.getAbsolutePath();
     }
-
-
 }

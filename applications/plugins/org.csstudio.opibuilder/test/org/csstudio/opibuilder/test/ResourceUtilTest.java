@@ -28,6 +28,7 @@ import org.junit.Test;
  */
 @SuppressWarnings("nls")
 public class ResourceUtilTest {
+    private static final String TEST_MESSAGE = "Test OK";
     public final static IPath URL_PATH = new Path("http://ics-srv-web2.sns.ornl.gov/opi/main.opi");
 	public final static IPath LOCAL_PATH = new Path("C:\\Users\\5hz\\Desktop\\2_5_1_XY_Graph.opi");
 
@@ -56,7 +57,8 @@ public class ResourceUtilTest {
         final IFile file = folder.getFile("File.ext");
         if (! file.exists())
         {
-            final InputStream content = new ByteArrayInputStream("This is a test\n".getBytes());
+            final String text = TEST_MESSAGE + "\n";
+            final InputStream content = new ByteArrayInputStream(text.getBytes());
             file.create(content, true, new NullProgressMonitor());
         }
 
@@ -87,13 +89,14 @@ public class ResourceUtilTest {
         assertNotNull(stream);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         final String line = reader.readLine();
+        // Not checking content, but there should be at least one line of text on the web page
         System.out.println(line);
         assertNotNull(line);
         reader.close();
 
         // Missing workspace file
         path = new Path("Project/Folder/NoSuchFile.xyz");
-        System.out.println("Workspace path: " + path);
+        System.out.println("Bad Workspace path: " + path);
         try
         {
             ResourceUtil.pathToInputStream(path);
@@ -101,11 +104,28 @@ public class ResourceUtilTest {
         }
         catch (Exception ex)
         {
-            System.out.println(ex.getMessage());
+            final String message = ex.getMessage();
+            System.out.println(message);
+            assertTrue(message.contains("Cannot open"));
+            assertTrue(message.contains(path.toString()));
+            assertTrue(message.contains("No such file"));
         }
 
-        // Cleanup
-        // project.delete(true, new NullProgressMonitor());
+        // URL to non-existing resource
+        path = new Path("http://localhost/Folder/NoSuchFile.xyz");
+        System.out.println("Bad URL: " + path);
+        try
+        {
+            ResourceUtil.pathToInputStream(path);
+            fail("Found missing file?");
+        }
+        catch (Exception ex)
+        {
+            final String message = ex.getMessage();
+            System.out.println(message);
+            assertTrue(message.contains("Cannot open"));
+            assertTrue(message.contains("localhost/Folder/NoSuchFile.xyz"));
+        }
 	}
 
 	/** Check content of test file */
@@ -115,7 +135,7 @@ public class ResourceUtilTest {
         final String line = reader.readLine();
         System.out.println(line);
         // Note: reads line without trailing "\n"
-        assertEquals(line, "This is a test");
+        assertEquals(line, TEST_MESSAGE);
         reader.close();
     }
 
