@@ -30,7 +30,7 @@ public class ArchiveGroup
      *  Using thread-safe array to allow HTTPD as well as main
      *  thread to traverse
      */
-    private final ConcurrentMap<String, ArchiveChannel<?>> _channelMap;
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
     
     /** (At most) one of the channels might be 'enabling' or 'disabling' */
 //    private ArchiveChannel enabling_channel = null;
@@ -65,7 +65,7 @@ public class ArchiveGroup
      *  @exception When trying to add multiple enabling channels
      */
     @SuppressWarnings("nls")
-    final void add(final ArchiveChannel<?> channel) throws Exception
+    final void add(final ArchiveChannel<?, ?> channel) throws Exception
     {
         if (is_running)
             throw new Error("Running"); //$NON-NLS-1$
@@ -84,7 +84,7 @@ public class ArchiveGroup
     }
 
     /** Remove channel from group */
-    final void remove(final ArchiveChannel<?> channel)
+    final void remove(final ArchiveChannel<?, ?> channel)
     {
         if (is_running)
             throw new Error("Running"); //$NON-NLS-1$
@@ -115,7 +115,7 @@ public class ArchiveGroup
 	 *  @return Channel or <code>null</code>s
 	 */
     @CheckForNull
-    public final ArchiveChannel<?> findChannel(@Nonnull final String name) {
+    public final ArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
         return _channelMap.get(name);
 	}
 
@@ -141,7 +141,7 @@ public class ArchiveGroup
 //        if (enabling_channel != null  &&
 //            enabling_channel.getEnablement() == Enablement.Enabling)
 //            enable(false);
-        for (ArchiveChannel<?> channel : _channelMap.values()) {
+        for (ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.start();
         }
     }
@@ -152,7 +152,7 @@ public class ArchiveGroup
         if (!is_running)
         	return;
         is_running = false;
-        for (ArchiveChannel<?> channel : _channelMap.values())
+        for (ArchiveChannel<?, ?> channel : _channelMap.values())
             channel.stop();
     }
 
@@ -171,7 +171,7 @@ public class ArchiveGroup
     }
 
     @Nonnull
-    public Collection<ArchiveChannel<?>>getChannels() {
+    public Collection<ArchiveChannel<?, ?>>getChannels() {
         return _channelMap.values();
     }
 }

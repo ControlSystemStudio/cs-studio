@@ -18,6 +18,7 @@ import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -30,11 +31,10 @@ import com.google.common.collect.MapMaker;
 /** Data model of the archive engine.
  *  @author Kay Kasemir
  */
-public class EngineModel
-{
-    private static final Logger LOG = 
+public class EngineModel {
+    private static final Logger LOG =
         CentralLogger.getInstance().getLogger(EngineModel.class);
-    
+
     /** Version code. See also webroot/version.html */
     final public static String VERSION = "1.2.3"; //$NON-NLS-1$
 
@@ -43,11 +43,11 @@ public class EngineModel
 
     /** Thread that writes to the <code>archive</code> */
     final private WriteThread _writeThread;
-    
-    /** 
+
+    /**
      * All channels
      */
-    final ConcurrentMap<String, ArchiveChannel<?>> _channelMap;
+    final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Groups of archived channels
      *  <p>
@@ -99,11 +99,11 @@ public class EngineModel
      */
     public EngineModel()
         throws OsgiServiceUnavailableException, ArchiveConnectionException {
-        
+
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
-        
-        
+
+
         applyPreferences();
 
         _writeThread = new WriteThread();
@@ -160,18 +160,16 @@ public class EngineModel
         return start_time;
     }
 
-    /** 
+    /**
      *  Add new group if not already exists.
-     * 
+     *
      *  @param name Name of the group to find or add.
      *  @return ArchiveGroup
-     *  @throws Exception on error (wrong state)
      */
-    public final void addGroup(final String name) throws Exception {
-        if (state != State.IDLE) {
-            throw new Exception("Cannot add group while " + state); //$NON-NLS-1$
-        }
-        _groupMap.putIfAbsent(name, new ArchiveGroup(name));
+    private final ArchiveGroup addGroup(final IArchiveChannelGroup groupCfg) {
+        final String groupName = groupCfg.getName();
+        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName, groupCfg.getId().longValue()));
+        return _groupMap.get(groupName);
     }
 
     /** @return Number of groups */
@@ -192,16 +190,16 @@ public class EngineModel
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final public ArchiveChannel<?> getChannel(final String name) {
+    final public ArchiveChannel<?, ?> getChannel(final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final public Collection<ArchiveChannel<?>> getChannels() {
+    final public Collection<ArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
-    
-    
+
+
 
 
     /** Start processing all channels and writing to archive. */
@@ -271,7 +269,7 @@ public class EngineModel
         //scanner.reset();
         synchronized (this)
         {
-            for (final ArchiveChannel<?> channel : _channelMap.values()) {
+            for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
                 channel.reset();
             }
         }
@@ -332,9 +330,7 @@ public class EngineModel
         final Collection<IArchiveChannelGroup> groups = service.getGroupsForEngine(engine.getId());
 
         for (final IArchiveChannelGroup groupCfg : groups) {
-            final String groupName = groupCfg.getName();
-            _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
-            ArchiveGroup group = _groupMap.get(groupName);
+            final ArchiveGroup group = addGroup(groupCfg);
 
             // Add channels to group
             final Collection<IArchiveChannel> channelCfgs =
@@ -342,13 +338,13 @@ public class EngineModel
 
             for (final IArchiveChannel channelCfg : channelCfgs) {
 
-                ArchiveChannel<?> channel = ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
-                
+                final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel = ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+                _writeThread.addChannel(channel);
+
                 _channelMap.putIfAbsent(channel.getName(), channel);
                 group.add(channel);
             }
         }
-        _writeThread.addChannels(_channelMap.values());
     }
 
     /** Remove all channels and groups. */
@@ -368,7 +364,7 @@ public class EngineModel
     public void dumpDebugInfo()
     {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (ArchiveChannel<?> channel : _channelMap.values()) {
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
             for (int i=0; i<channel.getGroupCount(); ++i)
@@ -393,7 +389,7 @@ public class EngineModel
     public Collection<ArchiveGroup> getGroups() {
         return _groupMap.values();
     }
-    
+
 
 //  /** Add a channel to the engine under given group.
 //   *  @param channelName Channel name
@@ -455,7 +451,7 @@ public class EngineModel
 //            // Create fake string sample with that time
 //            last_sample = ValueFactory.createStringValue(last_stamp,
 //                                                         ValueFactory.createOKSeverity(),
-//                                                         "", 
+//                                                         "",
 //                                                         IValue.Quality.Original,
 //                                                         new String [] { "Last timestamp in archive" });
 //        }
@@ -475,11 +471,11 @@ public class EngineModel
 //                  channel = new DeltaArchiveChannel(channelName, enablement,
 //                          buffer_capacity, last_sample, period, sample_val);
 //              } else {
-          
-//          
-//                  channel = new MonitoredArchiveChannel<T>(channelName, 
+
+//
+//                  channel = new MonitoredArchiveChannel<T>(channelName,
 //                                                        enablement,
-//                                                        buffer_capacity, 
+//                                                        buffer_capacity,
 //                                                        last_sample,
 //                                                        period);
 ////              }

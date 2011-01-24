@@ -34,7 +34,7 @@ class ChannelListResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -46,7 +46,7 @@ class ChannelListResponse extends AbstractResponse
             return;
         }
         final Pattern pattern = Pattern.compile(name);
-        
+
         // HTML table similar to group's list of channels
         final HTMLWriter html =
             new HTMLWriter(resp, "Archive Channels for pattern '" + name + "'");
@@ -62,13 +62,14 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_CurrentValue,
             Messages.HTTP_LastArchivedValue,
         });
-       
-        for (ArchiveChannel<?> channel : model.getChannels()) {
+
+        for (final ArchiveChannel<?,?> channel : model.getChannels()) {
             // Filter by channel name pattern
-            if (!pattern.matcher(channel.getName()).matches())
+            if (!pattern.matcher(channel.getName()).matches()) {
                 continue;
+            }
             final List<String> groupNamesWithLinks = new ArrayList<String>();
-            for (ArchiveGroup group : channel.getGroups()) {
+            for (final ArchiveGroup group : channel.getGroups()) {
                 groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
             }
             html.tableLine(new String[]
@@ -82,7 +83,7 @@ class ChannelListResponse extends AbstractResponse
                                                            channel.getInternalState(),
                                                            channel.getMechanism(),
                                                            channel.isEnabled()
-                                                           ? Messages.HTTP_Enabled 
+                                                           ? Messages.HTTP_Enabled
                                                            : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
                                                            channel.getCurrentValue(),
                                                            channel.getLastArchivedValue(),

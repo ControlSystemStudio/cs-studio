@@ -28,7 +28,7 @@ import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
-import org.csstudio.archive.common.service.sample.ArchiveSampleDTO;
+import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -122,6 +122,6 @@ public enum ArchiveEngineAdapter {
             return null;
         }
 
-        return new ArchiveSampleDTO<V, T, EpicsAlarm>(id, data, data.getTimestamp(), (EpicsAlarm) data.getAlarm());
+        return new ArchiveSample<V, T, EpicsAlarm>(id, data, data.getTimestamp(), (EpicsAlarm) data.getAlarm());
     }
 }

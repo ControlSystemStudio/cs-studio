@@ -47,7 +47,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
@@ -138,8 +138,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <T extends ICssValueType<?> & IHasAlarm>
-    void createSamples(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException {
+    public <V, T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
         Statement stmt = null;
@@ -167,18 +167,19 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <T extends ICssValueType<?> & IHasAlarm>
-        Statement composeStatements(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+    private <V, T extends ICssValueType<V> & IHasAlarm>
+        Statement composeStatements(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
-        for (final IArchiveSample<T, EpicsAlarm> sample : samples) {
+        for (final IArchiveSample2<V, T> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
-            final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status?
-            final TimeInstant timestamp = sample.getTimestamp();
+            final T data = sample.getData();
+            final EpicsAlarm alarm = (EpicsAlarm) data.getAlarm(); // FIXME (bknerr) : how to cope with alarms that don't have severities and status?
+            final TimeInstant timestamp = data.getTimestamp();
 
             final ArchiveSeverityId sevId =
                 getDaoMgr().getSeverityDao().retrieveSeverityId(alarm.getSeverity());
@@ -191,7 +192,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 // FIXME (bknerr) : what to do with the sample? archive/log/backup?
             } else {
                 // the VALUES (...) component for the standard sample table
-                final T data = sample.getData();
                 values.add(createSampleValueStmtStr(channelId,
                                                     sevId,
                                                     statusId,

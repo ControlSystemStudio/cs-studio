@@ -149,7 +149,17 @@ public abstract class TypeSupport<T> {
         return support;
     }
     
-    
+    /**
+     * Tries to create a {@link Class<?>} object for the given dataType string, iteratively 
+     * over the given array of package names.
+     * This method does not propagate a ClassNotFoundException but return <code>null</code>, if
+     * class creation is not possible.
+     * 
+     * @param <T>
+     * @param datatype the name of the class
+     * @param packages the array of package names to try
+     * @return a {@link Class} object or <code>null</code>.
+     */
     @SuppressWarnings("unchecked")
     @CheckForNull
     public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype, 
@@ -168,6 +178,17 @@ public abstract class TypeSupport<T> {
         return typeClass;
     }
 
+    /**
+     * Tries to create a {@link Class} object for the element type for a generic {@link Collection}, 
+     * such as "Set&lt;Byte&gt;" as {@param datatype} shall return Class&lt;Byte&gt;.<br/>
+     * Recognized patterns for collection describing strings are Collection<*>, List<*>, Set<*>, and 
+     * Vector<*>
+     * 
+     * @param <T>
+     * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
+     * @param packages the packages to try for the element type, e.g. typically "java.lang".
+     * @return the class object or <code>null</code>
+     */
     @CheckForNull
     public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype, 
                                                                     @Nonnull final String... packages) {
@@ -182,5 +203,4 @@ public abstract class TypeSupport<T> {
     
     @Nonnull
     public abstract Class<? extends TypeSupport<T>> getTypeSupportFamily();
-
 }

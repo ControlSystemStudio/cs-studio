@@ -12,7 +12,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Level;
 import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
@@ -24,18 +26,18 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *
  *  @author Kay Kasemir
  */
-public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<T>>
+public class SampleBuffer<V,
+                          T extends ICssValueType<V> & IHasAlarm,
+                          S extends IArchiveSample2<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
      *  to decouple stuff).
      */
-    final private String channel_name;
+    final private String channelName;
 
     /** The actual samples in a thread-save queue. */
-//    final private RingBuffer<IValue> samples;
-    private final BlockingQueue<ICssAlarmValueType<T>> samples;
-//    private final int capacity;
+    private final BlockingQueue<S> _samples;
 
     /** Statistics */
     final private BufferStats stats = new BufferStats();
@@ -53,20 +55,17 @@ public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<
     private static volatile boolean error = false;
 
     /** Create sample buffer of given capacity */
-    SampleBuffer(final String channel_name/*, final int cap */)
-    {
+    SampleBuffer(final String channel_name/*, final int cap */) {
         super();
 
-        this.channel_name = channel_name;
-        //samples = new RingBuffer<IValue>(capacity);
-        //capacity = cap;
-        samples = new LinkedBlockingQueue<ICssAlarmValueType<T>>(); // step by step to a producer consumer pattern
+        this.channelName = channel_name;
+        _samples = new LinkedBlockingQueue<S>(); // step by step to a producer consumer pattern
     }
 
     /** @return channel name of this buffer */
     String getChannelName()
     {
-        return channel_name;
+        return channelName;
     }
 
     /** @return Queue capacity, i.e. maximum queue size. */
@@ -91,9 +90,9 @@ public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<
     /** Add a sample to the queue, maybe dropping older samples */
     @Override
     @SuppressWarnings("nls")
-    public boolean add(final ICssAlarmValueType<T> value)
+    public boolean add(final S value)
     {
-    	synchronized (samples)
+    	synchronized (_samples)
         {
     	    //if (samples.isFull())
     	    if (!super.offer(value)) // is full, value not appended to queue
@@ -112,7 +111,7 @@ public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<
             else if (start_of_overruns != null)
             {   // Ending a string of overruns. Maybe log it.
                 final int overruns = stats.getOverruns() - start_of_overruns;
-                overrun_msg.log(channel_name + ": " + overruns + " overruns");
+                overrun_msg.log(channelName + ": " + overruns + " overruns");
                 start_of_overruns = null;
             }
         }
@@ -144,7 +143,7 @@ public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<
     {
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
-            channel_name,
+            channelName,
             super.size(),
             stats.getMaxSize(),
             stats.getAverageSize(),
@@ -155,7 +154,7 @@ public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<
      * {@inheritDoc}
      */
     @Override
-    protected BlockingQueue<ICssAlarmValueType<T>> delegate() {
-        return samples;
+    protected BlockingQueue<S> delegate() {
+        return _samples;
     }
 }
