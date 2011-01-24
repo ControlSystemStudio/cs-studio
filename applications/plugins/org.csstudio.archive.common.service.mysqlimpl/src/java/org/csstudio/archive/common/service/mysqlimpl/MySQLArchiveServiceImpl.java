@@ -46,6 +46,7 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapte
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
@@ -98,7 +99,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
         /**
          * Constructor.
          */
@@ -107,9 +108,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> from) {
+         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> from) {
              try {
                  // TODO (bknerr) : support lookup for every single value... check performance
+                 Object min = from.getMinimum();
+                 Object max = from.getMaximum();
+                 if (min != null && max != null) {
+                     return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
+                 }
                 return EpicsCssValueTypeSupport.toIValue(from.getData());
             } catch (final TypeSupportException e) {
                 return null;
@@ -359,7 +365,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> samples =
+            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> samples =
                 DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
 
             final Iterable<IValue> iValues =

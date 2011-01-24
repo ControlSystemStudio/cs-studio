@@ -46,7 +46,11 @@ public class RhinoScriptStore {
 	
 	private boolean errorInScript;
 
-	private Map<PV, Boolean> pvConnectStatusMap;	
+	
+	/**
+	 * A map to see if a PV was triggered before, this is used to skip the first trigger.
+	 */
+	private Map<PV, Boolean> pvTriggeredMap;	
 	
 	private boolean triggerSuppressed = false; 
 	
@@ -87,7 +91,7 @@ public class RhinoScriptStore {
 		
 		
 		pvListenerMap = new HashMap<PV, PVListener>();		
-		pvConnectStatusMap = new HashMap<PV, Boolean>();
+		pvTriggeredMap = new HashMap<PV, Boolean>();
 		
 		//register pv listener
 		int i=0;
@@ -95,6 +99,7 @@ public class RhinoScriptStore {
 			if(pv == null)
 				continue;	
 			if(!scriptData.getPVList().get(i++).trigger){
+				//execute the script if it was suppressed.
 				pv.addListener(new PVListener() {
 					
 					@Override
@@ -112,42 +117,29 @@ public class RhinoScriptStore {
 				});
 				continue;
 			};
-			pvConnectStatusMap.put(pv, true);
+			pvTriggeredMap.put(pv, false);
 			PVListener triggerPVListener = new PVListener() {			
 				public synchronized void pvValueUpdate(PV pv) {
-					//if pv connection is restored from connection
-					if(!pvConnectStatusMap.get(pv)){
-						ConsoleService.getInstance().writeInfo(
-								NLS.bind("Connection to PV {0} restored.", pv.getName()));
-						pvConnectStatusMap.put(pv, true);
+					
+					//skip the first trigger if it is needed.
+					if(scriptData.isSkipPVsFirstConnection() && !pvTriggeredMap.get(pv)){
+						pvTriggeredMap.put(pv, true);
+						return;
 					}
 					
 					//execute script only if all input pvs are connected
 					if(pvArray.length > 1){
 						if(!checkPVsConnected(scriptData, pvArray)){
 								triggerSuppressed = true;
-//								String message = NLS.bind(
-//										"{0} did not executed because the input PV: {1} is disconnected", 
-//										errorSource, pv2.getName());
-//								ConsoleService.getInstance().writeWarning(message);
 								return;
 							
 						}					
 					}
-					
+										
 					executeScript();
 				}
 				
-				public void pvDisconnected(PV pv) {
-					if(pv.isRunning()){
-						pvConnectStatusMap.put(pv, false);
-						String message = NLS.bind(
-								"The PV: {0} which is one of the inputs of the script or rule: {1} is disconnected.", 
-								pv.getName(), errorSource);
-						ConsoleService.getInstance().writeWarning(message);
-					}
-					
-				}
+				public void pvDisconnected(PV pv) {	}
 			};
 			pvListenerMap.put(pv, triggerPVListener);
 			pv.addListener(triggerPVListener);
@@ -182,15 +174,6 @@ public class RhinoScriptStore {
 		return true;
 		
 	}
-	
-	public void dispose() {
-		for(PV pv : pvListenerMap.keySet()){
-			pv.removeListener(pvListenerMap.get(pv));
-		}
-		pvListenerMap.clear();
-		pvConnectStatusMap.clear();
-	}
-	
 	
 	
 	

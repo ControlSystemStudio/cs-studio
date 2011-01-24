@@ -16,10 +16,10 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * Open a db2 trend in a shell. Most parts are from class {@link DataBrowserEditor}
- * from Kay Kasemir. 
- * 
+ * from Kay Kasemir.
+ *
  * TODO: Error handling, add context menu, ...
- * 
+ *
  * @author jhatje
  * @author $Author: jhatje $
  * @version $Revision: 1.7 $
@@ -54,17 +54,17 @@ public class DB2Shell {
             	CentralLogger.getInstance().error(this, "Error reading file");
             }
         }
-        
+
         // Create GUI elements (Plot)
         GridLayout layout = new GridLayout();
 		_shell.setLayout(layout);
-        
+
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(_shell, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        Plot plot = new Plot(plot_box);
-        
+        Plot plot = Plot.forCanvas(plot_box);
+
         // Create and start controller
         Controller controller = new Controller(_shell, model, plot);
         try
@@ -84,5 +84,5 @@ public class DB2Shell {
 
 	}
 
-	
+
 }

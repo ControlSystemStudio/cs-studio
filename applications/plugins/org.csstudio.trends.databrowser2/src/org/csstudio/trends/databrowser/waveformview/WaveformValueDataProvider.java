@@ -24,7 +24,7 @@ public class WaveformValueDataProvider implements IDataProvider
 {
     final private ArrayList<IDataProviderListener> listeners =
         new ArrayList<IDataProviderListener>();
-    
+
     private IValue value = null;
 
     /** Update the waveform value.
@@ -37,8 +37,9 @@ public class WaveformValueDataProvider implements IDataProvider
         for (IDataProviderListener listener : listeners)
             listener.dataChanged(this);
     }
-    
+
      /** {@inheritDoc} */
+    @Override
     public int getSize()
     {
         if (value == null)
@@ -47,6 +48,7 @@ public class WaveformValueDataProvider implements IDataProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public ISample getSample(final int index)
     {
         if (value.getSeverity().hasValue())
@@ -55,6 +57,7 @@ public class WaveformValueDataProvider implements IDataProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public Range getXDataMinMax()
     {
         if (value == null)
@@ -63,6 +66,7 @@ public class WaveformValueDataProvider implements IDataProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public Range getYDataMinMax()
     {
         if (value == null)
@@ -81,18 +85,21 @@ public class WaveformValueDataProvider implements IDataProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isChronological()
     {   // x range is [0..waveform size]
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addDataProviderListener(final IDataProviderListener listener)
     {
         listeners.add(listener);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean removeDataProviderListener(final IDataProviderListener listener)
     {
         return listeners.remove(listener);

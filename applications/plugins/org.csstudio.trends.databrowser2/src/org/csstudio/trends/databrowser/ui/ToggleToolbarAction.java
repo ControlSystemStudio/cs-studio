@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
-import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.eclipse.jface.action.Action;
@@ -17,9 +16,9 @@ import org.eclipse.jface.action.Action;
  */
 public class ToggleToolbarAction extends Action
 {
-    final private ToolbarArmedXYGraph plot;
+    final private Plot plot;
 
-    public ToggleToolbarAction(final ToolbarArmedXYGraph plot)
+    public ToggleToolbarAction(final Plot plot)
     {
         super(Messages.Toolbar_Hide,
               Activator.getDefault().getImageDescriptor("icons/toolbar.gif")); //$NON-NLS-1$
@@ -29,14 +28,14 @@ public class ToggleToolbarAction extends Action
     @Override
     public void run()
     {
-        if (plot.isShowToolbar())
+        if (plot.isToolbarVisible())
         {
-            plot.setShowToolbar(false);
+            plot.setToolbarVisible(false);
             setText(Messages.Toolbar_Show);
         }
         else
         {
-            plot.setShowToolbar(true);
+            plot.setToolbarVisible(true);
             setText(Messages.Toolbar_Hide);
         }
     }

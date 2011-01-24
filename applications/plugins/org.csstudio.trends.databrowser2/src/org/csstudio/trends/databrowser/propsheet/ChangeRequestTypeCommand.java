@@ -37,17 +37,19 @@ public class ChangeRequestTypeCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setRequestType(new_request_type);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setRequestType(old_request_type);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

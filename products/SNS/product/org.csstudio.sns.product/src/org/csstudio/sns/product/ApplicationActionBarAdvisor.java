@@ -2,10 +2,10 @@ package org.csstudio.sns.product;
 
 import java.util.ArrayList;
 
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.actions.LogoutAction;
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -55,7 +55,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
 	/** ID of CSS SNS Menu */
     private static final String CSS_MENU_WEB = "web"; //$NON-NLS-1$
-    
+
     //File menu
     private IAction create_new;
     private IAction close;
@@ -67,7 +67,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction exportAction;
     private IAction logout;
     private IAction quit;
-    
+
     //Edit menu
     private IAction undo;
     private IAction redo;
@@ -77,7 +77,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction delete;
     private IAction selectAll;
     private IAction findReplace;
-    
+
     private IAction new_window;
     private IContributionItem open_windows;
     private IAction intro;
@@ -86,7 +86,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IContributionItem menu_perspectives;
     private IContributionItem recent_files;
     private IContributionItem menu_views;
-    
+
     /**
      * The coolbar context menu manager.
      * @since 2.2.1
@@ -114,80 +114,80 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 		//File menu
         create_new = ActionFactory.NEW.create(window);
         register(create_new);
-        
+
         close = ActionFactory.CLOSE.create(window);
         register(close);
-        
+
         close_all = ActionFactory.CLOSE_ALL.create(window);
         register(close_all);
-        
+
         save = ActionFactory.SAVE.create(window);
         register(save);
-        
+
         save_as = ActionFactory.SAVE_AS.create(window);
         register(save_as);
-        
+
         save_all = ActionFactory.SAVE_ALL .create(window);
         register(save_all);
-        
+
         importAction = ActionFactory.IMPORT.create(window);
         register(importAction);
-        
+
         exportAction = ActionFactory.EXPORT.create(window);
         register(exportAction);
-        
+
         logout = new LogoutAction(window);
         register(logout);
-        
+
         quit = ActionFactory.QUIT.create(window);
         register(quit);
-        
+
         //Edit menu
         undo = ActionFactory.UNDO.create(window);
         register(undo);
-        
+
         redo = ActionFactory.REDO.create(window);
         register(redo);
-        
+
         cut = ActionFactory.CUT.create(window);
         register(cut);
-        
+
         copy = ActionFactory.COPY.create(window);
         register(copy);
-        
+
         paste = ActionFactory.PASTE.create(window);
         register(paste);
-        
+
         delete = ActionFactory.DELETE.create(window);
         register(delete);
-        
+
         selectAll = ActionFactory.SELECT_ALL.create(window);
         register(selectAll);
-        
+
         findReplace = ActionFactory.FIND.create(window);
         register(findReplace);
-                
+
         new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(new_window);
-        
+
         lockToolBarAction = ActionFactory.LOCK_TOOL_BAR.create(window);
         register(lockToolBarAction);
-        
+
         editActionSetAction = ActionFactory.EDIT_ACTION_SETS
         .create(window);
         register(editActionSetAction);
-        
+
         open_windows = ContributionItemFactory.OPEN_WINDOWS.create(window);
-        
+
         menu_perspectives =
             ContributionItemFactory.PERSPECTIVES_SHORTLIST.create(window);
         menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 
         recent_files = new ReopenEditorMenu(window, "reopenEditors", false); //$NON-NLS-1$
-        //Following is the standard way to create this menu, but it 
-        //will create a separator before the menu. 
+        //Following is the standard way to create this menu, but it
+        //will create a separator before the menu.
         //ContributionItemFactory.REOPEN_EDITORS.create(window);
-        
+
         if (window.getWorkbench().getIntroManager().hasIntro())
         {
             intro = ActionFactory.INTRO.create(window);
@@ -195,14 +195,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         }
         else
             System.out.println("There is no Intro: Check for org.eclipse.ui.intro.univeral"); //$NON-NLS-1$
-        
+
         help = ActionFactory.HELP_CONTENTS.create(window);
         register(help);
 
         about = ActionFactory.ABOUT.create(window);
         about.setImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
         register(about);
-        
+
         createWeblinkActions(window);
     }
 
@@ -270,7 +270,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             new MenuManager(Messages.Menu_File, IWorkbenchActionConstants.M_FILE);
         // Markers allow other code to use MenuManager.appendToGroup(...)...
         menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-        
+
         final MenuManager new_sub =
             new MenuManager(Messages.Menu_New, ActionFactory.NEW.getId());
         new_sub.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -291,19 +291,19 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(MENU_WORKSPACE));
         menu_file.add(new Separator());
-        
+
         menu_file.add(new GroupMarker(RECENT_FILES));
         final MenuManager recentFilesSubMenu =	new MenuManager(Messages.Menu_File_Recent);
         recentFilesSubMenu.add(recent_files);
         menu_file.add(recentFilesSubMenu);
-        
+
         menu_file.add(new Separator());
         menu_file.add(new GroupMarker(MENU_TOOLBAR_LOGIN));
         menu_file.add(logout);
         menu_file.add(quit);
         menubar.add(menu_file);
     }
-    
+
     /** Create the file menu. */
     private void createEditMenu(IMenuManager menubar)
     {
@@ -311,7 +311,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             new MenuManager(Messages.Menu_Edit, IWorkbenchActionConstants.M_EDIT);
         // Markers allow other code to use MenuManager.appendToGroup(...)...
         menu_edit.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
-        
+
         menu_edit.add(undo);
         menu_edit.add(redo);
         menu_edit.add(new Separator());
@@ -326,7 +326,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menu_edit.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
         menu_edit.add(new Separator());
         menu_edit.add(findReplace);
-        menu_edit.add(new Separator());        
+        menu_edit.add(new Separator());
         menubar.add(menu_edit);
     }
 
@@ -375,11 +375,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             new MenuManager(Messages.Menu_Window, IWorkbenchActionConstants.M_WINDOW);
         menu_window.add(new_window);
         menu_window.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        
+
         final MenuManager persp_sub = new MenuManager(Messages.Menu_Perspectives);
         persp_sub.add(menu_perspectives);
         menu_window.add(persp_sub);
-    
+
         final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
         view_sub.add(menu_views);
         menu_window.add(view_sub);
@@ -425,20 +425,20 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
             menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
         }
-    	
+
         IToolBarManager file_bar = new ToolBarManager();
-        IToolBarManager user_bar = new ToolBarManager();   
+        IToolBarManager user_bar = new ToolBarManager();
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
         coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
-        
+
         file_bar.add(create_new);
-        file_bar.add(save);       
+        file_bar.add(save);
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
         file_bar.add(new Separator());
-        
+
         user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
         user_bar.add(logout);
-       
-    } 
-    
+
+    }
+
 }

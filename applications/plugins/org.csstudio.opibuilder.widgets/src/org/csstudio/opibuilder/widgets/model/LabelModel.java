@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
@@ -32,10 +31,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	public static final String PROP_ALIGN_H = "horizontal_alignment";	//$NON-NLS-1$
 	public static final String PROP_ALIGN_V = "vertical_alignment";	//$NON-NLS-1$
 	
-	
-	public static final String PROP_FONT= "font"; //$NON-NLS-1$
-
-	
 	protected boolean pvModel = false;
 	
 	public LabelModel() {
@@ -46,9 +41,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 
 	@Override
 	protected void configureProperties() {
-		
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, "Default")); //$NON-NLS-1$
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
 				WidgetPropertyCategory.Display, "double click to enter text", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
@@ -103,11 +95,6 @@ public class LabelModel extends AbstractPVWidgetModel {
 	
 	public boolean isAutoSize(){
 		return (Boolean)getCastedPropertyValue(PROP_AUTOSIZE);
-	}
-	
-	
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
 	}
 	
 	public void setFont(OPIFont font){

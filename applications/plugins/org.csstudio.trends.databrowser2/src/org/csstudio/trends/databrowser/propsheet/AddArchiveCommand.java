@@ -20,10 +20,10 @@ public class AddArchiveCommand implements IUndoableCommand
 {
     /** PVs on which to set archive data sources */
     final private PVItem pvs[];
-    
+
     /** Desired archives for all PVs */
     final private ArchiveDataSource archives[];
-    
+
     /** Original archives before add/replace */
     final private ArchiveDataSource original[][];
 
@@ -41,7 +41,7 @@ public class AddArchiveCommand implements IUndoableCommand
     {
         this(operations_manager, new PVItem[] { pv }, new ArchiveDataSource[] { archive }, false);
     }
-    
+
     /** Register and perform the command
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param pvs PVs where to add archives
@@ -63,6 +63,7 @@ public class AddArchiveCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         if (replace)
@@ -74,12 +75,13 @@ public class AddArchiveCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         for (int i=0; i<original.length; ++i)
             pvs[i].setArchiveDataSource(original[i]);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

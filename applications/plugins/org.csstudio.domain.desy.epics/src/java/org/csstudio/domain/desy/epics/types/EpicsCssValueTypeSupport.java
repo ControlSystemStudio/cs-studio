@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.AbstractTypeSupport;
@@ -70,7 +71,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssStringValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -108,7 +109,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssCollectionValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @SuppressWarnings("unchecked")
@@ -146,7 +147,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssByteValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -182,7 +183,16 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                   null,
                                                   Longs.toArray(longs));
         }
+
+        @Override
+        @Nonnull
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Byte> cssValue, 
+                                                     @Nonnull final Byte min, 
+                                                     @Nonnull final Byte max) throws TypeSupportException {
+            return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
+        }
     }
+   
 
     /**
      * @author bknerr
@@ -193,7 +203,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssLongValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -220,6 +230,14 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                 null,
                                                 null,
                                                 Longs.toArray(data));
+        }
+
+        @Override
+        @Nonnull
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Long> cssValue, 
+                                                     @Nonnull final Long min, 
+                                                     @Nonnull final Long max) throws TypeSupportException {
+            return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
         }
     }
 
@@ -268,6 +286,14 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                 null,
                                                 Longs.toArray(longs));
         }
+
+        @Override
+        @Nonnull
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Integer> cssValue, 
+                                                     @Nonnull final Integer min, 
+                                                     @Nonnull final Integer max) throws TypeSupportException {
+            return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
+        }
     }
 
     /**
@@ -279,7 +305,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
          * Constructor.
          */
         public CssDoubleValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -307,13 +333,21 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                   null,
                                                   Doubles.toArray(data));
         }
+
+        @Override
+        @Nonnull
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Double> cssValue, 
+                                                     @Nonnull final Double min, 
+                                                     @Nonnull final Double max) throws TypeSupportException {
+            return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
+        }
     }
     private static final class CssFloatValueTypeSupport extends EpicsCssValueTypeSupport<Float> {
         /**
          * Constructor.
          */
         public CssFloatValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -349,13 +383,21 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                   null,
                                                   Doubles.toArray(doubles));
         }
+
+        @Override
+        @Nonnull
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Float> cssValue, 
+                                                     @Nonnull final Float min, 
+                                                     @Nonnull final Float max) throws TypeSupportException {
+            return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
+        }
     }
     private static final class CssEpicsEnumValueTypeSupport extends EpicsCssValueTypeSupport<EpicsEnumTriple> {
         /**
          * Constructor.
          */
         public CssEpicsEnumValueTypeSupport() {
-            // TODO Auto-generated constructor stub
+            // EMPTY
         }
 
         @Override
@@ -422,15 +464,6 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
     }
 
     @CheckForNull
-    public static <T> EpicsCssValueTypeSupport<T> getTypeSupportFor(@Nonnull final Class<T> typeClass) {
-        try {
-            return (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        } catch (final TypeSupportException e) {
-            return null;
-        }
-    }
-
-    @CheckForNull
     public static <T> IValue toIValue(@Nonnull final ICssAlarmValueType<T> cssValue) throws TypeSupportException {
         final T valueData = cssValue.getValueData();
         @SuppressWarnings("unchecked")
@@ -441,6 +474,24 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         return support.convertToIValue(valueData, (EpicsAlarm) cssValue.getAlarm(), cssValue.getTimestamp());
     }
 
+    /**
+     * @param data
+     * @param min
+     * @param max
+     * @return
+     * @throws TypeSupportException 
+     */
+    public static <T> IValue toIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<T> cssValue,
+                                                  @Nonnull final T min,
+                                                  @Nonnull final T max) throws TypeSupportException {
+        final T valueData = cssValue.getValueData();
+        @SuppressWarnings("unchecked")
+        final Class<T> typeClass = (Class<T>) valueData.getClass();
+        final EpicsCssValueTypeSupport<T> support =
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
+        return support.convertToIMinMaxDoubleValue(cssValue, min, max);
+    }
 
     protected IValue toIValue(@Nonnull final Class<?> typeClass,
                               @Nonnull final Collection<T> data,
@@ -461,5 +512,29 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
     protected abstract IValue convertToIValue(@Nonnull final T data,
                                               @Nonnull final EpicsAlarm alarm,
                                               @Nonnull final TimeInstant timestamp) throws TypeSupportException;
+    @CheckForNull
+    protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<T> cssValue,
+                                                 @SuppressWarnings("unused") @Nonnull final T min,
+                                                 @SuppressWarnings("unused") @Nonnull final T max) throws TypeSupportException {
+        throw new TypeSupportException("Type " + cssValue.getValueData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
+    }
+
+    @Nonnull 
+    static IValue createMinMaxDoubleValueFromNumber(@Nonnull final TimeInstant timestamp,
+                                                            @Nonnull final IAlarm ialarm,
+                                                            @Nonnull final Number valueData,
+                                                            @Nonnull final Number min,
+                                                            @Nonnull final Number max) {
+        // TODO (bknerr) : well thats not quite right again, Epics specifics shouldn't be here
+        EpicsAlarm alarm = (EpicsAlarm) ialarm;
+        return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp), 
+                                                    EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
+                                                    alarm.getStatus().toString(),
+                                                    null,
+                                                    null,
+                                                    new double[]{ valueData.doubleValue() },
+                                                    min.doubleValue(),
+                                                    max.doubleValue());
+    }
 
 }

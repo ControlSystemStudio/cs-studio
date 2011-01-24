@@ -20,13 +20,13 @@ import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.ui.AddPVAction;
-import org.csstudio.trends.databrowser.ui.ColorRegistry;
 import org.csstudio.trends.databrowser.ui.StartEndTimeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -67,21 +67,21 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
  *  <b>Note about life cycle, at least under Eclipse 3.5.1:</b>
  *  When a Properties view is open and a DataBrowserEditor is selected,
  *  a corresponding DataBrowserPropertySheetPage is created.
- *  
+ *
  *  It stays around even after the Properties is closed or changed
  *  to another editor, presumably to allow RCP to quickly re-display
  *  the properties when the editor is again selected.
- *  
+ *
  *  The DataBrowserPropertySheetPage is only disposed after the associated
  *  DataBrowserEditor closes.
- *  
+ *
  *  Under some circumstances, the DataBrowserPropertySheetPage is even
  *  created for a closed-then-re-opened DataBrowserEditor while there is
  *  no visible Properties view.
- *  
+ *
  *  In summary, the 'Model' for this DataBrowserPropertySheetPage never changes.
  *  Each DataBrowserEditor.getAdapter will create a new DataBrowserPropertySheetPage.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class DataBrowserPropertySheetPage extends Page
@@ -89,13 +89,10 @@ public class DataBrowserPropertySheetPage extends Page
 {
     /** Model to display/edit in property sheet */
     final private Model model;
-    
+
     /** Undo/redo operations manager */
     final private OperationsManager operations_manager;
 
-    /** Color Registry for trace colors, ... */
-    private ColorRegistry color_registry;
-    
     /** Top-level control for the property sheet */
     private Composite control;
 
@@ -130,6 +127,7 @@ public class DataBrowserPropertySheetPage extends Page
     }
 
     /** {@inheritDoc} */
+    @Override
     public void selectionChanged(IWorkbenchPart part, ISelection selection)
     {
         // NOP. Seems not to get called
@@ -146,17 +144,16 @@ public class DataBrowserPropertySheetPage extends Page
     @Override
     public void createControl(final Composite parent)
     {
-        color_registry = new ColorRegistry(parent);
         control = new Composite(parent, 0);
         control.setLayout(new FillLayout());
-        
+
         // Tabs: Traces, Time Axis, ...
         final TabFolder tab_folder = new TabFolder(control, SWT.TOP);
         createTracesTab(tab_folder);
         createTimeAxisTab(tab_folder);
         createValueAxesTab(tab_folder);
         createMiscTab(tab_folder);
-        
+
         model.addListener(this);
     }
 
@@ -173,28 +170,29 @@ public class DataBrowserPropertySheetPage extends Page
      */
     private void createTracesTab(final TabFolder tabs)
     {
-        // TabItem with SashForm 
+        // TabItem with SashForm
         final TabItem tab = new TabItem(tabs, 0);
         tab.setText(Messages.TracesTab);
-        
+
         final SashForm sashform = new SashForm(tabs, SWT.VERTICAL | SWT.BORDER);
         sashform.setLayout(new FillLayout());
         tab.setControl(sashform);
-        
+
         createTracesTabItemPanel(sashform);
         createTracesMenuAndToolbarActions();
-        
+
         createTracesTabDetailPanel(sashform);
         createArchiveMenu();
-        
+
         trace_table.addSelectionChangedListener(new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
                 updateTracesTabDetailPanel();
             }
         });
-        
+
         sashform.setWeights(new int[] { 60, 40 });
     }
 
@@ -203,18 +201,20 @@ public class DataBrowserPropertySheetPage extends Page
      */
     private void createTracesTabItemPanel(final SashForm sashform)
     {
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
         final Composite model_item_top = new Composite(sashform, SWT.BORDER);
-        model_item_top.setLayout(new FillLayout());
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        model_item_top.setLayout(table_layout);
         trace_table = new TableViewer(model_item_top ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
         final Table table = trace_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
-        final TraceTableHandler tth = new TraceTableHandler(color_registry);
-        tth.createColumns(operations_manager, trace_table);
-        
+
+        final TraceTableHandler tth = new TraceTableHandler();
+        tth.createColumns(table_layout, operations_manager, trace_table);
+
         trace_table.setContentProvider(tth);
         trace_table.setInput(model);
     }
@@ -228,9 +228,9 @@ public class DataBrowserPropertySheetPage extends Page
     {
         final Composite item_detail_top = new Composite(sashform, SWT.BORDER);
         item_detail_top.setLayout(new FormLayout());
-        
+
         archive_panel = new Composite(item_detail_top, 0);
-        FormData fd = new FormData();      
+        FormData fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.top = new FormAttachment(0);
         fd.right = new FormAttachment(100);
@@ -240,37 +240,42 @@ public class DataBrowserPropertySheetPage extends Page
         Label l = new Label(archive_panel, 0);
         l.setText(Messages.ArchiveDataSources);
         l.setLayoutData(new GridData());
-        
-        archive_table = new TableViewer(archive_panel ,
+
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
+        final Composite table_parent = new Composite(archive_panel, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        archive_table = new TableViewer(table_parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
         final Table table = archive_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         final ArchivesTableHandler ath = new ArchivesTableHandler();
-        ath.createColumns(operations_manager, archive_table);
+        ath.createColumns(table_layout, operations_manager, archive_table);
         archive_table.setContentProvider(ath);
-        
+
         formula_panel = new Composite(item_detail_top, 0);
-        fd = new FormData();      
+        fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.top = new FormAttachment(0);
         fd.right = new FormAttachment(100);
         fd.bottom = new FormAttachment(100);
         formula_panel.setLayoutData(fd);
         formula_panel.setLayout(new GridLayout(2, false));
-    
+
         l = new Label(formula_panel, 0);
         l.setText(Messages.FormulaLabel);
         l.setLayoutData(new GridData());
-        
+
         formula_txt = new Text(formula_panel, SWT.READ_ONLY | SWT.BORDER);
         formula_txt.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         formula_txt.setToolTipText(Messages.FormulaLabelEditTT);
         formula_txt.addMouseListener(new MouseListener()
         {
+            @Override
             public void mouseDown(MouseEvent e)
             {
                 final Object item =
@@ -283,14 +288,16 @@ public class DataBrowserPropertySheetPage extends Page
                 dlg.open();
             }
 
+            @Override
             public void mouseUp(MouseEvent e) { /* NOP */ }
+            @Override
             public void mouseDoubleClick(MouseEvent e) { /* NOP */ }
         });
-        
+
         archive_panel.setVisible(false);
         formula_panel.setVisible(false);
     }
-    
+
     /** Update the lower 'detail' section of the "Traces" tab
      *  based on the currently selected item
      */
@@ -335,11 +342,13 @@ public class DataBrowserPropertySheetPage extends Page
         final DeleteItemsAction delete_pv = new DeleteItemsAction(operations_manager, trace_table, model);
         menu.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 menu.add(add_pv);
                 menu.add(add_formula);
                 menu.add(delete_pv);
+                menu.add(new RemoveUnusedAxesAction(operations_manager, model));
                 final PVItem pvs[] = getSelectedPVs();
                 if (pvs.length <= 0)
                     return;
@@ -352,7 +361,7 @@ public class DataBrowserPropertySheetPage extends Page
         table.setMenu(menu.createContextMenu(table));
         // Allow object contributions based on selected items
         getSite().registerContextMenu(menu.getId(), menu, trace_table);
-        
+
         // Add to tool bar
         final IToolBarManager toolbar = getSite().getActionBars().getToolBarManager();
         toolbar.add(add_pv);
@@ -369,20 +378,21 @@ public class DataBrowserPropertySheetPage extends Page
         menu.setRemoveAllWhenShown(true);
         menu.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 // Determine selected PV Items
                 final PVItem pvs[] = getSelectedPVs();
                 if (pvs.length <= 0)
                     return;
-                
+
                 menu.add(new AddArchiveAction(operations_manager, control.getShell(), pvs));
                 menu.add(new UseDefaultArchivesAction(operations_manager, pvs));
-                
+
                 // Only allow removal of archives from single PV
                 if (pvs.length != 1)
                     return;
-                
+
                 // Determine selected archives
                 final IStructuredSelection arch_sel =
                     (IStructuredSelection)archive_table.getSelection();
@@ -425,12 +435,12 @@ public class DataBrowserPropertySheetPage extends Page
 
         final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout(3, false));
-        
+
         // Start Time: ______ [...]
         Label label = new Label(parent, 0);
         label.setText(Messages.StartTimeLbl);
         label.setLayoutData(new GridData());
-        
+
         start_time = new Text(parent, SWT.BORDER);
         start_time.setToolTipText(Messages.StartTimeTT);
         start_time.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -439,12 +449,12 @@ public class DataBrowserPropertySheetPage extends Page
         start_end.setText(Messages.StartEndDialogBtn);
         start_end.setToolTipText(Messages.StartEndDialogTT);
         start_end.setLayoutData(new GridData());
-        
+
         // End Time:   ______ [...]
         label = new Label(parent, 0);
         label.setText(Messages.EndTimeLbl);
         label.setLayoutData(new GridData());
-        
+
         end_time = new Text(parent, SWT.BORDER);
         end_time.setToolTipText(Messages.EndTimeTT);
         end_time.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -453,12 +463,12 @@ public class DataBrowserPropertySheetPage extends Page
         start_end2.setText(Messages.StartEndDialogBtn);
         start_end2.setToolTipText(Messages.StartEndDialogTT);
         start_end2.setLayoutData(new GridData());
-        
+
         time_tab.setControl(parent);
-        
+
         // Initialize with model's current start/end time
         changedTimerange();
-        
+
         // Allow entry of start/end times in text boxes
         final SelectionAdapter times_entered = new SelectionAdapter()
         {
@@ -503,9 +513,9 @@ public class DataBrowserPropertySheetPage extends Page
         final TabItem axes_tab = new TabItem(tab_folder, 0);
         axes_tab.setText(Messages.ValueAxes);
 
-        final Composite parent = new Composite(tab_folder, SWT.BORDER);
+        final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout());
-        
+
         // Rescale options
         final Composite rescale = new Composite(parent, 0);
         rescale.setLayout(new RowLayout());
@@ -519,7 +529,7 @@ public class DataBrowserPropertySheetPage extends Page
             final ArchiveRescale item = rescale_items[i];
             if (item.ordinal() != i)
                 throw new Error("ArchiveRescale items out of order"); //$NON-NLS-1$
-            
+
             rescales[i] = new Button(rescale, SWT.RADIO);
             rescales[i].setText(item.toString());
             if (model.getArchiveRescale() == item)
@@ -539,13 +549,13 @@ public class DataBrowserPropertySheetPage extends Page
             });
         }
 
-        // Tab is filled with 'axes' table
-        final AxesTableHandler ath = new AxesTableHandler(color_registry,
-                parent, operations_manager);
+        // TableColumnLayout requires the TableViewer to be in its own Composite!
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        final AxesTableHandler ath = new AxesTableHandler(table_parent, table_layout, operations_manager);
         ath.getAxesTable().setInput(model);
-        // Unclear: When setting the layout data inside AxesTableHandler(),
-        // the whole 'parent' didn't show up?!
-        ath.getAxesTable().getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         axes_tab.setControl(parent);
     }
@@ -557,15 +567,15 @@ public class DataBrowserPropertySheetPage extends Page
     {
         final TabItem misc_tab = new TabItem(tab_folder, 0);
         misc_tab.setText("Misc."); //$NON-NLS-1$
-        
+
         final Composite parent = new Composite(tab_folder, 0);
         parent.setLayout(new GridLayout(2, false));
-        
+
         // Redraw period: ______
         Label label = new Label(parent, 0);
         label.setText(Messages.UpdatePeriodLbl);
         label.setLayoutData(new GridData());
-        
+
         update_period = new Text(parent, SWT.BORDER);
         update_period.setText(Double.toString(model.getUpdatePeriod()));
         update_period.setToolTipText(Messages.UpdatePeriodTT);
@@ -591,7 +601,7 @@ public class DataBrowserPropertySheetPage extends Page
         label = new Label(parent, 0);
         label.setText(Messages.BackgroundColorLbl);
         label.setLayoutData(new GridData());
-        
+
         background = new ColorBlob(parent, model.getPlotBackground());
         background.setToolTipText(Messages.BackgroundColorTT);
         final GridData gd = new GridData();
@@ -611,10 +621,10 @@ public class DataBrowserPropertySheetPage extends Page
                     new ChangePlotBackgroundCommand(model, operations_manager, value);
             }
         });
-        
+
         misc_tab.setControl(parent);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setFocus()
@@ -623,12 +633,14 @@ public class DataBrowserPropertySheetPage extends Page
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedUpdatePeriod()
     {
         update_period.setText(Double.toString(model.getUpdatePeriod()));
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void changedArchiveRescale()
     {
         final int selected = model.getArchiveRescale().ordinal();
@@ -641,6 +653,7 @@ public class DataBrowserPropertySheetPage extends Page
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedColors()
     {
         background.setColor(model.getPlotBackground());
@@ -649,6 +662,7 @@ public class DataBrowserPropertySheetPage extends Page
     /** Update the start/end time in the Time axis panel when model changes
      *  {@inheritDoc}
      */
+    @Override
     public void changedTimerange()
     {
         start_time.setText(model.getStartSpecification());
@@ -656,42 +670,49 @@ public class DataBrowserPropertySheetPage extends Page
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedAxis(final AxisConfig axis)
     {
         // Axes Table handles this
     }
 
     /** {@inheritDoc} */
+    @Override
     public void itemAdded(final ModelItem item)
     {
-        // Trace Table handles it     
+        // Trace Table handles it
     }
 
     /** {@inheritDoc} */
+    @Override
     public void itemRemoved(final ModelItem item)
     {
-        // Trace Table handles it     
+        // Trace Table handles it
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedItemVisibility(final ModelItem item)
     {
-        // Trace Table handles it     
+        // Trace Table handles it
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedItemLook(final ModelItem item)
     {
         updateTracesTabDetailPanel();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void changedItemDataConfig(final PVItem item)
     {
         updateTracesTabDetailPanel();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void scrollEnabled(final boolean scroll_enabled)
     {
         changedTimerange();

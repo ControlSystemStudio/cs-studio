@@ -153,7 +153,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
 	}
 	
-	public OPIFont getFont(){
+	public OPIFont getScaleFont(){
 		return (OPIFont)getCastedPropertyValue(PROP_SCALE_FONT);
 	}
 	

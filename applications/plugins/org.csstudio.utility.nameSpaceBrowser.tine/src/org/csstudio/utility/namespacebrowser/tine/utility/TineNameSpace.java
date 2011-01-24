@@ -28,8 +28,8 @@ package org.csstudio.utility.namespacebrowser.tine.utility;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespacebrowser.tine.Activator;
 import org.csstudio.utility.namespacebrowser.tine.Messages;
-import org.csstudio.utility.tine.reader.NameSpaceResultListTine;
 import org.csstudio.utility.tine.reader.TineReader;
+import org.csstudio.utility.tine.reader.TineSearchResult;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
@@ -39,33 +39,43 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  * @version $Revision$
  * @since 07.05.2007
  */
-public class NameSpaceTine extends NameSpace {
+public class TineNameSpace extends NameSpace {
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
-	 */
-//	@Override
+    private TineSearchResult _searchResult = new TineSearchResult();
+    
+    private TineReader _reader = null;
+    
+    volatile boolean _cancelled = false;
+    
+    /**
+     * Constructor.
+     */
+    public TineNameSpace() {
+        // Empty
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
 	public void start() {
-        try{
-            TineReader tineReader;
-            if (getNameSpaceResultList() instanceof NameSpaceResultListTine) {
-                final NameSpaceResultListTine eListe = (NameSpaceResultListTine) getNameSpaceResultList();
-//                String tmp = getSelection();
-//                if(tmp.endsWith("=*,")) //$NON-NLS-1$
-//                    tineReader = new TineReader(getName(), getFilter(),SearchControls.SUBTREE_SCOPE, eListe);
-//                else
-//                    tineReader = new TineReader(getName(), eListe);
-                tineReader = new TineReader(getName(), getFilter(), eListe);
-                tineReader.addJobChangeListener(new JobChangeAdapter() {
+	    _cancelled = false;
+        try {
+            if (getSearchResult() instanceof TineSearchResult) {
+                final TineSearchResult searchResult = (TineSearchResult) getSearchResult();
+
+                _reader = new TineReader(getName(), getFilter(), searchResult);
+                _reader.addJobChangeListener(new JobChangeAdapter() {
+                    @Override
                     public void done(final IJobChangeEvent event) {
-                        if (event.getResult().isOK()) {
-                            getNameSpaceResultList().notifyView();
+                        if (!_cancelled && event.getResult().isOK()) {
+                            getSearchResult().notifyView();
                         }
-                        }
+                    }
                  });
 
-                tineReader.schedule();
-            }else{
+                _reader.schedule();
+            } else {
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof ErgebnisListe' nicht stimmt.
                 Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
             }
@@ -74,4 +84,31 @@ public class NameSpaceTine extends NameSpace {
         }
 
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void stop() {
+	    _cancelled = true;
+	    _reader.cancel();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TineSearchResult getSearchResult() {
+        return _searchResult;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NameSpace createNew() {
+        return new TineNameSpace();
+    }
+
 }

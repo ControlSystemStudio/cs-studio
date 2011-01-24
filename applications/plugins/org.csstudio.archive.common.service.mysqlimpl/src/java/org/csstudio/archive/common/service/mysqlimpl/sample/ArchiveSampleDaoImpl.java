@@ -407,10 +407,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @Nonnull
     public <V, T extends ICssAlarmValueType<V>>
-    Iterable<IArchiveSample<T, EpicsAlarm>> retrieveSamples(@Nullable final IArchiveRequestType type,
-                                                            @Nonnull final IArchiveChannel channel,
-                                                            @Nonnull final TimeInstant s,
-                                                            @Nonnull final TimeInstant e) throws ArchiveDaoException {
+    Iterable<IArchiveMinMaxSample<V, T, EpicsAlarm>> retrieveSamples(@Nullable final IArchiveRequestType type,
+                                                                     @Nonnull final IArchiveChannel channel,
+                                                                     @Nonnull final TimeInstant s,
+                                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
         final String dataType = channel.getDataType();
         final ArchiveChannelId channelId = channel.getId();
@@ -426,7 +426,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
             final ResultSet result = stmt.executeQuery();
 
-            final List<IArchiveSample<T, EpicsAlarm>> iterable = Lists.newArrayList();
+            final List<IArchiveMinMaxSample<V, T, EpicsAlarm>> iterable = Lists.newArrayList();
 
             while (result.next()) {
                 final IArchiveMinMaxSample<V, T, EpicsAlarm> sample =
@@ -442,7 +442,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final TypeSupportException tse) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, tse);
         } finally {
-            closeStatement(stmt, "Closing of statement " + stmt.toString() + " failed.");
+            closeStatement(stmt, "Closing of statement failed.");
         }
     }
 

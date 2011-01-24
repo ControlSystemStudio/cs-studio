@@ -11,7 +11,6 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
@@ -19,12 +18,11 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
-import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
+import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.FontData;
 
 /**The abstract editpart of choice widget.
  * 
@@ -191,21 +189,6 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractChoiceModel.PROP_ITEMS, itemsHandler);
-		
-		
-		
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				FontData fontData = ((OPIFont)newValue).getFontData();
-				refreshableFigure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractChoiceModel.PROP_FONT, fontHandler);
 		
 		IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
 			
