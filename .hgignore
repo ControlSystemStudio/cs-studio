@@ -34,3 +34,6 @@ syntax: regexp
 ^applications/plugins/org\.csstudio\.channelfinder\.ui/\.settings$
 ^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.settings$
 ^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$
+
+syntax: regexp
+^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.classpath$
