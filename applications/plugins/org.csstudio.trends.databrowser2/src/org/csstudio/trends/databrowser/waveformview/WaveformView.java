@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 public class WaveformView extends DataBrowserAwareView
 {
     /** View ID registered in plugin.xml */
-    final public static String ID = 
+    final public static String ID =
         "org.csstudio.trends.databrowser.waveformview.WaveformView"; //$NON-NLS-1$
 
     /** PV Name selector */
@@ -54,25 +54,25 @@ public class WaveformView extends DataBrowserAwareView
 
     /** Selector for model_item's current sample */
     private Slider sample_index;
-    
+
     /** Timestamp of current sample. */
     private Text timestamp;
 
     /** Status/severity of current sample. */
     private Text status;
-    
+
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
-    
+
     /** Selected model item in model, or <code>null</code> */
     private ModelItem model_item = null;
 
-    /** Color for trace of model_item's current sample */ 
+    /** Color for trace of model_item's current sample */
     private Color color = null;
-    
+
     /** Waveform for the currently selected sample */
     private WaveformValueDataProvider waveform = null;
-    
+
     /** {@inheritDoc} */
     @Override
     protected void doCreatePartControl(final Composite parent)
@@ -80,6 +80,7 @@ public class WaveformView extends DataBrowserAwareView
         // Arrange disposal
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 if (color != null)
@@ -89,28 +90,30 @@ public class WaveformView extends DataBrowserAwareView
 
         final GridLayout layout = new GridLayout(4, false);
         parent.setLayout(layout);
-        
+
         // PV: .pvs..... [Refresh]
         // =====================
         // ======= Plot ========
         // =====================
         // <<<<<< Slider >>>>>>
         // Timestamp: __________ Sevr./Status: __________
-        
+
         // PV: .pvs..... [Refresh]
         Label l = new Label(parent, 0);
         l.setText(Messages.SampleView_Item);
         l.setLayoutData(new GridData());
-        
+
         pv_name = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         pv_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-2, 1));
         pv_name.addSelectionListener(new SelectionListener()
         {
+            @Override
             public void widgetSelected(final SelectionEvent e)
             {
                 widgetDefaultSelected(e);
             }
-            
+
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {   // First item is "--select PV name--"
                  if (pv_name.getSelectionIndex() == 0)
@@ -119,7 +122,7 @@ public class WaveformView extends DataBrowserAwareView
                     selectPV(pv_name.getText());
             }
         });
-        
+
         final Button refresh = new Button(parent, SWT.PUSH);
         refresh.setText(Messages.SampleView_Refresh);
         refresh.setToolTipText(Messages.SampleView_RefreshTT);
@@ -147,7 +150,7 @@ public class WaveformView extends DataBrowserAwareView
         xygraph.primaryXAxis.setTitle(Messages.WaveformIndex);
         xygraph.primaryYAxis.setTitle(Messages.WaveformAmplitude);
         lws.setContents(plot);
-        
+
         // <<<<<< Slider >>>>>>
         sample_index = new Slider(parent, SWT.HORIZONTAL);
         sample_index.setToolTipText(Messages.WaveformTimeSelector);
@@ -160,26 +163,26 @@ public class WaveformView extends DataBrowserAwareView
                 showSelectedSample();
             }
         });
-        
+
         // Timestamp: __________ Sevr./Status: __________
         l = new Label(parent, 0);
         l.setText(Messages.WaveformTimestamp);
         l.setLayoutData(new GridData());
         timestamp = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
         timestamp.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         l = new Label(parent, 0);
         l.setText(Messages.WaveformStatus);
         l.setLayoutData(new GridData());
         status = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        status.setLayoutData(new GridData(SWT.FILL, 0, true, false));        
+        status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
     }
 
     /** {@inheritDoc} */
     @Override
     public void setFocus()
     {
-        pv_name.setFocus();        
+        pv_name.setFocus();
     }
 
     /** {@inheritDoc} */
@@ -195,7 +198,7 @@ public class WaveformView extends DataBrowserAwareView
             selectPV(null);
             return;
         }
-        
+
         // Show PV names
         final String names[] = new String[model.getItemCount()+1];
         names[0] = Messages.SampleView_SelectItem;
@@ -220,7 +223,7 @@ public class WaveformView extends DataBrowserAwareView
         pv_name.setEnabled(true);
         selectPV(null);
     }
-    
+
     /** Select given PV name (or <code>null</code>). */
     private void selectPV(final String new_pv_name)
     {
@@ -233,7 +236,7 @@ public class WaveformView extends DataBrowserAwareView
         int N = xygraph.getPlotArea().getTraceList().size();
         while (N > 0)
             xygraph.removeTrace(xygraph.getPlotArea().getTraceList().get(--N));
-        
+
         // No or unknown PV name?
         if (model_item == null)
         {

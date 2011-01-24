@@ -29,7 +29,7 @@ public class AddArchiveDialog extends TitleAreaDialog
 {
     private ArchiveListGUI archive_gui;
     private ArchiveDataSource archives[] = null;
- 
+
     /** Initialize
      *  @param shell Parent shell
      */
@@ -51,7 +51,7 @@ public class AddArchiveDialog extends TitleAreaDialog
         shell.setSize(600, 800);
         shell.setText(Messages.AddArchive);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected Control createDialogArea(final Composite parent_widget)
@@ -62,11 +62,11 @@ public class AddArchiveDialog extends TitleAreaDialog
         setTitle(Messages.AddArchive);
         setMessage(Messages.AddArchiveMsg);
         setTitleImage(Activator.getDefault().getImage("icons/config_archive.png")); //$NON-NLS-1$
-        
+
         // Create box for widgets we're about to add
         final Composite box = new Composite(parent_composite, 0);
         box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         // URL and list-of-archives handled by ArchiveListGUI
         archive_gui = new ArchiveListGUI(box)
         {
@@ -81,6 +81,7 @@ public class AddArchiveDialog extends TitleAreaDialog
             {
                 getShell().getDisplay().asyncExec(new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         MessageDialog.openError(getShell(),
@@ -90,19 +91,20 @@ public class AddArchiveDialog extends TitleAreaDialog
                 });
          }
         };
-        
+
         archive_gui.addSelectionListener(new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
                 final boolean anything = ! event.getSelection().isEmpty();
                 getButton(IDialogConstants.OK_ID).setEnabled(anything);
             }
         });
-        
+
         return parent_composite;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void createButtonsForButtonBar(final Composite parent)
@@ -118,7 +120,7 @@ public class AddArchiveDialog extends TitleAreaDialog
         archives = archive_gui.getSelectedArchives();
         super.okPressed();
     }
-    
+
     /** @return User-selected archives. Only valid when dialog was closed via 'OK' */
     public ArchiveDataSource[] getArchives()
     {

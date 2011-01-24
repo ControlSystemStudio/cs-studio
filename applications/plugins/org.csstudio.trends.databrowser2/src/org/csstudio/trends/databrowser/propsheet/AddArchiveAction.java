@@ -13,6 +13,7 @@ import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.search.AddArchiveDialog;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that allows addition of archive data sources to PVs.
@@ -42,7 +43,7 @@ public class AddArchiveAction extends Action
     public void run()
     {
         final AddArchiveDialog dlg = new AddArchiveDialog(shell);
-        if (dlg.open() != AddArchiveDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         new AddArchiveCommand(operations_manager, pvs, dlg.getArchives(), false);
     }

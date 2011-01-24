@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -49,8 +51,8 @@ public class ScriptsInputDialog extends Dialog {
 	
 	private TableViewer scriptsViewer;
 	private PVTupleTableEditor pvsEditor;
+	private Button skipFirstExecutionButton;
 	private Button checkConnectivityButton;
-	
 	
 	private List<ScriptData> scriptDataList;
 	private String title;	
@@ -125,7 +127,7 @@ public class ScriptsInputDialog extends Dialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
+		gridData.heightHint = 250;
 		mainComposite.setLayoutData(gridData);
 		
 		// Left Panel: List of scripts
@@ -173,16 +175,55 @@ public class ScriptsInputDialog extends Dialog {
 		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.minimumWidth = 250; // Account for the StringTableEditor's minimum size
 		rightComposite.setLayoutData(gd);
-		this.createLabel(rightComposite, "Input PVs for the selected script");
+		this.createLabel(rightComposite, "");
 		
-		pvsEditor = new PVTupleTableEditor(rightComposite, new ArrayList<PVTuple>());
+		TabFolder tabFolder = new TabFolder(rightComposite, SWT.None);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		TabItem pvTab = new TabItem(tabFolder, SWT.NONE);
+		pvTab.setText("Input PVs");		
+		TabItem optionTab = new TabItem(tabFolder, SWT.NONE);
+		optionTab.setText("Options");
+		
+		
+		pvsEditor = new PVTupleTableEditor(tabFolder, new ArrayList<PVTuple>());
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
-			
-		checkConnectivityButton = new Button(rightComposite, SWT.CHECK);
+		
+		pvTab.setControl(pvsEditor);
+		
+		final Composite optionTabComposite = new Composite(tabFolder, SWT.None);
+		optionTabComposite.setLayout(new GridLayout(1, false));
+		optionTab.setControl(optionTabComposite);
+		skipFirstExecutionButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+
+		skipFirstExecutionButton.setLayoutData(gd);
+		skipFirstExecutionButton.setText("Skip execution triggered by PVs' first connection");
+		skipFirstExecutionButton.setToolTipText(
+			"Skip the script execution caused by PVs' first connection during OPI startup.\n" +
+			"This is useful if you want to trigger a script from user inputs only.");
+		skipFirstExecutionButton.setSelection(false);
+		skipFirstExecutionButton.setEnabled(false);
+		skipFirstExecutionButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setSkipPVsFirstConnection(
+							skipFirstExecutionButton.getSelection());
+				}				
+			}
+		});	
+		
+		checkConnectivityButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		checkConnectivityButton.setLayoutData(gd);
 		checkConnectivityButton.setSelection(false);
 		checkConnectivityButton.setText(
-				"Execute anyway even if some PVs are disconnected.");
+				"Execute anyway even if some PVs are disconnected");
+		checkConnectivityButton.setToolTipText(
+				"This is only useful if you want to handle PVs' disconnection in script.\nOtherwise, please keep it unchecked.");
 		checkConnectivityButton.setEnabled(false);
 		checkConnectivityButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -202,10 +243,15 @@ public class ScriptsInputDialog extends Dialog {
 				}
 			}
 		});
+		
+		
+		
 		if(scriptDataList.size() > 0){
 			setScriptsViewerSelection(scriptDataList.get(0));
 			checkConnectivityButton.setSelection(
 					!scriptDataList.get(0).isCheckConnectivity());
+			skipFirstExecutionButton.setSelection(
+					scriptDataList.get(0).isSkipPVsFirstConnection());
 		}
 		return parent_Composite;
 	}
@@ -229,6 +275,9 @@ public class ScriptsInputDialog extends Dialog {
 			checkConnectivityButton.setSelection(!((ScriptData) selection
 					.getFirstElement()).isCheckConnectivity());
 			checkConnectivityButton.setEnabled(true);
+			skipFirstExecutionButton.setSelection(((ScriptData) selection
+					.getFirstElement()).isSkipPVsFirstConnection());
+			skipFirstExecutionButton.setEnabled(true);
 			
 		} else {
 			removeAction.setEnabled(false);
@@ -237,6 +286,7 @@ public class ScriptsInputDialog extends Dialog {
 			pvsEditor.setEnabled(false);
 			editAction.setEnabled(false);
 			checkConnectivityButton.setEnabled(false);
+			skipFirstExecutionButton.setEnabled(false);
 		}
 	}
 	

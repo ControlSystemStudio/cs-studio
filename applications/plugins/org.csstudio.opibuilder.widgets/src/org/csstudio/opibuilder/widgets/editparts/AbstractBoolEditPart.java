@@ -8,14 +8,12 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolWidgetModel}.
@@ -189,20 +187,6 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_OFF_COLOR, handler);
-		
-		
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				FontData fontData = ((OPIFont) newValue).getFontData();
-				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_FONT, fontHandler);
-		
 	}
 	
 	

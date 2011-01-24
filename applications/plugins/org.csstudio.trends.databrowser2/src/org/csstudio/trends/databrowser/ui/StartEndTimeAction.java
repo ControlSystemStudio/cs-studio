@@ -12,6 +12,7 @@ import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.propsheet.ChangeTimerangeCommand;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
 /** Helper for handling start/end time changes
@@ -31,7 +32,7 @@ public class StartEndTimeAction
         final String end_time = model.getEndSpecification();
         final StartEndDialog dlg = new StartEndDialog(shell,
                 start_time, end_time);
-        if (dlg.open() != StartEndDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         new ChangeTimerangeCommand(model, operations_manager,
                 dlg.isEndNow(), dlg.getStartCalendar(), dlg.getEndCalendar());

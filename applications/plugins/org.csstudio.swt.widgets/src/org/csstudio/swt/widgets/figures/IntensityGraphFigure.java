@@ -25,6 +25,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -667,6 +668,12 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		this.max = max;
 		colorMapRamp.setMax(max);
 		repaint();
+	}
+	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		colorMapRamp.setFont(f);
 	}
 	
 	/**

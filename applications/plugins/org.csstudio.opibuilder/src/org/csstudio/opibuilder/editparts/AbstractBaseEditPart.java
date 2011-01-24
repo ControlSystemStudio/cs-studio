@@ -39,6 +39,7 @@ import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
@@ -80,12 +81,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	private ExecutionMode executionMode;
 	
-	private TooltipLabel tooltipLabel;
+	private TooltipLabel tooltipLabel;	
 	
-	/**
-	 * This is true if deactivating has been triggered. 
-	 */
-	private boolean deactiveTriggered;
 	private Map<String, Object> externalObjectsMap;
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
@@ -123,6 +120,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 				getWidgetModel().getForegroundColor()));
 		
+		if(allPropIds.contains(AbstractWidgetModel.PROP_FONT))
+			figure.setFont(getWidgetModel().getFont().getSWTFont());
+		
 		if(allPropIds.contains(AbstractWidgetModel.PROP_VISIBLE))
 			figure.setVisible(getExecutionMode() == ExecutionMode.RUN_MODE ? 
 				getWidgetModel().isVisible() : true);
@@ -156,12 +156,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	
+	private ConnectionHandler connectionHandler;
+	
 	@Override
 	public void activate() {
 		if(!isActive()){
 			super.activate();
-			deactiveTriggered = false;
-			initFigure(getFigure());
+			initFigure(getFigure());			
 			
 			//add listener to all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){
@@ -207,6 +208,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 								try {
 									PV pv = PVFactory.createPV(pvName);
 									pvMap.put(pvName, pv);	
+									addToConnectionHandler(pvName, pv);
 									pvArray[i] = pv;
 								} catch (Exception e) {
 									String message = NLS.bind("Unable to connect to PV: {0}! \n" +
@@ -234,72 +236,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 												pv.getName());
 									}							
 							}
-						});							
-						 
-						
-//						//register scripts
-//						Job job = new Job("Connecting to PV"){							
-//							private boolean pvsConnected = true;
-//							private String disconnectedPVs = ""; //$NON-NLS-1$
-//							//attempt to connect with all PVs repeatedly
-//							private int connectAttempts = 10;//		
-//							
-//							@Override
-//							protected IStatus run(IProgressMonitor monitor) {
-//								//attempt to connect with all PVs repeatedly
-//								StringBuilder s = new StringBuilder();
-//								for(int i=0; i<pvArray.length; i++){
-//									if(pvArray[i] == null)
-//										continue;
-//									s.append(pvArray[i].getName());
-//									if(i!= pvArray.length-1)
-//										s.append(", "); //$NON-NLS-1$
-//								}
-//								monitor.beginTask("Connecting to PVs: " + s, connectAttempts);
-//								while (connectAttempts-->=0) {
-//									monitor.subTask(connectAttempts + " seconds left.");
-//									pvsConnected = true;
-//									for(PV pv : pvArray){
-//										if(pv != null && !pv.isConnected()){
-//											if(connectAttempts == 0){											
-//												disconnectedPVs += pv.getName() + ", "; //$NON-NLS-1$
-//											}
-//											pvsConnected = false;
-//										}
-//									}
-//									if(pvsConnected){
-//										ScriptService.getInstance().registerScript(
-//											scriptData, AbstractBaseEditPart.this, pvArray);
-//										return Status.OK_STATUS;
-//									}
-//									else if (connectAttempts == 0){  //give up
-//										String name = scriptData instanceof RuleScriptData ? 
-//												((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
-//										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of {1},  which is attached to {2}.\n" +
-//												"The script will still be executed once the PV was connected.",
-//												new String[]{
-//												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
-//												name, 
-//												AbstractBaseEditPart.this.getWidgetModel().getName()});
-//										ConsoleService.getInstance().writeWarning(message);
-//										ScriptService.getInstance().registerScript(
-//											scriptData, AbstractBaseEditPart.this, pvArray);
-//										return Status.OK_STATUS;
-//									}
-//									try {										
-//										Thread.sleep(1000);
-//										monitor.worked(1);
-//										if(monitor.isCanceled() || deactiveTriggered)
-//											return Status.CANCEL_STATUS;
-//									} catch (InterruptedException e) {
-//										
-//									}	
-//								}
-//								return Status.OK_STATUS;
-//							}
-//						};	
-//						job.schedule(100);		
-						
+						});							 
 				}
 			}
 		}		
@@ -340,7 +277,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	@Override
 	public void deactivate() {
 		if(isActive()){
-			deactiveTriggered = true;
 			super.deactivate();
 			//remove listener from all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){
@@ -412,6 +348,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND, foreColorHandler);
+		
+		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				figure.setFont(((OPIFont)newValue).getSWTFont());	
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
+		
 		
 		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -585,6 +531,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			
 		}*/
 	}
+	
+	/**
+	 * @return the map with all PVs. It is not allowed to change the Map.
+	 * null if no PV on this widget.
+	 */
+	public Map<String, PV> getAllPVs(){
+		if(getConnectionHandler() != null)
+			return getConnectionHandler().getAllPVs();
+		return null;
+	}
 
 	/**
 	 * @return the executionMode
@@ -691,7 +647,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							value.equals("RUN_MODE") && //$NON-NLS-1$
 							getExecutionMode() == ExecutionMode.RUN_MODE)
 						return true;
-					
+					if(name.equals("hasPVs") && //$NON-NLS-1$
+							value.equals("true")) //$NON-NLS-1$
+						return (getAllPVs() != null && getAllPVs().size() >0);
 					return false;
 				}
 			
@@ -699,9 +657,26 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		return super.getAdapter(key);
 	}
 
-
-
-		@Override
+	protected void addToConnectionHandler(String pvName, PV pv){
+		if(connectionHandler == null)
+			connectionHandler = createConnectionHandler();
+		connectionHandler.addPV(pvName, pv);
+	}
+	
+	protected ConnectionHandler createConnectionHandler(){
+		return new ConnectionHandler(this);
+	}
+	
+	protected void removeFromConnectionHandler(String pvName){
+		if(connectionHandler != null)
+			connectionHandler.removePV(pvName);
+	}
+	
+	protected ConnectionHandler getConnectionHandler() {
+		return connectionHandler;
+	}
+	
+	@Override
 	public String toString() {
 		return getWidgetModel().getName();
 	}

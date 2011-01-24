@@ -20,7 +20,7 @@ public class AddAxisCommand implements IUndoableCommand
 {
     /** Model to which axis is added */
     final private Model model;
-    
+
     /** The axis that was added */
     final private AxisConfig axis;
 
@@ -36,7 +36,7 @@ public class AddAxisCommand implements IUndoableCommand
         operations_manager.addCommand(this);
         axis = model.addAxis();
     }
-    
+
     /** @return AxisConfig that was added */
     public AxisConfig getAxis()
     {
@@ -44,17 +44,19 @@ public class AddAxisCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         model.addAxis(axis);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.removeAxis(axis);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

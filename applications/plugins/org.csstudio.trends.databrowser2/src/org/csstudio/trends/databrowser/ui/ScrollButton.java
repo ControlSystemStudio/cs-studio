@@ -23,16 +23,16 @@ public class ScrollButton extends ToggleButton
 {
     private static final String OFF_ICON = "icons/scroll_off.gif"; //$NON-NLS-1$
     private static final String ON_ICON = "icons/scroll_on.gif"; //$NON-NLS-1$
-    
+
     /** Label that shows one of the ICONs */
     private Label icon;
-    
+
     /** Listener to invoke on button presses */
     private PlotListener listener = null;
-    
+
     /** Used to remember the button state */
     private boolean scroll_on;
-    
+
     /** Button creates this undoable command when clicked,
      *  then executes it ('redo'). Since it's on the operations stack,
      *  it can later be undone or re-done.
@@ -46,17 +46,19 @@ public class ScrollButton extends ToggleButton
         {
             this.new_scroll_state = new_scroll_state;
         }
-        
+
+        @Override
         public void redo()
         {
             setScrollState(new_scroll_state);
         }
 
+        @Override
         public void undo()
         {
             setScrollState(!new_scroll_state);
         }
-        
+
         @Override
         public String toString()
         {
@@ -72,7 +74,7 @@ public class ScrollButton extends ToggleButton
         }
     }
 
-    /** Initialize 
+    /** Initialize
      *  @param operations_manager Used for undo/redo of scroll on/off
      */
     public ScrollButton(final OperationsManager operations_manager)
@@ -83,6 +85,7 @@ public class ScrollButton extends ToggleButton
         setToolTip(new Label(Messages.ScrollButtonTT));
         addActionListener(new ActionListener()
         {
+            @Override
             public void actionPerformed(final ActionEvent event)
             {
                 final IUndoableCommand command = new ScrollCommand(!isSelected());
@@ -99,7 +102,7 @@ public class ScrollButton extends ToggleButton
             throw new IllegalStateException();
         this.listener = listener;
     }
-    
+
     /** Update scroll button to reflect the desired scroll mode
      *  @param on <code>true</code> when scrolling is 'on'
      */

@@ -21,7 +21,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EditFormulaDialogTest
+public class EditFormulaDialogDemo
 {
     @Test
     public void dialogDemo() throws Exception
@@ -45,33 +45,17 @@ public class EditFormulaDialogTest
 
         final EditFormulaDialog edit = new EditFormulaDialog(null, shell, formula);
 
-//        System.out.println("Before editing:");
+        System.out.println("Before editing:");
         dump(formula);
 
 
-        // FIXME (kasemir) : check with assertions whatever you like, but close the dialog afterwards!
-        shell.getDisplay().asyncExec(new Runnable() {
-            /**
-             * {@inheritDoc}
-             */
-            public void run() {
-                if (edit.open()) {
-//            System.out.println("After editing:");
-                    dump(formula);
-                }
-//        else
-//            System.out.println("Cancelled");
-            }
-
-        });
-        shell.getDisplay().asyncExec(new Runnable() {
-            /**
-             * {@inheritDoc}
-             */
-            public void run() {
-                edit.close();
-            }
-        });
+        if (edit.open())
+        {
+            System.out.println("After editing:");
+            dump(formula);
+        }
+        else
+            System.out.println("Cancelled");
     }
 
     private void dump(final FormulaItem formula)
@@ -80,6 +64,6 @@ public class EditFormulaDialogTest
         final PrintWriter out = new PrintWriter(buf);
         formula.write(out);
         out.close();
-//        System.out.println(buf.toString());
+        System.out.println(buf.toString());
     }
 }

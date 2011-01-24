@@ -26,37 +26,43 @@ import org.eclipse.ui.IPersistableElement;
 public class EmptyEditorInput implements IEditorInput
 {
     /** Cause application title to reflect the 'not saved' state. */
+    @Override
     public String getName()
     {
         return Messages.NotSaved;
     }
 
     /** Cause tool top to reflect the 'not saved' state. */
+    @Override
     public String getToolTipText()
     {
         return Messages.NotSavedTT;
     }
-    
+
     /** @return Returns <code>false</code> since no file exists. */
+    @Override
     public boolean exists()
     {
         return false;
     }
 
     /** Returns no image. */
+    @Override
     public ImageDescriptor getImageDescriptor()
     {
         return null;
     }
 
     /** Can't persist. */
+    @Override
     public IPersistableElement getPersistable()
     {
         return null;
     }
 
     /** Don't adapt. */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(Class adapter)
     {
         return null;

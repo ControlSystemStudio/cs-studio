@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ConnectJob;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.trends.databrowser.propsheet.AddArchiveAction;
+import org.csstudio.trends.databrowser.ui.TableHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -51,7 +51,7 @@ public abstract class ArchiveListGUI
     private Combo urls;
     private Button info;
     private TableViewer archive_table;
-    
+
     /** Most recently selected archive reader */
     protected ArchiveReader reader;
 
@@ -61,21 +61,23 @@ public abstract class ArchiveListGUI
     public ArchiveListGUI(final Composite parent)
     {
         createGUI(parent);
-        
+
         // When URL is selected, connect to server to get info, list of archives
         urls.addSelectionListener(new SelectionListener()
         {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e)
             {
                 connectToArchiveServer(urls.getText());
             }
-    
+
+            @Override
             public void widgetSelected(final SelectionEvent e)
             {   // Same response
                 widgetDefaultSelected(e);
             }
         });
-    
+
         // Display info about selected archive
         info.addSelectionListener(new SelectionAdapter()
         {
@@ -93,15 +95,15 @@ public abstract class ArchiveListGUI
                 MessageDialog.openInformation(info.getShell(), "Archive Server Info", buf.toString());
             }
         });
-        
+
         // Activate the first archive server URL
         if (urls.getEnabled())
             connectToArchiveServer(urls.getText());
-        
+
         // Archive table: Allow dragging of archive data sources and PVs
         new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
     }
-    
+
     /** Set initial focus */
     public void setFocus()
     {
@@ -115,13 +117,13 @@ public abstract class ArchiveListGUI
     {
         final GridLayout layout = new GridLayout(3, false);
         parent.setLayout(layout);
-        
+
         // URL:  ___urls___  [info]
         Label l;
         l = new Label(parent, 0);
         l.setText(Messages.Search_URL);
         l.setLayoutData(new GridData());
-        
+
         urls = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
         urls.setToolTipText(Messages.Search_URL_TT);
         urls.setItems(Preferences.getArchiveServerURLs());
@@ -132,16 +134,21 @@ public abstract class ArchiveListGUI
             urls.setEnabled(false);
         }
         urls.select(0);
-        
+
         info = new Button(parent, SWT.PUSH);
         info.setText(Messages.ArchiveServerInfo);
         info.setToolTipText(Messages.ArchiveServerInfoTT);
         info.setEnabled(false);
 
         // Table for archives, displaying array of ArchiveDataSource entries
-        archive_table = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        // TableColumnLayout requires table in its own container
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        archive_table = new TableViewer(table_parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         archive_table.setContentProvider(new ArrayContentProvider());
-        TableViewerColumn col = AutoSizeColumn.make(archive_table, Messages.ArchiveName, 150, 100);
+        TableViewerColumn col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveName, 150, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -151,7 +158,7 @@ public abstract class ArchiveListGUI
                 cell.setText(archive.getName());
             }
         });
-        col = AutoSizeColumn.make(archive_table, Messages.ArchiveDescription, 50, 100);
+        col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveDescription, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -161,7 +168,7 @@ public abstract class ArchiveListGUI
                 cell.setText(archive.getDescription());
             }
         });
-        col = AutoSizeColumn.make(archive_table, Messages.ArchiveKey, 35, 5);
+        col = TableHelper.createColumn(table_layout, archive_table, Messages.ArchiveKey, 35, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -174,8 +181,6 @@ public abstract class ArchiveListGUI
         final Table table = archive_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        new AutoSizeControlListener(table);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
     }
 
     /** @param listener Listener to selections in the archives table of the GUI */
@@ -201,6 +206,7 @@ public abstract class ArchiveListGUI
                     return;
                 urls.getDisplay().asyncExec(new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         if (info.isDisposed())
@@ -216,7 +222,7 @@ public abstract class ArchiveListGUI
                     }
                 });
             }
-         
+
             @Override
             protected void archiveServerError(final String url, final Exception ex)
             {   // Called from non-UI thread
@@ -224,18 +230,19 @@ public abstract class ArchiveListGUI
                     return;
                 info.getDisplay().asyncExec(new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         if (info.isDisposed())
                             return;
                         info.setEnabled(false);
                         handleServerError(url, ex);
-                    }   
+                    }
                 });
-            }                    
+            }
         }.schedule();
     }
-    
+
     /** @return ArchiveReader that holds the list of archives or <code>null</code>
      *          if no info available
      */
@@ -263,7 +270,7 @@ public abstract class ArchiveListGUI
                 ! MessageDialog.openConfirm(archive_table.getTable().getShell(),
                         Messages.Search,
                         NLS.bind(Messages.SearchArchiveConfirmFmt, archives.size())))
-                     return null;   
+                     return null;
         }
         else
         {

@@ -31,7 +31,7 @@ public class DeleteItemsAction extends Action
     final private OperationsManager operations_manager;
     final private TableViewer trace_table;
     final private Model model;
-    
+
     /** Initialize
      *  @param operations_manager OperationsManager where command will be reg'ed
      *  @param trace_table Table of ModelItems
@@ -49,6 +49,7 @@ public class DeleteItemsAction extends Action
         // Only enabled when something's selected
         final ISelectionChangedListener selection_listener = new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event)
             {
                 setEnabled(!trace_table.getSelection().isEmpty());

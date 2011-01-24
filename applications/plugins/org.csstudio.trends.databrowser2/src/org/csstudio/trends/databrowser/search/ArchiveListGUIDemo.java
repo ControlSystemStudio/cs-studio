@@ -15,9 +15,8 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ArchiveListGUITest
+public class ArchiveListGUIDemo
 {
- // FIXME (kasemir) : remove sysos - use assertions
     @Test
     public void testArchiveGUI() throws Exception
     {
@@ -31,7 +30,7 @@ public class ArchiveListGUITest
             @Override
             protected void handleArchiveUpdate()
             {
-//                System.out.println("Received archive list");
+                System.out.println("Received archive list");
             }
 
             @Override
@@ -42,13 +41,9 @@ public class ArchiveListGUITest
         };
 
         shell.open();
-
-//        while (!shell.isDisposed())
-//        {
-//          if (!display.readAndDispatch())
-//            display.sleep();
-//        }
-     // FIXME (kasemir) : check what is necessary and close the shell afterwards
-        shell.close();
+        // Message loop left to the application
+        while (!shell.isDisposed())
+            if (!display.readAndDispatch())
+                display.sleep();
     }
 }

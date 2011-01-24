@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.debugging.jmsmonitor;
 
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeColumnAction;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
-import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;

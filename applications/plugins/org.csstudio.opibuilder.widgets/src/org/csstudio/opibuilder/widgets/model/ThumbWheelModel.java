@@ -24,10 +24,8 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
@@ -41,8 +39,6 @@ import org.eclipse.swt.graphics.RGB;
  * 
  */
 public class ThumbWheelModel extends AbstractPVWidgetModel {
-
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$
 
@@ -109,10 +105,6 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 				"Integer digits", WidgetPropertyCategory.Behavior, DEFAULT_INTEGER_DIGITS));
 		addProperty(new IntegerProperty(PROP_DECIMAL_DIGITS_PART, 
 				"Decimal digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
-
-		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
-
 		addProperty(new ColorProperty(PROP_INTERNAL_FRAME_COLOR, 
 				"Internal frame color", WidgetPropertyCategory.Display,
 				ColorConstants.black.getRGB()));
@@ -122,9 +114,6 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	}
 
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
-	}
 
 	public void setFont(OPIFont font){
 		setPropertyValue(PROP_FONT, font);

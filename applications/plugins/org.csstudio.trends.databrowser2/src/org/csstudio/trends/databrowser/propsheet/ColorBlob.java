@@ -30,7 +30,7 @@ public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 	/** The color */
 	private Color color;
 	private SelectionAdapter selected = null;
-	
+
 	/** Initialize
 	 *  @param parent Parent widget
 	 */
@@ -50,7 +50,7 @@ public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 			}
 		});
 	}
-	
+
 	public void addSelectionListener(SelectionAdapter selected)
 	{
 		this.selected  = selected;
@@ -65,13 +65,15 @@ public class ColorBlob extends Canvas implements PaintListener, DisposeListener
 	}
 
 	/** @see DisposeListener */
-	public void widgetDisposed(final DisposeEvent e)
+	@Override
+    public void widgetDisposed(final DisposeEvent e)
 	{
 		color.dispose();
 	}
 
 	/** @see PaintListener */
-	public void paintControl(final PaintEvent e)
+	@Override
+    public void paintControl(final PaintEvent e)
 	{
 		final GC gc = e.gc;
 		gc.setBackground(color);
