@@ -12,11 +12,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.ThrottledLogger;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.CssAlarmValueType;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.platform.internal.data.Timestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -27,8 +36,11 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class ArchiveChannel
+abstract public class ArchiveChannel<T>
 {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveChannel.class);
+    final Logger PV_LOG = CentralLogger.getInstance().getLogger(PVListener.class);
+    
     /** Throttled log for NaN samples */
     private static ThrottledLogger trouble_sample_log =
                     new ThrottledLogger(Level.INFO, "log_trouble_samples"); //$NON-NLS-1$
@@ -45,10 +57,10 @@ abstract public class ArchiveChannel
      *  This is the name by which the channel was created,
      *  not the PV name that might include decorations.
      */
-    final private String name;
+    final private String _name;
 
     /** Control system PV */
-    final private PV pv;
+    final private PV _pv;
 
     /** Is this channel currently running?
      *  <p>
@@ -57,7 +69,7 @@ abstract public class ArchiveChannel
      *  want to log that, so we keep track of
      *  the 'running' state.
      */
-    private boolean is_running = false;
+    volatile boolean _isRunning = false;
 
     /** Do we need to log a 'write error' sample?
      *  <p>
@@ -81,7 +93,7 @@ abstract public class ArchiveChannel
     private boolean need_first_sample = true;
 
     /** How channel affects its groups */
-    final private Enablement enablement;
+//    final private Enablement enablement;
 
     /** Is this channel currently enabled? */
     private boolean enabled = true;
@@ -93,7 +105,8 @@ abstract public class ArchiveChannel
      *  <p>
      *  SYNC:Lock on <code>this</code> for access.
      */
-    protected IValue most_recent_value = null;
+    //protected IValue most_recent_value = null;
+    protected ICssAlarmValueType<T> most_recent_css_value = null;
 
     /** Counter for received values (monitor updates) */
     private long received_value_count = 0;
@@ -102,12 +115,11 @@ abstract public class ArchiveChannel
      *  <p>
      *  SYNC: Lock on <code>this</code> for access.
      */
-    protected IValue last_archived_value = null;
+    //protected IValue last_archived_value = null;
+    protected ICssAlarmValueType<T> last_archived_css_value = null;
 
     /** Buffer of received samples, periodically written */
-    private final SampleBuffer buffer;
-
-    private Logger log;
+    private final SampleBuffer<ICssAlarmValueType<T>> buffer;
 
     /** Construct an archive channel
      *  @param name Name of the channel (PV)
@@ -116,44 +128,47 @@ abstract public class ArchiveChannel
      *  @param last_archived_value Last value from storage, or <code>null</code>.
      *  @throws Exception On error in PV setup
      */
-    public ArchiveChannel(final String name,
+    public ArchiveChannel(final String name/*,
                           final Enablement enablement,
                           final int buffer_capacity,
-                          final IValue last_archived_value) throws Exception
-    {
-        this.name = name;
-        this.enablement = enablement;
-        this.last_archived_value = last_archived_value;
-        this.buffer = new SampleBuffer(name, buffer_capacity);
-        log = CentralLogger.getInstance().getLogger(this);
-        if (last_archived_value == null) {
-            log.info(name + ": No known last value");
-        }
-        if (!log.isDebugEnabled()) {
-            log = null;
-        }
+                          final IValue last_archived_value */) throws Exception {
+        _name = name;
+//        this.enablement = enablement;
+//        this.last_archived_value = last_archived_value;
+        this.buffer = new SampleBuffer<ICssAlarmValueType<T>>(name);
 
-        pv = PVFactory.createPV(name);
-        pv.addListener(new PVListener()
-        {
+//        if (last_archived_value == null) {
+//            log.info(name + ": No known last value");
+//        }
+//        if (!log.isDebugEnabled()) {
+//            log = null;
+//        }
+
+        _pv = PVFactory.createPV(name);
+        _pv.addListener(new PVListener() {
             @Override
-            public void pvValueUpdate(final PV pv)
-            {
+            public void pvValueUpdate(final PV pv) {
                 // PV already suppresses updates after 'stop', but check anyway
-                if (is_running)
-                {
+                if (_isRunning) {
                     final IValue value = pv.getValue();
-                    if (enablement != Enablement.Passive) {
-                        handleEnablement(value);
+//                    if (enablement != Enablement.Passive) {
+//                        handleEnablement(value);
+//                    }
+                    try {
+                        ICssAlarmValueType<T> cssValue = EpicsIValueTypeSupport.toCssType(value);
+                        handleNewValue(cssValue);
+                    } catch (TypeSupportException e) {
+                        PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
+                        return;
                     }
-                    handleNewValue(value);
+
                 }
             }
 
             @Override
             public void pvDisconnected(final PV pv)
             {
-                if (is_running) {
+                if (_isRunning) {
                     handleDisconnected();
                 }
             }
@@ -161,16 +176,15 @@ abstract public class ArchiveChannel
     }
 
     /** @return Name of channel */
-    final public String getName()
-    {
-        return name;
+    final public String getName() {
+        return _name;
     }
 
     /** @return How channel affects its groups */
-    final public Enablement getEnablement()
-    {
-        return enablement;
-    }
+//    final public Enablement getEnablement()
+//    {
+//        return enablement;
+//    }
 
     /** @return <code>true</code> if channel is currently enabled */
     final public boolean isEnabled()
@@ -194,8 +208,7 @@ abstract public class ArchiveChannel
     }
 
     /** Tell channel that it belogs to group */
-    final void addGroup(final ArchiveGroup group)
-    {
+    final void addGroup(final ArchiveGroup group) {
         groups.add(group);
     }
 
@@ -211,31 +224,31 @@ abstract public class ArchiveChannel
     /** @return <code>true</code> if connected */
     final public boolean isConnected()
     {
-        return pv.isConnected();
+        return _pv.isConnected();
     }
 
     /** @return Human-readable info on internal state of PV */
     public String getInternalState()
     {
-        return pv.getStateInfo();
+        return _pv.getStateInfo();
     }
 
     /** Start archiving this channel. */
     final void start() throws Exception
     {
-        is_running = true;
+        _isRunning = true;
         need_first_sample = true;
-        pv.start();
+        _pv.start();
     }
 
     /** Stop archiving this channel */
     final void stop()
     {
-    	if (!is_running) {
+    	if (!_isRunning) {
             return;
         }
-        is_running = false;
-        pv.stop();
+        _isRunning = false;
+        _pv.stop();
         addInfoToBuffer(ValueButcher.createOff());
     }
 
@@ -289,25 +302,25 @@ abstract public class ArchiveChannel
     }
 
     /** Enable or disable groups based on received value */
-    final private void handleEnablement(final IValue value)
-    {
-        if (enablement == Enablement.Passive)
-         {
-            throw new Error("Not to be called when passive"); //$NON-NLS-1$
-        }
-        // Get boolean value (true <==> >0.0)
-        final double number = ValueUtil.getDouble(value);
-        final boolean yes = number > 0.0;
-        // Do we enable or disable based on that value?
-        final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
-        // Check which group needs to _change_
-        for (final ArchiveGroup group : groups)
-        {
-            if (group.isEnabled() != enable) {
-                group.enable(enable);
-            }
-        }
-    }
+//    final private void handleEnablement(final IValue value)
+//    {
+//        if (enablement == Enablement.Passive)
+//         {
+//            throw new Error("Not to be called when passive"); //$NON-NLS-1$
+//        }
+//        // Get boolean value (true <==> >0.0)
+//        final double number = ValueUtil.getDouble(value);
+//        final boolean yes = number > 0.0;
+//        // Do we enable or disable based on that value?
+//        final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
+//        // Check which group needs to _change_
+//        for (final ArchiveGroup group : groups)
+//        {
+//            if (group.isEnabled() != enable) {
+//                group.enable(enable);
+//            }
+//        }
+//    }
 
     /** Called for each value received from PV.
      *  <p>
@@ -321,35 +334,32 @@ abstract public class ArchiveChannel
      *               it's the first value after startup or error,
      *               so there's no need to write that sample again.
      */
-    protected boolean handleNewValue(final IValue value)
+    protected boolean handleNewValue(final ICssAlarmValueType<T> value)
     {
         synchronized (this)
         {
             ++received_value_count;
-            most_recent_value = value;
+            most_recent_css_value = value;
         }
-        // NaN test
-        if (value instanceof IDoubleValue)
-        {
-            final IDoubleValue dbl = (IDoubleValue) value;
-            if (Double.isNaN(dbl.getValue())) {
-                trouble_sample_log.log("'" + getName() + "': NaN "
-                        + value.format());
-            }
-
-        }
+//        // NaN test
+//        if (value instanceof IDoubleValue)
+//        {
+//            final IDoubleValue dbl = (IDoubleValue) value;
+//            if (Double.isNaN(dbl.getValue())) {
+//                trouble_sample_log.log("'" + getName() + "': NaN "
+//                        + value.format());
+//            }
+//
+//        }
         if (!enabled) {
             return false;
         }
 
         // Did we recover from write errors?
         if (need_write_error_sample &&
-            SampleBuffer.isInErrorState() == false)
-        {
+            SampleBuffer.isInErrorState() == false) {
             need_write_error_sample = false;
-            if (log != null) {
-                log.debug(getName() + " wrote error sample");
-            }
+            LOG.debug(getName() + " wrote error sample");
             addInfoToBuffer(ValueButcher.createWriteError());
             need_first_sample = true;
         }
@@ -358,10 +368,14 @@ abstract public class ArchiveChannel
             return false;
         }
         need_first_sample = false;
-        final IValue updated = ValueButcher.transformTimestampToNow(value);
-        if (log != null) {
-            log.debug(getName() + " wrote first sample " + updated);
-        }
+        
+        // well, this one just sets the value's timestamp to now! why?
+        //final IValue updated = ValueButcher.transformTimestampToNow(value);
+        ICssAlarmValueType<T> updated = new CssAlarmValueType<T>(value.getValueData(), 
+                                                                 value.getAlarm(), 
+                                                                 TimeInstantBuilder.buildFromNow());
+        LOG.debug(getName() + " wrote first sample " + updated);
+
         addInfoToBuffer(updated);
         return true;
     }
@@ -376,30 +390,33 @@ abstract public class ArchiveChannel
     {
         synchronized (this)
         {
-            most_recent_value = null;
+            most_recent_css_value = null;
         }
         if (log != null) {
             log.debug(getName() + " wrote disconnect sample");
         }
-        addInfoToBuffer(ValueButcher.createDisconnected());
+        //addInfoToBuffer(ValueButcher.createDisconnected());
         need_first_sample = true;
     }
 
-    /** Add given info value to buffer, tweaking its time stamp if necessary
+    /** 
+     * TODO (bknerr) : time stamp patching, inquire what's going on here - wrong timestamps from
+     * the epics system ?
+     * 
+     * Add given info value to buffer, tweaking its time stamp if necessary
      *  @param value Value to archive
      */
-    final protected void addInfoToBuffer(IValue value)
-    {
-        synchronized (this)
-        {
-            if (last_archived_value != null)
-            {
-                final ITimestamp last = last_archived_value.getTime();
-                if (last.isGreaterOrEqual(value.getTime()))
-                {   // Patch the time stamp
-                    final ITimestamp next =
-                        TimestampFactory.createTimestamp(last.seconds()+1, 0);
-                    value = ValueButcher.transformTimestamp(value, next);
+    final protected void addInfoToBuffer(ICssAlarmValueType<T> value) {
+        synchronized (this) {
+            if (last_archived_css_value != null) {
+                final TimeInstant last = last_archived_css_value.getTimestamp();
+                if (last.isAfter(value.getTimestamp())) {   // Patch the time stamp
+                    final TimeInstant next = last.plusMillis(1000);
+                        //TimestampFactory.createTimestamp(last.seconds()+1, 0);
+                        //value = ValueButcher.transformTimestamp(value, next);
+                    value = new CssAlarmValueType<T>(value.getValueData(), 
+                                                     value.getAlarm(),
+                                                     next);
                 }
                 // else: value is OK as is
             }
@@ -422,16 +439,16 @@ abstract public class ArchiveChannel
      *  @return <code>false</code> if value failed back-in-time or future check,
      *          <code>true</code> if value was added.
      */
-    final protected boolean addValueToBuffer(final IValue value)
+    final protected boolean addValueToBuffer(final ICssAlarmValueType<T> value)
     {
         // Suppress samples that are too far in the future
-        final ITimestamp time = value.getTime();
+        final TimeInstant time = value.getTimestamp();
 
-        if (isFuturistic(time))
-        {
-            trouble_sample_log.log("'" + getName() + "': Futuristic " + value);
-            return false;
-        }
+//        if (isFuturistic(time))
+//        {
+//            trouble_sample_log.log("'" + getName() + "': Futuristic " + value);
+//            return false;
+//        }
 
         synchronized (this)
         {
@@ -463,23 +480,23 @@ abstract public class ArchiveChannel
      *  Checks all groups to which the channel belongs.
      *  If they're all disabled, so is the channel.
      */
-    final void computeEnablement()
-    {
-        // 'Active' channels always stay enabled
-        if (enablement != Enablement.Passive) {
-            return;
-        }
-        for (final ArchiveGroup group : groups)
-        {
-            if (group.isEnabled())
-            {   // Found at least one enabled group
-                updateEnabledState(true);
-                return;
-            }
-        }
-        // else: All groups are disabled
-        updateEnabledState(false);
-    }
+//    final void computeEnablement()
+//    {
+//        // 'Active' channels always stay enabled
+//        if (enablement != Enablement.Passive) {
+//            return;
+//        }
+//        for (final ArchiveGroup group : groups)
+//        {
+//            if (group.isEnabled())
+//            {   // Found at least one enabled group
+//                updateEnabledState(true);
+//                return;
+//            }
+//        }
+//        // else: All groups are disabled
+//        updateEnabledState(false);
+//    }
 
     /** Update the enablement state in case of change */
     final private void updateEnabledState(final boolean new_enabled_state)
@@ -490,7 +507,7 @@ abstract public class ArchiveChannel
         }
         enabled = new_enabled_state;
         // In case this arrived after shutdown, don't log it.
-        if (!is_running) {
+        if (!_isRunning) {
             return;
         }
         if (enabled)

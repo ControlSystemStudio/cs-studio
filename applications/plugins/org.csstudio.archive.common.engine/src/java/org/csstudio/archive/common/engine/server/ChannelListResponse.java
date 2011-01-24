@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.server;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,8 @@ import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
+
+import com.google.common.base.Joiner;
 
 /** Provide web page with list of channels (by pattern).
  *  @author Kay Kasemir
@@ -59,37 +63,30 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_LastArchivedValue,
         });
        
-        for (int i=0; i<model.getChannelCount(); ++i)
-        {
-            final ArchiveChannel channel = model.getChannel(i);
+        for (ArchiveChannel<?> channel : model.getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches())
                 continue;
-            final StringBuilder groups = new StringBuilder();
-            for (int g=0; g<channel.getGroupCount(); ++g)
-            {
-                if (g > 0)
-                    groups.append(", ");
-                final ArchiveGroup group = channel.getGroup(i);
-                groups.append(HTMLWriter.makeLink(
-                            "group?name=" + group.getName(), group.getName()));
+            final List<String> groupNamesWithLinks = new ArrayList<String>();
+            for (ArchiveGroup group : channel.getGroups()) {
+                groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
             }
             html.tableLine(new String[]
-            {
-                HTMLWriter.makeLink("channel?name=" + channel.getName(),
-                        channel.getName()),
-                groups.toString(),
-                channel.isConnected()
-                    ? Messages.HTTP_Connected
-                    : HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
-                channel.getInternalState(),
-                channel.getMechanism(),
-                channel.isEnabled()
-                    ? Messages.HTTP_Enabled 
-                    : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                channel.getCurrentValue(),
-                channel.getLastArchivedValue(),
-            });
+                                      {
+                                       HTMLWriter.makeLink("channel?name=" + channel.getName(),
+                                                           channel.getName()),
+                                                           Joiner.on(", ").join(groupNamesWithLinks),
+                                                           channel.isConnected()
+                                                           ? Messages.HTTP_Connected
+                                                           : HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
+                                                           channel.getInternalState(),
+                                                           channel.getMechanism(),
+                                                           channel.isEnabled()
+                                                           ? Messages.HTTP_Enabled 
+                                                           : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
+                                                           channel.getCurrentValue(),
+                                                           channel.getLastArchivedValue(),
+                                      });
         }
         html.closeTable();
         html.close();

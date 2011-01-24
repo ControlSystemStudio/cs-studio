@@ -75,8 +75,8 @@ class ChannelResponse extends AbstractResponse
         html.tableLine(new String[]
         { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
 
-        html.tableLine(new String[]
-        { Messages.HTTP_Enablement, channel.getEnablement().toString() });
+//        html.tableLine(new String[]
+//        { Messages.HTTP_Enablement, channel.getEnablement().toString() });
 
         html.tableLine(new String[]
         {

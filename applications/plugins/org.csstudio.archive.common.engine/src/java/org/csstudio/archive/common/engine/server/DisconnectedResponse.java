@@ -36,24 +36,21 @@ class DisconnectedResponse extends AbstractResponse
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);
         html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_Group });
 
+        
+        
         final int group_count = model.getGroupCount();
         int disconnected = 0;
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                final ArchiveChannel channel = group.getChannel(j);
+        for (ArchiveGroup group : model.getGroups()) {
+            for (ArchiveChannel<?> channel : group.getChannels()) {
                 if (channel.isConnected())
                     continue;
                 ++disconnected;
                 html.tableLine(new String[]
-                {
-                    Integer.toString(disconnected),
-                    HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
-                    HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
-                } );
+                                          {
+                                           Integer.toString(disconnected),
+                                           HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                           HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                          } );
             }
         }
         html.closeTable();

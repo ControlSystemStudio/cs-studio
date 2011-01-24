@@ -16,11 +16,14 @@ import org.csstudio.platform.logging.CentralLogger;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MonitoredArchiveChannel extends ArchiveChannel
+public class MonitoredArchiveChannel<T> extends ArchiveChannel<T>
 {
+
+    private static final Logger LOG =
+            CentralLogger.getInstance().getLogger(MonitoredArchiveChannel.class);
+    
     /** Estimated period of change in seconds */
     final private double period_estimate;
-    private Logger log;
 
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public MonitoredArchiveChannel(final String name,
@@ -31,9 +34,6 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     {
         super(name, enablement, buffer_capacity, last_archived_value);
         this.period_estimate = period_estimate;
-        log = CentralLogger.getInstance().getLogger(this);
-        if (! log.isDebugEnabled())
-            log = null;
     }
 
     @Override
@@ -48,14 +48,12 @@ public class MonitoredArchiveChannel extends ArchiveChannel
     {
         if (super.handleNewValue(value))
         {
-            if (log != null)
-                log.debug(getName() + " wrote first sample " + value);
+            LOG.debug(getName() + " wrote first sample " + value);
             return true;
         }
         if (isEnabled())
         {
-            if (log != null)
-                log.debug(getName() + " writes " + value);
+            LOG.debug(getName() + " writes " + value);
             addValueToBuffer(value);
             return true;
         }

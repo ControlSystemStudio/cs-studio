@@ -24,6 +24,8 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class Application implements IApplication
 {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
+    
     /** Database URL, user, password */
     private String url = RDBArchiveEnginePreferences.getURL(),
                    user = RDBArchiveEnginePreferences.getUser(),
@@ -117,8 +119,7 @@ public class Application implements IApplication
 
         // Setup groups, channels, writer
         // This is all single-threaded!
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        logger.info("Archive Engine " + EngineModel.VERSION);
+        LOG.info("Archive Engine " + EngineModel.VERSION);
         try
         {
             model = new EngineModel();
@@ -130,7 +131,7 @@ public class Application implements IApplication
             }
             catch (final Exception ex)
             {
-                logger.fatal("Cannot start server on port "
+                LOG.fatal("Cannot start server on port "
                                 + port + ": " + ex.getMessage(), ex);
                 return EXIT_OK;
             }
@@ -138,7 +139,7 @@ public class Application implements IApplication
             boolean run = true;
             while (run)
             {
-                logger.info("Reading configuration '" + engine_name + "'");
+                LOG.info("Reading configuration '" + engine_name + "'");
                 final BenchmarkTimer timer = new BenchmarkTimer();
                 try
                 {
@@ -146,15 +147,15 @@ public class Application implements IApplication
                 }
                 catch (final Exception ex)
                 {
-                    logger.fatal(ex.getMessage());
+                    LOG.fatal(ex.getMessage());
                     return EXIT_OK;
                 }
                 timer.stop();
-                logger.info("Read configuration: " + model.getChannelCount() +
+                LOG.info("Read configuration: " + model.getChannelCount() +
                             " channels in " + timer.toString());
 
                 // Run until model gets stopped via HTTPD or #stop()
-                logger.info("Running, CA addr list: "
+                LOG.info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
                 model.start();
                 while (true)
@@ -170,17 +171,17 @@ public class Application implements IApplication
                     }
                 }
                 // Stop sampling
-                logger.info("ArchiveEngine ending");
+                LOG.info("ArchiveEngine ending");
                 model.stop();
                 model.clearConfig();
             }
 
-            logger.info("ArchiveEngine stopped");
+            LOG.info("ArchiveEngine stopped");
             server.stop();
         }
         catch (final Exception ex)
         {
-            logger.fatal("Unhandled Main Loop Error", ex);
+            LOG.fatal("Unhandled Main Loop Error", ex);
             ex.printStackTrace();
         }
 

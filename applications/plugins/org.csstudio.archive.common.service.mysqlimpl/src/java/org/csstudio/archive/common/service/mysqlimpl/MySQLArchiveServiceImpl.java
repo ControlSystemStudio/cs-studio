@@ -64,6 +64,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableBiMap.Builder;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
@@ -385,8 +387,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Set<IArchiveRequestType> getRequestTypes() {
-        return Sets.<IArchiveRequestType>newHashSet(EnumSet.allOf(ArchiveRequestType.class));
+    public ImmutableSet<IArchiveRequestType> getRequestTypes() {
+        return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(ArchiveRequestType.class)).build();
     }
 
 }

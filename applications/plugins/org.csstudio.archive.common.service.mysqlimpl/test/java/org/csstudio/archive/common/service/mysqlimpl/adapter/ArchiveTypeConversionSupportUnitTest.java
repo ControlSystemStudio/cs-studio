@@ -259,7 +259,8 @@ public class ArchiveTypeConversionSupportUnitTest {
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "127\\,-128" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
 
 
-            final Collection<Byte> coll = ArchiveTypeConversionSupport.fromArchiveString("List<Byte>", archiveString);
+            final Collection<Byte> coll =
+                ArchiveTypeConversionSupport.fromArchiveString("List<Byte>", archiveString);
 
             final Iterator<Byte> iterator = coll.iterator();
             Assert.assertEquals(Byte.valueOf("127"), iterator.next());

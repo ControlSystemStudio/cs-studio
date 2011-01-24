@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Level;
 import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
@@ -24,7 +24,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *
  *  @author Kay Kasemir
  */
-public class SampleBuffer extends ForwardingBlockingQueue<IValue>
+public class SampleBuffer<T> extends ForwardingBlockingQueue<ICssAlarmValueType<T>>
 {
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
@@ -34,8 +34,8 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
 
     /** The actual samples in a thread-save queue. */
 //    final private RingBuffer<IValue> samples;
-    private final BlockingQueue<IValue> samples;
-    private final int capacity;
+    private final BlockingQueue<ICssAlarmValueType<T>> samples;
+//    private final int capacity;
 
     /** Statistics */
     final private BufferStats stats = new BufferStats();
@@ -53,14 +53,14 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     private static volatile boolean error = false;
 
     /** Create sample buffer of given capacity */
-    SampleBuffer(final String channel_name, final int cap)
+    SampleBuffer(final String channel_name/*, final int cap */)
     {
         super();
 
         this.channel_name = channel_name;
         //samples = new RingBuffer<IValue>(capacity);
-        capacity = cap;
-        samples = new ArrayBlockingQueue<IValue>(capacity, true); // step by step to a producer consumer pattern
+        //capacity = cap;
+        samples = new LinkedBlockingQueue<ICssAlarmValueType<T>>(); // step by step to a producer consumer pattern
     }
 
     /** @return channel name of this buffer */
@@ -72,7 +72,8 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     /** @return Queue capacity, i.e. maximum queue size. */
     public int getCapacity()
     {
-        return capacity;
+        // for being a linked queue now, there isn't a fixed capacity
+        return -1;
     }
 
     /** @return <code>true</code> if currently experiencing write errors */
@@ -90,7 +91,7 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     /** Add a sample to the queue, maybe dropping older samples */
     @Override
     @SuppressWarnings("nls")
-    public boolean add(final IValue value)
+    public boolean add(final ICssAlarmValueType<T> value)
     {
     	synchronized (samples)
         {
@@ -154,7 +155,7 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
      * {@inheritDoc}
      */
     @Override
-    protected BlockingQueue<IValue> delegate() {
+    protected BlockingQueue<ICssAlarmValueType<T>> delegate() {
         return samples;
     }
 }
