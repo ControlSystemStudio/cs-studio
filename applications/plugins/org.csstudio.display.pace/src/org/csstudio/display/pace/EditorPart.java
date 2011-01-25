@@ -224,7 +224,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                 // Save changed values, make ELog entry
                 @Override
                 public void makeElogEntry(String logbook_name, String user,
-                        String password, String title, String body)
+                        String password, String title, String body, String images[])
                         throws Exception
                 {
                     // Both the logbook entry and the PV updates can fail
@@ -256,7 +256,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                         .connect(logbook_name, user, password);
                     try
                     {
-                        logbook.createEntry(title, body, null);
+                        logbook.createEntry(title, body, images);
                     }
                     finally
                     {
