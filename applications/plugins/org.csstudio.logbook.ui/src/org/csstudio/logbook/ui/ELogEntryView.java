@@ -17,6 +17,12 @@ import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -135,8 +141,29 @@ public class ELogEntryView extends ViewPart
         gd.minimumHeight = 50;
         text.setLayoutData(gd);
 
+        // Images
         image_tabfolder = new TabFolder(parent, SWT.TOP);
         image_tabfolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+
+        // Allow dropping file names (presumably images)
+        // Use the whole view as drop target.
+        // When dropping into the text field, the text widget itself will fetch the text,
+        // but anywhere else it will pick the image
+        DropTarget file_drop = new DropTarget(parent, DND.DROP_MOVE | DND.DROP_COPY);
+        file_drop.setTransfer(new Transfer[]
+        {
+                FileTransfer.getInstance()
+        });
+        file_drop.addDropListener(new DropTargetAdapter()
+        {
+            @Override
+            public void drop(final DropTargetEvent event)
+            {
+                final String names[] = (String[]) event.data;
+                for (String name : names)
+                    addImage(name);
+            }
+        });
 
         for (String image : image_filenames)
             addImage(image);
