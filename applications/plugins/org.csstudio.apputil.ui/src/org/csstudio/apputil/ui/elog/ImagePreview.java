@@ -95,10 +95,23 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
         final Rectangle bounds = getBounds();
         final GC gc = e.gc;
         if (image != null)
-        {   // Draw image to fit widget bounds
-            final Rectangle img_rect = image.getBounds();
-            gc.drawImage(image, 0, 0, img_rect.width, img_rect.height,
-                    0, 0, bounds.width, bounds.height);
+        {   // Draw image to fit widget bounds, maintaining aspect ratio
+            final Rectangle img = image.getBounds();
+            // Start with original size
+            int width = img.width;
+            int height = img.height;
+            if (width > bounds.width)
+            {   // Too wide?
+                width = bounds.width;
+                height = width * img.height / img.width;
+            }
+            if (height > bounds.height)
+            {   // Too high?
+                height = bounds.height;
+                width = height * img.width / img.height;
+            }
+            gc.drawImage(image, 0, 0, img.width, img.height,
+                    0, 0, width, height);
         }
         if (message != null)
         {   // Show message
