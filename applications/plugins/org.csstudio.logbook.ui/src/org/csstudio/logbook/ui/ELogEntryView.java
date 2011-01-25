@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.logbook.ui;
 
+import org.csstudio.apputil.ui.elog.ImagePreview;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
@@ -64,7 +65,7 @@ public class ELogEntryView extends ViewPart
             l.setText(Messages.LogEntry_ErrorNoLog + ex.getMessage());
             return;
         }
-        
+
         // Create GUI elements
         final GridLayout layout = new GridLayout(2, false);
         parent.setLayout(layout);
@@ -73,7 +74,7 @@ public class ELogEntryView extends ViewPart
         Label l = new Label(parent, 0);
         l.setText(Messages.LogEntry_User);
         l.setLayoutData(new GridData());
-        
+
         user_name = new Text(parent, SWT.BORDER);
         user_name.setToolTipText(Messages.LogEntry_User_TT);
         user_name.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -93,7 +94,7 @@ public class ELogEntryView extends ViewPart
             l = new Label(parent, 0);
             l.setText(Messages.LogEntry_Logbook);
             l.setLayoutData(new GridData());
-    
+
             logbook = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
             logbook.setToolTipText(Messages.LogEntry_Logbook_TT);
             logbook.setItems(logbooks);
@@ -122,7 +123,7 @@ public class ELogEntryView extends ViewPart
         text = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.WRAP);
         text.setToolTipText(Messages.LogEntry_Text_TT);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // Box with...
         final Composite box = new Composite(parent, 0);
         box.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
@@ -131,10 +132,10 @@ public class ELogEntryView extends ViewPart
         box_layout.marginRight = 0;
         box_layout.marginBottom = 0;
         box.setLayout(box_layout);
-        
+
         image = new ImagePreview(box);
         image.setLayoutData(new GridData());
-        
+
         add_image = new Button(box, SWT.PUSH);
         add_image.setText(Messages.ELogEntryView_AddImage);
         add_image.setToolTipText(Messages.ELogEntryView_AddImageTT);
@@ -147,11 +148,11 @@ public class ELogEntryView extends ViewPart
                 addImage();
             }
         });
-        
+
         // __status__ Submit
         status = new Label(box, 0);
         status.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         final Button submit = new Button(box, SWT.PUSH);
         submit.setText(Messages.LogEntry_Submit);
         submit.setToolTipText(Messages.LogEntry_Submit_TT);
@@ -175,7 +176,7 @@ public class ELogEntryView extends ViewPart
         if (text != null)
             text.setFocus();
     }
-    
+
     private void updateStatus(final String text, final boolean error)
     {
         status.setText(text);
@@ -213,7 +214,7 @@ public class ELogEntryView extends ViewPart
         }
         try
         {
-            log.createEntry(title.getText().trim(), text.getText().trim(), image.getImage());
+            log.createEntry(title.getText().trim(), text.getText().trim(), image.getImageFileName());
         }
         catch (Exception ex)
         {

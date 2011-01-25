@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.elog;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -27,26 +26,66 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ImagePreview extends Canvas implements DisposeListener, PaintListener
 {
-    private Image image;
+    /** Name of image file */
+    private String filename;
+
+    /** Image or <code>null</code> */
+    private Image image = null;
+
+    /** Additional short message or <code>null</code> */
     private String message;
 
-    public ImagePreview(final Composite parent, final String message, String image_filename)
+    public ImagePreview(final Composite parent)
+    {
+        this(parent, null, null);
+    }
+
+    public ImagePreview(final Composite parent, final String message, final String image_filename)
     {
         super(parent, 0);
-        addDisposeListener(this);
-        setToolTipText(image_filename);
+        this.message = message;
 
+        addDisposeListener(this);
+        setImage(image_filename);
+
+        addPaintListener(this);
+    }
+
+
+    /** Set image to display
+     *  @param image_filename Name of image file or <code>null</code> for no image
+     */
+    public void setImage(final String image_filename)
+    {
+        this.filename = image_filename;
+        // Remove previous image, if there was one
+        if (image != null)
+        {
+            image.dispose();
+            image = null;
+            setToolTipText(""); //$NON-NLS-1$
+        }
+        if (image_filename == null)
+            return;
         try
         {
-            image = new Image(parent.getDisplay(), image_filename);
-            this.message = message;
+            image = new Image(getDisplay(), image_filename);
         }
         catch (Exception ex)
         {
-            this.message =
-                NLS.bind(Messages.ImagePreview_ImageError, image_filename, ex.getMessage());
+            setToolTipText("Error: " + ex.getMessage()); //$NON-NLS-1$
+            return;
         }
-        addPaintListener(this);
+        setToolTipText(image_filename);
+    }
+
+    /** @see Control */
+    @Override
+    public Point computeSize(final int wHint, final int hHint)
+    {
+        if (image == null)
+            return new Point(1, 1);
+        return new Point(200, 200);
     }
 
     /** @see PaintListener */
@@ -77,5 +116,11 @@ public class ImagePreview extends Canvas implements DisposeListener, PaintListen
     {
         if (image != null)
             image.dispose();
+    }
+
+    /** @return Image file name */
+    public String getImageFileName()
+    {
+        return filename;
     }
 }
