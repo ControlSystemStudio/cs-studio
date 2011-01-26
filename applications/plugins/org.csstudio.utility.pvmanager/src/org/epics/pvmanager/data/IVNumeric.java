@@ -27,11 +27,11 @@ class IVNumeric extends IVMetadata implements Display {
     private final Double upperDisplayLimit;
 
     IVNumeric(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
+            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag);
+        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, timeValid);
         this.lowerDisplayLimit = lowerDisplayLimit;
         this.lowerCtrlLimit = lowerCtrlLimit;
         this.lowerAlarmLimit = lowerAlarmLimit;

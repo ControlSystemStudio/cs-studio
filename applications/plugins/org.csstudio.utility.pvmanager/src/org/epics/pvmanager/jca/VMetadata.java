@@ -51,4 +51,9 @@ class VMetadata<TValue extends TIME> implements Alarm, Time {
         return null;
     }
 
+    @Override
+    public boolean isTimeValid() {
+        return DataUtils.isTimeValid(getTimeStamp());
+    }
+
 }

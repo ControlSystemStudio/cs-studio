@@ -18,13 +18,15 @@ class IVMetadata implements Alarm, Time {
     private final AlarmStatus alarmStatus;
     private final TimeStamp timeStamp;
     private final Integer timeUserTag;
+    private final boolean timeValid;
 
     IVMetadata(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag) {
+            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid) {
         this.alarmSeverity = alarmSeverity;
         this.alarmStatus = alarmStatus;
         this.timeStamp = timeStamp;
         this.timeUserTag = timeUserTag;
+        this.timeValid = timeValid;
     }
 
     @Override
@@ -45,6 +47,11 @@ class IVMetadata implements Alarm, Time {
     @Override
     public Integer getTimeUserTag() {
         return timeUserTag;
+    }
+
+    @Override
+    public boolean isTimeValid() {
+        return timeValid;
     }
 
 }
