@@ -110,7 +110,9 @@
                   tooltip="Write the color map in this file to BOY&apos;s default Color Map">
                <visibleWhen
                      checkEnabled="false">
-                  <iterate>
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
                      <or>
                         <adapt
                               type="org.eclipse.core.resources.IResource">

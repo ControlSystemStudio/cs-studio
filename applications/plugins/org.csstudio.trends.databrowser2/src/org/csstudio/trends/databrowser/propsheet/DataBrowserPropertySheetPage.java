@@ -348,6 +348,7 @@ public class DataBrowserPropertySheetPage extends Page
                 menu.add(add_pv);
                 menu.add(add_formula);
                 menu.add(delete_pv);
+                menu.add(new RemoveUnusedAxesAction(operations_manager, model));
                 final PVItem pvs[] = getSelectedPVs();
                 if (pvs.length <= 0)
                     return;

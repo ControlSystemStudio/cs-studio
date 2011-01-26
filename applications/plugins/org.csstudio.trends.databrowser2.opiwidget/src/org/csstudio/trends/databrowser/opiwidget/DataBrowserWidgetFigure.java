@@ -29,13 +29,14 @@ public class DataBrowserWidgetFigure extends Figure
 
     /** Initialize
      *  @param filename Configuration file name
+     *  @param toolbar
      */
-    public DataBrowserWidgetFigure(final String filename)
+    public DataBrowserWidgetFigure(final String filename, final boolean toolbar)
     {
         this.filename = filename;
 
         plot = Plot.forDraw2D();
-        plot.setToolbarVisible(false);
+        plot.setToolbarVisible(toolbar);
         add(plot.getFigure());
     }
 
@@ -53,15 +54,28 @@ public class DataBrowserWidgetFigure extends Figure
         repaint();
     }
 
+    /** @return Tool bar visibility */
+    public boolean isToolbarVisible()
+    {
+        return plot.isToolbarVisible();
+    }
+
+    /** @param visible New tool bar visibility */
+    public void setToolbarVisible(final boolean visible)
+    {
+        plot.setToolbarVisible(visible);
+    }
+
+    /** Have plot fill the figure */
     @Override
     protected void layout()
     {
-        // Plot fills the figure
         plot.getFigure().setBounds(getClientArea());
         // Not using any LayoutManager
         // super.layout();
     }
 
+    /** Display filename on top of plot */
     @Override
     protected void paintClientArea(final Graphics graphics)
     {

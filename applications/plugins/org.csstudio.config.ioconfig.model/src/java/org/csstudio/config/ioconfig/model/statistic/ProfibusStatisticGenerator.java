@@ -27,12 +27,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
@@ -59,7 +59,7 @@ public class ProfibusStatisticGenerator {
     private StringBuilder _statistic;
     private Map<GSDFileDBO, Integer> _gsdMasterFileMap;
     private Map<GSDFileDBO, Integer> _gsdSlaveFileMap;
-    private Map<GSDModuleDBO, Integer> _gsdModuleMap;
+    private Map<GSDModuleDBO, ModuleStatistcCounter> _gsdModuleMap;
     private static final String LINE_END = "\r\n";
     
     /**
@@ -69,7 +69,7 @@ public class ProfibusStatisticGenerator {
         _statistic = new StringBuilder();
         _gsdMasterFileMap = new HashMap<GSDFileDBO, Integer>();
         _gsdSlaveFileMap = new HashMap<GSDFileDBO, Integer>();
-        _gsdModuleMap = new HashMap<GSDModuleDBO, Integer>();
+        _gsdModuleMap = new HashMap<GSDModuleDBO, ModuleStatistcCounter>();
     }
 
     /**
@@ -100,17 +100,18 @@ public class ProfibusStatisticGenerator {
         }
         _statistic.append("GSD Files gesamt: ").append(gsdFileCount).append(LINE_END);
         for (GSDModuleDBO gsdModuleDBO : _gsdModuleMap.keySet()) {
-            Integer count = _gsdModuleMap.get(gsdModuleDBO);
-            _statistic.append("GSD Module: \"").append(String.format("%40s",gsdModuleDBO.getName())).append("\" wird ").append(String.format("%3d",count)).append(" mal verwendet").append(LINE_END);
-            gsdModuleCount += count;
+            ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModuleDBO);
+            _statistic.append(String.format("GSD Module: \"%40s\" wird %3d mal verwendet.\tAngeschlossen: %4d von %4d Kanälen.",gsdModuleDBO.getName(),msc.getModuleCount(),msc.getUsedChannelsCount(),msc.getTotalChannelsCount())).append(LINE_END);
+            gsdModuleCount += msc.getModuleCount();
         }
         _statistic.append("GSD Modules gesamt: ").append(gsdModuleCount).append(LINE_END);
     }
     
     /**
      * @param ioc
+     * @throws PersistenceException 
      */
-    private void iocStatisticCreator(@Nonnull IocDBO ioc) {
+    private void iocStatisticCreator(@Nonnull IocDBO ioc) throws PersistenceException {
         Set<ProfibusSubnetDBO> subnets = ioc.getProfibusSubnets();
         for (ProfibusSubnetDBO subnet: subnets) {
             subnetStatisticCreator(subnet);
@@ -119,8 +120,9 @@ public class ProfibusStatisticGenerator {
 
     /**
      * @param subnet
+     * @throws PersistenceException 
      */
-    private void subnetStatisticCreator(@Nonnull ProfibusSubnetDBO subnet) {
+    private void subnetStatisticCreator(@Nonnull ProfibusSubnetDBO subnet) throws PersistenceException {
         Set<MasterDBO> masters = subnet.getProfibusDPMaster();
         for (MasterDBO master : masters) {
             masterStatisticCreator(master);
@@ -129,8 +131,9 @@ public class ProfibusStatisticGenerator {
 
     /**
      * @param master
+     * @throws PersistenceException 
      */
-    private void masterStatisticCreator(@Nonnull MasterDBO master) {
+    private void masterStatisticCreator(@Nonnull MasterDBO master) throws PersistenceException {
         Set<SlaveDBO> slaves = master.getSlaves();
         GSDFileDBO gsdFile = master.getGSDFile();
         if (gsdFile != null) {
@@ -148,19 +151,20 @@ public class ProfibusStatisticGenerator {
 
     /**
      * @param slave
+     * @throws PersistenceException 
      */
-    private void slaveStatisticCreator(@Nonnull SlaveDBO slave) {
+    private void slaveStatisticCreator(@Nonnull SlaveDBO slave) throws PersistenceException {
         Set<ModuleDBO> modules = slave.getModules();
         countGsdFile(slave.getGSDFile());
         for (ModuleDBO module : modules) {
-            countGsdModule(module.getGSDModule());
+            countGsdModule(module);
         }
     }
 
     /**
      * @param gsdFile
      */
-    private void countGsdFile(GSDFileDBO gsdFile) {
+    private void countGsdFile(@Nullable GSDFileDBO gsdFile) {
         Integer gsdFileCounter = _gsdSlaveFileMap.get(gsdFile);
         if(gsdFileCounter==null) {
             gsdFileCounter = 0;
@@ -170,15 +174,17 @@ public class ProfibusStatisticGenerator {
     }
 
     /**
-     * @param gsdModule
+     * @param module
+     * @throws PersistenceException 
      */
-    private void countGsdModule(@Nonnull GSDModuleDBO gsdModule) {
-        Integer gsdModuleCounter = _gsdModuleMap.get(gsdModule);
-        if(gsdModuleCounter==null) {
-            gsdModuleCounter = 0;
+    private void countGsdModule(@Nonnull ModuleDBO module) throws PersistenceException {
+        GSDModuleDBO gsdModule = module.getGSDModule();
+        ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModule);
+        if(msc==null) {
+            msc = new ModuleStatistcCounter();
         }
-        gsdModuleCounter++;
-        _gsdModuleMap.put(gsdModule, gsdModuleCounter);
+        msc.addModule(module);
+        _gsdModuleMap.put(gsdModule, msc);
     }
 
     
