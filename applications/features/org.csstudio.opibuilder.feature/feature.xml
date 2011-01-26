@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.opibuilder.feature"
       label="Operator Interface Builder (BOY)"
-      version="2.4.0.qualifier"
+      version="2.5.0.qualifier"
       provider-name="SNS">
 
    <description>
