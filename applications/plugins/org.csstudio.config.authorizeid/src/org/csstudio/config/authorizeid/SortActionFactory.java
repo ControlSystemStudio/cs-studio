@@ -56,18 +56,24 @@ enum SortActionFactory {
 
     /**
      * Creates a sort action based on the given comparator and registers it at the column header.
+     * Defines the default sort column.
      * 
      * @param <T> type of the items to compare
      * @param viewer
      * @param column 
      * @param comparator
+     * @param isDefault
      */
     public static <T> void connectSortActionToColumn(@Nonnull final TableViewer viewer,
                                                      @Nonnull final TableColumn column,
-                                                     @Nonnull final TypedComparator<T> comparator) {
+                                                     @Nonnull final TypedComparator<T> comparator,
+                                                     final boolean isDefault) {
         final InvertableViewerComparator invertableComparator = SortActionFactory.INSTANCE
                 .createComparator(comparator);
         final Action action = createSortAction(viewer, column, invertableComparator);
+        if (isDefault) {
+            action.run();
+        }
         final SelectionListener listener = createColumnHeaderSortListener(action);
         column.addSelectionListener(listener);
     }

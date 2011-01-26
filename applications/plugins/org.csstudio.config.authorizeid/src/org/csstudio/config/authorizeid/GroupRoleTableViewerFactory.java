@@ -85,7 +85,7 @@ enum GroupRoleTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_EAIG);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
-        SortActionFactory.connectSortActionToColumn(viewer, column, createGroupComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createGroupComparator(), true);
         return column;
     }
     
@@ -107,7 +107,7 @@ enum GroupRoleTableViewerFactory {
         
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(10, ColumnWeightData.MINIMUM_WIDTH));
-        SortActionFactory.connectSortActionToColumn(viewer, column, createRoleComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createRoleComparator(), false);
         return column;
     }
     

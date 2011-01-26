@@ -86,7 +86,7 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_EAIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(15, ColumnWeightData.MINIMUM_WIDTH));
-        SortActionFactory.connectSortActionToColumn(viewer, column, createAuthorizeIdComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createAuthorizeIdComparator(), true);
         return column;
     }
     
@@ -107,7 +107,7 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_DESCRIPTION);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(50, ColumnWeightData.MINIMUM_WIDTH));
-        SortActionFactory.connectSortActionToColumn(viewer, column, createDescriptionComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createDescriptionComparator(), false);
         return column;
     }
     
@@ -128,7 +128,7 @@ enum RegisteredAuthorizationIdTableViewerFactory {
         column.setText(Messages.AuthorizeIdView_ORIGINATING_PLUGIN);
         tableColumnLayout.setColumnData(column,
                                         new ColumnWeightData(35, ColumnWeightData.MINIMUM_WIDTH));
-        SortActionFactory.connectSortActionToColumn(viewer, column, createOriginatingPluginComparator());
+        SortActionFactory.connectSortActionToColumn(viewer, column, createOriginatingPluginComparator(), false);
         return column;
     }
 

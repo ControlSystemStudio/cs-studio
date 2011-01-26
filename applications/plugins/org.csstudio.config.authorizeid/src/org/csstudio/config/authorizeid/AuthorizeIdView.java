@@ -103,9 +103,9 @@ public class AuthorizeIdView extends ViewPart {
         registeredAuthIdGroupPanel.setLayout(new GridLayout(1, false));
         registeredAuthIdGroupPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         
-        createAuthIdPanel(authIDPanel);
-        createGroupRolePanel(groupRolePanel);
-        createRegisteredAuthIdPanel(registeredAuthIdGroupPanel);
+        createAuthIdPanelContent(authIDPanel);
+        createGroupRolePanelContent(groupRolePanel);
+        createRegisteredAuthIdPanelContent(registeredAuthIdGroupPanel);
         
         showRegisteredAuthIds();
     }
@@ -116,7 +116,7 @@ public class AuthorizeIdView extends ViewPart {
         _registeredAuthorizeIdTableViewer.setInput(authIds.toArray());
     }
     
-    private void createAuthIdPanel(@Nonnull final Composite authIDPanel) {
+    private void createAuthIdPanelContent(@Nonnull final Composite authIDPanel) {
         final Group categoryGroupPanel = new Group(authIDPanel, SWT.NONE);
         categoryGroupPanel.setText(Messages.AuthorizeIdView_SELECT_GROUP);
         categoryGroupPanel.setLayout(new FillLayout(SWT.HORIZONTAL));
@@ -132,7 +132,6 @@ public class AuthorizeIdView extends ViewPart {
         try {
             groups = LdapAccess.getGroups();
         } catch (final Exception e) {
-            // TODO (jpenning) popup with error message else user will not notice
             LOG.warn("No groups found in LDAP", e);
         }
         
@@ -168,7 +167,7 @@ public class AuthorizeIdView extends ViewPart {
         createButtons1(authIdButtonPanel);
     }
     
-    private void createGroupRolePanel(@Nonnull final Composite groupRolePanel) {
+    private void createGroupRolePanelContent(@Nonnull final Composite groupRolePanel) {
         final Composite groupRoleTablePanel = new Composite(groupRolePanel, SWT.NONE);
         groupRoleTablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         _groupRoleTableViewer = GroupRoleTableViewerFactory.INSTANCE
@@ -181,7 +180,7 @@ public class AuthorizeIdView extends ViewPart {
         createButtons2(groupRoleButtonPanel);
     }
     
-    private void createRegisteredAuthIdPanel(@Nonnull final Composite registeredAuthIdPanel) {
+    private void createRegisteredAuthIdPanelContent(@Nonnull final Composite registeredAuthIdPanel) {
         final Composite tablePanel = new Composite(registeredAuthIdPanel, SWT.NONE);
         tablePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         _registeredAuthorizeIdTableViewer = RegisteredAuthorizationIdTableViewerFactory.INSTANCE

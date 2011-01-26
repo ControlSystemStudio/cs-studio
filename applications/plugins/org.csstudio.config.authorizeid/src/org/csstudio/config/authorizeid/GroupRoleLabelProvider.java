@@ -5,10 +5,10 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 
-import javax.naming.Context;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -28,10 +28,18 @@ import org.eclipse.swt.graphics.Image;
  * @author Rok Povsic / Jörg Penning
  */
 class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+    private final String ROLE_ATTRIBUTE_KEY = "eagn";
+    private final String ORGANIZATION_ATTRIBUTE_KEY = "ou";
+    private final String ASSOCIATED_NAME_ATTRIBUTE_KEY = "associatedName";
+
+    private final String CSS_ATTRIBUTE_VALUE = "Css";
+    private final String AUTHORIZE_ATTRIBUTE_VALUE = "EpicsAuthorize";
     
     /**
      * {@inheritDoc}
      */
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
         return null;
     }
@@ -39,15 +47,14 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getColumnText(Object element, int columnIndex) {
         
         String result = null;
         
         if (element instanceof GroupRoleTableEntry) {
             GroupRoleTableEntry entry = (GroupRoleTableEntry) element;
-            
             GroupRoleTableColumns colIndex = GroupRoleTableColumns.values()[columnIndex];
-            
             switch (colIndex) {
                 case GROUP:
                     result = entry.getEaig();
@@ -63,26 +70,41 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
         return result;
     }
     
-    private String getUsers(GroupRoleTableEntry entry) {
+    @Nonnull
+    private String getUsers(@Nonnull final GroupRoleTableEntry entry) {
+        // (jpenning) why do this here in label provider? could be done at retrieval of entry.
         final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
-        final ILdapSearchResult ldapResult = service
-                .retrieveSearchResultSynchronously(createLdapName("eagn",
-                                                                  entry.getEair(),
-                                                                  "ou",
-                                                                  entry.getEaig(),
-                                                                  "ou",
-                                                                  "Css",
-                                                                  "ou",
-                                                                  "EpicsAuthorize"),
-                                                   any("associatedName"),
-                                                   SearchControls.SUBTREE_SCOPE);
+        final ILdapSearchResult ldapResult = service.retrieveSearchResultSynchronously(
+            createLdapName(ROLE_ATTRIBUTE_KEY, entry.getEair(), ORGANIZATION_ATTRIBUTE_KEY, entry.getEaig(),
+                           ORGANIZATION_ATTRIBUTE_KEY, CSS_ATTRIBUTE_VALUE, ORGANIZATION_ATTRIBUTE_KEY, AUTHORIZE_ATTRIBUTE_VALUE),
+                           any(ASSOCIATED_NAME_ATTRIBUTE_KEY), SearchControls.SUBTREE_SCOPE);
         
-        String result = null;
-        try {
+        StringBuilder result = new StringBuilder();
+        if (ldapResult != null) {
             for (SearchResult searchResult : ldapResult.getAnswerSet()) {
-                Attribute attribute = searchResult.getAttributes().get("associatedName");
-                result = scanAttribute(result, attribute);
+                Attribute userList = searchResult.getAttributes().get(ASSOCIATED_NAME_ATTRIBUTE_KEY);
+                if (userList != null) {
+                    result.append(getSortedListOfUsers(userList, entry));
+                }
             }
+        }
+        
+        return result.toString();
+    }
+    
+    @Nonnull
+    private String getSortedListOfUsers(@Nonnull final Attribute userList,
+                                        @Nonnull final GroupRoleTableEntry entry) {
+        String result = "";
+        try {
+            NamingEnumeration<?> allEAGNs = userList.getAll();
+            List<String> users = new ArrayList<String>();
+            while (allEAGNs.hasMoreElements()) {
+                String userAttribute = allEAGNs.nextElement().toString();
+                users.add(getUserNameWithoutPrefix(userAttribute));
+            }
+            Collections.sort(users);
+            result = createStringOfUsers(users);
         } catch (NamingException e) {
             result = "<error retrieving users for this group / role: probably undefined in ldap>";
             CentralLogger.getInstance().error(this,
@@ -90,29 +112,31 @@ class GroupRoleLabelProvider extends LabelProvider implements ITableLabelProvide
                                                       + " and role " + entry.getEair(),
                                               e);
         }
-        
         return result;
     }
-    
-    private String scanAttribute(String result, Attribute attribute) throws NamingException {
-        if (attribute != null) {
-            
-            NamingEnumeration<?> allEAGNs = attribute.getAll();
-            List<String> users = new ArrayList<String>();
-            while (allEAGNs.hasMoreElements()) {
-                String eaun = (String) allEAGNs.nextElement();
-                if (eaun != null) {
-                    users.add(eaun.substring(5));
-                }
+
+    @Nonnull
+    private String createStringOfUsers(@Nonnull final List<String> users) {
+        StringBuilder usersAsString = new StringBuilder();
+        for (String user : users) {
+            usersAsString.append(user);
+            usersAsString.append(' ');
+        }
+        return usersAsString.toString();
+    }
+
+    @Nonnull
+    private String getUserNameWithoutPrefix(@CheckForNull final String userAttribute) {
+        String result = "";
+        if (userAttribute != null) {
+            // the key 'eaun=' is removed
+            int beginIndex = userAttribute.indexOf('=') + 1;
+            if (beginIndex < userAttribute.length()) {
+                result = userAttribute.substring(beginIndex);
             }
-            Collections.sort(users);
-            
-            StringBuilder usersAsString = new StringBuilder();
-            for (String user : users) {
-                usersAsString.append(user);
-                usersAsString.append(' ');
-            }
-            result = usersAsString.toString();
+            else {
+                result = "<problem scanning attribute: " + userAttribute + ">";
+           }
         }
         return result;
     }
