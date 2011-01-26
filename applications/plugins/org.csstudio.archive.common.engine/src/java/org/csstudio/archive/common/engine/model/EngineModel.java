@@ -103,7 +103,6 @@ public class EngineModel {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
-
         applyPreferences();
 
         _writeThread = new WriteThread();
@@ -203,8 +202,8 @@ public class EngineModel {
 
 
     /** Start processing all channels and writing to archive. */
-    final public void start() throws Exception
-    {
+    final public void start() throws Exception {
+
         start_time = TimestampFactory.now();
         state = State.RUNNING;
         _writeThread.start(write_period, batch_size);

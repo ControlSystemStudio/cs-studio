@@ -30,7 +30,7 @@ class ChannelResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -41,7 +41,7 @@ class ChannelResponse extends AbstractResponse
             resp.sendError(400, "Missing channel name");
             return;
         }
-        final ArchiveChannel channel = model.getChannel(channel_name);
+        final ArchiveChannel<?, ?> channel = model.getChannel(channel_name);
         if (channel == null)
         {
             resp.sendError(400, "Unknown channel " + channel_name);
@@ -62,18 +62,18 @@ class ChannelResponse extends AbstractResponse
                         : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
         html.tableLine(new String[]
         { Messages.HTTP_Connected, connected });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_InternalState, channel.getInternalState() });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_Mechanism, channel.getMechanism() });
 
         html.tableLine(new String[]
         { Messages.HTTP_CurrentValue, channel.getCurrentValue() });
 
-        html.tableLine(new String[]
-        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
+//        html.tableLine(new String[]
+//        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
 
 //        html.tableLine(new String[]
 //        { Messages.HTTP_Enablement, channel.getEnablement().toString() });
@@ -81,11 +81,11 @@ class ChannelResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_State,
-            channel.isEnabled() ? Messages.HTTP_Enabled 
+            channel.isEnabled() ? Messages.HTTP_Enabled
                                 : HTMLWriter.makeRedText(Messages.HTTP_Disabled)
         });
-        
-        final SampleBuffer buffer = channel.getSampleBuffer();
+
+        final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
         html.tableLine(new String[]
         { Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
 
@@ -107,8 +107,9 @@ class ChannelResponse extends AbstractResponse
 
         final int overrun_count = stats.getOverruns();
         String overruns = Integer.toString(overrun_count);
-        if (overrun_count > 0)
+        if (overrun_count > 0) {
             overruns = HTMLWriter.makeRedText(overruns);
+        }
         html.tableLine(new String[]
         { Messages.HTTP_QueueOverruns, overruns });
 
@@ -132,7 +133,7 @@ class ChannelResponse extends AbstractResponse
             });
         }
         html.closeTable();
-        
+
         html.close();
     }
 }

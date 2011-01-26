@@ -39,7 +39,7 @@ public class MonitoredArchiveChannel<V,
     @Override
     public String getMechanism() {
         //return "on change [" + PeriodFormat.formatSeconds(period_estimate) + "]";
-        return "on change [";// + PeriodFormat.formatSeconds(period_estimate) + "]";
+        return "MONITOR (on change)";// + PeriodFormat.formatSeconds(period_estimate) + "]";
     }
 
     /** Attempt to add each new value to the buffer. */

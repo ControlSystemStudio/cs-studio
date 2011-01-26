@@ -15,9 +15,14 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.server.EngineServer;
+import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.jca.JCASupport;
+import org.epics.pvmanager.sim.SimulationDataSource;
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
@@ -25,7 +30,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class Application implements IApplication
 {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
-    
+
     /** Database URL, user, password */
     private String url = RDBArchiveEnginePreferences.getURL(),
                    user = RDBArchiveEnginePreferences.getUser(),
@@ -35,10 +40,10 @@ public class Application implements IApplication
     private int port;
 
     /** Request file */
-    private String engine_name;
+    private String _engineName;
 
     /** Application model */
-    private EngineModel model;
+    private EngineModel _model;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
@@ -95,20 +100,29 @@ public class Application implements IApplication
         user = user_opt.get();
         password = pass_opt.get();
         port = port_opt.get();
-        engine_name = engine_name_opt.get();
+        _engineName = engine_name_opt.get();
         return true;
     }
 
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("nls")
-    public Object start(final IApplicationContext context) throws Exception
-    {
+    public Object start(final IApplicationContext context) throws Exception {
         final String args[] =
             (String []) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
         }
+        // Install the type supports for these engines
+        ArchiveEngineTypeSupport.install();
+
+        // Install the data sources
+        final CompositeDataSource dataSource = new CompositeDataSource();
+        dataSource.putDataSource("sim", SimulationDataSource.simulatedData());
+        dataSource.putDataSource("epics", JCASupport.jca());
+        dataSource.setDefaultDataSource("epics");
+
+        PVManager.setDefaultDataSource(dataSource);
 
 //        if (url == null)
 //        {
@@ -120,60 +134,52 @@ public class Application implements IApplication
         // Setup groups, channels, writer
         // This is all single-threaded!
         LOG.info("Archive Engine " + EngineModel.VERSION);
-        try
-        {
-            model = new EngineModel();
+        try {
+            _model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
-            try
-            {
-                server = new EngineServer(model, port);
-            }
-            catch (final Exception ex)
-            {
+            try {
+                server = new EngineServer(_model, port);
+            } catch (final Exception ex) {
                 LOG.fatal("Cannot start server on port "
                                 + port + ": " + ex.getMessage(), ex);
                 return EXIT_OK;
             }
 
             boolean run = true;
-            while (run)
-            {
-                LOG.info("Reading configuration '" + engine_name + "'");
+            while (run) {
+                LOG.info("Reading configuration '" + _engineName + "'");
                 final BenchmarkTimer timer = new BenchmarkTimer();
-                try
-                {
-                    model.readConfig(engine_name, port);
-                }
-                catch (final Exception ex)
-                {
+                try {
+                    _model.readConfig(_engineName, port);
+                } catch (final Exception ex) {
                     LOG.fatal(ex.getMessage());
                     return EXIT_OK;
                 }
                 timer.stop();
-                LOG.info("Read configuration: " + model.getChannelCount() +
+                LOG.info("Read configuration: " + _model.getChannelCount() +
                             " channels in " + timer.toString());
 
                 // Run until model gets stopped via HTTPD or #stop()
                 LOG.info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
-                model.start();
+                _model.start();
                 while (true)
                 {
                     Thread.sleep(1000);
-                    if (model.getState() == EngineModel.State.SHUTDOWN_REQUESTED)
+                    if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED)
                     {
                         run = false;
                         break;
                     }
-                    if (model.getState() == EngineModel.State.RESTART_REQUESTED) {
+                    if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {
                         break;
                     }
                 }
                 // Stop sampling
                 LOG.info("ArchiveEngine ending");
-                model.stop();
-                model.clearConfig();
+                _model.stop();
+                _model.clearConfig();
             }
 
             LOG.info("ArchiveEngine stopped");
@@ -192,8 +198,8 @@ public class Application implements IApplication
     @Override
     public void stop()
     {
-        if (model != null) {
-            model.requestStop();
+        if (_model != null) {
+            _model.requestStop();
         }
     }
 }

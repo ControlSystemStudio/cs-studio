@@ -274,7 +274,6 @@ public class WriteThread implements Runnable {
             buffer.updateStats();
             totalCount += buffer.size();
             buffer.drainTo(allSamples);
-
         }
         final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
         writerService.writeSamples(allSamples);

@@ -50,6 +50,13 @@ import com.google.common.collect.Collections2;
 public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
+    private static final String[] SCALAR_TYPE_PACKAGES =
+        new String[]{"java.lang",
+                     "org.csstudio.domain.desy.epics.types"};
+    private static final String[] MULTI_SCALAR_TYPE_PACKAGES =
+        new String[]{"java.util",
+                     "org.csstudio.domain.desy.epics.types"};
+
     /**
      * Type to archive string converter function for guava collection transforming.
      *
@@ -223,7 +230,12 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
 
     @Nonnull
     public static <T> T fromDouble(@Nonnull final String dataType, @Nonnull final Double value) throws TypeSupportException {
-        final Class<?> typeClass = createTypeClassFromString(dataType);
+        final Class<?> typeClass = createTypeClassFromString(dataType,
+                                                             SCALAR_TYPE_PACKAGES);
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for data type " + dataType +
+                                           " could not be loaded from packages " + SCALAR_TYPE_PACKAGES, null);
+        }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
@@ -240,7 +252,12 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      */
     @Nonnull
     public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
-        final Class<?> typeClass = createTypeClassFromString(dataType);
+        final Class<?> typeClass = createTypeClassFromString(dataType,
+                                                             SCALAR_TYPE_PACKAGES);
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for data type " + dataType +
+                                           " could not be loaded from packages " + SCALAR_TYPE_PACKAGES, null);
+        }
         return isDataTypeOptimizable(typeClass);
     }
     /**
@@ -262,8 +279,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
         final Class<T> typeClass = TypeSupport.createTypeClassFromString(datatype,
-                                                                         "java.util",
-                                                                         "org.csstudio.domain.desy.epics.types");
+                                                                         SCALAR_TYPE_PACKAGES);
         if (typeClass != null) {
             return fromScalarArchiveString(typeClass, value);
         }
@@ -279,8 +295,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
 
         final Class<T> typeClass =
             TypeSupport.createTypeClassFromMultiScalarString(datatype,
-                                                            "java.lang",
-                                                            "org.csstudio.domain.desy.epics.types");
+                                                             MULTI_SCALAR_TYPE_PACKAGES);
         if (typeClass != null) {
             return (T) fromMultiScalarArchiveString(typeClass, value);
         }

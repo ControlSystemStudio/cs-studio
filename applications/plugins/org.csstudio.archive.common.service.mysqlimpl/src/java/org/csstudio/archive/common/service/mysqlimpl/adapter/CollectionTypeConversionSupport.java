@@ -87,7 +87,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @Nonnull
     protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
-                                       " Use .class type of T for a Collection<T>! as parameter." , null);
+                                       " Use .class type of T for a Collection<T> as parameter." , null);
     }
 
     /**

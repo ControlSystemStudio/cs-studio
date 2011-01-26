@@ -34,7 +34,9 @@ import org.csstudio.platform.AbstractPreference;
 public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
     public static final MySQLArchiveServicePreference<String> URL =
-        new MySQLArchiveServicePreference<String>("url", "jdbc:mysql://krykpcgasta.desy.de:3306/archive");
+        new MySQLArchiveServicePreference<String>("url", "jdbc:mysql://krynfsc.desy.de:3306/archive");
+    public static final MySQLArchiveServicePreference<String> FAILOVER_URL =
+        new MySQLArchiveServicePreference<String>("failoverUrl", "jdbc:mysql://krykpcgasta.desy.de:3306/archive");
 
     public static final MySQLArchiveServicePreference<String> USER =
         new MySQLArchiveServicePreference<String>("user", "desyArchiver");

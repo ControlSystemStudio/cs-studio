@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.eclipse.core.runtime.Platform;
+
 /**
  * Type support after carcassi's pattern: {@link org.epics.pvmanager.TypeSupport}
  *
@@ -98,7 +100,7 @@ public abstract class TypeSupport<T> {
     @SuppressWarnings("unchecked")
     @CheckForNull
     static <T> TypeSupport<T> recursiveTypeSupportFor(@Nonnull final Class<T> typeClass,
-                                                      final TypeSupportMap<?> supportMap) {
+                                                      @Nonnull final TypeSupportMap<?> supportMap) {
         TypeSupport<T> support = (TypeSupport<T>) supportMap.get(typeClass);
         if (support == null) {
             for (@SuppressWarnings("rawtypes") final Class clazz : typeClass.getInterfaces()) {
@@ -128,23 +130,36 @@ public abstract class TypeSupport<T> {
         TypeSupportMap<T> supportMap = ALL_TYPE_SUPPORTS.get(supportFamily);
         TypeSupportMap<T> calcSupportMap = ALL_CALC_TYPE_SUPPORTS.get(supportFamily);
         
+        if (supportMap == null || calcSupportMap == null) {
+            throw new TypeSupportException("No type support found for family " + supportFamily, null);
+        }
+        
         TypeSupport<T> support = (TypeSupport<T>) calcSupportMap.get(typeClass);
         if (support == null) {
             support = recursiveTypeSupportFor(typeClass, supportMap);
             if (support == null) {
-                Class<? super T> superClass = typeClass.getSuperclass();
-                while (!superClass.equals(Object.class)) {
-                    support = (TypeSupport<T>) supportMap.get(superClass);
-                    if (support != null) {
-                        break;
-                    }
-                    superClass = superClass.getSuperclass();
-                }
+                support = recursiveClassSupportFor(typeClass, supportMap);
             }
             if (support == null) {
                 throw new TypeSupportException("No type support found for type " + typeClass, null);
             }
             calcSupportMap.put(typeClass, support);
+        }
+        return support;
+    }
+
+    @CheckForNull
+    private static <T> TypeSupport<T> recursiveClassSupportFor(@Nonnull final Class<T> typeClass,
+                                                               @Nonnull final TypeSupportMap<T> supportMap) {
+        
+        TypeSupport<T> support = null;
+        Class<? super T> superClass = typeClass.getSuperclass();
+        while (!superClass.equals(Object.class)) {
+            support = (TypeSupport<T>) supportMap.get(superClass);
+            if (support != null) {
+                break;
+            }
+            superClass = superClass.getSuperclass();
         }
         return support;
     }

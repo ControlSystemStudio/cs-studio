@@ -52,7 +52,7 @@ public abstract class ArchiveChannel<V,
      */
     private final String _name;
 
-    private final ArchiveChannelId _id;
+    final ArchiveChannelId _id;
 
     /** Control system PV */
     private final PV _pv;
@@ -154,23 +154,25 @@ public abstract class ArchiveChannel<V,
         _pv.addListener(new PVListener() {
             @Override
             public void pvValueUpdate(final PV pv) {
-                // PV already suppresses updates after 'stop', but check anyway
-                if (_isRunning) {
-                    final IValue value = pv.getValue();
-//                    if (enablement != Enablement.Passive) {
-//                        handleEnablement(value);
-//                    }
-                    try {
-                        final ICssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
-                        @SuppressWarnings("unchecked")
-                        final ArchiveSample2<V,T> sample = new ArchiveSample2<V, T>(_id, (T) cssValue);
-                        handleNewSample(sample);
-                        //handleNewValue(cssValue);
-                    } catch (final TypeSupportException e) {
-                        PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
-                        return;
-                    }
+                try {
+                    // PV already suppresses updates after 'stop', but check anyway
+                    if (_isRunning) {
+                        final IValue value = pv.getValue();
+    //                    if (enablement != Enablement.Passive) {
+    //                        handleEnablement(value);
+    //                    }
+                            final ICssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
+                            @SuppressWarnings("unchecked")
+                            final ArchiveSample2<V, T> sample = new ArchiveSample2<V, T>(_id, (T) cssValue);
+                            handleNewSample(sample);
+                            //handleNewValue(cssValue);
 
+                    }
+                } catch (final TypeSupportException e) {
+                    PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
+                    return;
+                } catch (final Throwable t) {
+                    System.out.println("");
                 }
             }
 
@@ -269,7 +271,7 @@ public abstract class ArchiveChannel<V,
              {
                 return "null"; //$NON-NLS-1$
             }
-            return mostRecentValue.toString();
+            return mostRecentValue.getValueData().toString();
         }
     }
 
@@ -284,7 +286,7 @@ public abstract class ArchiveChannel<V,
             if (_lastArchivedValue == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return _lastArchivedValue.toString();
+            return _lastArchivedValue.getValueData().toString();
         }
     }
 
@@ -403,7 +405,7 @@ public abstract class ArchiveChannel<V,
         {
             mostRecentValue = null;
         }
-        LOG.debug(getName() + " wrote disconnect sample");
+        //LOG.debug(getName() + " wrote disconnect sample");
         //addInfoToBuffer(ValueButcher.createDisconnected());
         need_first_sample = true;
     }
