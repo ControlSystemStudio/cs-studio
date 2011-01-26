@@ -12,6 +12,8 @@ import gov.aps.jca.JCALibrary;
 import java.util.HashSet;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
+import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.TimeSupport;
 import org.epics.pvmanager.ValueCache;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import org.epics.pvmanager.DataRecipe;
 import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.data.TypeSupport;
+import org.epics.pvmanager.data.DataTypeSupport;
 
 /**
  * A data source that uses jca.
@@ -30,7 +32,7 @@ public class JCADataSource extends DataSource {
 
     static {
         // Install type support for the types it generates.
-        TypeSupport.install();
+        DataTypeSupport.install();
     }
 
     private static final Logger logger = Logger.getLogger(JCADataSource.class.getName());

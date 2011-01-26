@@ -1,24 +1,27 @@
 /*
- * Copyright 2010 Brookhaven National Laboratory
+ * Copyright 2008-2010 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 
 package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
-import java.util.List;
 import org.epics.pvmanager.util.TimeStamp;
 
 /**
+ * VStatistics implementation.
  *
  * @author carcassi
  */
-public class IVIntArray extends IVNumeric implements VIntArray {
+class IVStatistics extends IVNumeric implements VStatistics {
 
-    private final int[] array;
-    private final List<Integer> sizes;
+    private Double average;
+    private Double stdDev;
+    private Double min;
+    private Double max;
+    private Integer nSamples;
 
-    public IVIntArray(int[] array, List<Integer> sizes,
+    public IVStatistics(Double average, Double stdDev, Double min, Double max, Integer nSamples,
             AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
@@ -27,18 +30,38 @@ public class IVIntArray extends IVNumeric implements VIntArray {
         super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, timeValid, lowerDisplayLimit,
                 lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, format, upperWarningLimit,
                 upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
-        this.array = array;
-        this.sizes = sizes;
+        this.average = average;
+        this.stdDev = stdDev;
+        this.min = min;
+        this.max = max;
+        this.nSamples = nSamples;
+    }
+
+
+
+    @Override
+    public Double getAverage() {
+        return average;
     }
 
     @Override
-    public int[] getArray() {
-        return array;
+    public Double getStdDev() {
+        return stdDev;
     }
 
     @Override
-    public List<Integer> getSizes() {
-        return sizes;
+    public Double getMin() {
+        return min;
+    }
+
+    @Override
+    public Double getMax() {
+        return max;
+    }
+
+    @Override
+    public Integer getNSamples() {
+        return nSamples;
     }
 
 }
