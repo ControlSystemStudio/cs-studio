@@ -25,42 +25,25 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.authorizeid.AuthorizeIdTableViewerFactory.AuthorizeIdTableColumns;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.config.authorizeid.RegisteredAuthorizationIdTableViewerFactory.RegisteredAuthorizationIdTableColumns;
+import org.csstudio.platform.security.RegisteredAuthorizationId;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * Defines cell contents for the authorize id table (the topmost one).
+ * Defines cell contents for the table of registered authorize ids (the one at the bottom).
  * If changes are made, make sure it corresponds to the column layout as defined in the viewer factory.
  * 
  * @author jpenning
  * @since 19.01.2011
  */
-class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvider {
-    
-    // Icons are used for the boolean column
-    private static final Image CHECKED = CustomMediaFactory.getInstance()
-            .getImageFromPlugin(AuthorizeIdActivator.PLUGIN_ID, "/res/icons/enabled_co.gif");
-    private static final Image UNCHECKED = CustomMediaFactory.getInstance()
-            .getImageFromPlugin(AuthorizeIdActivator.PLUGIN_ID, "/res/icons/disabled_co.gif");
+class RegisteredAuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvider {
     
     @Override
     @CheckForNull
     public Image getColumnImage(@Nullable Object element, int columnIndex) {
-        Image result = null;
-        
-        if (element instanceof AuthorizedIdTableEntry) {
-            AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
-            
-            if (colIndex == AuthorizeIdTableColumns.REGISTERED_AS_EXTENSION) {
-                result = ((AuthorizedIdTableEntry) element).isRegisteredAtPlugin() ? CHECKED
-                        : UNCHECKED;
-            }
-        }
-        
-        return result;
+        return null;
     }
     
     @Override
@@ -68,19 +51,20 @@ class AuthorizeIdLabelProvider extends LabelProvider implements ITableLabelProvi
     public String getColumnText(@Nonnull Object element, int columnIndex) {
         String result = null;
         
-        if (element instanceof AuthorizedIdTableEntry) {
-            AuthorizedIdTableEntry entry = (AuthorizedIdTableEntry) element;
+        if (element instanceof RegisteredAuthorizationId) {
+            RegisteredAuthorizationId regAuthId = (RegisteredAuthorizationId) element;
             
-            AuthorizeIdTableColumns colIndex = AuthorizeIdTableColumns.values()[columnIndex];
+            RegisteredAuthorizationIdTableColumns colIndex = RegisteredAuthorizationIdTableColumns
+                    .values()[columnIndex];
             switch (colIndex) {
                 case AUTH_ID:
-                    result = entry.getAuthorizeId();
+                    result = regAuthId.getId();
                     break;
                 case DESCRIPTION:
-                    result = entry.getDescription();
+                    result = regAuthId.getDescription();
                     break;
-                case REGISTERED_AS_EXTENSION:
-                    // no string here, see getColumnImage
+                case ORIGINATING_PLUGIN:
+                    result = regAuthId.getContributor();
                     break;
             }
         }
