@@ -96,6 +96,8 @@
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.utility.pvmanager.sim"/>
+      <plugin id="org.csstudio.utility.pvmanager.ui"/>
+      <plugin id="org.csstudio.utility.pvmanager.widgets"/>
       <plugin id="org.csstudio.utility.speech"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
