@@ -3,7 +3,6 @@ package org.csstudio.utility.pvmanager;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleContext;
 import org.epics.pvmanager.*;
 
@@ -16,18 +15,6 @@ public class Activator extends Plugin {
 	public static final String PLUGIN_ID = "org.csstudio.utility.pvmanager";
 
 	private static final String defaultDataSource = "epics";
-	
-	private static ThreadSwitch SWTThread = new ThreadSwitch() {
-
-        @Override
-        public void post(Runnable task) {
-            try {
-            	PlatformUI.getWorkbench().getDisplay().asyncExec(task);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        }
-    };
 
 	/*
 	* (non-Javadoc)
@@ -53,8 +40,6 @@ public class Activator extends Plugin {
 				}
 			}
 			PVManager.setDefaultDataSource(composite);
-			// Set the thread on which to receive notifications
-			PVManager.setDefaultThread(SWTThread);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

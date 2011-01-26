@@ -94,6 +94,16 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
 
     static {
         Set<VTypeFactory<?, ?, ?>> newFactories = new HashSet<VTypeFactory<?, ?, ?>>();
+        // Add all SCALARs
+        // DBR_TIME_Float -> VDouble
+        newFactories.add(new VTypeFactory<VDouble, DBR_TIME_Float, DBR_CTRL_Double>(VDouble.class, DBR_TIME_Float.TYPE, DBR_CTRL_Double.TYPE, false) {
+
+            @Override
+            protected VDouble createValue(DBR_TIME_Float value, DBR_CTRL_Double metadata, boolean disconnected) {
+                return new VDoubleFromDbr(value, metadata, disconnected);
+            }
+        });
+        // DBR_CTRL_Double -> VDouble
         newFactories.add(new VTypeFactory<VDouble, DBR_TIME_Double, DBR_CTRL_Double>(VDouble.class, DBR_TIME_Double.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override
@@ -101,6 +111,23 @@ abstract class VTypeFactory<TValue, TEpicsValue, TEpicsMeta> {
                 return new VDoubleFromDbr(value, metadata, disconnected);
             }
         });
+        // DBR_TIME_Byte -> VInt
+        newFactories.add(new VTypeFactory<VInt, DBR_TIME_Byte, DBR_CTRL_Double>(VInt.class, DBR_TIME_Byte.TYPE, DBR_CTRL_Double.TYPE, false) {
+
+            @Override
+            protected VInt createValue(DBR_TIME_Byte value, DBR_CTRL_Double metadata, boolean disconnected) {
+                return new VIntFromDbr(value, metadata, disconnected);
+            }
+        });
+        // DBR_CTRL_Short -> VInt
+        newFactories.add(new VTypeFactory<VInt, DBR_TIME_Short, DBR_CTRL_Double>(VInt.class, DBR_TIME_Short.TYPE, DBR_CTRL_Double.TYPE, false) {
+
+            @Override
+            protected VInt createValue(DBR_TIME_Short value, DBR_CTRL_Double metadata, boolean disconnected) {
+                return new VIntFromDbr(value, metadata, disconnected);
+            }
+        });
+        // DBR_CTRL_Int -> VInt
         newFactories.add(new VTypeFactory<VInt, DBR_TIME_Int, DBR_CTRL_Double>(VInt.class, DBR_TIME_Int.TYPE, DBR_CTRL_Double.TYPE, false) {
 
             @Override

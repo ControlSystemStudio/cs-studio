@@ -44,6 +44,11 @@ public class DataRecipe {
         this.exceptionHandler = exceptionHandler;
     }
 
+    DataRecipe(ExceptionHandler exceptionHandler) {
+        channelsPerCollector = Collections.emptyMap();
+        this.exceptionHandler = exceptionHandler;
+    }
+
     /**
      * Creates a new recipe by adding the new collector and the new caches.
      * <p>
@@ -59,7 +64,7 @@ public class DataRecipe {
         Map<String, ValueCache> newCaches =
                 Collections.unmodifiableMap(new HashMap<String, ValueCache>(caches));
         newChannelsPerCollector.put(collector, newCaches);
-        return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector));
+        return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector), exceptionHandler);
     }
 
     /**
@@ -74,7 +79,7 @@ public class DataRecipe {
         Map<Collector, Map<String, ValueCache>> newChannelsPerCollector =
                 new HashMap<Collector, Map<String, ValueCache>>(channelsPerCollector);
         newChannelsPerCollector.putAll(dataRecipe.channelsPerCollector);
-        return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector));
+        return new DataRecipe(Collections.unmodifiableMap(newChannelsPerCollector), exceptionHandler);
     }
 
     /**

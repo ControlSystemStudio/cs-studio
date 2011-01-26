@@ -5,6 +5,8 @@
 
 package org.epics.pvmanager.data;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -120,6 +122,22 @@ public class Util {
     }
 
     /**
+     * Normalizes the given value according to the given range;
+     *
+     * @param value a value
+     * @param lowValue the lowest value in the range
+     * @param highValue the highest value in the range
+     * @return the normalized value, or null if any value is null
+     */
+    public static Double normalize(Number value, Number lowValue, Number highValue) {
+        if (value == null || lowValue == null || highValue == null) {
+            return null;
+        }
+
+        return (value.doubleValue() - lowValue.doubleValue()) / (highValue.doubleValue() - lowValue.doubleValue());
+    }
+
+    /**
      * Extracts a numeric value for the object. If it's a numeric scalar,
      * the value is returned. If it's a numeric array, the first element is
      * returned. If it's a numeric multi array, the value of the first
@@ -171,5 +189,37 @@ public class Util {
         }
 
         return null;
+    }
+
+    /**
+     * Converts a VImage to an AWT BufferedImage, so that it can be displayed.
+     * The content of the vImage buffer is copied, so further changes
+     * to the VImage will not modify the BufferedImage.
+     *
+     * @param vImage the image to be converted
+     * @return a new BufferedImage
+     */
+    public static BufferedImage toImage(VImage vImage) {
+        BufferedImage image = new BufferedImage(vImage.getWidth(), vImage.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        System.arraycopy(vImage.getData(), 0, ((DataBufferByte) image.getRaster().getDataBuffer()).getData(), 0,
+                vImage.getWidth() * vImage.getHeight() * 3);
+        return image;
+    }
+
+    /**
+     * Converts an AWT BufferedImage to a VImage.
+     * <p>
+     * Currently, only TYPE_3BYTE_BGR is supported
+     * 
+     * @param image
+     * @return
+     */
+    public static VImage toVImage(BufferedImage image) {
+        if (image.getType() != BufferedImage.TYPE_3BYTE_BGR) {
+            throw new IllegalArgumentException("Only BufferedImages of type TYPE_3BYTE_BGR can currently be converted to VImage");
+        }
+
+        byte[] buffer = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        return ValueFactory.newVImage(image.getHeight(), image.getWidth(), buffer);
     }
 }

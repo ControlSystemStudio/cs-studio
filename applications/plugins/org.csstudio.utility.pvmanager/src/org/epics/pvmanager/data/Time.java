@@ -30,4 +30,13 @@ public interface Time {
      * @return the user tag
      */
     Integer getTimeUserTag();
+
+    /**
+     * Returns a data source specific flag to indicate whether the time
+     * information should be trusted. Typical cases are when records
+     * were not processes and the timestamp has a zero time.
+     *
+     * @return true if the time information is valid
+     */
+    boolean isTimeValid();
 }
