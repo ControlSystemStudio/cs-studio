@@ -1,19 +1,13 @@
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.apputil.xml.DOMHelper;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.csstudio.trends.databrowser.model.AxisConfig;
-import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.csstudio.trends.databrowser.ui.Plot;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -22,7 +16,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
-import org.w3c.dom.Element;
 
 public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction {
 
@@ -45,7 +38,7 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
         final Canvas plot_box = new Canvas(shell, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
-        Plot plot = new Plot(plot_box);
+        Plot plot = Plot.forCanvas(plot_box);
         
         // Create and start controller
         Controller controller = new Controller(shell, model, plot);
