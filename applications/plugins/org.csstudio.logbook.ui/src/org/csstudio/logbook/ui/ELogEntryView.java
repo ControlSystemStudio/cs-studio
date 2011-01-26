@@ -8,7 +8,7 @@
 package org.csstudio.logbook.ui;
 
 import org.csstudio.apputil.ui.dialog.ErrorDialog;
-import org.csstudio.apputil.ui.elog.ImageTabFolder;
+import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;

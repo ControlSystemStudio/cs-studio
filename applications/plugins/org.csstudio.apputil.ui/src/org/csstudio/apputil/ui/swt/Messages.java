@@ -5,29 +5,19 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.email.ui;
+package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.osgi.util.NLS;
 
-/** Externalized Strings
- *  @author Kay Kasemir
- */
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.email.ui.messages"; //$NON-NLS-1$
-
-    public static String DefaultDestination;
-    public static String EmailDialogMessage;
-    public static String From;
-    public static String FromTT;
-    public static String MessageBodyTT;
-    public static String Preferences;
-    public static String SendEmail;
-    public static String SMTPHost;
-    public static String Subject;
-    public static String SubjectTT;
-    public static String To;
-    public static String ToTT;
+    private static final String BUNDLE_NAME = "org.csstudio.apputil.ui.swt.messages"; //$NON-NLS-1$
+    public static String AddImage;
+    public static String AddImageTT;
+    public static String ImageTabFmt;
+    public static String RemoveImage;
+    public static String RemoveImageTT;
+    public static String ImagePreview_ImageError;
 
     static
     {
@@ -36,7 +26,5 @@ public class Messages extends NLS
     }
 
     private Messages()
-    {
-        // Prevent instantiation
-    }
+    { /* prevent instantiation */ }
 }

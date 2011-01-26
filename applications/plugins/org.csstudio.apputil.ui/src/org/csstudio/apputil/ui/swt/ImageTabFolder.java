@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.apputil.ui.elog;
+package org.csstudio.apputil.ui.swt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +59,8 @@ public class ImageTabFolder
     public Button createAddButton(final Composite parent)
     {
         final Button button = new Button(parent, SWT.PUSH);
-        button.setText(Messages.ELog_AddImage);
-        button.setToolTipText(Messages.ELog_AddImageTT);
+        button.setText(Messages.AddImage);
+        button.setToolTipText(Messages.AddImageTT);
         button.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -103,7 +103,7 @@ public class ImageTabFolder
     {
         // Add tab item
         final TabItem tab = new TabItem(tab_folder, 0);
-        tab.setText(NLS.bind(Messages.ELog_ImageTabFmt, tab_folder.getItemCount()));
+        tab.setText(NLS.bind(Messages.ImageTabFmt, tab_folder.getItemCount()));
 
         final Composite box = new Composite(tab_folder, 0);
         box.setLayout(new GridLayout(2, false));
@@ -115,8 +115,8 @@ public class ImageTabFolder
         // Delete button
         final Button delete = new Button(box, SWT.PUSH);
         delete.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-        delete.setText(Messages.ELog_RemoveImage);
-        delete.setToolTipText(Messages.ELog_RemoveImageTT);
+        delete.setText(Messages.RemoveImage);
+        delete.setToolTipText(Messages.RemoveImageTT);
         delete.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -163,7 +163,7 @@ public class ImageTabFolder
         // Re-number the tabs
         final TabItem tabs[] = tab_folder.getItems();
         for (int t=i; t<tabs.length; ++t)
-            tabs[t].setText(NLS.bind(Messages.ELog_ImageTabFmt, t+1));
+            tabs[t].setText(NLS.bind(Messages.ImageTabFmt, t+1));
     }
 
     /** @return Image file names */

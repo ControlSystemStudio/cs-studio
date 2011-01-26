@@ -12,8 +12,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.apputil.ui.elog.messages"; //$NON-NLS-1$
-    public static String ELog_AddImage;
-    public static String ELog_AddImageTT;
     public static String ELog_ActionName;
     public static String ELog_ActionName_TT;
     public static String ELog_Dialog_Body;
@@ -28,10 +26,6 @@ public class Messages extends NLS
     public static String ELog_Dialog_User;
     public static String ELog_Dialog_User_TT;
     public static String ELog_Dialog_WindowTitle;
-    public static String ELog_ImageTabFmt;
-    public static String ELog_RemoveImage;
-    public static String ELog_RemoveImageTT;
-    public static String ImagePreview_ImageError;
 
     static
     {

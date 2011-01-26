@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.apputil.ui.elog;
+package org.csstudio.apputil.ui.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;

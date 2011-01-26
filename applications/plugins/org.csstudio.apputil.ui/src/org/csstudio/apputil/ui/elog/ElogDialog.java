@@ -8,6 +8,7 @@
 package org.csstudio.apputil.ui.elog;
 
 import org.csstudio.apputil.ui.Activator;
+import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
