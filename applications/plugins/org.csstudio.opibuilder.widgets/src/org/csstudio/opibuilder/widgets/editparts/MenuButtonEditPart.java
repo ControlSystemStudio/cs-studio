@@ -30,7 +30,6 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
@@ -38,7 +37,6 @@ import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -47,7 +45,6 @@ import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -74,10 +71,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		Label label = new Label();
 		label.setOpaque(true);
 		label.setText(model.getLabel());
-		label.setFont(CustomMediaFactory.getInstance().getFont(
-						model.getFont().getFontData()));
-		//label.setTextAlignment(model.getTextAlignment());
-		
 		if(getExecutionMode() == ExecutionMode.RUN_MODE)
 			label.addMouseListener(new MouseListener() {
 				public void mouseDoubleClicked(final MouseEvent me) {
@@ -220,8 +213,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if(getWidgetModel().isActionsFromPV() && 
-						newValue != null && newValue instanceof IValue)
+				if(newValue != null && newValue instanceof IValue)
 					((Label)refreshableFigure).setText(ValueUtil.getString((IValue)newValue));
 				return true;
 			}
@@ -237,19 +229,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(MenuButtonModel.PROP_LABEL, labelHandler);
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				FontData fontData = ((OPIFont)newValue).getFontData();
-				refreshableFigure.setFont(CustomMediaFactory.getInstance().getFont(
-						fontData.getName(), fontData.getHeight(),
-						fontData.getStyle()));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MenuButtonModel.PROP_FONT, fontHandler);
-		
+				
 		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {				
@@ -286,9 +266,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	private void updatePropSheet(final boolean actionsFromPV) {
 		getWidgetModel().setPropertyVisible(
 					MenuButtonModel.PROP_ACTIONS, !actionsFromPV);
-		getWidgetModel().setPropertyVisible(
-					MenuButtonModel.PROP_PVNAME, actionsFromPV);
-	
 	}
 
 	

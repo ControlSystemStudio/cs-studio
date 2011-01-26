@@ -125,13 +125,14 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 * Change listener for SDS resources.
 	 */
 	private SdsResourceChangeListener _resourceChangeListener;
-	
-	/**
-	 * List of Strings to match records that should be asked for Strings.
-	 * (For workaround in ConnectionUtilNew)
-	 */
-	private ArrayList<String> _recordTails = new ArrayList<String>();
-	private ArrayList<String> _recordTailsRegExp = new ArrayList<String>();
+
+//	TODO (jhatje): remove if patch in jca lib works
+//	/**
+//	 * List of Strings to match records that should be asked for Strings.
+//	 * (For workaround in ConnectionUtilNew)
+//	 */
+//	private ArrayList<String> _recordTails = new ArrayList<String>();
+//	private ArrayList<String> _recordTailsRegExp = new ArrayList<String>();
 
 	
 
@@ -190,7 +191,8 @@ public final class SdsPlugin extends AbstractCssPlugin {
 		
 		_behaviourService = new BehaviorService();
 		_widgetPropertyPostProcessingService = new WidgetPropertyPostProcessingService();
-		readWorkaroundStrings();
+//		TODO (jhatje): remove if patch in jca lib works
+//		readWorkaroundStrings();
 	}
 
 
@@ -220,33 +222,34 @@ public final class SdsPlugin extends AbstractCssPlugin {
 		return PLUGIN_ID;
 	}
 
-	public ArrayList<String> getRecordTails() {
-		return _recordTails;
-	}
-	
-	public ArrayList<String> getRecordTailsRegExp() {
-		return _recordTailsRegExp;
-	}
-
-	private void readWorkaroundStrings() {
-		try {
-			URL urlRecTails = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTails"));
-			File f = new File(urlRecTails.getPath());
-			FileReader fr = new FileReader(f);
-			BufferedReader br = new BufferedReader(fr);
-			String s;
-			while(null!= (s = br.readLine())){
-				_recordTails.add(s);
-			}
-			URL urlRecTailsRegExp = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTailsRegExp"));
-			f = new File(urlRecTailsRegExp.getPath());
-			fr = new FileReader(f);
-			br = new BufferedReader(fr);
-			while(null!= (s = br.readLine())){
-				_recordTailsRegExp.add(s);
-			}
-		} catch (IOException e) {
-			CentralLogger.getInstance().error(this, "Error reading file");
-		}
-	}
+//	TODO (jhatje): remove if patch in jca lib works
+//	public ArrayList<String> getRecordTails() {
+//		return _recordTails;
+//	}
+//	
+//	public ArrayList<String> getRecordTailsRegExp() {
+//		return _recordTailsRegExp;
+//	}
+//
+//	private void readWorkaroundStrings() {
+//		try {
+//			URL urlRecTails = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTails"));
+//			File f = new File(urlRecTails.getPath());
+//			FileReader fr = new FileReader(f);
+//			BufferedReader br = new BufferedReader(fr);
+//			String s;
+//			while(null!= (s = br.readLine())){
+//				_recordTails.add(s);
+//			}
+//			URL urlRecTailsRegExp = FileLocator.toFileURL( SdsPlugin.getDefault().getBundle().getEntry("/RecordTailsRegExp"));
+//			f = new File(urlRecTailsRegExp.getPath());
+//			fr = new FileReader(f);
+//			br = new BufferedReader(fr);
+//			while(null!= (s = br.readLine())){
+//				_recordTailsRegExp.add(s);
+//			}
+//		} catch (IOException e) {
+//			CentralLogger.getInstance().error(this, "Error reading file");
+//		}
+//	}
 }

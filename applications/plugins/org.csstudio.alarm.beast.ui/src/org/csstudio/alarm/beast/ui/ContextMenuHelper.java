@@ -10,11 +10,18 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
+import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.CommandAction;
+import org.csstudio.alarm.beast.ui.actions.DurationAction;
+import org.csstudio.alarm.beast.ui.actions.GuidanceAction;
+import org.csstudio.alarm.beast.ui.actions.RelatedDisplayAction;
+import org.csstudio.alarm.beast.ui.actions.SendToElogAction;
+import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Shell;
@@ -47,7 +54,7 @@ public class ContextMenuHelper
             final boolean allow_write)
     {
         // Determine how many PVs, with and w/o alarm we have
-        final List<AlarmTreePV> alarm_pvs = new ArrayList<AlarmTreePV>();
+        final List<AlarmTreeLeaf> alarm_pvs = new ArrayList<AlarmTreeLeaf>();
         final List<AlarmTreeItem> alarms = new ArrayList<AlarmTreeItem>();
         final List<AlarmTreeItem> ack_alarms = new ArrayList<AlarmTreeItem>();
 
@@ -58,8 +65,8 @@ public class ContextMenuHelper
             {
                 if (severity.isActive())
                 {
-                    if (item instanceof AlarmTreePV)
-                        alarm_pvs.add((AlarmTreePV) item);
+                    if (item instanceof AlarmTreeLeaf)
+                        alarm_pvs.add((AlarmTreeLeaf) item);
                     alarms.add(item);
                 }
                 else

@@ -43,7 +43,7 @@ public class TreeItem
     final private String name;
 
     /** Parent node */
-    final private TreeItem parent;
+    private TreeItem parent;
 
     /** Sub-tree elements of this item */
     final private List<TreeItem> children = new ArrayList<TreeItem>();
@@ -84,7 +84,7 @@ public class TreeItem
     }
 
     /** @return Parent item. <code>null</code> for root */
-    final public TreeItem getParent()
+    final synchronized public TreeItem getParent()
     {
         return parent;
     }
@@ -142,6 +142,8 @@ public class TreeItem
 
     /** @param index 0 ... <code>getChildCount()-1</code>
      *  @return Child item
+     *  @throws IndexOutOfBoundsException if the index is out of range
+     *          (<tt>index &lt; 0 || index &gt;= getChildCount()</tt>)
      */
     final public synchronized TreeItem getChild(final int index)
     {
@@ -169,10 +171,33 @@ public class TreeItem
         children.add(child);
     }
 
-    /** @param item Child item to remove */
-    final synchronized void removeChild(final TreeItem item)
+    /** Detach item from parent: Remove from parent's list of children
+     *  @return <code>true</code> if anything was done,
+     *          <code>false</code> if there was nothing to do
+     *  @throws Error if parent didn't know about this child item
+     */
+    final public boolean detachFromParent()
     {
-        children.remove(item);
+        final TreeItem p;
+        synchronized (this)
+        {
+            if (parent == null)
+                return false;
+            p = parent;
+            parent = null;
+        }
+        p.removeChild(this);
+        return true;
+    }
+
+    /** Remove child
+     *  @param child
+     *  @throws Error if child not known
+     */
+    private synchronized void removeChild(final TreeItem child)
+    {
+        if (! children.remove(child))
+            throw new Error("Corrupted tree item: " + toString());
     }
 
     /** Dump this item and sub-items.
@@ -216,7 +241,7 @@ public class TreeItem
         // All subtree entries must point back to this as their parent
         for (TreeItem child : children)
         {
-            if (child.parent != this)
+            if (child.getParent() != this)
                 throw new Exception("Hierarchy error from " + child + " to " + this);
             child.check();
         }

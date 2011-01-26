@@ -64,6 +64,7 @@ public class TankModel extends AbstractMarkedWidgetModel{
 		
 		setPropertyValue(PROP_LO_COLOR, new RGB(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new RGB(255, 128, 0));		
+		setPropertyVisible(PROP_VALUE_LABEL_FORMAT, false);
 	}
 	
 

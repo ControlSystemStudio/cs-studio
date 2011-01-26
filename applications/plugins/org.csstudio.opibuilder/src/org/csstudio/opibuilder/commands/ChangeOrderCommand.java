@@ -31,6 +31,11 @@ public class ChangeOrderCommand extends Command {
 	
 	
 	@Override
+	public boolean canExecute() {
+		return newIndex != container.getIndexOf(widget);
+	}
+	
+	@Override
 	public void execute() {
 		oldIndex = container.getIndexOf(widget);
 		container.changeChildOrder(widget, newIndex);

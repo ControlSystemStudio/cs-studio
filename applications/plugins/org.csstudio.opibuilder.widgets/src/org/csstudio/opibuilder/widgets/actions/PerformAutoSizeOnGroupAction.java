@@ -2,7 +2,6 @@ package org.csstudio.opibuilder.widgets.actions;
 
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.SetBoundsCommand;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
@@ -21,6 +20,9 @@ public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
 
 
 	public void run(IAction action) {
+		if(getContainerModel().getChildren().size() <=0){
+			return;
+		}
 		CompoundCommand compoundCommand = new CompoundCommand("Perform AutoSize");	
 		
 		GroupingContainerModel containerModel = getContainerModel();
@@ -59,9 +61,8 @@ public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
 					widget.getSize())));
 		}
 		
-		if(targetPart instanceof OPIEditor){
 			execute(compoundCommand);
-		}
+		
 	}
 
 

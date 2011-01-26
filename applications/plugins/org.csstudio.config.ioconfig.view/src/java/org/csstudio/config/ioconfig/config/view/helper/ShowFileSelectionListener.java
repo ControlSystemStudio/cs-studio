@@ -37,17 +37,21 @@ package org.csstudio.config.ioconfig.config.view.helper;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.tools.Helper;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -187,9 +191,11 @@ public class ShowFileSelectionListener implements SelectionListener {
                 createTempFile = File.createTempFile(filename, "." + firstElement.getMimeType());
                 Helper.writeDocumentFile(createTempFile, firstElement);
             } catch (final IOException e) {
-                e.printStackTrace();
-            } catch (final SQLException e) {
-                e.printStackTrace();
+                MessageDialog.openError(null, "Can't File create!", e.getMessage());
+                CentralLogger.getInstance().error(this, e);
+            } catch (final PersistenceException e) {
+                DeviceDatabaseErrorDialog.open(null, "Can't read document from database!", e);
+                CentralLogger.getInstance().error(this, e);
             }
         }
         if ((createTempFile != null) && createTempFile.isFile()) {
@@ -198,8 +204,8 @@ public class ShowFileSelectionListener implements SelectionListener {
                     try {
                         Desktop.getDesktop().open(createTempFile);
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        MessageDialog.openError(null, "Can't File create!", e.getMessage());
+                        CentralLogger.getInstance().error(this, e);
                     }
                 }
             }

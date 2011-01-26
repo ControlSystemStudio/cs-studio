@@ -15,6 +15,11 @@ import org.csstudio.platform.util.StringUtil;
  */
 public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 
+	/**Open OPI file.
+	 * @param path the path of the OPI file, it can be a workspace path, file system path or URL
+	 * @param data the input macros in format of {@code "macro1 = hello", "macro2 = hello2"}
+	 * @throws Exception
+	 */
 	public void openDisplay(String path, String data) throws Exception {
 		if(path != null && path.trim().length() > 0){
 			MacrosInput macrosInput = null;

@@ -17,13 +17,6 @@
    </license>
 
    <plugin
-         id="org.csstudio.management.xmpplogindialog"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.jaasAuthentication"
          download-size="0"
          install-size="0"

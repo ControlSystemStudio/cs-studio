@@ -35,14 +35,16 @@ abstract public class PlotSamples implements IDataProvider
      *  @see #testAndClearNewSamplesFlag()
      */
     protected boolean have_new_samples = false;
-    
+
     /** {@inheritDoc} */
+    @Override
     public void addDataProviderListener(IDataProviderListener listener)
     {
         // NOP
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean removeDataProviderListener(IDataProviderListener listener)
     {
         // NOP
@@ -50,18 +52,22 @@ abstract public class PlotSamples implements IDataProvider
     }
 
     /** @return <code>true</code> because Data Browser samples are always ordered by time */
+    @Override
     public boolean isChronological()
     {
         return true;
     }
 
     /** @see IDataProvider#getSize() */
+    @Override
     abstract public int getSize();
 
     /** @see IDataProvider#getSample() */
+    @Override
     abstract public PlotSample getSample(int index);
 
     /** @return Time range */
+    @Override
     synchronized public Range getXDataMinMax()
     {
         final int n = getSize();
@@ -74,6 +80,7 @@ abstract public class PlotSamples implements IDataProvider
     }
 
     /** @return Value range */
+    @Override
     synchronized public Range getYDataMinMax()
     {
         // Is there a way to optimize this?

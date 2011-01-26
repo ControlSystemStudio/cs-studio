@@ -30,16 +30,16 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
 
     /** Delay in millisecs for the suppression of a burst of events */
     final private long suppression_millis;
-    
+
     /** Timer for scheduling the update test */
     final private Thread throttle;
 
     /** Item used in the last trigger */
     private T item = null;
-    
+
     /** Counter for trigger events that arrived */
     private int triggers = 0;
-    
+
     /** Initialize
      *  @param initial_millis Delay [ms] for the initial update after trigger
      *  @param suppression_millis Delay [ms] for the suppression of a burst of events
@@ -72,6 +72,7 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
     }
 
     /** Thread Runnable that handles received triggers */
+    @Override
     public void run()
     {
         try

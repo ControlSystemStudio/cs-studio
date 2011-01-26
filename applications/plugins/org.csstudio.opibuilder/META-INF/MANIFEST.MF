@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OPI Builder
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 1.0.6.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen
 Bundle-Localization: plugin

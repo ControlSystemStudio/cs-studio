@@ -30,7 +30,6 @@ import java.util.List;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
-import org.csstudio.opibuilder.commands.SetBoundsCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -45,14 +44,18 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
+import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.rulers.RulerProvider;
@@ -177,8 +180,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		AbstractWidgetModel widget = (AbstractWidgetModel)child.getModel();
 		CompoundCommand result = new CompoundCommand("Adding widgets to container");
 		
-		result.add(new AddWidgetCommand(container, widget));
-		result.add(new SetBoundsCommand(widget, (Rectangle) constraint));
+		result.add(new AddWidgetCommand(container, widget, (Rectangle) constraint));
 		return result;		
 	}
 	
@@ -244,7 +246,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			feedbackFactory.showSizeOnDropFeedback(request, feedbackFigure,
 				getCreationFeedbackOffset(request));
 
-			feedbackFigure.repaint();
+			//feedbackFigure.repaint();
 		}else{
 			super.showSizeOnDropFeedback(request);
 		}
@@ -441,6 +443,69 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			sameParentWidgets.addAll(differentParentWidgets);
 		
 		return sameParentWidgets;
+	}
+	
+	//The minumum size should come from widget figure.
+	/* (non-Javadoc)
+	 * @see org.eclipse.gef.editpolicies.XYLayoutEditPolicy#getMinimumSizeFor(org.eclipse.gef.GraphicalEditPart)
+	 */
+	@Override
+	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
+		if(child instanceof AbstractBaseEditPart){
+			return ((AbstractBaseEditPart)child).getFigure().getMinimumSize();
+		}
+		return super.getMinimumSizeFor(child);
+	}
+	
+	
+	
+	//This has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue. 
+	/* (non-Javadoc)
+	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getResizeChildrenCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
+	 */
+	protected Command getResizeChildrenCommand(ChangeBoundsRequest request) {
+		CompoundCommand resize = new CompoundCommand();
+		Command c;
+		GraphicalEditPart child;
+		List children = request.getEditParts();
+
+		for (int i = 0; i < children.size(); i++) {
+			child = (GraphicalEditPart) children.get(i);
+			c = createChangeConstraintCommand(
+					request,
+					child,
+					translateToModelConstraint(getConstraintForResize(request, child)));
+			resize.add(c);
+		}
+		return resize.unwrap();
+	}
+	
+	//super.super.getConstraintFor() has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue. 
+	/**
+	 * Generates a draw2d constraint object derived from the specified child
+	 * EditPart using the provided Request. The returned constraint will be
+	 * translated to the application's model later using
+	 * {@link #translateToModelConstraint(Object)}.
+	 * 
+	 * @param request
+	 *            the ChangeBoundsRequest
+	 * @param child
+	 *            the child EditPart for which the constraint should be
+	 *            generated
+	 * @return the draw2d constraint
+	 */
+	protected Object getConstraintForResize(ChangeBoundsRequest request,
+			GraphicalEditPart child) {
+		Rectangle bounds = child.getFigure().getBounds();
+		if(child.getFigure() instanceof HandleBounds){
+			bounds = ((HandleBounds)child.getFigure()).getHandleBounds();
+		}
+		Rectangle rect = new PrecisionRectangle(bounds);
+		child.getFigure().translateToAbsolute(rect);
+		rect = request.getTransformedRectangle(rect);
+		child.getFigure().translateToRelative(rect);
+		rect.translate(getLayoutOrigin().getNegated());
+		return getConstraintFor(rect);
 	}
 
 }

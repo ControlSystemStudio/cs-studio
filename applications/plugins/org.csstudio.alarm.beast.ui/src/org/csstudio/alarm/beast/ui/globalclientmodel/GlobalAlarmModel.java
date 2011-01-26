@@ -9,23 +9,38 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.csstudio.alarm.beast.AlarmTreeItem;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /** Model for a 'global' alarm client.
  *  Initially reads alarms from RDB, then tracks changes via JMS.
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class GlobalAlarmModel
 {
-    final private GlobalAlarmModelListener listener;
+    /** Singleton instance */
+    private static volatile GlobalAlarmModel instance = null;
+
+    /** Reference count for instance */
+    private AtomicInteger references = new AtomicInteger();
+
+    /** Listeners who registered for notifications */
+    final private CopyOnWriteArrayList<GlobalAlarmModelListener> listeners =
+        new CopyOnWriteArrayList<GlobalAlarmModelListener>();
 
     /** Communicator that receives alarm updates from JMS */
     final private GlobalAlarmCommunicator communicator;
@@ -37,22 +52,17 @@ public class GlobalAlarmModel
      */
     private WorkQueue update_queue = null;
 
-    // TODO Track list of configurations which then contain the active alarms,
-    //      not just list of alarms
-    /** Currently active global alarms.
+    /** Currently active global alarms, i.e. configurations with partial
+     *  sub-tree of global alarms.
      *
-     *  Synchronize on <code>alarms</code> for access.
+     *  Synchronize on <code>configurations</code> for access.
      */
-    final private List<GlobalAlarm> alarms = new ArrayList<GlobalAlarm>();
+    final private List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
 
-    /** Initialize
-     *  @param jms_url JMS URL
-     */
-    public GlobalAlarmModel(final String jms_url,
-            final GlobalAlarmModelListener listener)
+    /** Initialize */
+    private GlobalAlarmModel()
     {
-        this.listener = listener;
-        communicator = new GlobalAlarmCommunicator(jms_url)
+        communicator = new GlobalAlarmCommunicator(Preferences.getJMS_URL())
         {
             @Override
             void handleAlarmUpdate(final AlarmUpdateInfo info)
@@ -76,21 +86,95 @@ public class GlobalAlarmModel
                 GlobalAlarmModel.this.handleAlarmUpdate(info);
             }
         };
+
+        new ReadConfigJob(this).schedule();
     }
 
-    /** @return Currently active global alarms */
-    public GlobalAlarm[] getAlarms()
+    /** Obtain the shared instance.
+     *  <p>
+     *  Increments the reference count.
+     *  @see #release()
+     *  @return Global alarm model instance
+     */
+    public static GlobalAlarmModel reference()
     {
-        synchronized (alarms)
+        synchronized (GlobalAlarmModel.class)
         {
-            return alarms.toArray(new GlobalAlarm[alarms.size()]);
+            if (instance == null)
+                instance = new GlobalAlarmModel();
+        }
+        instance.references.incrementAndGet();
+        return instance;
+    }
+
+    /** Release the 'instance' */
+    private static void releaseInstance()
+    {
+        synchronized (GlobalAlarmModel.class)
+        {
+            instance = null;
         }
     }
 
+    /** Must be called to release model when no longer used.
+     *  <p>
+     *  Based on reference count, model is closed when last
+     *  user releases it.
+     */
+    public void release()
+    {
+        if (references.decrementAndGet() > 0)
+            return;
+        communicator.stop();
+        releaseInstance();
+    }
+
+    /** @param listener Listener to add */
+    public void addListener(final GlobalAlarmModelListener listener)
+    {
+        listeners.add(listener);
+        // Send initial update
+        listener.globalAlarmsChanged(this);
+    }
+
+    /** @param listener Listener to remove
+     *  @throws IllegalArgumentException when listener not known
+     */
+    public void removeListener(final GlobalAlarmModelListener listener)
+    {
+        if (! listeners.remove(listener))
+            throw new IllegalArgumentException("Unknown listener"); //$NON-NLS-1$
+    }
+
+    /** @return Roots of currently active global alarms */
+    public AlarmTreeRoot[] getAlarmRoots()
+    {
+        synchronized (configurations)
+        {
+            return configurations.toArray(new AlarmTreeRoot[configurations.size()]);
+        }
+    }
+
+    /** @return Currently active global alarms */
+    public AlarmTreeLeaf[] getAlarms()
+    {
+        final List<AlarmTreeLeaf> alarms = new ArrayList<AlarmTreeLeaf>();
+        synchronized (configurations)
+        {
+            for (AlarmTreeRoot root : configurations)
+            {
+                for (int i=root.getAlarmChildCount()-1; i>=0; --i)
+                    root.addLeavesToList(alarms);
+            }
+        }
+        return alarms.toArray(new AlarmTreeLeaf[alarms.size()]);
+    }
+
     /** Read 'global' alarms from RDB
+     *  Invoked by {@link ReadConfigJob}
      *  @param monitor Progress monitor
      */
-    public void readConfiguration(final IProgressMonitor monitor)
+    void readConfiguration(final IProgressMonitor monitor)
     {
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
         // Arrange for JMS updates to be queued
@@ -119,10 +203,30 @@ public class GlobalAlarmModel
             }
         }
 
-        // TODO Read global alarms from RDB
-        synchronized (alarms)
+        // Read global alarms from RDB
+        List<AlarmTreeRoot> alarms = null;
+        GlobalAlarmReader reader = null;
+        try
         {
-            alarms.clear();
+            reader = new GlobalAlarmReader();
+            alarms = reader.readGlobalAlarms();
+        }
+        catch (Exception ex)
+        {
+            CentralLogger.getInstance().getLogger(this).error(
+                    "GlobalAlarmModel cannot read existing alarms", ex);
+        }
+        finally
+        {
+            if (reader != null)
+                reader.close();
+        }
+
+        synchronized (configurations)
+        {
+            configurations.clear();
+            if (alarms != null)
+                configurations.addAll(alarms);
         }
 
         // Apply queued updates
@@ -136,6 +240,7 @@ public class GlobalAlarmModel
 
         // From now on, updates will be executed right away
         monitor.done();
+        // Send initial alarm update after we read configuration
         fireAlarmUpdate();
     }
 
@@ -150,54 +255,69 @@ public class GlobalAlarmModel
         }
         else
         {
-            // TODO check for existing alarm
-            // Add alarm
-            createNewAlarm(info);
+            // Add/update alarm
+            final GlobalAlarm alarm;
+            synchronized (configurations)
+            {
+                alarm = GlobalAlarm.fromPath(configurations, info.getNameOrPath(),
+                        info.getSeverity(), info.getMessage(), info.getTimestamp());
+            }
+            // Complete GUI detail in background
+            final ReadInfoJob read_job = new ReadInfoJob(Preferences.getRDB_Url(),Preferences.getRDB_User(),
+                    Preferences.getRDB_Password(), alarm, null);
+            // Wait a little to give fireAlarmUpdate a head-start
+            read_job.schedule(100);
         }
         fireAlarmUpdate();
     }
 
     /** Remove alarm because it cleared
-     *  @param path Alarm path
+     *  @param full_path Alarm path
      *  @return <code>true</code> when removed, <code>false</code> when not found
      */
-    private boolean removeAlarm(final String path)
+    private boolean removeAlarm(final String full_path)
     {
-        synchronized (alarms)
+        final String path[] = AlarmTreePath.splitPath(full_path);
+        if (path.length <= 1)
+            return false;
+        synchronized (configurations)
         {
-            for (int i=0;  i<alarms.size();  ++i)
-                if (alarms.get(i).getPathName().equals(path))
+            // Locate alarm: Root....
+            AlarmTreeItem item = null;
+            for (AlarmTreeRoot root : configurations)
+                if (root.getName().equals(path[0]))
                 {
-                    alarms.remove(i);
-                    return true;
+                    item = root;
+                    break;
                 }
-        }
-        return false;
-    }
+            if (item == null)
+                return false;
+            // .. descend tree..
+            for (int i=1; item != null &&  i<path.length; ++i)
+                item = item.getClientChild(path[i]);
+            // Found?
+            if (item == null || !(item instanceof GlobalAlarm))
+                return false;
 
-    /** Create a temporary alarm: IDs -1, no guidance etc.
-     *  @param info Alarm info
-     */
-    private void createNewAlarm(final AlarmUpdateInfo info)
-    {
-        final String path[] = AlarmTreePath.splitPath(info.getNameOrPath());
-        AlarmTreeItem parent = null;
-        for (int i=0; i<path.length-1; ++i)
-            parent = new AlarmTreeItem(parent, path[i], -1);
-        final GlobalAlarm alarm = new GlobalAlarm(parent, path[path.length-1], -1,
-                info.getSeverity(),
-                info.getMessage(),
-                info.getTimestamp());
-        synchronized (alarms)
-        {
-            alarms.add(alarm);
+            // Up to the root, delete all 'empty' nodes
+            final AlarmTreeRoot root = item.getClientRoot();
+            while (item != null  &&  item.getChildCount() <= 0)
+            {
+                final AlarmTreeItem tmp = item;
+                item = item.getClientParent();
+                tmp.detachFromParent();
+            }
+            // If root is now unused, delete it from configurations
+            if (root.getChildCount() <= 0)
+                configurations.remove(root);
         }
-        // TODO schedule background task for fetching GUI detail
+        return true;
     }
 
     /** Inform listener of changes */
     private void fireAlarmUpdate()
     {
-        listener.globalAlarmsChanged(this);
+        for (GlobalAlarmModelListener listener : listeners)
+            listener.globalAlarmsChanged(this);
     }
 }

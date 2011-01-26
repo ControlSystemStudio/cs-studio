@@ -18,8 +18,6 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id: TestSuiteFactory.java,v 1.1.2.1 2010/07/23 15:33:02 bknerr Exp $
  */
 package org.csstudio.testsuite;
 
@@ -27,9 +25,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.csstudio.platform.test.TestDataProvider;
+import org.csstudio.platform.test.TestProviderException;
 import org.csstudio.platform.util.StringUtil;
 
 /**
@@ -47,20 +48,32 @@ public final class TestSuiteFactory {
      */
     public static final String COMMON_TEST_SUFFIX = "Test";
 
+    // Get site specific test data provider
+    private static TestDataProvider PROV = createTestDataProvider();
+    private static TestDataProvider createTestDataProvider() {
+        try {
+            return TestDataProvider.getInstance(Activator.PLUGIN_ID);
+        } catch (final TestProviderException e) {
+            Assert.fail("Unexpected exception creating the test data provider for plugin " +
+                        Activator.PLUGIN_ID + ".\n" + e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Comma separated list, if list is empty, every bundle will be chosen
      */
-    private static final String BUNDLES = "org.csstudio, org.remotercp, de.desy";
-
+    private static final String BUNDLES = (String) PROV.get("bundles");
     /**
      * Comma separated bundle black list.
      */
-    private static final String BUNDLES_BLACKLIST = "org.csstudio.platform.libs";
+    private static final String BUNDLES_BLACKLIST = (String) PROV.get("bundleBlacklist");
 
     /**
      *
      */
-    private static final String PACKAGE_BLACKLIST = "org.apache";
+    private static final String PACKAGE_BLACKLIST = (String) PROV.get("packageBlacklist");
+
 
 
     /**
@@ -98,8 +111,4 @@ public final class TestSuiteFactory {
 
         return suite;
     }
-
-
-
 }
-

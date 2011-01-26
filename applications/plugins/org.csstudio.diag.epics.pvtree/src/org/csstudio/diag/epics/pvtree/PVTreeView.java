@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 
@@ -39,21 +46,21 @@ public class PVTreeView extends ViewPart
     // Memento tags
     private static final String PV_TAG = "pv"; //$NON-NLS-1$
     private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
-    
+
     private IMemento memento;
-    
+
     /** The root PV name. */
     private Combo pv_name;
-    
+
     private PVTreeModel model;
 
     private TreeViewer viewer;
-    
+
     /** Allows 'zoom in' and then going back up via context menu. */
     private DrillDownAdapter drillDownAdapter;
 
     private ComboHistoryHelper pv_name_helper;
-    
+
     /** ViewPart interface, keep the memento. */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException
@@ -61,7 +68,7 @@ public class PVTreeView extends ViewPart
         super.init(site, memento);
         this.memento = memento;
     }
-    
+
     /** ViewPart interface, persist state */
     @Override
     public void saveState(IMemento memento)
@@ -78,12 +85,12 @@ public class PVTreeView extends ViewPart
         gl.numColumns = 2;
         parent.setLayout(gl);
         GridData gd;
-        
+
         Label l = new Label(parent, SWT.LEFT);
         l.setText(Messages.PV_Label);
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         pv_name = new Combo(parent, SWT.LEFT);
         pv_name.setToolTipText(Messages.PV_TT);
         gd = new GridData();
@@ -98,7 +105,7 @@ public class PVTreeView extends ViewPart
             public void newSelection(String new_pv_name)
             {   setPVName(new_pv_name); }
         };
-        
+
         Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
         gd.horizontalSpan = gl.numColumns;
@@ -135,11 +142,12 @@ public class PVTreeView extends ViewPart
                 setPVName(name.getName());
             }
         };
-        
-        
+
+
         // Stop the press when we're no more
         pv_name.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.dispose();
@@ -147,10 +155,10 @@ public class PVTreeView extends ViewPart
             }
         });
         hookContextMenu();
-        
+
         // Populate PV list
         pv_name_helper.loadSettings();
-        
+
         if (memento != null)
         {
             String pv_name = memento.getString(PV_TAG);
@@ -165,7 +173,7 @@ public class PVTreeView extends ViewPart
     {
         pv_name.setFocus();
     }
-    
+
     /** Final cleanup. */
     @Override
     public void dispose()
@@ -192,6 +200,7 @@ public class PVTreeView extends ViewPart
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 PVTreeView.this.fillContextMenu(manager);
@@ -204,7 +213,7 @@ public class PVTreeView extends ViewPart
 
     private void fillContextMenu(IMenuManager manager)
     {
-        //manager.add(new Separator());        
+        //manager.add(new Separator());
         drillDownAdapter.addNavigationActions(manager);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

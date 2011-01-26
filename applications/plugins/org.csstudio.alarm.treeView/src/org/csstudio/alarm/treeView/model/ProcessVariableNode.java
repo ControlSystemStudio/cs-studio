@@ -68,6 +68,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
         private final TreeNodeSource _source;
         private IAlarmSubtreeNode _parent;
         private IProcessVariableNodeListener _listener;
+        private Alarm _alarm;
 
         /**
          * Creates a new node for a process variable as a child of the specified
@@ -98,6 +99,11 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
             return this;
         }
 
+        @Nonnull
+        public Builder setHighestUnacknowledgedAlarm(@Nullable final Alarm alarm) {
+            _alarm = alarm;
+            return this;
+        }
         /**
          * The final method to build the object instance
          * @return the newly built object
@@ -111,6 +117,9 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
             }
             if (_parent != null) {
                 _parent.addChild(node);
+            }
+            if (_alarm != null) {
+                node.setHighestUnacknowledgedAlarm(_alarm);
             }
             return node;
         }
@@ -233,11 +242,11 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 		return _highestUnacknowledgedAlarm;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-    public void setHighestUnacknowledgedAlarm(@Nonnull final Alarm alarm) {
+    /**
+     * Sets the highest unacknowledged alarm at this node.
+     * @param alarm the alarm.
+     */
+    void setHighestUnacknowledgedAlarm(@Nonnull final Alarm alarm) {
 		_highestUnacknowledgedAlarm = alarm;
 		final IAlarmSubtreeNode parent = getParent();
 		if (parent != null) {
@@ -249,7 +258,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void removeHighestUnacknowledgedAlarm() {
+    public void acknowledgeAlarm() {
 	        _highestUnacknowledgedAlarm = new Alarm(_highestUnacknowledgedAlarm.getObjectName(),
 	                                                EpicsAlarmSeverity.UNKNOWN,
 	                                                new Date(0L));

@@ -15,24 +15,24 @@ import org.csstudio.trends.databrowser.Messages;
 
 /** Samples of a {@link PVItem}.
  *  <p>
- *  Made up of two sections, 
+ *  Made up of two sections,
  *  {@link HistoricSamples} and {@link LiveSamples},
  *  and presenting them as one long stream of samples.
- *  
+ *
  *  In addition, if the last sample is valid, it's
  *  extended to 'now' assuming no new data means
  *  that the last value is still valid.
- *   
+ *
  *  @author Kay Kasemir
  */
 public class PVSamples extends PlotSamples
 {
     /** Historic samples */
     final private HistoricSamples history = new HistoricSamples();
-    
+
     /** Live samples. Should start after end of historic samples */
     final private LiveSamples live = new LiveSamples();
-    
+
     /** @return Maximum number of live samples in ring buffer */
     public int getLiveCapacity()
     {
@@ -48,7 +48,7 @@ public class PVSamples extends PlotSamples
     {
         live.setCapacity(new_capacity);
     }
-    
+
     /** @return Combined count of historic and live samples */
     @Override
     synchronized public int getSize()
@@ -126,7 +126,7 @@ public class PVSamples extends PlotSamples
         final double max = Math.max(old_range.getUpper(), new_range.getUpper());
         return new Range(min, max);
     }
-    
+
     /** Test if samples changed since the last time
      *  <code>testAndClearNewSamplesFlag</code> was called.
      *  @return <code>true</code> if there were new samples
@@ -136,7 +136,7 @@ public class PVSamples extends PlotSamples
     {
         return history.hasNewSamples() | live.hasNewSamples();
     }
-    
+
     /** Test if samples changed since the last time this method was called.
      *  @return <code>true</code> if there were new samples
      */
@@ -164,8 +164,10 @@ public class PVSamples extends PlotSamples
     /** Add another 'live' sample
      *  @param value 'Live' sample
      */
-    synchronized public void addLiveSample(final IValue value)
+    synchronized public void addLiveSample(IValue value)
     {
+        if (! value.getTime().isValid())
+            value = ValueButcher.changeTimestampToNow(value);
         addLiveSample(new PlotSample(Messages.LiveData, value));
     }
 
@@ -198,7 +200,7 @@ public class PVSamples extends PlotSamples
         buf.append(history.toString());
         buf.append("\nLive Buffer: ");
         buf.append(live.toString());
-        
+
         final int count = getSize();
         if (count != getRawSize())
         {

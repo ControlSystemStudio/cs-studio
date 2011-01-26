@@ -38,19 +38,21 @@ public class ChangeAxisConfigCommand implements IUndoableCommand
     {
         this.new_config = axis.copy();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         apply(new_config);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         apply(old_config);
     }
-    
+
     /** Apply whatever's different in the given configuration to the axis
      *  @param config
      */

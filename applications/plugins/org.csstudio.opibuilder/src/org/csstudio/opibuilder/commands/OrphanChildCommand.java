@@ -14,6 +14,8 @@ public class OrphanChildCommand extends Command {
 	private AbstractContainerModel parent;
 	private AbstractWidgetModel child;
 	
+	private int index;
+
 
 	public OrphanChildCommand(AbstractContainerModel parent,
 			AbstractWidgetModel child) {
@@ -24,12 +26,13 @@ public class OrphanChildCommand extends Command {
 	
 	@Override
 	public void execute() {
+		index = parent.getIndexOf(child);
 		parent.removeChild(child);
 	}
 	
 	@Override
 	public void undo() {
-		parent.addChild(child);
+		parent.addChild(index, child);
 	}
 	
 	

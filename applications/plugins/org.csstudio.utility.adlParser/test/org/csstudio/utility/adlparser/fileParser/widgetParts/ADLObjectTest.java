@@ -10,7 +10,6 @@ public class ADLObjectTest extends TestCase {
 	ADLObject adlObject = null;
 	protected void setUp() throws Exception {
 		super.setUp();
-		ADLWidget widget = setupADLWidget();
 	}
 
 	private ADLWidget setupADLWidget() {

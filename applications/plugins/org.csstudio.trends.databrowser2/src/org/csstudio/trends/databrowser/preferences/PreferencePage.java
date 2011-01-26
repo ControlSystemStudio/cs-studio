@@ -34,8 +34,9 @@ public class PreferencePage extends FieldEditorPreferencePage
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.PLUGIN_ID));
         setMessage(Messages.PrefPage_Title);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void init(IWorkbench workbench)
     {
         // NOP
@@ -82,13 +83,13 @@ public class PreferencePage extends FieldEditorPreferencePage
             }
         };
         addField(scanperiod);
-        
+
         // Live sample buffer: 0 ... max int
         final IntegerFieldEditor buffersize = new IntegerFieldEditor(Preferences.BUFFER_SIZE,
                 Messages.PrefPage_LiveBufferSize, parent);
         buffersize.setValidRange(0, Integer.MAX_VALUE);
-        addField(buffersize);        
-        
+        addField(buffersize);
+
         // Refresh period: >0 seconds
         final StringFieldEditor updateperiod = new StringFieldEditor(Preferences.UPDATE_PERIOD,
                 Messages.PrefPage_UpdatePeriod, parent)
@@ -118,25 +119,25 @@ public class PreferencePage extends FieldEditorPreferencePage
             }
         };
         addField(updateperiod);
-        
+
         // Line Width: Some pixel range
         final IntegerFieldEditor linewidth = new IntegerFieldEditor(Preferences.LINE_WIDTH,
                 Messages.PrefPage_TraceLineWidth, parent);
         linewidth.setValidRange(0, 100);
         addField(linewidth);
-        
+
         // Archive fetch delay:  0.1 .. 10 seconds
         final IntegerFieldEditor fetch_delay = new IntegerFieldEditor(Preferences.ARCHIVE_FETCH_DELAY,
                 Messages.PrefPage_ArchiveFetchDelay, parent);
         fetch_delay.setValidRange(100, 10000);
         addField(fetch_delay);
-        
+
         // Plot bins: 10 ... one bin per second for a year
         final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS,
                 Messages.PrefPage_PlotBins, parent);
         plotbins.setValidRange(10, 365*24*60*60);
         addField(plotbins);
-        
+
         // Archive rescale options
         final ArchiveRescale values[] = ArchiveRescale.values();
         final String labels_and_values[][] = new String[values.length][2];
@@ -151,7 +152,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 //        final ComboFieldEditor rescale = new ComboFieldEditor(Preferences.ARCHIVE_RESCALE,
 //                Messages.ArchiveRescale_Label, labels_and_values, parent);
         addField(rescale);
-        
+
         // Server URLs
         final StringTableFieldEditor urls = new StringTableFieldEditor(
                 parent, Preferences.URLS, Messages.PrefPage_DataServerURLs,

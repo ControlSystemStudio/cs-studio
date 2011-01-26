@@ -113,6 +113,7 @@ CREATE TABLE ALARM.PV(
     CUR_SEVERITY_ID    NUMBER(38, 0),
     PV_VALUE           VARCHAR2(100),
     ALARM_TIME         TIMESTAMP(6)      DEFAULT systime,
+    ACT_GLOBAL_ALARM_IND  NUMBER(1, 0)   DEFAULT 0 NOT NULL,
     CONSTRAINT PK_PV PRIMARY KEY (COMPONENT_ID)
 )
 ;
@@ -144,6 +145,8 @@ COMMENT ON COLUMN ALARM.PV.CUR_SEVERITY_ID IS 'Current Severity Identifier: Curr
 COMMENT ON COLUMN ALARM.PV.PV_VALUE IS 'Process Variable Value: PV value that caused severity/status.'
 ;
 COMMENT ON COLUMN ALARM.PV.ALARM_TIME IS 'Alarm Time: The time of the most recent alarm.'
+;
+COMMENT ON COLUMN ALARM.PV.ACT_GLOBAL_ALARM_IND IS 'Indicates if PV has an active global alarm.'
 ;
 -- 
 -- TABLE: ALARM.SEVERITY 

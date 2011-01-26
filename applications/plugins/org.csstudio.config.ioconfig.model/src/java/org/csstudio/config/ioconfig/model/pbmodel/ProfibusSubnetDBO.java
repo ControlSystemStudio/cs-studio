@@ -1,5 +1,6 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -7,10 +8,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /***********************************************************
  * Data model for Profibus-DP Subnet *
@@ -94,12 +97,13 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
 
     /**
      * The default Constructor.
+     * @throws PersistenceException 
      */
-    public ProfibusSubnetDBO(final IocDBO ioc) {
+    public ProfibusSubnetDBO(final IocDBO ioc) throws PersistenceException {
         this(ioc, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) {
+    public ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) throws PersistenceException {
         setParent(ioc);
         // setSortIndex(ioc.getfirstFreeStationAddress(maxStationAddress));
         ioc.addChild(this);
@@ -442,14 +446,15 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parent) throws PersistenceException {
         if (parent instanceof IocDBO) {
             IocDBO ioc = (IocDBO) parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
             copy.setDescription(getDescription());
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
             copy.setGap(getGap());
@@ -476,10 +481,11 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }

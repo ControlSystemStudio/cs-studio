@@ -49,13 +49,16 @@ public class StringTableEditor extends Composite
 	}
 	
 	/** Creates an editable table.  The size of headers array implies the number of columns. 
-	 * @param parent The composite which the table resides in
-	 * @param headers Contains the header for each column
-	 * @param editable Whether it is editable for each column. The size must be same as headers.  
-	 * @param items The items to be displayed and manipulated in the table. 
+	 * @param parent The composite which the table resides in. Cannot be null.
+	 * @param headers Contains the header for each column. Cannot be null.
+	 * @param editable Whether it is editable for each column. The size must be same as headers. 
+	 * If it's null, all columns will be editable. 
+	 * @param items The items to be displayed and manipulated in the table. Cannot be null.
 	 * Each element in the list, which is an array of string, represents the data in a row.  
 	 * In turn, each element in the string array represents the data in a cell. 
-	 * So it is required that every string array in the list must has the same size as headers.  
+	 * So it is required that every string array in the list must has the same size as headers.
+	 * @param rowEditDialog The dialog to edit a row. If it is null, there will be no edit button.
+	 * @param columnsMinWidth The minimum width for each column. Cannot be null.  
 	 */
 	public StringTableEditor(final Composite parent, final String[] headers, 
 			final boolean[] editable, final List<String[]> items, 
@@ -65,7 +68,12 @@ public class StringTableEditor extends Composite
 		super(parent, 0);
 
 		final int table_columns = headers.length;
-		if (editable.length != table_columns ||
+		boolean[] editableArray = editable;
+		if(editable == null){
+			editableArray = new boolean[table_columns];
+			Arrays.fill(editableArray, true);
+		}
+		if (editableArray.length != table_columns ||
 		    columnsMinWidth.length != table_columns)
 		    throw new Error("Inconsistent table column count"); //$NON-NLS-1$
 
@@ -88,9 +96,9 @@ public class StringTableEditor extends Composite
 		for(int i = 0; i < table_columns; i++) {
 			final TableViewerColumn col = 
 				AutoSizeColumn.make(tableViewer, headers[i], columnsMinWidth[i], 100, false);
-			col.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer, editable[i]));
+			col.setLabelProvider(new StringMultiColumnsLabelProvider(tableViewer, editableArray[i]));
 			//col.setLabelProvider(new StringColumnLabelProvider(tableViwer));
-			if(editable[i]) {
+			if(editableArray[i]) {
 				col.setEditingSupport(new StringMultiColumnsEditor(tableViewer,
 				        table_columns, i));	
 			}
@@ -98,7 +106,8 @@ public class StringTableEditor extends Composite
 		tableViewer.setContentProvider(new StringTableContentProvider<String[]>());
 		tableViewer.setInput(items);
 		new AutoSizeControlListener(table);		
-		editButton = createEditButton(table_columns, rowEditDialog);
+		if(rowEditDialog != null)
+			editButton = createEditButton(table_columns, rowEditDialog);
 		upButton = createUpButton();
 		downButton = createDownButton();
 		deleteButton = createDeleteButton();		

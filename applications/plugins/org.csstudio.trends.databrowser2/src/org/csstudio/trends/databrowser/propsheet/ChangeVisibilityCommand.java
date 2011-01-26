@@ -36,17 +36,19 @@ public class ChangeVisibilityCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setVisible(new_visibility);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setVisible(old_visibility);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

@@ -28,7 +28,6 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
-import org.csstudio.dal.DalPlugin;
 import org.epics.css.dal.simple.SimpleDALBroker;
 
 /**
@@ -60,7 +59,6 @@ public class AlarmServiceDALImpl implements IAlarmService {
      */
     @Override
     public final IAlarmConnection newAlarmConnection() {
-//        return new AlarmConnectionDALImpl(_alarmConfigService, DalPlugin.getDefault().getSimpleDALBroker());
         return new AlarmConnectionDALImpl(_alarmConfigService, SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
     }
 

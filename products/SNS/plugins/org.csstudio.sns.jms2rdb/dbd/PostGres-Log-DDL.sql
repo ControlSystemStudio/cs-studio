@@ -51,7 +51,7 @@ INSERT INTO msg_property_type VALUES (10,'FILENAME');
 DROP TABLE IF EXISTS message;
 CREATE TABLE  message
 (
-   id BIGINT NOT NULL PRIMARY KEY,
+   id SERIAL PRIMARY KEY,
    datum TIMESTAMP NOT NULL,
    type VARCHAR(10) NOT NULL,
    name VARCHAR(80) NULL,
@@ -62,7 +62,7 @@ CREATE TABLE  message
 DROP TABLE IF EXISTS message_content;
 CREATE TABLE  message_content
 (
-  id BIGINT NOT NULL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   message_id BIGINT NOT NULL,
   msg_property_type_id BIGINT NOT NULL,
   value VARCHAR(100)

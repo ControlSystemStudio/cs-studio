@@ -30,15 +30,15 @@ public class TODO
      * In that case, if there are alarms un-acknowledged for some time,
      * send alarms to a "main" control room.
      *
-     * TODO (New) "Global" Model; Global Alarm Table displays these, fetching guidance etc. in background thread
+     * Done: (New) "Global" Model; Global Alarm Table displays these, fetching guidance etc. in background thread
      *
-     * TODO Alarm RDB includes ALARM_TREE.GLOBAL_DELAY (INT), PV.GLOBAL_ALARM (BOOL) for finer configuration
+     * TODO Alarm RDB includes PV.GLOBAL_DELAY (INT) for finer configuration
      *
-     * TODO Alarm Server uses ALARM_TREE.GLOBAL_DELAY instead of command-line switch
+     * TODO Alarm Server uses PV.GLOBAL_DELAY instead of command-line switch
      *
-     * TODO Alarm Server updates PV.GLOBAL_ALARM to persist state
+     * Done: Alarm Server updates PV.GLOBAL_ALARM to persist state
      *
-     * TODO Global Alarm Table initializes properly:
+     * Done: Global Alarm Table initializes properly:
      *      1) Subscribe to GLOBAL_ALARMSERVER, buffering messages
      *      2) Read all PV with GLOBAL_ALARM set
      *      3) Apply updates from buffered JMS info

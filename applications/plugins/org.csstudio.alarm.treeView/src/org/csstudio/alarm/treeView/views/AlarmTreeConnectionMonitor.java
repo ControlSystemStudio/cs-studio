@@ -42,8 +42,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor {
 
-    final AlarmTreeView _alarmTreeView;
-    final IAlarmSubtreeNode _monitorRootNode;
+    private final AlarmTreeView _alarmTreeView;
+    private final IAlarmSubtreeNode _monitorRootNode;
 
     /**
      *
@@ -59,6 +59,7 @@ public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor
     @Override
     public void onConnect() {
         Display.getDefault().asyncExec(new Runnable() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
                 _alarmTreeView.getMessageArea().hide();
@@ -74,6 +75,7 @@ public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor
     @Override
     public void onDisconnect() {
         Display.getDefault().asyncExec(new Runnable() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
                 final MessageArea area = _alarmTreeView.getMessageArea();

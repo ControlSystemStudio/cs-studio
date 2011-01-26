@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
 import org.csstudio.platform.data.ISeverity;
@@ -30,16 +37,18 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
         return null;
     }
 
+    @Override
     public Color getBackground(Object element)
     {
         return null;
     }
 
+    @Override
     public Color getForeground(Object element)
     {
         if (! (element instanceof PVTreeItem))
             return null;
-        
+
         ISeverity severity = ((PVTreeItem)element).getSeverity();
         if (severity == null)
             return null;

@@ -14,7 +14,7 @@ import junit.framework.TestCase;
  *
  */
 public class ADLMonitorTest extends TestCase {
-	ADLMonitor monitor = new ADLMonitor();
+	ADLConnected monitor = new ADLMonitor();
 	
 	/**
 	 * Test method for {@link org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor#ADLMonitor(org.csstudio.utility.adlparser.fileParser.ADLWidget)}.

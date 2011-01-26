@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
@@ -172,12 +171,6 @@ public final class DirectoryEditor {
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
             copy = copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
-            try {
-                AlarmTreeNodeModifier.setAlarmState((IAlarmProcessVariableNode) copy, attrs);
-            } catch (final NamingException e) {
-                throw new DirectoryEditException("Alarm state attributes of " +
-                                                 node.getName() + " could not be retrieved.", e);
-            }
         } else if (node instanceof IAlarmSubtreeNode) {
             copy = copySubtreeNode(node, target);
         } else {
@@ -231,10 +224,11 @@ public final class DirectoryEditor {
                                                           @Nonnull final IAlarmSubtreeNode target)
     throws DirectoryEditException {
 
-        final IAlarmProcessVariableNode copy =
-            new ProcessVariableNode.Builder(node.getName(), target.getSource()).setParent(target).build();
+        final IAlarmProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName(),
+                                                                               target.getSource())
+                .setParent(target)
+                .setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm()).build();
         copy.updateAlarm(node.getAlarm());
-        copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
         copyProperties(node, copy);
         return copy;
     }

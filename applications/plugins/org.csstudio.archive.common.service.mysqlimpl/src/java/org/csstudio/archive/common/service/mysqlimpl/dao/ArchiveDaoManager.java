@@ -65,6 +65,7 @@ public enum ArchiveDaoManager {
 
     INSTANCE;
 
+    @SuppressWarnings("unused")
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -93,24 +94,7 @@ public enum ArchiveDaoManager {
      * Constructor.
      */
     private ArchiveDaoManager() {
-
-//        final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
-//
-//        try {
-//            connect(prefs);
-//        } catch (final ArchiveConnectionException e) {
-//            // FIXME (bknerr) : Cannot be propagated by an enum constructor!
-//            final Connection connection = getConnection();
-//            if (connection != null) {
-//                try {
-//                    connection.close();
-//                } catch (final SQLException e1) {
-//                    // LOG.warn() cannot be called from the constructor
-//                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).warn("Closing of connection failed", e1);
-//                }
-//            }
-//            _archiveConnection.set(null);
-//        }
+        // EMPTY
     }
 
     /**
@@ -153,19 +137,36 @@ public enum ArchiveDaoManager {
 
                 _archiveConnection.set(connection);
             }
-        } catch (final InstantiationException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final IllegalAccessException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final ClassNotFoundException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final SQLException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
+        } catch (final Exception e) {
+            handleExceptions(e);
         }
         if (connection == null) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, null);
         }
         return connection;
+    }
+
+    /**
+     * To reduce the readability of the invoking method. Catches checked exceptions, wraps them in
+     * dedicated abstraction level exception. Rethrows any other exception as new RuntimeException.
+     *
+     * @param e
+     * @throws Throwable
+     */
+    private void handleExceptions(@Nonnull final Exception e) throws ArchiveConnectionException {
+        try {
+            throw e;
+        } catch (final InstantiationException ie) {
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, ie);
+        } catch (final IllegalAccessException iae) {
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, iae);
+        } catch (final ClassNotFoundException cfe) {
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, cfe);
+        } catch (final SQLException se) {
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, se);
+        } catch (final Exception re) {
+            throw new RuntimeException(re);
+        }
     }
 
     public void reconnect() throws ArchiveConnectionException {

@@ -41,7 +41,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -140,10 +139,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private long lastUpdateTime;
 	private long interval_ms;
 	private ScheduledFuture<?> scheduledFuture;
+	
+	private boolean startAnimationRequested = false;
+	
 	/**
 	 * dispose the resources used by this figure
 	 */
-	public void dispose(){
+	public synchronized void dispose(){
+		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
 			offScreenImage = null;
@@ -163,7 +166,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * @return the auto sized widget dimension according to the static imageSize
 	 */
-	public Dimension getAutoSizedDimension() {
+	public synchronized Dimension getAutoSizedDimension() {
 		if(originalStaticImageData != null)
 			return new Dimension(originalStaticImageData.width + getInsets().getWidth() - leftCrop - rightCrop,
 						originalStaticImageData.height + getInsets().getHeight() - topCrop - bottomCrop);
@@ -175,7 +178,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the amount of pixels, which are cropped from the top.
 	 * @return The amount of pixels
 	 */
-	public int getBottomCrop() {
+	public synchronized int getBottomCrop() {
 		return bottomCrop;
 	}
 	
@@ -183,7 +186,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the path to the image.
 	 * @return The path to the image
 	 */
-	public IPath getFilePath() {
+	public synchronized IPath getFilePath() {
 		return filePath;
 	}
 	
@@ -191,7 +194,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the amount of pixels, which are cropped from the top.
 	 * @return The amount of pixels
 	 */
-	public int getLeftCrop() {
+	public synchronized int getLeftCrop() {
 		return leftCrop;
 	}
 
@@ -199,7 +202,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the amount of pixels, which are cropped from the top.
 	 * @return The amount of pixels
 	 */
-	public int getRightCrop() {
+	public synchronized int getRightCrop() {
 		return rightCrop;
 	}
 
@@ -207,7 +210,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the stretch state for the image.
 	 * @return True, if it should be stretched, false otherwise
 	 */
-	public boolean getStretch() {
+	public synchronized boolean getStretch() {
 		return stretch;
 	}
 	
@@ -215,18 +218,18 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Returns the amount of pixels, which are cropped from the top.
 	 * @return The amount of pixels
 	 */
-	public int getTopCrop() {
+	public synchronized int getTopCrop() {
 		return topCrop;
 	}
 	
 	/**
 	 * @return the animationDisabled
 	 */
-	public boolean isAnimationDisabled() {
+	public synchronized boolean isAnimationDisabled() {
 		return animationDisabled;
 	}
 	
-	private void loadImage(IPath path) throws Exception {
+	private synchronized void loadImage(IPath path) throws Exception {
 		Image temp = null;
 		try {
 			InputStream stream = ResourceUtil.pathToInputStream(filePath);
@@ -250,7 +253,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * 
 	 */
-	private void loadImageFromFile() {
+	private synchronized void loadImageFromFile() {
 		//load image from file
 		try {
 			if (staticImage==null && !filePath.isEmpty()) {	
@@ -268,7 +271,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * The main drawing routine.
 	 * @param gfx The {@link Graphics} to use
 	 */
-	public void paintFigure(final Graphics gfx) {
+	public synchronized void paintFigure(final Graphics gfx) {
 		Rectangle bound=getBounds().getCopy();
 		bound.crop(this.getInsets());
 		if(loadingError) {
@@ -355,6 +358,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			return;
 				
 		if(animated) {   //draw refreshing image
+			if(startAnimationRequested)
+				realStartAnimation();
 			ImageData imageData = imageDataArray[showIndex];
 			Image refresh_image = new Image(Display.getDefault(), imageData);
 			switch (imageData.disposalMethod) {
@@ -414,7 +419,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * Resizes the image.
 	 */
-	public void resizeImage() {
+	public synchronized void resizeImage() {
 		if (staticImage!=null && !staticImage.isDisposed()) {
 			staticImage.dispose();
 		}
@@ -430,13 +435,13 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Automatically make the widget bounds be adjusted to the size of the static image 
 	 * @param autoSize
 	 */
-	public void setAutoSize(final boolean autoSize){
+	public synchronized void setAutoSize(final boolean autoSize){
 		if(!stretch && autoSize)
 				resizeImage();			
 	}
 	
 	
-	public void setAnimationDisabled(final boolean stop){
+	public synchronized void setAnimationDisabled(final boolean stop){
 		if(animationDisabled == stop)
 			return;
 		animationDisabled = stop;
@@ -460,7 +465,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the amount of pixels, which are cropped from the bottom. 
 	 * @param newval The amount of pixels
 	 */
-	public void setBottomCrop(final int newval) {
+	public synchronized void setBottomCrop(final int newval) {
 		if(bottomCrop == newval || (newval + topCrop)>= imgHeight|| newval <0|| (newval + topCrop) <0 )
 			return;
 		bottomCrop=newval;
@@ -471,7 +476,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the path to the image.
 	 * @param newval The path to the image
 	 */
-	public void setFilePath(final IPath newval) {
+	public synchronized void setFilePath(final IPath newval) {
 		if(this.filePath != null && this.filePath.equals(newval))
 			return;
 		if(animated){
@@ -494,7 +499,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the amount of pixels, which are cropped from the left. 
 	 * @param newval The amount of pixels
 	 */
-	public void setLeftCrop(final int newval) {
+	public synchronized void setLeftCrop(final int newval) {
 		if(leftCrop == newval || newval<0 || (newval + rightCrop) > imgWidth|| (newval + rightCrop) <0 )
 			return;
 		leftCrop=newval;
@@ -505,7 +510,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the amount of pixels, which are cropped from the right. 
 	 * @param newval The amount of pixels
 	 */
-	public void setRightCrop(final int newval) {
+	public synchronized void setRightCrop(final int newval) {
 		if(rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth || (newval + leftCrop) <0 )
 			return;
 		rightCrop=newval;
@@ -517,7 +522,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * @param showIndex the showIndex to set
 	 */
-	protected void setShowIndex(int showIndex) {
+	protected synchronized void setShowIndex(int showIndex) {
 		if(showIndex >= imageDataArray.length || this.showIndex == showIndex)
 			return;
 		this.showIndex = showIndex;
@@ -529,7 +534,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the stretch state for the image.
 	 * @param newval The new state (true, if it should be stretched, false otherwise)
 	 */
-	public void setStretch(final boolean newval) {
+	public synchronized void setStretch(final boolean newval) {
 		if(stretch == newval)
 			return;
 		stretch=newval;
@@ -548,7 +553,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Sets the amount of pixels, which are cropped from the top. 
 	 * @param newval The amount of pixels
 	 */
-	public void setTopCrop(final int newval) {
+	public synchronized void setTopCrop(final int newval) {
 		if(topCrop == newval || newval <0 || (newval + bottomCrop) > imgHeight|| (newval + bottomCrop) <0 )
 			return;
 		topCrop=newval;
@@ -569,9 +574,18 @@ public final class ImageFigure extends Figure implements Introspectable {
 	}
 	
 	/**
+	 * Start animation. The request will be pended until figure painted for the first time.
+	 */
+	public synchronized void startAnimation(){
+		startAnimationRequested = true;
+		repaint();
+	}
+	
+	/**
 	 * start the animation if the image is an animated GIF image.
 	 */
-	public void startAnimation(){		
+	public synchronized void realStartAnimation(){	
+		startAnimationRequested = false;
 		if(animated && !refreshing && !animationDisabled) {
 			repeatCount = loader.repeatCount;
 			//animationIndex = 0;
@@ -583,28 +597,30 @@ public final class ImageFigure extends Figure implements Introspectable {
 					UIBundlingThread.getInstance().addRunnable(new Runnable(){
 						
 						public void run() {				
-				
-							if(refreshing && (loader.repeatCount ==0 || repeatCount >0)) {
-								long currentTime = System.currentTimeMillis();
-								//use Math.abs() to ensure that the system time adjust won't cause problem
-								if(Math.abs(currentTime - lastUpdateTime) >= interval_ms) {
-									setShowIndex(animationIndex);
-									lastUpdateTime = currentTime;
-									int ms = originalImageDataArray[animationIndex].delayTime * 10;
-									animationIndex = (animationIndex + 1) % originalImageDataArray.length;
-									if (ms < 20) ms += 30;
-									if (ms < 30) ms += 10;
-									interval_ms = ms;								
-									/* If we have just drawn the last image, decrement the repeat count and start again. */
-									if(loader.repeatCount > 0 &&
-											animationIndex == originalImageDataArray.length -1) 
-										repeatCount--;									}															
-							}else if(loader.repeatCount > 0 && repeatCount <=0){ // stop thread when animation finished
-								if(scheduledFuture !=null){
-									scheduledFuture.cancel(true);
-									scheduledFuture = null;
-								}	
-							}			
+							synchronized (ImageFigure.this) {
+								if(refreshing && (loader.repeatCount ==0 || repeatCount >0)) {
+									long currentTime = System.currentTimeMillis();
+									//use Math.abs() to ensure that the system time adjust won't cause problem
+									if(Math.abs(currentTime - lastUpdateTime) >= interval_ms) {
+										setShowIndex(animationIndex);
+										lastUpdateTime = currentTime;
+										int ms = originalImageDataArray[animationIndex].delayTime * 10;
+										animationIndex = (animationIndex + 1) % originalImageDataArray.length;
+										if (ms < 20) ms += 30;
+										if (ms < 30) ms += 10;
+										interval_ms = ms;								
+										/* If we have just drawn the last image, decrement the repeat count and start again. */
+										if(loader.repeatCount > 0 &&
+												animationIndex == originalImageDataArray.length -1) 
+											repeatCount--;									}															
+								}else if(loader.repeatCount > 0 && repeatCount <=0){ // stop thread when animation finished
+									if(scheduledFuture !=null){
+										scheduledFuture.cancel(true);
+										scheduledFuture = null;
+									}	
+								}
+							}
+										
 						}
 					});
 			}
@@ -623,8 +639,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * stop the animation if the image is an animated GIF image.
 	 */
-	public void stopAnimation(){		
-		
+	public synchronized void stopAnimation(){		
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;

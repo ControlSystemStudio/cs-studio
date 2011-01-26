@@ -29,8 +29,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -84,7 +87,12 @@ public class GSDFileAddListener implements SelectionListener {
 					final GSDFileDBO gsdFile = new GSDFileDBO(file.getName(), text.toString());
 					_abstractNodeEditor.getGsdFiles().add(gsdFile);
 					_tableViewer.setInput(_abstractNodeEditor.getGsdFiles());
-					Repository.save(gsdFile);
+					try {
+                        Repository.save(gsdFile);
+                    } catch (PersistenceException e) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! Database error", e);
+                        CentralLogger.getInstance().error(this, e);
+                    }
 				} else {
 					MessageDialog.openInformation(_tabFolder.getShell(),
 							"Double GSD File",

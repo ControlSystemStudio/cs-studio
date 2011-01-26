@@ -40,8 +40,8 @@ import javax.persistence.Table;
  * @since 16.10.2008
  */
 
-@Entity
-@Table( name="ddb_NodeImage")
+//@Entity
+//@Table( name="ddb_NodeImage")
 public class NodeImageDBO implements Comparable<NodeImageDBO> {
 
     /**

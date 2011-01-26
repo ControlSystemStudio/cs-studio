@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.internal.data;
@@ -33,29 +33,29 @@ abstract public class Value implements IValue
 {
     /** Time stamp of this value. */
 	private final ITimestamp time;
-    
+
     /** Severity code of this value. */
     private final ISeverity severity;
-    
+
     /** Status text for this value's severity. */
 	private final String status;
-    
+
     /** Meta data (may be null). */
     private final IMetaData meta_data;
-    
+
     /** The data quality. */
     private final Quality quality;
 
 	/**
 	 * The max count of values to be formatted into string.
-	 * The value beyond this count will be omitted.  
+	 * The value beyond this count will be omitted.
 	 */
 	public final static int MAX_FORMAT_VALUE_COUNT = 20;
 
     /** Construct a new value from pieces. */
-    public Value(ITimestamp time, ISeverity severity,
-                 String status, IMetaData meta_data,
-                 Quality quality)
+    public Value(final ITimestamp time, final ISeverity severity,
+                 final String status, final IMetaData meta_data,
+                 final Quality quality)
     {
         this.time = time;
         this.severity = severity;
@@ -63,34 +63,34 @@ abstract public class Value implements IValue
         this.meta_data = meta_data;
         this.quality = quality;
     }
-    
-    /** {@inheritDoc} */
-    final public ITimestamp getTime()
-    {   return time;   }   
 
     /** {@inheritDoc} */
-	final public ISeverity getSeverity()
-	{	return severity;	}
-    
+    final public ITimestamp getTime()
+    {   return time;   }
+
     /** {@inheritDoc} */
-	final public String getStatus()
+    final public ISeverity getSeverity()
+	{	return severity;	}
+
+    /** {@inheritDoc} */
+    final public String getStatus()
 	{	return status; 	 }
-    
+
     /** {@inheritDoc} */
     final public Quality getQuality()
     {   return quality; }
 
     /** {@inheritDoc} */
-    final public IMetaData getMetaData()
+    public IMetaData getMetaData()
     {   return meta_data;    }
-    
+
     /** {@inheritDoc} */
     abstract public String format(Format how, int precision);
-    
+
     /** {@inheritDoc} */
-	final public String format()
+    final public String format()
     {   return format(Format.Default, -1); }
-    
+
     /** {@inheritDoc} */
     @Override
     final public String toString()
@@ -99,8 +99,8 @@ abstract public class Value implements IValue
         buffer.append(getTime().toString());
         buffer.append(Messages.ColumnSeperator);
         buffer.append(format(Format.Default, -1));
-        String sevr = getSeverity().toString();
-        String stat = getStatus();
+        final String sevr = getSeverity().toString();
+        final String stat = getStatus();
         if (sevr.length() > 0 || stat.length() > 0)
         {
             buffer.append(Messages.ColumnSeperator);
@@ -110,20 +110,22 @@ abstract public class Value implements IValue
         }
         return buffer.toString();
     }
-    
+
 	/** Convert char into printable character for Format.String
 	 *  @param c Char, 0 for end-of-string
 	 *  @return Printable version
 	 */
 	protected char getDisplayChar(final char c)
 	{
-		if (c == 0)
-			return 0;
+		if (c == 0) {
+            return 0;
+        }
 		if (Character.isLetterOrDigit(c) ||
 		    Character.isWhitespace(c)||
-			(Character.getType(c) == Character.OTHER_PUNCTUATION) ||
-			(Character.getType(c) == Character.MATH_SYMBOL))
-			return c;
+			Character.getType(c) == Character.OTHER_PUNCTUATION ||
+			Character.getType(c) == Character.MATH_SYMBOL) {
+            return c;
+        }
 		return '?';
 	}
 
@@ -131,14 +133,16 @@ abstract public class Value implements IValue
 	@Override
 	public boolean equals(final Object obj)
 	{
-		if (! (obj instanceof Value))
-			return false;
+		if (! (obj instanceof Value)) {
+            return false;
+        }
 		final Value rhs = (Value) obj;
 		if (! (rhs.time.equals(time) &&
 		       rhs.quality == quality &&
 			   rhs.status.equals(status) &&
-			   rhs.severity.toString().equals(severity.toString())))
-			   return false;
+			   rhs.severity.toString().equals(severity.toString()))) {
+            return false;
+        }
         // Meta_data might be null
         final IMetaData rhs_meta = rhs.getMetaData();
 		if (meta_data == null)

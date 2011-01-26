@@ -60,7 +60,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testInputOffset() {
+    public void testInputOffset() throws PersistenceException {
         final ModuleDBO out = new ModuleDBO();
         assertEquals(out.getInputOffsetNH(), 0);
 
@@ -106,7 +106,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testOutputOffset() {
+    public void testOutputOffset() throws PersistenceException {
         final ModuleDBO out = new ModuleDBO();
         assertEquals(out.getOutputOffsetNH(), 0);
 
@@ -136,7 +136,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testChildren() {
+    public void testChildren() throws PersistenceException {
 
 
         final ModuleDBO out = new ModuleDBO(_slave);
@@ -269,7 +269,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testEpicsAdressString() {
+    public void testEpicsAdressString() throws PersistenceException {
 
         _profibusSubnet.setName("Name");
         _slave.moveSortIndex((short) 12);
@@ -279,7 +279,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testGetGsdModuleModel() {
+    public void testGetGsdModuleModel() throws PersistenceException {
 
         final ModuleDBO out = new ModuleDBO(_slave);
         assertNull(out.getGsdModuleModel());
@@ -302,7 +302,7 @@ public class ModuleTest {
     }
 
     @Test
-    public void testGetGsdModuleModel2() {
+    public void testGetGsdModuleModel2() throws PersistenceException {
 
         final ModuleDBO out = new ModuleDBO(_slave);
         assertNull(out.getGsdModuleModel());
@@ -323,7 +323,7 @@ public class ModuleTest {
 
 
     @Test
-    public void testGetMaxOffset() {
+    public void testGetMaxOffset() throws PersistenceException {
 
         final ModuleDBO out = new ModuleDBO(_slave);
         assertTrue(out.getMaxOffset()==-1);

@@ -229,17 +229,18 @@ public final class ConnectionUtilNew {
 		// the pv ?
 		ValueType type = processVariable.getValueTypeHint();
 
-		// 2 nd choise from rule
-		/*
-		 * XXX hrickens 2010.11.10: ad as workarround for the DAL crash with
-		 * JNI. DAL crashed in case of wrong pv request. E.g.: get a String Pv
-		 * as Double.
-		 */
-		if (type == null) {
-			if (isStringRecord(processVariable)) {
-				type = ValueType.STRING;
-			}
-		}
+//		TODO (jhatje): remove if patch in jca lib works
+//		// 2 nd choise from rule
+//		/*
+//		 * XXX hrickens 2010.11.10: ad as workarround for the DAL crash with
+//		 * JNI. DAL crashed in case of wrong pv request. E.g.: get a String Pv
+//		 * as Double.
+//		 */
+//		if (type == null) {
+//			if (isStringRecord(processVariable)) {
+//				type = ValueType.STRING;
+//			}
+//		}
 		
 		// 3nd choice
 		if (type == null) {
@@ -256,21 +257,22 @@ public final class ConnectionUtilNew {
 		return type;
 	}
 
-	private static boolean isStringRecord(IProcessVariableAddress processVariable) {
-		ArrayList<String> recordTails = SdsPlugin.getDefault().getRecordTails();
-		for (String recTail : recordTails) {
-			if (processVariable.getProperty().endsWith(recTail)) {
-				return true;
-			}
-		}
-		ArrayList<String> recordTailsRegExp = SdsPlugin.getDefault().getRecordTailsRegExp();
-		for (String recTailRegExp : recordTailsRegExp) {
-			if (processVariable.getProperty().matches(recTailRegExp)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	TODO (jhatje): remove if patch in jca lib works
+//	private static boolean isStringRecord(IProcessVariableAddress processVariable) {
+//		ArrayList<String> recordTails = SdsPlugin.getDefault().getRecordTails();
+//		for (String recTail : recordTails) {
+//			if (processVariable.getProperty().endsWith(recTail)) {
+//				return true;
+//			}
+//		}
+//		ArrayList<String> recordTailsRegExp = SdsPlugin.getDefault().getRecordTailsRegExp();
+//		for (String recTailRegExp : recordTailsRegExp) {
+//			if (processVariable.getProperty().matches(recTailRegExp)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	
 	static final RemoteInfo translate(final IProcessVariableAddress pv) {

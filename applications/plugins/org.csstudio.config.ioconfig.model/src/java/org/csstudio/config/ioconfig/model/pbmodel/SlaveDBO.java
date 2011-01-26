@@ -26,6 +26,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,9 +40,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
@@ -145,11 +148,11 @@ public class SlaveDBO extends AbstractNodeDBO {
     public SlaveDBO() {
     }
 
-    public SlaveDBO(final MasterDBO master) {
+    public SlaveDBO(final MasterDBO master) throws PersistenceException {
         this(master, -1);
     }
 
-    public SlaveDBO(final MasterDBO master, final int stationAddress) {
+    public SlaveDBO(final MasterDBO master, final int stationAddress) throws PersistenceException {
         setParent(master);
         master.addChild(this);
         moveSortIndex(stationAddress);
@@ -458,13 +461,14 @@ public class SlaveDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof MasterDBO) {
             MasterDBO master = (MasterDBO) parentNode;
             SlaveDBO copy = new SlaveDBO(master);
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setFdlAddress(getFdlAddress());
             copy.setGroupIdent(getGroupIdent());
             copy.setGSDFile(getGSDFile());
@@ -480,8 +484,9 @@ public class SlaveDBO extends AbstractNodeDBO {
             copy.setVendorName(getVendorName());
             copy.setWdFact1(getWdFact1());
             copy.setWdFact2(getWdFact2());
-            for (AbstractNodeDBO n : getChildren()) {
-                n.copyThisTo(copy);
+            for (AbstractNodeDBO node : getChildren()) {
+                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
             }
             return copy;
         }
@@ -494,9 +499,10 @@ public class SlaveDBO extends AbstractNodeDBO {
      *
      * @param index
      *            the new sortIndex for this node.
+     * @throws PersistenceException 
      */
     @Override
-    public void moveSortIndex(final int toIndex) {
+    public void moveSortIndex(final int toIndex) throws PersistenceException {
     	short index = (short) toIndex;
         if (index == getSortIndex()) {
             // no new Address don't move

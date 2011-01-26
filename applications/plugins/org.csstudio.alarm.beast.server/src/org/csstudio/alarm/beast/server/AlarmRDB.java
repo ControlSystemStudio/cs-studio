@@ -51,6 +51,9 @@ public class AlarmRDB
     /** Lazily (re-)created statement for updating the alarm state of a PV */
     private PreparedStatement updateStateStatement;
 
+    /** Lazily (re-)created statement for updating the global alarm state of a PV */
+    private PreparedStatement updateGlobalStatement;
+
 	public AlarmRDB(final AlarmServer server, final String url,
 			final String user, final String password, final String root_name) throws Exception
     {
@@ -300,7 +303,29 @@ public class AlarmRDB
         connection.commit();
     }
 
-	/** Write updated PV enablement to RDB
+	/** Update 'global' alarm indicator in RDB
+	 *  @param pv
+	 *  @param active Is there an active 'global' alarm on the PV?
+	 *  @throws Exception on error
+	 */
+	public void writeGlobalUpdate(final AlarmPV pv, final boolean active) throws Exception
+    {
+        // The isConnected() check in here is expensive, but what's
+        // the alternative if we want convenient auto-reconnect?
+        final Connection actual_connection = rdb.getConnection();
+        if (actual_connection != connection  ||  updateGlobalStatement == null)
+        {   // (Re-)create statement on new connection
+            connection = actual_connection;
+            updateGlobalStatement = null;
+            updateGlobalStatement = connection.prepareStatement(sql.update_global_state);
+        }
+        updateGlobalStatement.setBoolean(1, active);
+        updateGlobalStatement.setInt(2, pv.getID());
+        updateGlobalStatement.execute();
+        connection.commit();
+    }
+
+    /** Write updated PV enablement to RDB
      *  @param pv Alarm PV
      *  @param enabled Enabled or not?
 	 *  @throws Exception on error
@@ -326,6 +351,8 @@ public class AlarmRDB
 	/** Must be called to release resources */
     public void close()
     {
+        // Does not specifically close all prepared statements,
+        // leaves that to overall rdb.close()
     	rdb.close();
     }
 }

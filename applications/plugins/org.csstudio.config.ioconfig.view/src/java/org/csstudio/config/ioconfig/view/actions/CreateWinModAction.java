@@ -30,11 +30,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -54,83 +56,126 @@ import org.eclipse.swt.widgets.MessageBox;
 
  */
 public class CreateWinModAction extends Action {
-
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			CreateWinModAction.class);
-	private final ProfiBusTreeView _pbtv;
-	
-	public CreateWinModAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
-		super(text);
-		_pbtv = pbtv;
-	}
-
-	private void makeXMLFile(@Nonnull final File path,@Nonnull final ProfibusSubnetDBO subnet) {
-	    ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(subnet.getName());
-	    cfg.setSubnet(subnet);
-	    File xmlFile = new File(path, subnet.getName() + ".cfg");
-	    File txtFile = new File(path, subnet.getName() + ".txt");
-	    if (xmlFile.exists()) {
-	        MessageBox box = new MessageBox(Display.getDefault().getActiveShell(),
-	                                        SWT.ICON_WARNING | SWT.YES | SWT.NO);
-	        box.setMessage("The file " + xmlFile.getName() + " exist! Overwrite?");
-	        int erg = box.open();
-	        if (erg == SWT.YES) {
-	            try {
-	                cfg.getXmlFile(xmlFile);
-	                cfg.getTxtFile(txtFile);
-	            } catch (IOException e) {
-	                MessageBox abortBox = new MessageBox(Display.getDefault()
-	                                                     .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
-	                abortBox.setMessage("The file " + xmlFile.getName()
-	                                    + " can not created!");
-	                abortBox.open();
-	            }
-	        }
-	    } else {
-	        try {
-	            xmlFile.createNewFile();
-	            cfg.getXmlFile(xmlFile);
-	        } catch (IOException e) {
-	            MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
-	                                                 SWT.ICON_WARNING | SWT.ABORT);
-	            abortBox.setMessage("The file " + xmlFile.getName() + " can not created!");
-	            abortBox.open();
-	        }
-	    }
-	}
-
-	@Override
-	public void run() {
-	    // TODO: Multi Selection Siemens Create.
-	    final String filterPathKey = "FilterPath";
-	    IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
-	    String filterPath = pref.get(filterPathKey, "");
-	    DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
-	    dDialog.setFilterPath(filterPath);
-	    filterPath = dDialog.open();
-	    File path = new File(filterPath);
-	    pref.put(filterPathKey, filterPath);
-	    Object selectedNode = _pbtv.getSelectedNode().getFirstElement();
-	    if (selectedNode instanceof ProfibusSubnetDBO) {
-	        ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
-	        LOG.info("Create XML for Subnet: " + subnet);
-	        makeXMLFile(path, subnet);
-
-	    } else if (selectedNode instanceof IocDBO) {
-	        IocDBO ioc = (IocDBO) selectedNode;
-	        LOG.info("Create XML for Ioc: " + ioc);
-	        for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
-	            makeXMLFile(path, subnet);
-	        }
-	    } else if (selectedNode instanceof FacilityDBO) {
-	        FacilityDBO facility = (FacilityDBO) selectedNode;
-	        LOG.info("Create XML for Facility: " + facility);
-	        for (IocDBO ioc : facility.getIoc()) {
-	            for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
-	                makeXMLFile(path, subnet);
-	            }
-	        }
-	    }
-	}
-
+    
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(CreateWinModAction.class);
+    private final ProfiBusTreeView _pbtv;
+    
+    public CreateWinModAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
+        super(text);
+        _pbtv = pbtv;
+    }
+    
+    private void makeFiles(@Nonnull final File path, @Nonnull final ProfibusSubnetDBO subnet) {
+        ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(subnet.getName());
+        try {
+            cfg.setSubnet(subnet);
+            File xmlFile = new File(path, subnet.getName() + ".cfg");
+            File txtFile = new File(path, subnet.getName() + ".txt");
+            makeXMLFile(cfg, xmlFile);
+            makeTxtFile(cfg, txtFile);
+        } catch (PersistenceException e) {
+            LOG.error("Database Error! Files not created!", e);
+            DeviceDatabaseErrorDialog.open(null, "Can't create WinMod conifg files! Database error.", e);
+        }
+    }
+    
+    /**
+     * @param cfg 
+     * @param txtFile
+     */
+    private void makeTxtFile(@Nonnull ProfibusConfigWinModGenerator cfg, @Nonnull File txtFile) {
+        if (txtFile.exists()) {
+            MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
+                    | SWT.YES | SWT.NO);
+            box.setMessage("The file " + txtFile.getName() + " exist! Overwrite?");
+            int erg = box.open();
+            if (erg == SWT.YES) {
+                try {
+                    cfg.getTxtFile(txtFile);
+                } catch (IOException e) {
+                    openCanCreateFileDialog(txtFile.getName());
+                }
+            }
+        } else {
+            try {
+                txtFile.createNewFile();
+                cfg.getTxtFile(txtFile);
+            } catch (IOException e) {
+                openCanCreateFileDialog(txtFile.getName());
+            }
+        }
+    }
+    
+    /**
+     * @param cfg 
+     * @param xmlFile
+     */
+    private void makeXMLFile(@Nonnull ProfibusConfigWinModGenerator cfg, @Nonnull File xmlFile) {
+        if (xmlFile.exists()) {
+            MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
+                    | SWT.YES | SWT.NO);
+            box.setMessage("The file " + xmlFile.getName() + " exist! Overwrite?");
+            int erg = box.open();
+            if (erg == SWT.YES) {
+                try {
+                    cfg.getXmlFile(xmlFile);
+                } catch (IOException e) {
+                    openCanCreateFileDialog(xmlFile.getName());
+                }
+            }
+        } else {
+            try {
+                xmlFile.createNewFile();
+                cfg.getXmlFile(xmlFile);
+            } catch (IOException e) {
+                openCanCreateFileDialog(xmlFile.getName());
+            }
+        }
+    }
+    
+    /**
+     * @param name
+     */
+    private void openCanCreateFileDialog(@Nonnull String fileName) {
+        MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
+                                             SWT.ICON_WARNING | SWT.ABORT);
+        abortBox.setMessage("The file " + fileName + " can not created!");
+        abortBox.open();
+    }
+    
+    @Override
+    public void run() {
+        // TODO: Multi Selection Siemens Create.
+        final String filterPathKey = "FilterPath";
+        IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
+        String filterPath = pref.get(filterPathKey, "");
+        DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
+        dDialog.setFilterPath(filterPath);
+        filterPath = dDialog.open();
+        File path = new File(filterPath);
+        pref.put(filterPathKey, filterPath);
+        Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
+        if (selectedNode instanceof ProfibusSubnetDBO) {
+            ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
+            LOG.info("Create XML for Subnet: " + subnet);
+            makeFiles(path, subnet);
+            
+        } else if (selectedNode instanceof IocDBO) {
+            IocDBO ioc = (IocDBO) selectedNode;
+            LOG.info("Create XML for Ioc: " + ioc);
+            for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+                makeFiles(path, subnet);
+            }
+        } else if (selectedNode instanceof FacilityDBO) {
+            FacilityDBO facility = (FacilityDBO) selectedNode;
+            LOG.info("Create XML for Facility: " + facility);
+            for (IocDBO ioc : facility.getIoc()) {
+                for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+                    makeFiles(path, subnet);
+                }
+            }
+        }
+    }
+    
 }

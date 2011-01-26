@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.util.swt.meter;
 
 import java.text.NumberFormat;
@@ -139,13 +146,13 @@ public class MeterWidget extends Canvas implements DisposeListener,
         	this.low_alarm = low_alarm;
         else
         	this.low_alarm = this.min;
-        
+
         if (low_warning > this.min  &&  low_warning < this.max)
         	this.low_warning = low_warning;
     	else
             this.low_warning = this.low_alarm;
 
-        
+
         if (high_alarm > this.min  &&  high_alarm < this.max)
             this.high_alarm = high_alarm;
         else
@@ -184,6 +191,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     }
 
     /** @see org.eclipse.swt.events.DisposeListener */
+    @Override
     public void widgetDisposed(final DisposeEvent e)
     {
         resetScale();
@@ -224,6 +232,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     }
 
 	/** @see org.eclipse.swt.events.PaintListener */
+    @Override
     public void paintControl(final PaintEvent e)
     {
         final GC gc = e.gc;

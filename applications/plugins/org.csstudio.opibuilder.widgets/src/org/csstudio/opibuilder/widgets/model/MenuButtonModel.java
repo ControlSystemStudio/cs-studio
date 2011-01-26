@@ -24,11 +24,8 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 
@@ -43,10 +40,6 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 	 * The ID of the label property.
 	 */
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
-	/**
-	 * The ID of the font property.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	public static final String PROP_ACTIONS_FROM_PV = "actions_from_pv"; //$NON-NLS-1$
 	
@@ -85,18 +78,13 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_LABEL, "Label",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
-		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
 				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
 		removeProperty(PROP_ACTIONS);		
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
-		//addProperty(new ComboProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", 
-		//		WidgetPropertyCategory.Display, TextAlignmentEnum.getDisplayNames() ,TextAlignmentEnum.CENTER.getIndex()));
 		
 		setPropertyVisible(PROP_ACTIONS, !DEFAULT_ACTIONS_FROM_PV);
-		setPropertyVisible(PROP_PVNAME, DEFAULT_ACTIONS_FROM_PV);
 		
 	}
 	
@@ -116,15 +104,6 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 	 */
 	public String getLabel() {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
-	}
-
-	/**
-	 * Return the label font.
-	 * 
-	 * @return The label font.
-	 */
-	public OPIFont getFont() {
-		return (OPIFont) getProperty(PROP_FONT).getPropertyValue();
 	}
 	
 	/**

@@ -24,8 +24,10 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -52,8 +54,9 @@ public class IocDBO extends AbstractNodeDBO {
     /**
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
+     * @throws PersistenceException 
      */
-    public IocDBO(final FacilityDBO facility) {
+    public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
         this(facility, DEFAULT_MAX_STATION_ADDRESS);
 
     }
@@ -62,8 +65,9 @@ public class IocDBO extends AbstractNodeDBO {
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
      * @param maxStationAddress the highest possible Station Address.
+     * @throws PersistenceException 
      */
-    public IocDBO(final FacilityDBO facility, final int maxStationAddress) {
+    public IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
         setParent(facility);
         facility.addChild(this);
     }
@@ -73,6 +77,7 @@ public class IocDBO extends AbstractNodeDBO {
      * @return the parent Facility of this IOC.
      */
     @Transient
+    @Nonnull
     public FacilityDBO getFacility() {
         return (FacilityDBO) getParent();
     }
@@ -82,6 +87,7 @@ public class IocDBO extends AbstractNodeDBO {
      */
     @Transient
     @SuppressWarnings("unchecked")
+    @Nonnull
     public Set<ProfibusSubnetDBO> getProfibusSubnets() {
         return (Set<ProfibusSubnetDBO>) getChildren();
     }
@@ -91,20 +97,21 @@ public class IocDBO extends AbstractNodeDBO {
      * @param facility
      *            set the parent Facility of this IOC.
      */
-    public void setFacility(final FacilityDBO facility) {
+    public void setFacility(@Nonnull final FacilityDBO facility) {
         this.setParent(facility);
     }
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) {
+    public AbstractNodeDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof FacilityDBO) {
             final FacilityDBO facility = (FacilityDBO) parentNode;
             final IocDBO copy = new IocDBO(facility);
             copy.setDescription(getDescription());
-            copy.setDocuments(getDocuments());
+            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             return copy;
         }
         return null;
@@ -112,12 +119,14 @@ public class IocDBO extends AbstractNodeDBO {
 
     /**
      * {@inheritDoc}
+     * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) {
+    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
         final AbstractNodeDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
-            node.copyThisTo(copy);
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
     }

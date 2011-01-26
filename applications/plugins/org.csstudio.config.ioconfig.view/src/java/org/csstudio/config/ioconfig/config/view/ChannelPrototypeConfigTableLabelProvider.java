@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.config.view;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -40,19 +43,26 @@ public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProv
     /**
      * {@inheritDoc}
      */
-    public Image getColumnImage(final Object element, final int columnIndex) {
+    @Override
+    public Image getColumnImage(@Nullable final Object element, final int columnIndex) {
         return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getColumnText(final Object element, final int columnIndex) {
+    // CHECKSTYLE OFF: CyclomaticComplexity
+    @Override 
+    public String getColumnText(@Nullable final Object element, final int columnIndex) {
         if (element instanceof ModuleChannelPrototypeDBO) {
             ModuleChannelPrototypeDBO prototype = (ModuleChannelPrototypeDBO) element;
 
-            ChannelPrototypConfigColumn[] values = new ChannelPrototypConfigColumn[] { ChannelPrototypConfigColumn.OFFSET, ChannelPrototypConfigColumn.NAME, ChannelPrototypConfigColumn.TYPE,
-                    ChannelPrototypConfigColumn.SIZE, ChannelPrototypConfigColumn.STRUCT , ChannelPrototypConfigColumn.STATUS, ChannelPrototypConfigColumn.MIN,ChannelPrototypConfigColumn.MAX,ChannelPrototypConfigColumn.ORDER };
+            ChannelPrototypConfigColumn[] values = new ChannelPrototypConfigColumn[] {
+                    ChannelPrototypConfigColumn.OFFSET, ChannelPrototypConfigColumn.NAME,
+                    ChannelPrototypConfigColumn.TYPE, ChannelPrototypConfigColumn.SIZE,
+                    ChannelPrototypConfigColumn.STRUCT, ChannelPrototypConfigColumn.STATUS,
+                    ChannelPrototypConfigColumn.MIN, ChannelPrototypConfigColumn.MAX,
+                    ChannelPrototypConfigColumn.ORDER };
             if (columnIndex < values.length) {
                 ChannelPrototypConfigColumn column = values[columnIndex];
                 switch (column) {
@@ -66,38 +76,17 @@ public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProv
                         return prototype.getType().getSize();
                     case SHIFT:
                     case STATUS:
-                        if (prototype.getShift() < 0) {
-                            return "";
-                        }
-                        return Integer.toString(prototype.getShift());
+                        return getStatus(prototype);
                     case IO:
-                        if (prototype.isInput()) {
-                            return "Input";
-                        }
-                        return "Output";
+                        return getIO(prototype);
                     case STRUCT:
-                        if (prototype.isStructure()) {
-                            return "yes";
-                        }
-                        return "no";
+                        return getStruct(prototype);
                     case MIN:
-                        Integer minimum = prototype.getMinimum();
-                        if(minimum==null) {
-                            return "";
-                        }
-                        return minimum.toString();
+                        return getMinimum(prototype);
                     case MAX:
-                        Integer maximum = prototype.getMaximum();
-                        if(maximum==null) {
-                            return "";
-                        }
-                        return maximum.toString();
+                        return getMaximum(prototype);
                     case ORDER:
-                        Integer byteOrdering = prototype.getByteOrdering();
-                        if(byteOrdering==null||byteOrdering<1) {
-                            return "";
-                        }
-                        return Integer.toString(byteOrdering);
+                        return getOrder(prototype);
                     default:
                         return null;
                 }
@@ -107,28 +96,110 @@ public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProv
     }
 
     /**
-     * {@inheritDoc}
+     * @param prototype
+     * @return
      */
-    public void addListener(final ILabelProviderListener listener) {
+    @Nonnull 
+    private String getOrder(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        Integer byteOrdering = prototype.getByteOrdering();
+        if(byteOrdering==null||byteOrdering<1) {
+            return "";
+        }
+        return Integer.toString(byteOrdering);
     }
+
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull 
+    private String getMaximum(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        Integer maximum = prototype.getMaximum();
+        if(maximum==null) {
+            return "";
+        }
+        return maximum.toString();
+    }
+
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull 
+    private String getMinimum(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        Integer minimum = prototype.getMinimum();
+        if(minimum==null) {
+            return "";
+        }
+        return minimum.toString();
+    }
+
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull 
+    private String getStruct(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        if (prototype.isStructure()) {
+            return "yes";
+        }
+        return "no";
+    }
+
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull 
+    private String getIO(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        if (prototype.isInput()) {
+            return "Input";
+        }
+        return "Output";
+    }
+
+    /**
+     * @param prototype
+     * @return
+     */
+    @Nonnull
+    private String getStatus(@Nonnull ModuleChannelPrototypeDBO prototype) {
+        if (prototype.getShift() < 0) {
+            return "";
+        }
+        return Integer.toString(prototype.getShift());
+    }
+    // CHECKSTYLE ON: CyclomaticComplexity
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
+        // not to dispose
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isLabelProperty(final Object element, final String property) {
+    @Override
+    public boolean isLabelProperty(@Nullable final Object element, @Nullable final String property) {
         return true;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void removeListener(final ILabelProviderListener listener) {
+    @Override
+    public void addListener(@Nullable final ILabelProviderListener listener) {
+        // don't use Listener
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeListener(@Nullable final ILabelProviderListener listener) {
+        // don't use Listener
     }
 }

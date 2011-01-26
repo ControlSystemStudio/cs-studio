@@ -18,4 +18,5 @@ Eclipse-LazyStart: false
 Export-Package: org.csstudio.diag.rack.gui,
  org.csstudio.diag.rack.model,
  org.csstudio.diag.rack.view
-Bundle-Vendor: Dave Purcell
+Bundle-Vendor: Dave Purcell <purcelljd@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

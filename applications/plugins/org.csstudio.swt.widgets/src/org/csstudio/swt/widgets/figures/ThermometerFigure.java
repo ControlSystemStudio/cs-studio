@@ -250,11 +250,9 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			}else{
 				graphics.setBackgroundColor(fillColor);				
 				super.fillShape(graphics);
-			}			
+			}				
 	
-			NumberFormat format = NumberFormat.getInstance();
-			format.setMaximumFractionDigits(2);
-			String valueString = format.format(rawValue);
+			String valueString = getValueText();
 			Dimension valueSize = 
 				FigureUtilities.getTextExtents(valueString, getFont());
 			if(valueSize.width < bounds.width) {				

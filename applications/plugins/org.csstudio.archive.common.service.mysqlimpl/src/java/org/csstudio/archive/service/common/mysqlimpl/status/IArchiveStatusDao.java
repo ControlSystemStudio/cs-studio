@@ -53,4 +53,12 @@ public interface IArchiveStatusDao {
     @CheckForNull
     IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveDaoException;
 
+    /**
+     * @param statusId
+     * @return
+     * @throws ArchiveDaoException
+     */
+    @CheckForNull
+    IArchiveStatus retrieveStatusById(@Nonnull final ArchiveStatusId statusId) throws ArchiveDaoException;
+
 }

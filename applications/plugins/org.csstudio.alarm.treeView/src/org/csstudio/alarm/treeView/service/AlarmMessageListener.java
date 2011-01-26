@@ -23,14 +23,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Listens for alarm messages and prepares the necessary updates to the tree in response to those
@@ -39,12 +37,6 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Joerg Rathlev
  */
 public class AlarmMessageListener implements IAlarmListener {
-
-    /**
-     * The logger used by this listener.
-     */
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmMessageListener.class);
 
     /**
      * The worker used by this listener.
@@ -56,7 +48,7 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * Applies the pending updates to the tree.
      */
-    private final class QueueWorker implements Runnable {
+    private static final class QueueWorker implements Runnable {
 
         /**
          * The worker thread which runs this runnable. This is set to <code>null</code> when this
@@ -80,7 +72,7 @@ public class AlarmMessageListener implements IAlarmListener {
         /**
          * Creates a new queue worker.
          */
-        private QueueWorker() {
+        QueueWorker() {
             _pendingUpdates = new LinkedBlockingQueue<AbstractPendingUpdate>();
         }
 

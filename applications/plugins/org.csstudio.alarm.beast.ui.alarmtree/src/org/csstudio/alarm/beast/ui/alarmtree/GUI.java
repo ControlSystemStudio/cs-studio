@@ -9,20 +9,20 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
-import org.csstudio.alarm.beast.AlarmTreePosition;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
-import org.csstudio.alarm.beast.ui.AddComponentAction;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePosition;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
-import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;
-import org.csstudio.alarm.beast.ui.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
-import org.csstudio.alarm.beast.ui.DuplicatePVAction;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.alarm.beast.ui.MoveItemAction;
-import org.csstudio.alarm.beast.ui.RemoveComponentAction;
-import org.csstudio.alarm.beast.ui.RenameItemAction;
+import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
+import org.csstudio.alarm.beast.ui.actions.DuplicatePVAction;
+import org.csstudio.alarm.beast.ui.actions.MoveItemAction;
+import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
+import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.eclipse.jface.action.GroupMarker;
@@ -33,7 +33,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -45,6 +44,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the alarm tree viewer
@@ -129,7 +129,7 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
 
-        ColumnViewerToolTipSupport.enableFor(tree_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
 
     /** Set or clear error message.
@@ -235,11 +235,12 @@ public class GUI implements AlarmClientModelListener
 	        {   // Allow removal of one or more selected items
 	            manager.add(new MoveItemAction(shell, model, items));
 	            manager.add(new RemoveComponentAction(shell, model, items));
-	            manager.add(new Separator());
 	        }
 		}
+        manager.add(new Separator());
         manager.add(new AlarmPerspectiveAction());
-        manager.add(new GroupMarker("additions")); //$NON-NLS-1$
+        manager.add(new Separator());
+        manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
     /** Set focus to desired element in GUI */
@@ -300,7 +301,7 @@ public class GUI implements AlarmClientModelListener
      *  @see AlarmClientModelListener
      */
     @Override
-    public void newAlarmTree(final AlarmClientModel model)
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
         final AlarmTreeRoot config = model.getConfigTree();
         Display.getDefault().asyncExec(new Runnable()

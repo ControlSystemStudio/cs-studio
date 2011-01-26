@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
  * @author hrickens
@@ -39,7 +40,7 @@ import org.csstudio.config.ioconfig.model.IDocument;
  * @since 27.08.2009
  */
 public class Helper {
-    public static void writeDocumentFile(final File outFile, final IDocument document) throws SQLException,
+    public static void writeDocumentFile(final File outFile, final IDocument document) throws PersistenceException,
             IOException {
         InputStream inputStream = document.getImageData();
         byte[] buffer = new byte[8192];

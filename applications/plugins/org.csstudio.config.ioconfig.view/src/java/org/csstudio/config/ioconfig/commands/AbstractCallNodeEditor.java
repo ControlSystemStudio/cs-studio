@@ -37,11 +37,16 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
@@ -59,6 +64,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public abstract class AbstractCallNodeEditor extends AbstractHandler {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AbstractCallNodeEditor.class);
+    
     /**
      * (@inheritDoc)
      */
@@ -67,20 +75,27 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
     public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
 
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        IWorkbenchPage page = window.getActivePage();
-
-        AbstractNodeDBO obj = getCallerNode(page);
-
-        try {
-            openNodeEditor(obj, page);
-        } catch (PartInitException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        if (window != null) {
+            IWorkbenchPage page = window.getActivePage();
+            
+            AbstractNodeDBO obj = getCallerNode(page);
+            
+            if (obj != null) {
+                try {
+                    openNodeEditor(obj, page);
+                } catch (PartInitException e1) {
+                    LOG.error(e1);
+                    MessageDialog.openError(null, "ERROR", e1.getMessage());
+                } catch (PersistenceException e2) {
+                    LOG.error(e2);
+                    DeviceDatabaseErrorDialog.open(null, "Can't open Editor", e2);
+                }
+            }
         }
         return null;
     }
 
-    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO parentNode,@Nonnull IWorkbenchPage page) throws PartInitException;
+    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO parentNode,@Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
 
     /**
      * @return

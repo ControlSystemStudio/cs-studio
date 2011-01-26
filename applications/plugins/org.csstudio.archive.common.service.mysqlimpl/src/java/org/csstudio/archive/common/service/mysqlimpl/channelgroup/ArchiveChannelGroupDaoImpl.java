@@ -29,7 +29,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupDTO;
@@ -39,10 +38,8 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -52,13 +49,10 @@ import com.google.common.collect.Ordering;
  */
 public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IArchiveChannelGroupDao {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveChannelGroupDaoImpl.class);
-
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelGroupByEngineIdStmt =
-        "SELECT grp_id, name, enabling_chan_id FROM archive.chan_grp WHERE eng_id=? ORDER BY name";
+        "SELECT id, name, enabling_channel_id FROM archive_new.channel_group WHERE engine_id=? ORDER BY name";
 
 
     /**
@@ -85,7 +79,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
 
             final List<IArchiveChannelGroup> groups = Lists.newArrayList();
             while (result.next()) {
-
+                // id, name, enabling_channel_id
                 final ArchiveChannelGroupId id = new ArchiveChannelGroupId(result.getInt(1));
                 final String name = result.getString(2);
                 final ArchiveChannelId chanId = new ArchiveChannelId(result.getInt(3));
@@ -95,33 +89,14 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
                                                       chanId));
             }
 
-            // TODO (bknerr) : check whether this is still necessary, if not just return 'groups'
-            // SQL should already give sorted result, but handling of upper/lowercase
-            // names seems to differ between Oracle and MySQL, resulting in
-            // files that were hard to compare
-            final Ordering<IArchiveChannelGroup> o = new Ordering<IArchiveChannelGroup>() {
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                public int compare(@Nonnull final IArchiveChannelGroup o1, @Nonnull final IArchiveChannelGroup o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            };
-            return o.sortedCopy(groups);
+            return groups;
 
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
         } catch (final SQLException e) {
             throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
         }
     }
 

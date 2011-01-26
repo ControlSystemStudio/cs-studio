@@ -38,17 +38,19 @@ public class DeleteArchiveCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         pv.removeArchiveDataSource(archives);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         pv.setArchiveDataSource(original);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

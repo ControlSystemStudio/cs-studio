@@ -36,17 +36,19 @@ public class ChangeDisplayNameCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setDisplayName(new_name);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setDisplayName(old_name);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

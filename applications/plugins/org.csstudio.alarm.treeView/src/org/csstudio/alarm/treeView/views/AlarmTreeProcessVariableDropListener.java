@@ -60,6 +60,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public Transfer getTransfer() {
         return ProcessVariableNameTransfer.getInstance();
@@ -68,6 +69,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEnabled(@Nonnull final DropTargetEvent event) {
         return dropTargetIsSubtreeNode(event);
     }
@@ -83,6 +85,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragEnter(@Nonnull final DropTargetEvent event) {
         // only copy is supported
         event.detail = event.operations & DND.DROP_COPY;
@@ -91,6 +94,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragOperationChanged(@Nonnull final DropTargetEvent event) {
         // only copy is supported
         event.detail = event.operations & DND.DROP_COPY;
@@ -99,6 +103,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragLeave(@Nonnull final DropTargetEvent event) {
         // EMPTY
     }
@@ -106,6 +111,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragOver(@Nonnull final DropTargetEvent event) {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL | DND.FEEDBACK_SELECT;
     }
@@ -113,6 +119,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dropAccept(@Nonnull final DropTargetEvent event) {
         // EMPTY
     }
@@ -120,6 +127,7 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     /**
      * {@inheritDoc}
      */
+    @Override
     public void drop(@Nonnull final DropTargetEvent event) {
         final SubtreeNode parent = (SubtreeNode) event.item.getData();
         final IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;

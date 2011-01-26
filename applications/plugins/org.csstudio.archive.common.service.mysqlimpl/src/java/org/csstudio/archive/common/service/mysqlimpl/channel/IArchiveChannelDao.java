@@ -26,6 +26,7 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -53,5 +54,12 @@ public interface IArchiveChannelDao {
      */
     @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveDaoException;
+
+    /**
+     * @param id the channel id
+     * @return the cached or freshly retrieved channel
+     */
+    @CheckForNull
+    IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
 }

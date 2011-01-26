@@ -154,6 +154,10 @@ public class InitialStateRetriever {
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }
 
+        @Override
+        public void notFound(@Nonnull final String pvName) {
+            // TODO (jpenning) NYI notFound
+        }
     }
 
 }

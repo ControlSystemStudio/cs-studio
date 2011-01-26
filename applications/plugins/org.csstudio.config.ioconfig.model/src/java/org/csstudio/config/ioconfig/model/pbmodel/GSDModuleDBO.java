@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -165,6 +166,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      * @param name
      *            set the Name of this GSD Module.
      */
+    @Column(nullable=false)
     public void setName(final String name) {
         this._name = name;
     }

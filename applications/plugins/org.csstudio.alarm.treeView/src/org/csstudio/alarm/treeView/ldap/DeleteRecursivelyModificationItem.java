@@ -23,7 +23,6 @@ package org.csstudio.alarm.treeView.ldap;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
-import javax.naming.ServiceUnavailableException;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
@@ -63,21 +62,22 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
     }
 
     @Override
-    public boolean apply() throws AlarmTreeModificationException {
-        boolean result;
+    public void apply() throws AlarmTreeModificationException {
         try {
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
             if (service == null) {
                 throw new AlarmTreeModificationException("Removal failed due to unavailable LDAP service", null);
             }
 
-            result = service.removeComponent(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT, _nodeName);
+            boolean isOk = service.removeComponent(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT, _nodeName);
+            if (!isOk) {
+                throw new AlarmTreeModificationException("Removal failed. LDAP query failed or model did not contain entry for "
+                                                                 + _nodeName.toString(), null);
+            }
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final CreateContentModelException e) {
             throw new AlarmTreeModificationException("Content model could not be constructed for subtree of " + _nodeName.toString(), e);
         }
-        setApplied(result);
-        return result;
     }
 }

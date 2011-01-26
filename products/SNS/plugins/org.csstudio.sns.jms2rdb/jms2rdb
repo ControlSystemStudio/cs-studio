@@ -12,7 +12,8 @@
 #
 # kasemirk@ornl.gov
 
-export JAVA_HOME=/usr/local/java/jdk1.5.0_05
+#export JAVA_HOME=/usr/local/java/jdk1.5.0_05
+export JAVA_HOME=/usr/local/java/jdk1.6.0_19
 PROGRAM=JMS2RDB
 # HTTP port must match JMS2RDB configuration!
 HTTP=4913
@@ -21,7 +22,7 @@ DIR=/usr/local/css/$PROGRAM
 LOGFILE=$DIR/$PROGRAM.log
 PIDFILE=$DIR/$PROGRAM.pid
 DATA=/tmp/$PROGRAM.$$
-OPT="-data $DATA -consoleLog -vmargs -Djava.awt.headless=true"
+OPT="-pluginCustomization $DIR/install/settings.ini -data $DATA -consoleLog -vmargs -Djava.awt.headless=true"
 unset DISPLAY
 
 export PATH=$JAVA_HOME/bin:$PATH
@@ -57,7 +58,10 @@ status)
     PID=`cat $PIDFILE`
     ps aux | fgrep $PID | grep -v grep
     ;;
+view)
+    lynx http://localhost:$HTTP/main
+    ;;
 *)
-    echo $0 "start | stop | status"
+    echo $0 "start | stop | status | view"
 esac
 

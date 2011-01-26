@@ -27,9 +27,12 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmListener;
+import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
@@ -39,6 +42,7 @@ import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.logging.CentralLogger;
@@ -133,6 +137,9 @@ public class LogView extends ViewPart {
 
     Composite _tableComposite;
 
+    private Button _soundEnableButton;
+    private final SoundHandler _soundHandler = new SoundHandler();
+
     /**
      * Stateful service maintaining the topic set preferences. There are different service
      * implementations available. Each is a singleton, all views belonging together share the state.
@@ -172,6 +179,7 @@ public class LogView extends ViewPart {
 
         addJmsTopicItems(logTableManagementComposite);
         // addMessageUpdateControl(logTableManagementComposite);
+        addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
         initializeMessageTable();
@@ -236,8 +244,14 @@ public class LogView extends ViewPart {
         getSite().setSelectionProvider(_tableViewer);
         createAndRegisterActions();
         _parent.layout();
-
+        
+        setInitialStateOfSoundHandler();
     }
+
+    // Set initial state for playing sounds based on the state of the sound enable button
+    protected void setInitialStateOfSoundHandler() {
+		_soundHandler.enableSound(_soundEnableButton.getSelection());
+	}
 
     /**
      * A view operates on a topic set column service specific to the view. This method must be called to set
@@ -671,6 +685,7 @@ public class LogView extends ViewPart {
     @Override
     public void dispose() {
         super.dispose();
+        _soundHandler.enableSound(false);
         _messageTable = null;
     }
 
@@ -766,5 +781,101 @@ public class LogView extends ViewPart {
         public boolean isVisible() {
             return _messageAreaComposite.isVisible();
         }
+    }
+    
+    /**
+     * Sound is played dependent of the state of the sound enable button. If it is enabled, the
+     * so-called sound playing listener (encapsulated here) is registered at the alarm table
+     * listener for the current topic set. If it gets disabled, the sound playing listener is
+     * deregistered. If the current topic set is changed, the sound playing listener gets
+     * deregistered and then registered at the now-current alarm table listener.<br>
+     * Because we have to know where we are currently registered, the current alarm table listener
+     * is recorded in here.
+     */
+    protected final class SoundHandler {
+
+        /**
+         * Service for playing sounds
+         */
+        private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
+                .getAlarmSoundService();
+
+        /**
+         * This listener listens to incoming messages for playing sounds. Each sound handler uses
+         * only one sound playing listener and registers it at the appropriate alarm table listener.
+         */
+        private IAlarmListener _soundPlayingListener = null;
+
+        /**
+         * Keep track where the sound playing listener is registered
+         */
+        private IAlarmTableListener _currentAlarmTableListener = null;
+
+        public SoundHandler() {
+            // Nothing to do
+        }
+
+        @Nonnull
+        private IAlarmListener getSoundPlayingListener() {
+            if (_soundPlayingListener == null) {
+                _soundPlayingListener = new IAlarmListener() {
+
+                    @Override
+                    public void stop() {
+                        // Nothing to do
+                    }
+
+                    @SuppressWarnings("synthetic-access")
+                    @Override
+                    public void onMessage(@Nonnull final IAlarmMessage message) {
+                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
+                    }
+                };
+            }
+            return _soundPlayingListener;
+        }
+
+        @SuppressWarnings("synthetic-access")
+        public void enableSound(final boolean yes) {
+            // Built in a robust way: Deregister always, register at the current alarm table
+            // listener.
+            if (_currentAlarmTableListener != null) {
+                _currentAlarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
+                _currentAlarmTableListener = null;
+                LOG.debug("Sound deregistered");
+            }
+
+            if (yes) {
+                _currentAlarmTableListener = getAlarmTableListener();
+                if (_currentAlarmTableListener != null) {
+                    _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+                    LOG.debug("Sound registered");
+                }
+            }
+        }
+    }
+
+    protected void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
+        final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
+
+        soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
+
+        final RowLayout layout = new RowLayout();
+        soundButtonGroup.setLayout(layout);
+
+        _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
+        _soundEnableButton.setLayoutData(new RowData(60, 21));
+        _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
+
+        // Initial state for playing sounds is always activated on startup, operator must manually turn it off.
+        _soundEnableButton.setSelection(true);
+
+        _soundEnableButton.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
+                _soundHandler.enableSound(_soundEnableButton.getSelection());
+            }
+        });
     }
 }

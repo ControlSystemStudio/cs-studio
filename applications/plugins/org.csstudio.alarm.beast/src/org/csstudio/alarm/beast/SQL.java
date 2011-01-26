@@ -44,14 +44,18 @@ public class SQL
     final public String delete_component_by_id;
 
     final public String sel_pv_by_id;
+    final public String sel_global_alarm_pvs;
+    final public String sel_item_by_id;
     final public String insert_pv;
 
     final public String update_pv_config;
     final public String update_pv_state;
+    final public String update_global_state;
     final public String update_pv_enablement;
     final public String delete_pv_by_id;
     final public String rename_item;
     final public String move_item;
+
 
     final public String sel_severity;
     final public String sel_last_severity;
@@ -64,6 +68,7 @@ public class SQL
     final public String message_table = "STATUS";
     final public String message_id_col = "STATUS_ID";
     final public String message_name_col = "NAME";
+
 
 	/** Initialize
      *  @param rdb RDBUtil
@@ -156,6 +161,19 @@ public class SQL
         sel_pv_by_id =
             "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";
 
+        sel_global_alarm_pvs =
+            //        1                  2
+            "SELECT t.PARENT_CMPNT_ID, t.NAME," +
+            //       3                4          5           6
+            " s.NAME SEVERITY, m.NAME STATUS, p.PV_VALUE, p.ALARM_TIME" +
+            " FROM " + schema_prefix + "PV p" +
+            " JOIN " + schema_prefix + "ALARM_TREE t on t.COMPONENT_ID=p.COMPONENT_ID" +
+            " JOIN " + schema_prefix + "SEVERITY s on s.SEVERITY_ID=p.SEVERITY_ID" +
+            " JOIN " + schema_prefix + "STATUS m on m.STATUS_ID=p.STATUS_ID" +
+            " WHERE ACT_GLOBAL_ALARM_IND=?";
+
+        sel_item_by_id = "SELECT PARENT_CMPNT_ID, NAME FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID=?";
+
         if (rdb.getDialect() == Dialect.PostgreSQL)
         	insert_pv =
             "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,true)";
@@ -167,6 +185,8 @@ public class SQL
             "UPDATE " + schema_prefix + "PV SET DESCR=?,ENABLED_IND=?,ANNUNCIATE_IND=?,LATCH_IND=?, DELAY=?,DELAY_COUNT=?,FILTER=? WHERE COMPONENT_ID=?";
         update_pv_state =
             "UPDATE " + schema_prefix + "PV SET CUR_SEVERITY_ID=?,CUR_STATUS_ID=?,SEVERITY_ID=?,STATUS_ID=?,PV_VALUE=?,ALARM_TIME=?  WHERE COMPONENT_ID=?";
+        update_global_state =
+            "UPDATE " + schema_prefix + "PV SET ACT_GLOBAL_ALARM_IND=? WHERE COMPONENT_ID=?";
         update_pv_enablement =
             "UPDATE " + schema_prefix + "PV SET ENABLED_IND=?  WHERE COMPONENT_ID=?";
         delete_pv_by_id = "DELETE FROM " + schema_prefix + "PV WHERE COMPONENT_ID = ?";

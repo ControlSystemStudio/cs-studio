@@ -19,8 +19,8 @@
 <ou name="EpicsAlarmcfg">
   <efan name="Test">
     <ecom name="Test-IOC">
-      <eren name="SawCalc0" />
-      <eren name="ConstantPV" />
+      <eren name="alarmTest:RAMPA_calc" />
+      <eren name="alarmTest:RAMPB_calc" />
       <eren name="NotExistent" />
     </ecom>
   </efan>

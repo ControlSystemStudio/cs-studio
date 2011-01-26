@@ -24,8 +24,11 @@ package org.csstudio.archive.common.service.mysqlimpl;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
@@ -41,7 +44,9 @@ import org.osgi.framework.BundleContext;
  * @since 22.11.2010
  */
 public class Activator implements BundleActivator {
-
+    /**
+     * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
+     */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.service.mysqlimpl";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
@@ -66,6 +71,7 @@ public class Activator implements BundleActivator {
      *
      * @return the instance
      */
+    @Nonnull
     public static Activator getDefault() {
         return INSTANCE;
     }
@@ -94,6 +100,15 @@ public class Activator implements BundleActivator {
         context.registerService(IArchiveWriterService.class.getName(),
                                 MySQLArchiveServiceImpl.INSTANCE,
                                 propsWr);
+
+        final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
+        propsWr.put("service.vendor", "DESY");
+        propsWr.put("service.description", "MySQL archive reader service implementation");
+        LOG.info("Register MySQL archive reader service");
+
+        context.registerService(IArchiveReaderService.class.getName(),
+                                MySQLArchiveServiceImpl.INSTANCE,
+                                propsRd);
 	}
 
 	/*
@@ -104,7 +119,6 @@ public class Activator implements BundleActivator {
     public void stop(final BundleContext bundleContext) throws Exception {
 
 	    // Services are automatically unregistered
-
 	    ArchiveDaoManager.INSTANCE.disconnect();
 	}
 }

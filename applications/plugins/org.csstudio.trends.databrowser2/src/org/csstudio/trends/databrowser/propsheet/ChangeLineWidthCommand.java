@@ -36,17 +36,19 @@ public class ChangeLineWidthCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setLineWidth(new_width);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setLineWidth(old_width);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

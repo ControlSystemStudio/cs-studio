@@ -24,10 +24,13 @@
  */
 package org.csstudio.config.ioconfig.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.dct.IoNameService;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * @author hrickens
@@ -43,20 +46,36 @@ public class ProfiBusIoNameService implements IoNameService {
      * 
      * @param ioName the IO-Name.
      * @return Field and the Epics Address String for the given IO-Name separated by ':'.
+     * @throws PersistenceException 
      */
-    public String getEpicsAddress(String ioName, String field) {
+    public final String getEpicsAddress(String ioName, String field) {
         // return the Bus-type
         if(field.equals("DTYP")) {
             // at the moment only Profibus DP
             return "PBDP";
         } else if(field.equals("DESC")) {
-            return Repository.getShortChannelDesc(ioName);
+            try {
+                return Repository.getShortChannelDesc(ioName);
+            } catch (PersistenceException e) {
+                CentralLogger.getInstance().error(this, e);
+                return "%%% Database not available %%%";
+            }
         }
-        return Repository.getEpicsAddressString(ioName);
+        try {
+            return Repository.getEpicsAddressString(ioName);
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+            return "%%% Database not available %%%";
+        }
     }
     
     public List<String> getAllIoNames(){
-        return Repository.getIoNames();
+        try {
+            return Repository.getIoNames();
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+            return null;
+        }
     }
     
     /**
@@ -67,7 +86,14 @@ public class ProfiBusIoNameService implements IoNameService {
      * @return the Epics Adress for the given IO-Name.
      */
     public List<String> getIoNamesFromIoc(String iocName){
-        return Repository.getIoNames(iocName);
+        try {
+            return Repository.getIoNames(iocName);
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+            ArrayList<String> al = new ArrayList<String>();
+            al.add("%%% Database not available %%%");
+            return al;
+        }
     }
 
 }

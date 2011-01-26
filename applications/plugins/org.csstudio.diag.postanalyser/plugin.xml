@@ -36,28 +36,10 @@
                menubarPath="org.csstudio.popmenu/content"/>
       </objectContribution>
    </extension>
-   <!-- No need to start standalone, since you only get data via object contrib startup
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.diag.postanalyser.ShowAnalyserAction"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.postanalyser.ShowAnalyserAction"
-               id="org.csstudio.diag.postanalyser.showAnalyser"
-               icon="icons/mainLabel.png"
-               label="%PostAnalyzer"
-               menubarPath="css/diag/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   -->
    <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true"/>
    </extension>
-
 </plugin>

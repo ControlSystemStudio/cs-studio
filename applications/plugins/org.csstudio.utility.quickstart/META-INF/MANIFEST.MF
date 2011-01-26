@@ -8,7 +8,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.csstudio.platform.ui,
- org.csstudio.sds.ui,
- org.csstudio.trends.databrowser2;bundle-version="2.0.5"
+ org.csstudio.sds.ui
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

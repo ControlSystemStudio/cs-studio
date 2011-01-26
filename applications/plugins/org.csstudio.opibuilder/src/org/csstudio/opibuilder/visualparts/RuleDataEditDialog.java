@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -208,6 +207,15 @@ public class RuleDataEditDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ruleData.setPropId(propIDList.get(propCombo.getSelectionIndex()));
+				if(ruleData.getProperty().getPropertyDescriptor() == null){
+					ruleData.setOutputExpValue(true);
+					outPutExpButton.setSelection(true);					
+					outPutExpButton.setEnabled(false);
+					for(Expression exp : expressionList)
+						exp.setValue(""); //$NON-NLS-1$
+					valueColumn.getColumn().setText("Output Expression");
+				}else
+					outPutExpButton.setEnabled(true);
 				if(!ruleData.isOutputExpValue()){
 					for(Expression exp : expressionList)
 						exp.setValue(ruleData.isOutputExpValue() ? 
@@ -222,8 +230,12 @@ public class RuleDataEditDialog extends Dialog {
 		gd = new GridData();
 		gd.horizontalSpan = 2;
 		outPutExpButton.setLayoutData(gd);
-		outPutExpButton.setSelection(ruleData.isOutputExpValue());
 		outPutExpButton.setText("Output Expression");
+		if(ruleData.getProperty().getPropertyDescriptor() == null){
+			ruleData.setOutputExpValue(true);
+			outPutExpButton.setEnabled(false);
+		}
+		outPutExpButton.setSelection(ruleData.isOutputExpValue());
 		outPutExpButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -407,6 +419,8 @@ public class RuleDataEditDialog extends Dialog {
 			@Override
 			protected Object getValue(Object element) {
 				if(element instanceof Expression){
+					if(((Expression)element).getValue() == null)
+							return ""; //$NON-NLS-1$
 					return ((Expression)element).getValue();
 				}
 				return null;
@@ -415,7 +429,7 @@ public class RuleDataEditDialog extends Dialog {
 			@Override
 			protected CellEditor getCellEditor(Object element) {
 				if(element instanceof Expression){
-					if(ruleData.isOutputExpValue())
+					if(ruleData.isOutputExpValue() || ruleData.getProperty().getPropertyDescriptor() == null)
 						return new TextCellEditor(viewer.getTable());
 					else
 						return ruleData.getProperty().getPropertyDescriptor().
@@ -547,6 +561,8 @@ public class RuleDataEditDialog extends Dialog {
 					Expression expression = (Expression) element;
 					
 					if (expression != null) {
+						if(ruleData.getProperty().getPropertyDescriptor() == null)
+							return null; 
 						if (ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null) 
 							return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().
 								getImage(expression.getValue());
@@ -566,10 +582,14 @@ public class RuleDataEditDialog extends Dialog {
 						return expression.getBooleanExpression();
 					}
 					
-					if (!ruleData.isOutputExpValue() && ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null) {
+					if (ruleData.getProperty().getPropertyDescriptor() != null
+							&& !ruleData.isOutputExpValue() 
+							&& ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null) {
 						return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().getText(
 								expression.getValue());
-					}else
+					}else if(expression.getValue() == null)
+						return "";
+					else
 						return expression.getValue().toString();
 				}
 				if (element != null) {

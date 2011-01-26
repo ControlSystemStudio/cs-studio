@@ -105,7 +105,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected final void doStop(@Nonnull final BundleContext context) throws Exception {
+    protected void doStop(@Nonnull final BundleContext context) throws Exception {
         _ldapServiceTracker.close();
     }
 
@@ -126,7 +126,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     @Override
     @Nonnull
-    public final String getPluginId() {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
 

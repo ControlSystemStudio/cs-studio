@@ -101,8 +101,8 @@ public class Messages extends NLS {
     public static String ADLMonitor_WrongADLFormatException_End;
     public static String ADLMonitor_WrongADLFormatException_Parameter_Begin;
     public static String ADLMonitor_WrongADLFormatException_Parameter_End;
-    public static String ADLMonitor_assertError_Begin;
-    public static String ADLMonitor_assertError_End;
+    public static String ADLMonitor_AssertError_Begin;
+    public static String ADLMonitor_AssertError_End;
     public static String ADLObject_AssertError_Begin;
     public static String ADLObject_AssertError_End;
     public static String ADLObject_WrongADLFormatException_Begin;

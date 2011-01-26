@@ -26,6 +26,8 @@ package org.csstudio.config.ioconfig.model.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.dct.ISensorIdService;
@@ -42,7 +44,12 @@ public class ProfibusSensorService implements ISensorIdService {
      * @see org.csstudio.dct.SensorService#getSonsorId(java.lang.String, java.lang.String)
      */
     public String getSensorId(String ioName, String selection) {
-        SensorsDBO loadSensors = Repository.loadSensor(ioName, selection);
+        SensorsDBO loadSensors;
+        try {
+            loadSensors = Repository.loadSensor(ioName, selection);
+        } catch (PersistenceException e) {
+            return "$$$ Database not accessible $$$";
+        }
         if(loadSensors==null) {
 //            return null;
             return "$$$ NO Sensors ID found for IOName "+ioName+" $$$";
@@ -54,10 +61,16 @@ public class ProfibusSensorService implements ISensorIdService {
      * @see org.csstudio.dct.SensorService#getSonsorIds(java.lang.String)
      */
     public List<String> getSensorIds(String ioName) {
-        List<SensorsDBO> loadSensors = Repository.loadSensors(ioName);
-        List<String> sensorsIds = new ArrayList<String>(loadSensors.size());
-        for (SensorsDBO sensors : loadSensors) {
-            sensorsIds.add(sensors.getSensorID());
+        List<SensorsDBO> loadSensors;
+        List<String> sensorsIds = new ArrayList<String>();
+        try {
+            loadSensors = Repository.loadSensors(ioName);
+            for (SensorsDBO sensors : loadSensors) {
+                sensorsIds.add(sensors.getSensorID());
+            }
+        } catch (PersistenceException e) {
+            sensorsIds.add("$$$ Database not accessible $$$");
+            
         }
         return sensorsIds;
     }

@@ -7,18 +7,15 @@ import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -38,8 +35,6 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
 		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		buttonFigure.setText(model.getText());
-		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				model.getFont().getFontData()));
 		buttonFigure.setToggleStyle(model.isToggleButton());
 		buttonFigure.setImagePath(model.getImagePath());
 		updatePropSheet(model.isToggleButton());	
@@ -110,23 +105,6 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		// the button should be disabled in edit mode to make select work.
-//		((ActionButtonFigure)getFigure()).setEnabled(
-//				getExecutionMode() == ExecutionMode.RUN_MODE);
-//		
-//		removeAllPropertyChangeHandlers(ActionButtonModel.PROP_ENABLED);
-//		
-//		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
-//			public boolean handleChange(Object oldValue, Object newValue,
-//					IFigure figure) {
-//				//enablement only takes effect in run mode
-//				//if(getExecutionMode() == ExecutionMode.RUN_MODE)
-//					figure.setEnabled((Boolean)newValue);
-//				return false;
-//			}
-//		};		
-//		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
-//		
 
 		// text
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
@@ -138,19 +116,9 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT, textHandler);
-		// font
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				FontData fontData = ((OPIFont) newValue).getFontData();
-				figure.setFont(CustomMediaFactory.getInstance().getFont(fontData));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_FONT, fontHandler);
 
-		// font
+
+		//image
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
@@ -163,21 +131,8 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);
-
-		
-		/*// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setTextAlignment((Integer) newValue);
-				return true;
-			}
-		};
-		//setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
-		//		alignmentHandler);
-		*/
+		setPropertyChangeHandler(ActionButtonModel.PROP_IMAGE, imageHandler);		
+	
 		// button style
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -195,10 +150,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				public void propertyChange(PropertyChangeEvent evt) {
 					buttonStyleHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
 				}
-			});
-		//cannot use handler because it will delay the propsheet update.
-		//setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
-		//		buttonStyleHandler);
+			});		
 	}
 	
 	/**

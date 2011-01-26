@@ -3,11 +3,13 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
+import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -39,9 +41,9 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());	
 		figure.setTransparent(model.isTransparent());
-		figure.getScale().setFont(model.getFont().getSWTFont());
-		
-		
+		figure.getScale().setFont(model.getScaleFont().getSWTFont());
+		setScaleFormat(figure, model.getScaleFormat());
+		setValueLabelFormat(figure, model.getValueLabelFormat());
 	}	
 	
 	/**
@@ -160,8 +162,64 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SCALE_FONT, scaleFontHandler);
+		
+		//scale format
+		IWidgetPropertyChangeHandler numericFormatHandler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
+				setScaleFormat(scaleFigure, (String)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SCALE_FORMAT, numericFormatHandler);
+	
+		//value label format
+		IWidgetPropertyChangeHandler valueFormatHandler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
+				setValueLabelFormat(scaleFigure, (String)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_VALUE_LABEL_FORMAT, valueFormatHandler);
+	
 	}
 
+	private void setScaleFormat(AbstractScaledWidgetFigure scaleFigure, String numericFormat){
+		AbstractScale scale = scaleFigure.getScale();
+		if(numericFormat.trim().equals("")) //$NON-NLS-1$
+			scale.setAutoFormat(true);
+		else{
+			try {
+				scale.setAutoFormat(false);
+				scale.setFormatPattern(numericFormat);
+			} catch (Exception e) {
+				ConsoleService.getInstance().writeError(numericFormat + 
+						" is illegal Numeric Format." + 
+						" The scale will be auto formatted.");
+				scale.setAutoFormat(true);
+			}
+		}
+		//update value label
+		scaleFigure.setValue(scaleFigure.getValue());
+	}
+	
+	private void setValueLabelFormat(AbstractScaledWidgetFigure scaleFigure, 
+			String valueLabelFormat){
+		try {
+			scaleFigure.setValueLabelFormat(valueLabelFormat);
+		} catch (Exception e) {
+			ConsoleService.getInstance().writeError(valueLabelFormat + 
+					" is illegal Numeric Format." + 
+					" The value label will be formatted in the same way as scale.");
+			scaleFigure.setValueLabelFormat(""); //$NON-NLS-1$
+		}
+	}
+	
 	@Override
 	public void setValue(Object value) {
 		if(value instanceof Double || value instanceof Integer)

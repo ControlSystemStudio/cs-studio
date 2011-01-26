@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
@@ -16,9 +15,8 @@ public class RemoveTabAction extends AbstractWidgetTargetAction {
 
 	public void run(IAction action) {
 		Command command = new RemoveTabCommand(getSelectedTabWidget());
-		if(targetPart instanceof OPIEditor){
 			execute(command);
-		}
+		
 	}
 	
 	/**

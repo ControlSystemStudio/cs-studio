@@ -8,47 +8,66 @@
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import static org.junit.Assert.*;
+import java.util.List;
+import java.util.ArrayList;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
-import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;
 
+/** JUnit test of the {@link GlobalAlarm}
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
-public class GlobalAlarmTest
+public class GlobalAlarmTest implements ReadInfoJobListener
 {
-    // TODO combine with similar code that'll be needed in the model
-    // to create alarm based on partially available root, area, ...
-    private GlobalAlarm createAlarmFromPath(final String full_path,
-            final SeverityLevel severity, final String message,
-            final ITimestamp timestamp)
-    {
-        final String path[] = AlarmTreePath.splitPath(full_path);
-
-        AlarmTreeItem parent = null;
-        for (int i=0; i<path.length-1; ++i)
-        {
-            if (i == 0)
-                parent = new AlarmTreeRoot(path[i], -1);
-            else
-                parent = new AlarmTreeItem(parent, path[i], -1);
-        }
-        return new GlobalAlarm(parent, path[path.length-1], -1,
-                severity, message, timestamp);
-    }
+    final List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
 
     @Test
     public void testGlobalAlarm() throws Exception
     {
-        GlobalAlarm alarm = createAlarmFromPath("/Root/Area/System/TheAlarm",
+        // Create completely new alarm
+        configurations.clear();
+        final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/TheAlarm",
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
-        alarm.getRoot().dump(System.out);
+        final AlarmTreeRoot root = alarm.getClientRoot();
+        root.dump(System.out);
+        // New root should be in list of configurations
+        assertEquals(1, configurations.size());
+        assertEquals(root, configurations.get(0));
+
+        // Create another alarm with same path
+        final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/OtherAlarm",
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        root.dump(System.out);
+        assertSame(root, alarm2.getRoot());
+        assertSame(alarm.getParent(), alarm2.getParent());
+
+        // Update existing alarm
+        final GlobalAlarm alarm_copy = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/TheAlarm",
+                SeverityLevel.MAJOR, "Demo2", TimestampFactory.now());
+        // Locates existing alarm, changes its alarm message
+        assertSame(alarm, alarm_copy);
+        assertEquals("Demo2", alarm.getMessage());
+    }
+
+    private int received_rdb_info = 0;
+
+    // ReadInfoJobListener
+    @Override
+    public void receivedAlarmInfo(GlobalAlarm alarm)
+    {
+        synchronized (this)
+        {
+            ++received_rdb_info;
+            notifyAll();
+        }
     }
 
     @Test
@@ -64,9 +83,9 @@ public class GlobalAlarmTest
             System.out.println("Need test path, skipping test");
             return;
         }
-        final GlobalAlarm alarm = createAlarmFromPath(full_path,
+        final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations, full_path,
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
-
+        // It lacks ID, guidance etc.
         assertEquals(-1, alarm.getID());
         assertEquals(0, alarm.getGuidance().length);
 
@@ -79,19 +98,77 @@ public class GlobalAlarmTest
             System.out.println("Need test RDB URL, skipping test");
             return;
         }
-        final RDBUtil rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
-        final SQL sql = new SQL(rdb);
-        try
+
+        System.out.println("Before reading GUI info:");
+        alarm.getClientRoot().dump(System.out);
+
+        // Read RDB info in background job
+        BenchmarkTimer timer = new BenchmarkTimer();
+        synchronized (this)
         {
-            alarm.completeGuiInfo(rdb, sql);
+            received_rdb_info = 0;
+            new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm, this).schedule();
+            for (int i=0; received_rdb_info == 0  &&  i<10; ++i)
+                wait(1000);
+            assertEquals(1, received_rdb_info);
         }
-        finally
-        {
-            rdb.close();
-        }
+        timer.stop();
+        System.out.println("After reading GUI info (" + timer.toString() + "):");
         alarm.getClientRoot().dump(System.out);
 
         assertTrue(alarm.getID() >= 0);
         assertTrue(alarm.getGuidance().length > 0);
+    }
+
+    @Test
+    public void testConcurrentAlarmCompletionFromRDB() throws Exception
+    {
+        // Get test settings, abort if incomplete
+        final TestProperties settings = new TestProperties();
+
+        // Create global alarm for some path
+        final String full_path = settings.getString("alarm_test_path");
+        final String full_path2 = settings.getString("alarm_test_path2");
+        final String rdb_url = settings.getString("alarm_rdb_url");
+        final String rdb_user = settings.getString("alarm_rdb_user");
+        final String rdb_password = settings.getString("alarm_rdb_password");
+        if (rdb_url == null)
+        {
+            System.out.println("Need test RDB URL, skipping test");
+            return;
+        }
+        if (full_path == null  ||  full_path2 == null)
+        {
+            System.out.println("Need two test paths, skipping test");
+            return;
+        }
+        // Start with 2 'global' alarms
+        final GlobalAlarm alarm1 = GlobalAlarm.fromPath(configurations, full_path,
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations, full_path2,
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        // Same root, no detail from RDB, yet
+        final AlarmTreeRoot root = alarm1.getClientRoot();
+        assertNotSame(alarm1, alarm2);
+        assertSame(root, alarm2.getClientRoot());
+        assertEquals(-1, root.getID());
+
+        // Read RDB info for both in background jobs
+        synchronized (this)
+        {
+            received_rdb_info = 0;
+            final ReadInfoJob job1 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm1, this);
+            final ReadInfoJob job2 = new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm2, this);
+            job1.schedule();
+            job2.schedule();
+            for (int i=0; received_rdb_info != 2 &&  i<10; ++i)
+                wait(1000);
+            assertEquals(2, received_rdb_info);
+        }
+        root.dump(System.out);
+
+        assertTrue(root.getID() >= 0);
+        assertTrue(alarm1.getID() >= 0);
+        assertTrue(alarm1.getGuidance().length > 0);
     }
 }

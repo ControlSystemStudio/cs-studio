@@ -6,6 +6,7 @@ org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
 org.csstudio.alarm.beast.ui.alarmtree/**
+org.csstudio.alarm.beast.ui.globaltable/**
 org.csstudio.apputil/**
 org.csstudio.apputil.ui/**
 org.csstudio.archive.engine/**
@@ -52,6 +53,7 @@ org.csstudio.platform.libs.jdbc/**
 org.csstudio.platform.libs.jdom/**
 org.csstudio.platform.libs.jmock/**
 org.csstudio.platform.libs.jms/**
+org.csstudio.platform.libs.log4j/**
 org.csstudio.platform.ui/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
@@ -69,6 +71,7 @@ org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
 org.csstudio.swt.xygraph/**
 org.csstudio.trends.databrowser2/**
+org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.utility.adlParser/**
 org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**

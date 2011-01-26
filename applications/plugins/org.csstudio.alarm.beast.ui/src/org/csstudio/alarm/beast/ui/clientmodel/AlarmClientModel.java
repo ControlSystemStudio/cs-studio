@@ -9,16 +9,17 @@ package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.beast.AlarmConfiguration;
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
-import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmConfiguration;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.logging.CentralLogger;
@@ -37,10 +38,10 @@ import org.eclipse.osgi.util.NLS;
 public class AlarmClientModel
 {
     /** Singleton instance */
-    private static volatile AlarmClientModel instance = null;
+    private static AlarmClientModel instance = null;
 
     /** Reference count for instance */
-    private volatile int references = 0;
+    private AtomicInteger references = new AtomicInteger();
 
     /** Name of this configuration, i.e. root element of the configuration tree */
 	private String config_name;
@@ -117,16 +118,22 @@ public class AlarmClientModel
      */
     public static AlarmClientModel getInstance() throws Exception
     {
-        if (instance == null)
-            instance = new AlarmClientModel();
-        ++instance.references;
+        synchronized (AlarmClientModel.class)
+        {
+            if (instance == null)
+                instance = new AlarmClientModel();
+        }
+        instance.references.incrementAndGet();
         return instance;
     }
 
     /** Release the 'instance' */
     private static void releaseInstance()
     {
-    	instance = null;
+        synchronized (AlarmClientModel.class)
+        {
+            instance = null;
+        }
     }
 
     /** Must be called to release model when no longer used.
@@ -136,12 +143,8 @@ public class AlarmClientModel
      */
     public void release()
     {
-        synchronized (acknowledged_alarms)
-        {
-            --references;
-            if (references > 0)
-                return;
-        }
+        if (references.decrementAndGet() > 0)
+            return;
         try
         {
             CentralLogger.getInstance().getLogger(this)
@@ -361,7 +364,7 @@ public class AlarmClientModel
         	synchronized (this)
             {
                 count = config_tree.getElementCount();
-                pv_count = config_tree.getPVCount();
+                pv_count = config_tree.getLeafCount();
             }
             logger.info(String.format(
                 "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
@@ -886,7 +889,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmTree(this);
+                listener.newAlarmConfiguration(this);
             }
             catch (Throwable ex)
             {

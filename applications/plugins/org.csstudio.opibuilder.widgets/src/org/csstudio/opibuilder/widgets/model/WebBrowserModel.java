@@ -26,6 +26,7 @@ public class WebBrowserModel extends AbstractWidgetModel {
 	protected void configureProperties() {		
 		addProperty(new StringProperty(
 				PROP_URL, "URL", WidgetPropertyCategory.Basic, "")); //$NON-NLS-2$
+		removeProperty(PROP_FONT);
 	
 	}
 	

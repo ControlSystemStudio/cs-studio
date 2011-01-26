@@ -36,7 +36,7 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
 	 * @param command the command to execute
 	 */
 	protected void execute(Command command) {
-		if (command == null || !command.canExecute())
+		if (command == null || !command.canExecute() || getCommandStack() == null)
 			return;
 		getCommandStack().execute(command);
 	}

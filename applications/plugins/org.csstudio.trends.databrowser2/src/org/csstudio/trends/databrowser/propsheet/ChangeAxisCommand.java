@@ -37,17 +37,19 @@ public class ChangeAxisCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         item.setAxis(new_axis);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         item.setAxis(old_axis);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()
