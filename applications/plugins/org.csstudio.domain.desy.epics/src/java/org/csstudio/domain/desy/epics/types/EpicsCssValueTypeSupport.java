@@ -22,8 +22,6 @@
 package org.csstudio.domain.desy.epics.types;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -31,16 +29,15 @@ import javax.annotation.Nonnull;
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
@@ -53,13 +50,8 @@ import com.google.common.primitives.Longs;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T> {
+public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
-
-    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
-        Maps.newHashMap();
-    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
-        new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
 
     /**
      * @author bknerr
@@ -449,16 +441,16 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         if (INSTALLED) {
             return;
         }
-        AbstractTypeSupport.addTypeSupport(Double.class, new CssDoubleValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(Float.class, new CssFloatValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(Long.class, new CssLongValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(Integer.class, new CssIntegerValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(String.class, new CssStringValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(Byte.class, new CssByteValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(Double.class, new CssDoubleValueTypeSupport());
+        TypeSupport.addTypeSupport(Float.class, new CssFloatValueTypeSupport());
+        TypeSupport.addTypeSupport(Long.class, new CssLongValueTypeSupport());
+        TypeSupport.addTypeSupport(Integer.class, new CssIntegerValueTypeSupport());
+        TypeSupport.addTypeSupport(String.class, new CssStringValueTypeSupport());
+        TypeSupport.addTypeSupport(Byte.class, new CssByteValueTypeSupport());
 
-        AbstractTypeSupport.addTypeSupport(EpicsEnumTriple.class, new CssEpicsEnumValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(EpicsEnumTriple.class, new CssEpicsEnumValueTypeSupport());
 
-        AbstractTypeSupport.addTypeSupport(Collection.class, new CssCollectionValueTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(Collection.class, new CssCollectionValueTypeSupport());
 
         INSTALLED = true;
     }
@@ -469,7 +461,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsCssValueTypeSupport<T> support =
-            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(EpicsCssValueTypeSupport.class, typeClass);
         // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
         return support.convertToIValue(valueData, (EpicsAlarm) cssValue.getAlarm(), cssValue.getTimestamp());
     }
@@ -488,7 +480,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsCssValueTypeSupport<T> support =
-            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(EpicsCssValueTypeSupport.class, typeClass);
         // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
         return support.convertToIMinMaxDoubleValue(cssValue, min, max);
     }
@@ -499,7 +491,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                               @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsCssValueTypeSupport<T> support =
-            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+            (EpicsCssValueTypeSupport<T>) cachedTypeSupportFor(EpicsCssValueTypeSupport.class, typeClass);
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
@@ -537,4 +529,9 @@ public abstract class EpicsCssValueTypeSupport<T> extends AbstractTypeSupport<T>
                                                     max.doubleValue());
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public final Class<? extends TypeSupport<T>> getTypeSupportFamily() {
+        return (Class<? extends TypeSupport<T>>) EpicsCssValueTypeSupport.class;
+    }
 }

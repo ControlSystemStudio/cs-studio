@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.RDBArchiveEnginePreferences;
+import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
@@ -95,13 +96,12 @@ class MainResponse extends AbstractResponse
         final int group_count = model.getGroupCount();
         int total_channel_count = 0;
         int connect_count = 0;
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
+        for (final ArchiveGroup group : model.getGroups()) {
+
             final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                if (group.getChannel(j).isConnected()) {
+            for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
+
+                if (channel.isConnected()) {
                     ++connect_count;
                 }
             }
@@ -167,8 +167,9 @@ class MainResponse extends AbstractResponse
 
         html.tableLine(new String[]
         {
+         // TODO (bknerr) : do I need that
             Messages.HTTP_Idletime,
-            String.format("%.1f %%", model.getIdlePercentage())
+            String.format("%.1f %%", -1.0f/* model.getIdlePercentage() */)
         });
 
         final Runtime runtime = Runtime.getRuntime();

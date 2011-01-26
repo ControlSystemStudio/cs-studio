@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Archive reader methods.
  *
@@ -44,10 +46,15 @@ public interface IArchiveReaderService {
     /**
      * Returns the supported request types.
      * If there isn't any choice offered by the implementation, then empty set should be returned.
+     * 
+     * This set is immutable such that it is not possible to add or remove an element or change it's
+     * definition. But it is possible to retrieve a type's internal parameter(s) and set its/their
+     * value(s).
+     * 
      * @return the set of supported request types.
      */
     @Nonnull
-    Set<IArchiveRequestType> getRequestTypes();
+    ImmutableSet<IArchiveRequestType> getRequestTypes();
 
     /**
      * Retrieves the samples from the archive for the given channel and time interval

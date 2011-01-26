@@ -47,7 +47,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
@@ -93,14 +93,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
 //    private final String _selectLastSmplTimeByChannelIdStmt =
-//        "SELECT MAX(sample_time) FROM archive_new.sample WHERE channel_id=?";
+//        "SELECT MAX(sample_time) FROM archive.sample WHERE channel_id=?";
 
     private final String _insertSamplesStmt =
-        "INSERT INTO archive_new.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
+        "INSERT INTO archive.sample (channel_id, sample_time, nanosecs, severity_id, status_id, value) VALUES ";
     private final String _insertSamplesPerMinuteStmt =
-        "INSERT INTO archive_new.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive.sample_m (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
     private final String _insertSamplesPerHourStmt =
-        "INSERT INTO archive_new.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
+        "INSERT INTO archive.sample_h (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val) VALUES ";
 
     private final String _selectSamplesStmt =
         "SELECT sample_time, severity_id, nanosecs, status_id, value " +
@@ -138,8 +138,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <T extends ICssValueType<?> & IHasAlarm>
-    void createSamples(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException {
+    public <V, T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
         Statement stmt = null;
@@ -167,18 +167,19 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <T extends ICssValueType<?> & IHasAlarm>
-        Statement composeStatements(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+    private <V, T extends ICssValueType<V> & IHasAlarm>
+        Statement composeStatements(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
-        for (final IArchiveSample<T, EpicsAlarm> sample : samples) {
+        for (final IArchiveSample2<V, T> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
-            final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status?
-            final TimeInstant timestamp = sample.getTimestamp();
+            final T data = sample.getData();
+            final EpicsAlarm alarm = (EpicsAlarm) data.getAlarm(); // FIXME (bknerr) : how to cope with alarms that don't have severities and status?
+            final TimeInstant timestamp = data.getTimestamp();
 
             final ArchiveSeverityId sevId =
                 getDaoMgr().getSeverityDao().retrieveSeverityId(alarm.getSeverity());
@@ -191,7 +192,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 // FIXME (bknerr) : what to do with the sample? archive/log/backup?
             } else {
                 // the VALUES (...) component for the standard sample table
-                final T data = sample.getData();
                 values.add(createSampleValueStmtStr(channelId,
                                                     sevId,
                                                     statusId,
@@ -484,13 +484,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
-                stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive_new.sample"));
+                stmt = getConnection().prepareStatement(_selectSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive.sample"));
                 break;
             case AVG_PER_MINUTE :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive_new.sample_m"));
+                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive.sample_m"));
                 break;
             case AVG_PER_HOUR :
-                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive_new.sample_h"));
+                stmt = getConnection().prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, "archive.sample_h"));
                 break;
             default :
         }

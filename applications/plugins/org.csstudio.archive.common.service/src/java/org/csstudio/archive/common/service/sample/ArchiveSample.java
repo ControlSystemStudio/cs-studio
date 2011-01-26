@@ -37,9 +37,9 @@ import org.csstudio.domain.desy.types.ICssAlarmValueType;
  * @param <T> the css value type
  * @param <A> the alarm type
  */
-public class ArchiveSampleDTO<V,
-                              T extends ICssAlarmValueType<V>,
-                              A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
+public class ArchiveSample<V,
+                           T extends ICssAlarmValueType<V>,
+                           A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;
@@ -49,10 +49,10 @@ public class ArchiveSampleDTO<V,
     /**
      * Constructor.
      */
-    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId channelId,
-                            @Nonnull final T data,
-                            @Nonnull final TimeInstant ts,
-                            @Nonnull final A alarm) {
+    public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
+                         @Nonnull final T data,
+                         @Nonnull final TimeInstant ts,
+                         @Nonnull final A alarm) {
         _channelId = channelId;
         _value = data;
         _timestamp = ts;

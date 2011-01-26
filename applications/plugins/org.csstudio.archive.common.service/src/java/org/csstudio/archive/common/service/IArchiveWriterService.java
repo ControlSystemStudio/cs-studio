@@ -26,7 +26,9 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -67,7 +69,8 @@ public interface IArchiveWriterService {
      * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
-    boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException;
+    <V, T extends ICssValueType<V> & IHasAlarm>
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample2<V,T>> samples) throws ArchiveServiceException;
 
     /**
      * Transfers the sample information to the persistence layer.

@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Level;
 import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
@@ -24,18 +26,18 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *
  *  @author Kay Kasemir
  */
-public class SampleBuffer extends ForwardingBlockingQueue<IValue>
+public class SampleBuffer<V,
+                          T extends ICssValueType<V> & IHasAlarm,
+                          S extends IArchiveSample2<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
      *  to decouple stuff).
      */
-    final private String channel_name;
+    final private String channelName;
 
     /** The actual samples in a thread-save queue. */
-//    final private RingBuffer<IValue> samples;
-    private final BlockingQueue<IValue> samples;
-    private final int capacity;
+    private final BlockingQueue<S> _samples;
 
     /** Statistics */
     final private BufferStats stats = new BufferStats();
@@ -53,26 +55,24 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     private static volatile boolean error = false;
 
     /** Create sample buffer of given capacity */
-    SampleBuffer(final String channel_name, final int cap)
-    {
+    SampleBuffer(final String channel_name/*, final int cap */) {
         super();
 
-        this.channel_name = channel_name;
-        //samples = new RingBuffer<IValue>(capacity);
-        capacity = cap;
-        samples = new ArrayBlockingQueue<IValue>(capacity, true); // step by step to a producer consumer pattern
+        this.channelName = channel_name;
+        _samples = new LinkedBlockingQueue<S>(); // step by step to a producer consumer pattern
     }
 
     /** @return channel name of this buffer */
     String getChannelName()
     {
-        return channel_name;
+        return channelName;
     }
 
     /** @return Queue capacity, i.e. maximum queue size. */
     public int getCapacity()
     {
-        return capacity;
+        // for being a linked queue now, there isn't a fixed capacity
+        return -1;
     }
 
     /** @return <code>true</code> if currently experiencing write errors */
@@ -90,9 +90,9 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     /** Add a sample to the queue, maybe dropping older samples */
     @Override
     @SuppressWarnings("nls")
-    public boolean add(final IValue value)
+    public boolean add(final S value)
     {
-    	synchronized (samples)
+    	synchronized (_samples)
         {
     	    //if (samples.isFull())
     	    if (!super.offer(value)) // is full, value not appended to queue
@@ -111,7 +111,7 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
             else if (start_of_overruns != null)
             {   // Ending a string of overruns. Maybe log it.
                 final int overruns = stats.getOverruns() - start_of_overruns;
-                overrun_msg.log(channel_name + ": " + overruns + " overruns");
+                overrun_msg.log(channelName + ": " + overruns + " overruns");
                 start_of_overruns = null;
             }
         }
@@ -143,7 +143,7 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
     {
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
-            channel_name,
+            channelName,
             super.size(),
             stats.getMaxSize(),
             stats.getAverageSize(),
@@ -154,7 +154,7 @@ public class SampleBuffer extends ForwardingBlockingQueue<IValue>
      * {@inheritDoc}
      */
     @Override
-    protected BlockingQueue<IValue> delegate() {
-        return samples;
+    protected BlockingQueue<S> delegate() {
+        return _samples;
     }
 }

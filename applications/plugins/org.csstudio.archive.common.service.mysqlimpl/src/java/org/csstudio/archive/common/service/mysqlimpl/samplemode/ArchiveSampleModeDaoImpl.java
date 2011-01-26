@@ -62,7 +62,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize database schema
     private final String _selectSampleModeByIdStmt =
-        "SELECT name FROM archive_new.sample_mode where id=?";
+        "SELECT name FROM archive.sample_mode where id=?";
 
     /**
      * Constructor.

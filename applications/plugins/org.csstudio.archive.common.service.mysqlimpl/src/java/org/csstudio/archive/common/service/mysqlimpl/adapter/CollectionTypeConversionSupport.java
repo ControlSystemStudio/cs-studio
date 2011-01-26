@@ -52,7 +52,8 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
         // TODO (bknerr) : couldn't it be recursive until the non-collection type is met with
         final Class typeClass = values.iterator().next().getClass();
         final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(typeClass, getTypeSupports(), getCalcTypeSupports());
+            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+                                                                   typeClass);
         if (support == null) {
             throw new TypeSupportException("No conversion type support registered.", null);
         }
@@ -86,7 +87,7 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     @Nonnull
     protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
-                                       " Use .class type of T for a Collection<T>! as parameter." , null);
+                                       " Use .class type of T for a Collection<T> as parameter." , null);
     }
 
     /**
