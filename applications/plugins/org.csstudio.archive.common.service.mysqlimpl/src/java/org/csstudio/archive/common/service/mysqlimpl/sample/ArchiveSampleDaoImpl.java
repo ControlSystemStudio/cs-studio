@@ -36,15 +36,15 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.mysqlimpl.ArchiveRequestType;
+import org.csstudio.archive.common.service.mysqlimpl.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample2;
@@ -417,7 +417,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         PreparedStatement stmt = null;
         try {
-            final ArchiveRequestType reqType = determineRequestType(type, dataType, s, e);
+            final DesyArchiveRequestType reqType = determineRequestType(type, dataType, s, e);
 
             stmt = dispatchRequestTypeToStatement(reqType);
             stmt.setInt(1, channelId.intValue());
@@ -447,39 +447,39 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @Nonnull
-    private ArchiveRequestType determineRequestType(@CheckForNull final IArchiveRequestType type,
+    private DesyArchiveRequestType determineRequestType(@CheckForNull final IArchiveRequestType type,
                                                     @Nonnull final String dataType,
                                                     @Nonnull final TimeInstant s,
                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException, TypeSupportException {
 
         if (!ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
-            return ArchiveRequestType.RAW;
+            return DesyArchiveRequestType.RAW;
         }
 
-        ArchiveRequestType reqType;
-        if (type == null) {
-            final Duration d = new Duration(s.getInstant(), e.getInstant());
-            if (d.isLongerThan(Duration.standardDays(45))) {
-                reqType = ArchiveRequestType.AVG_PER_HOUR;
-            } else if (d.isLongerThan(Duration.standardDays(1))) {
-                reqType = ArchiveRequestType.AVG_PER_MINUTE;
+        DesyArchiveRequestType reqType;
+        try {
+            if (type == null) {
+                final Duration d = new Duration(s.getInstant(), e.getInstant());
+                if (d.isLongerThan(Duration.standardDays(45))) {
+                    reqType = DesyArchiveRequestType.AVG_PER_HOUR;
+                } else if (d.isLongerThan(Duration.standardDays(1))) {
+                    reqType = DesyArchiveRequestType.AVG_PER_MINUTE;
+                } else {
+                    reqType = DesyArchiveRequestType.RAW;
+                }
             } else {
-                reqType = ArchiveRequestType.RAW;
+                reqType = DesyArchiveRequestType.valueOf(type.getTypeIdentifier());
             }
-        } else {
-            try {
-                reqType = ArchiveRequestType.valueOf(type.getTypeIdentifier());
-            } catch (final IllegalArgumentException iae) {
-                throw new ArchiveDaoException("Archive request type " + type.getTypeIdentifier() +
-                                              " unknown for this implementation.", iae);
-            }
+        } catch (final IllegalArgumentException iae) {
+            throw new ArchiveDaoException("Archive request type " + type.getTypeIdentifier() +
+                                          " unknown for this implementation.", iae);
         }
 
         return reqType;
     }
 
     @Nonnull
-    private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final ArchiveRequestType type) throws SQLException,
+    private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final DesyArchiveRequestType type) throws SQLException,
                                                                                                             ArchiveConnectionException {
         PreparedStatement stmt = null;
         switch (type) {
@@ -500,7 +500,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @SuppressWarnings("unchecked")
     private <V, T extends ICssAlarmValueType<V>>
-    IArchiveMinMaxSample<V, T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final ArchiveRequestType type,
+    IArchiveMinMaxSample<V, T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                                        @Nonnull final String dataType,
                                                                        @Nonnull final ArchiveChannelId channelId,
                                                                        @Nonnull final ResultSet result) throws SQLException,

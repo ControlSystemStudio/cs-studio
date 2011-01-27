@@ -19,21 +19,63 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service;
+package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
+
 /**
- * TODO (bknerr) :
+ * Parameter available to the archive request types of this service implementation.
  *
  * @author bknerr
- * @since 05.01.2011
+ * @since 26.01.2011
  */
-public interface IArchiveRequestType {
+public final class ARTParameters {
+    /**
+     * Constructor.
+     */
+    private ARTParameters() {
+        // Don't instantiate
+    }
 
-    @Nonnull
-    String getDescription();
+    public static final IArchiveRequestTypeParameter<Integer> NUM_OF_BINS =
+        new IArchiveRequestTypeParameter<Integer>() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String getName() {
+            return "numOfBins";
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Integer getValue() {
+            return Integer.valueOf(1000);
+        }
+    };
+    public static final IArchiveRequestTypeParameter<Double> PRECISION =
+        new IArchiveRequestTypeParameter<Double>() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String getName() {
+            return "precision";
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Double getValue() {
+            return Double.valueOf(2.0);
+        }
+    };
 
-    @Nonnull
-    String getTypeIdentifier();
 }

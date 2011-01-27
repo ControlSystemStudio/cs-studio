@@ -32,7 +32,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
-import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -43,6 +42,7 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapte
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
@@ -385,7 +385,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     @Nonnull
     public ImmutableSet<IArchiveRequestType> getRequestTypes() {
-        return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(ArchiveRequestType.class)).build();
+        return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(DesyArchiveRequestType.class)).build();
     }
 
 }

@@ -19,56 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.IArchiveRequestType;
+import javax.annotation.Nullable;
 
 /**
- * Archive request abstraction for optimized MySQL implementation.
- *
+ * Domain specific exception for archive request types. 
+ * 
  * @author bknerr
- * @since 05.01.2011
+ * @since 26.01.2011
  */
-public enum ArchiveRequestType implements IArchiveRequestType {
-    RAW("Raw values."),
-    AVG_PER_MINUTE("Averaged over the time period of one minute."),
-    AVG_PER_HOUR("Averaged over the time period of one hour.");
-
-    private final String _desc;
+public class RequestTypeParameterException extends Exception {
+    
+    private static final long serialVersionUID = -3770678673695779001L;
 
     /**
      * Constructor.
      */
-    private ArchiveRequestType(@Nonnull final String desc) {
-        _desc = desc;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getDescription() {
-        return _desc;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getTypeIdentifier() {
-        return name();
-    }
-
-    /**
-     * Returns the default/natural request type.
-     * @return the default/natural request type for this implementation.
-     */
-    @Nonnull
-    public static ArchiveRequestType getDefault() {
-        return RAW;
+    public RequestTypeParameterException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
     }
 }

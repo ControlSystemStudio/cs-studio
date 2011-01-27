@@ -21,11 +21,10 @@
  */
 package org.csstudio.archive.common.service;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 

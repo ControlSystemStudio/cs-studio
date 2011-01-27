@@ -19,47 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
 package org.csstudio.archive.common.service.requesttypes;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableSet;
 
 /**
- * Common interface for (archive) request types.
- * Any service implementor has to provide a suitable data structure (probably enums) for the
- * set of different request types.
+ * The read-only interface of a parameter specifying an archive request type.
  *
  * @author bknerr
  * @since 05.01.2011
+ * @param <T> the type of the param's value
  */
-public interface IArchiveRequestType {
-
+public interface IArchiveRequestTypeParameter<T> {
     @Nonnull
-    String getDescription();
-
+    String getName();
     @Nonnull
-    String getTypeIdentifier();
-    
-    /**
-     * Any request types may have a set of parameters specifying itself.
-     * For instance, for a request type AVERAGE one could think of parameter "windowLength", which
-     * is an integer.
-     * In case there is such a parameter that is adjustable by the client, the returned class yields
-     * access to it.
-     * 
-     * @return the data structure populating and giving access to the type's parameters.
-     */
-    @CheckForNull
-    ImmutableSet<IArchiveRequestTypeParameter<?>> getParameters();
-    
-    
-     void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException;
-     // or in case any parameter provides a toString and a fromString engine, and the param description shows the format \
-     // as for java.util.Number (Byte.parseByte, Double.parseDouble,...) 
-     // void setParam(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
-
-     @CheckForNull
-     <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id);
+    T getValue();
 }

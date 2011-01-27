@@ -19,9 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.requesttypes;
+package org.csstudio.archive.common.service.requesttypes.internal;
 
 import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
 
 /**
  * An immutable parameter specifying an archive request type.
@@ -31,38 +33,36 @@ import javax.annotation.Nonnull;
  * @param <T> the type of the value.
  * 
  */
-public final class ArchiveRequestTypeParameter<T> {
+public final class ArchiveRequestTypeParameter<T> implements IArchiveRequestTypeParameter<T> {
     
     private final String _name;
     
-    private final Class<T> _classType;
-    
-    private final T _value;
+    private T _value;
     
     /**
      * Constructor.
      */
-    @SuppressWarnings("unchecked")
     public ArchiveRequestTypeParameter(@Nonnull final String name,
                                        @Nonnull final T value) {
         _name = name;
         _value = value;
-        _classType = (Class<T>) value.getClass();
-    }
-    
-    @Nonnull
-    public Class<T> getValueClassType() {
-        return _classType;
     }
 
+    @Override
     @Nonnull
     public String getName() {
         return _name;
     }
 
+    @Override
     @Nonnull
     public T getValue() {
         return _value;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void setValue(Object newValue) {
+        _value = (T) newValue;
     }
     
 }

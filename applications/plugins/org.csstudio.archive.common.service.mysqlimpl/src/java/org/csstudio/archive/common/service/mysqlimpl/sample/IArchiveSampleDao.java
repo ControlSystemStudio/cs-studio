@@ -26,9 +26,9 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
