@@ -37,4 +37,6 @@ public interface IArchiveRequestTypeParameter<T> {
     String getName();
     @Nonnull
     T getValue();
+    @Nonnull
+    Class<T> getValueType();
 }

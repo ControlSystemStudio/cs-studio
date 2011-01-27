@@ -61,7 +61,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
      * Constructor.
      */
     private DesyArchiveRequestType(@Nonnull final String desc,
-                               @Nonnull final IArchiveRequestTypeParameter<?>... params) {
+                                   @Nonnull final IArchiveRequestTypeParameter<?>... params) {
         _delegate = new AbstractArchiveRequestType("f", desc, params) {
             // EMPTY
         };
@@ -117,8 +117,9 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
      */
     @Override
     @CheckForNull
-    public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id) {
-        return _delegate.getParameter(id);
+    public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
+                                                            @Nonnull final Class<T> clazz) throws RequestTypeParameterException {
+        return _delegate.getParameter(id, clazz);
     }
 
     /**

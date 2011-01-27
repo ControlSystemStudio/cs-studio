@@ -111,23 +111,25 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         if (param == null) {
             throw new RequestTypeParameterException("Parameter with identifying name " + id + " unknown.", null);
         }
-
         final Object oldValue = param.getValue();
         if (newValue.equals(oldValue)) {
             return; // identity
-        }
-        final Class<?> clazz = newValue.getClass();
-        if (oldValue.getClass() != clazz) { // TODO (bknerr) : check whether isAssignableFrom is better in any way
-            throw new RequestTypeParameterException("Value object's class type " + clazz.getName() +
-                                                    " does not match required " + oldValue.getClass().getName(), null);
         }
         param.setValue(newValue);
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public IArchiveRequestTypeParameter<?> getParameter(String id) {
-        // FIXME (bknerr) : this can cause a CCE, use TypeSupport internally
-        return _paramMap.get(id);
+    public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
+                                                            @Nonnull final Class<T> clazz) throws RequestTypeParameterException {
+        IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) _paramMap.get(id);
+        if (param == null || param.getValueType() != clazz) {
+            throw new RequestTypeParameterException("Parameter with id " + id + 
+                                                    " either does not exist or does not have the correct class type", 
+                                                    null);
+            
+        }
+        
+        return param;
     }
 }

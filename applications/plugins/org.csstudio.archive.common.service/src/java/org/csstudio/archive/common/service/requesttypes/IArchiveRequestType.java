@@ -54,12 +54,28 @@ public interface IArchiveRequestType {
     @CheckForNull
     ImmutableSet<IArchiveRequestTypeParameter<?>> getParameters();
     
-    
-     void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException;
-     // or in case any parameter provides a toString and a fromString engine, and the param description shows the format \
-     // as for java.util.Number (Byte.parseByte, Double.parseDouble,...) 
-     // void setParam(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
+    // or in case any parameter provides a toString and a fromString engine, and the param description shows the format \
+    // as for java.util.Number (Byte.parseByte, Double.parseDouble,...) 
+    // void setParam(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
+    /**
+     * Sets the parameter with the given id to the new value, unless such a parameter does not exist for this
+     * request type or the newValue's type does not match.
+     * @param id
+     * @param newValue
+     * @throws RequestTypeParameterException
+     */
+    void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException;
 
+    /**
+     * Returns the parameter with the given id, if it exists and its value's type matches the given type.
+     * Otherwise an exception is thrown.
+     * @param <T>
+     * @param id
+     * @param clazz
+     * @return
+     * @throws RequestTypeParameterException
+     */
      @CheckForNull
-     <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id);
+     <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
+                                                      @Nonnull final Class<T> clazz) throws RequestTypeParameterException;
 }

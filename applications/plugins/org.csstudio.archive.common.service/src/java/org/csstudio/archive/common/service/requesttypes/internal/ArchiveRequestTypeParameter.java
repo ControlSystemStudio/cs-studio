@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.requesttypes.internal;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 
 /**
  * An immutable parameter specifying an archive request type.
@@ -60,9 +61,29 @@ public final class ArchiveRequestTypeParameter<T> implements IArchiveRequestType
         return _value;
     }
     
+    /**
+     * Set the value field to the new value.
+     * In case the object is not an instance of the required type an exception is thrown.
+     * @param newValue
+     * @throws RequestTypeParameterException 
+     */
+    public void setValue(@Nonnull final Object newValue) throws RequestTypeParameterException {
+        final Class<?> clazz = newValue.getClass();
+        if (getValueType() != clazz) { // TODO (bknerr) : check whether isAssignableFrom is better in any way
+            throw new RequestTypeParameterException("New value object's class type " + clazz.getName() +
+                                                    " does not match the required type " + getValueType().getName(), null);
+        }
+        _value = getValueType().cast(newValue);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
-    public void setValue(Object newValue) {
-        _value = (T) newValue;
+    @Override
+    @Nonnull
+    public Class<T> getValueType() {
+        return (Class<T>) _value.getClass();
     }
     
 }

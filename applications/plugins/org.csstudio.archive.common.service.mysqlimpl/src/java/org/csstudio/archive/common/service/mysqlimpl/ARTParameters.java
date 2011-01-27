@@ -57,6 +57,10 @@ public final class ARTParameters {
         public Integer getValue() {
             return Integer.valueOf(1000);
         }
+        @Override
+        public Class<Integer> getValueType() {
+            return Integer.class;
+        }
     };
     public static final IArchiveRequestTypeParameter<Double> PRECISION =
         new IArchiveRequestTypeParameter<Double>() {
@@ -75,6 +79,10 @@ public final class ARTParameters {
         @Nonnull
         public Double getValue() {
             return Double.valueOf(2.0);
+        }
+        @Override
+        public Class<Double> getValueType() {
+            return Double.class;
         }
     };
 
