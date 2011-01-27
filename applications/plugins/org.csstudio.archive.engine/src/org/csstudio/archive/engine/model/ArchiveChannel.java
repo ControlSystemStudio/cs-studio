@@ -30,7 +30,7 @@ import org.csstudio.utility.pv.PVListener;
 abstract public class ArchiveChannel
 {
     /** Throttled log for NaN samples */
-    private static ThrottledLogger trouble_sample_log = 
+    private static ThrottledLogger trouble_sample_log =
                     new ThrottledLogger(Level.INFO, "log_trouble_samples"); //$NON-NLS-1$
 
     /** Group to which this channel belongs.
@@ -40,16 +40,16 @@ abstract public class ArchiveChannel
      */
     final private CopyOnWriteArrayList<ArchiveGroup> groups =
                                 new CopyOnWriteArrayList<ArchiveGroup>();
-    
+
     /** Channel name.
      *  This is the name by which the channel was created,
      *  not the PV name that might include decorations.
      */
     final private String name;
-    
+
     /** Control system PV */
     final private PV pv;
-    
+
     /** Is this channel currently running?
      *  <p>
      *  PV sends another 'disconnected' event
@@ -67,7 +67,7 @@ abstract public class ArchiveChannel
      *  When we can write again, we add one info sample.
      */
     private boolean need_write_error_sample = false;
-    
+
     /** Do we need to log a 'first' sample?
      *  <p>
      *  After startup, or after a network disconnect,
@@ -79,22 +79,22 @@ abstract public class ArchiveChannel
      *  sample into the archive with current time stamp.
      */
     private boolean need_first_sample = true;
-    
+
     /** How channel affects its groups */
     final private Enablement enablement;
-    
+
     /** Is this channel currently enabled? */
     private boolean enabled = true;
-    
+
     /** Most recent value of the PV.
      *  <p>
      *  This is the value received from the PV,
-     *  is is not necessarily written to the archive. 
+     *  is is not necessarily written to the archive.
      *  <p>
      *  SYNC:Lock on <code>this</code> for access.
      */
     protected IValue most_recent_value = null;
-    
+
     /** Counter for received values (monitor updates) */
     private long received_value_count = 0;
 
@@ -103,7 +103,7 @@ abstract public class ArchiveChannel
      *  SYNC: Lock on <code>this</code> for access.
      */
     protected IValue last_archived_value = null;
-    
+
     /** Buffer of received samples, periodically written */
     private final SampleBuffer buffer;
 
@@ -130,10 +130,11 @@ abstract public class ArchiveChannel
             log.info(name + ": No known last value");
         if (!log.isDebugEnabled())
             log = null;
-        
+
         pv = PVFactory.createPV(name);
         pv.addListener(new PVListener()
         {
+            @Override
             public void pvValueUpdate(final PV pv)
             {
                 // PV already suppresses updates after 'stop', but check anyway
@@ -146,6 +147,7 @@ abstract public class ArchiveChannel
                 }
             }
 
+            @Override
             public void pvDisconnected(final PV pv)
             {
                 if (is_running)
@@ -159,28 +161,28 @@ abstract public class ArchiveChannel
     {
         return name;
     }
-    
+
     /** @return How channel affects its groups */
     final public Enablement getEnablement()
     {
         return enablement;
     }
-    
+
     /** @return <code>true</code> if channel is currently enabled */
     final public boolean isEnabled()
     {
         return enabled ;
     }
-    
+
     /** @return Short description of sample mechanism */
     abstract public String getMechanism();
-    
+
     /** @return Number of Groups to which this channel belongs */
     final public int getGroupCount()
     {
         return groups.size();
     }
-    
+
     /** @return One Group to which this channel belongs */
     final public ArchiveGroup getGroup(final int index)
     {
@@ -200,7 +202,7 @@ abstract public class ArchiveChannel
             throw new Error("Channel " + getName() + " doesn't belong to group"
                             + group.getName());
     }
-    
+
     /** @return <code>true</code> if connected */
     final public boolean isConnected()
     {
@@ -264,7 +266,7 @@ abstract public class ArchiveChannel
     {
         return buffer;
     }
-    
+
     /** Reset counters */
     public void reset()
     {
@@ -298,9 +300,9 @@ abstract public class ArchiveChannel
      *  Base class remembers the <code>most_recent_value</code>,
      *  and asserts that one 'first' sample is archived.
      *  Derived class <b>must</b> call <code>super()</code>.
-     *  
+     *
      *  @param value Value received from PV
-     *  
+     *
      *  @return true if the value was already written because
      *               it's the first value after startup or error,
      *               so there's no need to write that sample again.
@@ -319,11 +321,11 @@ abstract public class ArchiveChannel
             if (Double.isNaN(dbl.getValue()))
                 trouble_sample_log.log("'" + getName() + "': NaN "
                         + value.format());
-            
+
         }
         if (!enabled)
             return false;
-        
+
         // Did we recover from write errors?
         if (need_write_error_sample &&
             SampleBuffer.isInErrorState() == false)
@@ -344,7 +346,7 @@ abstract public class ArchiveChannel
         addInfoToBuffer(updated);
         return true;
     }
-    
+
     /** Handle a disconnect event.
      *  <p>
      *  Base class clears the <code>most_recent_value</code> and
@@ -364,7 +366,7 @@ abstract public class ArchiveChannel
     }
 
     /** Add given info value to buffer, tweaking its time stamp if necessary
-     *  @param value Value to archive 
+     *  @param value Value to archive
      */
     final protected void addInfoToBuffer(IValue value)
     {
@@ -410,7 +412,7 @@ abstract public class ArchiveChannel
             trouble_sample_log.log("'" + getName() + "': Futuristic " + value);
             return false;
         }
-        
+
         synchronized (this)
         {
             if (last_archived_value != null &&
