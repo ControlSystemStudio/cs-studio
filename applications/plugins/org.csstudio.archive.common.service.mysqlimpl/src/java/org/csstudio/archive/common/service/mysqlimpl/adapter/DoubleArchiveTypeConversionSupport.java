@@ -32,6 +32,15 @@ import org.csstudio.domain.desy.types.TypeSupportException;
  * @since 10.12.2010
  */
 public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Double> {
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    DoubleArchiveTypeConversionSupport() {
+        super(Double.class);
+    }
+
     /**
      * {@inheritDoc}
      */

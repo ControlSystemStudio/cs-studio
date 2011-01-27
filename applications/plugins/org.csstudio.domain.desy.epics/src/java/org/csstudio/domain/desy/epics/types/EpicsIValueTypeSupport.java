@@ -29,11 +29,11 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
+import org.epics.pvmanager.TypeSupport;
 
 /**
  * Conversion for epics and epics related types.
@@ -46,6 +46,15 @@ import org.csstudio.platform.data.ValueFactory;
  */
 public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
+
+    /**
+     * Constructor for a new EpicsIValue support.
+     * 
+     * @param type the supported type
+     */
+    public EpicsIValueTypeSupport(Class<T> type) {
+        super(type, EpicsIValueTypeSupport.class);
+    }
 
     public static void install() {
         AbstractIValueConversionTypeSupport.install();
@@ -66,7 +75,8 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
-            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(EpicsIValueTypeSupport.class, typeClass);
+            (AbstractIValueConversionTypeSupport<R, T>) findTypeSupportFor(EpicsIValueTypeSupport.class, 
+                                                                           typeClass);
         return support.convertToCssType(value);
     }
 
@@ -124,11 +134,5 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
             case INVALID :  return ValueFactory.createInvalidSeverity();
         }
         return null;
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public final Class<? extends TypeSupport<T>> getTypeSupportFamily() {
-        return (Class<? extends TypeSupport<T>>) EpicsIValueTypeSupport.class;
     }
 }

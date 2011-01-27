@@ -27,10 +27,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
-import org.csstudio.domain.desy.types.TypeSupport;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -132,22 +132,22 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     /**
      * Constructor.
      */
-    ArchiveTypeConversionSupport() {
-        // Don't instantiate outside this class
+    ArchiveTypeConversionSupport(@Nonnull final Class<T> type) {
+        super(type, ArchiveTypeConversionSupport.class);
     }
 
     public static void install() {
         if (INSTALLED) {
             return;
         }
-        TypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Long.class, new LongArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(EpicsEnumTriple.class, new EnumArchiveTypeConversionSupport());
-        TypeSupport.addTypeSupport(Collection.class, new CollectionTypeConversionSupport());
+        TypeSupport.addTypeSupport(new DoubleArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new FloatArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new IntegerArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new LongArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new StringArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new ByteArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new EnumArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(new CollectionTypeConversionSupport());
 
         INSTALLED = true;
     }
@@ -163,7 +163,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertToArchiveString(value);
     }
@@ -179,7 +179,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @CheckForNull
     public static <T> T fromScalarArchiveString(final Class<T> typeClass, @Nonnull final String value) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertFromArchiveString(value);
     }
@@ -203,7 +203,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     fromMultiScalarArchiveString(@Nonnull final Class<T> elemClass,
                                  @Nonnull final String values) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    elemClass);
         return support.convertFromArchiveStringToMultiScalar(values);
     }
@@ -223,14 +223,14 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     public static <T> Double toDouble(@Nonnull final T value) throws TypeSupportException {
         final Class<T> typeClass = (Class<T>) value.getClass();
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertToDouble(value);
     }
 
     @Nonnull
     public static <T> T fromDouble(@Nonnull final String dataType, @Nonnull final Double value) throws TypeSupportException {
-        final Class<?> typeClass = createTypeClassFromString(dataType,
+        final Class<?> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
                                                              SCALAR_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
@@ -238,7 +238,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertFromDouble(value);
     }
@@ -252,7 +252,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      */
     @Nonnull
     public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
-        final Class<?> typeClass = createTypeClassFromString(dataType,
+        final Class<?> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
                                                              SCALAR_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
@@ -269,7 +269,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @Nonnull
     public static <T> Boolean isDataTypeOptimizable(@Nonnull final Class<T> dataType) throws TypeSupportException {
         final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<?>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    dataType);
         return support.isOptimizableByAveraging();
     }
@@ -278,7 +278,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @Nonnull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
-        final Class<T> typeClass = TypeSupport.createTypeClassFromString(datatype,
+        final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
                                                                          SCALAR_TYPE_PACKAGES);
         if (typeClass != null) {
             return fromScalarArchiveString(typeClass, value);
@@ -294,7 +294,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
                                             @Nonnull final String value) throws TypeSupportException {
 
         final Class<T> typeClass =
-            TypeSupport.createTypeClassFromMultiScalarString(datatype,
+            BaseTypeConversionSupport.createTypeClassFromMultiScalarString(datatype,
                                                              MULTI_SCALAR_TYPE_PACKAGES);
         if (typeClass != null) {
             return (T) fromMultiScalarArchiveString(typeClass, value);
@@ -311,7 +311,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) cachedTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    values.iterator().next().getClass());
 
         final Collection<String> items =
@@ -347,9 +347,4 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         return Boolean.FALSE;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public final Class<? extends TypeSupport<T>> getTypeSupportFamily() {
-        return (Class<? extends TypeSupport<T>>) ArchiveTypeConversionSupport.class;
-    }
 }

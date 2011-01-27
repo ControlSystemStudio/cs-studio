@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,48 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.domain.desy.types;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Type conversions for {@link Long}.
- *
+ * TODO (bknerr) : 
+ * 
  * @author bknerr
- * @since 15.12.2010
+ * @since 27.01.2011
  */
-public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
-
-
-    /**
-     * Constructor.
-     * @param type
-     */
-    LongArchiveTypeConversionSupport() {
-        super(Long.class);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.longValue();
+public class BaseTypeConversionSupportUnitTest {
+    
+    @Test
+    public void testCreateTypeClassFromStringFromBuddyPlugin() {
+        
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString("String", 
+                                                                                 "java.lang"));
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString("EpicsEnumTriple", 
+                                                                                 "org.csstudio.domain.desy.epics.types"));
+        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala", 
+                                                                              "org.csstudio.domain.desy.epics.types"));
     }
 }
