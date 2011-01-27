@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.requesttypes.internal.ArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,52 +35,10 @@ import org.junit.Test;
  */
 public class IArchiveRequestTypeUnitTest {
     
-    public static final IArchiveRequestTypeParameter<Integer> TEST_PARAM_I =
-        new IArchiveRequestTypeParameter<Integer>() {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public String getName() {
-            return "testi";
-        }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public Integer getValue() {
-            return Integer.valueOf(1000);
-        }
-        @Override
-        public Class<Integer> getValueType() {
-            return Integer.class;
-        }
-    };
-    public static final IArchiveRequestTypeParameter<Double> TEST_PARAM_D =
-        new IArchiveRequestTypeParameter<Double>() {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public String getName() {
-            return "testd";
-        }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public Double getValue() {
-            return Double.valueOf(1000.0);
-        }
-        @Override
-        public Class<Double> getValueType() {
-            return Double.class;
-        }
-    };
+    private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I = 
+        new ArchiveRequestTypeParameter<Integer>("testi", Integer.valueOf(1000));
+    private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D = 
+        new ArchiveRequestTypeParameter<Double>("testi", Double.valueOf(1000.0));
     
     private static final class ART extends AbstractArchiveRequestType {
         public ART(String id, 
@@ -126,9 +85,11 @@ public class IArchiveRequestTypeUnitTest {
                                                                        TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
             Assert.assertEquals(TEST_PARAM_I.getValue(), p.getValue());
+            
             art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
-            Integer value = TEST_PARAM_I.getValue();
-            Assert.assertEquals(Integer.valueOf(4711), value);
+            p = art.getParameter(TEST_PARAM_I.getName(), 
+                                 TEST_PARAM_I.getValueType());
+            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
             
         }
         {
