@@ -49,6 +49,7 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         assertTrue(got_anything);
     }
 
+    @Override
     public void fetchCompleted(final ArchiveFetchJob job)
     {
         //System.out.println("Completed " + job);
@@ -58,6 +59,7 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         got_anything = true;
     }
 
+    @Override
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
