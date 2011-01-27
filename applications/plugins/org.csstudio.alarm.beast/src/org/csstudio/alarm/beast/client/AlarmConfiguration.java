@@ -48,7 +48,7 @@ public class AlarmConfiguration
     final private AlarmConfigurationReader config_reader;
 
     /** Root of the alarm tree.  */
-    final private AlarmTreeRoot config_tree;
+    private AlarmTreeRoot config_tree = null;
 
     /** Hash of all PVs in config_tree that maps PV name to PV */
     private HashMap<String, AlarmTreePV> pvs = new HashMap<String, AlarmTreePV>();
@@ -60,21 +60,13 @@ public class AlarmConfiguration
      *  @param url RDB URL
      *  @param user	RDB user name
      *  @param password RDB password
-     *  @param root_name Name of root element. When <code>null</code>, only <code>listConfigurations()</code> is supported.
-     *  @param create Set true to create new tree if nothing found
      *  @throws Exception on error
      */
     public AlarmConfiguration(final String url, final String user,
-    		final String password,
-            final String root_name,
-            final boolean create) throws Exception
+    		final String password) throws Exception
     {
         // Allow auto-reconnect...
         rdb = RDBUtil.connect(url, user, password, true);
-
-        // For now assert auto-commit
-        // TODO Commit as needed, disable auto-commit.
-        rdb.getConnection().setAutoCommit(true);
 
         // Disable it while reading initial config. because that
         // can be 10% faster
@@ -83,13 +75,12 @@ public class AlarmConfiguration
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
         config_reader = new AlarmConfigurationReader(rdb, sql);
-        if (root_name != null)
-            config_tree = readAlarmTree(root_name, create);
-        else
-            config_tree = null;
-        closeStatements();
         // Re-enable auto-connect
         rdb.setAutoReconnect(true);
+
+        // For now assert auto-commit
+        // TODO Commit as needed, disable auto-commit.
+        rdb.getConnection().setAutoCommit(true);
     }
 
     /** List all configuration 'root' element names
@@ -112,6 +103,24 @@ public class AlarmConfiguration
     	}
     	// Convert to plain array
         return names.toArray(new String[names.size()]);
+    }
+
+    /** Read configuration.
+     *  @param root_name Name of root element.
+     *  @param create Set <code>true</code> to create new tree if nothing found
+     */
+    public void readConfiguration(final String root_name, final boolean create) throws Exception
+    {
+        rdb.setAutoReconnect(false);
+        try
+        {
+            config_tree = readAlarmTree(root_name, create);
+            closeStatements();
+        }
+        finally
+        {
+            rdb.setAutoReconnect(true);
+        }
     }
 
 	/** Must be called to release resources */

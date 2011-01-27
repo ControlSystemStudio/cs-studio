@@ -146,7 +146,7 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, user, password, root, false);
+            config = new AlarmConfiguration(url, user, password);
         }
         catch (Exception ex)
         {
@@ -201,7 +201,8 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, user, password, root, mode == Mode.IMPORT);
+            config = new AlarmConfiguration(url, user, password);
+            config.readConfiguration(root, mode == Mode.IMPORT);
         }
         catch (Exception ex)
         {
