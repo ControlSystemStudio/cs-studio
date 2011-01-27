@@ -217,7 +217,7 @@ public class AlarmView extends LogView {
     }
 
     private void enableAckButtonIfPermitted() {
-        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, false));
     }
 
     // CHECKSTYLE:OFF

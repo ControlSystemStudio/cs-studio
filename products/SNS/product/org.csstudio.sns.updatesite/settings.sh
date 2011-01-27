@@ -2,7 +2,7 @@
 #
 # Kay Kasemir
 
-export VERSION=2.4.0
+export VERSION=2.5.0
 
 # Use only the date as qualifier?
 # With default, the time is included and then the same plugin for

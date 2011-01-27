@@ -26,7 +26,7 @@ public class SendToElogAction extends SendToElogActionHelper
         this.opiRunner = part;
         setId(ID);
     }
- 
+
     @Override
     public void run()
     {
@@ -42,7 +42,7 @@ public class SendToElogAction extends SendToElogActionHelper
             MessageDialog.openError(opiRunner.getEditorSite().getShell(), "error", ex.getMessage());
             return;
         }
-        
+
         // Display dialog, create entry
         try
         {
@@ -54,21 +54,22 @@ public class SendToElogAction extends SendToElogActionHelper
             {
                 @Override
                 public void makeElogEntry(final String logbook_name, final String user,
-                        final String password, final String title, final String body)
+                        final String password, final String title, final String body,
+                        final String images[])
                         throws Exception
                 {
                     final ILogbook logbook = getLogbook_factory()
                                         .connect(logbook_name, user, password);
                     try
                     {
-                        logbook.createEntry(title, body, filename);
+                        logbook.createEntry(title, body, images);
                     }
                     finally
                     {
                         logbook.close();
                     }
                 }
-                
+
             };
             dialog.open();
         }

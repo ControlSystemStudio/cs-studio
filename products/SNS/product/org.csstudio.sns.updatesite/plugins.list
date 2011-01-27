@@ -6,6 +6,7 @@ org.csstudio.alarm.beast.server/**
 org.csstudio.alarm.beast.ui/**
 org.csstudio.alarm.beast.ui.alarmtable/**
 org.csstudio.alarm.beast.ui.alarmtree/**
+org.csstudio.alarm.beast.ui.globaltable/**
 org.csstudio.apputil/**
 org.csstudio.apputil.ui/**
 org.csstudio.archive.engine/**
@@ -70,6 +71,7 @@ org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
 org.csstudio.swt.xygraph/**
 org.csstudio.trends.databrowser2/**
+org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.utility.adlParser/**
 org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**

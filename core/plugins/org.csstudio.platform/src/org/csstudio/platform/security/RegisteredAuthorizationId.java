@@ -37,6 +37,7 @@ public final class RegisteredAuthorizationId {
 
 	private final String _id;
 	private final String _description;
+	private final String _contributor;
 	private final ArrayList<AuthorizationIdUsage> _usage;
 
 	/**
@@ -50,10 +51,11 @@ public final class RegisteredAuthorizationId {
 	 *            a collection of descriptions of places where the authorization
 	 *            ID is used.
 	 */
-	public RegisteredAuthorizationId(String id, String description,
+	public RegisteredAuthorizationId(String id, String description, String contributor,
 			Collection<AuthorizationIdUsage> usage) {
 		_id = id;
 		_description = description;
+		_contributor = contributor;
 		// Create a copy of the collection to keep this object immutable
 		_usage = new ArrayList<AuthorizationIdUsage>(usage);
 	}
@@ -75,6 +77,15 @@ public final class RegisteredAuthorizationId {
 	public String getDescription() {
 		return _description;
 	}
+	
+	/**
+	 * Returns the name of the contributor. This is usually the id of the plugin, where the authorization id has been registered.
+	 * 
+	 * @return the name of the contributor
+	 */
+	public String getContributor() {
+        return _contributor;
+    }
 
 	/**
 	 * Returns an unmodifiable collection of descriptions of the places where

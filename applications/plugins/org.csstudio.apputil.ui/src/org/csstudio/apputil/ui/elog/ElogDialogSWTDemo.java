@@ -36,7 +36,7 @@ public class ElogDialogSWTDemo
         {
             @Override
             public void makeElogEntry(String logbook_name, String user, String password,
-                    String title, String body) throws Exception
+                    String title, String body, String images[]) throws Exception
             {
                 if ("fred".equals(user))
                     throw new Exception ("Try again");

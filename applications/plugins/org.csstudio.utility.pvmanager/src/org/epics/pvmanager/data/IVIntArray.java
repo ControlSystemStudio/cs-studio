@@ -20,11 +20,11 @@ public class IVIntArray extends IVNumeric implements VIntArray {
 
     public IVIntArray(int[] array, List<Integer> sizes,
             AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
+            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, lowerDisplayLimit,
+        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, timeValid, lowerDisplayLimit,
                 lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, format, upperWarningLimit,
                 upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
         this.array = array;
