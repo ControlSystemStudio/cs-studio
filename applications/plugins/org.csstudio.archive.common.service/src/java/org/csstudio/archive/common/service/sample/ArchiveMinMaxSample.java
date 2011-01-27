@@ -42,7 +42,7 @@ import org.csstudio.domain.desy.types.ICssAlarmValueType;
 public class ArchiveMinMaxSample<V,
                                  T extends ICssAlarmValueType<V>,
                                  A extends IAlarm & Comparable<? super A>>
-                                extends ArchiveSampleDTO<V, T, A>
+                                extends ArchiveSample<V, T, A>
                                 implements IArchiveMinMaxSample<V, T, A> {
 
     private final V _minimum;

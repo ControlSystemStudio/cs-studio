@@ -23,52 +23,67 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.IArchiveRequestType;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
 
 /**
- * Archive request abstraction for optimized MySQL implementation.
+ * Parameter available to the archive request types of this service implementation.
  *
  * @author bknerr
- * @since 05.01.2011
+ * @since 26.01.2011
  */
-public enum ArchiveRequestType implements IArchiveRequestType {
-    RAW("Raw values."),
-    AVG_PER_MINUTE("Averaged over the time period of one minute."),
-    AVG_PER_HOUR("Averaged over the time period of one hour.");
-
-    private final String _desc;
-
+public final class ARTParameters {
     /**
      * Constructor.
      */
-    private ArchiveRequestType(@Nonnull final String desc) {
-        _desc = desc;
+    private ARTParameters() {
+        // Don't instantiate
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getDescription() {
-        return _desc;
-    }
+    public static final IArchiveRequestTypeParameter<Integer> NUM_OF_BINS =
+        new IArchiveRequestTypeParameter<Integer>() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String getName() {
+            return "numOfBins";
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Integer getValue() {
+            return Integer.valueOf(1000);
+        }
+        @Override
+        public Class<Integer> getValueType() {
+            return Integer.class;
+        }
+    };
+    public static final IArchiveRequestTypeParameter<Double> PRECISION =
+        new IArchiveRequestTypeParameter<Double>() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String getName() {
+            return "precision";
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Double getValue() {
+            return Double.valueOf(2.0);
+        }
+        @Override
+        public Class<Double> getValueType() {
+            return Double.class;
+        }
+    };
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getTypeIdentifier() {
-        return name();
-    }
-
-    /**
-     * Returns the default/natural request type.
-     * @return the default/natural request type for this implementation.
-     */
-    @Nonnull
-    public static ArchiveRequestType getDefault() {
-        return RAW;
-    }
 }

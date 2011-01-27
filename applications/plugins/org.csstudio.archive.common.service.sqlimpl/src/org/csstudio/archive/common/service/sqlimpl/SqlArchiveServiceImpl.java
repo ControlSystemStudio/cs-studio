@@ -37,6 +37,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.rdb.ChannelConfig;
@@ -45,6 +46,8 @@ import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -130,15 +133,6 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * In case there'll be several WriteThreads later on.
      */
     private final ThreadLocal<RDBArchive> _archive = new ThreadLocal<RDBArchive>();
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
-        throw new ArchiveServiceException("Not implemented", null);
-    }
 
 
     /**
@@ -306,6 +300,16 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
             throw new ArchiveServiceException("Committing of batch failed.", e);
         }
         return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <V, T extends ICssValueType<V> & IHasAlarm> 
+    boolean writeSamples(Collection<IArchiveSample2<V, T>> samples) throws ArchiveServiceException {
+      throw new ArchiveServiceException("Not implemented", null);
     }
 
 }

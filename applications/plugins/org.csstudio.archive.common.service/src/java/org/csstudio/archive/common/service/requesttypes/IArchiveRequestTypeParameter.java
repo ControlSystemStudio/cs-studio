@@ -19,21 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service;
+
+package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
 
+
 /**
- * TODO (bknerr) :
+ * The read-only interface of a parameter specifying an archive request type.
  *
  * @author bknerr
  * @since 05.01.2011
+ * @param <T> the type of the param's value
  */
-public interface IArchiveRequestType {
-
+public interface IArchiveRequestTypeParameter<T> {
     @Nonnull
-    String getDescription();
-
+    String getName();
     @Nonnull
-    String getTypeIdentifier();
+    T getValue();
+    @Nonnull
+    Class<T> getValueType();
 }

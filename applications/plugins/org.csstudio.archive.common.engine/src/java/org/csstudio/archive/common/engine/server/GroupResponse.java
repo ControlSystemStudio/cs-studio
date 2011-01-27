@@ -25,7 +25,7 @@ class GroupResponse extends AbstractResponse
 {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
-    
+
     /** Maximum text length of last value that's displayed */
     private static final int MAX_VALUE_DISPLAY = 60;
 
@@ -33,7 +33,7 @@ class GroupResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -52,9 +52,9 @@ class GroupResponse extends AbstractResponse
             return;
         }
 
-        HTMLWriter html = new HTMLWriter(resp,
+        final HTMLWriter html = new HTMLWriter(resp,
                         "Archive Engine Group " + group_name);
-                                         
+
         // Basic group info
         html.openTable(2, new String[]
         {
@@ -65,20 +65,20 @@ class GroupResponse extends AbstractResponse
             Messages.HTTP_State,
             group.isEnabled() ? Messages.HTTP_Enabled : Messages.HTTP_Disabled
         });
-        final ArchiveChannel ena_channel = group.getEnablingChannel();
-        if (ena_channel != null)
-        {
-            html.tableLine(new String[]
-            {
-                Messages.HTTP_EnablingChannel,
-                HTMLWriter.makeLink("channel?name=" + ena_channel.getName(),
-                         ena_channel.getName())
-            });
-        }
+//        final ArchiveChannel ena_channel = group.getEnablingChannel();
+//        if (ena_channel != null)
+//        {
+//            html.tableLine(new String[]
+//            {
+//                Messages.HTTP_EnablingChannel,
+//                HTMLWriter.makeLink("channel?name=" + ena_channel.getName(),
+//                         ena_channel.getName())
+//            });
+//        }
         html.closeTable();
-        
+
         html.h2(Messages.HTTP_Channels);
-                             
+
         // HTML Table of all channels in the group
         html.openTable(1, new String[]
         {
@@ -95,24 +95,26 @@ class GroupResponse extends AbstractResponse
             Messages.HTTP_QueueOverruns,
         });
         final int channel_count = group.getChannelCount();
-        for (int j=0; j<channel_count; ++j)
-        {
-            final ArchiveChannel channel = group.getChannel(j);
-            final String connected = channel.isConnected() 
+        for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
+
+            final String connected = channel.isConnected()
             ? Messages.HTTP_Connected : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
             final SampleBuffer buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
             final int overrun_count = stats.getOverruns();
             String overruns = Integer.toString(overrun_count);
-            if (overrun_count > 0)
+            if (overrun_count > 0) {
                 overruns = HTMLWriter.makeRedText(overruns);
+            }
 
             String current_value = channel.getCurrentValue();
-            if (current_value.length() > MAX_VALUE_DISPLAY)
+            if (current_value.length() > MAX_VALUE_DISPLAY) {
                 current_value = current_value.substring(0, MAX_VALUE_DISPLAY);
+            }
             String last_value = channel.getLastArchivedValue();
-            if (last_value.length() > MAX_VALUE_DISPLAY)
+            if (last_value.length() > MAX_VALUE_DISPLAY) {
                 last_value = last_value.substring(0, MAX_VALUE_DISPLAY);
+            }
             html.tableLine(new String[]
             {
                 HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
@@ -129,7 +131,7 @@ class GroupResponse extends AbstractResponse
             });
         }
         html.closeTable();
-            
+
         html.close();
     }
 }
