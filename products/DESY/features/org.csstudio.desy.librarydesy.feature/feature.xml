@@ -32,27 +32,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.ldap.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.ldap.service.impl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.csstudio.utility.ldap.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.namespace.utility"
          download-size="0"
          install-size="0"
          version="0.0.0"
