@@ -58,30 +58,6 @@ public class AlarmConfiguration
 
     /** Initialize
      *  @param url RDB URL
-     *  @param root_name Name of root element
-     *  @throws Exception on error
-     */
-    public AlarmConfiguration(final String url,
-            final String root_name) throws Exception
-    {
-        this(url, root_name, false);
-    }
-
-    /** Initialize
-     *  @param url RDB URL
-     *  @param root_name Name of root element
-     *  @param create Set true to create new tree if nothing found
-     *  @throws Exception on error
-     */
-    public AlarmConfiguration(final String url,
-            final String root_name,
-            final boolean create) throws Exception
-    {
-       this(url, null, null, root_name, create);
-    }
-
-    /** Initialize
-     *  @param url RDB URL
      *  @param user	RDB user name
      *  @param password RDB password
      *  @param root_name Name of root element. When <code>null</code>, only <code>listConfigurations()</code> is supported.

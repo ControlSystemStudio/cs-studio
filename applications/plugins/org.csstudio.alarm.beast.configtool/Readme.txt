@@ -19,7 +19,7 @@ Basic Incantations
 Note that alarm configurations are identified by their "Root"
 element.
 
-The following examples assume that the RDB URL is built into
+The following examples assume that the RDB URL/user/password are built into
 the tool via plugin_customization.ini or the underlying
 org.csstudio.alarm/preferences.ini.
 To specify another URL, add the option

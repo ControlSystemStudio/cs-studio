@@ -27,7 +27,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 @SuppressWarnings("nls")
 public class Application implements IApplication
 {
-    private String url;
+    private String url, user, password;
     private String root;
     private enum Mode
     {
@@ -43,7 +43,11 @@ public class Application implements IApplication
         final BooleanOption help_opt = new BooleanOption(parser, "-help",
                "Display Help");
         final StringOption url = new StringOption(parser, "-rdb_url",
-               "Alarm config database URL (with user/password)", Preferences.getRDB_Url());
+               "Alarm config database URL", Preferences.getRDB_Url());
+        final StringOption user = new StringOption(parser, "-rdb_user",
+                "Database user", Preferences.getRDB_User());
+        final StringOption password = new StringOption(parser, "-rdb_pass",
+                "Database password", Preferences.getRDB_Password());
         final BooleanOption do_list = new BooleanOption(parser, "-list",
                 "List available configurations");
         final StringOption root = new StringOption(parser, "-root",
@@ -75,6 +79,8 @@ public class Application implements IApplication
             return parser.getHelp();
 
         this.url = url.get();
+        this.user = user.get().isEmpty() ? null : user.get();
+        this.password = password.get().isEmpty() ? null : password.get();
         if (do_list.get())
         {
             mode = Mode.LIST;
@@ -140,7 +146,7 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, root, mode == Mode.IMPORT);
+            config = new AlarmConfiguration(url, user, password, root, false);
         }
         catch (Exception ex)
         {
@@ -195,7 +201,7 @@ public class Application implements IApplication
         final AlarmConfiguration config;
         try
         {
-            config = new AlarmConfiguration(url, root, mode == Mode.IMPORT);
+            config = new AlarmConfiguration(url, user, password, root, mode == Mode.IMPORT);
         }
         catch (Exception ex)
         {
