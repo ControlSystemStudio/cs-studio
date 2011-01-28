@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JfreeChart Widgets
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.jfreechart.widgets
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.utility.pvmanager.jfreechart.widgets.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager;bundle-version="0.3.0",
+ org.csstudio.platform.libs.jfreechart;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.utility.pvmanager.jfreechart.widgets
