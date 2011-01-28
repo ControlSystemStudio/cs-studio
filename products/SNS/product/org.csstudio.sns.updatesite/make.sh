@@ -19,8 +19,10 @@ ant clean
 echo Fetching sources
 ant get_sources
 
+PRODS=config_build_Basic_CSS config_build_SNS_CSS config_build_optional
+
 # Build products and optional feature
-for prod in config_build_Basic_CSS config_build_SNS_CSS config_build_optional
+for prod in $PRODS
 do
     echo $prod
     (cd $prod; sh build.sh)
@@ -29,7 +31,7 @@ done
 
 OK=1
 # Each build log contains 2(!) "BUILD SUCCESSFUL" lines
-for prod in config_build_Basic_CSS config_build_SNS_CSS config_build_optional
+for prod in $PRODS
 do
     if [ `cat $prod/build.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
     then
