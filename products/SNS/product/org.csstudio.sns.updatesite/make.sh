@@ -19,7 +19,7 @@ ant clean
 echo Fetching sources
 ant get_sources
 
-PRODS=config_build_Basic_CSS config_build_SNS_CSS config_build_optional
+PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_optional"
 
 # Build products and optional feature
 for prod in $PRODS
