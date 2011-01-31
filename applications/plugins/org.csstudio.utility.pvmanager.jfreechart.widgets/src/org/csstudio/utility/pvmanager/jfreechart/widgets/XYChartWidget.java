@@ -18,9 +18,11 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
+import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.VMultiDouble;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -34,13 +36,13 @@ import org.jfree.experimental.chart.swt.ChartComposite;
  * @author shroffk
  * 
  */
-public class ChartWidget extends Composite {
+public class XYChartWidget extends Composite {
 
 	private ChartComposite chartDisplay;
 	private JFreeChart chart;
 	private XYSeriesCollection dataset;
 
-	public ChartWidget(Composite parent, int style) {
+	public XYChartWidget(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FormLayout());
 		chartDisplay = new ChartComposite(this, SWT.BORDER, null, true);
@@ -77,7 +79,7 @@ public class ChartWidget extends Composite {
 		chartDisplay.setChart(null);
 		// Create an empty chart
 		dataset = new XYSeriesCollection();
-		final XYSeries series = new XYSeries("PV Group1", false, true);
+		XYSeries series = new XYSeries("PV Group1", false, true);
 		dataset.addSeries(series);
 		chart = ChartFactory.createXYLineChart("Multi Channel Plot",
 				"PV Channels", "Values", dataset, PlotOrientation.VERTICAL,
@@ -92,17 +94,29 @@ public class ChartWidget extends Composite {
 
 		if (pvNames != null) {
 			final Random generator = new Random();
-			pv = PVManager
-					.read(synchronizedArrayOf(ms(75),
+			pv = PVManager.read(
+					synchronizedArrayOf(ms(75),
 							vDoubles(Collections.unmodifiableList(pvNames))))
-					.andNotify(SWTUtil.onSWTThread()).atHz(10);
+					.atHz(10);
 			pv.addPVValueChangeListener(new PVValueChangeListener() {
 
 				@Override
 				public void pvValueChanged() {
 					if (!chartDisplay.isDisposed()) {
-						series.add(System.currentTimeMillis(),
-								generator.nextDouble());
+						XYSeries series = new XYSeries("PV Group1", false, true);
+						double index = 0;
+						for (VDouble value : pv.getValue().getValues()) {
+							if (value != null)
+								series.add(index, (double) value.getValue(),
+										false);
+							index++;
+						}
+						PlatformUI
+								.getWorkbench()
+								.getDisplay()
+								.asyncExec(
+										new UpdateXYSeriesCollection(chartDisplay, dataset,
+												series));
 					}
 				}
 			});
