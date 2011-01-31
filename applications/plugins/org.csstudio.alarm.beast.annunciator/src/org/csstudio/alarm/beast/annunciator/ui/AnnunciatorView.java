@@ -39,16 +39,16 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
 
     /** Annunciator that performs the actual annunciations. */
     private volatile JMSAnnunciator annunciator = null;
-    
+
     /** Table of recent annunciations */
     private TableViewer message_table;
-    
+
     /** List of recent annunciations, shown in message_table.
      *  Synchronize on access
      */
     final private RingBuffer<AnnunciationMessage> messages =
         new RingBuffer<AnnunciationMessage>(Preferences.getRingBufferSize());
-    
+
     @Override
     public void createPartControl(final Composite parent)
     {
@@ -61,31 +61,32 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // the view.
         // On Linux, the view seems to really close when the visible view
         // is closed.
-        // Tried IPartListener2, but no good solution at this point. 
+        // Tried IPartListener2, but no good solution at this point.
 //        final IPartService service =
 //            (IPartService) getSite().getService(IPartService.class);
 //        service.addPartListener(new IPartListener2()
 //        {
 // ...
 //        });
-        
+
         createGUI(parent);
-        
+
         // Fake initial message that shows up in table
         messages.add(new AnnunciationMessage(Severity.forInfo(), Messages.ConnectMsg));
-        
+
         // Connect table to message list
         message_table.setContentProvider(new MessageRingBufferContentProvider());
         message_table.setInput(messages);
-        
+
         // Start connection in background job because it hangs when
         // there's no JMS
         final ConnectJob connect_job = new ConnectJob(this);
         connect_job.schedule();
-        
+
         // ConnectJob would set annunciator. Cleanup when view is disposed.
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 if (annunciator != null)
@@ -103,7 +104,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     private void createGUI(final Composite parent)
     {
         parent.setLayout(new FillLayout());
-        
+
         // List of annunciations
         message_table = new TableViewer(parent ,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
@@ -111,7 +112,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         final Table table = message_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
+
         TableViewerColumn col;
 
         // Time
@@ -167,6 +168,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
             return;
         control.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 synchronized (messages)
@@ -180,6 +182,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     }
 
     /** {@inheritDoc} */
+    @Override
     public void performedAnnunciation(final AnnunciationMessage annunciation)
     {
         logAnnunciation(annunciation);
@@ -188,6 +191,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     /** Called by ConnectJob or later Annunciator on error
      *  {@inheritDoc}
      */
+    @Override
     public void annunciatorError(final Exception ex)
     {
         logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
@@ -212,6 +216,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         // Update table in UI thread
         control.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (control.isDisposed())
