@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="Waterfall View"
+            icon="icons/water.png"
+            category="org.csstudio"
+            class="org.csstudio.display.waterfall.WaterfallView"
+            id="org.csstudio.display.waterfall.WaterfallView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.display.waterfall"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.display.waterfall.ShowWaterfallAction"
+               id="org.csstudio.display.waterfall.showaction"
+               label="Waterfall Plot"
+               menubarPath="css/display/"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>

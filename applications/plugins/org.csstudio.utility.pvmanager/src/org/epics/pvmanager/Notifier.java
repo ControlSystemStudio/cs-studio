@@ -52,7 +52,9 @@ class Notifier<T> {
      * @return true if new notification should be performed
      */
     boolean isActive() {
-        if (pvRef.get() != null && !pvRef.get().isClosed()) {
+        // Making sure to get the reference once for thread safety
+        final PV<T> pv = pvRef.get();
+        if (pv != null && !pv.isClosed()) {
             return true;
         } else {
             if (pvRecipe != null) {
@@ -108,8 +110,8 @@ class Notifier<T> {
                     T safeValue = pop();
                     PV<T> pv = pvRef.get();
                     if (pv != null && safeValue != null) {
-                        TypeSupport.Notification<T> notification =
-                                TypeSupport.notification(pv.getValue(), safeValue);
+                        Notification<T> notification =
+                                NotificationSupport.notification(pv.getValue(), safeValue);
                         if (notification.isNotificationNeeded()) {
                             pv.setValue(notification.getNewValue());
                         }

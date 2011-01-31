@@ -108,6 +108,12 @@ class NameParser {
             return clazz.getConstructor(types).newInstance(constructorParams);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException("Function " + parameters.get(0) + " is not defined");
+        } catch (NoClassDefFoundError ex) {
+            if (ex.getMessage().contains("wrong name") && ex.getMessage().lastIndexOf("/") != -1) {
+                String suggestedName = ex.getMessage().substring(ex.getMessage().lastIndexOf("/") + 1, ex.getMessage().length() - 1);
+                throw new RuntimeException("Function " + parameters.get(0) + " is not defined (Looking for " + suggestedName + "?)");
+            }
+            throw new RuntimeException("Function " + parameters.get(0) + " is not defined");
         } catch (NoSuchMethodException ex) {
             throw new RuntimeException("Wrong parameter number for function " + parameters.get(0));
         } catch (SecurityException ex) {

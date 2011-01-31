@@ -14,7 +14,7 @@ import org.epics.pvmanager.util.TimeInterval;
 import org.epics.pvmanager.util.TimeStamp;
 import java.util.List;
 import java.util.logging.Level;
-import static org.epics.pvmanager.TypeSupport.*;
+import static org.epics.pvmanager.TimeSupport.timestampOf;
 
 /**
  * Provides an aggregator that returns a synchronized set of data by looking

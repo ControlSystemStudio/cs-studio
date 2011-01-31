@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.AbstractTypeSupport;
+import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.CssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -75,14 +75,14 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
         if (INSTALLED) {
             return;
         }
-        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(IDoubleValue.class,
+                                   new IDoubleValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(IEnumeratedValue.class,
+                                   new IEnumeratedValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(ILongValue.class,
+                                   new ILongValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(IStringValue.class,
+                                   new IStringValueConversionTypeSupport());
 
         INSTALLED = true;
     }

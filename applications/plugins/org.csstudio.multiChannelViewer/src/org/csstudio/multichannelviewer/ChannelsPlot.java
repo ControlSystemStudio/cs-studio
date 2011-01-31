@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -84,11 +85,11 @@ public class ChannelsPlot extends ViewPart {
 				}
 				List<String> pvNames = new ArrayList<String>();
 				for (int i = 0; i < 200; i++) {
-					pvNames.add("ramp(" + i + "," + (i+50) + ", 1, 0.1)");
+					pvNames.add("sim://ramp(" + i + "," + (i+50) + ", 1, 0.1)");
 				}
 				pv1 = PVManager.read(
 						synchronizedArrayOf(ms(75), vDoubles(Collections
-								.unmodifiableList(pvNames)))).atHz(10);
+								.unmodifiableList(pvNames)))).andNotify(SWTUtil.onSWTThread()).atHz(10);
 				final XYSeries series1 = new XYSeries("PV Group1", false, true);
 				dataset.addSeries(series1);
 				pv1.addPVValueChangeListener(new PVValueChangeListener() {
@@ -114,11 +115,11 @@ public class ChannelsPlot extends ViewPart {
 				}
 				List<String> pvNames = new ArrayList<String>();
 				for (int i = 200; i > 0; i--) {
-					pvNames.add("ramp(" + i + "," + (i+50) + ", 1, 0.1)");
+					pvNames.add("sim://ramp(" + i + "," + (i+50) + ", 1, 0.1)");
 				}
 				pv2 = PVManager.read(
 						synchronizedArrayOf(ms(75), vDoubles(Collections
-								.unmodifiableList(pvNames)))).atHz(10);
+								.unmodifiableList(pvNames)))).andNotify(SWTUtil.onSWTThread()).atHz(10);
 				final XYSeries series2 = new XYSeries("PV Group2", false, true);
 				dataset.addSeries(series2);
 				pv2.addPVValueChangeListener(new PVValueChangeListener() {

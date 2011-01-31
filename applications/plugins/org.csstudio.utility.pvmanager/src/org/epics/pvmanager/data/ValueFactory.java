@@ -25,7 +25,7 @@ public class ValueFactory {
     public static VString newVString(String value, AlarmSeverity alarmSeverity,
             AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag) {
-        return new IVString(value, alarmSeverity, alarmStatus, timeStamp, timeUserTag);
+        return new IVString(value, alarmSeverity, alarmStatus, timeStamp, timeUserTag, true);
     }
 
     public static VMultiDouble newVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
@@ -35,7 +35,7 @@ public class ValueFactory {
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
         return new IVMultiDouble(values, alarmSeverity, alarmStatus,
-                timeStamp, timeUserTag, lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit,
+                timeStamp, timeUserTag, true, lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit,
                 units, format, upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
 
@@ -125,6 +125,11 @@ public class ValueFactory {
             public Double getValue() {
                 return value;
             }
+
+            @Override
+            public boolean isTimeValid() {
+                return true;
+            }
         };
     }
 
@@ -156,104 +161,10 @@ public class ValueFactory {
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
             final Double upperAlarmLimit, final Double upperDisplayLimit,
             final Double lowerCtrlLimit, final Double upperCtrlLimit) {
-        return new VStatistics() {
-
-            @Override
-            public Double getAverage() {
-                return average;
-            }
-
-            @Override
-            public Double getStdDev() {
-                return stdDev;
-            }
-
-            @Override
-            public Double getMin() {
-                return min;
-            }
-
-            @Override
-            public Double getMax() {
-                return max;
-            }
-
-            @Override
-            public Integer getNSamples() {
-                return nSamples;
-            }
-
-            @Override
-            public Double getLowerCtrlLimit() {
-                return lowerCtrlLimit;
-            }
-
-            @Override
-            public Double getUpperCtrlLimit() {
-                return upperCtrlLimit;
-            }
-
-            @Override
-            public Double getLowerDisplayLimit() {
-                return lowerDisplayLimit;
-            }
-
-            @Override
-            public Double getLowerAlarmLimit() {
-                return lowerAlarmLimit;
-            }
-
-            @Override
-            public Double getLowerWarningLimit() {
-                return lowerWarningLimit;
-            }
-
-            @Override
-            public String getUnits() {
-                return units;
-            }
-
-            @Override
-            public NumberFormat getFormat() {
-                return numberFormat;
-            }
-
-            @Override
-            public Double getUpperWarningLimit() {
-                return upperWarningLimit;
-            }
-
-            @Override
-            public Double getUpperAlarmLimit() {
-                return upperAlarmLimit;
-            }
-
-            @Override
-            public Double getUpperDisplayLimit() {
-                return upperDisplayLimit;
-            }
-
-            @Override
-            public Integer getTimeUserTag() {
-                return timeUserTag;
-            }
-
-            @Override
-            public TimeStamp getTimeStamp() {
-                return timeStamp;
-            }
-
-            @Override
-            public AlarmSeverity getAlarmSeverity() {
-                return alarmSeverity;
-            }
-
-            @Override
-            public AlarmStatus getAlarmStatus() {
-                return alarmStatus;
-            }
-
-        };
+        return new IVStatistics(average, stdDev, min, max, nSamples, alarmSeverity,
+                alarmStatus, timeStamp, timeUserTag, true, lowerDisplayLimit, lowerCtrlLimit,
+                lowerAlarmLimit, lowerWarningLimit, units, numberFormat, upperWarningLimit,
+                upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
 
     /**
@@ -284,83 +195,9 @@ public class ValueFactory {
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
             final Double upperAlarmLimit, final Double upperDisplayLimit,
             final Double lowerCtrlLimit, final Double upperCtrlLimit) {
-        return new VInt() {
-
-            @Override
-            public Double getLowerCtrlLimit() {
-                return lowerCtrlLimit;
-            }
-
-            @Override
-            public Double getUpperCtrlLimit() {
-                return upperCtrlLimit;
-            }
-
-            @Override
-            public Double getLowerDisplayLimit() {
-                return lowerDisplayLimit;
-            }
-
-            @Override
-            public Double getLowerAlarmLimit() {
-                return lowerAlarmLimit;
-            }
-
-            @Override
-            public Double getLowerWarningLimit() {
-                return lowerWarningLimit;
-            }
-
-            @Override
-            public String getUnits() {
-                return units;
-            }
-
-            @Override
-            public NumberFormat getFormat() {
-                return numberFormat;
-            }
-
-            @Override
-            public Double getUpperWarningLimit() {
-                return upperWarningLimit;
-            }
-
-            @Override
-            public Double getUpperAlarmLimit() {
-                return upperAlarmLimit;
-            }
-
-            @Override
-            public Double getUpperDisplayLimit() {
-                return upperDisplayLimit;
-            }
-
-            @Override
-            public Integer getTimeUserTag() {
-                return timeUserTag;
-            }
-
-            @Override
-            public TimeStamp getTimeStamp() {
-                return timeStamp;
-            }
-
-            @Override
-            public AlarmSeverity getAlarmSeverity() {
-                return alarmSeverity;
-            }
-
-            @Override
-            public AlarmStatus getAlarmStatus() {
-                return alarmStatus;
-            }
-
-            @Override
-            public Integer getValue() {
-                return value;
-            }
-        };
+        return new IVInt(value, alarmSeverity, alarmStatus, timeStamp, timeUserTag, true, lowerDisplayLimit,
+                lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat, upperWarningLimit,
+                upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
 
     /**
@@ -379,16 +216,20 @@ public class ValueFactory {
                 oldValue.getLowerCtrlLimit(), oldValue.getUpperCtrlLimit());
     }
 
-    static VDoubleArray newVDoubleArray(final double[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
+    public static VDoubleArray newVDoubleArray(final double[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
             final AlarmStatus alarmStatus, final TimeStamp timeStamp,
             final Integer timeUserTag,
             final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
             final Double upperAlarmLimit, final Double upperDisplayLimit,
             final Double lowerCtrlLimit, final Double upperCtrlLimit) {
-        return new IVDoubleArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag,
+        return new IVDoubleArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag, true,
                 lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat,
                 upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
+    }
+
+    public static VImage newVImage(int height, int width, byte[] data) {
+        return new IVImage(height, width, data);
     }
 
     static VIntArray newVIntArray(final int[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
@@ -398,7 +239,7 @@ public class ValueFactory {
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
             final Double upperAlarmLimit, final Double upperDisplayLimit,
             final Double lowerCtrlLimit, final Double upperCtrlLimit) {
-        return new IVIntArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag,
+        return new IVIntArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag, true,
                 lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat,
                 upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }

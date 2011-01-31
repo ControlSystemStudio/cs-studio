@@ -56,13 +56,13 @@ public class SendToElogAction extends SendToElogActionHelper
                 @Override
                 public void makeElogEntry(final String logbook_name,
                         final String user, final String password,
-                        final String title, final String body) throws Exception
+                        final String title, final String body, final String images[]) throws Exception
                 {
                     final ILogbook logbook = getLogbook_factory()
                                     .connect(logbook_name, user, password);
                     try
                     {
-                        logbook.createEntry(title, body, null);
+                        logbook.createEntry(title, body, images);
                     }
                     finally
                     {

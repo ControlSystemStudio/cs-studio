@@ -26,11 +26,11 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -51,8 +51,8 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <T extends ICssValueType<?> & IHasAlarm>
-    void createSamples(Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException;
+    <V, T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException;
 
 
     /**

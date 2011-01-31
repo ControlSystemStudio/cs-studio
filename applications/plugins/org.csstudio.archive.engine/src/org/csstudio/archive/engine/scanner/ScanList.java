@@ -22,12 +22,12 @@ public class ScanList implements Scheduleable
 {
     /** Scan period in seconds */
     final private long scan_period_millis;
-    
+
     /** Items to scan */
     final private ArrayList<Runnable> items = new ArrayList<Runnable>();
-    
+
     private long next_due_time = System.currentTimeMillis();
-    
+
     /** Construct scan list.
      *  @param scan_period Scan period in seconds
      */
@@ -43,14 +43,16 @@ public class ScanList implements Scheduleable
     {
         return scan_period_millis / 1000.0;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isDueAtAll()
     {
         return items.size() > 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getNextDueTime()
     {
         if (items.size() == 0)
@@ -71,13 +73,13 @@ public class ScanList implements Scheduleable
     {
         return items.remove(item);
     }
-    
+
     /** @return Number of items on scan list */
     public int size()
     {
         return items.size();
     }
-    
+
     /** @return Item with given index from the scan list */
     public Runnable get(final int index)
     {

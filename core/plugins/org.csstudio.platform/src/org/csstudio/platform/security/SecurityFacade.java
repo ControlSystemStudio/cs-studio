@@ -393,10 +393,12 @@ public final class SecurityFacade {
 	 */
 	private void loadRegisteredAuthorizationIdExtension(IExtension extension,
 			Map<String, RegisteredAuthorizationId> authIds) {
+	    String contributor = extension.getContributor().getName();
+	    
 		IConfigurationElement[] elements = extension.getConfigurationElements();
 		for (IConfigurationElement element : elements) {
 			if (contributesAuthorizationId(element)) {
-				loadRegisteredAuthorizationIdElement(element, authIds);
+				loadRegisteredAuthorizationIdElement(element, contributor, authIds);
 			}
 		}
 	}
@@ -425,7 +427,7 @@ public final class SecurityFacade {
 	 *            will be added.
 	 */
 	private void loadRegisteredAuthorizationIdElement(
-			IConfigurationElement element,
+			IConfigurationElement element, String contributor,
 			Map<String, RegisteredAuthorizationId> authIds) {
 		String id = element.getAttribute("id");
 		String description = element.getAttribute("description");
@@ -442,7 +444,7 @@ public final class SecurityFacade {
 		
 		// Finally, create the new description.
 		RegisteredAuthorizationId authId =
-			new RegisteredAuthorizationId(id, description, usages);
+			new RegisteredAuthorizationId(id, description, contributor, usages);
 		authIds.put(id, authId);
 	}
 

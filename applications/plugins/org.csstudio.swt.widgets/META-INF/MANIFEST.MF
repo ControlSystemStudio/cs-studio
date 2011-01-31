@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Widgets
 Bundle-SymbolicName: org.csstudio.swt.widgets
-Bundle-Version: 1.0.1.qualifier
+Bundle-Version: 1.0.2.qualifier
 Bundle-Activator: org.csstudio.swt.widgets.Activator
 Bundle-Vendor: SNS & DESY
 Require-Bundle: org.eclipse.ui,

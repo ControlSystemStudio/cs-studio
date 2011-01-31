@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * An expression that represents a PV that is read at the UI scan rate.
  * Objects of this class are not created directly but through the operators defined
- * in {@link PVExpressionLanguage}.
+ * in {@link ExpressionLanguage}.
  *
  * @param <T> type of the expression output
  * @author carcassi

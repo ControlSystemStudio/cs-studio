@@ -84,11 +84,11 @@ public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             }
 
             @Override
-            public ValueIterator getRawValues(final int key, 
-                                              final String name, 
-                                              final ITimestamp start, 
+            public ValueIterator getRawValues(final int key,
+                                              final String name,
+                                              final ITimestamp start,
                                               final ITimestamp end) throws UnknownChannelException, Exception {
-                return new DesyArchiveValueIterator(name, start, end, DesyArchiveValueIterator.RAW_TYPE);
+                return new DesyArchiveValueIterator(name, start, end, null);
             }
 
             @Override

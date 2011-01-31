@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderService;
-import org.csstudio.archive.common.service.IArchiveRequestType;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -46,31 +46,6 @@ import com.google.common.collect.Iterables;
  * @since 21.12.2010
  */
 public class DesyArchiveValueIterator implements ValueIterator {
-
-    // FIXME (bknerr with kasemir) :
-    // the available archive request types should be obtained over the extpoint/service from the
-    // implementation, offered to the client. then the client decides for a specific one, and asks for the
-    // data with the 'typed' request type information
-    private static final class ART implements IArchiveRequestType {
-        String _type;
-        public ART(@Nonnull final String type) {
-            _type = type;
-        }
-        @Override
-        public String getTypeIdentifier() {
-            return _type;
-        }
-
-        @Override
-        public String getDescription() {
-            return "blubb";
-        }
-    }
-    public static final ART APH_TYPE = new ART("AVG_PER_HOUR");
-    public static final ART APM_TYPE = new ART("AVG_PER_MINUTE");
-    public static final ART RAW_TYPE = new ART("RAW");
-
-
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
@@ -89,10 +64,7 @@ public class DesyArchiveValueIterator implements ValueIterator {
         IArchiveReaderService service;
         try {
             service = Activator.getDefault().getArchiveReaderService();
-            // TODO (bknerr with kasemir) :
-            // the available archive request types can be obtained over the service from the
-            // implementation, offered to the client, the client decides for a specific one, and asks for the
-            // data with the 'typed' request type information
+
             _values = service.readSamples(channelName, start, end, type);
 
             LOG.error("Samples: " + Iterables.size(_values));

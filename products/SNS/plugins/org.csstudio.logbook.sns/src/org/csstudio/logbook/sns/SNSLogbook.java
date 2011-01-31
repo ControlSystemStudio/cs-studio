@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -89,6 +90,7 @@ public class SNSLogbook implements ILogbook
             addFileToElog(fname, "A", entry_id, text);
             tmp_file.deleteOnExit();
         }
+        rdb.getConnection().commit();
 
         // Attach remaining files
         for (String file : filenames)
@@ -155,7 +157,8 @@ public class SNSLogbook implements ILogbook
        // Initiate the sql to add attachments to the elog
        final String mysql = "call logbook.logbook_pkg.add_entry_attachment"
                        + "(?, ?, ?, ?, ?)";
-       final CallableStatement statement = rdb.getConnection().prepareCall(mysql);
+       final Connection connection = rdb.getConnection();
+       final CallableStatement statement = connection.prepareCall(mysql);
        try
        {
            statement.setInt(1, entry_id);
@@ -184,11 +187,12 @@ public class SNSLogbook implements ILogbook
            else
            {
               // Create a Blob to store the attachment in.
-              final BLOB blob = BLOB.createTemporary(rdb.getConnection(), true, BLOB.DURATION_SESSION);
+              final BLOB blob = BLOB.createTemporary(connection, true, BLOB.DURATION_SESSION);
               blob.setBytes( 1L, getBytesFromFile(inputFile) );
               statement.setBlob(5, blob);
            }
            statement.executeQuery();
+           connection.commit();
        }
        finally
        {
