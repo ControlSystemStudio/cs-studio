@@ -35,5 +35,12 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.csstudio.platform.authorizationId">
+      <id
+            description="Permission to configure the Authorization Id."
+            id="AuthorizeId">
+      </id>
+   </extension>
 
 </plugin>
