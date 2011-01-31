@@ -41,6 +41,7 @@ import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
@@ -342,6 +343,7 @@ public class LogView extends ViewPart {
             final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
                 final AbstractMessageList messageList = createMessageList();
+                messageList.showOutdatedMessages(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
