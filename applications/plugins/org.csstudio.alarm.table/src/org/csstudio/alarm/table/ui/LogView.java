@@ -874,6 +874,8 @@ public class LogView extends ViewPart {
             @SuppressWarnings("synthetic-access")
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
+                _soundEnableButton.setText(_soundEnableButton.getSelection() ? Messages.AlarmView_soundButtonEnable
+                        : Messages.AlarmView_soundButtonDisable);
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
         });
