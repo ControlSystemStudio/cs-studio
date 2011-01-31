@@ -14,19 +14,20 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse view for the Annunciator
@@ -103,7 +104,9 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
      */
     private void createGUI(final Composite parent)
     {
-        parent.setLayout(new FillLayout());
+        // Note: TableColumnLayout requires that Table is only one child widget
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        parent.setLayout(table_layout);
 
         // List of annunciations
         message_table = new TableViewer(parent ,
@@ -116,7 +119,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         TableViewerColumn col;
 
         // Time
-        col = AutoSizeColumn.make(message_table, Messages.Time, 150, 10);
+        col = createColumn(message_table, table_layout, Messages.Time, 150, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -128,7 +131,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         });
 
         // Severity
-        col = AutoSizeColumn.make(message_table, Messages.Severity, 80, 1);
+        col = createColumn(message_table, table_layout, Messages.Severity, 80, 1);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -140,7 +143,7 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         });
 
         // Message
-        col = AutoSizeColumn.make(message_table, Messages.Message, 100, 100);
+        col = createColumn(message_table, table_layout, Messages.Message, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -152,6 +155,27 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         });
 
         new AutoSizeControlListener(table);
+    }
+
+    /** Create column with layout info
+     *  @param message_table
+     *  @param table_layout
+     *  @param title
+     *  @param width
+     *  @param weight
+     *  @return TableViewerColumn
+     */
+    private TableViewerColumn createColumn(final TableViewer message_table,
+            final TableColumnLayout table_layout, final String title,
+            final int width, final int weight)
+    {
+        final TableViewerColumn view_col = new TableViewerColumn(message_table, 0);
+        final TableColumn col = view_col.getColumn();
+        col.setText(title);
+        table_layout.setColumnData(col, new ColumnWeightData(weight, width));
+        col.setMoveable(true);
+
+        return view_col;
     }
 
     @Override
