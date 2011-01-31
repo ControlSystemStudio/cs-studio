@@ -154,8 +154,7 @@ public class ArchiveView extends ViewPart {
 
         _shell = parent.getShell();
 
-        _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID,
-                false);
+        _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 
         _storedFilters.readFromPreferences();
 
