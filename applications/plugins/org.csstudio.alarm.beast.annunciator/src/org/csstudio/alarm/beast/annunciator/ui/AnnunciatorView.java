@@ -14,7 +14,6 @@ import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
 import org.csstudio.alarm.beast.annunciator.model.Severity;
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -153,8 +152,6 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 cell.setText(message.getMessage());
             }
         });
-
-        new AutoSizeControlListener(table);
     }
 
     /** Create column with layout info
