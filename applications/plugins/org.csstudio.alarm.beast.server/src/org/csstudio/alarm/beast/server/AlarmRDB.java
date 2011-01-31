@@ -267,20 +267,59 @@ public class AlarmRDB
      *  @throws Exception on error
      */
 	public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
-            final String current_message, final SeverityLevel severity, final String message,
+            String current_message, final SeverityLevel severity, String message,
             final String value, final ITimestamp timestamp) throws Exception
     {
+        // Message should not be empty because Oracle treats empty strings like null
+        if (message == null  ||  message.isEmpty())
+            message = SeverityLevel.OK.getDisplayName();
+        if (current_message == null  ||  current_message.isEmpty())
+            current_message = SeverityLevel.OK.getDisplayName();
+
         // According to JProfiler, this is the part of the code
         // that uses most of the CPU:
         // Compared to receiving updates from PVs and sending them
         // to JMS clients, the (Oracle) RDB update dominates
         // the combined time spent in CPU usage and network I/O.
 
-        // These are usually quick accesses to local caches
-        final int current_severity_id = severity_mapping.getSeverityID(current_severity);
-        final int severity_id = severity_mapping.getSeverityID(severity);
-        final int current_message_id = message_mapping.findOrAddMessage(current_message);
-        final int message_id = message_mapping.findOrAddMessage(message);
+        // These are usually quick accesses to local caches,
+	    // but could fail when trying to add new values to RDB, so give detailed error
+        final int current_severity_id;
+        final int severity_id;
+        final int current_message_id;
+        final int message_id;
+        try
+        {
+            current_severity_id = severity_mapping.getSeverityID(current_severity);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to map current severity " + current_severity + ": " + ex.getMessage(), ex);
+        }
+        try
+        {
+            severity_id = severity_mapping.getSeverityID(severity);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to map alarm severity " + severity + ": " + ex.getMessage(), ex);
+        }
+        try
+        {
+            current_message_id = message_mapping.findOrAddMessage(current_message);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to map current message " + current_message + ": " + ex.getMessage(), ex);
+        }
+        try
+        {
+            message_id = message_mapping.findOrAddMessage(message);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to map alarm message " + message + ": " + ex.getMessage(), ex);
+        }
 
         // The isConnected() check in here is expensive, but what's
         // the alternative if we want convenient auto-reconnect?
