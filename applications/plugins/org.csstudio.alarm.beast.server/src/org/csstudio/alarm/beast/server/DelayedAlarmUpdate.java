@@ -54,6 +54,12 @@ public class DelayedAlarmUpdate
      */
     void schedule_update(final AlarmState new_state, final int seconds)
     {
+        // TODO Remove check when done debugging
+        if (new_state == null)
+        {
+            new NullPointerException("DelayedAlarmUpdate with null").printStackTrace();
+            return;
+        }
         final TimerTask new_task;
         synchronized (this)
         {
@@ -74,6 +80,13 @@ public class DelayedAlarmUpdate
                         the_state = state;
                         scheduled_task = null;
                         state = null;
+                    }
+                    if (the_state == null)
+                    {
+                        // TODO Remove message when no longer needed
+                        CentralLogger.getInstance().getLogger(this).error("DelayedAlarmUpdate was cancelled just before it was about to run");
+                        // Don't run because update was cancelled
+                        return;
                     }
                     //  Re-evaluate alarm logic with the delayed state,
                     //  not allowing any further delays.

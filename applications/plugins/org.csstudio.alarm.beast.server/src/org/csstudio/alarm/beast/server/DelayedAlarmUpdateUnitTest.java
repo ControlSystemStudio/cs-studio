@@ -112,5 +112,6 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
         // Try to schedule another delayed update
         delay.schedule_update(state, 1);
         // It will also fail, but at least it's still possible to schedule another update. The Timer wasn't canceled.
+        delay.cancel();
     }
 }
