@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -50,15 +51,15 @@ import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.ChannelConfigDialog;
 import org.csstudio.config.ioconfig.config.view.ModuleListLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
-import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
@@ -335,7 +336,7 @@ public class ModuleEditor extends AbstractNodeEditor {
 
         if (_module == null) {
             newNode();
-            _module.setModuleNumber(0);
+            _module.setModuleNumber(-1);
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
         moduels("Module");
@@ -511,19 +512,14 @@ public class ModuleEditor extends AbstractNodeEditor {
 
         SlaveDBO slave = _module.getSlave();
         if (getGsdFile() != null) {
-            HashMap<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData()
-                    .getGsdModuleList();
+            Map<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData().getGsdModuleList();
             _moduleTypList.setInput(gsdModuleList);
             comp.layout();
             _moduleTypList.getTable().setData(_module.getModuleNumber());
-            GsdModuleModel gsdModuleModel2 = gsdModuleList.get(_module.getModuleNumber());
-            if (gsdModuleModel2 != null) {
-                _moduleTypList.setSelection(new StructuredSelection(gsdModuleModel2));
-            } else {
-                _moduleTypList.getTable().select(0);
+            GsdModuleModel selectModuleModel = gsdModuleList.get(_module.getModuleNumber());
+            if (selectModuleModel != null) {
+                _moduleTypList.setSelection(new StructuredSelection(selectModuleModel));
             }
-        } else {
-            _moduleTypList.getTable().select(0);
         }
         _moduleTypList.getTable().showSelection();
     }
