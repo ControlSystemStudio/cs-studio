@@ -30,7 +30,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -51,7 +51,7 @@ public interface IArchiveSampleDao {
      * @throws ArchiveSampleDaoException
      */
     <V, T extends ICssValueType<V> & IHasAlarm>
-    void createSamples(Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException;
+    void createSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
     /**

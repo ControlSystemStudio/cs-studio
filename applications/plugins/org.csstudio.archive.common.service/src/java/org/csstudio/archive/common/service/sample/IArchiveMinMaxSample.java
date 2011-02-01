@@ -41,7 +41,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  */
 public interface IArchiveMinMaxSample<V,
                                       T extends ICssValueType<V> & IHasAlarm>
-    extends IArchiveSample2<V, T> {
+    extends IArchiveSample<V, T> {
 
     @Nonnull
     V getMinimum();

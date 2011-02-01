@@ -47,7 +47,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
@@ -139,7 +139,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     public <V, T extends ICssValueType<V> & IHasAlarm>
-    void createSamples(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException {
+    void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
         Statement stmt = null;
@@ -168,13 +168,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private <V, T extends ICssValueType<V> & IHasAlarm>
-        Statement composeStatements(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+        Statement composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
-        for (final IArchiveSample2<V, T> sample : samples) {
+        for (final IArchiveSample<V, T> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
             final T data = sample.getData();

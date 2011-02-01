@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -25,20 +25,45 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Data transfer object for sample.
+ *
  * @author bknerr
  * @since 24.01.2011
+ * @param <V> the data value type
+ * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample2<V, T extends ICssValueType<V> & IHasAlarm> {
-    
-    @Nonnull
-    ArchiveChannelId getChannelId();
+public class ArchiveSample<V,
+                           T extends ICssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
 
-    @Nonnull
-    T getData();
+    private final ArchiveChannelId _channelId;
+    private final T _value;
+
+    /**
+     * Constructor.
+     */
+    public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
+                          @Nonnull final T data) {
+        _channelId = channelId;
+        _value = data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public T getData() {
+        return _value;
+    }
+
 }

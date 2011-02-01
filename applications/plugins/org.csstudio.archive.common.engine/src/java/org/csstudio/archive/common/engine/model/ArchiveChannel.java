@@ -15,8 +15,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.ThrottledLogger;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.sample.ArchiveSample2;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.ArchiveSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -59,7 +59,7 @@ public abstract class ArchiveChannel<V,
 
 
     /** Buffer of received samples, periodically written */
-    private final SampleBuffer<V, T, IArchiveSample2<V, T>> _buffer;
+    private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
 
     /** Group to which this channel belongs.
      *  <p>
@@ -141,7 +141,7 @@ public abstract class ArchiveChannel<V,
         _id = id;
 //        this.enablement = enablement;
 //        this.last_archived_value = last_archived_value;
-        _buffer = new SampleBuffer<V, T, IArchiveSample2<V, T>>(name);
+        _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
 //        if (last_archived_value == null) {
 //            log.info(name + ": No known last value");
@@ -163,7 +163,7 @@ public abstract class ArchiveChannel<V,
     //                    }
                             final ICssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
                             @SuppressWarnings("unchecked")
-                            final ArchiveSample2<V, T> sample = new ArchiveSample2<V, T>(_id, (T) cssValue);
+                            final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) cssValue);
                             handleNewSample(sample);
                             //handleNewValue(cssValue);
 
@@ -291,7 +291,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Sample buffer */
-    public final SampleBuffer<V, T, IArchiveSample2<V, T>> getSampleBuffer() {
+    public final SampleBuffer<V, T, IArchiveSample<V, T>> getSampleBuffer() {
         return _buffer;
     }
 
@@ -325,7 +325,7 @@ public abstract class ArchiveChannel<V,
 //        }
 //    }
 
-    protected boolean handleNewSample(final IArchiveSample2<V, T> sample) {
+    protected boolean handleNewSample(final IArchiveSample<V, T> sample) {
         synchronized (this) {
             ++_receivedValueCount;
             mostRecentValue = sample.getData();

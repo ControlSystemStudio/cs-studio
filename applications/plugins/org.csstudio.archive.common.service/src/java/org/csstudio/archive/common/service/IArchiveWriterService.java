@@ -26,7 +26,7 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.platform.data.ITimestamp;
@@ -70,7 +70,7 @@ public interface IArchiveWriterService {
      * @throws ArchiveServiceException
      */
     <V, T extends ICssValueType<V> & IHasAlarm>
-    boolean writeSamples(@Nonnull final Collection<IArchiveSample2<V,T>> samples) throws ArchiveServiceException;
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V,T>> samples) throws ArchiveServiceException;
 
     /**
      * Transfers the sample information to the persistence layer.

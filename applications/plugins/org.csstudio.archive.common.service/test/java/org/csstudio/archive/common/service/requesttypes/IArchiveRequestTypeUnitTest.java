@@ -21,8 +21,6 @@
  */
 package org.csstudio.archive.common.service.requesttypes;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.archive.common.service.requesttypes.internal.ArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,6 +38,12 @@ public class IArchiveRequestTypeUnitTest {
     private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D = 
         new ArchiveRequestTypeParameter<Double>("testi", Double.valueOf(1000.0));
     
+    /**
+     * Internal request type for testing. 
+     * 
+     * @author bknerr
+     * @since 01.02.2011
+     */
     private static final class ART extends AbstractArchiveRequestType {
         public ART(String id, 
                    String desc, 
@@ -48,7 +52,7 @@ public class IArchiveRequestTypeUnitTest {
         }
 
     }
-    
+    // CHECKSTYLE OFF: AvoidNestedBlocks
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse1() throws RequestTypeParameterException {
         {
@@ -100,5 +104,5 @@ public class IArchiveRequestTypeUnitTest {
             Assert.assertEquals(TEST_PARAM_D.getValue(), p.getValue());
         }
     }
-
+    // CHECKSTYLE ON: AvoidNestedBlocks
 }

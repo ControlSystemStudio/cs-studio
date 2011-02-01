@@ -37,7 +37,7 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.rdb.ChannelConfig;
@@ -308,7 +308,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      */
     @Override
     public <V, T extends ICssValueType<V> & IHasAlarm> 
-    boolean writeSamples(Collection<IArchiveSample2<V, T>> samples) throws ArchiveServiceException {
+    boolean writeSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
       throw new ArchiveServiceException("Not implemented", null);
     }
 

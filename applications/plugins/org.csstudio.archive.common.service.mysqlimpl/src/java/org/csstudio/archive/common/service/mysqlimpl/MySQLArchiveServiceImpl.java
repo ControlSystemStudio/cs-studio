@@ -44,7 +44,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
@@ -176,7 +176,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public
     <V, T extends ICssValueType<V> & IHasAlarm>
-    boolean writeSamples(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveServiceException {
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
        //                   And apparently the type leads to Object instead of generic type...damn
