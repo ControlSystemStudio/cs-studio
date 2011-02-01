@@ -216,7 +216,7 @@ public class ArchiveView extends ViewPart {
     private void addMessageCount(final Composite archiveTableManagementComposite) {
         GridData gd;
         final Group count = new Group(archiveTableManagementComposite, SWT.LINE_SOLID);
-        count.setText(Messages.getString("LogViewArchive_count")); //$NON-NLS-1$
+        count.setText(Messages.LogViewArchive_count); //$NON-NLS-1$
         count.setLayout(new GridLayout(1, true));
         gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
         gd.minimumHeight = 60;
@@ -232,7 +232,7 @@ public class ArchiveView extends ViewPart {
         _nextButton = new Button(count, SWT.PUSH);
         gd = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
         _nextButton.setLayoutData(gd);
-        _nextButton.setText(Messages.getString("LogViewArchive_nextButton")); //$NON-NLS-1$
+        _nextButton.setText(Messages.LogViewArchive_nextButton); //$NON-NLS-1$
         _nextButton.setEnabled(false);
         _nextButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -250,7 +250,7 @@ public class ArchiveView extends ViewPart {
         final Group periodGroup = new Group(archiveTableManagementComposite,
                 SWT.LINE_SOLID);
         periodGroup.setLayout(new GridLayout(5, false));
-        periodGroup.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$" +
+        periodGroup.setText(Messages.LogViewArchive_period); //$NON-NLS-1$" +
 
         //Set Layout for group
         gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
@@ -285,7 +285,7 @@ public class ArchiveView extends ViewPart {
         final Button variableSearchButton = new Button(periodGroup, SWT.PUSH);
         variableSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
                 true, false, 1, 1));
-        variableSearchButton.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
+        variableSearchButton.setText(Messages.LogViewArchive_user); //$NON-NLS-1$
         variableSearchButton.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -406,8 +406,7 @@ public class ArchiveView extends ViewPart {
     private void addCommandButtons(final Composite archiveTableManagementComposite) {
         final Group commandButtonGroup = new Group(archiveTableManagementComposite,
                 SWT.LINE_SOLID);
-        commandButtonGroup.setText(Messages
-                .getString("ViewArchiveCommandGroup")); //$NON-NLS-1$
+        commandButtonGroup.setText(Messages.ViewArchiveCommandGroup); //$NON-NLS-1$
         final GridLayout layout = new GridLayout(1, true);
         commandButtonGroup.setLayout(layout);
         final GridData gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
