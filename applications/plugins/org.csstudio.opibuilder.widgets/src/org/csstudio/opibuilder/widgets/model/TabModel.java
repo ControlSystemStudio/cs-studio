@@ -77,7 +77,7 @@ public class TabModel extends AbstractContainerModel {
 	protected void configureProperties() {
 		addProperty(new IntegerProperty(PROP_TAB_COUNT, "Tab Count",
 				WidgetPropertyCategory.Behavior, 1, 1, MAX_TABS_AMOUNT));	
-		removeProperty(PROP_FONT);
+		setPropertyVisible(PROP_FONT, false);
 		addTabsProperties();		
 	}
 	
