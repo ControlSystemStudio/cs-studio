@@ -631,6 +631,7 @@ public class Controller implements ArchiveFetchJobListener
             final ArchiveDataSource archive, final Exception error)
     {
         if (display == null  ||  display.isDisposed())
+            return;
         display.asyncExec(new Runnable()
         {
             @Override
