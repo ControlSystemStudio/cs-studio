@@ -10,28 +10,30 @@ package org.csstudio.alarm.beast.annunciator.model;
 import org.junit.Test;
 
 /** JUnit demo of the Queue Manager.
- *   
+ *
  *  @author Kay Kasemir
  *  @author Katia Danilova
  *  @author Delphy Armstrong
- *  
+ *
  *    reviewed by Delphy 1/29/09
  */
-public class QueueManagerDemo 
+public class QueueManagerDemo
 {
     final private JMSAnnunciatorListener listener = new JMSAnnunciatorListener()
     {
+        @Override
         public void performedAnnunciation(final AnnunciationMessage annunciation)
         {
             System.out.println(annunciation);
         }
-        
+
+        @Override
         public void annunciatorError(final Exception ex)
         {
             ex.printStackTrace();
         }
     };
-    
+
     @Test
     @SuppressWarnings("nls")
     public void main() throws Exception
@@ -46,24 +48,24 @@ public class QueueManagerDemo
         Thread.sleep(3000);
 
         // Initial Message comes out right away
-        queue.add(Severity.forInfo(), "Initial Message"); 
+        queue.add(Severity.forInfo(), "Initial Message");
 
         // Queuing several messages where the higher priority arrives later
-        queue.add(Severity.fromString("INFO"), ".. and then the info message"); 
-        queue.add(Severity.fromString("MAJOR"), "This should come next"); 
+        queue.add(Severity.fromString("INFO"), ".. and then the info message");
+        queue.add(Severity.fromString("MAJOR"), "This should come next");
         // Wait for messages to be processed
         while (queue.size() > 0)
             Thread.sleep(100);
         Thread.sleep(2000);
-        
+
         // Create burst of messages by adding many to the queue
-        queue.add(Severity.fromString("MAJOR"), "Burst of messages"); 
+        queue.add(Severity.fromString("MAJOR"), "Burst of messages");
         for (int i = 0; i < 10; ++i)
-            queue.add(Severity.fromString("MAJOR"), "all ignored"); 
-        queue.add(Severity.fromString("MINOR"), "  ! important messages get through"); 
+            queue.add(Severity.fromString("MAJOR"), "all ignored");
+        queue.add(Severity.fromString("MINOR"), "  ! important messages get through");
         for (int i = 0; i < 10; ++i)
-            queue.add(Severity.fromString("MAJOR"), "all ignored"); 
-        queue.add(Severity.fromString("MINOR"), "  ! like this one"); 
+            queue.add(Severity.fromString("MAJOR"), "all ignored");
+        queue.add(Severity.fromString("MINOR"), "  ! like this one");
         // Wait for QueueManager to handle that burst
         while (queue.size() > 0)
             Thread.sleep(100);
@@ -72,11 +74,11 @@ public class QueueManagerDemo
         Thread.sleep(5000);
         System.out.println("Adding final");
         queue.add(Severity.fromString("INFO"), "Back to normal.");
-        
+
         // Wait for that message to be processed
         while (queue.size() > 0)
             Thread.sleep(100);
-        
+
         // Ask queue manager to exit
         queue_manager.stop();
     }

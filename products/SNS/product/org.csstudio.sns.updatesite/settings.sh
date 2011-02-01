@@ -4,6 +4,10 @@
 
 export VERSION=2.5.0
 
+# Mac OS X window system
+# OSWIN=cocoa
+OSWIN=carbon
+
 # Use only the date as qualifier?
 # With default, the time is included and then the same plugin for
 # 'basic' and 'SNS' is generated twice
