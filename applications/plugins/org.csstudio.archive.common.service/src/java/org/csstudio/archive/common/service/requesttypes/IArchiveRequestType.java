@@ -36,9 +36,20 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface IArchiveRequestType {
 
+    /**
+     * The description of the specific request type, and its - optional - type parameters.
+     * 
+     * @return the description
+     */
     @Nonnull
     String getDescription();
 
+    /**
+     * Identifier for this request type, supposed to be unique among a given set
+     * of request types
+     * 
+     * @return the identifier
+     */
     @Nonnull
     String getTypeIdentifier();
     
@@ -54,12 +65,15 @@ public interface IArchiveRequestType {
     @CheckForNull
     ImmutableSet<IArchiveRequestTypeParameter<?>> getParameters();
     
-    // or in case any parameter provides a toString and a fromString engine, and the param description shows the format \
-    // as for java.util.Number (Byte.parseByte, Double.parseDouble,...) 
-    // void setParam(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
     /**
      * Sets the parameter with the given id to the new value, unless such a parameter does not exist for this
-     * request type or the newValue's type does not match.
+     * request type or the newValue's type does not match. <br/>
+     * 
+     * Another possibility is that any parameter provides toString and fromString methods, and the 
+     * param description shows the format (cmp java.util.Number.toString and in Byte.parseByte, Double.parseDouble,...)
+     * In other words any parameter type is carrying its own validator internally: <br/> 
+     * void setParameter(\@Nonnull final String id, \@Nonnull final String newValue) throws RequestTypeParameterException;
+     * 
      * @param id
      * @param newValue
      * @throws RequestTypeParameterException
