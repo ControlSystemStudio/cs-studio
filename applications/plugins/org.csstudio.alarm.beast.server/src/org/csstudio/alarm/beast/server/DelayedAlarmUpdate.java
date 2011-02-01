@@ -10,6 +10,8 @@ package org.csstudio.alarm.beast.server;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.csstudio.platform.logging.CentralLogger;
+
 /** Helper for checking alarms after a delay.
  *  It will trigger a transition to a new state only after a delay.
  *
@@ -21,9 +23,10 @@ import java.util.TimerTask;
  *  The check can also be canceled because the control system sent an 'OK'
  *  value in time.
  */
+@SuppressWarnings("nls")
 public class DelayedAlarmUpdate
 {
-    final private static Timer timer = new Timer("DelayedAlarmUpdate", true); //$NON-NLS-1$
+    final private static Timer timer = new Timer("DelayedAlarmUpdate", true);
 
     /** Listener to notify when delay expires */
     final private DelayedAlarmListener listener;
@@ -51,6 +54,12 @@ public class DelayedAlarmUpdate
      */
     void schedule_update(final AlarmState new_state, final int seconds)
     {
+        // TODO Remove check when done debugging
+        if (new_state == null)
+        {
+            new NullPointerException("DelayedAlarmUpdate with null").printStackTrace();
+            return;
+        }
         final TimerTask new_task;
         synchronized (this)
         {
@@ -72,9 +81,23 @@ public class DelayedAlarmUpdate
                         scheduled_task = null;
                         state = null;
                     }
+                    if (the_state == null)
+                    {
+                        // TODO Remove message when no longer needed
+                        CentralLogger.getInstance().getLogger(this).error("DelayedAlarmUpdate was cancelled just before it was about to run");
+                        // Don't run because update was cancelled
+                        return;
+                    }
                     //  Re-evaluate alarm logic with the delayed state,
                     //  not allowing any further delays.
-                    listener.delayedStateUpdate(the_state);
+                    try
+                    {
+                        listener.delayedStateUpdate(the_state);
+                    }
+                    catch (Throwable ex)
+                    {
+                        CentralLogger.getInstance().getLogger(this).error("Error in delayed alarm update: " + ex.getMessage(), ex);
+                    }
                 }
             };
             scheduled_task = new_task;

@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
@@ -23,7 +24,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 
 /** Helper for drag-and-drop support that handles dragging
- *  of Alarm PV info as text out of an alarm GUI element
+ *  of Alarm PV info as PVs or as text out of an alarm GUI element
  *  into other tools that accept text.
  *  @author Kay Kasemir
  */
@@ -36,7 +37,7 @@ public class AlarmPVDragSource implements DragSourceListener
     final private DragSource source;
 
     /** Currently selected Alarm PVs, updated when drag starts */
-    final private ArrayList<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+    final private List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
 
     /** Initialize
      *  @param control Control from which to support 'drag'
@@ -47,7 +48,11 @@ public class AlarmPVDragSource implements DragSourceListener
     {
         this.selection_provider = selection_provider;
         source = new DragSource(control, DND.DROP_COPY);
-        source.setTransfer(new Transfer[] { TextTransfer.getInstance() });
+        source.setTransfer(new Transfer[]
+        {
+            ProcessVariableNameTransfer.getInstance(),
+            TextTransfer.getInstance(),
+        });
         source.addDragListener(this);
     }
 
@@ -69,14 +74,25 @@ public class AlarmPVDragSource implements DragSourceListener
     }
 
     // @see DragSourceListener
+    @SuppressWarnings("nls")
     @Override
     public void dragSetData(final DragSourceEvent event)
     {
-        if (TextTransfer.getInstance().isSupportedType(event.dataType))
+        if (ProcessVariableNameTransfer.getInstance()
+                .isSupportedType(event.dataType))
+        {
+            event.data = pvs;
+        }
+        else if (TextTransfer.getInstance().isSupportedType(event.dataType))
         {
             final StringBuilder buf = new StringBuilder();
-            for (AlarmTreePV pv : pvs)
-                buf.append(pv.getVerboseDescription());
+            for (int i = 0; i < pvs.size(); ++i)
+            {
+                if (i > 0) // line between items
+                    buf.append("\n");
+                buf.append(pvs.get(i).getVerboseDescription());
+                buf.append("\n");
+            }
             event.data = buf.toString();
         }
     }
