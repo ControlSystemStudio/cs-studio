@@ -16,8 +16,6 @@ import org.csstudio.util.stats.Average;
  *  <p>
  *  Places runnable items on scan lists,
  *  determines how long to wait to the scan next.
- *  <p>
- *  TODO Check for year 2038 time stamp rollover problems.
  *  @author Kay Kasemir
  */
 public class Scanner implements Scheduleable
@@ -30,7 +28,7 @@ public class Scanner implements Scheduleable
 
     /** Time to wait in system millis when nothing to do */
     final private long idle_delay;
-    
+
     /** All the single-period scan lists.
      *  <p>
      *  Note that we don't keep empty lists around,
@@ -40,7 +38,7 @@ public class Scanner implements Scheduleable
 
     /** Next due time in system millis */
     private long next_due_time;
-    
+
     /** Average idle time in percent. */
     final private Average idle_percentage = new Average();
 
@@ -51,13 +49,13 @@ public class Scanner implements Scheduleable
     {
         this.idle_delay = idle_delay;
     }
-    
+
     /** Construct scanner with default idle delay */
     public Scanner()
     {
         this(DEFAULT_IDLE_DELAY);
     }
-    
+
     /** Add an item to the scanner, placing it on a suitable scan list.
      *  @param item Item to scan
      *  @param period Scan period in seconds
@@ -66,7 +64,7 @@ public class Scanner implements Scheduleable
     {
         // Avoid duplicates by removing what might be there
         remove(item);
-        
+
         // Locate suitable scan list
         ScanList the_list = null;
         for (ScanList list : lists)
@@ -114,20 +112,22 @@ public class Scanner implements Scheduleable
     {
         return lists.size();
     }
-    
+
     /** @return One of the scan lists. */
     public ScanList get(final int index)
     {
         return lists.get(index);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean isDueAtAll()
     {
         return lists.size() > 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getNextDueTime()
     {
         if (lists.size() == 0)
@@ -157,7 +157,7 @@ public class Scanner implements Scheduleable
         for (ScanList list : lists)
             next_due_time = Math.min(list.getNextDueTime(), next_due_time);
     }
-    
+
     /** Average idle time in percent.
      *  <p>
      *  100 means: Nothing to do, always waiting.<br>

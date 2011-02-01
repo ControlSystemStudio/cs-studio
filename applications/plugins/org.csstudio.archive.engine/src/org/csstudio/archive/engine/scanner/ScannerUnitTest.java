@@ -28,25 +28,26 @@ public class ScannerUnitTest
     {
         final String name;
         int scans = 0;
-        
+
         ScanItem(final String name)
         {
             this.name = name;
         }
-        
+
+        @Override
         public void run()
         {
             ++scans;
             System.out.format("%s scans: %d\n", name, scans);
         }
     }
-    
+
     /** Single ScanList, basic due time computation */
     @Test
     public void testScanListScan() throws InterruptedException
     {
         System.out.println("Testing " + period + " second ScanList");
-        
+
         final ScanList list = new ScanList(period);
         final ScanItem item = new ScanItem("Test");
         list.add(item);
@@ -55,22 +56,22 @@ public class ScannerUnitTest
         System.out.println("Due in " + delay + " ms...");
         assertTrue("About " + period + " second delay",
                         Math.abs(delay - 1000*period) < 100);
-        
+
         Thread.sleep(delay);
         delay = list.getNextDueTime() - System.currentTimeMillis();
         System.out.println("Due in " + delay + " ms...");
         assertTrue("Should be due", Math.abs(delay) < 100);
-        
+
         // Scan once
         list.scanItems();
         assertEquals(1, item.scans);
-        
+
         delay = list.getNextDueTime() - System.currentTimeMillis();
         System.out.println("Due in " + delay + " ms...");
         assertTrue("About " + period + " second delay",
                         Math.abs(delay - 1000*period) < 100);
     }
-    
+
     /** Scanner, how it schedules ScanLists */
     @Test
     public void testScannerConfig() throws Exception
@@ -83,13 +84,13 @@ public class ScannerUnitTest
         assertTrue(scanner.isDueAtAll());
         assertEquals(1, scanner.size());
         assertEquals(item1, scanner.get(0).get(0));
-        
+
         // Due at period
         long delay = scanner.getNextDueTime() - System.currentTimeMillis();
         System.out.println("Due in " + delay + " ms...");
         assertTrue("About " + period + " second delay",
                     Math.abs(delay - 1000*period) < 100);
-        
+
         // Now due at fast period
         scanner.add(item1, fast_period);
         delay = scanner.getNextDueTime() - System.currentTimeMillis();
@@ -116,7 +117,7 @@ public class ScannerUnitTest
         assertEquals(item2, scanner.get(0).get(1));
         assertEquals(item3, scanner.get(1).get(0));
     }
-    
+
     /** Run Scanner, doing the delay for it. */
     @Test
     public void testScannerWithExternalDelay() throws Exception
@@ -126,13 +127,13 @@ public class ScannerUnitTest
         final Scanner scanner = new Scanner();
         final ScanItem item = new ScanItem("Item");
         scanner.add(item, fast_period);
-        
+
         // Check initial delay
         long delay = scanner.getNextDueTime() - System.currentTimeMillis();
         System.out.println("Due in " + delay + " ms...");
         assertTrue("About " + fast_period + " second delay",
                         Math.abs(delay - 1000*fast_period) < 100);
-        
+
         // Wait, then scan once
         Thread.sleep(delay);
         scanner.scanDueScanLists();
@@ -144,13 +145,13 @@ public class ScannerUnitTest
         assertTrue("About " + fast_period + " second delay",
                         Math.abs(delay - 1000*fast_period) < 100);
     }
-    
+
     /** Ask the scanner to perform the delay */
     @Test
     public void testScannerRun() throws InterruptedException
     {
         System.out.println("Scanning 3 times");
-        
+
         final Scanner scanner = new Scanner();
         final ScanItem item = new ScanItem("Item");
         scanner.add(item, fast_period);
@@ -163,7 +164,7 @@ public class ScannerUnitTest
             scanner.scanOnce();
         }
         assertTrue(item.scans >= 3);
-        
+
         System.out.format("Idle: %.2f %%\n", scanner.getIdlePercentage());
     }
 
@@ -172,11 +173,11 @@ public class ScannerUnitTest
     public void testScanThread() throws InterruptedException
     {
         System.out.println("Scanning 3 times");
-        
+
         final Scanner scanner = new Scanner();
         final ScanItem item = new ScanItem("Item");
         scanner.add(item, fast_period);
-        
+
         final ScanThread thread = new ScanThread(scanner);
         thread.start();
         int check = 0;
@@ -194,11 +195,11 @@ public class ScannerUnitTest
         // Should take about 3 seconds...
         assertTrue(timer.getSeconds() > 2.0);
         assertTrue(timer.getSeconds() < 4.0);
-        
+
         item.scans = 0;
         Thread.sleep(2000);
         assertEquals("Unexpected scans", 0, item.scans);
-        
+
         System.out.format("Idle: %.2f %%\n", scanner.getIdlePercentage());
     }
 }

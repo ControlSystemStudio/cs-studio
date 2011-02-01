@@ -260,15 +260,65 @@ public class AlarmClientModel
         final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
-        // While we read the RDB, new alarms could arrive.
-        // To avoid missing them, we assert that we are connected to JMS.
+        // Clear old data
+        synchronized (this)
+        {
+            // Prevent a flurry of events while items with alarms are added
+            notify_listeners = false;
+
+            if (config != null)
+                config.close();
+            active_alarms.clear();
+            acknowledged_alarms.clear();
+            config = null;
+            // Note config_tree stays as it was...
+        }
+
+        // Connect to RDB
+        final AlarmConfiguration new_config;
+        try
+        {
+            new_config = new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
+                                   Preferences.getRDB_Password())
+            {
+                // When reading config, create the root element
+                // that links to the model instead of the default AlarmTreeRoot
+                @Override
+                protected AlarmTreeRoot createAlarmTreeRoot(int id,
+                        String root_name)
+                {
+                    return new AlarmClientModelRoot(id, root_name,
+                                                    AlarmClientModel.this);
+                }
+            };
+
+            // Read names of available configurations
+            final String new_root_names[] = new_config.listConfigurations();
+            synchronized (this)
+            {
+                config_names = new_root_names;
+            }
+        }
+        catch (Exception ex)
+        {
+            CentralLogger.getInstance().getLogger(this).error(ex);
+            createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage()); //$NON-NLS-1$
+
+            synchronized (this)
+            {
+                notify_listeners = true;
+            }
+            fireNewConfig();
+            monitor.done();
+            return;
+        }
+
         // Check if we need to create a NEW communicator
         final AlarmClientCommunicator comm;
         synchronized (communicator_lock)
         {
 	        if (communicator == null)
-	        {   // New communicator will queue received events until we
-		        // read the whole configuration.
+	        {
 		    	try
 		    	{
 			    	communicator = new AlarmClientCommunicator(this);
@@ -280,13 +330,13 @@ public class AlarmClientModel
 		    		return;
 		    	}
 	        }
-	        else
-	        {	// Switch existing communicator to queue mode
-	        	communicator.setQueueMode(true);
-	        }
+            // Queue received events until we read the whole configuration
+	        communicator.setQueueMode(true);
 	        comm = communicator;
         }
-        // Wait for JMS connection
+
+        // While we read the RDB, new alarms could arrive.
+        // To avoid missing them, assert that we are connected to JMS.
         int wait = 0;
         while (!comm.isConnected())
         {
@@ -301,6 +351,11 @@ public class AlarmClientModel
             }
             if (monitor.isCanceled())
             {
+                synchronized (this)
+                {
+                    notify_listeners = true;
+                }
+                fireNewConfig();
                 monitor.done();
                 return;
             }
@@ -310,40 +365,12 @@ public class AlarmClientModel
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
         try
         {
-            synchronized (this)
-            {
-                // Prevent a flurry of events while items with alarms are added
-                notify_listeners = false;
-                if (config != null)
-                    config.close();
-                active_alarms.clear();
-                acknowledged_alarms.clear();
-                config = null;
-                // Note config_tree stays as it was...
-            }
-            // When reading config, create the root element
-            // that links to the model instead of the default AlarmTreeRoot
-            final AlarmConfiguration new_config =
-                new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
-                					   Preferences.getRDB_Password(),
-                                       getConfigurationName(),false)
-            {
-                @Override
-                protected AlarmTreeRoot createAlarmTreeRoot(int id,
-                        String root_name)
-                {
-                    return new AlarmClientModelRoot(id, root_name,
-                                                    AlarmClientModel.this);
-                }
-            };
-            // Read names of available configurations
-            final String new_root_names[] = new_config.listConfigurations();
+            new_config.readConfiguration(getConfigurationName(),false);
             // Update model with newly received data
             synchronized (this)
             {
                 config = new_config;
                 config_tree = config.getAlarmTree();
-                config_names = new_root_names;
                 // active_alarms & acknowledged_alarms already populated
                 // because fireNewAlarmState() was called while building
                 // the alarm tree

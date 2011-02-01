@@ -37,7 +37,7 @@ public class EngineModel
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$
-    
+
     /** RDB Archive to which samples are written.
      *  <p>
      *  <b>NOTE Thread Usage:</b>
@@ -46,10 +46,10 @@ public class EngineModel
      *  touches the archive to avoid thread issues.
      */
     final private RDBArchive archive;
-    
+
     /** Thread that writes to the <code>archive</code> */
     final private WriteThread writer;
-    
+
     /** All the channels.
      *  <p>
      *  Accessed by HTTPD and main thread, so lock on <code>this</code>
@@ -61,19 +61,19 @@ public class EngineModel
      *  @see channels about thread safety
      */
     final Map<String, ArchiveChannel> channel_by_name = new HashMap<String, ArchiveChannel>();
-    
+
     /** Groups of archived channels
      *  <p>
      *  @see channels about thread safety
      */
     final List<ArchiveGroup> groups = new ArrayList<ArchiveGroup>();
-    
+
     /** Scanner for scanned channels */
     final Scanner scanner = new Scanner();
 
     /** Thread that runs the scanner */
     final ScanThread scan_thread = new ScanThread(scanner);
-    
+
     /** Engine states */
     public enum State
     {
@@ -88,10 +88,10 @@ public class EngineModel
         /** State while in <code>stop()</code>; will then be IDLE again. */
         STOPPING
     }
-    
+
     /** Engine state */
-    private State state = State.IDLE;
-    
+    private volatile State state = State.IDLE;
+
     /** Start time of the model */
     private ITimestamp start_time = null;
 
@@ -133,7 +133,7 @@ public class EngineModel
     {
         return name;
     }
-    
+
     /** @return Seconds into the future that should be ignored */
     public static long getIgnoredFutureSeconds()
     {
@@ -165,7 +165,7 @@ public class EngineModel
     {
         return start_time;
     }
-    
+
     /** Get existing or add new group.
      *  @param name Name of the group to find or add.
      *  @return ArchiveGroup
@@ -187,13 +187,13 @@ public class EngineModel
         return group;
         }
     }
-    
+
     /** @return Number of groups */
     final synchronized public int getGroupCount()
     {
         return groups.size();
     }
-    
+
     /** Get one archive group.
      *  @param group_index 0...<code>getGroupCount()-1</code>
      *  @return group
@@ -212,7 +212,7 @@ public class EngineModel
                 return group;
         return null;
     }
-    
+
     /** @return Number of channels */
     final synchronized public int getChannelCount()
     {
@@ -250,7 +250,7 @@ public class EngineModel
     {
         if (state != State.IDLE)
             throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
-        
+
         // Is this an existing channel?
         ArchiveChannel channel = getChannel(name);
 
@@ -295,7 +295,7 @@ public class EngineModel
             // simply use the reserve for the capacity
             if (buffer_capacity < buffer_reserve)
                 buffer_capacity = (int)buffer_reserve;
-            
+
             // Create new channel
             if (monitor)
             {
@@ -324,7 +324,7 @@ public class EngineModel
         // Connect new or old channel to group
         channel.addGroup(group);
         group.add(channel);
-        
+
         return channel;
     }
 
@@ -357,7 +357,7 @@ public class EngineModel
     {
         return writer.getWriteCount();
     }
-    
+
     /** @return  Average duration of write run in seconds */
     public double getWriteDuration()
     {
@@ -369,14 +369,16 @@ public class EngineModel
     {
         return scanner.getIdlePercentage();
     }
-    
+
     /** Ask the model to stop.
      *  Merely updates the model state.
      *  @see #getState()
      */
     final public void requestStop()
     {
-        state = State.SHUTDOWN_REQUESTED;
+        if (state == State.RUNNING ||
+            state == State.RESTART_REQUESTED)
+            state = State.SHUTDOWN_REQUESTED;
     }
 
     /** Ask the model to restart.
@@ -385,9 +387,10 @@ public class EngineModel
      */
     final public void requestRestart()
     {
-        state = State.RESTART_REQUESTED;
+        if (state == State.RUNNING)
+            state = State.RESTART_REQUESTED;
     }
-    
+
     /** Reset engine statistics */
     public void reset()
     {
@@ -433,12 +436,12 @@ public class EngineModel
         final SampleEngineConfig engine = archive.findEngine(name);
         if (engine == null)
             throw new Exception("Unknown engine '" + name + "'");
-        
+
         // Is the configuration consistent?
         if (engine.getUrl().getPort() != port)
             throw new Exception("Engine running on port " + port +
                 " while configuration requires " + engine.getUrl().toString());
-        
+
         // Get groups
         final ChannelGroupConfig[] engine_groups = engine.getGroups();
         for (ChannelGroupConfig group_config : engine_groups)
@@ -492,13 +495,13 @@ public class EngineModel
             }
             buf.append("): ");
             buf.append(channel.getMechanism());
-            
+
             buf.append(channel.isEnabled() ? ", enabled" : ", DISABLED");
             buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
             buf.append(channel.getInternalState() + ")");
             buf.append(", value " + channel.getCurrentValue());
             buf.append(", last stored " + channel.getLastArchivedValue());
-            System.out.println(buf.toString());        
+            System.out.println(buf.toString());
         }
     }
 }

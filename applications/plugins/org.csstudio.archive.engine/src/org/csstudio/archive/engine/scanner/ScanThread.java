@@ -16,10 +16,10 @@ public class ScanThread implements Runnable
 {
     /** Scanner to execute */
     final private Scanner scanner;
-    
+
     /** The thread */
     private Thread thread;
-    
+
     /** Flag, set <code>false</code> to cause thread to exit */
     private volatile boolean do_run;
 
@@ -28,14 +28,14 @@ public class ScanThread implements Runnable
     {
         this.scanner = scanner;
     }
-    
+
     /** Start the scan thread */
     public void start()
     {
         thread = new Thread(this, "ScanThread"); //$NON-NLS-1$
         thread.start();
     }
-    
+
     /** Stop the scan thread
      *  @see #join()
      */
@@ -43,7 +43,8 @@ public class ScanThread implements Runnable
     {
         do_run = false;
     }
-    
+
+    @Override
     @SuppressWarnings("nls")
     public void run()
     {
