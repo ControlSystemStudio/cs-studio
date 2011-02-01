@@ -57,10 +57,9 @@ public class IArchiveRequestTypeUnitTest {
     public void testIncorrectUse1() throws RequestTypeParameterException {
         {
             IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
-            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
-            Assert.assertNotNull(p);
+            // Type mismatch on getting
             @SuppressWarnings("unused")
-            Integer value = p.getValue();
+            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
         }
     }
     @Test(expected=RequestTypeParameterException.class)
@@ -70,7 +69,7 @@ public class IArchiveRequestTypeUnitTest {
             IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), Double.class);
             Assert.assertNotNull(p);
             Assert.assertEquals(Double.class, p.getValueType());
-            
+            // Type mismatch on setting
             art.setParameter(TEST_PARAM_D.getName(), "Here shouldn't be a string");
         }
     }
@@ -95,7 +94,7 @@ public class IArchiveRequestTypeUnitTest {
             art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
             p = art.getParameter(TEST_PARAM_I.getName(), 
                                  TEST_PARAM_I.getValueType());
-            Assert.assertEquals(Integer.valueOf(4711), value);
+            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
             
         }
         {
