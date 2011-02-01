@@ -61,4 +61,56 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
         // Delay should be 'idle', no pending state
         assertNull(delay.getState());
     }
+
+
+    @Test
+    public void testCancellation() throws Exception
+    {
+        final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(this);
+        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, TimestampFactory.now());
+        delay.schedule_update(state, 2);
+
+        assertEquals(state, delay.getState());
+        // Expect nothing right away
+        synchronized (this)
+        {
+            assertNull(delayed_state);
+        }
+        // Cancel
+        delay.cancel();
+        delay.cancel();
+        delay.cancel();
+
+        // Even after ~2 seconds, no update should arrive
+        Thread.sleep(2000);
+        synchronized (this)
+        {
+            assertNull(delayed_state);
+        }
+        // Delay should be 'idle', no pending state
+        assertNull(delay.getState());
+    }
+
+    /** Test if delayed update stops completely when one of its updates crashes */
+    @Test
+    public void testCrashInTimer() throws Exception
+    {
+        final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(new DelayedAlarmListener()
+        {
+            @Override
+            public void delayedStateUpdate(final AlarmState delayed_state)
+            {
+                throw new Error("Simulated crash");
+            }
+        });
+        final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, TimestampFactory.now());
+        delay.schedule_update(state, 1);
+
+        // Wait for delay to expire
+        Thread.sleep(2000);
+
+        // Try to schedule another delayed update
+        delay.schedule_update(state, 1);
+        // It will also fail, but at least it's still possible to schedule another update. The Timer wasn't canceled.
+    }
 }
