@@ -59,6 +59,7 @@ public class IArchiveRequestTypeUnitTest {
             IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
             IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
             Assert.assertNotNull(p);
+            @SuppressWarnings("unused")
             Integer value = p.getValue();
         }
     }
@@ -88,12 +89,13 @@ public class IArchiveRequestTypeUnitTest {
             IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(), 
                                                                        TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Assert.assertEquals(TEST_PARAM_I.getValue(), p.getValue());
+            Integer value = p.getValue();
+            Assert.assertEquals(TEST_PARAM_I.getValue(), value);
             
             art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
             p = art.getParameter(TEST_PARAM_I.getName(), 
                                  TEST_PARAM_I.getValueType());
-            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
+            Assert.assertEquals(Integer.valueOf(4711), value);
             
         }
         {
