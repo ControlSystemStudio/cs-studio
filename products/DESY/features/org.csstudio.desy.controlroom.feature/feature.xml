@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.product.feature"
-      label="Desy Product Feature"
+      id="org.csstudio.desy.controlroom.feature"
+      label="Controlroom Feature"
       version="1.0.0.qualifier"
       provider-name="Desy, Jan Hatje &lt;jan.hatje@desy.de&gt;">
 
@@ -73,12 +73,8 @@
          id="org.csstudio.desy.desytools.feature"
          version="0.0.0"/>
 
-   <includes
-         id="org.csstudio.desy.development.feature"
-         version="0.0.0"/>
-
    <plugin
-         id="org.csstudio.desy.product"
+         id="org.csstudio.desy.controlroom.product"
          download-size="0"
          install-size="0"
          version="0.0.0"

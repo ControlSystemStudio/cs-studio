@@ -23,23 +23,23 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 	@Override
 	public void handlePVs(IProcessVariable[] pv_names) {
 		Shell shell = new Shell();
-		shell.setText(pv_names.toString());
+		shell.setText(pv_names[0].getName());
 		shell.setLocation(10, 10);
 		shell.setSize(800, 600);
         Model model = new Model();
         //Create a default model because there is no workspace file.
         createModel(model, pv_names);
-
+        
         // Create GUI elements (Plot)
         GridLayout layout = new GridLayout();
 		shell.setLayout(layout);
-
+        
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(shell, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         Plot plot = Plot.forCanvas(plot_box);
-
+        
         // Create and start controller
         Controller controller = new Controller(shell, model, plot);
         try
@@ -61,7 +61,7 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 
 //        scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
 //        update_period = DOMHelper.getSubelementDouble(root_node, TAG_PERIOD, update_period);
-
+        
 //        final String start = DOMHelper.getSubelementString(root_node, TAG_START);
 //        final String end = DOMHelper.getSubelementString(root_node, TAG_END);
 //        if (start.length() > 0  &&  end.length() > 0)
@@ -70,11 +70,11 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //            setTimerange(TimestampFactory.fromCalendar(times.getStart()),
 //                         TimestampFactory.fromCalendar(times.getEnd()));
 //        }
-
+        
 //        RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
 //        if (color != null)
 //            background = color;
-//
+//        
 		model.setArchiveRescale(ArchiveRescale.AUTOZOOM);
 
 //        // Load Axes
@@ -91,10 +91,10 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //            }
 //        }
 
-		model.addAxis(new AxisConfig(true, pv_names[0].toString(), new RGB(0, 0, 0), 0.0, 10.0, true, false));
+		model.addAxis(new AxisConfig(true, pv_names[0].getName(), new RGB(0, 0, 0), 0.0, 10.0, true, false));
 		PVItem item;
 		try {
-			item = new PVItem(pv_names[0].toString(), 3);
+			item = new PVItem(pv_names[0].getName(), 3);
 			item.setLiveCapacity(300);
 			item.useDefaultArchiveDataSources();
                 // Adding item creates the axis for it if not already there
@@ -116,8 +116,8 @@ public class OpenDataBrowserShellPopupAction extends ProcessVariablePopupAction 
 //                item = DOMHelper.findNextElementNode(item, TAG_FORMULA);
 //            }
         }
-
-
-
+    
+		
+	
 
 }

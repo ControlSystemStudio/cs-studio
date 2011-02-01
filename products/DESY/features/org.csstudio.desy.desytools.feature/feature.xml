@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.sds.feature"
-      label="SDS Feature"
+      id="org.csstudio.desy.desytools.feature"
+      label="Desytools Feature"
       version="1.0.0.qualifier"
-      provider-name="Desy">
+      provider-name="Desy, Jan Hatje &lt;jan.hatje@desy.de&gt;">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,97 +18,56 @@
    </license>
 
    <plugin
-         id="org.csstudio.sds"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.csstudio.sds.components"
+         id="org.csstudio.utility.documentService"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.components.epics"
+         id="org.csstudio.utility.documentViewer"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.components.ui"
+         id="org.csstudio.config.savevalue.service"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.importer"
+         id="org.csstudio.config.savevalue.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.importer.ui"
+         id="org.csstudio.utility.dal.epics.infobar"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.language.script"
+         id="org.csstudio.utility.nameSpaceBrowser"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.language.script.ui"
+         id="org.csstudio.utility.nameSpaceSearch"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.sds.samples"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.settings.desy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.quickstart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.sds.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.adlConverter"
+         id="org.csstudio.utility.recordProperty"
          download-size="0"
          install-size="0"
          version="0.0.0"

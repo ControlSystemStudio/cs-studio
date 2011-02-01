@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.librarydesy.feature"
-      label="Library Desy Feature"
+      id="org.csstudio.desy.development.feature"
+      label="Development Feature"
       version="1.0.0.qualifier"
       provider-name="Desy, Jan Hatje &lt;jan.hatje@desy.de&gt;">
 
@@ -18,62 +18,49 @@
    </license>
 
    <plugin
-         id="org.csstudio.utility.IOC-Socket-Communication"
+         id="org.csstudio.diag.snlDebugger"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.ldap.nameSpaceBrowser"
+         id="org.csstudio.utility.caSnooperUi"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.ldap.ui"
+         id="org.csstudio.diag.IOCremoteManagement"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.samples"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.csstudio.config.savevalue.service"
+         id="org.csstudio.diag.diles"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.icsiocmonitor.service"
+         id="org.csstudio.diag.jmssender"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.nameSpaceBrowser"
+         id="org.csstudio.config.authorizeid"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archivereader.aapi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.archivereader.archiverecord"
+         id="org.csstudio.config.kryoNameBrowser"
          download-size="0"
          install-size="0"
          version="0.0.0"
