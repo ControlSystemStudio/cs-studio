@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 27.01.2011
  */
-public class BaseTypeConversionSupportUnitTest {
+public class BaseTypeConversionSupportHeadlessUnitTest {
     
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() {

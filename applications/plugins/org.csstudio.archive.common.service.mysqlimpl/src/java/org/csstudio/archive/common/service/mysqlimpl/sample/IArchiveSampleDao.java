@@ -27,8 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.mysqlimpl.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
@@ -61,7 +61,7 @@ public interface IArchiveSampleDao {
      * @return
      */
     <V, T extends ICssAlarmValueType<V>>
-    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable IArchiveRequestType type,
+    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                          @Nonnull IArchiveChannel channel,
                                                          @Nonnull TimeInstant s,
                                                          @Nonnull TimeInstant e) throws ArchiveDaoException;

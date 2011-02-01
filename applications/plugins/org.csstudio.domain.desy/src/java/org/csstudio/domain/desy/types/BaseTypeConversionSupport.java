@@ -31,6 +31,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
@@ -66,7 +67,8 @@ public abstract class BaseTypeConversionSupport {
      * 
      * Note that the utilized <code>Class.forName(package + class)</code> does only work when a 
      * class loader buddy is registered for this package. Unless it is a basic package like 
-     * "java.lang", "java.util" you have to adde
+     * "java.lang" or "java.util" you have to add in the manifest.mf of the plugin that exports the
+     * passed package(s) the line "Eclipse-RegisterBuddy: org.csstudio.domain.desy". {@value Platform#getB}
      * 
      * This method does not propagate a ClassNotFoundException but return <code>null</code>, if
      * class creation is not possible.
@@ -89,7 +91,6 @@ public abstract class BaseTypeConversionSupport {
             } catch (final ClassNotFoundException e) {
                 // Ignore
                 // CHECKSTYLE ON: EmptyBlock
-                System.out.println("hallo");
             }            
         }
         return typeClass;

@@ -43,6 +43,7 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversi
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
+import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
@@ -354,29 +355,32 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                                         @Nonnull final ITimestamp end,
                                         @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
-        final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
-        final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-
         try {
+            final DesyArchiveRequestType desyType = validateRequestType(type);
+
+            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
             final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
-                DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
+                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =
                 Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
                                  Predicates.<IValue>notNull());
             return iValues;
 
-        } catch (final IllegalArgumentException iae) {
-            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeIdentifier(), iae);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
+        } catch (final RequestTypeParameterException re) {
+            throw new ArchiveServiceException("Sample retrieval failed.", re);
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -387,4 +391,13 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(DesyArchiveRequestType.class)).build();
     }
 
+    @CheckForNull
+    private DesyArchiveRequestType validateRequestType(@CheckForNull final IArchiveRequestType type) throws RequestTypeParameterException {
+        try {
+            return DesyArchiveRequestType.class.cast(type);
+        } catch(final ClassCastException cce) {
+            throw new RequestTypeParameterException("Request type is not the correct type instance!" +
+                                                    " Use one the type instances returned by the service interface or null", cce);
+        }
+    }
 }

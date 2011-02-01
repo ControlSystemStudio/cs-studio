@@ -44,7 +44,6 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversi
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -407,7 +406,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @Nonnull
     public <V, T extends ICssAlarmValueType<V>>
-    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable final IArchiveRequestType type,
+    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                          @Nonnull final IArchiveChannel channel,
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e) throws ArchiveDaoException {
@@ -444,38 +443,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } finally {
             closeStatement(stmt, "Closing of statement failed.");
         }
-    }
-
-    @Nonnull
-    private DesyArchiveRequestType determineRequestType(@CheckForNull final IArchiveRequestType type,
-                                                    @Nonnull final String dataType,
-                                                    @Nonnull final TimeInstant s,
-                                                    @Nonnull final TimeInstant e) throws ArchiveDaoException, TypeSupportException {
-
-        if (!ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
-            return DesyArchiveRequestType.RAW;
-        }
-
-        DesyArchiveRequestType reqType;
-        try {
-            if (type == null) {
-                final Duration d = new Duration(s.getInstant(), e.getInstant());
-                if (d.isLongerThan(Duration.standardDays(45))) {
-                    reqType = DesyArchiveRequestType.AVG_PER_HOUR;
-                } else if (d.isLongerThan(Duration.standardDays(1))) {
-                    reqType = DesyArchiveRequestType.AVG_PER_MINUTE;
-                } else {
-                    reqType = DesyArchiveRequestType.RAW;
-                }
-            } else {
-                reqType = DesyArchiveRequestType.valueOf(type.getTypeIdentifier());
-            }
-        } catch (final IllegalArgumentException iae) {
-            throw new ArchiveDaoException("Archive request type " + type.getTypeIdentifier() +
-                                          " unknown for this implementation.", iae);
-        }
-
-        return reqType;
     }
 
     @Nonnull
@@ -550,5 +517,30 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             new ArchiveMinMaxSample<V, T>(channelId, data, min, max);
 
         return sample;
+    }
+
+
+    @Nonnull
+    private DesyArchiveRequestType determineRequestType(@CheckForNull final DesyArchiveRequestType type,
+                                                        @Nonnull final String dataType,
+                                                        @Nonnull final TimeInstant s,
+                                                        @Nonnull final TimeInstant e) throws ArchiveDaoException, TypeSupportException {
+
+        if (DesyArchiveRequestType.RAW.equals(type) || !ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
+            return DesyArchiveRequestType.RAW;
+        } else if (type != null) {
+            return type;
+        } else {
+            DesyArchiveRequestType reqType;
+            final Duration d = new Duration(s.getInstant(), e.getInstant());
+            if (d.isLongerThan(Duration.standardDays(45))) {
+                reqType = DesyArchiveRequestType.AVG_PER_HOUR;
+            } else if (d.isLongerThan(Duration.standardDays(1))) {
+                reqType = DesyArchiveRequestType.AVG_PER_MINUTE;
+            } else {
+                reqType = DesyArchiveRequestType.RAW;
+            }
+            return reqType;
+        }
     }
 }
