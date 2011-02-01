@@ -32,7 +32,6 @@ import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssValueType;
@@ -62,8 +61,8 @@ public interface IArchiveSampleDao {
      * @return
      */
     <V, T extends ICssAlarmValueType<V>>
-    Iterable<IArchiveMinMaxSample<V, T, EpicsAlarm>> retrieveSamples(@Nullable IArchiveRequestType type,
-                                                                     @Nonnull IArchiveChannel channel,
-                                                                     @Nonnull TimeInstant s,
-                                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
+    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable IArchiveRequestType type,
+                                                         @Nonnull IArchiveChannel channel,
+                                                         @Nonnull TimeInstant s,
+                                                         @Nonnull TimeInstant e) throws ArchiveDaoException;
 }

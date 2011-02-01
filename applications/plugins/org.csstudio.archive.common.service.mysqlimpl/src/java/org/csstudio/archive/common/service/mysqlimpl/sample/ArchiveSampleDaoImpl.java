@@ -407,10 +407,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @Nonnull
     public <V, T extends ICssAlarmValueType<V>>
-    Iterable<IArchiveMinMaxSample<V, T, EpicsAlarm>> retrieveSamples(@Nullable final IArchiveRequestType type,
-                                                                     @Nonnull final IArchiveChannel channel,
-                                                                     @Nonnull final TimeInstant s,
-                                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException {
+    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable final IArchiveRequestType type,
+                                                         @Nonnull final IArchiveChannel channel,
+                                                         @Nonnull final TimeInstant s,
+                                                         @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
         final String dataType = channel.getDataType();
         final ArchiveChannelId channelId = channel.getId();
@@ -426,10 +426,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
             final ResultSet result = stmt.executeQuery();
 
-            final List<IArchiveMinMaxSample<V, T, EpicsAlarm>> iterable = Lists.newArrayList();
+            final List<IArchiveMinMaxSample<V, T>> iterable = Lists.newArrayList();
 
             while (result.next()) {
-                final IArchiveMinMaxSample<V, T, EpicsAlarm> sample =
+                final IArchiveMinMaxSample<V, T> sample =
                     createSampleFromQueryResult(reqType, dataType, channelId, result);
                 iterable.add(sample);
             }
@@ -500,12 +500,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @SuppressWarnings("unchecked")
     private <V, T extends ICssAlarmValueType<V>>
-    IArchiveMinMaxSample<V, T, EpicsAlarm> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
-                                                                       @Nonnull final String dataType,
-                                                                       @Nonnull final ArchiveChannelId channelId,
-                                                                       @Nonnull final ResultSet result) throws SQLException,
-                                                                                                               ArchiveDaoException,
-                                                                                                               TypeSupportException {
+    IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
+                                                           @Nonnull final String dataType,
+                                                           @Nonnull final ArchiveChannelId channelId,
+                                                           @Nonnull final ResultSet result) throws SQLException,
+                                                                                                   ArchiveDaoException,
+                                                                                                   TypeSupportException {
         // (sample_time, severity_id, ...) or (sample_time, highest_severity_id, ...)
         final Timestamp timestamp = result.getTimestamp(1);
         final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(2));
@@ -546,8 +546,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         final T data = (T) new CssAlarmValueType<V>(value, alarm, timeInstant);
 
-        final ArchiveMinMaxSample<V, T, EpicsAlarm> sample =
-            new ArchiveMinMaxSample<V, T, EpicsAlarm>(channelId, data, timeInstant, alarm, min, max);
+        final ArchiveMinMaxSample<V, T> sample =
+            new ArchiveMinMaxSample<V, T>(channelId, data, min, max);
+
         return sample;
     }
 }

@@ -24,20 +24,12 @@ package org.csstudio.archive.common.service.mysqlimpl.adapter;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
-import org.csstudio.archive.common.service.sample.ArchiveSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 
 /**
@@ -109,19 +101,19 @@ public enum ArchiveEngineAdapter {
      * be properly instantiated. See Carcassi's types for that, very likely to replace IValue.
      * @throws TypeSupportException
      */
-    @CheckForNull
-    public <V, T extends ICssAlarmValueType<V>>
-        IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws TypeSupportException {
-
-        final IValue value = valueWithId.getValue();
-
-        final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
-        final T data = EpicsIValueTypeSupport.toCssType(value);
-
-        if (data == null) {
-            return null;
-        }
-
-        return new ArchiveSample<V, T, EpicsAlarm>(id, data, data.getTimestamp(), (EpicsAlarm) data.getAlarm());
-    }
+//    @CheckForNull
+//    public <V, T extends ICssAlarmValueType<V>>
+//        IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws TypeSupportException {
+//
+//        final IValue value = valueWithId.getValue();
+//
+//        final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
+//        final T data = EpicsIValueTypeSupport.toCssType(value);
+//
+//        if (data == null) {
+//            return null;
+//        }
+//
+//        return new ArchiveSample<V, T, EpicsAlarm>(id, data, data.getTimestamp(), (EpicsAlarm) data.getAlarm());
+//    }
 }

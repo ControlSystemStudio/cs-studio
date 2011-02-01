@@ -48,7 +48,6 @@ import org.csstudio.archive.common.service.sample.IArchiveSample2;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
@@ -96,7 +95,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>, IValue> {
         /**
          * Constructor.
          */
@@ -105,7 +104,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> from) {
+         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>> from) {
              try {
                  // TODO (bknerr) : support lookup for every single value... check performance
                  final Object min = from.getMinimum();
@@ -364,7 +363,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> samples =
+            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
                 DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
 
             final Iterable<IValue> iValues =
