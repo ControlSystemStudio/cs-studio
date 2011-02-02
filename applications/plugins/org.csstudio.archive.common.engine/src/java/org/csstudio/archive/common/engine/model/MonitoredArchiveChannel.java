@@ -36,6 +36,7 @@ public class MonitoredArchiveChannel<V,
         super(name, channelId);
     }
 
+
     @Override
     public String getMechanism() {
         //return "on change [" + PeriodFormat.formatSeconds(period_estimate) + "]";

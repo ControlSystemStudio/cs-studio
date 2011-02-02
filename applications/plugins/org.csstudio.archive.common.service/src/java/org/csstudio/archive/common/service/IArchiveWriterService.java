@@ -26,6 +26,10 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ICssValueType;
@@ -72,6 +76,22 @@ public interface IArchiveWriterService {
     <V, T extends ICssValueType<V> & IHasAlarm>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V,T>> samples) throws ArchiveServiceException;
 
+    
+    /**
+     * Writes the monitoring information of an engine for a channel.
+     * 
+     * @param entry
+     * @throws ArchiveServiceException
+     */
+    void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException;
+
+    /**
+     * Writes the monitoring information of an engine for a channel.
+     * @param monitorStates collection of states
+     * @throws ArchiveServiceException 
+     */
+    void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
+    
     /**
      * Transfers the sample information to the persistence layer.
      * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
@@ -101,4 +121,5 @@ public interface IArchiveWriterService {
      * @throws ArchiveServiceException
      */
     boolean flush() throws ArchiveServiceException;
+
 }

@@ -30,7 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelDTO;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -129,7 +129,7 @@ public enum ArchiveEngineAdapter {
     public static IArchiveChannel adapt(@Nonnull final ChannelConfig channel,
                                  @Nullable final ITimestamp lastTimestamp) {
 
-        final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
+        final IArchiveChannel cfg = new ArchiveChannel(new ArchiveChannelId(channel.getId()),
                                                           channel.getName(),
                                                           "<not set>",
                                                           new ArchiveChannelGroupId(channel.getGroupId()),

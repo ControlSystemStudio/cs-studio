@@ -36,7 +36,7 @@ public class IArchiveRequestTypeUnitTest {
     private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I = 
         new ArchiveRequestTypeParameter<Integer>("testi", Integer.valueOf(1000));
     private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D = 
-        new ArchiveRequestTypeParameter<Double>("testi", Double.valueOf(1000.0));
+        new ArchiveRequestTypeParameter<Double>("testd", Double.valueOf(1000.0));
     
     /**
      * Internal request type for testing. 
@@ -85,6 +85,7 @@ public class IArchiveRequestTypeUnitTest {
     public void testCorrectUse() throws RequestTypeParameterException {
         {
             IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I);
+            // Type dispatching perhaps via TypeSupport pattern...
             IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(), 
                                                                        TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);

@@ -33,6 +33,7 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -42,6 +43,7 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapte
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IDaoCommand;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
@@ -332,6 +334,43 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     public boolean flush() throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return false;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntries(monitorStates);
+                }
+            });
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntry(entry);
+                }
+            });
+      } catch (final ArchiveDaoException e) {
+          throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+      }
     }
 
     /**

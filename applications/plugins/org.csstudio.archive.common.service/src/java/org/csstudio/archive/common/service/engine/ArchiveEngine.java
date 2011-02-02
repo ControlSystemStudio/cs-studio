@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 19.11.2010
  */
-public class ArchiveEngineDTO implements IArchiveEngine {
+public class ArchiveEngine implements IArchiveEngine {
 
     private final ArchiveEngineId _id;
     private final URL _url;
@@ -43,7 +43,7 @@ public class ArchiveEngineDTO implements IArchiveEngine {
      * @param archiveEngineId
      * @param url
      */
-    public ArchiveEngineDTO(@Nonnull final ArchiveEngineId id,
+    public ArchiveEngine(@Nonnull final ArchiveEngineId id,
                             @Nonnull final URL url) {
         _id = id;
         _url = url;

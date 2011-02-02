@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,11 +15,19 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntryId;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -26,6 +35,7 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
@@ -307,49 +317,80 @@ public class EngineModel {
      *  @param port Current HTTPD port
      */
     @SuppressWarnings("nls")
-    final public void readConfig(final String p_name, final int port) throws Exception {
-        if (state != State.IDLE) {
-            throw new Exception("Read configuration while state " + state + ". Should be " + State.IDLE);
-        }
-        this.name = p_name;
-
-        final IArchiveEngineConfigService service = Activator.getDefault().getArchiveEngineConfigService();
-
-        final IArchiveEngine engine = service.findEngine(p_name);
-        if (engine == null) {
-            throw new Exception("Unknown engine '" + p_name + "'");
-        }
-
-        // Is the configuration consistent?
-        if (engine.getUrl().getPort() != port) {
-            throw new Exception("Engine running on port " + port +
-                " while configuration requires " + engine.getUrl().toString());
-        }
-
-        final Collection<IArchiveChannelGroup> groups = service.getGroupsForEngine(engine.getId());
-
-        for (final IArchiveChannelGroup groupCfg : groups) {
-            final ArchiveGroup group = addGroup(groupCfg);
-
-            // Add channels to group
-            final Collection<IArchiveChannel> channelCfgs =
-                service.getChannelsByGroupId(groupCfg.getId());
-
-            for (final IArchiveChannel channelCfg : channelCfgs) {
-
-                final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel = ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
-                _writeThread.addChannel(channel);
-
-                _channelMap.putIfAbsent(channel.getName(), channel);
-                group.add(channel);
+    public final void readConfig(final String p_name, final int port) {
+        try {
+            if (state != State.IDLE) {
+                LOG.error("Read configuration while state " + state + ". Should be " + State.IDLE);
+                return;
             }
+            this.name = p_name;
+
+            final IArchiveEngineConfigService configService = Activator.getDefault().getArchiveEngineConfigService();
+
+            final IArchiveEngine engine = configService.findEngine(p_name);
+            if (engine == null) {
+                LOG.error("Unknown engine '" + p_name + "' EXIT.");
+                return;
+            }
+
+            // Is the configuration consistent?
+            if (engine.getUrl().getPort() != port) {
+                LOG.error("Engine running on port " + port +
+                          " while configuration requires " + engine.getUrl().toString());
+            }
+
+
+            final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(engine.getId());
+
+            final Collection<IArchiverMgmtEntry> monitorStates = Lists.newLinkedList();
+
+            final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
+            for (final IArchiveChannelGroup groupCfg : groups) {
+                final ArchiveGroup group = addGroup(groupCfg);
+
+                // Add channels to group
+                final Collection<IArchiveChannel> channelCfgs =
+                    configService.getChannelsByGroupId(groupCfg.getId());
+
+                for (final IArchiveChannel channelCfg : channelCfgs) {
+
+                    final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel =
+                        ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+
+                    monitorStates.add(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                            channelCfg.getId(),
+                                                            ArchiverMonitorStatus.ON,
+                                                            engine.getId(),
+                                                            TimeInstantBuilder.buildFromNow(),
+                                                            ArchiverMgmtEntry.ARCHIVER_START));
+
+                    _writeThread.addChannel(channel);
+
+                    _channelMap.putIfAbsent(channel.getName(), channel);
+                    group.add(channel);
+                }
+            }
+            writerService.writeMonitorModeInformation(monitorStates);
+
+
+        } catch (final OsgiServiceUnavailableException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final ArchiveServiceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final TypeSupportException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
     /** Remove all channels and groups. */
     @SuppressWarnings("nls")
-    final public void clearConfig()
-    {
+    public final void clearConfig() {
         if (state != State.IDLE) {
             throw new IllegalStateException("Only allowed in IDLE state");
         }
@@ -360,14 +401,12 @@ public class EngineModel {
 
     /** Write debug info to stdout */
     @SuppressWarnings("nls")
-    public void dumpDebugInfo()
-    {
+    public void dumpDebugInfo() {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
-            for (int i=0; i<channel.getGroupCount(); ++i)
-            {
+            for (int i=0; i<channel.getGroupCount(); ++i) {
                 if (i > 0) {
                     buf.append(", ");
                 }

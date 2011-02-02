@@ -69,9 +69,12 @@ public interface IArchiveRequestType {
      * Sets the parameter with the given id to the new value, unless such a parameter does not exist for this
      * request type or the newValue's type does not match. <br/>
      * 
-     * Another possibility is that any parameter provides toString and fromString methods, and the 
-     * param description shows the format (cmp java.util.Number.toString and in Byte.parseByte, Double.parseDouble,...)
-     * In other words any parameter type is carrying its own validator internally: <br/> 
+     * Another possibility is that any parameter provides toString and fromString methods, 
+     * to being called internally and the parameter description in the according type description 
+     * populates the required format (cmp java.util.Number.toString and in Byte.parseByte, 
+     * Double.parseDouble,...)
+     * In other words any parameter type is carrying its own validator invisibly with it, the 
+     * signature would slightly change to: <br/> 
      * void setParameter(\@Nonnull final String id, \@Nonnull final String newValue) throws RequestTypeParameterException;
      * 
      * @param id
