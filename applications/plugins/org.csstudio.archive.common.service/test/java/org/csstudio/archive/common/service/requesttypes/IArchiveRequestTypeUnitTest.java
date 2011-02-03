@@ -21,7 +21,9 @@
  */
 package org.csstudio.archive.common.service.requesttypes;
 
-import org.csstudio.archive.common.service.requesttypes.internal.ArchiveRequestTypeParameter;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,10 +35,54 @@ import org.junit.Test;
  */
 public class IArchiveRequestTypeUnitTest {
 
-    private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I =
-        new ArchiveRequestTypeParameter<Integer>("testi", Integer.valueOf(1000));
-    private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D =
-        new ArchiveRequestTypeParameter<Double>("testd", Double.valueOf(1000.0));
+    private static final class IntegerParam extends AbstractArchiveRequestTypeParameter<Integer> {
+        public IntegerParam() {
+            super("testi", Integer.valueOf(1000));
+        }
+        @Override
+        @Nonnull
+        public Integer toValue(@Nonnull final String value) throws RequestTypeParameterException {
+            try {
+                return Integer.parseInt(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new IntegerParam();
+        }
+
+    }
+    private static final IntegerParam TEST_PARAM_I = new IntegerParam();
+
+    private static final class DoubleParam extends AbstractArchiveRequestTypeParameter<Double> {
+        public DoubleParam() {
+            super("test2", Double.valueOf(4711));
+        }
+        @Override
+        @Nonnull
+        public Double toValue(@Nonnull final String value) throws RequestTypeParameterException {
+            try {
+                return Double.parseDouble(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new DoubleParam();
+        }
+    }
+    private static final DoubleParam TEST_PARAM_D = new DoubleParam();
+
+
 
     /**
      * Internal request type for testing.
@@ -97,7 +143,7 @@ public class IArchiveRequestTypeUnitTest {
             p = art.getParameter(TEST_PARAM_I.getName(),
                                  TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
+            Assert.assertEquals(Integer.valueOf(1000), p.getValue());
         }
         {
             final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);

@@ -32,11 +32,21 @@ import javax.annotation.Nonnull;
  * @since 05.01.2011
  * @param <T> the type of the param's value
  */
-public interface IArchiveRequestTypeParameter<T> {
+public interface IArchiveRequestTypeParameter<T> extends Cloneable {
     @Nonnull
     String getName();
+
     @Nonnull
     T getValue();
+
     @Nonnull
     Class<T> getValueType();
+
+    @Nonnull
+    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
+
+    @Nonnull
+    Object clone();
+
+    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
 }

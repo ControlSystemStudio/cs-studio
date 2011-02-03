@@ -26,34 +26,34 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.internal.ArchiveRequestTypeParameter;
+import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 /**
- * Abstract class handling the set of request types with access to the mutable type objects. 
- * 
+ * Abstract class handling the set of request types with access to the mutable type objects.
+ *
  * @author bknerr
  * @since 26.01.2011
  */
 public abstract class AbstractArchiveRequestType implements IArchiveRequestType {
-    
+
     private final String _id;
     private final String _desc;
-    private final Map<String, ArchiveRequestTypeParameter<?>> _paramMap;
-    
+    private final Map<String, IArchiveRequestTypeParameter<?>> _paramMap;
+
     /**
      * Constructor.
      */
     public AbstractArchiveRequestType(@Nonnull final String id,
                                       @Nonnull final String desc) {
-        
+
         _id = id;
         _desc = desc;
         _paramMap = Collections.emptyMap();
     }
-    
+
     /**
      * Constructor.
      */
@@ -68,12 +68,12 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         } else {
             _paramMap = Maps.newHashMap();
             for (final IArchiveRequestTypeParameter param : params) {
-                _paramMap.put(param.getName(), new ArchiveRequestTypeParameter(param.getName(), 
-                                                                               param.getValue()));
+                _paramMap.put(param.getName(), (IArchiveRequestTypeParameter<?>) param.clone());
+
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -82,7 +82,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
     public String getDescription() {
         return _desc;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -91,7 +91,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
     public String getTypeIdentifier() {
         return _id;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -100,36 +100,61 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
     public ImmutableSet<IArchiveRequestTypeParameter<?>> getParameters() {
         return ImmutableSet.<IArchiveRequestTypeParameter<?>>builder().addAll(_paramMap.values()).build();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException {
-        ArchiveRequestTypeParameter<?> param = _paramMap.get(id);
-        if (param == null) {
-            throw new RequestTypeParameterException("Parameter with identifying name " + id + " unknown.", null);
+    public <T> void setParameter(@Nonnull final String id, @Nonnull final T newValue) throws RequestTypeParameterException {
+
+        @SuppressWarnings("unchecked")
+        final IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) getParameterById(id);
+        setParameterValue(newValue, param);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <T> void setParameter(@Nonnull final String id, @Nonnull final String newStrValue) throws RequestTypeParameterException {
+
+        @SuppressWarnings("unchecked")
+        final IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) getParameterById(id);
+        final T newValue = param.toValue(newStrValue);
+        setParameterValue(newValue, param);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
+                                                            @Nonnull final Class<T> clazz) throws RequestTypeParameterException {
+        final AbstractArchiveRequestTypeParameter<T> param =
+            (AbstractArchiveRequestTypeParameter<T>) getParameterById(id);
+        if (param.getValueType() != clazz) {
+            throw new RequestTypeParameterException("Parameter with id " + id +
+                                                    " either does not exist or does not have the correct class type",
+                                                    null);
         }
+        return param;
+    }
+
+    private <T> void setParameterValue(@Nonnull final T newValue,
+                                       @Nonnull final IArchiveRequestTypeParameter<T> param) throws RequestTypeParameterException {
         final Object oldValue = param.getValue();
         if (newValue.equals(oldValue)) {
             return; // identity
         }
         param.setValue(newValue);
     }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
-                                                            @Nonnull final Class<T> clazz) throws RequestTypeParameterException {
-        IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) _paramMap.get(id);
-        if (param == null || param.getValueType() != clazz) {
-            throw new RequestTypeParameterException("Parameter with id " + id + 
-                                                    " either does not exist or does not have the correct class type", 
-                                                    null);
-            
+
+    @Nonnull
+    private IArchiveRequestTypeParameter<?> getParameterById(@Nonnull final String id) throws RequestTypeParameterException {
+        final IArchiveRequestTypeParameter<?> param = _paramMap.get(id);
+        if (param == null) {
+            throw new RequestTypeParameterException("Parameter with identifying name " + id + " unknown.", null);
         }
-        
-        return param;
+        return (IArchiveRequestTypeParameter<?>) param.clone();
     }
 }

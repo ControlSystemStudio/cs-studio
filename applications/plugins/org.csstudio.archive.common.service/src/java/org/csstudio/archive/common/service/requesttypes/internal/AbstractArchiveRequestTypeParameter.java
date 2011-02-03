@@ -28,22 +28,25 @@ import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterExce
 
 /**
  * An immutable parameter specifying an archive request type.
- * 
+ *
+ * Mandatory to implement toString() in case its value type doesn't feature already a reasonable
+ * 'inHouse' toString implementation like Double or Integer
+ *
  * @author bknerr
  * @since 19.01.2011
  * @param <T> the type of the value.
- * 
+ *
  */
-public final class ArchiveRequestTypeParameter<T> implements IArchiveRequestTypeParameter<T> {
-    
+public abstract class AbstractArchiveRequestTypeParameter<T> implements IArchiveRequestTypeParameter<T> {
+
     private final String _name;
-    
+
     private T _value;
-    
+
     /**
      * Constructor.
      */
-    public ArchiveRequestTypeParameter(@Nonnull final String name,
+    public AbstractArchiveRequestTypeParameter(@Nonnull final String name,
                                        @Nonnull final T value) {
         _name = name;
         _value = value;
@@ -60,14 +63,15 @@ public final class ArchiveRequestTypeParameter<T> implements IArchiveRequestType
     public T getValue() {
         return _value;
     }
-    
+
     /**
      * Set the value field to the new value.
      * In case the object is not an instance of the required type an exception is thrown.
      * @param newValue
-     * @throws RequestTypeParameterException 
+     * @throws RequestTypeParameterException
      */
-    public void setValue(@Nonnull final Object newValue) throws RequestTypeParameterException {
+    @Override
+    public void setValue(@Nonnull final T newValue) throws RequestTypeParameterException {
         final Class<?> clazz = newValue.getClass();
         if (getValueType() != clazz) { // TODO (bknerr) : check whether isAssignableFrom is better in any way
             throw new RequestTypeParameterException("New value object's class type " + clazz.getName() +
@@ -85,5 +89,19 @@ public final class ArchiveRequestTypeParameter<T> implements IArchiveRequestType
     public Class<T> getValueType() {
         return (Class<T>) _value.getClass();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public abstract T toValue(@Nonnull final String value) throws RequestTypeParameterException;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public abstract Object clone();
+
 }

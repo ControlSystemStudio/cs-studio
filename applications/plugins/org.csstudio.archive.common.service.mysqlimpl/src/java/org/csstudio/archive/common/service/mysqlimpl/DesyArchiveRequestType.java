@@ -103,6 +103,14 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setParameter(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException {
+        _delegate.setParameter(id, newValue);
+    }
+
+    /**
      * Returns the default/natural request type.
      * @return the default/natural request type for this implementation.
      */
