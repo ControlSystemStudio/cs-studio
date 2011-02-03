@@ -39,7 +39,6 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
@@ -169,8 +168,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
-    private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
-
 
 
     /**
@@ -222,26 +219,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         //
         // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
-
-        IArchiveChannel channel = null;
-        try {
-            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
-            if (channel != null) {
-                return ADAPT_MGR.adapt(channel.getLatestTimestamp());
-            }
-            return null;
-        } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Channel information could not be retrieved.", e);
-        }
     }
 
     /**

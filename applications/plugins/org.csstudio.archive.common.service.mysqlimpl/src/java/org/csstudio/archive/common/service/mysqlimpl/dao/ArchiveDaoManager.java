@@ -69,9 +69,15 @@ public enum ArchiveDaoManager implements IDaoManager {
 
     INSTANCE;
 
+    /**
+     * TODO (bknerr) : Implement DAO command structure
+     *
+     * @author bknerr
+     * @since 03.02.2011
+     */
     public interface IDaoCommand {
         @CheckForNull
-        public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException;
+        Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException;
     }
 
     @Override
