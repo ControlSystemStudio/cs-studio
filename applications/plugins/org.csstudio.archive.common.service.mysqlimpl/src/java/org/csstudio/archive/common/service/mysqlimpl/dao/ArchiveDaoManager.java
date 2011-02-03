@@ -75,17 +75,17 @@ public enum ArchiveDaoManager implements IDaoManager {
      * @author bknerr
      * @since 03.02.2011
      */
-    public interface IDaoCommand {
+    public interface IArchiveDaoCommand {
         @CheckForNull
         Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException;
     }
 
     @Override
-    public Object execute(final IDaoCommand command) throws ArchiveDaoException {
+    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
             return command.execute(this);
     }
     @Override
-    public Object executeAndClose(final IDaoCommand command) throws ArchiveDaoException {
+    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
         try{
             return command.execute(this);
         } finally {
@@ -99,7 +99,7 @@ public enum ArchiveDaoManager implements IDaoManager {
         }
     }
     @Override
-    public Object transaction(final IDaoCommand command) throws ArchiveDaoException {
+    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
         Connection connection = null;
         try {
             try {
@@ -124,8 +124,8 @@ public enum ArchiveDaoManager implements IDaoManager {
         }
     }
     @CheckForNull
-    public Object transactionAndClose(@Nonnull final IDaoCommand command) throws ArchiveDaoException {
-        return executeAndClose(new IDaoCommand(){
+    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
+        return executeAndClose(new IArchiveDaoCommand(){
             @Override
             public Object execute(final ArchiveDaoManager manager) throws ArchiveDaoException{
                 return manager.transaction(command);

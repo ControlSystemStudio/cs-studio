@@ -41,7 +41,7 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IDaoCommand;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
@@ -320,7 +320,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IDaoCommand() {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
                 @Override
                 @CheckForNull
                 public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
@@ -338,7 +338,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IDaoCommand() {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
                 @Override
                 @CheckForNull
                 public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {

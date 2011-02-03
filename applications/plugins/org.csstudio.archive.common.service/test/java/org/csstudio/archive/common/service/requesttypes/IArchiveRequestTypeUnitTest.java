@@ -35,6 +35,10 @@ import org.junit.Test;
  */
 public class IArchiveRequestTypeUnitTest {
 
+    /**
+     * @author bknerr
+     * @since 03.02.2011
+     */
     private static final class IntegerParam extends AbstractArchiveRequestTypeParameter<Integer> {
         public IntegerParam() {
             super("testi", Integer.valueOf(1000));
@@ -59,6 +63,10 @@ public class IArchiveRequestTypeUnitTest {
     }
     private static final IntegerParam TEST_PARAM_I = new IntegerParam();
 
+    /**
+     * @author bknerr
+     * @since 03.02.2011
+     */
     private static final class DoubleParam extends AbstractArchiveRequestTypeParameter<Double> {
         public DoubleParam() {
             super("test2", Double.valueOf(4711));

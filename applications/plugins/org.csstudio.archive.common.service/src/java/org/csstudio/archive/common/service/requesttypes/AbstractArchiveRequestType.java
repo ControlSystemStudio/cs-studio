@@ -57,7 +57,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
     /**
      * Constructor.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("rawtypes")
     public AbstractArchiveRequestType(@Nonnull final String id,
                                       @Nonnull final String desc,
                                       @Nonnull final IArchiveRequestTypeParameter<?>... params) {
