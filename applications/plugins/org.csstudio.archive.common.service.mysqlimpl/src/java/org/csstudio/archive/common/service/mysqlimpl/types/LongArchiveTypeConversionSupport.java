@@ -19,27 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
- * Type conversions for {@link Integer}.
+ * Type conversions for {@link Long}.
  *
  * @author bknerr
- * @since 10.12.2010
+ * @since 15.12.2010
  */
-public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Integer> {
+public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
 
 
     /**
      * Constructor.
      * @param type
      */
-    IntegerArchiveTypeConversionSupport() {
-        super(Integer.class);
+    LongArchiveTypeConversionSupport() {
+        super(Long.class);
     }
 
     /**
@@ -47,9 +47,9 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Integer convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    public Long convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
         try {
-            return Integer.parseInt(value);
+            return Long.parseLong(value);
         } catch (final NumberFormatException e) {
             throw new TypeSupportException("Parsing failed.", e);
         }
@@ -60,7 +60,7 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
      */
     @Override
     @Nonnull
-    public Integer convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.intValue();
+    public Long convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.longValue();
     }
 }

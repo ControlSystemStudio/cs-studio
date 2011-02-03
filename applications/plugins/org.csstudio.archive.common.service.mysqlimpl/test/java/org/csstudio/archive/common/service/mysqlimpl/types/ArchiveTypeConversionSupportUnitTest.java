@@ -19,21 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_PREFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SEP;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SUFFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.collectionEmbrace;
-import static org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport.collectionRelease;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_PREFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SEP;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SUFFIX;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionEmbrace;
+import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionRelease;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.junit.Assert;

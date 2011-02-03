@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
@@ -49,7 +51,7 @@ public class EngineModel {
     final public static String VERSION = "1.2.3"; //$NON-NLS-1$
 
     /** Name of this model */
-    private String name = "DESY Archive Engine";  //$NON-NLS-1$
+    private String _name = "DESY Archive Engine";  //$NON-NLS-1$
 
     /** Thread that writes to the <code>archive</code> */
     final private WriteThread _writeThread;
@@ -134,7 +136,7 @@ public class EngineModel {
 
     /** @return Name (description) */
     final public String getName() {
-        return name;
+        return _name;
     }
 
     /** @return Seconds into the future that should be ignored */
@@ -172,7 +174,7 @@ public class EngineModel {
     /**
      *  Add new group if not already exists.
      *
-     *  @param name Name of the group to find or add.
+     *  @param _name Name of the group to find or add.
      *  @return ArchiveGroup
      */
     private final ArchiveGroup addGroup(final IArchiveChannelGroup groupCfg) {
@@ -315,76 +317,88 @@ public class EngineModel {
     /** Read configuration of model from RDB.
      *  @param p_name Name of engine in RDB
      *  @param port Current HTTPD port
+     * @throws ArchiveReadConfigException
      */
     @SuppressWarnings("nls")
-    public final void readConfig(final String p_name, final int port) {
+    public final void readConfig(final String engineName, final int port) throws ArchiveReadConfigException {
         try {
             if (state != State.IDLE) {
                 LOG.error("Read configuration while state " + state + ". Should be " + State.IDLE);
                 return;
             }
-            this.name = p_name;
+            _name = engineName;
 
             final IArchiveEngineConfigService configService = Activator.getDefault().getArchiveEngineConfigService();
+            final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
 
-            final IArchiveEngine engine = configService.findEngine(p_name);
+            final IArchiveEngine engine = configService.findEngine(_name);
             if (engine == null) {
-                LOG.error("Unknown engine '" + p_name + "' EXIT.");
+                LOG.error("Unknown engine '" + _name + "'.");
+                return;
+            }
+            // Is the configuration consistent?
+            if (engine.getUrl().getPort() != port) {
+                LOG.error("Engine " + _name + " running on port " + port +
+                          " while configuration requires " + engine.getUrl().toString());
                 return;
             }
 
-            // Is the configuration consistent?
-            if (engine.getUrl().getPort() != port) {
-                LOG.error("Engine running on port " + port +
-                          " while configuration requires " + engine.getUrl().toString());
-            }
-
-
             final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(engine.getId());
-
             final Collection<IArchiverMgmtEntry> monitorStates = Lists.newLinkedList();
 
-            final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
             for (final IArchiveChannelGroup groupCfg : groups) {
-                final ArchiveGroup group = addGroup(groupCfg);
-
-                // Add channels to group
-                final Collection<IArchiveChannel> channelCfgs =
-                    configService.getChannelsByGroupId(groupCfg.getId());
-
-                for (final IArchiveChannel channelCfg : channelCfgs) {
-
-                    final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel =
-                        ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
-
-                    monitorStates.add(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                            channelCfg.getId(),
-                                                            ArchiverMonitorStatus.ON,
-                                                            engine.getId(),
-                                                            TimeInstantBuilder.buildFromNow(),
-                                                            ArchiverMgmtEntry.ARCHIVER_START));
-
-                    _writeThread.addChannel(channel);
-
-                    _channelMap.putIfAbsent(channel.getName(), channel);
-                    group.add(channel);
-                }
+                configureGroup(configService, engine, monitorStates, groupCfg);
             }
             writerService.writeMonitorModeInformation(monitorStates);
 
+        } catch (final Exception e) {
+            handleExceptions(e);
+        }
+    }
 
+    private void configureGroup(@Nonnull final IArchiveEngineConfigService configService,
+                                @Nonnull final IArchiveEngine engine,
+                                @Nonnull final Collection<IArchiverMgmtEntry> monitorStates,
+                                @Nonnull final IArchiveChannelGroup groupCfg) throws ArchiveServiceException,
+                                                                                     TypeSupportException {
+        final ArchiveGroup group = addGroup(groupCfg);
+        // Add channels to group
+        final Collection<IArchiveChannel> channelCfgs =
+            configService.getChannelsByGroupId(groupCfg.getId());
+
+        for (final IArchiveChannel channelCfg : channelCfgs) {
+
+            final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel =
+                ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
+
+            monitorStates.add(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                    channelCfg.getId(),
+                                                    ArchiverMonitorStatus.ON,
+                                                    engine.getId(),
+                                                    TimeInstantBuilder.buildFromNow(),
+                                                    ArchiverMgmtEntry.ARCHIVER_START));
+
+            _writeThread.addChannel(channel);
+
+            _channelMap.putIfAbsent(channel.getName(), channel);
+            group.add(channel);
+        }
+    }
+
+    private void handleExceptions(@Nonnull final Exception inE) throws ArchiveReadConfigException {
+        final String msg = "Failure during archive engine configuration retrieval";
+        try {
+            throw inE;
         } catch (final OsgiServiceUnavailableException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ArchiveReadConfigException(msg, e);
         } catch (final ArchiveServiceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ArchiveReadConfigException(msg, e);
         } catch (final MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ArchiveReadConfigException(msg, e);
         } catch (final TypeSupportException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ArchiveReadConfigException(msg, e);
+        } catch (final Exception re) {
+            throw new RuntimeException(re);
         }
     }
 

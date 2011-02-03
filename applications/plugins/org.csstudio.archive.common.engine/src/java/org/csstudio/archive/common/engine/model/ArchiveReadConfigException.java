@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,48 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.engine.model;
 
 import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.types.TypeSupportException;
+import javax.annotation.Nullable;
 
 /**
- * Type conversions for {@link Long}.
+ * Exception for archive read configuration.
  *
  * @author bknerr
- * @since 15.12.2010
+ * @since 03.02.2011
  */
-public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
-
+public class ArchiveReadConfigException extends Exception {
+    private static final long serialVersionUID = -6528784167665678920L;
 
     /**
      * Constructor.
-     * @param type
      */
-    LongArchiveTypeConversionSupport() {
-        super(Long.class);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.longValue();
+    public ArchiveReadConfigException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
     }
 }

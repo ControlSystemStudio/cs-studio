@@ -47,6 +47,39 @@ import com.google.common.collect.Iterables;
 public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiverMgmtDao {
 
     /**
+     * Converter function to single sql VALUE, i.e. comma separated strings embraced by parentheses.
+     * TODO (bknerr) : extract to be used by all VALUE assemblers
+     *
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    private static final class MonitorStates2SqlValue implements Function<IArchiverMgmtEntry, String> {
+        /**
+         * Constructor.
+         */
+        public MonitorStates2SqlValue() {
+            // Empty
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String apply(@Nonnull final IArchiverMgmtEntry from) {
+
+            return "(" +
+                   Joiner.on(",").join(from.getChannelId().longValue(),
+                                       from.getStatus().name(),
+                                       from.getEngineId().longValue(),
+                                       from.getTimestamp().formatted(),
+                                       from.getInfo()) +
+                    ")";
+        }
+    }
+    private static final MonitorStates2SqlValue M2S_FUNC = new MonitorStates2SqlValue();
+
+    /**
      * Constructor.
      * @param mgr
      */
@@ -59,15 +92,16 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
         return "INSERT INTO " + database + ".archiver_mgmt (channel_id, monitor_mode, engine_id, time, info) VALUES ";
     }
 
-
-
     /**
      * {@inheritDoc}
      */
     @Override
     @CheckForNull
-    public IArchiverMgmtEntry createMgmtEntry(@Nonnull final IArchiverMgmtEntry entry) {
-        // TODO Auto-generated method stub
+    public IArchiverMgmtEntry createMgmtEntry(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveDaoException {
+        final String sqlValue = M2S_FUNC.apply(entry);
+        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + sqlValue;
+
+        performSingleSQLStmtExecution(stmtStr, "creation of monitor state");
         return null;
     }
 
@@ -77,39 +111,34 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
     @Override
     public boolean createMgmtEntries(final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveDaoException {
 
-        final String values = Joiner.on(",").join(Iterables.transform(monitorStates,
-                                                                      new Function<IArchiverMgmtEntry, String>() {
-                                                                          /**
-                                                                           * {@inheritDoc}
-                                                                           */
-                                                                           @Override
-                                                                           public String apply(final IArchiverMgmtEntry from) {
-
-                                                                               return "(" +
-                                                                                      Joiner.on(",").join(from.getChannelId().longValue(),
-                                                                                                          from.getStatus().name(),
-                                                                                                          from.getEngineId().longValue(),
-                                                                                                          from.getTimestamp().formatted(),
-                                                                                                          from.getInfo()) +
-                                                                                      ")";
-                                                                           }
-                                                                       }));
+        final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + values;
 
+        performSingleSQLStmtExecution(stmtStr, "creation of monitor states");
+        return false;
+    }
+
+
+    /**
+     * TODO (bknerr) : extract these patterns to be used for all daos (probably with exception handler)
+     *
+     * @param stmtStr
+     * @param stmtDesc
+     * @throws ArchiveDaoException
+     */
+    private void performSingleSQLStmtExecution(@Nonnull final String stmtStr,
+                                               @Nonnull final String stmtDesc) throws ArchiveDaoException {
         Statement stmt = null;
         try {
-            stmt = getConnection().createStatement();//.prepareStatement(stmtStr);
+            stmt = getConnection().createStatement();
             stmt.execute(stmtStr);
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException("Creation of monitor states failed.", e);
+            throw new ArchiveDaoException(stmtDesc + " failed.", e);
         } catch (final SQLException e) {
-            throw new ArchiveDaoException("Creation of monitor states failed.", e);
+            throw new ArchiveDaoException(stmtDesc + " failed.", e);
         } finally {
-            closeStatement(stmt, "Closing of statement for monitor states of channels failed.");
+            closeStatement(stmt, "Closing of statement for '" + stmtDesc + "' failed.");
         }
-
-
-        return false;
     }
 
 }

@@ -19,27 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
+
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.types.TypeSupportException;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+
 /**
- * Type conversions for {@link Float}.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 14.12.2010
+ * @since 13.12.2010
  */
-public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Float> {
+public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<String> {
 
 
     /**
      * Constructor.
      * @param type
      */
-    FloatArchiveTypeConversionSupport() {
-        super(Float.class);
+    StringArchiveTypeConversionSupport() {
+        super(String.class);
     }
 
     /**
@@ -47,11 +52,30 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
      */
     @Override
     @Nonnull
-    public Float convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    public String convertToArchiveString(@Nonnull final String value) throws TypeSupportException {
+        return value;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String convertFromArchiveString(@Nonnull final String value) {
+        return value;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Double convertToDouble(@Nonnull final String value) throws TypeSupportException {
         try {
-            return Float.parseFloat(value);
+            return Double.parseDouble(value);
         } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
+            throw new TypeSupportException("String value " + value + " could not be converted to Double." , e);
         }
     }
 
@@ -60,7 +84,16 @@ public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveType
      */
     @Override
     @Nonnull
-    public Float convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.floatValue();
+    public String convertFromDouble(@Nonnull final Double value) {
+        return value.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
+        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
     }
 }

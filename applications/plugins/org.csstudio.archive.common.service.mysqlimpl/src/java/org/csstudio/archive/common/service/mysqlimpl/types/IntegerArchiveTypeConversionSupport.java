@@ -19,26 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
- * Type conversions for {@link Byte}.
+ * Type conversions for {@link Integer}.
  *
  * @author bknerr
- * @since 14.12.2010
+ * @since 10.12.2010
  */
-public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
+public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Integer> {
+
 
     /**
      * Constructor.
      * @param type
      */
-    ByteArchiveTypeConversionSupport() {
-        super(Byte.class);
+    IntegerArchiveTypeConversionSupport() {
+        super(Integer.class);
     }
 
     /**
@@ -46,9 +47,9 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Byte convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    public Integer convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
         try {
-            return Byte.parseByte(value);
+            return Integer.parseInt(value);
         } catch (final NumberFormatException e) {
             throw new TypeSupportException("Parsing failed.", e);
         }
@@ -59,16 +60,7 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Byte convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.byteValue();
+    public Integer convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.intValue();
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
-//        throw new TypeSupportException("Byte shall not be converted to Double.", null);
-//    }
 }

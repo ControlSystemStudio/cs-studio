@@ -19,32 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
-
-import java.util.Collection;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.types.TypeSupportException;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
 /**
- * TODO (bknerr) :
+ * Type conversions for {@link Byte}.
  *
  * @author bknerr
- * @since 13.12.2010
+ * @since 14.12.2010
  */
-public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<String> {
-
+public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
 
     /**
      * Constructor.
      * @param type
      */
-    StringArchiveTypeConversionSupport() {
-        super(String.class);
+    ByteArchiveTypeConversionSupport() {
+        super(Byte.class);
     }
 
     /**
@@ -52,30 +46,11 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
      */
     @Override
     @Nonnull
-    public String convertToArchiveString(@Nonnull final String value) throws TypeSupportException {
-        return value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String convertFromArchiveString(@Nonnull final String value) {
-        return value;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final String value) throws TypeSupportException {
+    public Byte convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
         try {
-            return Double.parseDouble(value);
+            return Byte.parseByte(value);
         } catch (final NumberFormatException e) {
-            throw new TypeSupportException("String value " + value + " could not be converted to Double." , e);
+            throw new TypeSupportException("Parsing failed.", e);
         }
     }
 
@@ -84,16 +59,16 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
      */
     @Override
     @Nonnull
-    public String convertFromDouble(@Nonnull final Double value) {
-        return value.toString();
+    public Byte convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.byteValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<String> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
-        return Lists.newArrayList(Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values));
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    public Double convertToDouble(@Nonnull final Byte b) throws TypeSupportException {
+//        throw new TypeSupportException("Byte shall not be converted to Double.", null);
+//    }
 }

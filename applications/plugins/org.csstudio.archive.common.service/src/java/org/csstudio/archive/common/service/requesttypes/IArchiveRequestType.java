@@ -38,7 +38,7 @@ public interface IArchiveRequestType {
 
     /**
      * The description of the specific request type, and its - optional - type parameters.
-     * 
+     *
      * @return the description
      */
     @Nonnull
@@ -47,36 +47,36 @@ public interface IArchiveRequestType {
     /**
      * Identifier for this request type, supposed to be unique among a given set
      * of request types
-     * 
+     *
      * @return the identifier
      */
     @Nonnull
     String getTypeIdentifier();
-    
+
     /**
      * Any request types may have a set of parameters specifying itself.
      * For instance, for a request type AVERAGE one could think of parameter "windowLength", which
      * is an integer.
      * In case there is such a parameter that is adjustable by the client, the returned class yields
      * access to it.
-     * 
+     *
      * @return the data structure populating and giving access to the type's parameters.
      */
-    @CheckForNull
+    @Nonnull
     ImmutableSet<IArchiveRequestTypeParameter<?>> getParameters();
-    
+
     /**
      * Sets the parameter with the given id to the new value, unless such a parameter does not exist for this
      * request type or the newValue's type does not match. <br/>
-     * 
-     * Another possibility is that any parameter provides toString and fromString methods, 
-     * to being called internally and the parameter description in the according type description 
-     * populates the required format (cmp java.util.Number.toString and in Byte.parseByte, 
+     *
+     * Another possibility is that any parameter provides toString and fromString methods,
+     * to being called internally and the parameter description in the according type description
+     * populates the required format (cmp java.util.Number.toString and in Byte.parseByte,
      * Double.parseDouble,...)
-     * In other words any parameter type is carrying its own validator invisibly with it, the 
-     * signature would slightly change to: <br/> 
+     * In other words any parameter type is carrying its own validator invisibly with it, the
+     * signature would slightly change to: <br/>
      * void setParameter(\@Nonnull final String id, \@Nonnull final String newValue) throws RequestTypeParameterException;
-     * 
+     *
      * @param id
      * @param newValue
      * @throws RequestTypeParameterException

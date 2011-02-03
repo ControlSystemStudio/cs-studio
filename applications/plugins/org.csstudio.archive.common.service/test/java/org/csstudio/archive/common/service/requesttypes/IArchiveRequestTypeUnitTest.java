@@ -27,27 +27,27 @@ import org.junit.Test;
 
 /**
  * Test
- * 
+ *
  * @author bknerr
  * @since 26.01.2011
  */
 public class IArchiveRequestTypeUnitTest {
-    
-    private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I = 
+
+    private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I =
         new ArchiveRequestTypeParameter<Integer>("testi", Integer.valueOf(1000));
-    private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D = 
+    private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D =
         new ArchiveRequestTypeParameter<Double>("testd", Double.valueOf(1000.0));
-    
+
     /**
-     * Internal request type for testing. 
-     * 
+     * Internal request type for testing.
+     *
      * @author bknerr
      * @since 01.02.2011
      */
     private static final class ART extends AbstractArchiveRequestType {
-        public ART(String id, 
-                   String desc, 
-                   IArchiveRequestTypeParameter<?>... params) {
+        public ART(final String id,
+                   final String desc,
+                   final IArchiveRequestTypeParameter<?>... params) {
             super(id, desc, params);
         }
 
@@ -56,17 +56,18 @@ public class IArchiveRequestTypeUnitTest {
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse1() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
             // Type mismatch on getting
             @SuppressWarnings("unused")
+            final
             IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
         }
     }
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse2() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
-            IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), Double.class);
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), Double.class);
             Assert.assertNotNull(p);
             Assert.assertEquals(Double.class, p.getValueType());
             // Type mismatch on setting
@@ -75,32 +76,32 @@ public class IArchiveRequestTypeUnitTest {
     }
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse3() throws RequestTypeParameterException {
-        IArchiveRequestType art = new ART("Typ1", "T1");
+        final IArchiveRequestType art = new ART("Typ1", "T1");
         Assert.assertNull(art.getParameter("notexist", Object.class));
     }
-    
-    
-    
+
+
+
     @Test
     public void testCorrectUse() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I);
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I);
             // Type dispatching perhaps via TypeSupport pattern...
-            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(), 
+            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(),
                                                                        TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Integer value = p.getValue();
+            final Integer value = p.getValue();
             Assert.assertEquals(TEST_PARAM_I.getValue(), value);
-            
+
             art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
-            p = art.getParameter(TEST_PARAM_I.getName(), 
+            p = art.getParameter(TEST_PARAM_I.getName(),
                                  TEST_PARAM_I.getValueType());
+            Assert.assertNotNull(p);
             Assert.assertEquals(Integer.valueOf(4711), p.getValue());
-            
         }
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
-            IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), 
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(),
                                                                       TEST_PARAM_D.getValueType());
             Assert.assertNotNull(p);
             Assert.assertEquals(TEST_PARAM_D.getValue(), p.getValue());
