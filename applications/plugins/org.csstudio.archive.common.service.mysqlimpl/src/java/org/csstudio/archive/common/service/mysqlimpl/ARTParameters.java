@@ -22,8 +22,10 @@
 package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 
 /**
  * Parameter available to the archive request types of this service implementation.
@@ -33,37 +35,22 @@ import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParam
  */
 public final class ARTParameters {
     /**
-     * Constructor.
+     * Internal typed request parameter.
+     *
+     * @author bknerr
+     * @since 03.02.2011
      */
-    private ARTParameters() {
-        // Don't instantiate
-    }
+    private static final class PrecisionRequestParameter implements
+                                                        IArchiveRequestTypeParameter<Double> {
+        private Double _value;
 
-    public static final IArchiveRequestTypeParameter<Integer> NUM_OF_BINS =
-        new IArchiveRequestTypeParameter<Integer>() {
         /**
-         * {@inheritDoc}
+         * Constructor.
          */
-        @Override
-        @Nonnull
-        public String getName() {
-            return "numOfBins";
+        public PrecisionRequestParameter() {
+            _value = Double.valueOf(2.0);
         }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        @Nonnull
-        public Integer getValue() {
-            return Integer.valueOf(1000);
-        }
-        @Override
-        public Class<Integer> getValueType() {
-            return Integer.class;
-        }
-    };
-    public static final IArchiveRequestTypeParameter<Double> PRECISION =
-        new IArchiveRequestTypeParameter<Double>() {
+
         /**
          * {@inheritDoc}
          */
@@ -72,18 +59,179 @@ public final class ARTParameters {
         public String getName() {
             return "precision";
         }
+
         /**
          * {@inheritDoc}
          */
         @Override
         @Nonnull
         public Double getValue() {
-            return Double.valueOf(2.0);
+            return _value;
         }
+
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Class<Double> getValueType() {
             return Double.class;
         }
-    };
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Double toValue(final String value) throws RequestTypeParameterException {
+            try {
+                return Double.parseDouble(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new PrecisionRequestParameter();
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(@Nullable final Object obj) {
+            if (obj instanceof PrecisionRequestParameter) {
+                // no non-static fields
+                return true;
+            }
+            return false;
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+         // no non-static fields
+            return super.hashCode();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void setValue(@Nonnull final Double newValue) throws RequestTypeParameterException {
+            _value = newValue;
+        }
+    }
+
+    /**
+     * Internal typed request parameter.
+     *
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    private static final class NumOfBinsRequestParameter implements IArchiveRequestTypeParameter<Integer> {
+
+        private Integer _value;
+
+        /**
+         * Constructor.
+         */
+        public NumOfBinsRequestParameter() {
+            _value = Integer.valueOf(1000);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public String getName() {
+            return "numOfBins";
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Integer getValue() {
+            return _value;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Class<Integer> getValueType() {
+            return Integer.class;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Integer toValue(@Nonnull final String value) throws RequestTypeParameterException {
+            try {
+                return Integer.parseInt(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new NumOfBinsRequestParameter();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(@Nullable final Object obj) {
+            if (obj instanceof NumOfBinsRequestParameter) {
+             // no non-static fields
+                return true;
+            }
+            return false;
+        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode() {
+         // no non-static fields
+            return super.hashCode();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void setValue(@Nonnull final Integer newValue) throws RequestTypeParameterException {
+            _value = newValue;
+        }
+    }
+    /**
+     * Constructor.
+     */
+    private ARTParameters() {
+        // Don't instantiate
+    }
+
+    public static final NumOfBinsRequestParameter NUM_OF_BINS =
+        new NumOfBinsRequestParameter();
+    public static final PrecisionRequestParameter PRECISION =
+        new PrecisionRequestParameter();
 
 }

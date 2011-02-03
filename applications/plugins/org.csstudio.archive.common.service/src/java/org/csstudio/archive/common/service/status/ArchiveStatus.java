@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 22.11.2010
  */
-public class ArchiveStatusDTO implements IArchiveStatus {
+public class ArchiveStatus implements IArchiveStatus {
 
     private final ArchiveStatusId _id;
 
@@ -41,7 +41,7 @@ public class ArchiveStatusDTO implements IArchiveStatus {
      * @param id
      * @param name
      */
-    public ArchiveStatusDTO(@Nonnull final ArchiveStatusId id, @Nonnull final String name) {
+    public ArchiveStatus(@Nonnull final ArchiveStatusId id, @Nonnull final String name) {
         _id = id;
         _name = name;
     }

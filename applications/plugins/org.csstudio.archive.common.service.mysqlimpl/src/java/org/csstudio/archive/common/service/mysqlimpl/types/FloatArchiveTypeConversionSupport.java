@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,34 +19,48 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.archive.common.service.requesttypes;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
- * The read-only interface of a parameter specifying an archive request type.
+ * Type conversions for {@link Float}.
  *
  * @author bknerr
- * @since 05.01.2011
- * @param <T> the type of the param's value
+ * @since 14.12.2010
  */
-public interface IArchiveRequestTypeParameter<T> extends Cloneable {
-    @Nonnull
-    String getName();
+public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Float> {
 
-    @Nonnull
-    T getValue();
 
-    @Nonnull
-    Class<T> getValueType();
+    /**
+     * Constructor.
+     * @param type
+     */
+    FloatArchiveTypeConversionSupport() {
+        super(Float.class);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
+    public Float convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+        try {
+            return Float.parseFloat(value);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Parsing failed.", e);
+        }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    Object clone();
-
-    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
+    public Float convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
+        return value.floatValue();
+    }
 }

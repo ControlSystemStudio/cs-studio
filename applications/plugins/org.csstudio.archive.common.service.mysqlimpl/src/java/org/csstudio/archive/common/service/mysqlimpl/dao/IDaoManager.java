@@ -19,34 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-package org.csstudio.archive.common.service.requesttypes;
+import java.sql.Connection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
 
 /**
- * The read-only interface of a parameter specifying an archive request type.
+ * General DAO Manager interface.
  *
  * @author bknerr
- * @since 05.01.2011
- * @param <T> the type of the param's value
+ * @since 02.02.2011
  */
-public interface IArchiveRequestTypeParameter<T> extends Cloneable {
-    @Nonnull
-    String getName();
+public interface IDaoManager {
 
     @Nonnull
-    T getValue();
+    Connection getConnection() throws ArchiveConnectionException;
 
-    @Nonnull
-    Class<T> getValueType();
+    @CheckForNull
+    Object execute(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
 
-    @Nonnull
-    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
+    @CheckForNull
+    Object executeAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
 
-    @Nonnull
-    Object clone();
-
-    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
+    @CheckForNull
+    Object transaction(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
 }

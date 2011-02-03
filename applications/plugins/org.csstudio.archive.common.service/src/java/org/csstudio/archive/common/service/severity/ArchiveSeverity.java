@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 22.11.2010
  */
-public class ArchiveSeverityDTO implements IArchiveSeverity {
+public class ArchiveSeverity implements IArchiveSeverity {
 
     private final ArchiveSeverityId _id;
 
@@ -41,7 +41,7 @@ public class ArchiveSeverityDTO implements IArchiveSeverity {
      * @param id
      * @param name
      */
-    public ArchiveSeverityDTO(@Nonnull final ArchiveSeverityId id,
+    public ArchiveSeverity(@Nonnull final ArchiveSeverityId id,
                               @Nonnull final String name) {
         _id = id;
         _name = name;

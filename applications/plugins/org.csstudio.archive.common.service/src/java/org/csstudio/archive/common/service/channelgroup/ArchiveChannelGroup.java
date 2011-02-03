@@ -33,7 +33,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
  * @author bknerr
  * @since 22.11.2010
  */
-public class ArchiveChannelGroupDTO implements IArchiveChannelGroup {
+public class ArchiveChannelGroup implements IArchiveChannelGroup {
 
     private final ArchiveChannelGroupId _id;
 
@@ -49,7 +49,7 @@ public class ArchiveChannelGroupDTO implements IArchiveChannelGroup {
      * @param name
      * @param enablingChannelId
      */
-    public ArchiveChannelGroupDTO(@Nonnull final ArchiveChannelGroupId id,
+    public ArchiveChannelGroup(@Nonnull final ArchiveChannelGroupId id,
                                   @Nonnull final String name,
                                   @Nullable final ArchiveChannelId enablingChannelId) {
         super();

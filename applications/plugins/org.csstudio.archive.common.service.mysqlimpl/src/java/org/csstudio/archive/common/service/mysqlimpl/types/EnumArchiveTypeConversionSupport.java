@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -143,7 +143,12 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public Collection<EpicsEnumTriple> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
-        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease(values));
+        final String collectionRelease = collectionRelease(values);
+        if (collectionRelease == null) {
+            throw new TypeSupportException("Values from archive do not adhere to collection pattern:\n " +
+                                           values, null);
+        }
+        final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(collectionRelease);
         final Iterable<EpicsEnumTriple> enums =
             Iterables.filter(Iterables.transform(strings, _archiveString2EpicsEnumFunc),
                              Predicates.<EpicsEnumTriple>notNull());

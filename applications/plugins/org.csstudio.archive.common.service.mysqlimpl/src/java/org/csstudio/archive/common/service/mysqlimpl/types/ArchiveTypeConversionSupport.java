@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import java.util.Collection;
 
@@ -234,7 +234,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
                                                              SCALAR_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from packages " + SCALAR_TYPE_PACKAGES, null);
+                                           " could not be loaded from packages " +
+                                           Joiner.on(", ").join(SCALAR_TYPE_PACKAGES), null);
         }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
@@ -256,7 +257,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
                                                              SCALAR_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from packages " + SCALAR_TYPE_PACKAGES, null);
+                                           " could not be loaded from packages " +
+                                           Joiner.on(", ").join(SCALAR_TYPE_PACKAGES), null);
         }
         return isDataTypeOptimizable(typeClass);
     }
@@ -275,7 +277,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     }
 
 
-    @Nonnull
+    @CheckForNull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
         final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,

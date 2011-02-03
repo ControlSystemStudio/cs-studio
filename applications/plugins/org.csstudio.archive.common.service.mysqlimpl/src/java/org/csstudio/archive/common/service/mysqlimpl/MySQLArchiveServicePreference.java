@@ -44,6 +44,9 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> PASSWORD =
         new MySQLArchiveServicePreference<String>("password", "archive");
 
+    public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
+        new MySQLArchiveServicePreference<String>("database_name", "archive");
+
     public static final MySQLArchiveServicePreference<Boolean> AUTO_CONNECT =
         new MySQLArchiveServicePreference<Boolean>("auto_connect", Boolean.FALSE);
 

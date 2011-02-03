@@ -33,15 +33,16 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
+import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
@@ -167,8 +168,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
-    private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
-
 
 
     /**
@@ -220,26 +219,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         //
         // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
-
-        IArchiveChannel channel = null;
-        try {
-            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
-            if (channel != null) {
-                return ADAPT_MGR.adapt(channel.getLatestTimestamp());
-            }
-            return null;
-        } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Channel information could not be retrieved.", e);
-        }
     }
 
     /**
@@ -332,6 +311,43 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     public boolean flush() throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return false;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntries(monitorStates);
+                }
+            });
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntry(entry);
+                }
+            });
+      } catch (final ArchiveDaoException e) {
+          throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+      }
     }
 
     /**
