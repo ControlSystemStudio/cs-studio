@@ -46,6 +46,14 @@ import com.google.common.collect.Lists;
 public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<EpicsEnumTriple> {
 
     /**
+     * Constructor.
+     * @param type
+     */
+    EnumArchiveTypeConversionSupport() {
+        super(EpicsEnumTriple.class);
+    }
+
+    /**
      * guava converter function
      *
      * @author bknerr

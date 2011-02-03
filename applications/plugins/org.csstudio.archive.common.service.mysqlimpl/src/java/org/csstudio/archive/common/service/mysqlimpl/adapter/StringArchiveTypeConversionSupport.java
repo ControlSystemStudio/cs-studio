@@ -38,6 +38,15 @@ import com.google.common.collect.Lists;
  */
 public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSupport<String> {
 
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    StringArchiveTypeConversionSupport() {
+        super(String.class);
+    }
+
     /**
      * {@inheritDoc}
      */

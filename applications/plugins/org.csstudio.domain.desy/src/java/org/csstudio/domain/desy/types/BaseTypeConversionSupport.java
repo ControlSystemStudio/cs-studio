@@ -21,12 +21,17 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
@@ -54,6 +59,64 @@ public abstract class BaseTypeConversionSupport {
     @Nonnull
     public static ITimestamp toTimestamp(@Nonnull final TimeInstant ti) {
         return TimestampFactory.createTimestamp(ti.getSeconds(), ti.getFractalSecondsInNanos());
+    }
+    
+    /**
+     * Tries to create a {@link Class<?>} object for the given dataType string, iteratively 
+     * over the given array of package names.
+     * 
+     * Note that the utilized <code>Class.forName(package + class)</code> does only work when a 
+     * class loader buddy is registered for this package. Unless it is a basic package like 
+     * "java.lang" or "java.util" you have to add in the manifest.mf of the plugin that exports the
+     * passed package(s) the line "Eclipse-RegisterBuddy: org.csstudio.domain.desy". {@value Platform#getB}
+     * 
+     * This method does not propagate a ClassNotFoundException but return <code>null</code>, if
+     * class creation is not possible.
+     * 
+     * @param <T>
+     * @param datatype the name of the class
+     * @param packages the array of package names to try
+     * @return a {@link Class} object or <code>null</code>.
+     */
+    @SuppressWarnings("unchecked")
+    @CheckForNull
+    public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype, 
+                                                         @Nonnull final String... packages) {
+        Class<T> typeClass = null;
+        for (final String pkg : packages) {
+            try {
+                typeClass = (Class<T>) Class.forName(pkg + "." + datatype);
+                break;
+                // CHECKSTYLE OFF: EmptyBlock
+            } catch (final ClassNotFoundException e) {
+                // Ignore
+                // CHECKSTYLE ON: EmptyBlock
+            }            
+        }
+        return typeClass;
+    }
+    
+    /**
+     * Tries to create a {@link Class} object for the element type for a generic {@link Collection}, 
+     * such as "Set&lt;Byte&gt;" as {@param datatype} shall return Class&lt;Byte&gt;.<br/>
+     * Recognized patterns for collection describing strings are Collection<*>, List<*>, Set<*>, and 
+     * Vector<*>
+     * 
+     * @param <T>
+     * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
+     * @param packages the packages to try for the element type, e.g. typically "java.lang".
+     * @return the class object or <code>null</code>
+     */
+    @CheckForNull
+    public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype, 
+                                                                    @Nonnull final String... packages) {
+        final Pattern p = Pattern.compile("^(Collection|List|Set|Vector)<(.+)>$");
+        final Matcher m = p.matcher(datatype);
+        if (m.matches()) {
+            final String elementType = m.group(2); // e.g. Byte from List<Byte>
+            return createTypeClassFromString(elementType, packages);
+        }
+        return null;
     }
 
 

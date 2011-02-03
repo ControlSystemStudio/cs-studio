@@ -7,21 +7,24 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.stats.Average;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
  *  to an <code>RDBArchiveServer</code>.
@@ -36,47 +39,14 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  *
  *  @author Kay Kasemir
  */
-public class WriteThread implements Runnable
-{
+public class WriteThread implements Runnable {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteThread.class);
 
     /** Minimum write period [seconds] */
     private static final double MIN_WRITE_PERIOD = 5.0;
 
-    private static final class ValueWithChannelId implements IValueWithChannelId {
-
-        private final IValue _value;
-        private final int _id;
-
-        /**
-         * Constructor.
-         */
-        public ValueWithChannelId(final IValue val, final int id) {
-            _value = val;
-            _id = id;
-        }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public IValue getValue() {
-            return _value;
-        }
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int getChannelId() {
-            return _id;
-        }
-    }
-
-    /** Server to which this thread writes. */
-   // final private RDBArchive archive;
-
-    /** All the sample buffers this thread writes. */
-    final private ArrayList<SampleBuffer> buffers =
-        new ArrayList<SampleBuffer>();
+    private final ConcurrentMap<String, ArchiveChannel<Object, ICssAlarmValueType<Object>>> _channelMap =
+        Maps.newConcurrentMap();
 
     /** Flag that tells the write thread to run or quit. */
     private boolean do_run;
@@ -102,7 +72,7 @@ public class WriteThread implements Runnable
     private final Average write_time = new Average();
 
     /** Thread the executes this.run() */
-    private Thread thread;
+    private Thread _thread;
 
 
     /**
@@ -113,15 +83,8 @@ public class WriteThread implements Runnable
     }
 
     /** Add a channel's buffer that this thread reads */
-    public void addChannel(final ArchiveChannel channel)
-    {
-        addSampleBuffer(channel.getSampleBuffer());
-    }
-
-    /** Add a sample buffer that this thread reads */
-    void addSampleBuffer(final SampleBuffer buffer)
-    {
-        buffers.add(buffer);
+    public void addChannel(final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel) {
+        _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
     /** Start the write thread.
@@ -140,8 +103,8 @@ public class WriteThread implements Runnable
         }
         millisec_delay = (int)(1000.0 * write_period);
         batch_size = p_batch_size;
-        thread = new Thread(this, "WriteThread");
-        thread.start();
+        _thread = new Thread(this, "WriteThread");
+        _thread.start();
     }
 
     /** Reset statistics */
@@ -215,8 +178,7 @@ public class WriteThread implements Runnable
         while (do_run)
         {
             long delay;
-            try
-            {
+            try {
                 // If there was an error before...
 //                if (write_error)
 //                {   // .. try to reconnect
@@ -278,16 +240,15 @@ public class WriteThread implements Runnable
 //            LOG.error("Archive Disconnection could not be established. Ignored.");
 //        }
 
-        LOG.info("WriteThread exists");
+        LOG.info("WriteThread exits");
     }
 
     /** Stop the write thread, performing a final write. */
-    public void shutdown() throws Exception
-    {
+    public void shutdown() throws Exception {
         // Stop the thread
         stop();
         // Wait for it to end
-        thread.join();
+        _thread.join();
         // Then write once more.
         // Errors in this last write are passed up.
         write();
@@ -298,48 +259,25 @@ public class WriteThread implements Runnable
      * @throws OsgiServiceUnavailableException
      * @throws ArchiveServiceException
      */
-    private long write() throws OsgiServiceUnavailableException, ArchiveServiceException
-    {
-        int total_count = 0;
+    private //<V, T extends ICssValueType<V> & IHasAlarm>
+    long write() throws OsgiServiceUnavailableException, ArchiveServiceException {
+        int totalCount = 0;
 
-        final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
+        final LinkedList<IArchiveSample<Object, ICssAlarmValueType<Object>>> allSamples = Lists.newLinkedList();
 
-        // FIXME (bknerr) : workaround adapter interface for sample (value + channel id)
-        // Find a proper abstraction for IArchiveSample!
-        // FIXME (bknerr) : get rid of batch size here, move it to the impl
-        final List<IValueWithChannelId> samples =
-            new ArrayList<IValueWithChannelId>(batch_size);
-        IValue sample;
+        for (final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel : _channelMap.values()) {
+            final SampleBuffer<Object,
+                               ICssAlarmValueType<Object>,
+                               IArchiveSample<Object, ICssAlarmValueType<Object>>> buffer = channel.getSampleBuffer();
 
-        for (final SampleBuffer buffer : buffers) {
             // Update max buffer length etc. before we start to remove samples
             buffer.updateStats();
-            // Gather samples for one channel
-            final String channelName = buffer.getChannelName();
-
-            final int channelId = writerService.getChannelId(channelName);
-
-            // REfactor to buffer drainTo in service
-            while ((sample = buffer.poll()) != null) {
-                // sample handling
-                samples.add(new ValueWithChannelId(sample, channelId));
-                if (samples.size() >= batch_size) {
-                    writerService.writeSamples(samples);
-                    total_count += batch_size;
-                    samples.clear();
-                }
-
-                // metadata handling
-                writerService.writeMetaData(channelName, sample);
-            }
+            totalCount += buffer.size();
+            buffer.drainTo(allSamples);
         }
-        // remaining sample handling of this sample buffer
-        if (!samples.isEmpty()) {
-            writerService.writeSamples(samples);
-            total_count += samples.size();
-            samples.clear();
-        }
+        final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
+        writerService.writeSamples(allSamples);
 
-        return total_count;
+        return totalCount;
     }
 }

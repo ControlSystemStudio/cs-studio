@@ -21,10 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -34,9 +32,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
-import org.csstudio.archive.common.service.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -46,26 +42,27 @@ import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapte
 import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
+import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 
 /**
@@ -99,7 +96,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>, IValue> {
         /**
          * Constructor.
          */
@@ -108,11 +105,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> from) {
+         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>> from) {
              try {
                  // TODO (bknerr) : support lookup for every single value... check performance
-                 Object min = from.getMinimum();
-                 Object max = from.getMaximum();
+                 final Object min = from.getMinimum();
+                 final Object max = from.getMaximum();
                  if (min != null && max != null) {
                      return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
                  }
@@ -125,47 +122,47 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
 
-    /**
-     * Converter function with email error.
-     *
-     * @author bknerr
-     * @since 20.12.2010
-     */
-    private static final class IValueWithId2ICssAlarmValueFunction implements
-            Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> {
-        /**
-         * Constructor.
-         */
-        public IValueWithId2ICssAlarmValueFunction() {
-            // EMPTY
-        }
-
-        @SuppressWarnings("synthetic-access")
-        @Override
-        @CheckForNull
-        public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
-            try {
-                return ADAPT_MGR.adapt(valWithId);
-
-            } catch (final TypeSupportException e) {
-                final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
-                LOG.error(msg, e);
-                try {
-                    final EMailSender mailer =new EMailSender("smtp.desy.de",
-                                                              "archive.service@dontreply",
-                                                              "bastian.knerr@desy.de",
-                                                              msg);
-                    mailer.addText(e.getMessage() + "\n" + e.getCause());
-                    mailer.close();
-                } catch (final IOException ioe) {
-                    LOG.error("Closing of mailer for error message failed.", ioe);
-                }
-                return null;
-            }
-        }
-    }
-    private static final IValueWithId2ICssAlarmValueFunction IVALUE_2_CSS_VALUE_FUNC =
-        new IValueWithId2ICssAlarmValueFunction();
+//    /**
+//     * Converter function with email error.
+//     *
+//     * @author bknerr
+//     * @since 20.12.2010
+//     */
+//    private static final class IValueWithId2ICssAlarmValueFunction implements
+//            Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> {
+//        /**
+//         * Constructor.
+//         */
+//        public IValueWithId2ICssAlarmValueFunction() {
+//            // EMPTY
+//        }
+//
+//        @SuppressWarnings("synthetic-access")
+//        @Override
+//        @CheckForNull
+//        public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
+//            try {
+//                return ADAPT_MGR.adapt(valWithId);
+//
+//            } catch (final TypeSupportException e) {
+//                final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
+//                LOG.error(msg, e);
+//                try {
+//                    final EMailSender mailer =new EMailSender("smtp.desy.de",
+//                                                              "archive.service@dontreply",
+//                                                              "bastian.knerr@desy.de",
+//                                                              msg);
+//                    mailer.addText(e.getMessage() + "\n" + e.getCause());
+//                    mailer.close();
+//                } catch (final IOException ioe) {
+//                    LOG.error("Closing of mailer for error message failed.", ioe);
+//                }
+//                return null;
+//            }
+//        }
+//    }
+//    private static final IValueWithId2ICssAlarmValueFunction IVALUE_2_CSS_VALUE_FUNC =
+//        new IValueWithId2ICssAlarmValueFunction();
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
@@ -178,16 +175,18 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
+    public
+    <V, T extends ICssValueType<V> & IHasAlarm>
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
        //                   And apparently the type leads to Object instead of generic type...damn
         try {
-            final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
-                Collections2.filter(Collections2.transform(samples, IVALUE_2_CSS_VALUE_FUNC),
-                                    Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
+//            final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
+//                Collections2.filter(Collections2.transform(samples, IVALUE_2_CSS_VALUE_FUNC),
+//                                    Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
 
-            DAO_MGR.getSampleDao().createSamples(sampleBeans);
+            DAO_MGR.getSampleDao().createSamples(samples);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }
@@ -356,37 +355,49 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                                         @Nonnull final ITimestamp end,
                                         @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
-        final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
-        final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-
         try {
+            final DesyArchiveRequestType desyType = validateRequestType(type);
+
+            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> samples =
-                DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
+            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
+                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =
                 Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
                                  Predicates.<IValue>notNull());
             return iValues;
 
-        } catch (final IllegalArgumentException iae) {
-            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeIdentifier(), iae);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
+        } catch (final RequestTypeParameterException re) {
+            throw new ArchiveServiceException("Sample retrieval failed.", re);
         }
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Set<IArchiveRequestType> getRequestTypes() {
-        return Sets.<IArchiveRequestType>newHashSet(EnumSet.allOf(ArchiveRequestType.class));
+    public ImmutableSet<IArchiveRequestType> getRequestTypes() {
+        return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(DesyArchiveRequestType.class)).build();
     }
 
+    @CheckForNull
+    private DesyArchiveRequestType validateRequestType(@CheckForNull final IArchiveRequestType type) throws RequestTypeParameterException {
+        try {
+            return DesyArchiveRequestType.class.cast(type);
+        } catch(final ClassCastException cce) {
+            throw new RequestTypeParameterException("Request type is not the correct type instance!" +
+                                                    " Use one the type instances returned by the service interface or null", cce);
+        }
+    }
 }

@@ -33,6 +33,15 @@ import org.csstudio.domain.desy.types.TypeSupportException;
  */
 public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Float> {
 
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    FloatArchiveTypeConversionSupport() {
+        super(Float.class);
+    }
+
     /**
      * {@inheritDoc}
      */

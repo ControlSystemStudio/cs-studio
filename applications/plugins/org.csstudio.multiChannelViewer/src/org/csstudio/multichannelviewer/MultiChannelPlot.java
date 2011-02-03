@@ -12,6 +12,7 @@ import java.util.List;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.utility.channel.ICSSChannel;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -118,7 +119,7 @@ public class MultiChannelPlot extends EditorPart {
 				}				
 				pv = PVManager.read(
 						synchronizedArrayOf(ms(75), vDoubles(Collections
-								.unmodifiableList(pvNames)))).atHz(10);
+								.unmodifiableList(pvNames)))).andNotify(SWTUtil.onSWTThread()).atHz(10);
 				final XYSeries series = new XYSeries("PV Group1", false, true);
 				dataset.addSeries(series);
 				pv.addPVValueChangeListener(new PVValueChangeListener() {

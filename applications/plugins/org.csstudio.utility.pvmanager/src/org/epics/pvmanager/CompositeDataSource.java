@@ -112,7 +112,7 @@ public class CompositeDataSource extends DataSource {
             // Add to the recipes
             for (Map.Entry<String, Map<String, ValueCache>> entry : routingCaches.entrySet()) {
                 if (splitRecipe.get(entry.getKey()) == null)
-                    splitRecipe.put(entry.getKey(), new DataRecipe());
+                    splitRecipe.put(entry.getKey(), new DataRecipe(recipe.getExceptionHandler()));
                 splitRecipe.put(entry.getKey(), splitRecipe.get(entry.getKey()).includeCollector(collector, entry.getValue()));
             }
 
@@ -123,8 +123,11 @@ public class CompositeDataSource extends DataSource {
         // Dispatch calls to all the data sources
         for (Map.Entry<String, DataRecipe> entry : splitRecipe.entrySet()) {
             try {
-                dataSources.get(entry.getKey()).connect(entry.getValue());
-            } catch(RuntimeException ex) {
+                DataSource dataSource = dataSources.get(entry.getKey());
+                if (dataSource == null)
+                    throw new IllegalArgumentException("DataSource '" + entry.getKey() + "://' was not configured.");
+                dataSource.connect(entry.getValue());
+            } catch (RuntimeException ex) {
                 // If data source fail, still go and connect the others
                 recipe.getExceptionHandler().handleException(ex);
             }

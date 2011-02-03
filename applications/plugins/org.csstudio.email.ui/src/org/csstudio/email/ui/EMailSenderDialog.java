@@ -1,5 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.email.ui;
 
+import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.email.EMailSender;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -10,6 +18,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -23,8 +32,9 @@ public class EMailSenderDialog extends TitleAreaDialog
 {
     final private String host, from, to, subject, body;
     final private String image_filename;
-    
+
     private Text txt_from, txt_to, txt_subject, txt_body;
+    private ImageTabFolder image_tabfolder;
 
     /** Initialize for plain-text entry
      *  @param shell
@@ -60,10 +70,13 @@ public class EMailSenderDialog extends TitleAreaDialog
         this.subject = subject;
         this.body = body;
         this.image_filename = image_filename;
+    }
 
-        // Try to allow resize, because the 'text' section could
-        // use more or less space depending on use.
-        setShellStyle(getShellStyle() | SWT.RESIZE);
+    /** Allow resize */
+    @Override
+    protected boolean isResizable()
+    {
+        return true;
     }
 
     /** Set the dialog title. */
@@ -73,7 +86,7 @@ public class EMailSenderDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.SendEmail);
     }
-    
+
     /** Create the GUI. */
     @Override
     protected Control createDialogArea(final Composite parent)
@@ -86,26 +99,26 @@ public class EMailSenderDialog extends TitleAreaDialog
         setTitleImage(title_image);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 title_image.dispose();
             }
         });
-        
-        
+
         // From peeking at super.createDialogArea we happen to expect a Compos.
         final Composite area = (Composite) super.createDialogArea(parent);
-        
+
         final SashForm sash = new SashForm(area, SWT.VERTICAL);
         sash.setLayout(new FillLayout());
         sash.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
-        // Put our widgets in another box to have own layout in there 
+
+        // Put our widgets in another box to have own layout in there
         final Composite box = new Composite(sash, 0);
         final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         box.setLayout(layout);
-        
+
         // From:     ____from_______
         // To:       ___to____
         // Subject:  ___subject____
@@ -146,19 +159,38 @@ public class EMailSenderDialog extends TitleAreaDialog
         gd.verticalAlignment = SWT.FILL;
         txt_body.setLayoutData(gd);
         txt_body.setText(body);
-        
+
+        image_tabfolder = new ImageTabFolder(sash, 0);
         // Maybe add image
         if (image_filename != null)
-        {
-            new ImagePreview(sash, Messages.AttachedImage, image_filename);
-            sash.setWeights(new int[] { 80, 20 });
-        }
-    
+            image_tabfolder.addImage(image_filename);
+        sash.setWeights(new int[] { 80, 20 });
+
         txt_to.setFocus();
-        
+
         return area;
     }
-    
+
+    /** Add an "Add Image" button to the dialog's button bar */
+    @Override
+    protected Control createButtonBar(final Composite parent)
+    {
+        final Composite composite = new Composite(parent, SWT.NONE);
+        final GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        layout.horizontalSpacing = 0;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        composite.setFont(parent.getFont());
+
+        final Button button = image_tabfolder.createAddButton(composite);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        super.createButtonBar(composite);
+        return composite;
+    }
+
     /** Send email, display errors. */
     @Override
     protected void okPressed()
@@ -170,8 +202,8 @@ public class EMailSenderDialog extends TitleAreaDialog
                     txt_to.getText().trim(),
                     txt_subject.getText().trim());
             mailer.addText(txt_body.getText().trim());
-            if (image_filename != null)
-                mailer.attachImage(image_filename);
+            for (String image : image_tabfolder.getFilenames())
+                mailer.attachImage(image);
             mailer.close();
         }
         catch (Exception ex)

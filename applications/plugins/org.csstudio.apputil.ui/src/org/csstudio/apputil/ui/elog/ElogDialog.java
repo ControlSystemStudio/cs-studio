@@ -8,6 +8,7 @@
 package org.csstudio.apputil.ui.elog;
 
 import org.csstudio.apputil.ui.Activator;
+import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -19,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -40,13 +42,14 @@ abstract public class ElogDialog extends TitleAreaDialog
 
     private Text user, password, title, body;
     private Combo logbook;
+    private ImageTabFolder image_tabfolder;
 
     /** Construct a dialog
      *  @param shell The parent shell
      *  @param message Message, explanation of entry
      *  @param initial_title Initial title for new entry
      *  @param initial_body Initial body text for new entry
-     *  @param image_filename Name of image file or <code>null</code>
+     *  @param image_filename Name of initial image file or <code>null</code>
      *  @throws Exception on error
      */
     public ElogDialog(final Shell shell,
@@ -222,13 +225,35 @@ abstract public class ElogDialog extends TitleAreaDialog
         gd.verticalAlignment = SWT.FILL;
         body.setLayoutData(gd);
 
+        image_tabfolder = new ImageTabFolder(sash, SWT.TOP);
+
+        sash.setWeights(new int[] { 80, 20 });
+
         // Maybe add image
         if (image_filename != null)
-        {
-            new ImagePreview(sash, Messages.Elog_Dialog_ImageComment, image_filename);
-            sash.setWeights(new int[] { 80, 20 });
-        }
+            image_tabfolder.addImage(image_filename);
+
         return area;
+    }
+
+    /** Add an "Add Image" button to the dialog's button bar */
+    @Override
+    protected Control createButtonBar(final Composite parent)
+    {
+        final Composite composite = new Composite(parent, SWT.NONE);
+        final GridLayout layout = new GridLayout(2, false);
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+        layout.horizontalSpacing = 0;
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+        composite.setFont(parent.getFont());
+
+        final Button button = image_tabfolder.createAddButton(composite);
+        button.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+
+        super.createButtonBar(composite);
+        return composite;
     }
 
     /** Make the elog entry, display errors. */
@@ -240,7 +265,8 @@ abstract public class ElogDialog extends TitleAreaDialog
         {
             makeElogEntry(log_name, user.getText().trim(),
                     password.getText().trim(), title.getText().trim(),
-                    body.getText().trim());
+                    body.getText().trim(),
+                    image_tabfolder.getFilenames());
         }
         catch (Exception ex)
         {
@@ -259,6 +285,7 @@ abstract public class ElogDialog extends TitleAreaDialog
      *  @param password Password
      *  @param title Title of entry
      *  @param body Body text of entry
+     *  @param images Image file names
      */
-    abstract public void makeElogEntry(String logbook_name, String user, String password, String title, String body) throws Exception;
+    abstract public void makeElogEntry(String logbook_name, String user, String password, String title, String body, String images[]) throws Exception;
 }

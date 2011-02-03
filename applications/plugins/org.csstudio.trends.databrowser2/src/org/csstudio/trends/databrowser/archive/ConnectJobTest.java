@@ -50,7 +50,7 @@ public class ConnectJobTest
                 //System.out.println(infos.length + " archives:");
                 for (final ArchiveInfo info : infos)
                 {
-                    //System.out.println(info.getKey() + ": " + info.getName() + " (" + info.getDescription() + ")");
+                    System.out.println(info.getKey() + ": " + info.getName() + " (" + info.getDescription() + ")");
                 }
                 done.release();
             }

@@ -85,7 +85,7 @@ public class DctContentModelBuilder extends
 
 		try {
 			ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> unit = addUnit(
-					contentModel, _dctPoject.getName());
+					contentModel, "EpicsAlarmcfg");
 			addFacility(contentModel, _dctPoject.getName(), unit);
 		} catch (final InvalidNameException e) {
 			throw new CreateContentModelException(e.getMessage(), e);

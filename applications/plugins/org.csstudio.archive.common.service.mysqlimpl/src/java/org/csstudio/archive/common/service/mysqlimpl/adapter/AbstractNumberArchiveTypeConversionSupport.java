@@ -44,6 +44,16 @@ import com.google.common.collect.Lists;
 public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number> extends ArchiveTypeConversionSupport<N> {
 
     /**
+     * Constructor.
+     * @param type
+     */
+    AbstractNumberArchiveTypeConversionSupport(@Nonnull final Class<N> type) {
+        super(type);
+    }
+
+
+
+    /**
      * Number to string convertible function.
      *
      * @author bknerr

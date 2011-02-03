@@ -2,6 +2,7 @@ package org.csstudio.diag.pvmanager.probe.views;
 
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
 
 import java.text.DecimalFormat;
 
@@ -478,7 +479,7 @@ public class PVManagerProbe extends ViewPart {
 		}
 		
 		setStatus(Messages.S_Searching);
-		pv = PVManager.read(channel(pvName)).atHz(25);
+		pv = PVManager.read(channel(pvName)).andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
 			
 			@Override
@@ -640,7 +641,8 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	@Override
 	public void dispose() {
-		pv.close();
+		if (pv != null)
+			pv.close();
 		super.dispose();
 	}
 

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Utilities to convert JCA types to VData types.
@@ -127,6 +128,24 @@ class DataUtils {
             return AlarmStatus.NONE;
         }
         return statusConverter.get(status);
+    }
+
+    /**
+     * Determines whether the timestamp represents good data or not. It
+     * checks whether the seconds are either a UNIX 0 or a Epics 0.
+     *
+     * @param timeStamp a timestamp
+     * @return false if timeStamp is null or represents a UNIX 0 or an Epics 0
+     */
+    static boolean isTimeValid(TimeStamp timeStamp) {
+        if (timeStamp == null)
+            return false;
+        
+        long sec = timeStamp.getSec();
+        if (sec == 0 || sec == TS_EPOCH_SEC_PAST_1970) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -35,7 +35,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
-import org.csstudio.config.authorizeid.AuthorizeIdEntry;
+import org.csstudio.config.authorizeid.GroupRoleTableEntry;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -60,14 +60,14 @@ public final class LdapAccess {
      * @param ou the group
      * @return attributes
      */
-    public static AuthorizeIdEntry[] getProp(final String eain, final String ou) {
+    public static GroupRoleTableEntry[] getProp(final String eain, final String ou) {
 
         final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
         if (service == null) {
             MessageDialog.openError(null,
                                     "LDAP Access failed",
                                     "No LDAP service available. Try again later.");
-            return new AuthorizeIdEntry[0];
+            return new GroupRoleTableEntry[0];
         }
 
         final ILdapSearchResult result =
@@ -80,10 +80,10 @@ public final class LdapAccess {
             MessageDialog.openInformation(null,
                                           "LDAP Access",
                                           "No search result.");
-            return new AuthorizeIdEntry[0];
+            return new GroupRoleTableEntry[0];
         }
 
-        final List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
+        final List<GroupRoleTableEntry> al = new ArrayList<GroupRoleTableEntry>();
         for (final SearchResult row : result.getAnswerSet()) {
             final String name = row.getName();
             final String type = row.getClassName();
@@ -103,12 +103,12 @@ public final class LdapAccess {
                 }
             }
             if (!StringUtil.isBlank(eaig) && !StringUtil.isBlank(eair)) {
-                final AuthorizeIdEntry entry = new AuthorizeIdEntry(eaig, eair);
+                final GroupRoleTableEntry entry = new GroupRoleTableEntry(eaig, eair);
                 al.add(entry);
             }
         }
 
-        return al.toArray(new AuthorizeIdEntry[al.size()]);
+        return al.toArray(new GroupRoleTableEntry[al.size()]);
     }
 
     /**

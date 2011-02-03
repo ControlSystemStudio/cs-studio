@@ -100,6 +100,7 @@ public class ExportTest implements ExportErrorHandler
     }
 
     /** @see ExportErrorHandler */
+    @Override
     public void handleExportError(final Exception ex)
     {
         ex.printStackTrace();

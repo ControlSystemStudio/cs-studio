@@ -23,6 +23,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSLogbookFactory implements ILogbookFactory
 {
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public String[] getLogbooks() throws Exception
     {
@@ -48,14 +49,16 @@ public class SNSLogbookFactory implements ILogbookFactory
         final String ret_val[] = new String[names.size()];
         return names.toArray(ret_val);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public String getDefaultLogbook()
     {
         return Preferences.getDefaultLogbook();
     }
 
     /** {@inheritDoc} */
+    @Override
     public ILogbook connect(final String logbook, final String user, final String password)
             throws Exception
     {
@@ -68,7 +71,7 @@ public class SNSLogbookFactory implements ILogbookFactory
      *  Application code should use the
      *   <code>org.csstudio.logbook.sns.LogbookFactory</code>
      *  and not directly call the <code>SNSLogbookFactory</code>.
-     *  
+     *
      *  @param url RDB URL
      *  @param logbook Logbook name
      *  @param user   RDB user

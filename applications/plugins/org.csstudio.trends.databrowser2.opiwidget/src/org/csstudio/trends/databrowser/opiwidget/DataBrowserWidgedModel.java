@@ -85,4 +85,11 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
         model.read(input);
         return model;
     }
+
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+        return "DataBrowserWidgetModel: " + getFilename().toString();
+    }
 }

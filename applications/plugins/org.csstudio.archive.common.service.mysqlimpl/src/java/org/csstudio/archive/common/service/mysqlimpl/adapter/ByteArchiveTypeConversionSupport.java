@@ -34,6 +34,14 @@ import org.csstudio.domain.desy.types.TypeSupportException;
 public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
 
     /**
+     * Constructor.
+     * @param type
+     */
+    ByteArchiveTypeConversionSupport() {
+        super(Byte.class);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

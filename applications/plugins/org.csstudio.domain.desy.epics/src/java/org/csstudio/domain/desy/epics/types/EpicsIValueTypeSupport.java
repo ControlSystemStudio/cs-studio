@@ -21,9 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,17 +28,15 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
-
-import com.google.common.collect.Maps;
+import org.epics.pvmanager.TypeSupport;
 
 /**
- * TODO (bknerr) :
+ * Conversion for epics and epics related types.
  *
  * @author bknerr
  * @since 15.12.2010
@@ -49,13 +44,17 @@ import com.google.common.collect.Maps;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
+public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
-    protected static Map<Class<?>, AbstractTypeSupport<?>> TYPE_SUPPORTS =
-        Maps.newHashMap();
-    protected static Map<Class<?>, AbstractTypeSupport<?>> CALC_TYPE_SUPPORTS =
-        new ConcurrentHashMap<Class<?>, AbstractTypeSupport<?>>();
+    /**
+     * Constructor for a new EpicsIValue support.
+     * 
+     * @param type the supported type
+     */
+    public EpicsIValueTypeSupport(Class<T> type) {
+        super(type, EpicsIValueTypeSupport.class);
+    }
 
     public static void install() {
         AbstractIValueConversionTypeSupport.install();
@@ -76,7 +75,8 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
-            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass, TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+            (AbstractIValueConversionTypeSupport<R, T>) findTypeSupportFor(EpicsIValueTypeSupport.class, 
+                                                                           typeClass);
         return support.convertToCssType(value);
     }
 

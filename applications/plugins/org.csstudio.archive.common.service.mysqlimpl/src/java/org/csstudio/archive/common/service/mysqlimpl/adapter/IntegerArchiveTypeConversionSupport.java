@@ -33,6 +33,15 @@ import org.csstudio.domain.desy.types.TypeSupportException;
  */
 public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Integer> {
 
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    IntegerArchiveTypeConversionSupport() {
+        super(Integer.class);
+    }
+
     /**
      * {@inheritDoc}
      */

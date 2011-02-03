@@ -28,7 +28,7 @@ import org.csstudio.util.stats.Average;
  *  be lost.
  *  The channels that add samples to the sample buffer supposedly notice
  *  the error condition and add a special indicator once we recover.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class WriteThread implements Runnable
@@ -38,22 +38,22 @@ public class WriteThread implements Runnable
 
     /** Server to which this thread writes. */
     final private RDBArchive archive;
-    
+
     /** All the sample buffers this thread writes. */
     final private ArrayList<SampleBuffer> buffers =
         new ArrayList<SampleBuffer>();
-    
+
     /** Flag that tells the write thread to run or quit. */
     private boolean do_run;
-    
+
     /** Synchronization block for waiting.
      *  Signaled in stop().
      */
     private Object wait_block = new Object();
-    
+
     /** Delay between write runs. */
     private long millisec_delay = 5000;
-    
+
     /** Number of values to place into one batch */
     private int batch_size = 500;
 
@@ -62,7 +62,7 @@ public class WriteThread implements Runnable
 
     /** Average number of values per write run */
     private Average write_count = new Average();
-    
+
     /** Average duration of write run */
     private Average write_time = new Average();
 
@@ -88,7 +88,7 @@ public class WriteThread implements Runnable
     {
         buffers.add(buffer);
     }
-    
+
     /** Start the write thread.
      *  @param write_period Period between writes in seconds
      *  @param batch_size Number of values to batch
@@ -124,7 +124,7 @@ public class WriteThread implements Runnable
             wait_block.notify();
         }
     }
-    
+
     /** @return Timestamp of end of last write run */
     public ITimestamp getLastWriteTime()
     {
@@ -136,13 +136,13 @@ public class WriteThread implements Runnable
     {
         return write_count.get();
     }
-    
+
     /** @return  Average duration of write run in seconds */
     public double getWriteDuration()
     {
         return write_time.get();
     }
-    
+
     /** 'Main loop' of the write thread.
      *  <p>
      *  Writes all values out, then waits.
@@ -156,6 +156,7 @@ public class WriteThread implements Runnable
      *  we wait on a semaphore (wait_block), which
      *  can be notified in stop() to cause an ASAP exit.
      */
+    @Override
     @SuppressWarnings("nls")
     public void run()
     {
@@ -226,7 +227,7 @@ public class WriteThread implements Runnable
         // Errors in this last write are passed up.
         write();
     }
-    
+
     /** Write right now until all sample buffers are empty
      *  @return number of samples written
      */

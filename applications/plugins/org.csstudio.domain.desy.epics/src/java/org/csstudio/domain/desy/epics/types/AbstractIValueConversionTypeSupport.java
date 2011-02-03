@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.CssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -42,6 +41,7 @@ import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
+import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
@@ -67,22 +67,18 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
     /**
      * Constructor.
      */
-    AbstractIValueConversionTypeSupport() {
-        // Don't instantiate outside this class
+    AbstractIValueConversionTypeSupport(@Nonnull final Class<T> clazz) {
+        super(clazz);
     }
 
     public static void install() {
         if (INSTALLED) {
             return;
         }
-        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(new IDoubleValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IEnumeratedValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new ILongValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IStringValueConversionTypeSupport());
 
         INSTALLED = true;
     }
@@ -100,7 +96,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
          * Constructor.
          */
         public IStringValueConversionTypeSupport() {
-            // Empty
+            super(IStringValue.class);
         }
 
         @Override
@@ -137,7 +133,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
          * Constructor.
          */
         public ILongValueConversionTypeSupport() {
-            // Empty
+            super(ILongValue.class);
         }
 
         @CheckForNull
@@ -172,7 +168,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IDoubleValue> {
 
         public IDoubleValueConversionTypeSupport() {
-            // Empty
+            super(IDoubleValue.class);
         }
 
         @CheckForNull
@@ -207,7 +203,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IEnumeratedValue> {
 
         public IEnumeratedValueConversionTypeSupport() {
-            // Empty
+            super(IEnumeratedValue.class);
         }
         /**
          * {@inheritDoc}

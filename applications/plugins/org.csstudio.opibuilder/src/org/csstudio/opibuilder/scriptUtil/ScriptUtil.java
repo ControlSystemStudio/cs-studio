@@ -19,26 +19,26 @@ import org.eclipse.jface.dialogs.MessageDialog;
  *
  */
 public class ScriptUtil {
-	
+
 	/**Open an OPI.
-	 * @param widgetController the widgetController to which the script is attached. 
-	 * @param relative_path the path of the OPI relative to the Display file of the widgetContoller. 
+	 * @param widgetController the widgetController to which the script is attached.
+	 * @param relative_path the path of the OPI relative to the Display file of the widgetContoller.
 	 * @param newWindow true if it will be opened in a new window. false if in a new tab.
 	 * @param macrosInput the macrosInput. null if no macros needed.
 	 */
-	public final static void openOPI(AbstractBaseEditPart widgetController, 
+	public final static void openOPI(AbstractBaseEditPart widgetController,
 			String relative_path, boolean newWindow, MacrosInput macrosInput){
 		IPath  path = ResourceUtil.buildAbsolutePath(
 				widgetController.getWidgetModel(), ResourceUtil.getPathFromString(relative_path));
-		RunModeService.getInstance().runOPI(path, 
+		RunModeService.getInstance().runOPI(path,
 				newWindow ? TargetWindow.NEW_WINDOW : TargetWindow.SAME_WINDOW, null, macrosInput);
 	}
-			
+
 	/**Pop up an Elog dialog to make an Elog entry.
-	 * @param filePath path of a file to attach or null. 
-	 * It could be either a local file system file path 
-	 * or a workspace file path. File types that the logbook support depend on 
-	 * implementation but should include *.gif, *.jpg: File will be attached 
+	 * @param filePath path of a file to attach or null.
+	 * It could be either a local file system file path
+	 * or a workspace file path. File types that the logbook support depend on
+	 * implementation but should include *.gif, *.jpg: File will be attached
 	 * as image.
 	 */
 	public final static void makeElogEntry(final String filePath){
@@ -54,7 +54,7 @@ public class ScriptUtil {
 		            // try workspace
 		  			IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
 		     					path, false);
-		        	if (r!= null && r instanceof IFile) {			
+		        	if (r!= null && r instanceof IFile) {
 		            		systemFilePath = ((IFile)r).getLocation().toOSString();
 		            }else
 		            	throw new Exception();
@@ -70,22 +70,22 @@ public class ScriptUtil {
             {
                 @Override
                 public void makeElogEntry(final String logbook_name, final String user,
-                        final String password, final String title, final String body)
+                        final String password, final String title, final String body, final String images[])
                         throws Exception
                 {
                     final ILogbook logbook = getLogbook_factory()
                                         .connect(logbook_name, user, password);
                     try
-                    {	
-	                
-                        logbook.createEntry(title, body, finalfilePath);
+                    {
+
+                        logbook.createEntry(title, body, images);
                     }
                     finally
                     {
                         logbook.close();
                     }
                 }
-                
+
             };
             dialog.open();
         }
@@ -94,5 +94,5 @@ public class ScriptUtil {
             MessageDialog.openError(null, "Error", ex.getMessage());
         }
 	}
-	
+
 }

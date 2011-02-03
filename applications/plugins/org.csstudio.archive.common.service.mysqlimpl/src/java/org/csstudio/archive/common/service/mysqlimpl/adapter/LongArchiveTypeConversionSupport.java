@@ -33,6 +33,15 @@ import org.csstudio.domain.desy.types.TypeSupportException;
  */
 public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
 
+
+    /**
+     * Constructor.
+     * @param type
+     */
+    LongArchiveTypeConversionSupport() {
+        super(Long.class);
+    }
+
     /**
      * {@inheritDoc}
      */

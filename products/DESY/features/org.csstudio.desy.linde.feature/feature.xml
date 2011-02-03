@@ -34,10 +34,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.desy.librarydesy.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.desy.sds.feature"
          version="0.0.0"/>
 
