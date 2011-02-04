@@ -55,6 +55,7 @@ import org.csstudio.archive.common.service.mysqlimpl.severity.IArchiveSeverityDa
 import org.csstudio.archive.service.common.mysqlimpl.status.ArchiveStatusDaoImpl;
 import org.csstudio.archive.service.common.mysqlimpl.status.IArchiveStatusDao;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.Maps;
 
@@ -215,8 +216,8 @@ public enum ArchiveDaoManager implements IDaoManager {
         } catch (final Exception e) {
             handleExceptions(e);
         }
-        if (connection == null) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, null);
+        if (connection == null || StringUtil.isBlank(_databaseName )) {
+            throw new ArchiveConnectionException("Either connection or database name is blank (null or empty).", null);
         }
         return connection;
     }
@@ -252,8 +253,10 @@ public enum ArchiveDaoManager implements IDaoManager {
     private Map<String, Object> createConnectionPrefsFromEclipsePrefs() {
         final Map<String, Object> prefs = Maps.newHashMap();
         prefs.put(URL.getKeyAsString(), URL.getValue());
+        prefs.put(FAILOVER_URL.getKeyAsString(), FAILOVER_URL.getValue());
         prefs.put(USER.getKeyAsString(), USER.getValue());
         prefs.put(PASSWORD.getKeyAsString(), PASSWORD.getValue());
+        prefs.put(DATABASE_NAME.getKeyAsString(), DATABASE_NAME.getValue());
         return prefs;
     }
 

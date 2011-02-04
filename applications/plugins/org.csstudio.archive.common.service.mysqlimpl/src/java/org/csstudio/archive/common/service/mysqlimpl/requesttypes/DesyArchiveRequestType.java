@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.requesttypes;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -40,10 +40,10 @@ import com.google.common.collect.ImmutableSet;
 public enum DesyArchiveRequestType implements IArchiveRequestType {
     RAW("Raw values."),
     AVG_PER_MINUTE("Averaged over the time period of one minute.",
-                   ARTParameters.NUM_OF_BINS,
-                   ARTParameters.PRECISION),
+                   RequestTypeParameters.NUM_OF_BINS,
+                   RequestTypeParameters.PRECISION),
     AVG_PER_HOUR("Averaged over the time period of one hour.",
-                 ARTParameters.NUM_OF_BINS);
+                 RequestTypeParameters.NUM_OF_BINS);
 
 
     private final IArchiveRequestType _delegate;

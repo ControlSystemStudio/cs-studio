@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl;
+package org.csstudio.archive.common.service.mysqlimpl.requesttypes;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +33,7 @@ import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterExce
  * @author bknerr
  * @since 26.01.2011
  */
-public final class ARTParameters {
+public final class RequestTypeParameters {
     /**
      * Internal typed request parameter.
      *
@@ -225,7 +225,7 @@ public final class ARTParameters {
     /**
      * Constructor.
      */
-    private ARTParameters() {
+    private RequestTypeParameters() {
         // Don't instantiate
     }
 
