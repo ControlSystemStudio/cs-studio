@@ -16,5 +16,6 @@ Require-Bundle: org.junit;bundle-version="4.8.1",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
  org.csstudio.archive.common.service;bundle-version="1.0.0",
  org.csstudio.utility.pvmanager;bundle-version="0.4.0",
- org.csstudio.email;bundle-version="1.0.0"
+ org.csstudio.email;bundle-version="1.0.0",
+ org.csstudio.platform.libs.jdbc.mysql;bundle-version="5.1.14"
 Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY

@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_URL;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.URL;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
@@ -140,6 +141,7 @@ public enum ArchiveDaoManager implements IDaoManager {
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     private String _url;
+    private String _failoverUrl;
     private String _user;
     private String _password;
     private String _databaseName;
@@ -185,6 +187,7 @@ public enum ArchiveDaoManager implements IDaoManager {
                 connection.close();
             }
             _url = (String) prefs.get(URL.getKeyAsString());
+            _failoverUrl = (String) prefs.get(FAILOVER_URL.getKeyAsString());
             _user = (String) prefs.get(USER.getKeyAsString());
             _password = (String) prefs.get(PASSWORD.getKeyAsString());
             _databaseName = (String) prefs.get(DATABASE_NAME.getKeyAsString());

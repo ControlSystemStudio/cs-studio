@@ -34,18 +34,19 @@ import org.csstudio.platform.AbstractPreference;
 public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
     public static final MySQLArchiveServicePreference<String> URL =
-        new MySQLArchiveServicePreference<String>("url", "jdbc:mysql://krynfsc.desy.de:3306/archive");
+        new MySQLArchiveServicePreference<String>("url", "NOT PUBLIC");
+
     public static final MySQLArchiveServicePreference<String> FAILOVER_URL =
-        new MySQLArchiveServicePreference<String>("failoverUrl", "jdbc:mysql://krykpcgasta.desy.de:3306/archive");
+        new MySQLArchiveServicePreference<String>("failover_url", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<String> USER =
-        new MySQLArchiveServicePreference<String>("user", "desyArchiver");
+        new MySQLArchiveServicePreference<String>("user", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<String> PASSWORD =
-        new MySQLArchiveServicePreference<String>("password", "archive");
+        new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
-        new MySQLArchiveServicePreference<String>("database_name", "archive");
+        new MySQLArchiveServicePreference<String>("database_name", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<Boolean> AUTO_CONNECT =
         new MySQLArchiveServicePreference<Boolean>("auto_connect", Boolean.FALSE);
@@ -76,7 +77,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
      */
     @Override
     protected String getPluginID() {
-        return "org.csstudio.archive.service.mysqlimpl";
+        return Activator.PLUGIN_ID;
     }
 
 }

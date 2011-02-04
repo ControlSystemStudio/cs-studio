@@ -42,6 +42,7 @@ import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
  */
 public class EngineModel {
     private static final Logger LOG =
@@ -386,17 +387,17 @@ public class EngineModel {
     }
 
     private void handleExceptions(@Nonnull final Exception inE) throws ArchiveReadConfigException {
-        final String msg = "Failure during archive engine configuration retrieval";
+        final String msg = "Failure during archive engine configuration retrieval: ";
         try {
             throw inE;
         } catch (final OsgiServiceUnavailableException e) {
-            throw new ArchiveReadConfigException(msg, e);
+            throw new ArchiveReadConfigException(msg + "Service unavailable.", e);
         } catch (final ArchiveServiceException e) {
-            throw new ArchiveReadConfigException(msg, e);
+            throw new ArchiveReadConfigException(msg + "Internal service exception.", e);
         } catch (final MalformedURLException e) {
-            throw new ArchiveReadConfigException(msg, e);
+            throw new ArchiveReadConfigException(msg + "Engine url malformed.", e);
         } catch (final TypeSupportException e) {
-            throw new ArchiveReadConfigException(msg, e);
+            throw new ArchiveReadConfigException(msg + "Channel type not supported.", e);
         } catch (final Exception re) {
             throw new RuntimeException(re);
         }
