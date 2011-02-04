@@ -8,10 +8,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.utility.channel.ICSSChannel;
+import org.csstudio.utility.pvmanager.jfreechart.widgets.XYChartWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -43,22 +45,20 @@ import org.jfree.experimental.chart.swt.ChartComposite;
 
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class MultiChannelPlot extends EditorPart {
+	public MultiChannelPlot() {
+	}
 
 	//
 	public static final String EDITOR_ID = "org.csstudio.multiChannelViewer.plot";
 
 	// Model
 	private CSSChannelGroup channels;
-	private PV<VMultiDouble> pv;
-
-	// GUI
-	private GridLayout layout;
-	private ChartComposite frame;
-	private JFreeChart chart;
-
-	private XYSeriesCollection dataset;
+	private XYChartWidget chart;
 
 	//
 	// public MultiChannelPlot() {
@@ -72,85 +72,34 @@ public class MultiChannelPlot extends EditorPart {
 
 	private void createChart(Composite parent) {
 		channels = new CSSChannelGroup("test group of channels");
+		parent.setLayout(new FormLayout());
+		chart = new XYChartWidget(parent, SWT.NONE);
+		FormData fd_chart = new FormData();
+		fd_chart.bottom = new FormAttachment(100);
+		fd_chart.right = new FormAttachment(100);
+		fd_chart.top = new FormAttachment(0);
+		fd_chart.left = new FormAttachment(0);
+		chart.setLayoutData(fd_chart);
+		
+		chart.setTitle("MultiChannel Plot");
+		chart.setYAxisLabel("PV Value");
 
-		// TODO Auto-generated method stub
-		layout = new GridLayout(1, true);
-		parent.setLayout(layout);
-
-		dataset = new XYSeriesCollection();
-		try {
-			chart = ChartFactory.createXYLineChart(
-					"Multi Channel Plot", "PV Channels", "Values", dataset,
-					PlotOrientation.VERTICAL, true, true, true);
-			XYPlot plot = (XYPlot) chart.getPlot();
-//			NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-//			rangeAxis.setRange(0, 250);
-			plot.setDomainGridlinesVisible(false);
-			plot.setRangeGridlinesVisible(false);
-			plot.setBackgroundPaint(Color.white);
-			frame = new ChartComposite(parent, SWT.NONE, chart, true);
-			// layout
-			GridData frameGD = new GridData();
-			frameGD.horizontalSpan = 1;
-			frameGD.grabExcessHorizontalSpace = true;
-			frameGD.grabExcessVerticalSpace = true;
-			frameGD.horizontalAlignment = SWT.FILL;
-			frameGD.verticalAlignment = SWT.FILL;
-			frame.setLayoutData(frameGD);
-			frame.pack();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		channels.addEventListListener(new ListEventListener<ICSSChannel>() {
 
 			@Override
 			public void listChanged(ListEvent<ICSSChannel> listChanges) {
-				if (pv != null) {
-					pv.close();					
-					dataset.removeSeries(dataset.getSeries("PV Group1"));
-				}
-				ValueAxis rangeAxis = (ValueAxis) ((XYPlot) chart.getPlot()).getDomainAxis();
-				rangeAxis.setLabel("Channels sorted by "+channels.getComparator().toString());
+				chart.setXAxisLabel("Channels sorted by "
+						+ channels.getComparator().toString());
 				List<String> pvNames = new ArrayList<String>();
-				for (ICSSChannel channel : channels.getList()) {	
-//					pvNames.add(channel.getChannel().getName());
+				for (ICSSChannel channel : channels.getList()) {
+					// pvNames.add(channel.getChannel().getName());
 					pvNames.add("sim://gaussian(50, 20, 0.1)");
-				}				
-				pv = PVManager.read(
-						synchronizedArrayOf(ms(75), vDoubles(Collections
-								.unmodifiableList(pvNames)))).andNotify(SWTUtil.onSWTThread()).atHz(10);
-				final XYSeries series = new XYSeries("PV Group1", false, true);
-				dataset.addSeries(series);
-				pv.addPVValueChangeListener(new PVValueChangeListener() {
-					@Override
-					public void pvValueChanged() {
-						// replace old series with new
-						updateXYSeriesForPV(pv, series);
-					}
-				});
+				}
+				chart.setChannelNames(pvNames);
+				chart.setChannelPositions(generatePositions(pvNames.size(),true));				
 			}
 
 		});
-	}
-
-	/**
-	 * updates the series to represent the new values for the pv
-	 * 
-	 * @param pv
-	 * @param series
-	 */
-	private void updateXYSeriesForPV(PV<VMultiDouble> pv, XYSeries series) {
-		if (pv.getValue() != null) {
-			double index = 0;
-			series.clear();
-			for (VDouble value : pv.getValue().getValues()) {
-				if (value != null)
-					series.add(index, (double)value.getValue(), false);
-				index++;
-			}
-			series.fireSeriesChanged();
-		}
 	}
 	
 	@Override
@@ -211,19 +160,31 @@ public class MultiChannelPlot extends EditorPart {
 		return this.channels;
 	}
 
-	PV<VMultiDouble> getChannelGroupPV() {
-		return this.pv;
+//	PV<VMultiDouble> getChannelGroupPV() {
+//		return this.pv;
+//	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void dispose() {
+		chart.dispose();
+		super.dispose();
 	}
 
-	 /** {@inheritDoc} */
-    @Override
-    public void dispose()
-    {
-        if (pv != null)
-        {
-            pv.close();
-        }
-        super.dispose();
-    }
-
+	protected List<Double> generatePositions(int size, boolean exponential) {
+		List<Double> positions = new ArrayList<Double>();
+		if(exponential){			
+			double step = 1;
+			for (double i = 0; i < size; i++) {
+				positions.add(i+step);
+				step=step*2;				
+			}
+		}else{
+			Random generator = new Random();
+			for (int i = 0; i < size; i++) {
+				positions.add(generator.nextDouble());
+			}
+		}
+		return positions;
+	}
 }

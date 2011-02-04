@@ -100,12 +100,12 @@ public abstract class MultiChannelPlotAwareView extends ViewPart {
     private void updateEditor(MultiChannelPlot new_editor)
     {
         final CSSChannelGroup old_group = (editor == null) ? null : editor.getCSSChannelGroup();
-        final PV<VMultiDouble> old_pv = (editor == null) ? null : editor.getChannelGroupPV();
+//        final PV<VMultiDouble> old_pv = (editor == null) ? null : editor.getChannelGroupPV();
         editor = new_editor;
         final CSSChannelGroup new_group = (editor == null) ? null : editor.getCSSChannelGroup();
-        final PV<VMultiDouble> new_pv = (editor == null) ? null : editor.getChannelGroupPV();
+//        final PV<VMultiDouble> new_pv = (editor == null) ? null : editor.getChannelGroupPV();
         updateChannelGroup(old_group, new_group);
-        updatePV(old_pv, new_pv);
+//        updatePV(old_pv, new_pv);
     }
     
     protected abstract void updateChannelGroup(CSSChannelGroup old_group, CSSChannelGroup new_group);

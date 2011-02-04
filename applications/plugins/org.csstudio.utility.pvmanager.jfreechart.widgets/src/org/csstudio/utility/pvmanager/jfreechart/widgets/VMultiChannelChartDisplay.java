@@ -3,35 +3,20 @@
  */
 package org.csstudio.utility.pvmanager.jfreechart.widgets;
 
-import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.VMultiDouble;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartMouseEvent;
 import org.jfree.chart.ChartMouseListener;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.SymbolAxis;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -53,6 +38,9 @@ public class VMultiChannelChartDisplay extends Canvas {
 	private List<Double> positions;
 	private int domainAxisType;
 
+	private String title = "title";
+	private String xAxisLabel = "X Axis";
+	private String yAxisLabel = "Y Axis";
 	/**
 	 * 
 	 * @param parent
@@ -88,8 +76,8 @@ public class VMultiChannelChartDisplay extends Canvas {
 		if (pvdata != null) {
 			if (chartDisplay.getChart() == null) {
 				dataset = new XYSeriesCollection();
-				chart = ChartFactory.createXYLineChart("Title", "X Axis",
-						"Y Axis", dataset, PlotOrientation.VERTICAL, true,
+				chart = ChartFactory.createXYLineChart(this.title, this.xAxisLabel,
+						this.yAxisLabel, dataset, PlotOrientation.VERTICAL, true,
 						true, true);
 				chartDisplay.setChart(chart);
 				chart.getXYPlot().setDomainCrosshairVisible(false);
@@ -178,6 +166,29 @@ public class VMultiChannelChartDisplay extends Canvas {
 
 	public void setPlotUsing(int plotUsing) {
 		this.domainAxisType = plotUsing;
+	}
+	
+
+	public void setTitle(String title) {
+		this.title = title;
+		if(chartDisplay.getChart() != null){
+			chartDisplay.getChart().setTitle(this.title);
+		}
+	}
+	
+
+	public void setXAxisLabel(String xAxisLabel) {
+		this.xAxisLabel = xAxisLabel;
+		if(chartDisplay.getChart() != null){
+			chartDisplay.getChart().getXYPlot().getDomainAxis().setLabel(xAxisLabel);
+		}
+	}
+	
+	public void setYAxisLabel(String yAxisLabel) {
+		this.yAxisLabel = yAxisLabel;
+		if(chartDisplay.getChart() != null){
+			chartDisplay.getChart().getXYPlot().getDomainAxis().setLabel(yAxisLabel);
+		}
 	}
 
 	public void clear() {

@@ -121,6 +121,18 @@ public class XYChartWidget extends Composite {
 		}
 	}
 
+	public void setTitle(String title){
+		multiDoubleDisplay.setTitle(title);
+	}
+
+	public void setXAxisLabel(String xAxisLabel) {
+		multiDoubleDisplay.setXAxisLabel(xAxisLabel);
+	}
+	
+	public void setYAxisLabel(String yAxisLabel) {
+		multiDoubleDisplay.setYAxisLabel(yAxisLabel);
+	}
+	
 	private void reconnect() {
 		// First de-allocate current pv if any
 		if (pv != null) {
@@ -164,4 +176,5 @@ public class XYChartWidget extends Composite {
 		}
 		super.dispose();
 	}
+
 }
