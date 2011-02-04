@@ -1,7 +1,7 @@
 /*************************************************************************\
-* Copyright (c) 2010  UChicago Argonne, LLC
-* This file is distributed subject to a Software License Agreement found
-* in the file LICENSE that is included with this distribution.
+ * Copyright (c) 2010  UChicago Argonne, LLC
+ * This file is distributed subject to a Software License Agreement found
+ * in the file LICENSE that is included with this distribution.
 /*************************************************************************/
 
 package org.csstudio.opibuilder.adl2boy.translator;
@@ -20,44 +20,40 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * Convert MEDMs related display to BOYs MenuButton 
+ * Convert MEDMs related display to BOYs MenuButton
  * 
  * @author John Hammonds, Argonne National Laboratory
- *
+ * 
  */
 public class RelatedDisplay2Model extends AbstractADL2Model {
-	MenuButtonModel menuModel = new MenuButtonModel();
+	// MenuButtonModel menuModel = new MenuButtonModel();
 
 	public RelatedDisplay2Model(ADLWidget adlWidget, RGB[] colorMap,
 			AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
-		parentModel.addChild(menuModel, true);
-		processWidget(adlWidget);
 	}
 
 	public RelatedDisplay2Model(RGB[] colorMap) {
 		super(colorMap);
 	}
 
+	public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
+		widgetModel = new MenuButtonModel();
+		parentModel.addChild(widgetModel, true);
+	}
+	
 	/**
 	 * @param adlWidget
 	 */
 	public void processWidget(ADLWidget adlWidget) {
 		RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
 		if (rdWidget != null) {
-			setADLObjectProps(rdWidget, menuModel);
-			setADLDynamicAttributeProps(rdWidget, menuModel);
-			if (rdWidget.isForeColorDefined()) {
-				menuModel.setForegroundColor(this.colorMap[rdWidget
-						.getForegroundColor()]);
-			}
-			if (rdWidget.isBackColorDefined()) {
-				menuModel.setBackgroundColor(this.colorMap[rdWidget
-						.getBackgroundColor()]);
-			}
+			setADLObjectProps(rdWidget, widgetModel);
+			setADLDynamicAttributeProps(rdWidget, widgetModel);
+			setWidgetColors(rdWidget);
 			RelatedDisplayItem[] rdDisplays = rdWidget.getRelatedDisplayItems();
 			if (rdDisplays.length > 0) {
-				ActionsInput ai = menuModel.getActionsInput();
+				ActionsInput ai = widgetModel.getActionsInput();
 				for (int ii = 0; ii < rdDisplays.length; ii++) {
 					if (!(rdDisplays[ii].getFileName().replaceAll("\"", "")
 							.equals(""))) {
@@ -75,7 +71,21 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 				label = label.substring(1);
 			}
 		}
-		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
+		widgetModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
+	}
+
+	/**
+	 * @param rdWidget
+	 */
+	public void setWidgetColors(RelatedDisplay rdWidget) {
+		if (rdWidget.isForeColorDefined()) {
+			setColor(rdWidget.getForegroundColor(),
+					AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		}
+		if (rdWidget.isBackColorDefined()) {
+			setColor(rdWidget.getBackgroundColor(),
+					AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+		}
 	}
 
 	/**
@@ -148,7 +158,9 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 	}
 
 	/**
-	 * Remove parent macros (i.e. P=$(P))from the list.  We can now pass parent Macros.
+	 * Remove parent macros (i.e. P=$(P))from the list. We can now pass parent
+	 * Macros.
+	 * 
 	 * @param args
 	 * @return
 	 */
@@ -168,12 +180,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 		return resArgs;
 	}
 
-	@Override
-	public AbstractWidgetModel getWidgetModel() {
-		return menuModel;
-	}
-
 	public void cleanup() {
-		menuModel = null;
+		widgetModel = null;
 	}
 }

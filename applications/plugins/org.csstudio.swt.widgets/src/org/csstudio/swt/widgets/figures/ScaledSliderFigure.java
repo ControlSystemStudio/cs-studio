@@ -793,7 +793,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		}
 	
 		private void setLabel() {
-			String text = scale.format(value);
+			String text = getValueText();
 			Dimension textSize = FigureUtilities.getStringExtents(text, label.getFont());
 			label.setText(text);
 			if(horizontal)

@@ -11,34 +11,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
-import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;
-import org.csstudio.alarm.beast.ui.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
+import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
+import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
+import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeColumnAction;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -56,6 +54,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** Alarm table GUI
@@ -308,23 +307,25 @@ public class GUI implements AlarmClientModelListener
      */
     private TableViewer createAlarmTable(final Composite parent)
     {
-        final GridLayout layout = (GridLayout) parent.getLayout();
-        final TableViewer table_viewer = new TableViewer(parent,
+        // TableColumnLayout requires the TableViewer to be in its own Composite
+        final GridLayout parent_layout = (GridLayout) parent.getLayout();
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(
+                new GridData(SWT.FILL, SWT.FILL, true, true, parent_layout.numColumns, 1));
+
+        // Auto-size table columns
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        final TableViewer table_viewer = new TableViewer(table_parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
 
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        GridData gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
 
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
 
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new AlarmTableContentProvider());
@@ -333,14 +334,16 @@ public class GUI implements AlarmClientModelListener
         for (AlarmTableLabelProvider.ColumnInfo col_info
                                 : AlarmTableLabelProvider.ColumnInfo.values())
         {
-            final TableViewerColumn view_col =
-                AutoSizeColumn.make(table_viewer, col_info.getTitle(),
-                        col_info.getMinWidth(), col_info.getWeight());
+            // Create auto-size column
+            final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+            final TableColumn table_col = view_col.getColumn();
+            table_layout.setColumnData(table_col, new ColumnWeightData(col_info.getWeight(), col_info.getMinWidth()));
+            table_col.setText(col_info.getTitle());
+            table_col.setMoveable(true);
             // Tell column how to display the model elements
             view_col.setLabelProvider(new AlarmTableLabelProvider(table,
                                                    color_provider, col_info));
-            final TableColumn table_col = view_col.getColumn();
-
+            // Sort support
             final AlarmColumnSortingSelector sel_listener =
                 new AlarmColumnSortingSelector(table_viewer, table_col, col_info);
             table_col.addSelectionListener(sel_listener);
@@ -348,9 +351,7 @@ public class GUI implements AlarmClientModelListener
             if (col_info == ColumnInfo.SEVERITY)
                 sel_listener.widgetSelected(null);
         }
-        // Logically we would add the AutoSizeControlListener() here to
-        // auto-size the columns, but we need it later to create the
-        // context menu action, so that's done in connectContextMenu()
+
         return table_viewer;
     }
 
@@ -362,9 +363,6 @@ public class GUI implements AlarmClientModelListener
             final IWorkbenchPartSite site)
     {
         final Table table = table_viewer.getTable();
-
-        final Action auto_size =
-            new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
 
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
@@ -380,17 +378,17 @@ public class GUI implements AlarmClientModelListener
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
                 new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
-                // Placeholder for CSS PV contributions
-                manager.add(new GroupMarker("additions")); //$NON-NLS-1$
-                manager.add(new Separator());
                 // Add edit items
                 if (items.size() == 1 && model.isWriteAllowed())
                 {
                     final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
-                manager.add(auto_size);
+                manager.add(new Separator());
                 manager.add(new AlarmPerspectiveAction());
+                manager.add(new Separator());
+                // Placeholder for CSS PV contributions
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
         table.setMenu(manager.createContextMenu(table));
@@ -458,7 +456,7 @@ public class GUI implements AlarmClientModelListener
     // For now, the table responds to any changes with a full update
     // @see AlarmClientModelListener
     @Override
-    public void newAlarmTree(final AlarmClientModel model)
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
     }

@@ -12,15 +12,15 @@ import java.util.ArrayList;
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ChannelInfo;
 import org.csstudio.trends.databrowser.archive.SearchJob;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser.ui.TableHelper;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -59,7 +59,7 @@ public class SearchView extends ViewPart
 
     /** Archive URL and list of archives */
     private ArchiveListGUI archive_gui;
-    
+
     // GUI elements
     private Combo pattern;
     private Button search, result_replace, regex;
@@ -67,7 +67,7 @@ public class SearchView extends ViewPart
 
     /** Memento that might store previous state */
     private IMemento memento;
-    
+
     @Override
     public void init(final IViewSite site, final IMemento memento) throws PartInitException
     {
@@ -110,7 +110,7 @@ public class SearchView extends ViewPart
 
         createServerSash(sashform);
         createSearchSash(sashform);
-        
+
         sashform.setWeights(new int[] { 15, 85 });
     }
 
@@ -128,7 +128,7 @@ public class SearchView extends ViewPart
                 pattern.setEnabled(true);
                 search.setEnabled(true);
             }
-            
+
             @Override
             protected void handleServerError(final String url, final Exception ex)
             {
@@ -160,7 +160,7 @@ public class SearchView extends ViewPart
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
-        
+
         final ComboHistoryHelper pattern_history =
             new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
                     TAG_CHANNELS, pattern)
@@ -177,7 +177,7 @@ public class SearchView extends ViewPart
         search.setToolTipText(Messages.SearchTT);
         search.setLayoutData(new GridData());
         search.setEnabled(false);
-        
+
         // ( ) Add  (*) Replace   [ ] Reg.Exp.
         final Button result_append = new Button(parent, SWT.RADIO);
         result_append.setText(Messages.AppendSearchResults);
@@ -194,11 +194,17 @@ public class SearchView extends ViewPart
         regex.setText(Messages.RegularExpression);
         regex.setToolTipText(Messages.RegularExpressionTT);
         regex.setLayoutData(new GridData());
- 
+
         // Table for channel names, displaying array of ChannelInfo entries
-        channel_table = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        // TableColumnLayout requires table in its own composite
+        final Composite table_parent = new Composite(parent, 0);
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+
+        channel_table = new TableViewer(table_parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         channel_table.setContentProvider(new ArrayContentProvider());
-        TableViewerColumn col = AutoSizeColumn.make(channel_table, Messages.PVName, 200, 100);
+        TableViewerColumn col = TableHelper.createColumn(table_layout, channel_table, Messages.PVName, 200, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -208,7 +214,7 @@ public class SearchView extends ViewPart
                 cell.setText(channel.getName());
             }
         });
-        col = AutoSizeColumn.make(channel_table, Messages.ArchiveName, 50, 100);
+        col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -221,12 +227,10 @@ public class SearchView extends ViewPart
         final Table table = channel_table.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        new AutoSizeControlListener(table);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // searchForChannels() relies on non-null content
         channel_table.setInput(new ChannelInfo[0]);
-        
+
         // Load previously entered patterns
         pattern_history.loadSettings();
         // Restore settings from memento
@@ -255,7 +259,7 @@ public class SearchView extends ViewPart
                 searchForChannels();
             }
         });
-        
+
         // Channel Table: Allow dragging of PVs with archive
         final Table table = channel_table.getTable();
         new ProcessVariableWithArchiveDragSource(table, channel_table);
@@ -275,6 +279,7 @@ public class SearchView extends ViewPart
             return;
         pattern.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (pattern.isDisposed())
@@ -299,17 +304,17 @@ public class SearchView extends ViewPart
             return;
 
         final String pattern_txt = pattern.getText().trim();
-        
+
         // Warn when searching ALL channels
         if (pattern_txt.length() <= 0  &&
             ! MessageDialog.openConfirm(pattern.getShell(),
                     Messages.Search,
                     Messages.SearchPatternConfirmMessage))
                 return;
-        
+
         final ArchiveReader reader = archive_gui.getArchiveReader();
         new SearchJob(reader, archives, pattern_txt, !regex.getSelection())
-        {                    
+        {
             @Override
             protected void receivedChannelInfos(final ChannelInfo channels[])
             {
@@ -334,6 +339,7 @@ public class SearchView extends ViewPart
             return;
         table.getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (result_replace.isDisposed())

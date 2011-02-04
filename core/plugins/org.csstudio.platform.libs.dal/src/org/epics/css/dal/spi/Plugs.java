@@ -107,7 +107,7 @@ public final class Plugs
 	/**
 	 * DAL default initial connection timeout value in milliseconds. Used if INITIAL_CONNECTION_TIMEOUT is not defined.
 	 */
-	public static final long DEFAULT_INITIAL_CONNECTION_TIMEOUT = 1000;
+	public static final long DEFAULT_INITIAL_CONNECTION_TIMEOUT = 200;
 
 	private static Plugs plugs;
 	

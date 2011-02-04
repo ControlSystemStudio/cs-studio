@@ -52,11 +52,13 @@ final class AlarmTreeTextDragListener implements TransferDragSourceListener {
         _alarmTreeView = alarmTreeView;
     }
 
+    @Override
     @Nonnull
     public Transfer getTransfer() {
         return TextTransfer.getInstance();
     }
 
+    @Override
     public void dragStart(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -68,6 +70,7 @@ final class AlarmTreeTextDragListener implements TransferDragSourceListener {
         }
     }
 
+    @Override
     public void dragSetData(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -89,6 +92,7 @@ final class AlarmTreeTextDragListener implements TransferDragSourceListener {
         }
     }
 
+    @Override
     public void dragFinished(@Nonnull final DragSourceEvent event) {
         // EMPTY
     }

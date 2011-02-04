@@ -29,7 +29,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -38,7 +37,6 @@ import org.csstudio.archive.common.service.severity.ArchiveSeverityDTO;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Maps;
 
@@ -50,20 +48,20 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchiveSeverityDao {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveSeverityDaoImpl.class);
-
     private static final String RETRIEVAL_FAILED = "Severity retrieval from archive failed.";
 
     /**
      * Archive severity cache.
      */
-    private final Map<EpicsAlarmSeverity, IArchiveSeverity> _severityCache = Maps.newEnumMap(EpicsAlarmSeverity.class);
+    private final Map<EpicsAlarmSeverity, IArchiveSeverity> _severityCacheByEnum = Maps.newEnumMap(EpicsAlarmSeverity.class);
+    private final Map<ArchiveSeverityId, IArchiveSeverity> _severityCacheById = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectSeverityByNameStmt =
-        "SELECT severity_id FROM archive.severity WHERE name=?";
+        "SELECT id FROM archive_new.severity WHERE name=?";
+    private final String _selectSeverityByIdStmt =
+        "SELECT name FROM archive_new.severity WHERE id=?";
 
     /**
      * Constructor.
@@ -90,14 +88,13 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     @CheckForNull
     public IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException {
 
-        final IArchiveSeverity severity = _severityCache.get(sev);
+        final IArchiveSeverity severity = _severityCacheByEnum.get(sev);
         if (severity != null) {
             return severity;
         }
         PreparedStatement stmt = null;
         try {
             stmt = getConnection().prepareStatement(_selectSeverityByNameStmt);
-
             stmt.setString(1, sev.name());
 
             final ResultSet result = stmt.executeQuery();
@@ -105,7 +102,8 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
                 final ArchiveSeverityId id = new ArchiveSeverityId(result.getInt(1));
                 final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, sev.name());
 
-                _severityCache.put(sev, newSev);
+                _severityCacheByEnum.put(sev, newSev);
+                _severityCacheById.put(id, newSev);
                 return newSev;
             }
         } catch (final ArchiveConnectionException e) {
@@ -113,13 +111,40 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
         } catch (final SQLException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectSeverityByNameStmt + " failed.");
-                }
+            closeStatement(stmt, "Closing of statement " + _selectSeverityByNameStmt + " failed.");
+        }
+        return null;
+    }
+
+    @Override
+    @CheckForNull
+    public IArchiveSeverity retrieveSeverityById(@Nonnull final ArchiveSeverityId id) throws ArchiveDaoException {
+
+        final IArchiveSeverity severity = _severityCacheById.get(id);
+        if (severity != null) {
+            return severity;
+        }
+        PreparedStatement stmt = null;
+        try {
+            stmt = getConnection().prepareStatement(_selectSeverityByIdStmt);
+            stmt.setLong(1, id.longValue());
+
+            final ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                final String name = result.getString(1);
+                final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, name);
+
+                _severityCacheById.put(id, newSev);
+                _severityCacheByEnum.put(EpicsAlarmSeverity.parseSeverity(name), newSev);
+
+                return newSev;
             }
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } catch (final SQLException e) {
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } finally {
+            closeStatement(stmt, "Closing of statement " + _selectSeverityByIdStmt + " failed.");
         }
         return null;
     }

@@ -23,12 +23,15 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import java.util.Date;
+
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -49,6 +52,7 @@ public class PVNodeItem implements IAlarmInitItem {
         _pvNode = pvNode;
     }
 
+    @Override
     @Nonnull
     public String getPVName() {
         return _pvNode.getName();
@@ -57,6 +61,7 @@ public class PVNodeItem implements IAlarmInitItem {
     /**
      * The alarm tag of the PV node will be updated when the initial state was retrieved.
      */
+    @Override
     public void init(@Nonnull final IAlarmMessage alarmMessage) {
         // TODO (jpenning) Review access to alarm message properties
         final String name = alarmMessage.getString(AlarmMessageKey.NAME);
@@ -67,6 +72,14 @@ public class PVNodeItem implements IAlarmInitItem {
         } else {
             LOG.warn("Could not retrieve name from " + alarmMessage);
         }
+    }
+
+    @Override
+    public void notFound(@Nonnull final String pvName) {
+        final Alarm alarm = new Alarm(pvName,
+                                      EpicsAlarmSeverity.INVALID,
+                                      new Date(System.currentTimeMillis()));
+        _pvNode.updateAlarm(alarm);
     }
 
 }

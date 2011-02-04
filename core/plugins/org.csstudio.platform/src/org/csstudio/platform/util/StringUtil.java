@@ -19,6 +19,7 @@ import javax.naming.NamingException;
  *
  * @author <code>splitIgnoreInQuotes</code> by Xihui Chen
  */
+@SuppressWarnings("nls")
 public final class StringUtil {
 
     /**
@@ -28,7 +29,7 @@ public final class StringUtil {
         // Don't instantiate
     }
 
-	public static String printArrays(final Object value) {
+    public static String printArrays(final Object value) {
 		String result = null;
 
 		if (value == null) {
@@ -159,7 +160,10 @@ public final class StringUtil {
 			while(pos < trimmedSource.length() && trimmedSource.charAt(pos) !=splitChar) {
 				//in case of quote, go to the end of next quote
 				if(trimmedSource.charAt(pos) == QUOTE) {
-					final int end = trimmedSource.indexOf(QUOTE, pos+1);
+				    // When locating the ending quote, ignore escaped quotes
+					int end = trimmedSource.indexOf(QUOTE, pos+1);
+					while (end > 0  &&  trimmedSource.charAt(end-1) == '\\')
+					    end = trimmedSource.indexOf(QUOTE, end+1);
 					if(end < 0) {
                         throw new Exception("Missing end of quoted text in '" +
 								trimmedSource + "'");

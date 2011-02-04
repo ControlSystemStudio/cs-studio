@@ -46,9 +46,15 @@ public class RhinoScriptStore {
 	
 	private boolean errorInScript;
 
-	private Map<PV, Boolean> pvConnectStatusMap;	
 	
-	public RhinoScriptStore(ScriptData scriptData, final AbstractBaseEditPart editpart, 
+	/**
+	 * A map to see if a PV was triggered before, this is used to skip the first trigger.
+	 */
+	private Map<PV, Boolean> pvTriggeredMap;	
+	
+	private boolean triggerSuppressed = false; 
+	
+	public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart, 
 			final PV[] pvArray) throws Exception {
 		errorInScript = false;
 		scriptContext = ScriptService.getInstance().getScriptContext();		
@@ -85,75 +91,89 @@ public class RhinoScriptStore {
 		
 		
 		pvListenerMap = new HashMap<PV, PVListener>();		
-		pvConnectStatusMap = new HashMap<PV, Boolean>();
+		pvTriggeredMap = new HashMap<PV, Boolean>();
 		
 		//register pv listener
 		int i=0;
 		for(PV pv : pvArray){
-			if(pv == null || !scriptData.getPVList().get(i++).trigger)
+			if(pv == null)
 				continue;	
-			pvConnectStatusMap.put(pv, true);
-			PVListener pvListener = new PVListener() {			
-				public void pvValueUpdate(PV pv) {
-					//if pv connection is restored from connection
-					if(!pvConnectStatusMap.get(pv)){
-						ConsoleService.getInstance().writeInfo(
-								NLS.bind("Connection to PV {0} restored.", pv.getName()));
-						pvConnectStatusMap.put(pv, true);
+			if(!scriptData.getPVList().get(i++).trigger){
+				//execute the script if it was suppressed.
+				pv.addListener(new PVListener() {
+					
+					@Override
+					public synchronized void pvValueUpdate(PV pv) {
+						if(triggerSuppressed && checkPVsConnected(scriptData, pvArray)){
+							executeScript();
+							triggerSuppressed = false;
+						}
+					}
+					
+					@Override
+					public void pvDisconnected(PV pv) {
+						
+					}
+				});
+				continue;
+			};
+			pvTriggeredMap.put(pv, false);
+			PVListener triggerPVListener = new PVListener() {			
+				public synchronized void pvValueUpdate(PV pv) {
+					
+					//skip the first trigger if it is needed.
+					if(scriptData.isSkipPVsFirstConnection() && !pvTriggeredMap.get(pv)){
+						pvTriggeredMap.put(pv, true);
+						return;
 					}
 					
 					//execute script only if all input pvs are connected
 					if(pvArray.length > 1){
-						for(PV pv2 : pvArray){
-							if(!pv2.isConnected()){
-								String message = NLS.bind(
-										"{0} did not executed because the input PV: {1} is disconnected", 
-										errorSource, pv2.getName());
-								ConsoleService.getInstance().writeWarning(message);
+						if(!checkPVsConnected(scriptData, pvArray)){
+								triggerSuppressed = true;
 								return;
-							}
+							
 						}					
 					}
-					
-					UIBundlingThread.getInstance().addRunnable(new Runnable() {						
-						public void run() {
-							if(!errorInScript){
-								try {								
-									script.exec(scriptContext, scriptScope);
-								} catch (Exception e) {
-									errorInScript = true;
-									final String message = NLS.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
-										errorSource, e.getMessage());									
-									ConsoleService.getInstance().writeError(message);
-								}
-							}
-						}
-					});
-				}			
-				public void pvDisconnected(PV pv) {
-					if(pv.isRunning()){
-						pvConnectStatusMap.put(pv, false);
-						String message = NLS.bind(
-								"The PV: {0} which is one of the inputs of the script or rule: {1} is disconnected.", 
-								pv.getName(), errorSource);
-						ConsoleService.getInstance().writeWarning(message);
-					}
-					
+										
+					executeScript();
 				}
+				
+				public void pvDisconnected(PV pv) {	}
 			};
-			pvListenerMap.put(pv, pvListener);
-			pv.addListener(pvListener);
+			pvListenerMap.put(pv, triggerPVListener);
+			pv.addListener(triggerPVListener);
 		}
 	}
 	
-	public void dispose() {
-		for(PV pv : pvListenerMap.keySet()){
-			pv.removeListener(pvListenerMap.get(pv));
-		}
-		pvListenerMap.clear();
-		pvConnectStatusMap.clear();
-	}
+	private void executeScript() {
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			public void run() {
+				if (!errorInScript) {
+					try {
+						script.exec(scriptContext, scriptScope);
+					} catch (Exception e) {
+						errorInScript = true;
+						final String message = NLS
+								.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
+										errorSource, e.getMessage());
+						ConsoleService.getInstance().writeError(message);
+					}
+				}
+			}
+		});
+	}	
 	
+	private boolean checkPVsConnected(ScriptData scriptData, PV[] pvArray){
+		if(!scriptData.isCheckConnectivity())
+			return true;
+		for(PV pv : pvArray){
+			if(!pv.isConnected())
+				return false;
+		}
+		return true;
+		
+	}
 	
 	
 	

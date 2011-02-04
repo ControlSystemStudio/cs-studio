@@ -8,9 +8,8 @@
 package org.csstudio.trends.databrowser.propsheet;
 
 import org.csstudio.apputil.time.RelativeTime;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.AxisConfig;
@@ -20,8 +19,9 @@ import org.csstudio.trends.databrowser.model.ModelListener;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.RequestType;
 import org.csstudio.trends.databrowser.model.TraceType;
-import org.csstudio.trends.databrowser.ui.ColorRegistry;
+import org.csstudio.trends.databrowser.ui.TableHelper;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -46,21 +45,26 @@ public class TraceTableHandler implements ILazyContentProvider
 {
     /** Prompt for the 'raw request' warning? */
     static private boolean prompt_for_raw_data_request = true;
-    
+
     /** Prompt for the 'hide trace' warning'? */
     static private boolean prompt_for_not_visible = true;
 
-    final private ColorRegistry color_registry;
+    final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
     private Model model;
     private TableViewer trace_table;
-    
+
     final private ModelListener model_listener = new ModelListener()
     {
+        @Override
         public void changedUpdatePeriod() { /* Ignored */ }
+        @Override
         public void changedArchiveRescale() { /* Ignored */ }
+        @Override
         public void changedColors() { /* Ignored */ }
+        @Override
         public void changedTimerange() { /* Ignored */ }
 
+        @Override
         public void changedAxis(AxisConfig axis)
         {
             // In case an axis _name_ changed, this needs to be shown
@@ -68,12 +72,14 @@ public class TraceTableHandler implements ILazyContentProvider
             trace_table.refresh();
         }
 
+        @Override
         public void itemAdded(final ModelItem item)
         {
             trace_table.cancelEditing();
             trace_table.setItemCount(model.getItemCount());
         }
-        
+
+        @Override
         public void itemRemoved(final ModelItem item)
         {
             // User will often click on an item,
@@ -85,40 +91,37 @@ public class TraceTableHandler implements ILazyContentProvider
             trace_table.refresh();
         }
 
+        @Override
         public void changedItemVisibility(ModelItem item)
         {   // Update the item's row in table
             changedItemLook(item);
         }
 
+        @Override
         public void changedItemLook(final ModelItem item)
         {
             trace_table.refresh(item);
         }
-        
+
+        @Override
         public void changedItemDataConfig(final PVItem item) { /* Ignored */ }
+        @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
-    };    
-    
-    /** Initialize
-     *  @param color_registry ColorRegistry
-     */
-    public TraceTableHandler(final ColorRegistry color_registry)
-    {
-        this.color_registry = color_registry;
-    }
-    
+    };
+
     /** Create table columns: Auto-sizable, with label provider and editor
-     *  @param trace_table
+     *  @param table_layout
+     *  @param operations_manager
+     *  @param table_viewer
      */
-    public void createColumns(final OperationsManager operations_manager,
-            final TableViewer trace_table)
+    public void createColumns(TableColumnLayout table_layout, final OperationsManager operations_manager,
+            final TableViewer table_viewer)
     {
-        final Shell shell = trace_table.getTable().getShell();
-        TableViewerColumn col;
-        
+        final Shell shell = table_viewer.getTable().getShell();
+
         // Visible Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.TraceVisibility, 45, 1);
-        col.setLabelProvider(new CellLabelProvider()
+        TableViewerColumn view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceVisibility, 45, 1);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -128,8 +131,14 @@ public class TraceTableHandler implements ILazyContentProvider
                         ? Activator.getDefault().getImage(Activator.ICON_CHECKED)
                         : Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceVisibilityTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected CellEditor getCellEditor(final Object element)
@@ -159,10 +168,10 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeVisibilityCommand(operations_manager, item, visible);
             }
         });
-        
+
         // Trace PV/Formula Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.ItemName, 100, 100);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ItemName, 100, 100);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -170,8 +179,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getName());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.ItemNameTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected Object getValue(final Object element)
@@ -189,10 +204,10 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeNameCommand(shell, operations_manager, item, new_name);
             }
         });
-        
+
         // Display Name Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.TraceDisplayName, 100, 100);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceDisplayName, 100, 100);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -200,8 +215,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getDisplayName());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceDisplayNameTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected Object getValue(final Object element)
@@ -220,10 +241,10 @@ public class TraceTableHandler implements ILazyContentProvider
                         item, new_name);
             }
         });
-        
+
         // Color Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.Color, 40, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Color, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -231,13 +252,19 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setBackground(color_registry.getColor(item.getColor()));
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.ColorTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-                return new RGBCellEditor(trace_table.getTable());
+                return new RGBCellEditor(table_viewer.getTable());
             }
 
             @Override
@@ -253,10 +280,10 @@ public class TraceTableHandler implements ILazyContentProvider
                         (ModelItem) element, (RGB)value);
             }
         });
-        
+
         // Scan Period Column (only applies to PVItems) ----------
-        col = AutoSizeColumn.make(trace_table, Messages.ScanPeriod, 70, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.ScanPeriod, 70, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -277,7 +304,7 @@ public class TraceTableHandler implements ILazyContentProvider
             }
 
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected boolean canEdit(Object element)
@@ -314,10 +341,10 @@ public class TraceTableHandler implements ILazyContentProvider
                 }
             }
         });
-        
+
         // Buffer size Column (only applies to PVItems) ----------
-        col = AutoSizeColumn.make(trace_table, Messages.LiveSampleBufferSize, 70, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.LiveSampleBufferSize, 70, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -338,7 +365,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 return NLS.bind(Messages.LiveBufferSizeInfoFmt, pv.getLiveCapacity(), new RelativeTime(pv.getLiveCapacity()).toString());
             }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected boolean canEdit(Object element)
@@ -374,10 +401,10 @@ public class TraceTableHandler implements ILazyContentProvider
                 }
             }
         });
-        
+
         // Line Width Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.TraceLineWidth, 40, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceLineWidth, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -385,8 +412,15 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(Integer.toString(item.getLineWidth()));
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceLineWidthTT;
+            }
+
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected Object getValue(final Object element)
@@ -411,10 +445,10 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeLineWidthCommand(operations_manager, item, width);
             }
         });
-        
+
         // Axis Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.Axis, 60, 30);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.Axis, 60, 30);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -422,8 +456,14 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getAxis().getName());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.AxisTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected CellEditor getCellEditor(final Object element)
@@ -431,7 +471,7 @@ public class TraceTableHandler implements ILazyContentProvider
                 final String axis_names[] = new String[model.getAxisCount()];
                 for (int i=0; i<axis_names.length; ++i)
                     axis_names[i] = model.getAxis(i).getName();
-                final ComboBoxCellEditor combo = new ComboBoxCellEditor(trace_table.getTable(),
+                final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
                         axis_names, SWT.READ_ONLY);
                 combo.setValue(getValue(element));
                 return combo;
@@ -451,10 +491,10 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeAxisCommand(operations_manager, item, axis);
             }
         });
-        
+
         // Trace Type Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.TraceType, 75, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.TraceType, 75, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -462,13 +502,19 @@ public class TraceTableHandler implements ILazyContentProvider
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setText(item.getTraceType().toString());
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.TraceTypeTT;
+            }
         });
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-                final ComboBoxCellEditor combo = new ComboBoxCellEditor(trace_table.getTable(),
+                final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
                         TraceType.getDisplayNames(), SWT.READ_ONLY);
                 combo.setValue(getValue(element));
                 return combo;
@@ -488,10 +534,10 @@ public class TraceTableHandler implements ILazyContentProvider
                     new ChangeTraceTypeCommand(operations_manager, item, trace_type);
             }
         });
-        
+
         // Request Type Column ----------
-        col = AutoSizeColumn.make(trace_table, Messages.RequestType, 75, 10);
-        col.setLabelProvider(new CellLabelProvider()
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.RequestType, 75, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
         {
             @Override
             public void update(final ViewerCell cell)
@@ -502,9 +548,15 @@ public class TraceTableHandler implements ILazyContentProvider
                 else
                     cell.setText(Messages.NotApplicable);
             }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.RequestTypeTT;
+            }
         });
         // Edit as boolean: Raw == false,  Optimized == true
-        col.setEditingSupport(new EditSupportBase(trace_table)
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
         {
             @Override
             protected boolean canEdit(final Object element)
@@ -540,20 +592,19 @@ public class TraceTableHandler implements ILazyContentProvider
                 new ChangeRequestTypeCommand(operations_manager, item, request_type);
             }
         });
-        
-        ColumnViewerToolTipSupport.enableFor(trace_table, ToolTip.NO_RECREATE);
 
-        new AutoSizeControlListener(trace_table.getTable());
+        ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old_model, final Object new_model)
     {
         if (old_model != null)
             ((Model)old_model).removeListener(model_listener);
-            
+
         trace_table = (TableViewer) viewer;
         model = (Model) new_model;
         if (trace_table == null  ||  model == null)
@@ -562,16 +613,18 @@ public class TraceTableHandler implements ILazyContentProvider
         trace_table.setItemCount(model.getItemCount());
         model.addListener(model_listener);
     }
-    
+
     /** Called by ILazyContentProvider to get the ModelItem for a table row
      *  {@inheritDoc}
      */
+    @Override
     public void updateElement(int index)
     {
         trace_table.replace(model.getItem(index), index);
     }
 
-    // ILazyContentProvider
+    /** {@inheritDoc} */
+    @Override
     public void dispose()
     {
         // NOP

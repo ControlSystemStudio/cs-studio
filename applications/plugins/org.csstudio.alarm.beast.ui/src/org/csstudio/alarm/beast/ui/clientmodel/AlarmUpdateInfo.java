@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.jms.MapMessage;
 
@@ -15,6 +17,7 @@ import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Information about an alarm update
@@ -48,7 +51,18 @@ public class AlarmUpdateInfo
         final String current_message = message.getString(JMSAlarmMessage.CURRENT_STATUS);
         final String value = message.getString(JMSAlarmMessage.VALUE);
         final String timetext = message.getString(JMSLogMessage.EVENTTIME);
-        final long millisecs = date_format.parse(timetext).getTime();
+        Date time;
+        try
+        {
+            time = date_format.parse(timetext);
+        }
+        catch (ParseException ex)
+        {
+            CentralLogger.getInstance().getLogger(AlarmUpdateInfo.class)
+                .warn("Received invalid time " + timetext);
+            time = new Date();
+        }
+        final long millisecs = time.getTime();
         final ITimestamp timestamp = TimestampFactory.fromMillisecs(millisecs);
         return new AlarmUpdateInfo(name, current_severity, current_message,
                 severity, status, value, timestamp);

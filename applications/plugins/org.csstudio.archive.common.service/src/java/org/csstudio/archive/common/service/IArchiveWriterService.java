@@ -34,7 +34,7 @@ import org.csstudio.platform.data.IValue;
  * Archive engine writer methods.
  *
  * TODO (bknerr): all database access methods should definitely return explicit immutables.
- *                Note guavas immutable collections are implement 'mutable' interfaces with
+ *                Note guavas immutable collections implement 'mutable' interfaces with
  *                throwing UOEs. mmh.
  *
  * @author bknerr
@@ -77,7 +77,7 @@ public interface IArchiveWriterService {
      * @param value
      * @throws ArchiveServiceException
      */
-    void commitSample(int channelId, IValue value) throws ArchiveServiceException;
+    void submitSample(int channelId, IValue value) throws ArchiveServiceException;
 
     /**
      * TODO (kasemir) : committing or persisting?

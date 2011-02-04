@@ -30,13 +30,17 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -71,7 +75,12 @@ public class FacilityEditor extends AbstractNodeEditor{
         super(true);
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();
-        getNode().moveSortIndex(sortIndex);
+        try {
+            getNode().moveSortIndex(sortIndex);
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+            DeviceDatabaseErrorDialog.open(null, "Can't create Facility. Database Error.", e);
+        }
         buildGui();
     }
 
@@ -85,7 +94,7 @@ public class FacilityEditor extends AbstractNodeEditor{
         super(facility == null);
         _facility = facility;
         buildGui();
-        getTabFolder().setSelection(0);
+        selecttTabFolder(0);
     }
 
 
@@ -94,8 +103,8 @@ public class FacilityEditor extends AbstractNodeEditor{
         super.createPartControl(parent);
         _facility = (FacilityDBO) getNode();
         buildGui();
-        getTabFolder().setSelection(0);
-    }
+        selecttTabFolder(0);
+   }
 
     /**
      * (@inheritDoc)
@@ -110,8 +119,11 @@ public class FacilityEditor extends AbstractNodeEditor{
         getIndexSpinner().setData(_facility.getSortIndex());
 
         // Document
-        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-        _facility.setDocuments(docs);
+        DocumentationManageView documentationManageView = getDocumentationManageView();
+        if (documentationManageView != null) {
+            Set<DocumentDBO> docs = documentationManageView.getDocuments();
+            _facility.setDocuments(docs);
+        }
 
         save();
 //        getProfiBusTreeView().refresh(getNode());
@@ -185,8 +197,14 @@ public class FacilityEditor extends AbstractNodeEditor{
                     text.setText("");
                 }
             }
-            getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
-            getNameWidget().setText((String) getNameWidget().getData());
+            Spinner indexSpinner = getIndexSpinner();
+            if(indexSpinner != null) {
+                indexSpinner.setSelection((Short) indexSpinner.getData());
+            }
+            Text nameWidget = getNameWidget();
+            if(nameWidget!=null) {
+                nameWidget.setText((String) nameWidget.getData());
+            }
         }
         DocumentationManageView dMV = getDocumentationManageView();
         if (dMV != null) {

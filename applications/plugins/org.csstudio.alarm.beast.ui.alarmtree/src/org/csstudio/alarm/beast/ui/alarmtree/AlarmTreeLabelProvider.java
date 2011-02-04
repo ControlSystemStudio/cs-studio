@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.SeverityIconProvider;

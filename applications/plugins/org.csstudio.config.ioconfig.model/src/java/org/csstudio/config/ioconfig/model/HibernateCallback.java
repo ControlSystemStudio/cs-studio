@@ -21,6 +21,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.hibernate.Session;
 
 /**
@@ -37,6 +40,7 @@ public interface HibernateCallback {
      * @param session  The Hibernate Session.
      * @return the session result.
      */
-    Object execute(Session session);
+    @CheckForNull
+    <T> T execute(@Nonnull Session session);
     
 }

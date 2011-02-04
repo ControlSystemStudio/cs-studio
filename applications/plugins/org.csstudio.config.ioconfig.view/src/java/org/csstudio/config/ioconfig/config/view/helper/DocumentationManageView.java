@@ -35,8 +35,11 @@ import org.csstudio.config.ioconfig.config.view.IHasDocumentableObject;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.IDocumentable;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -186,7 +189,13 @@ public class DocumentationManageView extends Composite {
 
         _docResorceTableViewer = DocumentTableViewerBuilder.crateDocumentTable(searchGroup, false);
 
-        _documentResorce = Repository.loadDocument(false);
+        try {
+            _documentResorce = Repository.loadDocument(false);
+        } catch (PersistenceException e) {
+            _documentResorce = null;
+            DeviceDatabaseErrorDialog.open(null, "Can't load Documents!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
         _docResorceTableViewer.addFilter(filter);
         _docResorceTableViewer.setFilters(new ViewerFilter[] {filter});
         TableViewerEditor.create(_docResorceTableViewer, new ColumnViewerEditorActivationStrategy(
@@ -233,8 +242,13 @@ public class DocumentationManageView extends Composite {
             }
 
             private void refreshDocuments() {
-                _documentResorce = Repository.loadDocument(true);
-                _docResorceTableViewer.setInput(_documentResorce);
+                try {
+                    _documentResorce = Repository.loadDocument(true);
+                    _docResorceTableViewer.setInput(_documentResorce);
+                } catch (PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't load Documents!", e);
+                    CentralLogger.getInstance().error(this, e);
+                }
             }
 
         });

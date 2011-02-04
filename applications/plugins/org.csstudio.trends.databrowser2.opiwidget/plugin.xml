@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.opibuilder.widget">
+      <widget
+            category="Monitors"
+            description="Display a Data Browser configuration"
+            editpart_class="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedEditPart"
+            icon="icons/databrowser.png"
+            model_class="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedModel"
+            name="Data Browser"
+            typeId="org.csstudio.trends.databrowser.opiwidget">
+      </widget>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.trends.databrowser.opiwidget"
+            objectClass="org.csstudio.trends.databrowser.opiwidget.DataBrowserWidgedEditPart">
+         <action
+               class="org.csstudio.trends.databrowser.opiwidget.OpenDataBrowserAction"
+               enablesFor="1"
+               icon="icons/databrowser.png"
+               id="org.csstudio.trends.databrowser.opiwidget.open_databrowser_action"
+               label="%OpenDatabrowser"
+               tooltip="%OpenDatabrowserTT">
+         </action>
+         <action
+               class="org.csstudio.trends.databrowser.opiwidget.ToggleToolbarAction"
+               icon="icons/toolbar.gif"
+               id="org.csstudio.trends.databrowser.opiwidget.toggle_toolbar_action"
+               label="%ToggleToolbar"
+               tooltip="%ToggleToolbarTT">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

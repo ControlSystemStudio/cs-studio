@@ -9,6 +9,7 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -98,6 +99,11 @@ public class ColorMapRamp extends Figure {
 		this.colorMap = colorMap;
 	}
 	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		scale.setFont(f);
+	}
 	
 	class ColorMapFigure extends Figure{
 		

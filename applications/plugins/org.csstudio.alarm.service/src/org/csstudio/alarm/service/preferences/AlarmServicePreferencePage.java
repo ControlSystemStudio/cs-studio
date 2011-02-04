@@ -21,18 +21,20 @@
  */
 package org.csstudio.alarm.service.preferences;
 
+import java.io.File;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.platform.util.StringUtil;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -41,6 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.osgi.framework.Bundle;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -173,7 +176,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
         public MyFileFieldEditor(@Nonnull final String name,
                 @Nonnull final String labelText, @Nonnull final Composite parent) {
             super(name, labelText, false,
-                    FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
+                    VALIDATE_ON_KEY_STROKE, parent);
         }
 
         @Override
@@ -181,8 +184,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
             boolean result = false;
 
             final String text = getTextControl().getText();
-            result = text.isEmpty()
-                    || true;
+            result = text.isEmpty() || existsResource(text); 
 
             handleErrorMessage(result);
             return result;
@@ -195,6 +197,23 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
                 showErrorMessage(getErrorMessage());
             }
         }
+        
+        private boolean existsResource(@Nonnull final String text) {
+            boolean result = !text.isEmpty();
+            if (result) {
+                final Path path = new Path(text);
+                if (path.isAbsolute()) {
+                    File file = new File(text);
+                    result = file.exists();
+                } else {
+                    Bundle bundle = AlarmServiceActivator.getDefault().getBundle();
+                    result = bundle.getResource(text) != null;
+                }
+            }
+            return result;
+        }
+
+
     }
 
 }

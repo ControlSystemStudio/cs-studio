@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional SNS Control Room Tools"
-      version="2.4.0.qualifier"
+      version="2.5.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -85,6 +85,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.eclipse.team.cvs.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.alarm.beast.ui.globaltable"
          download-size="0"
          install-size="0"
          version="0.0.0"

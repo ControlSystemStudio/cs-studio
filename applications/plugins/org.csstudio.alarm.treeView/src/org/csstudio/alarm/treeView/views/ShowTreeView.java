@@ -48,21 +48,24 @@ public class ShowTreeView implements IWorkbenchWindowActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void dispose() {
+	@Override
+    public void dispose() {
 	    // EMPTY
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(@Nullable final IWorkbenchWindow window) {
+	@Override
+    public void init(@Nullable final IWorkbenchWindow window) {
 	       // EMPTY
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void run(@Nullable final IAction action) {
+	@Override
+    public final void run(@Nullable final IAction action) {
 		final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         final IWorkbenchPage page = window.getActivePage();
@@ -76,7 +79,8 @@ public class ShowTreeView implements IWorkbenchWindowActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(@Nullable final IAction action,
+	@Override
+    public void selectionChanged(@Nullable final IAction action,
 	                             @Nullable final ISelection selection) {
 	       // EMPTY
 	}

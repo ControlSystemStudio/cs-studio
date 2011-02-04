@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
@@ -77,8 +78,9 @@ public class ProfibusConfigWinModGenerator {
     *
     * @param subnet
     *            The Profibus Subnet.
+     * @throws PersistenceException 
     */
-    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
         _winModSlaveAdr.append(",'Treibersignal','Adresse','Symbol','Typ','Default Wert','Kommentar'").append(LINE_END);
         _lineNr++;
         Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
@@ -97,9 +99,10 @@ public class ProfibusConfigWinModGenerator {
     }
 
     /**
+     * @throws PersistenceException 
      *
      */
-    private void createSlave(@Nonnull final SlaveDBO slave) {
+    private void createSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
     	_id = slave.getSortIndex();
     	_slot = 1;
         int normslaveParamDataSize = 0;
@@ -121,8 +124,9 @@ public class ProfibusConfigWinModGenerator {
                   .append("  PNO_IDENT_NO ").append("\"")
                   .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
                   .append("\"").append(LINE_END);
-        if (!slave.getPrmUserData().equals("Property not found")) {
-			String cleanPrmUserData = slave.getPrmUserData()
+        String prmUserData = slave.getPrmUserData();
+        if (!prmUserData.equals("Property not found")) {
+			String cleanPrmUserData = prmUserData
 					.replaceAll("(0x)", "")
 					.replaceAll(",", " ").replaceAll("  ", " ").trim();
 			_winModConfig.append("  NORMSLAVE_PARAM_DATA ").append("\"");
@@ -154,8 +158,9 @@ public class ProfibusConfigWinModGenerator {
 
     /**
      * @param module
+     * @throws PersistenceException 
      */
-    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) {
+    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
 		String slaveCfgData = module.getGsdModuleModel().getValue()
 				.replaceAll("0x", "");
@@ -183,68 +188,75 @@ public class ProfibusConfigWinModGenerator {
 
 	/**
 	 * @param channelStructureDBO
+	 * @throws PersistenceException 
 	 */
-	private void createChannel(ChannelStructureDBO channelStructureDBO) {
+	private void createChannel(ChannelStructureDBO channelStructureDBO) throws PersistenceException {
 		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChannelsAsMap();
 		Set<Short> keySet = channelsAsMap.keySet();
 		for (Short key : keySet) {
 			ChannelDBO channelDBO = channelsAsMap.get(key);
-			String io;
+			char io1;
+			String io2="";
 			String def;
 			String convertedChannelType;
+			String mbbChannelType;
 			String desc = "";
 			int lines = 1;
 			DataType channelType = channelDBO.getChannelType();
 			switch (channelType) {
 			case BIT:
-				convertedChannelType = "B";
+				convertedChannelType = "B"; // Binary
 				break;
 			case INT8:
 			case UINT8:
+			    convertedChannelType = "A"; // Analog
+			    break;
 			case INT16:
 			case UINT16:
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				lines = 2;
 				break;
 			case INT32:
 			case UINT32:
 				lines = 4;
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			case DS33:
 				lines = channelType.getByteSize();
 				desc = "> "+channelType;
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			default:
-				convertedChannelType = "A";
+				convertedChannelType = "A"; // Analog
 				break;
 			}
 			if(channelDBO.isInput()) {
-					io = "E";
-					convertedChannelType += "I";
+					io1 = 'E';              // Eingang
+					convertedChannelType += "I"; // Input
+					mbbChannelType = "DI";
 			} else {
-					io = "A";
-					convertedChannelType += "O";
+					io1 = 'A';              // Ausgang
+					convertedChannelType += "O"; // Output
+					mbbChannelType = "DO";
 			}
 
 			if(channelDBO.isDigital()) {
 				def = "0";
 			}else {
-				def = "0,00 %";
+				def = "0,00";
 				int byteSize = channelType.getByteSize();
 				switch (byteSize) {
 				case 1:
-					io += "B";
+					io2 = "B"; // Byte
 					break;
 				case 2:
-					io += "W";
+					io2 = "W"; // Word
 					break;
 				case 4:
-					io += "D";
+					io2 = "D"; // Double Word
 					break;
 				case 5:
-					io += "D"; // TODO: hier kommt sicherlich was anderes hin!
+					io2 = "D"; // TODO: hier kommt sicherlich was anderes hin!
 					break;
 				default:
 					break;
@@ -275,11 +287,17 @@ public class ProfibusConfigWinModGenerator {
 				bytee = channelDBO.getChannelNumber();
 			}
 			
-			
-			for (int i = 0; i < lines; i++) {
-				appendLine(i, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			String io = io1+""+io2;
+			if(lines>1) {
+			    appendLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
+			    def = "0";
+			    io = io1+"B";
+    			for (int i = 0; i < lines; i++) {
+    				appendAddLine(i, io, bytee, channelDBO, bit, mbbChannelType, def, desc);
+    			}
+			} else { 
+			    appendAddLine(0, io, bytee, channelDBO, bit, convertedChannelType, def, desc);
 			}
-			
 		}
 	}
 
@@ -294,11 +312,40 @@ public class ProfibusConfigWinModGenerator {
 	 * @param desc 
 	 */
 	private void appendLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
+	    _winModSlaveAdr.append(_lineNr++).append(",");
+	    // Treibersignal
+	    addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+	       // Adresse
+        _winModSlaveAdr.append(",");
+        // Symbol
+        _winModSlaveAdr.append(",");
+        if(channelDBO.getIoName()==null) {
+            addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
+        }else {
+            _winModSlaveAdr.append("'").append(channelDBO.getIoName());
+//          if(lineNr>0) {
+            if(channelType.startsWith("D")&&io.endsWith("B")) {
+                if(lineNr==4) {
+                    _winModSlaveAdr.append("_Stat");
+                }else {
+                    _winModSlaveAdr.append("_Byte").append(lineNr);
+                }
+            }
+            _winModSlaveAdr.append("'");
+        }
+        _winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
+        if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
+            _winModSlaveAdr.append("'").append(desc).append("'");
+        }
+        _winModSlaveAdr.append(LINE_END);
+	}
+	
+	private void appendAddLine(int lineNr, String io, int bytee, ChannelDBO channelDBO, Short bit, String channelType, String def, String desc) {
 		_winModSlaveAdr.append(_lineNr++).append(",");
 		// Treibersignal
 		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
-		// Adresse
 
+		// Adresse
 		_winModSlaveAdr.append(",");
 		addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
 		
@@ -308,11 +355,17 @@ public class ProfibusConfigWinModGenerator {
 			addAdr(_winModSlaveAdr, _id,_module, io, bytee+lineNr, channelDBO.isDigital(), bit);
 		}else {
 			_winModSlaveAdr.append("'").append(channelDBO.getIoName());
-			if(lineNr>0) {
-				_winModSlaveAdr.append("_").append(lineNr);
+//			if(lineNr>0) {
+			if(channelType.startsWith("D")&&io.endsWith("B")) {
+			    if(lineNr==4) {
+			        _winModSlaveAdr.append("_Stat");
+			    }else {
+			        _winModSlaveAdr.append("_Byte").append(lineNr);
+			    }
 			}
+			_winModSlaveAdr.append("'");
 		}
-		_winModSlaveAdr.append("','").append(channelType).append("','").append(def).append("',");
+		_winModSlaveAdr.append(",'").append(channelType).append("','").append(def).append("',");
 		if(channelDBO.getDescription()!=null && !channelDBO.getDescription().isEmpty()) {
 			_winModSlaveAdr.append("'").append(desc).append("'");
 		}
@@ -330,9 +383,12 @@ public class ProfibusConfigWinModGenerator {
 	 */
 	private void addAdr(@Nonnull StringBuilder winModSlaveAdr, int id, int module,
 			@Nonnull String io, int bytee, boolean digital, short bit) {
-		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(io).append(" ").append(bytee);
+	    int fullBytes = bit/8;
+	    int bitsModifier = fullBytes*8; 
+        int byt = bytee+fullBytes;
+		winModSlaveAdr.append("'ID").append(id).append(".M").append(module).append(".").append(io).append(" ").append(byt);
 		if(digital) {
-			winModSlaveAdr.append(".").append(bit);
+			winModSlaveAdr.append(".").append(bit-bitsModifier);
 		}
 		winModSlaveAdr.append("'");
 	}

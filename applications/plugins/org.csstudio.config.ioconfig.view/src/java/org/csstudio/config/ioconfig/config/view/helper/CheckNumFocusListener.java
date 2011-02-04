@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -55,23 +58,28 @@ class CheckNumFocusListener implements FocusListener{
     /**
      * @param ranges The min/max ranges
      */
-    CheckNumFocusListener( final Value ranges){
+    CheckNumFocusListener(@Nonnull final Value ranges){
         _min = ranges.getMin();
         _max = ranges.getMax();
     }
     
     /** {@inheritDoc} */
-    public void focusGained(final FocusEvent e) {}
+    @Override
+    public void focusGained(@Nullable final FocusEvent e) {/* Nothing to do*/}
 
     /** {@inheritDoc} */
-    public void focusLost(final FocusEvent e) {
+    @Override
+    public void focusLost(@Nullable final FocusEvent e) {
         if (e.widget instanceof Text) {
             final Display display = Display.getDefault();
             Text text = (Text) e.widget;
             int zahl =0;
             try{
                 zahl = Integer.parseInt(text.getText());
-            }catch (NumberFormatException nfe) {/*Ignore*/}
+            }catch (NumberFormatException nfe) {
+                /*Ignore*/
+                zahl = 0; 
+            }
             if(!(_min<=zahl&&zahl<=_max)){
                 text.setBackground(display.getSystemColor(SWT.COLOR_RED));
                 ToolTip tt = new ToolTip(display.getActiveShell(),SWT.ICON_WARNING);

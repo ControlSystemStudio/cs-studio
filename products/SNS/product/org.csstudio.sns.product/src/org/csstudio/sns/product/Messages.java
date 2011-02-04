@@ -6,6 +6,8 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.sns.product.messages"; //$NON-NLS-1$
 
+	
+
 	public static String Application_DefaultProject;
     public static String Menu_CSS_Alarm;
     public static String Menu_CSS_Configuration;
@@ -21,6 +23,7 @@ public class Messages extends NLS
     public static String Menu_CSS_Utilities;
     public static String Menu_CSS_Weblinks;
     public static String Menu_File;
+    public static String Menu_Edit;
     public static String Menu_File_Recent;
     public static String Menu_Help;
     public static String Menu_Help_CheatSheet;

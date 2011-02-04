@@ -12,7 +12,7 @@
             allowMultiple="false"
             category="org.csstudio"
             class="org.csstudio.alarm.treeView.views.AlarmTreeView"
-            icon="icons/alarm_tree.png"
+            icon="res/icons/alarm_tree.png"
             id="org.csstudio.alarm.treeView.views.AlarmTreeView"
             name="Alarm Tree">
       </view>

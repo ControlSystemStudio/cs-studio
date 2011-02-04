@@ -52,6 +52,8 @@ org.csstudio.utility.pv.ui
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.sim
+org.csstudio.utility.pvmanager.ui
+org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.speech
 org.csstudio.platform
 org.csstudio.platform.libs.annotations

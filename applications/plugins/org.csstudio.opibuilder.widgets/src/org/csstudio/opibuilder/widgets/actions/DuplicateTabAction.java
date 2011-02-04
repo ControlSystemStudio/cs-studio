@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
-import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
@@ -16,9 +15,8 @@ public class DuplicateTabAction extends AbstractWidgetTargetAction {
 
 	public void run(IAction action) {
 		Command command = new DuplicateTabCommand(getSelectedTabWidget());
-		if(targetPart instanceof OPIEditor){
-			execute(command);
-		}
+		execute(command);
+		
 	}
 
 	

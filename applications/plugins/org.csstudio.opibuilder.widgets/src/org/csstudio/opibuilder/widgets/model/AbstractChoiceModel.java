@@ -6,12 +6,9 @@ import java.util.List;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.RGB;
 
@@ -26,10 +23,7 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 	 * Items of the choice widget.
 	 */
 	public static final String PROP_ITEMS = "items";//$NON-NLS-1$
-	/**
-	 * Font of the widget.
-	 */
-	public static final String PROP_FONT = "font";//$NON-NLS-1$
+
 	/**
 	 * If this is true, items will be loaded from input Enum PV.
 	 */
@@ -56,8 +50,6 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {		
 		addProperty(new StringListProperty(
 				PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, Arrays.asList(DEFAULT_ITEMS)));
-		addProperty(new FontProperty(
-				PROP_FONT, "Font", WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
 		addProperty(new BooleanProperty(
 				PROP_ITEMS_FROM_PV, "Items From PV", WidgetPropertyCategory.Behavior, true));
 		addProperty(new ColorProperty(PROP_SELECTED_COLOR, "Selected Color", 
@@ -75,9 +67,6 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 		return (Boolean)getPropertyValue(PROP_ITEMS_FROM_PV);
 	}
 	
-	public OPIFont getFont(){
-		return (OPIFont)getCastedPropertyValue(PROP_FONT);
-	}
 		
 
 	public OPIColor getSelectedColor(){

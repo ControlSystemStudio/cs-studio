@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <settings>
 	<style name="Default" description="Default Settings">
-		<color name="Test1" description="Test Color 1 (Red)" value="#FF0000"/>
-		<color name="Test2" description="Test Color 2 (Green)" value="#00FF00"/>
-		<font name="Test1" description="Test Font 1" fontName="Arial" fontSize="10" bold="false" italic="false"/>
-		<font name="Test2" description="Test Font 2" fontName="Arial" fontSize="20" bold="true" italic="false"/>
+		<color name="Gruen" description="Default gruen" value="#00D800"/>
+		<color name="Gelb" description="Default gelb" value="#FBF34A"/>
+		<color name="Rot" description="Default rot" value="#FD0000"/>
+		<color name="Weiss" description="Default weiß" value="#FFFFFF"/>
+		<color name="Schwarz" description="Default schwarz" value="#707070"/>
+		<color name="Blau" description="Default blau" value="#2A63E4"/>
+		<color name="Rosa" description="Default rosa" value="#FFA8DE"/>
+		<color name="Pink" description="Default pink" value="#FF09A3"/>
+		<color name="Lila" description="Default lila" value="#8070FF"/>
+		<color name="NoAlarm" description="No Alarm (Gruen)" value="#00D800"/>
+		<color name="Minor" description="Minor Alarm (Gelb)" value="#FBF34A"/>
+		<color name="Major" description="Major Alarm (Rot)" value="#FD0000"/>
+		<color name="Inintial" description="Inintial (Pink)" value="#FF09A3"/>
+		<color name="VerbAbbr" description="Verbindung Verloren (Rosa)" value="#FFA8DE"/>
+		<color name="Offen" description="Offen (Gruen)" value="#00D800"/>
+		<color name="Zu" description="Inintial (Schwarz)" value="#707070"/>
+		<color name="Geregelt" description="Ventil in zwischen Position (Blau)" value="#2A63E4"/>
+		<color name="Background" description="Display Backgroud (Grau)" value="#DADADA"/>
+		<color name="Illegal" description="Illegaler status (Lila)" value="#8070FF"/>
+		<font name="Static" description="Default Font for static Text" fontName="Times New Roman" fontSize="14" bold="false" italic="false"/>
+		<font name="Dynamic" description="Default Font for dynamic Text" fontName="Arial" fontSize="20" bold="true" italic="false"/>
 	</style>
-	
 </settings>

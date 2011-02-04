@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.httpd;
 
 import org.csstudio.sns.jms2rdb.Application;
@@ -10,8 +17,8 @@ public class StopServlet extends AbstractServlet
 {
 	private static final long serialVersionUID = 1L;
 
-    private Application application;
-    
+    private transient Application application;
+
     /** Initialize
      *  @param application Application to stop when servlet runs
      */

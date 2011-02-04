@@ -44,10 +44,12 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * @author hrickens
@@ -225,6 +227,7 @@ public class GSDFileDBO {
 
 	/**
 	 * Parse this file to set Master and Slave flag.
+	 * @throws PersistenceException 
 	 */
 	@Transient
 	private void paresFile() {
@@ -235,7 +238,11 @@ public class GSDFileDBO {
 		setMaster((master != null)
 				&& (master.getType() == GSDFileTypes.Master));
 		master = null;
-		Repository.save(this);
+		try {
+            Repository.save(this);
+        } catch (PersistenceException e) {
+            CentralLogger.getInstance().error(this, e);
+        }
 	}
 
 	/** @return the Name of this gsdFile */

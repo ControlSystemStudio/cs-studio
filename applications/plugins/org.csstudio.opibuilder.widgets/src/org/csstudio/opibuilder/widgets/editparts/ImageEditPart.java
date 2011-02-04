@@ -223,8 +223,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 	
 	@Override
 	public void deactivate() {
-		super.deactivate();
-		((ImageFigure) getFigure()).stopAnimation();
+		super.deactivate();		
 		((ImageFigure) getFigure()).dispose();
 	}
 	

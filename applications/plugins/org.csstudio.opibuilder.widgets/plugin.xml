@@ -336,6 +336,15 @@
             name="Byte Monitor"
             typeId="org.csstudio.opibuilder.widgets.bytemonitor">
       </widget>
+      <widget
+            category="Layout"
+            description="A virtual widget for automatically layoutting widgets in a container."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.GridLayoutEditpart"
+            icon="icons/grid.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.GridLayoutModel"
+            name="Grid Layout"
+            typeId="org.csstudio.opibuilder.widgets.gridLayout">
+      </widget>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -364,6 +373,15 @@
             id="org.csstudio.opibuilder.widgets.removeGroup"
             objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
          <action
+               class="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction"
+               enablesFor="1"
+               icon="icons/unlock.png"
+               id="org.csstudio.opibuilder.widgets.lockUnlockChildrenAction"
+               label="Lock/Unlock Children"
+               menubarPath="group"
+               tooltip="Lock/Unlock children in the grouping container.">
+         </action>
+         <action
                class="org.csstudio.opibuilder.widgets.actions.RemoveGroupAction"
                enablesFor="1"
                icon="icons/removeGroup.png"
@@ -384,6 +402,7 @@
          <action
                class="org.csstudio.opibuilder.widgets.actions.SelectAllInGroupAction"
                enablesFor="1"
+               icon="icons/select_all.png"
                id="org.csstudio.opibuilder.widgets.selectall"
                label="Select All Widgets in Group"
                menubarPath="group"
@@ -415,6 +434,14 @@
                label="Add Tab After"
                menubarPath="tab"
                tooltip="add tab after this tab.">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.ChangeTabIndexAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.changeTabIndex"
+               label="Change Tab Index"
+               menubarPath="tab"
+               tooltip="Change Tab Index.">
          </action>
          <action
                class="org.csstudio.opibuilder.widgets.actions.DuplicateTabAction"

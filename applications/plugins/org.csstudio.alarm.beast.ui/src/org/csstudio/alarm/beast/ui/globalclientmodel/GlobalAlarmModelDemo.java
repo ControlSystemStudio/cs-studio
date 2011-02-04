@@ -7,40 +7,49 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
-import org.csstudio.apputil.test.TestProperties;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.junit.Test;
 
-/** JUnit demo of the {@link GlobalAlarmModel}
+/** [Headless] JUnit Plug-in demo of the {@link GlobalAlarmModel}
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
 {
+    final Timer delayed_update = new Timer();
+
     // GlobalAlarmModelListener
     @Override
     public void globalAlarmsChanged(final GlobalAlarmModel model)
     {
         System.out.println("\nGlobal alarms:");
-        final GlobalAlarm alarms[] = model.getAlarms();
-        for (GlobalAlarm alarm : alarms)
-            System.out.println(alarm);
+        final AlarmTreeRoot trees[] = model.getAlarmRoots();
+        final AlarmTreeLeaf alarms[] = model.getAlarms();
+        for (AlarmTreeLeaf alarm : alarms)
+            System.out.println(alarm.getPathName() + ", Description: " + alarm.getDescription());
+
+        // Delayed printout that would (usually) have GUI detail
+        delayed_update.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                for (AlarmTreeRoot root : trees)
+                    root.dump(System.out);
+            }
+        }, 3000);
     }
 
     @Test
     public void testGlobalClientModel() throws Exception
     {
-        final TestProperties settings = new TestProperties();
-        final String jms_url = settings.getString("alarm_jms_url");
-        if (jms_url == null)
-        {
-            System.out.println("Need test URL, skipping test");
-            return;
-        }
-
-        final GlobalAlarmModel model = new GlobalAlarmModel(jms_url, this);
-        model.readConfiguration(new NullProgressMonitor());
+        final GlobalAlarmModel model = GlobalAlarmModel.reference();
+        model.addListener(this);
 
         System.out.println("Model is running ....");
         while (true)

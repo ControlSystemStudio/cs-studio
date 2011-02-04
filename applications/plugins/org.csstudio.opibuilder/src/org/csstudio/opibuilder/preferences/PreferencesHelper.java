@@ -35,7 +35,9 @@ public class PreferencesHelper {
 	public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
 	public static final String TOP_OPIS = "top_opis"; //$NON-NLS-1$
 	public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
-	public static final String POPUP_CONSOLE = "popup_console"; ////$NON-NLS-1$
+	public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
+	public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
+	
 	private static final char ROW_SEPARATOR = '|'; //$NON-NLS-1$
 	private static final char ITEM_SEPARATOR = ','; //$NON-NLS-1$
 	private static final char MACRO_SEPARATOR = '='; //$NON-NLS-1$
@@ -76,6 +78,21 @@ public class PreferencesHelper {
     			return new URLPath(fontFilePath);
     		else
     			return new Path(fontFilePath);
+    	}
+    	return null;
+    }
+    
+    
+    /**Get the probe OPI path from preference store.
+     * @return the probe OPI path. null if not specified.
+     */
+    public static IPath getProbeOPIPath(){
+    	String probeOPIPath = getString(PROBE_OPI);
+    	if(probeOPIPath != null){
+    		if(ResourceUtil.isURL(probeOPIPath))
+    			return new URLPath(probeOPIPath);
+    		else
+    			return new Path(probeOPIPath);
     	}
     	return null;
     }

@@ -45,41 +45,44 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final ArchiveSampleModeId _sampleModeId;
 
-    private final double _sampleValue;
+    private final String _dataType;
 
     private final double _samplePeriod;
 
     private final TimeInstant _latestTimestamp;
 
-    /** The channel's meta data */
-    //private final IMetaData _metaData;
+    private final double _sampleValue;
 
     /**
      * Constructor.
      * @param id
+     * @param name
+     * @param type
      * @param grpId
      * @param sampleModeId
-     * @param smplVal
      * @param smplPer
-    //* @param metaData
      * @param ltstTimestamp
+     * @param sampleValue
+     *
+     * CHECKSTYLE OFF: ParameterNumber
      */
     public ArchiveChannelDTO(@Nonnull final ArchiveChannelId id,
                              @Nonnull final String name,
+                             @Nonnull final String type,
                              @Nonnull final ArchiveChannelGroupId grpId,
                              @Nonnull final ArchiveSampleModeId sampleModeId,
-                             final double smplVal,
                              final double smplPer,
-                             /* @Nonnull final IMetaData metaData */
-                             @Nullable final TimeInstant ltstTimestamp) {
+                             @Nullable final TimeInstant ltstTimestamp,
+                             final double sampleValue) {
+        // CHECKSTYLE  ON : ParameterNumber
         _id = id;
         _name = name;
         _groupId = grpId;
+        _dataType = type;
         _sampleModeId = sampleModeId;
-        _sampleValue = smplVal;
         _samplePeriod = smplPer;
-        //_metaData = metaData;
         _latestTimestamp = ltstTimestamp;
+        _sampleValue = sampleValue;
     }
 
     /**
@@ -118,8 +121,8 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      * {@inheritDoc}
      */
     @Override
-    public double getSampleValue() {
-        return _sampleValue;
+    public String getDataType() {
+        return _dataType;
     }
     /**
      * {@inheritDoc}
@@ -128,14 +131,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
     public double getSamplePeriod() {
         return _samplePeriod;
     }
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public IMetaData getMetaData() {
-//        return _metaData;
-//    }
+
     /**
      * {@inheritDoc}
      */
@@ -143,5 +139,13 @@ public class ArchiveChannelDTO implements IArchiveChannel {
     @CheckForNull
     public TimeInstant getLatestTimestamp() {
         return _latestTimestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double getSampleValue() {
+        return _sampleValue;
     }
 }

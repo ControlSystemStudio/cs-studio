@@ -48,7 +48,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		TIME_FORMAT("time_format", "Time Format"),
 		SHOW_GRID("show_grid", "Show Grid"),
 		GRID_COLOR("grid_color", "Grid Color"),
-		DASH_GRID("dash_grid_line", "Dash Grid Line");		
+		DASH_GRID("dash_grid_line", "Dash Grid Line"),
+		SCALE_FORMAT("scale_format", "Scale Format");		
 		
 		public String propIDPre;
 		public String description;
@@ -211,7 +212,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
-		//setPropertyVisible(PROP_PVNAME, false);
+		removeProperty(PROP_FONT);
 		
 	}
 	
@@ -283,6 +284,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			break;	
 		case VISIBLE:
 			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
+			break;
+		case SCALE_FORMAT:
+			addProperty(new StringProperty(propID, axisProperty.toString(), category, "")); //$NON-NLS-1$
 			break;
 		default:
 			break;

@@ -4,14 +4,11 @@ import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.widgets.figures.WrappableTextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.WrappableTextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -29,8 +26,6 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		WrappableTextFigure labelFigure = new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
-		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
@@ -75,23 +70,12 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
-		
-		
-		IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setFont(CustomMediaFactory.getInstance().getFont(
-						((OPIFont)newValue).getFontData()));
-				return true;
-			}
-		};		
-		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 	
 		IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((WrappableTextFigure)figure).setSelectable(
-						!((ActionsInput)newValue).getActionsList().isEmpty() || 
+						!getWidgetModel().getActionsInput().getActionsList().isEmpty() || 
 						getWidgetModel().getTooltip().trim().length() > 0);
 				return false;
 			}

@@ -35,7 +35,8 @@ public class Messages extends NLS
     public static String AddPVMsg;
     public static String AppendSearchResults;
     public static String AppendSearchResultsTT;
-    public static String ArchiveAccessErrorFmt;
+    public static String ArchiveAccessDetailFmt;
+    public static String ArchiveAccessMessageFmt;
     public static String ArchiveDataSources;
     public static String ArchiveDescription;
     public static String ArchiveFetchJobFmt;
@@ -44,7 +45,7 @@ public class Messages extends NLS
     public static String ArchiveFetchDetailFmt;
     public static String ArchiveKey;
     public static String ArchiveListGUI_NoArchives;
-    public static String ArchiveName;   
+    public static String ArchiveName;
     public static String ArchiveRescale_AUTOZOOM;
     public static String ArchiveRescale_Label;
     public static String ArchiveRescale_NONE;
@@ -57,12 +58,14 @@ public class Messages extends NLS
     public static String Axis;
     public static String AxisMax;
     public static String AxisMin;
+    public static String AxisTT;
     public static String AxisVisibility;
     public static String BackgroundColorLbl;
     public static String BackgroundColorTT;
     public static String ChangeLiveCapacityCommandErrorFmt;
     public static String ChangeNameErrorFmt;
     public static String Color;
+    public static String ColorTT;
     public static String Connecting;
     public static String ConfigFileErrorFmt;
     public static String ControllerStartErrorFmt;
@@ -72,7 +75,6 @@ public class Messages extends NLS
     public static String DeleteItem;
     public static String DuplicateItemFmt;
     public static String EMailDefaultSender;
-
     public static String EmptyNameError;
     public static String EndTimeLbl;
     public static String EndTimeTT;
@@ -88,6 +90,7 @@ public class Messages extends NLS
     public static String ExportDigits;
     public static String ExportDigitsError;
     public static String ExportDigitsTT;
+    public static String ExportEnterFilenameError;
     public static String ExportErrorFmt;
     public static String ExportFileExists;
     public static String ExportFileExistsFmt;
@@ -129,10 +132,12 @@ public class Messages extends NLS
     public static String FormulaLabelEditTT;
     public static String HideTraceWarning;
     public static String HideTraceWarningDetail;
+    public static String Information;
     public static String InspectSamples;
     public static String InvalidScanPeriodError;
     public static String InvalidStartEndTimeError;
     public static String ItemName;
+    public static String ItemNameTT;
     public static String KeyLbl;
     public static String LinacScale;
     public static String LinLogScaleType;
@@ -173,12 +178,12 @@ public class Messages extends NLS
     public static String RegularExpression;
     public static String RegularExpressionTT;
     public static String RemoveEmptyAxes;
-
     public static String ReplaceSearchResults;
     public static String ReplaceSearchResultsTT;
     public static String Request_raw;
     public static String Request_optimized;
     public static String RequestType;
+    public static String RequestTypeTT;
     public static String RequestTypeWarning;
     public static String RequestTypeWarningDetail;
     public static String SampleView_Item;
@@ -216,7 +221,9 @@ public class Messages extends NLS
     public static String Toolbar_Hide;
     public static String Toolbar_Show;
     public static String TraceDisplayName;
+    public static String TraceDisplayNameTT;
     public static String TraceLineWidth;
+    public static String TraceLineWidthTT;
     public static String TraceType;
     public static String TraceType_Area;
     public static String TraceType_ErrorBars;
@@ -225,9 +232,11 @@ public class Messages extends NLS
     public static String TraceType_Circles;
     public static String TraceType_Diamonds;
     public static String TraceType_Crosses;
-    public static String TraceType_Triangles;    
+    public static String TraceType_Triangles;
+    public static String TraceTypeTT;
     public static String TracesTab;
     public static String TraceVisibility;
+    public static String TraceVisibilityTT;
     public static String UpdatePeriodLbl;
     public static String UpdatePeriodTT;
     public static String URL;

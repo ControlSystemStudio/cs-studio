@@ -45,7 +45,7 @@ public class PVTupleTableEditor extends Composite {
 	private List<PVTuple> pvTupleList;
 
 	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList) {
-		super(parent, SWT.BORDER);
+		super(parent, SWT.None);
 		this.pvTupleList = pvTupleList;
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginLeft = 0;
@@ -107,7 +107,7 @@ public class PVTupleTableEditor extends Composite {
 		final TableViewerColumn pvColumn = new TableViewerColumn(viewer, SWT.NONE);		
 		pvColumn.getColumn().setText("PV Name");
 		pvColumn.getColumn().setMoveable(false);
-		pvColumn.getColumn().setWidth(200);
+		pvColumn.getColumn().setWidth(220);
 		pvColumn.setEditingSupport(new PVColumnEditingSupport(viewer, viewer.getTable()));	
 		
 		

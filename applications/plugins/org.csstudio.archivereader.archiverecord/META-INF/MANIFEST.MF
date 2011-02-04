@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Archiverecord
+Bundle-SymbolicName: org.csstudio.archivereader.archiverecord;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.archivereader.archiverecord.Activator
+Bundle-Vendor: Desy, Jan Hatje <jan.hatje@desy.de>
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform;bundle-version="1.1.1",
+ org.csstudio.utility.pv;bundle-version="1.1.1",
+ org.csstudio.utility.pv.epics;bundle-version="1.1.1",
+ org.csstudio.archivereader;bundle-version="2.0.2",
+ org.junit4;bundle-version="4.8.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

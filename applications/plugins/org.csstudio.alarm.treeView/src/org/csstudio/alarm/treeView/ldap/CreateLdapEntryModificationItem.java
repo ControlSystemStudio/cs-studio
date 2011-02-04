@@ -69,16 +69,15 @@ final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem
      * {@inheritDoc}
      */
     @Override
-    public boolean apply() throws AlarmTreeModificationException {
+    public void apply() throws AlarmTreeModificationException {
         final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
         if (service == null) {
-            throw new AlarmTreeModificationException("Entry creation failed.", new ServiceUnavailableException("LDAP service unavailable."));
+            throw new AlarmTreeModificationException("Entry creation failed.",
+                                                     new ServiceUnavailableException("LDAP service unavailable."));
         }
-        if (service.createComponent(_newName, _attrs)) {
-            setApplied(true);
-            return true;
+        if (!service.createComponent(_newName, _attrs)) {
+            throw new AlarmTreeModificationException("CREATE RECORD for " + _newName.toString()
+                    + " failed in LDAP.", null);
         }
-        throw new AlarmTreeModificationException("CREATE RECORD for " + _newName.toString() +
-                                                 " failed in LDAP.", null);
     }
 }

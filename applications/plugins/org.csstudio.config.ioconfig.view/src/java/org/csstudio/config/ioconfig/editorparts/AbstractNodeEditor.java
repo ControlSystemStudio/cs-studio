@@ -46,6 +46,7 @@ import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
@@ -57,10 +58,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -104,7 +106,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.internal.views.markers.TodoFiltersContributionParameters;
 import org.eclipse.ui.part.EditorPart;
 
 /**
@@ -139,8 +140,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			// if (getNode().isPersistent()) {
 			if (!isNew()) {
 				cancel();
-				if (getDocumentationManageView() != null) {
-					getDocumentationManageView().cancel();
+				DocumentationManageView documentationManageView = getDocumentationManageView();
+                if (documentationManageView != null) {
+					documentationManageView.cancel();
 				}
 				setSaveButtonSaved();
 			} else {
@@ -150,10 +152,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 								+ node.getClass().getSimpleName() + "?");
 				if (openQuestion) {
 					setSaveButtonSaved();
-					// ISelection selection = getProfiBusTreeView()
-					// .getTreeViewer().getSelection();
-					// if(selection.isEmpty()) {
-
 					// hrickens (01.10.2010): Beim Cancel einer neuen Facility
 					// macht nur Perfrom close Sinn.
 					AbstractNodeDBO parent = node.getParent();
@@ -161,12 +159,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 						parent.removeChild(node);
 					}
 					perfromClose();
-					// } else {
-					// getProfiBusTreeView().getTreeViewer().setSelection(selection);
-					// }
-				} else {
-					// TODO: do nothing or cancel?
-				}
+				} 
 			}
 		}
 
@@ -242,21 +235,27 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 		@Override
 		public void widgetSelected(@Nonnull final SelectionEvent e) {
-			final StructuredSelection selection = (StructuredSelection) _tableViewer
-					.getSelection();
-			final GSDFileDBO removeFile = (GSDFileDBO) selection
-					.getFirstElement();
-
-			if (MessageDialog.openQuestion(getShell(),
-					"Lösche Datei aus der Datenbank",
-					"Sind sie sicher das sie die Datei " + removeFile.getName()
-							+ " löschen möchten")) {
-				Repository.removeGSDFiles(removeFile);
-				if (getGsdFiles() != null) {
-					getGsdFiles().remove(removeFile);
-				}
-				_tableViewer.setInput(getGsdFiles());
-			}
+            final StructuredSelection selection = (StructuredSelection) _tableViewer.getSelection();
+            final GSDFileDBO removeFile = (GSDFileDBO) selection.getFirstElement();
+            
+            if (removeFile != null) {
+                if (MessageDialog.openQuestion(getShell(),
+                                               "Lösche Datei aus der Datenbank",
+                                               "Sind sie sicher das sie die Datei "
+                                                       + removeFile.getName() + " löschen möchten")) {
+                    try {
+                        Repository.removeGSDFiles(removeFile);
+                        List<GSDFileDBO> gsdFiles = getGsdFiles();
+                        if (gsdFiles != null) {
+                            gsdFiles.remove(removeFile);
+                        }
+                        _tableViewer.setInput(gsdFiles);
+                    } catch (PersistenceException pE) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't remove file from Database!", pE);
+                        CentralLogger.getInstance().error(this, pE);
+                    }
+                }
+            }
 
 		}
 	}
@@ -285,14 +284,22 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			_tSelected = tSelected;
 		}
 
-		private void doFileAdd() {
-			setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer
-					.getSelection()).getFirstElement());
-			if (fill(getGsdFile())) {
-				_tSelected.setText(getGsdFile().getName());
-				setSavebuttonEnabled("GSDFile", true);
-			}
-		}
+        private void doFileAdd() {
+            setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer.getSelection())
+                    .getFirstElement());
+            GSDFileDBO gsdFile = getGsdFile();
+            try {
+                if (gsdFile != null) {
+                    if (fill(gsdFile)) {
+                        _tSelected.setText(gsdFile.getName());
+                        setSavebuttonEnabled("GSDFile", true);
+                    }
+                }
+            } catch (PersistenceException e) {
+                LOG.error(e);
+                DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
+            }
+        }
 
 		@Override
 		public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
@@ -483,7 +490,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		return newText;
 	}
 
-	protected static void resetString(Text textField) {
+	protected static void resetString(@Nonnull Text textField) {
 		String text = (String) textField.getData();
 		if (text != null) {
 			textField.setText(text);
@@ -577,9 +584,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	// Node Editor View
 
 	public void cancel() {
-		if (getDescText() != null && getDescText().getData() != null
-				&& getDescText().getData() instanceof String) {
-			setDesc((String) getDescText().getData());
+		Text descText = getDescText();
+        if (descText != null && descText.getData() != null
+				&& descText.getData() instanceof String) {
+			setDesc((String) descText.getData());
 		}
 		if (getNode() != null) {
 			getNode().setDirty(false);
@@ -649,12 +657,19 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		GridDataFactory.fillDefaults().grab(true, true)
 				.applyTo(gsdFileTableViewer.getTable());
 
-		setGsdFiles(Repository.load(GSDFileDBO.class));
-		if (getGsdFiles() == null) {
+        try {
+            List<GSDFileDBO> load = Repository.load(GSDFileDBO.class);
+            setGsdFiles(load);
+        } catch (PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't read GSDFiles from Database!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
+		List<GSDFileDBO> gsdFiles = getGsdFiles();
+        if (gsdFiles == null) {
 			setGsdFiles(new ArrayList<GSDFileDBO>());
-		} else if (!getGsdFiles().isEmpty()) {
-			gsdFileTableViewer.setInput(getGsdFiles().toArray(
-					new GSDFileDBO[getGsdFiles().size()]));
+		} else if (!gsdFiles.isEmpty()) {
+			gsdFileTableViewer.setInput(gsdFiles.toArray(
+					new GSDFileDBO[gsdFiles.size()]));
 		}
 		return gsdFileTableViewer;
 	}
@@ -686,9 +701,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		tSelected = new Text(gSelected, SWT.SINGLE | SWT.BORDER);
 		tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
-		if (getGsdFile() != null) {
-			setGsdFile(getGsdFile());
-			tSelected.setText(getGsdFile().getName());
+		GSDFileDBO gsdFile = getGsdFile();
+        if (gsdFile != null) {
+			setGsdFile(gsdFile);
+			tSelected.setText(gsdFile.getName());
 		}
 		return tSelected;
 	}
@@ -722,7 +738,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 			private void docTabSelectionAction(@Nonnull final SelectionEvent e) {
 				if (e.item.equals(item)) {
-					getDocumentationManageView().onActivate();
+					DocumentationManageView documentationManageView = getDocumentationManageView();
+					if(documentationManageView!=null) {
+					    documentationManageView.onActivate();
+					}
 				}
 			}
 
@@ -759,8 +778,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		getNode().setUpdatedOn(now);
 
 		getNode().setDescription(getDesc());
-		if (getDescText() != null) {
-			getDescText().setData(getDesc());
+		Text descText = getDescText();
+        if (descText != null) {
+			descText.setData(getDesc());
 		}
 
 		// update Header
@@ -790,8 +810,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	 * @param gsdFile
 	 *            the GSDFile whit the data.
 	 * @return true when set the data ok.
+	 * @throws PersistenceException 
 	 */
-	public abstract boolean fill(@Nullable GSDFileDBO gsdFile);
+	public abstract boolean fill(@Nullable GSDFileDBO gsdFile) throws PersistenceException;
 
 	/**
 	 * @return the cancelButton
@@ -803,10 +824,11 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 	@Nonnull
 	public String getDesc() {
-		if (getDescText() == null || getDescText().getText() == null) {
+		Text descText = getDescText();
+        if (descText == null || descText.getText() == null) {
 			return "";
 		}
-		return getDescText().getText();
+		return descText.getText();
 	}
 
 	@CheckForNull
@@ -943,6 +965,12 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		return _tabFolder;
 	}
 
+	protected final void selecttTabFolder(int index) {
+	    if(_tabFolder!=null) {
+	        _tabFolder.setSelection(index);
+	    }
+	}
+
 	/**
 	 * (@inheritDoc)
 	 */
@@ -951,7 +979,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 			@Nonnull final IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
-		getProfiBusTreeView().closeOpenEditor();
 		_node = ((NodeEditorInput) input).getNode();
 		setNew(((NodeEditorInput) input).isNew());
 		setPartName(_node.getName());
@@ -1029,7 +1056,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		});
 		setText(descText, getNode().getDescription(), 255);
 		setDescWidget(descText);
-		gDesc.setTabList(new Control[] { descText });
+		gDesc.setTabList(new Control[] {descText });
 	}
 
 	/**
@@ -1075,81 +1102,69 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 				+ nodeType, "Enter the name of the " + nodeType, nameOffer,
 				null);
 		id.setBlockOnOpen(true);
-		if (id.open() == Window.OK) {
-			getNode().setName(id.getValue());
-			final User user = SecurityFacade.getInstance().getCurrentUser();
-			String name = "Unknown";
-			if (user != null) {
-				name = user.getUsername();
-			}
-
-			getNode().setCreatedBy(name);
-			getNode().setCreatedOn(new Date());
-			getNode().setVersion(-2);
-			id.close();
-
-			final Object obj = ((StructuredSelection) getProfiBusTreeView()
-					.getTreeViewer().getSelection()).getFirstElement();
-
-			if (getNode() instanceof FacilityDBO || obj == null) {
-				getProfiBusTreeView().getTreeViewer().setInput(getNode());
-				// TODO neue facility erstellen und speichern..
-			} else if (obj instanceof AbstractNodeDBO) {
-				if (getNode().getParent() == null) {
-					final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
-
-					getNode()
-							.moveSortIndex(
-									nodeParent
-											.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
-					nodeParent.addChild(getNode());
-				}
-			}
-			return true;
-		}
+        try {
+            if (id.open() == Window.OK) {
+                getNode().setName(id.getValue());
+                String name = getUserName(); 
+                getNode().setCreatedBy(name);
+                getNode().setCreatedOn(new Date());
+                getNode().setVersion(-2);
+                id.close();
+                
+                final Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer()
+                        .getSelection()).getFirstElement();
+                
+                if (getNode() instanceof FacilityDBO || obj == null) {
+                    getProfiBusTreeView().getTreeViewer().setInput(getNode());
+                    // TODO neue facility erstellen und speichern..
+                } else if (obj instanceof AbstractNodeDBO) {
+                    if (getNode().getParent() == null) {
+                        final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
+                        
+                        getNode()
+                                .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
+                        nodeParent.addChild(getNode());
+                    }
+                }
+                return true;
+            }
+        } catch (PersistenceException e) {
+            LOG.error(e.getMessage());
+            DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
+        }
 		return false;
 	}
 
 	/**
+     * @return
+     */
+	@Nonnull
+    private String getUserName() {
+        final User user = SecurityFacade.getInstance().getCurrentUser();
+        String name = "Unknown";
+        if (user != null) {
+            name = user.getUsername();
+        }
+        return name;
+    }
+
+    /**
 	 * @param exception
 	 *            A exception to show in a Dialog,
 	 */
 	protected void openErrorDialog(@Nonnull final Exception exception) {
 		LOG.error(exception);
-		final Formatter f = new Formatter();
-		String message = exception.getLocalizedMessage();
-		if (message == null) {
-			message = exception.getMessage();
-			if (message == null) {
-				message = "Unknown Exception";
-			}
-		}
-
-		f.format("The Settings not saved!\n\nDataBase Failure:\n%s", message);
-
-		final ErrorDialog errorDialog = new ErrorDialog(Display.getCurrent()
-				.getActiveShell(), "Data Base Error", f.toString(),
-				Status.CANCEL_STATUS, 0);
-		errorDialog.open();
-		f.close();
+		DeviceDatabaseErrorDialog.open(null, "The Settings not saved!\n\nDataBase Failure:", exception);
 	}
 
 	public void perfromClose() {
-		// TODO: Schliesst den Momentan angezeigen Editor und nicht den Editor
-		// der das Command ausführt
 		final IViewSite site = getProfiBusTreeView().getSite();
-		final IHandlerService handlerService = (IHandlerService) site
-				.getService(IHandlerService.class);
-		try {
-			setFocus();
-			handlerService.executeCommand("org.eclipse.ui.file.close", null);
-		} catch (final Exception ex) {
-			LOG.error(ex);
-		}
+		site.getPage().closeEditor(this, false);
 	}
 
 	protected void perfromSave() {
 		final IViewSite site = getProfiBusTreeView().getSite();
+        
 		final IHandlerService handlerService = (IHandlerService) site
 				.getService(IHandlerService.class);
 		try {
@@ -1163,31 +1178,54 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 	 * Save or Update the Node to the Data Base.
 	 */
 	final void save() {
-		try {
-			if (getNode().getParent() == null) {
-				getNode().localSave();
-			} else {
-				getNode().getParent().localSave();
-			}
-		} catch (final PersistenceException e) {
-			openErrorDialog(e);
-		}
-
-		setSaveButtonSaved();
-		getSaveButton().setText("&Save");
-
-		if (isNew() && !getNode().isRootNode()) {
-			getProfiBusTreeView().refresh(getNode().getParent());
-		} else if (isNew() && getNode().isRootNode()) {
-			getProfiBusTreeView().addFacility(getNode());
-			getProfiBusTreeView().refresh(getNode());
-			getProfiBusTreeView().refresh();
-		} else {
-			// refresh the View
-			getProfiBusTreeView().refresh(getNode());
-		}
-		setNew(false);
-
+	    
+	    ProgressMonitorDialog dia = new ProgressMonitorDialog(getShell());
+	    dia.open();
+	    IProgressMonitor progressMonitor = dia.getProgressMonitor();
+	    try {
+            progressMonitor.beginTask("Save " + getNode(), 3);
+            AbstractNodeDBO parent = getNode().getParent();
+            progressMonitor.worked(1);
+            try {
+                if (parent == null) {
+                    getNode().localSave();
+                } else {
+                    parent.localSave();
+                }
+            } catch (final PersistenceException e) {
+                openErrorDialog(e);
+            }
+            progressMonitor.worked(2);
+            setSaveButtonSaved();
+            Button saveButton = getSaveButton();
+            if (saveButton != null) {
+                saveButton.setText("&Save");
+            }
+            
+            getHeaderField(HeaderFields.DB_ID).setText(getNode().getId() + "");
+            progressMonitor.worked(3);
+            
+            if (isNew() && !getNode().isRootNode()) {
+                getProfiBusTreeView().refresh(parent);
+                getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(),
+                                                                    AbstractTreeViewer.ALL_LEVELS);
+                getProfiBusTreeView().getTreeViewer()
+                        .setSelection(new StructuredSelection(getNode()));
+            } else if (isNew() && getNode().isRootNode()) {
+                getProfiBusTreeView().addFacility(getNode());
+//			getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(), AbstractTreeViewer.ALL_LEVELS);
+                getProfiBusTreeView().refresh(getNode());
+                getProfiBusTreeView().refresh();
+                
+            } else {
+                // refresh the View
+                getProfiBusTreeView().refresh(getNode());
+            }
+            setNew(false);
+        } finally {
+            progressMonitor.done();
+            dia.close();
+        }
 	}
 
 	/**
@@ -1304,7 +1342,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		setHeaderField(HeaderFields.MODIFIED_ON, modifiedOn);
 		temp = "";
 
-		final Label dbID = getNewLabel(header, "DataBase ID:");
+		getNewLabel(header, "DataBase ID:");
 		/** The description field with the Version from GSD File. */
 		if (node != null) {
 			temp = node.getId() + "";
@@ -1337,19 +1375,25 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		// -Footer
 		new Label(getParent(), SWT.NONE);
 		setSaveButton(new Button(getParent(), SWT.PUSH));
-		if (isNew()) {
-			getSaveButton().setText("Create");
-		} else {
-			getSaveButton().setText("&Save");
-		}
-		setSavebuttonEnabled(null, !isNew());
-		getSaveButton().setLayoutData(labelGridData.create());
-		setSaveButtonSelectionListener(new SaveSelectionListener());
+		Button saveButton = getSaveButton();
+        if (saveButton != null) {
+            if (isNew()) {
+                saveButton.setText("Create");
+            } else {
+                saveButton.setText("&Save");
+            }
+            setSavebuttonEnabled(null, !isNew());
+            saveButton.setLayoutData(labelGridData.create());
+            setSaveButtonSelectionListener(new SaveSelectionListener());
+        }
 		new Label(getParent(), SWT.NONE);
 		setCancelButton(new Button(getParent(), SWT.PUSH));
-		getCancelButton().setText("&Cancel");
-		getCancelButton().setLayoutData(labelGridData.create());
-		getCancelButton().addSelectionListener(new CancelSelectionListener());
+		Button cancelButton = getCancelButton();
+        if (cancelButton != null) {
+            cancelButton.setText("&Cancel");
+            cancelButton.setLayoutData(labelGridData.create());
+            cancelButton.addSelectionListener(new CancelSelectionListener());
+        }
 		new Label(getParent(), SWT.NONE);
 		header.setTabList(new Control[0]);
 	}
@@ -1385,7 +1429,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 	public void setDesc(@CheckForNull final String desc) {
 		String temp = desc != null ? desc : "";
-		getDescText().setText(temp);
+		Text descText = getDescText();
+		if(descText!=null) {
+		    descText.setText(temp);
+		}
 	}
 
 	protected void setDescText(@Nullable final Text descText) {
@@ -1448,9 +1495,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 		_nameText.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(@Nonnull final KeyEvent e) {
-				if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-					getDescText().setFocus();
-				}
+			    Text descText = getDescText();
+                if ( (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) && (descText != null) ) {
+                    descText.setFocus();
+                }
 			}
 		});
 	}

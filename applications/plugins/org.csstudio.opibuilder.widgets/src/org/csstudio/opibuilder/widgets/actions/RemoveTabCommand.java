@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.widgets.actions;
 
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
-import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
-import org.eclipse.draw2d.Label;
+import org.csstudio.opibuilder.widgets.editparts.TabItem;
+import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -12,28 +12,23 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public class RemoveTabCommand extends Command {
 	private int tabIndex;
-	private TabEditPart tabEditPart;
-	private GroupingContainerModel groupingContainer;
-	private Label label;
+	private TabModel tabModel;
+	
+	private TabItem tabItem;
+	
 	private boolean executed = false;
 	
 	public RemoveTabCommand(TabEditPart tabEditPart) {
-		this.tabEditPart = tabEditPart;
+		this.tabModel = tabEditPart.getWidgetModel();
 		this.tabIndex = tabEditPart.getActiveTabIndex();
-		this.groupingContainer = tabEditPart.getGroupingContainer(tabIndex);
-		this.label = new Label();
-		Label oldLabel = tabEditPart.getTabLabel(tabIndex);
-		label.setText(oldLabel.getText());
-		label.setBackgroundColor(oldLabel.getBackgroundColor());
-		label.setForegroundColor(oldLabel.getForegroundColor());
-		label.setFont(oldLabel.getFont());
+		this.tabItem = tabEditPart.getTabItem(tabIndex);
 		setLabel("Remove Tab");
 	}
 
 	@Override
 	public void execute() {
-		if(tabEditPart.getWidgetModel().getChildren().size()>1){
-			tabEditPart.removeTab(tabIndex);
+		if(tabModel.getChildren().size()>1){
+			tabModel.removeTab(tabIndex);
 			executed = true;
 		}			
 		else
@@ -45,7 +40,7 @@ public class RemoveTabCommand extends Command {
 	@Override
 	public void undo() {
 		if(executed)
-			tabEditPart.addTab(tabIndex, groupingContainer, label);
+			tabModel.addTab(tabIndex, tabItem);
 		executed = false;
 	}
 	

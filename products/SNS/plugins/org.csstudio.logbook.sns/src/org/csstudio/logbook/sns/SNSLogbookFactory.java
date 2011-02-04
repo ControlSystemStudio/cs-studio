@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.logbook.sns;
 
 import java.sql.ResultSet;
@@ -16,6 +23,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSLogbookFactory implements ILogbookFactory
 {
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public String[] getLogbooks() throws Exception
     {
@@ -41,14 +49,16 @@ public class SNSLogbookFactory implements ILogbookFactory
         final String ret_val[] = new String[names.size()];
         return names.toArray(ret_val);
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public String getDefaultLogbook()
     {
         return Preferences.getDefaultLogbook();
     }
 
     /** {@inheritDoc} */
+    @Override
     public ILogbook connect(final String logbook, final String user, final String password)
             throws Exception
     {
@@ -61,7 +71,7 @@ public class SNSLogbookFactory implements ILogbookFactory
      *  Application code should use the
      *   <code>org.csstudio.logbook.sns.LogbookFactory</code>
      *  and not directly call the <code>SNSLogbookFactory</code>.
-     *  
+     *
      *  @param url RDB URL
      *  @param logbook Logbook name
      *  @param user   RDB user

@@ -15,5 +15,11 @@ Headless app Issues on Linux:
 Need -vmargs  -D java.awt.headless=true ?
 See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=201414
 
+VERSIONS
+Defined in plugin.xml and JMS2RDB.product.
+See webroot/versions.html for brief notes.
 
-Versions: See webroot/versions.html
+V2.0.0
+IDs for message entries now depend on Oracle sequence or MySQL auto-increment columns.
+Before, this program would determine the next available message ID, but that can fail
+when multiple programs try to add to the message tables.

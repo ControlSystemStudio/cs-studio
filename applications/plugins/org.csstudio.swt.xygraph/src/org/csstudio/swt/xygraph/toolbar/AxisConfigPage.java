@@ -38,8 +38,10 @@ public class AxisConfigPage {
 	private XYGraph xyGraph;
 	private Axis axis;
 	private Text titleText;
-	private Label fontLabel;
-	private Font titleFont;	
+	private Label scaleFontLabel;
+	private Font scaleFont;	
+	private Label titleFontLabel;
+	private Font titleFont;
 	private ColorSelector axisColorSelector;
 	private Button primaryButton;
 	private Button logButton;
@@ -64,7 +66,8 @@ public class AxisConfigPage {
 	public AxisConfigPage(XYGraph xyGraph, Axis axis) {
 		this.xyGraph = xyGraph;
 		this.axis = axis;
-		titleFont = axis.getFont();
+		scaleFont = axis.getFont();
+		titleFont = axis.getTitleFont();
 	}
 	
 	public void createPage(final Composite composite){
@@ -82,15 +85,15 @@ public class AxisConfigPage {
 		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		titleText.setLayoutData(gd);		
 		
-		fontLabel = new Label(composite, 0);		
+		titleFontLabel = new Label(composite, 0);		
 		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);	
-		fontLabel.setLayoutData(labelGd);
+		titleFontLabel.setLayoutData(labelGd);
 		
-		final Button fontButton = new Button(composite, SWT.PUSH);
-		fontButton.setText("Change...");
+		final Button titleFontButton = new Button(composite, SWT.PUSH);
+		titleFontButton.setText("Change...");
 		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
-		fontButton.setLayoutData(gd);
-		fontButton.addSelectionListener(new SelectionAdapter(){
+		titleFontButton.setLayoutData(gd);
+		titleFontButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FontDialog fontDialog = new FontDialog(composite.getShell());
@@ -99,8 +102,33 @@ public class AxisConfigPage {
 				FontData fontData = fontDialog.open();
 				if(fontData != null){
 					titleFont = XYGraphMediaFactory.getInstance().getFont(fontData);
-					fontLabel.setFont(titleFont);
-					fontLabel.setText("Font: " + fontData.getName());
+					titleFontLabel.setFont(titleFont);
+					titleFontLabel.setText("Title Font: " + fontData.getName());
+					composite.getShell().layout(true, true);
+				}
+			}
+		});
+		
+		
+		scaleFontLabel = new Label(composite, 0);		
+		labelGd = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);	
+		scaleFontLabel.setLayoutData(labelGd);
+		
+		final Button scaleFontButton = new Button(composite, SWT.PUSH);
+		scaleFontButton.setText("Change...");
+		gd = new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 1, 1);
+		scaleFontButton.setLayoutData(gd);
+		scaleFontButton.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				FontDialog fontDialog = new FontDialog(composite.getShell());
+				if(scaleFont != null)
+					fontDialog.setFontList(scaleFont.getFontData());
+				FontData fontData = fontDialog.open();
+				if(fontData != null){
+					scaleFont = XYGraphMediaFactory.getInstance().getFont(fontData);
+					scaleFontLabel.setFont(scaleFont);
+					scaleFontLabel.setText("Scale Font: " + fontData.getName());
 					composite.getShell().layout(true, true);
 				}
 			}
@@ -116,7 +144,9 @@ public class AxisConfigPage {
 		axisColorSelector.getButton().setLayoutData(gd);
 		axisColorSelector.addListener(new IPropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent event) {
-				fontLabel.setForeground(XYGraphMediaFactory.getInstance().getColor(
+				scaleFontLabel.setForeground(XYGraphMediaFactory.getInstance().getColor(
+						axisColorSelector.getColorValue()));
+				titleFontLabel.setForeground(XYGraphMediaFactory.getInstance().getColor(
 						axisColorSelector.getColorValue()));
 			}
 		});
@@ -250,7 +280,8 @@ public class AxisConfigPage {
 
 	public void applyChanges(){
 		axis.setTitle(titleText.getText());
-		axis.setFont(titleFont);
+		axis.setFont(scaleFont);
+		axis.setTitleFont(titleFont);
 		axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(
 				axisColorSelector.getColorValue()));
 		axis.setPrimarySide(primaryButton.getSelection());
@@ -287,9 +318,12 @@ public class AxisConfigPage {
 	
 	private void initialize(){
 		titleText.setText(axis.getTitle());
-		fontLabel.setForeground(axis.getForegroundColor());
-		fontLabel.setFont(titleFont);
-		fontLabel.setText("Font: " + titleFont.getFontData()[0].getName());
+		scaleFontLabel.setForeground(axis.getForegroundColor());
+		scaleFontLabel.setFont(scaleFont);
+		scaleFontLabel.setText("Scale Font: " + scaleFont.getFontData()[0].getName());
+		titleFontLabel.setForeground(axis.getForegroundColor());
+		titleFontLabel.setFont(titleFont);
+		titleFontLabel.setText("Title Font: " + titleFont.getFontData()[0].getName());
 		axisColorSelector.setColorValue(axis.getForegroundColor().getRGB());
 		primaryButton.setSelection(axis.isOnPrimarySide());
 		if(axis == xyGraph.primaryXAxis || axis == xyGraph.primaryYAxis)

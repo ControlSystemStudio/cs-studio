@@ -40,7 +40,7 @@ public abstract class AbstractWidgetProperty {
 	 * @param description the description of the property,
 	 * which will be shown as the property name in property sheet.
 	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
+	 * @param defaultValue the default value when the widget is first created. It cannot be null.
 	 */
 	public AbstractWidgetProperty(String prop_id, String description,
 			WidgetPropertyCategory category, Object defaultValue) {

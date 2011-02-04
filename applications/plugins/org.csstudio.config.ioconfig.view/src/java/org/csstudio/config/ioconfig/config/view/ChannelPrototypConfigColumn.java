@@ -1,5 +1,7 @@
 package org.csstudio.config.ioconfig.config.view;
 
+import javax.annotation.Nonnull;
+
 /**
  * 
  * @author hrickens
@@ -52,7 +54,7 @@ enum ChannelPrototypConfigColumn {
      * @param text
      *            The String representation oft the column.
      */
-    private ChannelPrototypConfigColumn(final String text) {
+    private ChannelPrototypConfigColumn(@Nonnull final String text) {
         _text = text;
     }
 
@@ -60,6 +62,7 @@ enum ChannelPrototypConfigColumn {
      * 
      * @return the String representation oft the column.
      */
+    @Nonnull
     public String getText() {
         return _text;
     }
@@ -68,6 +71,7 @@ enum ChannelPrototypConfigColumn {
      * 
      * @return The String representation oft <b>all</b> column.
      */
+    @Nonnull
     public static String[] getStringValues() {
         String[] all = new String[ChannelPrototypConfigColumn.values().length];
         for (int i = 0; i < ChannelPrototypConfigColumn.values().length; i++) {

@@ -26,8 +26,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
-import org.csstudio.utility.ldap.namespacebrowser.utility.NameSpaceLDAP;
-import org.csstudio.utility.ldap.utils.LdapSearchResult;
+import org.csstudio.utility.ldap.namespacebrowser.utility.LdapNameSpace;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -88,20 +87,15 @@ public class MainView extends ViewPart {
 		};
 
 
-		final NameSpaceLDAP nameSpaceLDAP = new NameSpaceLDAP();
-		final LdapSearchResult searchResult = new LdapSearchResult();
-		nameSpaceLDAP.setResult(searchResult);
-
 		cssview =
 		    new CSSView(c,
 		                _automat,
-		                nameSpaceLDAP,
+		                new LdapNameSpace(),
 		                getSite(),
 		                defaultPVFilter,
 		                UNIT.getNodeTypeName() + FIELD_ASSIGNMENT + UNIT.getUnitTypeValue(),
 		                headlines,
-		                0,
-		                searchResult);
+		                0);
 
 
 	}

@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.Arrays;
 
-import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;

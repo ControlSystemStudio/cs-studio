@@ -23,6 +23,7 @@ public class SampleTableContentProvider implements ILazyContentProvider
     private PlotSamples samples;
 
     /** Called by table when its 'input' is changed */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old, final Object model_item)
     {
         sample_table = (TableViewer) viewer;
@@ -40,6 +41,7 @@ public class SampleTableContentProvider implements ILazyContentProvider
     }
 
     /** Called by 'lazy' table, needs to 'replace' entry of given row. */
+    @Override
     public void updateElement(final int row)
     {
         synchronized (samples)
@@ -48,6 +50,7 @@ public class SampleTableContentProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void dispose()
     {   /* NOP */ }
 }

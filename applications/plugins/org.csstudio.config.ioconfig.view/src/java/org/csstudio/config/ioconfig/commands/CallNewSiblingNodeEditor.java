@@ -46,6 +46,7 @@ import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -77,42 +78,35 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     /**
      * {@inheritDoc}
      * @throws PartInitException
+     * @throws PersistenceException 
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException, PersistenceException {
         AbstractNodeDBO node = null;
         String id = null;
-        String nodeType = "";
+
         if (siblingNode instanceof FacilityDBO) {
-//			FacilityDBO new_name = (FacilityDBO) siblingNode;
-			
 			id = FacilityEditor.ID;
 			node = new FacilityDBO();
-			nodeType = "Facility";
-		}
-        if (siblingNode instanceof IocDBO) {
+		}else  if (siblingNode instanceof IocDBO) {
         	id = IocEditor.ID;
         	node = new IocDBO(((IocDBO)siblingNode).getFacility());
-        	nodeType = "Ioc";
         } else if (siblingNode instanceof ProfibusSubnetDBO) {
             id = SubnetEditor.ID;
             node = new ProfibusSubnetDBO(((ProfibusSubnetDBO)siblingNode).getIoc());
-            nodeType = "Subnet";
         } else if (siblingNode instanceof MasterDBO) {
             id = MasterEditor.ID;
             node = new MasterDBO(((MasterDBO)siblingNode).getProfibusSubnet());
-            nodeType = "Master";
         } else if (siblingNode instanceof SlaveDBO) {
             id = SlaveEditor.ID;
             node = new SlaveDBO(((SlaveDBO)siblingNode).getProfibusDPMaster());
-            nodeType = "Slave";
         } else if (siblingNode instanceof ModuleDBO) {
             id = ModuleEditor.ID;
             node = new ModuleDBO(((ModuleDBO)siblingNode).getSlave());
-            nodeType = "Module";
         }
         if((node != null) && (id != null)) {
+            String nodeType = node.getNodeType().getName();
             InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
                                                   "Enter the name of the " + nodeType, siblingNode.getName(), null);
             idialog.setBlockOnOpen(true);

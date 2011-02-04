@@ -85,6 +85,7 @@ public class DisplayModel extends AbstractContainerModel {
 		removeProperty(PROP_ENABLED);
 		removeProperty(PROP_TOOLTIP);
 		removeProperty(PROP_ACTIONS);
+		removeProperty(PROP_FONT);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");

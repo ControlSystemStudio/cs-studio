@@ -26,8 +26,6 @@ package org.csstudio.alarm.treeView.views;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.ui.IViewPart;

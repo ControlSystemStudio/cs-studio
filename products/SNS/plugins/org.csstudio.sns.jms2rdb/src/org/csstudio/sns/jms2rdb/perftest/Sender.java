@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.perftest;
 
 import java.net.InetAddress;
@@ -18,7 +25,7 @@ import org.csstudio.platform.logging.JMSLogMessage;
 /** Thread that sends as many JMS messages as possible.
  *  <p>
  *  Uses CSS 'log' message format.
- *  
+ *
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
  */
@@ -46,14 +53,19 @@ public class Sender implements ExceptionListener, Runnable
         final Topic topic = session.createTopic(topic_name);
         producer = session.createProducer(topic);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        
+
         run = true;
         count = 0;
         thread = new Thread(this, "Sender");
+    }
+
+    public void start()
+    {
         thread.start();
     }
 
     /** @see Runnable */
+    @Override
     public void run()
     {
         try
@@ -79,7 +91,7 @@ public class Sender implements ExceptionListener, Runnable
             ex.printStackTrace();
         }
     }
-    
+
     /** Stop the sender (blocks until done)
      *  @throws Exception
      */
@@ -92,6 +104,7 @@ public class Sender implements ExceptionListener, Runnable
     }
 
     /** @see ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
         ex.printStackTrace();

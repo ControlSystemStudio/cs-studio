@@ -31,7 +31,7 @@ import org.eclipse.ui.part.ViewPart;
 abstract public class DataBrowserAwareView extends ViewPart
 {
     /** Used to learn about the current 'editor'. */
-    private IPartListener2 part_listener;    
+    private IPartListener2 part_listener;
 
     /** The current editor. */
     private DataBrowserEditor editor = null;
@@ -48,6 +48,7 @@ abstract public class DataBrowserAwareView extends ViewPart
         part_listener = new IPartListener2()
         {
             // Remember the editor when activated...
+            @Override
             public void partActivated(IWorkbenchPartReference ref)
             {
                 if (ref.getId().equals(DataBrowserEditor.ID))
@@ -59,6 +60,7 @@ abstract public class DataBrowserAwareView extends ViewPart
                 }
             }
             // ... until another one gets activated, or the current one closes.
+            @Override
             public void partClosed(IWorkbenchPartReference ref)
             {
                 if (ref.getPart(false) == editor)
@@ -67,11 +69,17 @@ abstract public class DataBrowserAwareView extends ViewPart
                 }
             }
             // All ignored
+            @Override
             public void partDeactivated(IWorkbenchPartReference ref) { /* NOP */ }
+            @Override
             public void partBroughtToTop(IWorkbenchPartReference ref) { /* NOP */ }
+            @Override
             public void partHidden(IWorkbenchPartReference ref) { /* NOP */ }
+            @Override
             public void partInputChanged(IWorkbenchPartReference ref) { /* NOP */ }
+            @Override
             public void partOpened(IWorkbenchPartReference ref) { /* NOP */ }
+            @Override
             public void partVisible(IWorkbenchPartReference ref) { /* NOP */ }
         };
         getSite().getPage().addPartListener(part_listener);
@@ -85,7 +93,7 @@ abstract public class DataBrowserAwareView extends ViewPart
             updateEditor((DataBrowserEditor) current);
         else
             updateEditor(null);
-        
+
         // When view is destroyed, we fake a null editor update.
         // Since derived views already handle <code>updateModel</code>
         // with a new <code>null</code> model, this will cause
@@ -102,6 +110,7 @@ abstract public class DataBrowserAwareView extends ViewPart
         // while the "Config" view is kept around.
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 getSite().getPage().removePartListener(part_listener);
@@ -112,7 +121,7 @@ abstract public class DataBrowserAwareView extends ViewPart
 
     /** Replaces createPartControl() for PlotAwareView */
     abstract protected void doCreatePartControl(Composite parent);
-    
+
     /** The editor has changed. */
     private void updateEditor(DataBrowserEditor new_editor)
     {

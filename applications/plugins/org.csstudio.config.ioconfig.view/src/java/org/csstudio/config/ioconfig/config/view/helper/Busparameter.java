@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.eclipse.swt.SWT;
@@ -118,7 +121,8 @@ public class Busparameter extends Composite {
      */
     private ModifyListener _enableSafe = new ModifyListener(){
 
-        public void modifyText(final ModifyEvent e) {
+        @Override
+        public void modifyText(@Nullable final ModifyEvent e) {
             _saveButton.setEnabled(true);
         }
         
@@ -129,7 +133,7 @@ public class Busparameter extends Composite {
      * @param style The Style of this Composite
      * @param subnet The subnet Object {@link PROFIBUS_subnet}
      */
-    public Busparameter(final Composite parent, final int style, final ProfibusSubnetDBO subnet) {
+    public Busparameter(@Nonnull final Composite parent, final int style,@Nonnull final ProfibusSubnetDBO subnet) {
         super(parent, style);
         _subnet = subnet;
         this.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false,1,1));
@@ -151,7 +155,7 @@ public class Busparameter extends Composite {
     /**
      * @param rigth The Parent Composite.
      */
-    private void rigth(final Group rigth) {
+    private void rigth(@Nonnull final Group rigth) {
         
         // tslot
         Label front = new Label(rigth,SWT.NONE);
@@ -239,7 +243,7 @@ public class Busparameter extends Composite {
     /**
      * @param left The Parent Composite.
      */
-    private void left(final Group left) {
+    private void left(@Nonnull final Group left) {
         //Tslot_Init
         Label front = new Label(left,SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -325,9 +329,11 @@ public class Busparameter extends Composite {
         }
         _gapCombo.addSelectionListener(new SelectionListener(){
 
-            public void widgetDefaultSelected(final SelectionEvent e) {}
+            @Override
+            public void widgetDefaultSelected(@Nullable final SelectionEvent e) {}
 
-            public void widgetSelected(final SelectionEvent e) {
+            @Override
+            public void widgetSelected(@Nullable final SelectionEvent e) {
                 _saveButton.setEnabled(true);
             }
             
@@ -349,15 +355,17 @@ public class Busparameter extends Composite {
         }
         _retrayCombo.addSelectionListener(new SelectionListener(){
 
-            public void widgetDefaultSelected(final SelectionEvent e) {}
+            @Override
+            public void widgetDefaultSelected(@Nullable final SelectionEvent e) {}
 
-            public void widgetSelected(final SelectionEvent e) {
+            @Override
+            public void widgetSelected(@Nullable final SelectionEvent e) {
                 _saveButton.setEnabled(true);
             }
             
         });
 
-        front = new Label(left,SWT.NONE);
+        new Label(left, SWT.NONE).setText("");
         
         for (Control children : left.getChildren()) {
             

@@ -201,6 +201,7 @@ public class PlotArea extends Figure {
 	 */
 	public void setShowBorder(final boolean showBorder) {
 		this.showBorder = showBorder;
+		repaint();
 	}
 
 	/**

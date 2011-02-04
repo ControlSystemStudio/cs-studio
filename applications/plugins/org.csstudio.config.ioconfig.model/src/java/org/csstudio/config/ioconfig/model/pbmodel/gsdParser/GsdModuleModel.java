@@ -31,6 +31,8 @@ import java.util.Comparator;
 import java.util.Formatter;
 import java.util.HashMap;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -267,6 +269,7 @@ public class GsdModuleModel {
         return _extUserPrmDataRefMap.get(reference);
     }
     
+    @Nonnull
     public ArrayList<ExtUserPrmData> getAllExtUserPrmDataRef() {
         ArrayList<ExtUserPrmData> arrayList = new ArrayList<ExtUserPrmData>();
         for (String key : _extUserPrmDataRefMap.keySet()) {

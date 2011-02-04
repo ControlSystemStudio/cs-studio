@@ -55,8 +55,9 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	 */
 	public FilePathProperty(String prop_id, String description,
 			WidgetPropertyCategory category, IPath defaultValue,
-			String[] fileExtensions) {
-		super(prop_id, description, category, defaultValue);
+			String[] fileExtensions) {		
+		super(prop_id, description, category,
+				defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
 		this.fileExtensions = fileExtensions;
 	}
 

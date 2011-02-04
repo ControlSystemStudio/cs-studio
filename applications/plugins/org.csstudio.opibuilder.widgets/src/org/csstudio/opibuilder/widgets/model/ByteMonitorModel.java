@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -82,6 +83,56 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+	
+	public boolean isHorizontal() {
+		return (Boolean)getPropertyValue(PROP_HORIZONTAL);
+	}
+	
+	public boolean isReverseBits(){
+		return (Boolean)getPropertyValue(PROP_BIT_REVERSE);
+	}
+	
+	@Override
+	public void flipHorizontally() {
+		super.flipHorizontally();
+		if(isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipHorizontally(int centerX) {
+		super.flipHorizontally(centerX);
+		if(isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipVertically() {
+		super.flipVertically();
+		if(!isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void flipVertically(int centerY) {
+		super.flipVertically(centerY);
+		if(!isHorizontal())
+			setPropertyValue(PROP_BIT_REVERSE, !isReverseBits());
+	}
+	
+	@Override
+	public void rotate90(boolean clockwise) {
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+	}
+	
+	
+
+	@Override
+	public void rotate90(boolean clockwise, Point center) {
+		super.rotate90(clockwise, center);
+		setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
+		super.rotate90(true);
 	}
 
 }

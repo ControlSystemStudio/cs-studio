@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.ITimestamp;
@@ -34,6 +35,7 @@ public class AlarmLogicHeadlessTest
     	private boolean fired_update = false;
     	private boolean annunciated = false;
     	final private AtomicInteger global_updates = new AtomicInteger();
+        private AtomicReference<AlarmState> global_alarm = new AtomicReference<AlarmState>();
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating)
         {
@@ -88,6 +90,7 @@ public class AlarmLogicHeadlessTest
         public void globalStateChanged(final AlarmState alarm)
         {
         	System.out.println(TimestampFactory.now() + ": Global alarm state: " + alarm);
+        	global_alarm.set(alarm);
         	global_updates.incrementAndGet();
         }
 
@@ -128,6 +131,11 @@ public class AlarmLogicHeadlessTest
         void checkGlobalUpdates(final int expected)
         {
         	assertEquals(expected, global_updates.get());
+        }
+
+        AlarmState getGlobalAlarm()
+        {
+            return global_alarm.get();
         }
 
         public void computeNewState(final String value, final SeverityLevel sevr,
@@ -717,7 +725,7 @@ public class AlarmLogicHeadlessTest
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, global_delay);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
 
-        // Normal alarm
+        // Alarm that clears and is ack'ed in time, NO global alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
 
@@ -750,18 +758,21 @@ public class AlarmLogicHeadlessTest
         // There should be a global alarm after the delay
         Thread.sleep(global_delay * 1300);
         logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
 
         // Acknowledged but still in alarm, the global state stays
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR_ACK, "high");
         Thread.sleep(global_delay * 500);
         logic.checkGlobalUpdates(expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
 
         // Alarm clears, was already ack'ed: All clear, global update
         logic.computeNewState("b", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         Thread.sleep(global_delay * 500);
         logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.OK, logic.getGlobalAlarm().getSeverity());
 
         // ------
 
@@ -775,15 +786,61 @@ public class AlarmLogicHeadlessTest
 
         // Nothing happens right away
         logic.checkGlobalUpdates(expected_count);
+        assertEquals(SeverityLevel.OK, logic.getGlobalAlarm().getSeverity());
 
         // There should be a global alarm after the delay
         Thread.sleep(global_delay * 1300);
         logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
 
         // Once acknowledged, the global state should also clear
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.OK, logic.getGlobalAlarm().getSeverity());
+
+
+        // ------
+
+        // Channel goes back into alarm
+        System.out.println("Trigger of 'global' alarm:");
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
+        logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+        logic.computeNewState("b", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
+
+        // Nothing happens right away
+        logic.checkGlobalUpdates(expected_count);
+        assertEquals(SeverityLevel.OK, logic.getGlobalAlarm().getSeverity());
+
+        // There should be a global alarm after the delay
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
+
+        // One could ack' the alarm now. Instead, the channel returns into alarm for some reason
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
+        // Update but no annunciation
+        logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+        // No new global alarm
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
+
+        // Once ack'ed, the global alarm stays because the channel is still in alarm
+        logic.acknowledge(true);
+        // 'Local' alarm display updates to ack'ed
+        logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR_ACK, "high");
+        // .. but no change in global alarm
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(expected_count);
+        assertEquals(SeverityLevel.MINOR, logic.getGlobalAlarm().getSeverity());
+
+        // Channel clears, which also clears the global alarm
+        logic.computeNewState("d", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+        logic.checkGlobalUpdates(++expected_count);
+        assertEquals(SeverityLevel.OK, logic.getGlobalAlarm().getSeverity());
     }
 
     @Test

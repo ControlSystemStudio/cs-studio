@@ -20,7 +20,7 @@ public class DeleteAxisCommand implements IUndoableCommand
 {
     /** Model to which axis is added */
     final private Model model;
-    
+
     /** The axis that was removed */
     final private AxisConfig axis;
 
@@ -32,7 +32,7 @@ public class DeleteAxisCommand implements IUndoableCommand
      *  @param model
      *  @param axis
      */
-    public DeleteAxisCommand(final OperationsManager operationsManager, 
+    public DeleteAxisCommand(final OperationsManager operationsManager,
             final Model model, final AxisConfig axis)
     {
         this.model = model;
@@ -44,17 +44,19 @@ public class DeleteAxisCommand implements IUndoableCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void redo()
     {
         model.removeAxis(axis);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void undo()
     {
         model.addAxis(index, axis);
     }
-    
+
     /** @return Command name that appears in undo/redo menu */
     @Override
     public String toString()

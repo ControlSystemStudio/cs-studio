@@ -2,7 +2,6 @@ package org.csstudio.utility.quickstart.commandhandler;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
-import org.csstudio.trends.databrowser.DB2Shell;
 import org.csstudio.utility.quickstart.Activator;
 import org.csstudio.utility.quickstart.preferences.PreferenceConstants;
 import org.eclipse.core.commands.AbstractHandler;
@@ -57,15 +56,16 @@ public abstract class AbstractRunDisplayHandler extends AbstractHandler {
 					RunModeService.getInstance().openDisplayShellInRunMode(newPath);
             	}
             	if (filePath[0].endsWith(PLT_FILE_EXTENSION.toLowerCase())) {
-            		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-						
-						@Override
-						public void run() {
-							IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(newPath); 
-							DB2Shell dbShell = new DB2Shell(file);
-							dbShell.openShell();
-						}
-					});
+// TODO (jhatje): Enable when Databrwoser2 is integrated in CSS.
+//            		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+//						
+//						@Override
+//						public void run() {
+//							IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(newPath); 
+//							DB2Shell dbShell = new DB2Shell(file);
+//							dbShell.openShell();
+//						}
+//					});
             	}
             }
         }

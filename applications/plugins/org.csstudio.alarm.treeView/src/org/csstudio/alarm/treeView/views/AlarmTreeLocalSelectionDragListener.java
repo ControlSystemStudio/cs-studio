@@ -54,6 +54,7 @@ public final class AlarmTreeLocalSelectionDragListener implements TransferDragSo
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public Transfer getTransfer() {
         return LocalSelectionTransfer.getTransfer();
@@ -62,6 +63,7 @@ public final class AlarmTreeLocalSelectionDragListener implements TransferDragSo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragStart(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -96,6 +98,7 @@ public final class AlarmTreeLocalSelectionDragListener implements TransferDragSo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragSetData(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {
@@ -109,6 +112,7 @@ public final class AlarmTreeLocalSelectionDragListener implements TransferDragSo
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragFinished(@Nonnull final DragSourceEvent event) {
         LocalSelectionTransfer.getTransfer().setSelection(null);
     }

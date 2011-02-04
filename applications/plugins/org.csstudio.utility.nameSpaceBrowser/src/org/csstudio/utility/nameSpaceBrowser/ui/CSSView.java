@@ -145,8 +145,6 @@ public class CSSView extends Composite implements Observer {
     private Group _group;
     private Text _filter;
 
-    private final NameSpaceSearchResult _resultList;
-
     private TableViewer _tableViewer;
 
     private boolean _hasChild = false;
@@ -173,9 +171,8 @@ public class CSSView extends Composite implements Observer {
                    final String defaultFilter,
                    final String selection,
                    final String[] headlines,
-                   final int level,
-                   final NameSpaceSearchResult resultList) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+                   final int level) {
+        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
 
         // Make a Textfield to Filter the list. Can text drop
         makeFilterField();
@@ -190,9 +187,8 @@ public class CSSView extends Composite implements Observer {
                    final String selection,
                    final String[] headlines,
                    final int level,
-                   final NameSpaceSearchResult resultList,
                    final String fixFrist) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level, resultList);
+        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
 
         _haveFixFirst = true;
         _fixFirst = fixFrist;
@@ -208,14 +204,12 @@ public class CSSView extends Composite implements Observer {
                     final IWorkbenchPartSite site,
                     final String defaultFilter,
                     final String[] headlines,
-                    final int level,
-                    final NameSpaceSearchResult resultList) {
+                    final int level) {
         super(parent, SWT.NONE);
         _display = parent.getDisplay();
 
         this._automat = automat;
         this._nameSpace = nameSpace;
-        this._resultList = resultList;
         this._parent = parent;
         this._site = site;
         this._headlines = headlines;
@@ -224,8 +218,9 @@ public class CSSView extends Composite implements Observer {
 
         init();
 
+        NameSpaceSearchResult searchResult = nameSpace.getSearchResult();
         // FIXME (bknerr) : Antipattern - here, the 'this' pointer is used although object is not completely constructed
-        _resultList.addObserver(this);
+        searchResult.addObserver(this);
     }
 
     /**
@@ -240,7 +235,8 @@ public class CSSView extends Composite implements Observer {
                 // Empty
             }
         }
-
+        _nameSpace.stop();
+        
         ((GridLayout) _parent.getLayout()).numColumns--;
         super.dispose();
         _parent.layout(false);
@@ -324,10 +320,6 @@ public class CSSView extends Composite implements Observer {
 
         ((GridLayout) _parent.getLayout()).numColumns++;
 
-
-        final NameSpaceSearchResult searchResult = _resultList.getNew();
-        _nameSpace.setResult(searchResult);
-
         // The first element is the "All" element
         if ((_tableViewer.getTable().getSelectionIndex() > _start) || (_fixFirst != null)) {
 
@@ -337,10 +329,10 @@ public class CSSView extends Composite implements Observer {
 
             if (_fixFirst == null) {
                 _child =
-                    new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, searchResult); //$NON-NLS-1$
+                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1); //$NON-NLS-1$
             } else {
                 _child =
-                    new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, searchResult, _fixFirst); //$NON-NLS-1$
+                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _fixFirst); //$NON-NLS-1$
             }
         } else {
 
@@ -351,7 +343,7 @@ public class CSSView extends Composite implements Observer {
             final String[] fields = path.split("=");
             final String df = fields[0] + "=*,";
 
-            _child = new CSSView(_parent, _automat, _nameSpace, _site, _defaultPVFilter, df, _headlines, _level + 1, searchResult); //$NON-NLS-1$
+            _child = new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, df, _headlines, _level + 1); //$NON-NLS-1$
         }
         _hasChild = true;
 
@@ -363,6 +355,7 @@ public class CSSView extends Composite implements Observer {
         final MenuManager man = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         final Control contr = _tableViewer.getControl();
         man.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
             }
@@ -385,6 +378,7 @@ public class CSSView extends Composite implements Observer {
         target.setTransfer(new Transfer[] { textTransfer });
 
         target.addDropListener(new DropTargetListener() {
+            @Override
             public void dragEnter(final DropTargetEvent event) {
                 if (event.detail == DND.DROP_DEFAULT) {
                     if ((event.operations & DND.DROP_COPY) != 0) {
@@ -395,10 +389,12 @@ public class CSSView extends Composite implements Observer {
                 }
             }
 
+            @Override
             public void dragLeave(final DropTargetEvent event) {
              // EMPTY
             }
 
+            @Override
             public void dragOperationChanged(final DropTargetEvent event) {
                 if (event.detail == DND.DROP_DEFAULT) {
                     if ((event.operations & DND.DROP_COPY) != 0) {
@@ -409,16 +405,19 @@ public class CSSView extends Composite implements Observer {
                 }
             }
 
+            @Override
             public void dragOver(final DropTargetEvent event) {
              // EMPTY
             }
 
+            @Override
             public void drop(final DropTargetEvent event) {
                 if (textTransfer.isSupportedType(event.currentDataType)) {
                     _filter.insert((String) event.data);
                 }
             }
 
+            @Override
             public void dropAccept(final DropTargetEvent event) {
              // EMPTY
             }
@@ -426,10 +425,12 @@ public class CSSView extends Composite implements Observer {
         });
 
         _filter.addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(final KeyEvent e) {
              // EMPTY
             }
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
                     _tableViewer.setInput(new ArrayList<Object>(_itemList.values()).toArray());
@@ -462,6 +463,7 @@ public class CSSView extends Composite implements Observer {
         _tableViewer.getTable().setSize(getClientArea().x - 100, getClientArea().y - 100);
         //        listViewer.getList().addPaintListener(new PaintListener() {
         _tableViewer.getTable().addPaintListener(new PaintListener() {
+            @Override
             public void paintControl(final PaintEvent e) {
                 //                listViewer.getList().setSize(getSize().x - 16,
                 _tableViewer.getTable().setSize(getSize().x - 16,
@@ -486,10 +488,12 @@ public class CSSView extends Composite implements Observer {
 
         //        listViewer.getList().addKeyListener(new KeyListener() {
         _tableViewer.getTable().addKeyListener(new KeyListener() {
+            @Override
             public void keyPressed(final KeyEvent e) {
              // EMPTY
             }
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.F1) {
                     PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
@@ -529,10 +533,13 @@ public class CSSView extends Composite implements Observer {
         }
     }
 
+    @Override
     public void update(final Observable arg0, final Object arg1) {
+
         _display.syncExec(new Runnable() {
+            @Override
             public void run() {
-                fillItemList(_nameSpace.getNameSpaceResultList().getCSIResultList());
+                fillItemList(_nameSpace.getSearchResult().getCSIResultList());
                 workItemList();
             }
         });
@@ -573,6 +580,7 @@ public class CSSView extends Composite implements Observer {
         final NameSpaceBrowserState zu = _automat.getState();
         if (zu != NameSpaceBrowserState.RECORD) {
             _tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+                @Override
                 public void selectionChanged(final SelectionChangedEvent event) {
                     // TODO: Checken ob dadurch vermieden werden kann das ein Elemente zu häufig
                     // angeklickt werden kann.

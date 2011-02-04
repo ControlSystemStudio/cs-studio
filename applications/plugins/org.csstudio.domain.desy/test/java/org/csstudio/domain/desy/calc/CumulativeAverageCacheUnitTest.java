@@ -23,8 +23,6 @@ package org.csstudio.domain.desy.calc;
 
 import junit.framework.Assert;
 
-import org.csstudio.domain.desy.types.AbstractArchiveConversionTypeSupport;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,11 +32,6 @@ import org.junit.Test;
  * @since 03.12.2010
  */
 public class CumulativeAverageCacheUnitTest {
-
-    @Before
-    public void setup() {
-        AbstractArchiveConversionTypeSupport.install();
-    }
 
     @Test
     public void testAccumulate() {

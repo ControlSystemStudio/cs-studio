@@ -263,7 +263,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 	 * Update the text of the label.
 	 */
 	private void updateLabelText() {
-		label.setText(scale.format(getValue()));
+		label.setText(getValueText());
 	}
 	
 	class Thumb extends Polygon {

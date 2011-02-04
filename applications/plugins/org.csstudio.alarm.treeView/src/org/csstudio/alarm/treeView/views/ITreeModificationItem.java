@@ -43,22 +43,8 @@ public interface ITreeModificationItem {
 
     /**
      * The modification is applied.
-     * @return <code>true</code> if the modification has been successful,
-     *  <code>false</code> otherwise
-     * @throws AlarmTreeModficationException
+     * @throws AlarmTreeModficationException if the modification was unsuccessful
      */
-    boolean apply() throws AlarmTreeModificationException;
+    void apply() throws AlarmTreeModificationException;
 
-    /**
-     * Sets the applied field of the modification item.
-     *
-     * @param applied .
-     */
-    void setApplied(boolean applied);
-
-    /**
-     * Returns whether this modification item has already been applied.
-     * @return <code>true</code> if the mod item has been applied
-     */
-    boolean hasBeenApplied();
 }

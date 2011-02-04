@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  *  <p>
  *  Also implements IProcessVariable so that context menus
  *  can link to related CSS tools.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class PVItem extends ModelItem implements PVListener, IProcessVariableWithSamples
@@ -51,7 +51,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
 
     /** Control system PV */
     private PV pv;
-    
+
     /** Most recently received value */
     private volatile IValue current_value;
 
@@ -81,10 +81,11 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         pv = PVFactory.createPV(name);
         this.period = period;
     }
-    
+
     /** IProcessVariable
      *  {@inheritDoc}
      */
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
@@ -93,12 +94,13 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     /** IProcessVariable
      *  {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(Class adapter)
     {
         return null;
     }
-    
+
     /** Set new item name, which changes the underlying PV name
      *  {@inheritDoc}
      */
@@ -118,13 +120,13 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             start(scan_timer);
         return true;
     }
-    
+
     /** @return Scan period in seconds, &le;0 to 'monitor' */
     public double getScanPeriod()
     {
         return period;
     }
-    
+
     /** Update scan period.
      *  <p>
      *  When called on a running item, this stops and re-starts the PV.
@@ -161,7 +163,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         samples.setLiveCapacity(new_capacity);
         fireItemLookChanged();
     }
-    
+
     /** @return Archive data sources for this item */
     public ArchiveDataSource[] getArchiveDataSources()
     {
@@ -174,7 +176,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         archives.clear();
         for (ArchiveDataSource arch : Preferences.getArchives())
             archives.add(arch);
-        fireItemDataConfigChanged();        
+        fireItemDataConfigChanged();
     }
 
     /** @param archive Archive data source
@@ -197,7 +199,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         if (hasArchiveDataSource(archive))
             throw new Error("Duplicate archive " + archive);
         archives.add(archive);
-        fireItemDataConfigChanged();        
+        fireItemDataConfigChanged();
     }
 
     /** @param archive Archives to add as a source to this item. Duplicates are ignored */
@@ -211,14 +213,14 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
                 archives.add(archive);
             }
         if (change)
-            fireItemDataConfigChanged();        
+            fireItemDataConfigChanged();
     }
 
     /** @param archive Archive to remove as a source from this item. */
     public void removeArchiveDataSource(final ArchiveDataSource archive)
     {
         if (archives.remove(archive))
-            fireItemDataConfigChanged();        
+            fireItemDataConfigChanged();
     }
 
     /** @param archive Archives to remove as a source from this item. Ignored when not used. */
@@ -229,7 +231,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             if (archives.remove(archive))
                 change = true;
         if (change)
-            fireItemDataConfigChanged();        
+            fireItemDataConfigChanged();
     }
 
     /** Replace existing archive data sources with given archives
@@ -269,7 +271,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         if (this.request_type == request_type)
             return;
         this.request_type = request_type;
-        fireItemDataConfigChanged();        
+        fireItemDataConfigChanged();
     }
 
     /** Notify listeners */
@@ -279,7 +281,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             model.fireItemDataConfigChanged(this);
     }
 
-    /** Connect control system PV, start scanning, ... 
+    /** Connect control system PV, start scanning, ...
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
@@ -301,7 +303,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             {
                 if (logger != null)
                     logger.debug("PV " + getName() + " scans " + current_value);
-                logCurrentValue();                
+                logCurrentValue();
             }
         };
         final long delay = (long) (period*1000);
@@ -333,7 +335,8 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     /** Get sample for IProcessVariableWithSamples
      *  {@inheritDoc}
      */
-    public IValue getSample(int index)
+    @Override
+    public IValue getSample(final int index)
     {
         return samples.getSample(index).getValue();
     }
@@ -341,28 +344,31 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     /** Get sample count for IProcessVariableWithSamples
      *  {@inheritDoc}
      */
+    @Override
     public int size()
     {
         return samples.getSize();
     }
 
     // PVListener
-    public void pvDisconnected(PV pv)
+    @Override
+    public void pvDisconnected(final PV pv)
     {
         current_value = null;
-        // In 'monitor' mode, mark in live sample buffer 
+        // In 'monitor' mode, mark in live sample buffer
         if (period <= 0)
             logDisconnected();
     }
 
     // PVListener
+    @Override
     @SuppressWarnings("nls")
-    public void pvValueUpdate(PV pv)
+    public void pvValueUpdate(final PV pv)
     {
         final IValue value = pv.getValue();
         // Cache most recent for 'scanned' operation
         current_value = value;
-        // In 'monitor' mode, add to live sample buffer 
+        // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {
             if (logger != null)
@@ -412,7 +418,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             final ArrayList<IValue> result)
     {
         samples.mergeArchivedData(server_name, result);
-        
+
 //        // Order check
 //        final int N = samples.getSize();
 //        if (N <= 0)
@@ -429,9 +435,9 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
 //            }
 //            prev = time;
 //        }
-//        System.out.println(N + " Samples in order");   
+//        System.out.println(N + " Samples in order");
     }
-    
+
     /** Write XML formatted PV configuration
      *  @param writer PrintWriter
      */
@@ -483,7 +489,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         {
             // Ignore
         }
-        
+
         item.configureFromDocument(model, node);
         // Load archives
         Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);

@@ -23,15 +23,18 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.util.Collection;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.IArchiveRequestType;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
@@ -42,13 +45,6 @@ import org.csstudio.domain.desy.types.ICssValueType;
  */
 public interface IArchiveSampleDao {
 
-    /**
-     * Retrieves the sample for the given channel with the latest timestamp from sample table.
-     * @param id the channel id
-     * @throws ArchiveSampleDaoException
-     */
-    @CheckForNull
-    TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
     /**
      * Inserts the collection of sample objects into the db.
@@ -57,4 +53,17 @@ public interface IArchiveSampleDao {
      */
     <T extends ICssValueType<?> & IHasAlarm>
     void createSamples(Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException;
+
+
+    /**
+     * @param id
+     * @param s
+     * @param e
+     * @return
+     */
+    <V, T extends ICssAlarmValueType<V>>
+    Iterable<IArchiveMinMaxSample<V, T, EpicsAlarm>> retrieveSamples(@Nullable IArchiveRequestType type,
+                                                                     @Nonnull IArchiveChannel channel,
+                                                                     @Nonnull TimeInstant s,
+                                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
 }

@@ -283,9 +283,16 @@ public final class LdapServiceImpl implements ILdapService {
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
+        // retrieve component from model
+        ISubtreeNodeComponent<T> childByLdapName = model.getChildByLdapName(component.toString());
+        if (childByLdapName == null) {
+            LOG.debug("Model does not contain entry for component " + component.toString());
+            return false;
+        }
+
         // perform the removal of the subtree
         copyAndRemoveTreeComponent(null,
-                                   model.getChildByLdapName(component.toString()),
+                                   childByLdapName,
                                    false);
         // perform the removal of the component itself
         removeLeafComponent(component);

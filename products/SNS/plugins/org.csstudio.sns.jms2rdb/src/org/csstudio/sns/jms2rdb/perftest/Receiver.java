@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.jms2rdb.perftest;
 
 import javax.jms.Connection;
@@ -15,7 +22,7 @@ import org.csstudio.platform.logging.JMSLogMessage;
 /** Receives and counts JMS messages.
  *  <p>
  *  Uses CSS 'log' message format.
- *  
+ *
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
  */
@@ -42,7 +49,7 @@ public class Receiver implements ExceptionListener, MessageListener
         final Topic topic = session.createTopic(topic_name);
         consumer = session.createConsumer(topic);
         consumer.setMessageListener(this);
-        
+
         count = 0;
         next_num = -1;
     }
@@ -50,6 +57,7 @@ public class Receiver implements ExceptionListener, MessageListener
     /** Invoked by JMS for each received message.
      *  Counts JMSLogMessage instances
      */
+    @Override
     public void onMessage(final Message msg)
     {
         if (! (msg instanceof MapMessage))
@@ -85,6 +93,7 @@ public class Receiver implements ExceptionListener, MessageListener
     }
 
     /** @see ExceptionListener */
+    @Override
     public void onException(final JMSException ex)
     {
         ex.printStackTrace();

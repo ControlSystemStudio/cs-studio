@@ -11,6 +11,8 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.SHOW_SQL;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -63,18 +65,18 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
                     _desc, 
                     "", 
                     null);
-            if (inputDialog.open() == Window.OK) 
-            {
+            if (inputDialog.open() == Window.OK) {
                 return inputDialog.getValue();
             }
             return null;            }
 
         @Override
-        protected String createList(String[] items) {
-            String temp = "";
-            for(int i = 0; i < items.length;i++)
-                temp = temp + items[i] + ",";
-            return temp;            }
+        protected String createList(@Nonnull String[] items) {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < items.length;i++) {
+                sb.append(items[i]).append(",");
+            }
+            return sb.toString();            }
     }
 
     public HibernatePreferencePage() {

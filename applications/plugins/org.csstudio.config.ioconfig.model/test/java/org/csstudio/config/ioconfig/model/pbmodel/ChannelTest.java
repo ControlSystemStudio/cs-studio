@@ -345,7 +345,7 @@ public class ChannelTest {
     }
 
     @Test
-    public void testChSize() {
+    public void testChSize() throws PersistenceException {
         final ChannelDBO out = ChannelStructureDBO.makeSimpleChannel(_module, false).getFirstChannel();
         // Channel out = new Channel(_structure);
         assertEquals(1, out.getChSize());
@@ -416,10 +416,11 @@ public class ChannelTest {
 
     /**
      * Test only for {@link ChannelDBO}.
+     * @throws PersistenceException 
      */
 
     @Test
-    public void testModule() {
+    public void testModule() throws PersistenceException {
         final ProfibusSubnetDBO profibusSubnet = new ProfibusSubnetDBO(new IocDBO());
         final MasterDBO master = new MasterDBO(profibusSubnet);
         final SlaveDBO slave = new SlaveDBO(master);
@@ -438,10 +439,11 @@ public class ChannelTest {
 
     /**
      * Test only for the {@link StructChannel}.
+     * @throws PersistenceException 
      */
     @Ignore("Not yet implemented")
     @Test
-    public void testChannelStructure() {
+    public void testChannelStructure() throws PersistenceException {
         final ChannelDBO out = new ChannelDBO();
         assertNull(out.getParent());
         assertNull(out.getChannelStructure());
@@ -1742,7 +1744,7 @@ public class ChannelTest {
     }
 
     private void testModule(final String addressString, final short sortIndex, final int inputOffset, final int inputSize,
-            final int outputOffset, final int outputSize, final ModuleDBO module) {
+            final int outputOffset, final int outputSize, final ModuleDBO module) throws PersistenceException {
         assertEquals(addressString, module.getEpicsAddressString());
         assertEquals(sortIndex, (short) module.getSortIndex());
         assertEquals(inputOffset, module.getInputOffsetNH());
@@ -1759,7 +1761,7 @@ public class ChannelTest {
     }
 
     private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
-            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) {
+            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) throws PersistenceException {
         final ChannelDBO channel = (ChannelDBO) channelStructure.getChildrenAsMap().get(sortIndex);
         assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
                 + channelStructure.getFirstChannel().getSortIndex(), channel);

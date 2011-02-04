@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.propsheet;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.PVItem;
+import org.csstudio.trends.databrowser.ui.TableHelper;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ILazyContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -26,21 +26,23 @@ import org.eclipse.jface.viewers.ViewerCell;
  *  ArchiveDataSource.
  *  @author Kay Kasemir
  */
-public class ArchivesTableHandler  implements ILazyContentProvider
+public class ArchivesTableHandler implements ILazyContentProvider
 {
     private PVItem  pv_item;
     private TableViewer table_viewer;
 
     /** Create table columns: Auto-sizable, with label provider and editor
+     *  @param table_layout
+     *  @param operations_manager
      *  @param archives_table
      */
-    public void createColumns(final OperationsManager operations_manager,
+    public void createColumns(TableColumnLayout table_layout, final OperationsManager operations_manager,
             final TableViewer archives_table)
     {
         table_viewer = archives_table;
         TableViewerColumn col;
         // Archive Name Column ----------
-        col = AutoSizeColumn.make(archives_table, Messages.ArchiveName, 100, 20);
+        col = TableHelper.createColumn(table_layout, archives_table, Messages.ArchiveName, 100, 20);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -50,9 +52,9 @@ public class ArchivesTableHandler  implements ILazyContentProvider
                 cell.setText(archive.getName());
             }
         });
-        
+
         // Archive Key Column ----------
-        col = AutoSizeColumn.make(archives_table, Messages.ArchiveKey, 20, 5);
+        col = TableHelper.createColumn(table_layout, archives_table, Messages.ArchiveKey, 20, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -62,9 +64,9 @@ public class ArchivesTableHandler  implements ILazyContentProvider
                 cell.setText(Integer.toString(archive.getKey()));
             }
         });
-        
+
         // Archive Server URL Column ----------
-        col = AutoSizeColumn.make(archives_table, Messages.URL, 50, 100);
+        col = TableHelper.createColumn(table_layout, archives_table, Messages.URL, 50, 100);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -74,13 +76,12 @@ public class ArchivesTableHandler  implements ILazyContentProvider
                 cell.setText(archive.getUrl());
             }
         });
-        
-        new AutoSizeControlListener(archives_table.getTable());
     }
 
     /** Set input to a Model
      *  @see ILazyContentProvider#inputChanged(Viewer, Object, Object)
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old_pv, final Object new_pv)
     {
         pv_item = (PVItem) new_pv;
@@ -89,16 +90,18 @@ public class ArchivesTableHandler  implements ILazyContentProvider
         else
             table_viewer.setItemCount(pv_item.getArchiveDataSources().length);
     }
-    
+
     /** Called by ILazyContentProvider to get the ModelItem for a table row
      *  {@inheritDoc}
      */
+    @Override
     public void updateElement(int index)
     {
         table_viewer.replace(pv_item.getArchiveDataSources()[index], index);
     }
 
-    // ILazyContentProvider
+    /** {@inheritDoc} */
+    @Override
     public void dispose()
     {
         // NOP

@@ -49,11 +49,13 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -174,16 +176,18 @@ public class MasterEditor extends AbstractNodeEditor {
 		_master = (MasterDBO) getNode();
 		_gsdFile = _master.getGSDFile();
 		String[] heads = {"Master", "GSD File List" };
-		master(heads[0]);
+		try {
+            master(heads[0]);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            DeviceDatabaseErrorDialog.open(null, "Can't create Master Editor! Database Error", e);
+        }
 		fill(_gsdFile);
-		TabFolder tabFolder = getTabFolder();
-		if (tabFolder != null) {
-			tabFolder.setSelection(0);
-		}
+		selecttTabFolder(0);
 	}
 
 	@SuppressWarnings("unused")
-	private void makeFmbSetGroup(@Nonnull final Composite parent) {
+	private void makeFmbSetGroup(@Nonnull final Composite parent) throws PersistenceException {
 		final int limit = 13000;
 		ModifyListener listener = new ModifyListener() {
 
@@ -332,8 +336,9 @@ public class MasterEditor extends AbstractNodeEditor {
 	/**
 	 * @param head
 	 *            is TabHead Text
+	 * @throws PersistenceException 
 	 */
-	private void master(@Nonnull final String head) {
+	private void master(@Nonnull final String head) throws PersistenceException {
 
 		Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 4,
 				350, 240);
@@ -507,7 +512,7 @@ public class MasterEditor extends AbstractNodeEditor {
 	}
 
 	private void makeRedundencyMasterGroup(@Nonnull final Composite comp,
-			final int column) {
+			final int column) throws PersistenceException {
 		Group gRedundencyMaster = new Group(comp, SWT.NONE);
 		gRedundencyMaster.setText("Redundency Master:");
 		gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true,
@@ -546,10 +551,15 @@ public class MasterEditor extends AbstractNodeEditor {
 						.getSelection() != (Boolean) _redundentButton.getData());
 				Short sortIndex = (Short) ((StructuredSelection) _indexCombo
 						.getSelection()).getFirstElement();
-				_freeStationAddress = _master
-						.getFreeMStationAddress(_redundentButton.getSelection());
-				_indexCombo.setInput(_freeStationAddress);
-				_indexCombo.setSelection(new StructuredSelection(sortIndex));
+				try {
+                    _freeStationAddress = _master
+                    		.getFreeMStationAddress(_redundentButton.getSelection());
+                    _indexCombo.setInput(_freeStationAddress);
+                    _indexCombo.setSelection(new StructuredSelection(sortIndex));
+                } catch (PersistenceException e) {
+                    LOG.error(e);
+                    DeviceDatabaseErrorDialog.open(null, "Database error!", e);
+                }
 			}
 		});
 	}
@@ -582,33 +592,36 @@ public class MasterEditor extends AbstractNodeEditor {
 	}
 
 	/**
+	 * @throws PersistenceException 
      *
      */
-	private void initIndexCombo() {
+	private void initIndexCombo() throws PersistenceException {
 		fillStationAddressCombo();
 		_indexCombo.getCombo().setData(
 				_indexCombo.getCombo().getSelectionIndex());
 		_indexCombo.getCombo().addModifyListener(getMLSB());
-		_indexCombo
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					@Override
-					public void selectionChanged(
-							@Nonnull final SelectionChangedEvent event) {
-						short index = (Short) ((StructuredSelection) _indexCombo
-								.getSelection()).getFirstElement();
-						getNode().moveSortIndex(index);
-						if (getNode().getParent() != null) {
-							getProfiBusTreeView()
-									.refresh(getNode().getParent());
-						} else {
-							getProfiBusTreeView().refresh();
-						}
-					}
-				});
+		_indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+            @Override
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                        .getFirstElement();
+                try {
+                    getNode().moveSortIndex(index);
+                    if (getNode().getParent() != null) {
+                        getProfiBusTreeView().refresh(getNode().getParent());
+                    } else {
+                        getProfiBusTreeView().refresh();
+                    }
+                } catch (PersistenceException e) {
+                    DeviceDatabaseErrorDialog.open(null, "Can't move Master! Database Error", e);
+                    LOG.error(e);
+                }
+            }
+        });
 	}
 
-	private void fillStationAddressCombo() {
+	private void fillStationAddressCombo() throws PersistenceException {
 		_freeStationAddress = _master.getFreeMStationAddress(_redundentButton
 				.getSelection());
 		Short sortIndex = _master.getSortIndex();
@@ -628,73 +641,72 @@ public class MasterEditor extends AbstractNodeEditor {
 
 	/**
 	 * {@inheritDoc}
+	 * @throws PersistenceException 
 	 */
 	@Override
-	public void doSave(@Nullable final IProgressMonitor monitor) {
-		super.doSave(monitor);
-		Date now = new Date();
-
-		// Name
-		_master.setName(getNameWidget().getText());
-		getNameWidget().setData(getNameWidget().getText());
-
-		Short stationAddress = (Short) ((StructuredSelection) _indexCombo
-				.getSelection()).getFirstElement();
-		_master.setSortIndexNonHibernate(stationAddress);
-		if (_redundentButton.getSelection()) {
-			_redundentButton.setData(true);
-			_master.setRedundant((short) (stationAddress + 1));
-		} else {
-			_redundentButton.setData(false);
-			_master.setRedundant((short) -1);
-		}
-		_indexCombo.getCombo().setData(
-				_indexCombo.getCombo().getSelectionIndex());
-
-		// Information
-		_master.setVendorName(_vendorText.getText());
-		_master.setProfibusdpmasterBez(_pbBoardText.getText());
-		// Parameters
-		_master.setMinSlaveInt(Integer.valueOf(_minSlaveIntervalText.getText()));
-		_master.setPollTime(Integer.valueOf(_pollTimeOutText.getText()));
-		_master.setDataControlTime(Integer.valueOf(_dataControlTimeText
-				.getText()));
-		_master.setAutoclear(_autoclearButton.getSelection());
-		// MasterUserData
-		_master.setMasterUserData(_masterUserDataText.getText());
-		// Mem Adress Type
-		_master.setProfibusPnoId(_memAddressType);
-		_oldMemAddressType = _memAddressType;
-		// Document
-		Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-		_master.setDocuments(docs);
-
-		// update header
-		getHeaderField(HeaderFields.MODIFIED_BY).setText(
-				ConfigHelper.getUserName());
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-		getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
-
-		// GSD File
-		_master.setGSDFile(_gsdFile);
-
-		// FMB Set
-		_master.setMaxNrSlave(Integer.parseInt(_maxNrSlaveText.getText()));
-		_master.setMaxSlaveOutputLen(Integer.parseInt(_maxSlaveOutputLenText
-				.getText()));
-		_master.setMaxSlaveInputLen(Integer.parseInt(_maxSlaveInputLenText
-				.getText()));
-		_master.setMaxSlaveDiagEntries(Integer
-				.parseInt(_maxSlaveDiagEntriesText.getText()));
-		_master.setMaxSlaveDiagLen(Integer.parseInt(_maxSlaveDiagLenText
-				.getText()));
-		_master.setMaxBusParaLen(Integer.parseInt(_maxBusParaLenText.getText()));
-		_master.setMaxSlaveParaLen(Integer.parseInt(_maxSlaveParaLenText
-				.getText()));
-
-		fillStationAddressCombo();
-		save();
-	}
+    public void doSave(@Nullable final IProgressMonitor monitor) {
+        super.doSave(monitor);
+        Date now = new Date();
+        
+        // Name
+        _master.setName(getNameWidget().getText());
+        getNameWidget().setData(getNameWidget().getText());
+        
+        Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
+                .getFirstElement();
+        
+        try {
+            _master.setSortIndexNonHibernate(stationAddress);
+            if (_redundentButton.getSelection()) {
+                _redundentButton.setData(true);
+                _master.setRedundant((short) (stationAddress + 1));
+            } else {
+                _redundentButton.setData(false);
+                _master.setRedundant((short) -1);
+            }
+            _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
+            
+            // Information
+            _master.setVendorName(_vendorText.getText());
+            _master.setProfibusdpmasterBez(_pbBoardText.getText());
+            // Parameters
+            _master.setMinSlaveInt(Integer.valueOf(_minSlaveIntervalText.getText()));
+            _master.setPollTime(Integer.valueOf(_pollTimeOutText.getText()));
+            _master.setDataControlTime(Integer.valueOf(_dataControlTimeText.getText()));
+            _master.setAutoclear(_autoclearButton.getSelection());
+            // MasterUserData
+            _master.setMasterUserData(_masterUserDataText.getText());
+            // Mem Adress Type
+            _master.setProfibusPnoId(_memAddressType);
+            _oldMemAddressType = _memAddressType;
+            // Document
+            Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+            _master.setDocuments(docs);
+            
+            // update header
+            getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
+            
+            // GSD File
+            _master.setGSDFile(_gsdFile);
+            
+            // FMB Set
+            _master.setMaxNrSlave(Integer.parseInt(_maxNrSlaveText.getText()));
+            _master.setMaxSlaveOutputLen(Integer.parseInt(_maxSlaveOutputLenText.getText()));
+            _master.setMaxSlaveInputLen(Integer.parseInt(_maxSlaveInputLenText.getText()));
+            _master.setMaxSlaveDiagEntries(Integer.parseInt(_maxSlaveDiagEntriesText.getText()));
+            _master.setMaxSlaveDiagLen(Integer.parseInt(_maxSlaveDiagLenText.getText()));
+            _master.setMaxBusParaLen(Integer.parseInt(_maxBusParaLenText.getText()));
+            _master.setMaxSlaveParaLen(Integer.parseInt(_maxSlaveParaLenText.getText()));
+            
+            fillStationAddressCombo();
+            save();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            DeviceDatabaseErrorDialog.open(null, "Can't save Master! Database error.", e);
+        }
+    }
 
 	/** {@inheritDoc} */
 	@Override

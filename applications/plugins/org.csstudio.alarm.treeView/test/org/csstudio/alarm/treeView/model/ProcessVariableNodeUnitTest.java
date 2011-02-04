@@ -106,7 +106,7 @@ public class ProcessVariableNodeUnitTest {
     @Test
 	public void testAcknowledgeAlarm() throws Exception {
 		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
-		_node.removeHighestUnacknowledgedAlarm();
+		_node.acknowledgeAlarm();
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
         assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
 	}
