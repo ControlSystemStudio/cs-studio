@@ -23,6 +23,7 @@
 package org.csstudio.opibuilder.properties;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.properties.support.FilePathPropertyDescriptor;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
@@ -113,6 +114,8 @@ public class FilePathProperty extends AbstractWidgetProperty {
 
 	@Override
 	public Object readValueFromXML(Element propElement) {
+		if(ResourceUtil.isURL(propElement.getText()))
+			return new URLPath(propElement.getText());
 		return Path.fromPortableString(propElement.getText());
 	}
 
