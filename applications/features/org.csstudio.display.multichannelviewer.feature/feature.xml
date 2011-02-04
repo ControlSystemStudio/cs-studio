@@ -32,6 +32,8 @@
       <import plugin="org.csstudio.platform.libs.jfreechart" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.channelfinder" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.display.channelfinderviewer" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pvmanager.jfreechart.widgets" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
