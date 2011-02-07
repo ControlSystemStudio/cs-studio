@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -58,7 +58,7 @@ public interface IArchiveWriterService {
      * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
-    <V, T extends ICssValueType<V> & IHasAlarm>
+    <V, T extends ITimedCssValueType<V> & IHasAlarm>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V,T>> samples) throws ArchiveServiceException;
 
 

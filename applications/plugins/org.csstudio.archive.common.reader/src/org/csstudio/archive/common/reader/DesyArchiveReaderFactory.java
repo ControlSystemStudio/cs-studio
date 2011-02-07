@@ -52,7 +52,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      * @author bknerr
      * @since 03.02.2011
      */
-    private final class DesyArchiveReader implements ArchiveReader {
+    private static final class DesyArchiveReader implements ArchiveReader {
         /**
          * Constructor.
          */

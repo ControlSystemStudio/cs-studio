@@ -33,8 +33,8 @@ import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * Dao for archive samples.
@@ -50,7 +50,7 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V, T extends ICssValueType<V> & IHasAlarm>
+    <V, T extends ITimedCssValueType<V> & IHasAlarm>
     void createSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
@@ -60,7 +60,7 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
-    <V, T extends ICssAlarmValueType<V>>
+    <V, T extends ITimedCssAlarmValueType<V>>
     Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                          @Nonnull IArchiveChannel channel,
                                                          @Nonnull TimeInstant s,

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * Data transfer object for sample.
@@ -36,7 +36,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <T> the css value type with alarm information
  */
 public class ArchiveSample<V,
-                           T extends ICssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
+                           T extends ITimedCssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;

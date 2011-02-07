@@ -54,8 +54,8 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -98,7 +98,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>, IValue> {
         /**
          * Constructor.
          */
@@ -107,7 +107,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>> from) {
+         public IValue apply(final IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>> from) {
              try {
                  // TODO (bknerr) : support lookup for every single value... check performance
                  final Object min = from.getMinimum();
@@ -176,7 +176,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     public
-    <V, T extends ICssValueType<V> & IHasAlarm>
+    <V, T extends ITimedCssValueType<V> & IHasAlarm>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
@@ -383,7 +383,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
+            final Iterable<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>> samples =
                 DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =

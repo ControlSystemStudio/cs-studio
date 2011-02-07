@@ -58,9 +58,9 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.CssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
@@ -132,7 +132,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ICssValueType<V> & IHasAlarm>
+    public <V, T extends ITimedCssValueType<V> & IHasAlarm>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
@@ -161,7 +161,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <V, T extends ICssValueType<V> & IHasAlarm>
+    private <V, T extends ITimedCssValueType<V> & IHasAlarm>
         Statement composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
@@ -207,7 +207,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
 
-    private <T extends ICssValueType<?>>
+    private <T extends ITimedCssValueType<?>>
         void writeReducedData(@Nonnull final ArchiveChannelId channelId,
                               @Nonnull final T data,
                               @CheckForNull final EpicsAlarm alarm,
@@ -345,7 +345,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs),"
      */
     @Nonnull
-    private <T extends ICssValueType<?> & IHasAlarm>
+    private <T extends ITimedCssValueType<?> & IHasAlarm>
         String createSampleValueStmtStr(final ArchiveChannelId channelId,
                                         final ArchiveSeverityId sevId,
                                         final ArchiveStatusId statusId,
@@ -400,7 +400,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @Nonnull
-    public <V, T extends ICssAlarmValueType<V>>
+    public <V, T extends ITimedCssAlarmValueType<V>>
     Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                          @Nonnull final IArchiveChannel channel,
                                                          @Nonnull final TimeInstant s,
@@ -461,7 +461,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
 
     @SuppressWarnings("unchecked")
-    private <V, T extends ICssAlarmValueType<V>>
+    private <V, T extends ITimedCssAlarmValueType<V>>
     IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                            @Nonnull final String dataType,
                                                            @Nonnull final ArchiveChannelId channelId,
@@ -508,7 +508,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                 EpicsAlarmStatus.parseStatus(st.getName()));
         final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
 
-        final T data = (T) new CssAlarmValueType<V>(value, alarm, timeInstant);
+        final T data = (T) new TimedCssAlarmValueType<V>(value, alarm, timeInstant);
 
         final ArchiveMinMaxSample<V, T> sample =
             new ArchiveMinMaxSample<V, T>(channelId, data, min, max);

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * Read-only interface for archive sample. 
@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample<V, T extends ICssValueType<V> & IHasAlarm> {
+public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
     
     @Nonnull
     ArchiveChannelId getChannelId();
