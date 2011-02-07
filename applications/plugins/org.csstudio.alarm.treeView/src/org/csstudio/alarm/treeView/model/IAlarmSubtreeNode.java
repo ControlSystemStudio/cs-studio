@@ -54,6 +54,14 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
     void removeChildren();
 
     /**
+     * Checks, whether the given child is already present. If this is the case, it cannot be added.
+     * 
+     * @param name name of the child to be added
+     * @return true, if the child can be added
+     */
+    boolean canAddChild(@Nonnull final String name);
+    
+    /**
      * Adds the specified child node to the list of this node's children unless a
      * node with this name is already in the list, then nothing is added and false is
      * returned.

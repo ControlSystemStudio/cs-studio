@@ -29,11 +29,13 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -55,7 +57,9 @@ import org.eclipse.swt.widgets.TreeItem;
  * @since 09.06.2010
  */
 public final class AlarmTreeLocalSelectionDropListener implements TransferDropTargetListener {
-
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmTreeLocalSelectionDropListener.class);
+    
     private final AlarmTreeView _alarmTreeView;
     private final Queue<ITreeModificationItem> _ldapModificationItems;
 
@@ -182,7 +186,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
             } catch (final DirectoryEditException e) {
                 MessageDialog.openError(_alarmTreeView.getSite().getShell(),
                                         "Copying Nodes",
-                                        "An error occured. The nodes could not be copied.");
+                                        "An error occured. The nodes could not be copied.\n" + e.getMessage());
             }
         } else if (event.detail == DND.DROP_MOVE) {
             try {
@@ -190,7 +194,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
             } catch (final DirectoryEditException e) {
                 MessageDialog.openError(_alarmTreeView.getSite().getShell(),
                                         "Moving Nodes",
-                                        "An error occured. The nodes could not be moved.");
+                                        "An error occured. The nodes could not be moved.\n" + e.getMessage());
             }
         }
         final TreeViewer viewer = _alarmTreeView.getViewer();
@@ -210,8 +214,15 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
             if (node.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.FACILITY)) {
                 copyFacilityComponentAsInsertion(target, node);
             } else {
-                final Queue<ITreeModificationItem> items = DirectoryEditor.copyNode(node, target);
-                _ldapModificationItems.addAll(items);
+                if (target.canAddChild(node.getName())) {
+                    final Queue<ITreeModificationItem> items = DirectoryEditor.copyNode(node, target);
+                    _ldapModificationItems.addAll(items);
+                } else {
+                    String message = "Node '" + node.getName() + "' cannot be added to component '" + target.getName() + "'\n" +
+                    		"Does it already exist?";
+                    LOG.warn(message);
+                    throw new DirectoryEditException(message, null);
+                }
             }
 
         }
