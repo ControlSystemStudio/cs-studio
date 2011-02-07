@@ -21,62 +21,15 @@
  */
 package org.csstudio.domain.desy.types;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 
 /**
- * Abstract class for an alarm bearing css value type of base type <T>
+ * Helper interface for this type combination.
  *
  * @author bknerr
- * @since 07.12.2010
- * @param <T> the basic value type of the datum/data
+ * @since 06.12.2010
+ * @param <T> basic type of the Css value type
  */
-public class CssAlarmValueType<T> implements ICssAlarmValueType<T> {
-
-    private final T _data;
-    private final IAlarm _alarm;
-    private final TimeInstant _timestamp;
-
-    /**
-     * Constructor.
-     */
-    public CssAlarmValueType(@Nonnull final T data,
-                                     @Nullable final IAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        _data = data;
-        _alarm = alarm;
-        _timestamp = timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public T getValueData() {
-        return _data;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public IAlarm getAlarm() {
-        return _alarm;
-    }
-
+public interface ITimedCssAlarmValueType<T> extends ITimedCssValueType<T>, IHasAlarm {
+    // Empty
 }

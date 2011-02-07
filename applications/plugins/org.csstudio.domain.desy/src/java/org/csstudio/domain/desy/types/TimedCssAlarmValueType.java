@@ -21,23 +21,62 @@
  */
 package org.csstudio.domain.desy.types;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.time.IHasTimeStamp;
+import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Base value type with a timestamp.
+ * Abstract class for an alarm bearing css value type of base type <T>
  *
  * @author bknerr
- * @since 26.11.2010
- * @param <T>
+ * @since 07.12.2010
+ * @param <T> the basic value type of the datum/data
  */
-public interface ICssValueType<T> extends IHasTimeStamp {
+public class TimedCssAlarmValueType<T> implements ITimedCssAlarmValueType<T> {
+
+    private final T _data;
+    private final IAlarm _alarm;
+    private final TimeInstant _timestamp;
 
     /**
-     * Returns the value datum/data.
-     * @return the datum/data
+     * Constructor.
      */
+    public TimedCssAlarmValueType(@Nonnull final T data,
+                                     @Nullable final IAlarm alarm,
+                                     @Nonnull final TimeInstant timestamp) {
+        _data = data;
+        _alarm = alarm;
+        _timestamp = timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    T getValueData();
+    public T getValueData() {
+        return _data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IAlarm getAlarm() {
+        return _alarm;
+    }
+
 }

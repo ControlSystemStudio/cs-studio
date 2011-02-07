@@ -24,7 +24,7 @@ package org.csstudio.domain.desy;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * System variables are the fundamental atomic components of any system.
@@ -41,7 +41,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<V, T extends ICssValueType<V>> extends Identifiable<SystemVariableId> {
+public interface ISystemVariable<V, T extends ITimedCssValueType<V>> extends Identifiable<SystemVariableId> {
 
     /**
      * The datum entity (value(s) and/or state(s) of this system variable.

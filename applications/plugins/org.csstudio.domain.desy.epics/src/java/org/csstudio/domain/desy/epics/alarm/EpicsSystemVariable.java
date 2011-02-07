@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.ISystemVariable;
 import org.csstudio.domain.desy.SystemVariableId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * An EPICS system variable is tightly bound to EpicsAlarms
@@ -38,7 +38,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <V> the base value type
  * @param <T> the css variable type
  */
-public class EpicsSystemVariable<V, T extends ICssValueType<V>> implements ISystemVariable<V, T>, IHasAlarm {
+public class EpicsSystemVariable<V, T extends ITimedCssValueType<V>> implements ISystemVariable<V, T>, IHasAlarm {
 
     private final SystemVariableId _id;
     private final String _name;

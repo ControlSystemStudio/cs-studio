@@ -21,15 +21,15 @@
  */
 package org.csstudio.domain.desy.types;
 
-import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /**
- * Helper interface for this type combination.
+ * Base value type with a timestamp.
  *
  * @author bknerr
- * @since 06.12.2010
- * @param <T> basic type of the Css value type
+ * @since 26.11.2010
+ * @param <T>
  */
-public interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
+public interface ITimedCssValueType<T> extends ICssValueType<T>, IHasTimeStamp {
     // Empty
 }
