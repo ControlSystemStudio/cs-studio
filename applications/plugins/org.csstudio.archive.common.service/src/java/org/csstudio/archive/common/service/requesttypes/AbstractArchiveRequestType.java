@@ -155,6 +155,6 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         if (param == null) {
             throw new RequestTypeParameterException("Parameter with identifying name " + id + " unknown.", null);
         }
-        return (IArchiveRequestTypeParameter<?>) param.clone();
+        return param;
     }
 }
