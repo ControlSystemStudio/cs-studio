@@ -50,7 +50,7 @@ public final class AcknowledgeSecureAction extends AbstractUserDependentAction {
         CentralLogger.getInstance().getLogger(AcknowledgeSecureAction.class);
 
     private static final String RIGHT_ID = "operating";
-    private static final boolean DEFAULT_PERMISSION = false;
+    private static final boolean DEFAULT_PERMISSION = true;
 
     private final TreeViewer _viewer;
 

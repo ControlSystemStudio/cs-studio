@@ -29,6 +29,7 @@ import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.alarm.treeView.views.LdapNameInputValidator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
@@ -68,12 +69,16 @@ public abstract class AbstractCreateComponentAction extends Action {
         if (selected instanceof SubtreeNode) {
             final SubtreeNode parent = (SubtreeNode) selected;
             final String name = promptForRecordName();
-            if ( (name != null) && !name.equals("")) {
+            if ( (name != null) && !name.equals("") && parent.canAddChild(name)) {
                 final ITreeModificationItem item = createComponent(parent, name);
                 if (item != null) {
                     _ldapModificationItems.add(item);
                 }
                 _viewer.refresh(parent);
+            } else {
+                String message = "Node '" + name + "' cannot be added to component '" + parent.getName() + "'.\n" +
+                		"Does it already exist?";
+                MessageDialog.openWarning(_site.getShell(), "Error adding record", message);
             }
         }
     }

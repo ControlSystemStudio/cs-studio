@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,6 +27,16 @@ public class SubtreeNodeUnitTest {
                                                TreeNodeSource.LDAP).build();
         _node0 = new ProcessVariableNode.Builder("node 0", TreeNodeSource.LDAP).build();
         _node1 = new ProcessVariableNode.Builder("node 1", TreeNodeSource.LDAP).build();
+    }
+    
+    @Test
+    public void testAdd() throws Exception {
+        // ensure add and its precondition
+        Assert.assertTrue(_subtreeNode.canAddChild(_node0.getName()));
+        Assert.assertTrue(_subtreeNode.addChild(_node0));
+        // cannot be added again
+        Assert.assertFalse(_subtreeNode.canAddChild(_node0.getName()));
+        Assert.assertFalse(_subtreeNode.addChild(_node0));
     }
     
     @Test

@@ -116,7 +116,10 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
                 node.setListener(_listener);
             }
             if (_parent != null) {
-                _parent.addChild(node);
+                boolean couldAdd = _parent.addChild(node);
+                if (!couldAdd) {
+                    throw new IllegalStateException("Could not add node '" + node.getName() + "' to parent '" + _parent.getName() + "'");
+                }
             }
             if (_alarm != null) {
                 node.setHighestUnacknowledgedAlarm(_alarm);
