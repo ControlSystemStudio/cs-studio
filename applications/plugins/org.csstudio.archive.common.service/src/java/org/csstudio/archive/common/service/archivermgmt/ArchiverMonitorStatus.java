@@ -19,34 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.archive.common.service.requesttypes;
-
-import javax.annotation.Nonnull;
-
+package org.csstudio.archive.common.service.archivermgmt;
 
 /**
- * The read-only interface of a parameter specifying an archive request type.
- *
+ * The monitor status of the archiver, typically used as indicator whether a channel is 
+ * currently configured to be monitored by an archive engine.
+ * 
  * @author bknerr
- * @since 05.01.2011
- * @param <T> the type of the param's value
+ * @since 02.02.2011
  */
-public interface IArchiveRequestTypeParameter<T> extends Cloneable {
-    @Nonnull
-    String getName();
-
-    @Nonnull
-    T getValue();
-
-    @Nonnull
-    Class<T> getValueType();
-
-    @Nonnull
-    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
-
-    @Nonnull
-    Object clone();
-
-    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
+public enum ArchiverMonitorStatus {
+    ON,
+    OFF;
 }

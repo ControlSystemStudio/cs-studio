@@ -9,6 +9,7 @@ package org.csstudio.archive.common.engine.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.apache.log4j.Level;
@@ -149,9 +150,9 @@ public abstract class ArchiveChannel<V,
 //        if (!log.isDebugEnabled()) {
 //            log = null;
 //        }
-
         _pv = PVFactory.createPV(name);
         _pv.addListener(new PVListener() {
+
             @Override
             public void pvValueUpdate(final PV pv) {
                 try {
@@ -166,23 +167,32 @@ public abstract class ArchiveChannel<V,
                             final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) cssValue);
                             handleNewSample(sample);
                             //handleNewValue(cssValue);
-
                     }
                 } catch (final TypeSupportException e) {
                     PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
                     return;
                 } catch (final Throwable t) {
-                    System.out.println("");
+                    PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage());
                 }
             }
 
             @Override
             public void pvDisconnected(final PV pv) {
-                if (_isRunning) {
-                    handleDisconnected();
+                if (_isRunning && pv != null) {
+                    //handleDisconnected();
+                    handleDisconnectionInformation(pv);
                 }
             }
         });
+    }
+
+    /**
+     * @param pv
+     */
+    protected void handleDisconnectionInformation(@Nonnull final PV pv) {
+
+        final String someMoreInfo = pv.getStateInfo();
+
     }
 
     /** @return Name of channel */

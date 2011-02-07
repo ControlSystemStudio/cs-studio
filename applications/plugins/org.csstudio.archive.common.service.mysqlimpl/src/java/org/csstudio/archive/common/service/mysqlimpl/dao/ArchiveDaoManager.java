@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.URL;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
@@ -31,10 +32,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
@@ -61,11 +65,76 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveDaoManager {
+public enum ArchiveDaoManager implements IDaoManager {
 
     INSTANCE;
 
-    @SuppressWarnings("unused")
+    /**
+     * TODO (bknerr) : Implement DAO command structure
+     *
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    public interface IArchiveDaoCommand {
+        @CheckForNull
+        Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException;
+    }
+
+    @Override
+    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
+            return command.execute(this);
+    }
+    @Override
+    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
+        try{
+            return command.execute(this);
+        } finally {
+            try {
+                getConnection().close();
+            } catch (final ArchiveConnectionException e) {
+                throw new ArchiveDaoException("Connection could not be established.", e);
+            } catch (final SQLException e) {
+                throw new ArchiveDaoException("Connection could not be closed.", e);
+            }
+        }
+    }
+    @Override
+    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
+        Connection connection = null;
+        try {
+            try {
+                connection = getConnection();
+                connection.setAutoCommit(false);
+                final Object returnValue = command.execute(this);
+                connection.commit();
+                return returnValue;
+            } catch (final Exception e) {
+                if (connection != null) {
+                    LOG.warn("DAO command execution failed. Rollback.", e);
+                    connection.rollback();
+                }
+                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
+            } finally {
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                }
+            }
+        } catch (final SQLException e1) {
+            throw new ArchiveDaoException("DAO command and rollback failed", e1);
+        }
+    }
+    @CheckForNull
+    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
+        return executeAndClose(new IArchiveDaoCommand(){
+            @Override
+            public Object execute(final ArchiveDaoManager manager) throws ArchiveDaoException{
+                return manager.transaction(command);
+            }
+        });
+    }
+
+
+
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -73,6 +142,7 @@ public enum ArchiveDaoManager {
     private String _url;
     private String _user;
     private String _password;
+    private String _databaseName;
 
     /**
      * Any thread owns a connection.
@@ -84,9 +154,10 @@ public enum ArchiveDaoManager {
      */
     private IArchiveChannelDao _archiveChannelDao;
     private IArchiveChannelGroupDao _archiveChannelGroupDao;
-    private IArchiveSampleModeDao _archiveSampleModeDao;
-    private IArchiveSampleDao _archiveSampleDao;
     private IArchiveEngineDao _archiveEngineDao;
+    private IArchiverMgmtDao _archiverMgmtDao;
+    private IArchiveSampleDao _archiveSampleDao;
+    private IArchiveSampleModeDao _archiveSampleModeDao;
     private IArchiveSeverityDao _archiveSeverityDao;
     private IArchiveStatusDao _archiveStatusDao;
 
@@ -116,6 +187,7 @@ public enum ArchiveDaoManager {
             _url = (String) prefs.get(URL.getKeyAsString());
             _user = (String) prefs.get(USER.getKeyAsString());
             _password = (String) prefs.get(PASSWORD.getKeyAsString());
+            _databaseName = (String) prefs.get(DATABASE_NAME.getKeyAsString());
 
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -205,8 +277,9 @@ public enum ArchiveDaoManager {
      * @return the connection
      * @throws ArchiveConnectionException
      */
+    @Override
     @Nonnull
-    Connection getConnection() throws ArchiveConnectionException {
+    public Connection getConnection() throws ArchiveConnectionException {
         // TODO (bknerr) : put here connection pooling
         final Connection connection = _archiveConnection.get();
         if (connection == null) {
@@ -215,6 +288,11 @@ public enum ArchiveDaoManager {
             return connect(createConnectionPrefsFromEclipsePrefs());
         }
         return connection;
+    }
+
+    @CheckForNull
+    public String getDatabaseName() {
+        return _databaseName;
     }
 
     /**
@@ -226,6 +304,17 @@ public enum ArchiveDaoManager {
             _archiveChannelDao = new ArchiveChannelDaoImpl(this);
         }
         return _archiveChannelDao;
+    }
+
+    /**
+     * @return the archiver management dao
+     */
+    @Nonnull
+    public IArchiverMgmtDao getArchiverMgmtDao() {
+        if (_archiverMgmtDao == null) {
+            _archiverMgmtDao  = new ArchiverMgmtDaoImpl(this);
+        }
+        return _archiverMgmtDao;
     }
 
     /**
@@ -293,6 +382,4 @@ public enum ArchiveDaoManager {
         }
         return _archiveStatusDao;
     }
-
-
 }

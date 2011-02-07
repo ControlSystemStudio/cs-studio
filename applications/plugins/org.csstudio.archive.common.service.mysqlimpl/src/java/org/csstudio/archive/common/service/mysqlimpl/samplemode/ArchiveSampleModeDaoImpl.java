@@ -104,13 +104,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
         } catch (final IllegalArgumentException e) {
             LOG.warn("Sample mode for id " + id.intValue() + " does not exist in the archive.");
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectSampleModeByIdStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectSampleModeByIdStmt + " failed.");
         }
         return mode;
     }

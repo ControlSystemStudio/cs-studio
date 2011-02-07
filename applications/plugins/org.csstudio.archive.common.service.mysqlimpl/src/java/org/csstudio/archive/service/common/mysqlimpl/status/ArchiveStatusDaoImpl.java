@@ -33,7 +33,7 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
+import org.csstudio.archive.common.service.status.ArchiveStatus;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
@@ -101,7 +101,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final ArchiveStatusId id = new ArchiveStatusId(result.getInt(1));
-                final IArchiveStatus newStts = new ArchiveStatusDTO(id, stts.name());
+                final IArchiveStatus newStts = new ArchiveStatus(id, stts.name());
                 _statusCacheById.put(id, newStts);
                 _statusCache.put(stts, newStts);
                 return newStts;
@@ -135,7 +135,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final String name = result.getString(1);
-                final IArchiveStatus newStts = new ArchiveStatusDTO(id, name);
+                final IArchiveStatus newStts = new ArchiveStatus(id, name);
                 _statusCacheById.put(id, newStts);
                 _statusCache.put(EpicsAlarmStatus.parseStatus(name), newStts);
                 return newStts;

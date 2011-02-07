@@ -34,7 +34,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.channel.ArchiveChannelDTO;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -111,14 +111,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                     TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
 
         final IArchiveChannel channel =
-            new ArchiveChannelDTO(id,
-                                  name,
-                                  datatype,
-                                  new ArchiveChannelGroupId(groupId),
-                                  new ArchiveSampleModeId(sampleMode),
-                                  samplePeriod,
-                                  time,
-                                  0.0);
+            new ArchiveChannel(id,
+                               name,
+                               datatype,
+                               new ArchiveChannelGroupId(groupId),
+                               new ArchiveSampleModeId(sampleMode),
+                               samplePeriod,
+                               time,
+                               0.0);
 
         _channelCacheByName.put(name, channel);
         _channelCacheById.put(id, channel);

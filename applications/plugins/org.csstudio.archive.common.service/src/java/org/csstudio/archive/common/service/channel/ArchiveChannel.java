@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDTO implements IArchiveChannel {
+public class ArchiveChannel implements IArchiveChannel {
 
     private final ArchiveChannelId _id;
 
@@ -66,7 +66,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      *
      * CHECKSTYLE OFF: ParameterNumber
      */
-    public ArchiveChannelDTO(@Nonnull final ArchiveChannelId id,
+    public ArchiveChannel(@Nonnull final ArchiveChannelId id,
                              @Nonnull final String name,
                              @Nonnull final String type,
                              @Nonnull final ArchiveChannelGroupId grpId,

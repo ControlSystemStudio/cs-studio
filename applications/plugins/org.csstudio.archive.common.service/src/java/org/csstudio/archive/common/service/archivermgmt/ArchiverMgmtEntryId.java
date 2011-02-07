@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,48 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.adapter;
+package org.csstudio.archive.common.service.archivermgmt;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.types.TypeSupportException;
 
 /**
- * Type conversions for {@link Long}.
- *
+ * Id object for an ArchiverMgmtEntry.
+ * 
  * @author bknerr
- * @since 15.12.2010
+ * @since 02.02.2011
  */
-public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Long> {
-
+public class ArchiverMgmtEntryId extends org.csstudio.domain.desy.common.id.Id<ArchiverMgmtEntryId> {
+    
+    private static final long serialVersionUID = -4359196591799659829L;
+    
+    /**
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
+     */
+    public static final ArchiverMgmtEntryId NONE = new ArchiverMgmtEntryId(-1L);
 
     /**
      * Constructor.
-     * @param type
+     *
+     * @param value the value
      */
-    LongArchiveTypeConversionSupport() {
-        super(Long.class);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Long.parseLong(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value.longValue();
+    public ArchiverMgmtEntryId(final long value) {
+        super(value);
     }
 }
