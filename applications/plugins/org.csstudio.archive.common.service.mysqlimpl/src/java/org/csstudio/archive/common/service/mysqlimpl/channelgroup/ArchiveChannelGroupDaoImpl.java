@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupDTO;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
@@ -84,7 +84,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
                 final String name = result.getString(2);
                 final ArchiveChannelId chanId = new ArchiveChannelId(result.getInt(3));
 
-                groups.add(new ArchiveChannelGroupDTO(id,
+                groups.add(new ArchiveChannelGroup(id,
                                                       name,
                                                       chanId));
             }

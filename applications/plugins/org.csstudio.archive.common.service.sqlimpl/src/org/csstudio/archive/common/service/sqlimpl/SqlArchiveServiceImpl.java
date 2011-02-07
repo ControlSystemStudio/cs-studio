@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -246,12 +246,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
+    @CheckForNull ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
 
         final ChannelConfig cfg = getChannelConfig(name);
         if (cfg == null) {
@@ -307,9 +302,27 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ICssValueType<V> & IHasAlarm> 
-    boolean writeSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
+    public <V, T extends ICssValueType<V> & IHasAlarm>
+    boolean writeSamples(final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
       throw new ArchiveServiceException("Not implemented", null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(final IArchiverMgmtEntry entry) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+
     }
 
 }

@@ -21,3 +21,4 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.treeconfiguration,
  org.csstudio.utility.ldap.utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY

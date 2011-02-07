@@ -85,10 +85,11 @@ public class SlaveCfgData {
                 int parameter2;
                 if (para.length > 1) {
                     try {
-                        if (para[1].startsWith("0x")) {
-                            parameter2 = Integer.parseInt(para[1].replaceAll("0x", ""), 16);
+                        String parameter1 = para[1].trim();
+                        if (parameter1.startsWith("0x")) {
+                            parameter2 = Integer.parseInt(parameter1.replaceAll("0x", ""), 16);
                         } else {
-                            parameter2 = Integer.parseInt(para[1], 10);
+                            parameter2 = Integer.parseInt(parameter1, 10);
                         }
                         setParameter(parameter, parameter2);
                     } catch (NumberFormatException e) {

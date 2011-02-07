@@ -56,7 +56,7 @@ public class ModuleDBO extends AbstractNodeDBO {
     /**
      * The number of module at the GSD File.
      */
-    private int _moduleNumber;
+    private int _moduleNumber = -1;
 
     private String _configurationData;
 

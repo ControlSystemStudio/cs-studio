@@ -38,18 +38,18 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.mysqlimpl.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
+import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
-import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
+import org.csstudio.archive.common.service.status.ArchiveStatus;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
@@ -65,8 +65,6 @@ import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -109,9 +107,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         "SELECT sample_time, highest_severity_id, avg_val, min_val, max_val " +
         "FROM " + ARCH_TABLE_PLACEHOLDER + " WHERE channel_id=? " +
         "AND sample_time BETWEEN ? AND ?";
-
-    // TODO (bknerr) : move this to a place where we collect the DESY archive standard time stamp format
-    private static final DateTimeFormatter SAMPLE_TIME_FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * the reduced data, I'd love to use gabriele's aggregators, but they are his alarms, and times.
@@ -358,7 +353,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                         final TimeInstant timestamp) {
             try {
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
-                                                  "'" + timestamp.formatted(SAMPLE_TIME_FMT) + "'",
+                                                  "'" + timestamp.formatted() + "'",
                                                   timestamp.getFractalSecondsInNanos(),
                                                   sevId.intValue(),
                                                   statusId.intValue(),
@@ -390,7 +385,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final int sevIdInt = sevId == null ? ArchiveSeverityId.NONE.intValue() : sevId.intValue();
         final String valueStr =
             "(" + channelId.intValue() + ", '" +
-                  SAMPLE_TIME_FMT.print(timestamp.getInstant()) + "', " +
+                  timestamp.formatted() + "', " +
                   sevIdInt + ", " +
                   avg + ", " +
                   min + ", " +
@@ -491,15 +486,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 final ArchiveStatusId statusId = new ArchiveStatusId(result.getInt("status_id"));
                 value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString("value"));
                 st = getDaoMgr().getStatusDao().retrieveStatusById(statusId);
-            } break;
+                break;
+            }
             case AVG_PER_MINUTE :
             case AVG_PER_HOUR : {
                 // (..., avg_val, min_val, max_val)
                 value = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("avg_val"));
                 min = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("min_val"));
                 max = ArchiveTypeConversionSupport.fromDouble(dataType , result.getDouble("max_val"));
-                st = new ArchiveStatusDTO(ArchiveStatusId.NONE, "UNKNOWN");
-            } break;
+                st = new ArchiveStatus(ArchiveStatusId.NONE, "UNKNOWN");
+                break;
+            }
             default:
                 break;
         }
