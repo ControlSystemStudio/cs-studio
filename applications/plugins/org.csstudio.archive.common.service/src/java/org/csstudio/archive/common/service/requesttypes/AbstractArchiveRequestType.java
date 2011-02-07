@@ -126,6 +126,9 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         setParameterValue(newValue, param);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     @Override
     public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
@@ -137,7 +140,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
                                                     " either does not exist or does not have the correct class type",
                                                     null);
         }
-        return param;
+        return (IArchiveRequestTypeParameter<T>) param.clone();
     }
 
     private <T> void setParameterValue(@Nonnull final T newValue,
@@ -149,6 +152,13 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         param.setValue(newValue);
     }
 
+    /**
+     * Returns the parameter with the given id, if it is present in the map.
+     *
+     * @param id
+     * @return
+     * @throws RequestTypeParameterException
+     */
     @Nonnull
     private IArchiveRequestTypeParameter<?> getParameterById(@Nonnull final String id) throws RequestTypeParameterException {
         final IArchiveRequestTypeParameter<?> param = _paramMap.get(id);

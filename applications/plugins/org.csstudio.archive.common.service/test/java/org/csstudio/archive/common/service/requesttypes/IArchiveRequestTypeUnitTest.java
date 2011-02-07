@@ -40,8 +40,8 @@ public class IArchiveRequestTypeUnitTest {
      * @since 03.02.2011
      */
     private static final class IntegerParam extends AbstractArchiveRequestTypeParameter<Integer> {
-        public IntegerParam() {
-            super("testi", Integer.valueOf(1000));
+        public IntegerParam(@Nonnull final Integer value) {
+            super("testi", value);
         }
         @Override
         @Nonnull
@@ -57,19 +57,19 @@ public class IArchiveRequestTypeUnitTest {
         @Override
         @Nonnull
         public Object clone() {
-            return new IntegerParam();
+            return new IntegerParam(getValue());
         }
 
     }
-    private static final IntegerParam TEST_PARAM_I = new IntegerParam();
+    private static final IntegerParam TEST_PARAM_I = new IntegerParam(1000);
 
     /**
      * @author bknerr
      * @since 03.02.2011
      */
     private static final class DoubleParam extends AbstractArchiveRequestTypeParameter<Double> {
-        public DoubleParam() {
-            super("test2", Double.valueOf(4711));
+        public DoubleParam(@Nonnull final Double value) {
+            super("test2", value);
         }
         @Override
         @Nonnull
@@ -85,10 +85,10 @@ public class IArchiveRequestTypeUnitTest {
         @Override
         @Nonnull
         public Object clone() {
-            return new DoubleParam();
+            return new DoubleParam(getValue());
         }
     }
-    private static final DoubleParam TEST_PARAM_D = new DoubleParam();
+    private static final DoubleParam TEST_PARAM_D = new DoubleParam(1.0);
 
 
 
@@ -147,11 +147,13 @@ public class IArchiveRequestTypeUnitTest {
             final Integer value = p.getValue();
             Assert.assertEquals(TEST_PARAM_I.getValue(), value);
 
-            art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
+            final Integer newValue = Integer.valueOf(4711);
+
+            art.setParameter(TEST_PARAM_I.getName(), newValue);
             p = art.getParameter(TEST_PARAM_I.getName(),
                                  TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
+            Assert.assertEquals(newValue, p.getValue());
         }
         {
             final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
