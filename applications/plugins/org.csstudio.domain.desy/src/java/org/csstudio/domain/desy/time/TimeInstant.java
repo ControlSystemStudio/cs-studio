@@ -47,6 +47,9 @@ import org.joda.time.format.DateTimeFormatter;
  * @since 16.11.2010
  */
 public class TimeInstant implements Comparable<TimeInstant> {
+    
+    public static final DateTimeFormatter STD_TIME_FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+
 
     private static final int NANOS_PER_SECOND = 1000000000;
     private static final int NANOS_PER_MILLIS = 1000000;
@@ -305,5 +308,14 @@ public class TimeInstant implements Comparable<TimeInstant> {
         }
 
         return new TimeInstant(new Instant(getMillis() + addMillis), newNanos);
+    }
+
+    /**
+     * Formats the instant with the standard time formatter of this class.
+     * @return the formatted time string
+     */
+    @Nonnull
+    public String formatted() {
+        return formatted(STD_TIME_FMT);
     }
 }

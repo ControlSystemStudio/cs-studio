@@ -23,13 +23,12 @@ package org.csstudio.archive.common.service;
 
 import java.util.Collection;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ICssValueType;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -43,16 +42,6 @@ import org.csstudio.platform.data.IValue;
  * @since 12.11.2010
  */
 public interface IArchiveWriterService {
-
-    /**
-     * Retrieves the time stamp of the latest sample for the given channel.
-     *
-     * @param name the identifying channel name.
-     * @return the time stamp of the latest sample
-     * @throws ArchiveServiceException if the retrieval of the latest time stamp failed
-     */
-    @CheckForNull
-    ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel id for a given channel name.
@@ -70,7 +59,23 @@ public interface IArchiveWriterService {
      * @throws ArchiveServiceException
      */
     <V, T extends ICssValueType<V> & IHasAlarm>
-    boolean writeSamples(@Nonnull final Collection<IArchiveSample2<V,T>> samples) throws ArchiveServiceException;
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V,T>> samples) throws ArchiveServiceException;
+
+
+    /**
+     * Writes the monitoring information of an engine for a channel.
+     *
+     * @param entry
+     * @throws ArchiveServiceException
+     */
+    void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException;
+
+    /**
+     * Writes the monitoring information of an engine for a channel.
+     * @param monitorStates collection of states
+     * @throws ArchiveServiceException
+     */
+    void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
 
     /**
      * Transfers the sample information to the persistence layer.
@@ -101,4 +106,5 @@ public interface IArchiveWriterService {
      * @throws ArchiveServiceException
      */
     boolean flush() throws ArchiveServiceException;
+
 }

@@ -19,12 +19,11 @@ import org.osgi.framework.BundleContext;
 /** Plugin Activator
  *  @author Kay Kasemir
  */
-public class Activator extends Plugin
-{
+public class Activator extends Plugin {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
-    public static final String PLUGIN_ID = "org.csstudio.common.archive.engine"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.csstudio.archive.common.engine"; //$NON-NLS-1$
 
     /** The shared instance */
     private static Activator INSTANCE;

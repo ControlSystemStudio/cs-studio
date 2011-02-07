@@ -334,6 +334,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	@SuppressWarnings("unchecked")
 	protected <TYPE> TYPE getCastedPropertyValue(final String propertyName) {
+		checkPropertyExist(propertyName);
 		return (TYPE) getProperty(propertyName).getPropertyValue();
 	}
 	

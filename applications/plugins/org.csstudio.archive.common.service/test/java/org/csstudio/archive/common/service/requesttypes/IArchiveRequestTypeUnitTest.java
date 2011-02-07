@@ -23,82 +23,143 @@ package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.internal.ArchiveRequestTypeParameter;
+import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test
- * 
+ *
  * @author bknerr
  * @since 26.01.2011
  */
 public class IArchiveRequestTypeUnitTest {
-    
-    private static final ArchiveRequestTypeParameter<Integer> TEST_PARAM_I = 
-        new ArchiveRequestTypeParameter<Integer>("testi", Integer.valueOf(1000));
-    private static final ArchiveRequestTypeParameter<Double> TEST_PARAM_D = 
-        new ArchiveRequestTypeParameter<Double>("testi", Double.valueOf(1000.0));
-    
+
+    /**
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    private static final class IntegerParam extends AbstractArchiveRequestTypeParameter<Integer> {
+        public IntegerParam() {
+            super("testi", Integer.valueOf(1000));
+        }
+        @Override
+        @Nonnull
+        public Integer toValue(@Nonnull final String value) throws RequestTypeParameterException {
+            try {
+                return Integer.parseInt(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new IntegerParam();
+        }
+
+    }
+    private static final IntegerParam TEST_PARAM_I = new IntegerParam();
+
+    /**
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    private static final class DoubleParam extends AbstractArchiveRequestTypeParameter<Double> {
+        public DoubleParam() {
+            super("test2", Double.valueOf(4711));
+        }
+        @Override
+        @Nonnull
+        public Double toValue(@Nonnull final String value) throws RequestTypeParameterException {
+            try {
+                return Double.parseDouble(value);
+            } catch (final NumberFormatException e) {
+                throw new RequestTypeParameterException("Value " + value +
+                                                        " could not be parsed to " +
+                                                        getValueType().getName(), e);
+            }
+        }
+        @Override
+        @Nonnull
+        public Object clone() {
+            return new DoubleParam();
+        }
+    }
+    private static final DoubleParam TEST_PARAM_D = new DoubleParam();
+
+
+
+    /**
+     * Internal request type for testing.
+     *
+     * @author bknerr
+     * @since 01.02.2011
+     */
     private static final class ART extends AbstractArchiveRequestType {
-        public ART(String id, 
-                   String desc, 
-                   IArchiveRequestTypeParameter<?>... params) {
+        public ART(final String id,
+                   final String desc,
+                   final IArchiveRequestTypeParameter<?>... params) {
             super(id, desc, params);
         }
 
     }
-    
+    // CHECKSTYLE OFF: AvoidNestedBlocks
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse1() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            // Type mismatch on getting
+            @SuppressWarnings("unused")
+            final
             IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
-            Assert.assertNotNull(p);
-            Integer value = p.getValue();
         }
     }
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse2() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
-            IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), Double.class);
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), Double.class);
             Assert.assertNotNull(p);
             Assert.assertEquals(Double.class, p.getValueType());
-            
+            // Type mismatch on setting
             art.setParameter(TEST_PARAM_D.getName(), "Here shouldn't be a string");
         }
     }
     @Test(expected=RequestTypeParameterException.class)
     public void testIncorrectUse3() throws RequestTypeParameterException {
-        IArchiveRequestType art = new ART("Typ1", "T1");
+        final IArchiveRequestType art = new ART("Typ1", "T1");
         Assert.assertNull(art.getParameter("notexist", Object.class));
     }
-    
-    
-    
+
+
+
     @Test
     public void testCorrectUse() throws RequestTypeParameterException {
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I);
-            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(), 
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I);
+            // Type dispatching perhaps via TypeSupport pattern...
+            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_I.getName(),
                                                                        TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Assert.assertEquals(TEST_PARAM_I.getValue(), p.getValue());
-            
+            final Integer value = p.getValue();
+            Assert.assertEquals(TEST_PARAM_I.getValue(), value);
+
             art.setParameter(TEST_PARAM_I.getName(), Integer.valueOf(4711));
-            p = art.getParameter(TEST_PARAM_I.getName(), 
+            p = art.getParameter(TEST_PARAM_I.getName(),
                                  TEST_PARAM_I.getValueType());
-            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
-            
+            Assert.assertNotNull(p);
+            Assert.assertEquals(Integer.valueOf(1000), p.getValue());
         }
         {
-            IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
-            IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(), 
+            final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
+            final IArchiveRequestTypeParameter<Double> p = art.getParameter(TEST_PARAM_D.getName(),
                                                                       TEST_PARAM_D.getValueType());
             Assert.assertNotNull(p);
             Assert.assertEquals(TEST_PARAM_D.getValue(), p.getValue());
         }
     }
-
+    // CHECKSTYLE ON: AvoidNestedBlocks
 }

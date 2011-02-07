@@ -34,6 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Controller that interfaces the {@link Model} with the {@link Plot}:
@@ -47,8 +48,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class Controller implements ArchiveFetchJobListener
 {
-    /** Shell used for dialog boxes etc. */
-    private Shell shell;
+    /** Optional shell used to track shell state */
+    final private Shell shell;
+
+    /** Display used for dialog boxes etc. */
+    final private Display display;
 
     /** Model with data to display */
     final Model model;
@@ -94,6 +98,7 @@ public class Controller implements ArchiveFetchJobListener
      *  @param shell Shell
      *  @param model Model that has the data
      *  @param plot Plot for displaying the Model
+     *  @throws Error when called from non-UI thread
      */
     public Controller(final Shell shell, final Model model, final Plot plot)
     {
@@ -101,9 +106,16 @@ public class Controller implements ArchiveFetchJobListener
         this.model = model;
         this.plot = plot;
 
-        // Update 'iconized' state from shell
-        if (shell != null)
+        if (shell == null)
         {
+            display = Display.getCurrent();
+            if (display == null)
+                throw new Error("Must be called from UI thread"); //$NON-NLS-1$
+        }
+        else
+        {
+            display = shell.getDisplay();
+            // Update 'iconized' state from shell
             shell.addShellListener(new ShellListener()
             {
                 @Override
@@ -589,14 +601,14 @@ public class Controller implements ArchiveFetchJobListener
         final ArchiveRescale rescale = model.getArchiveRescale();
         if (rescale == ArchiveRescale.NONE)
             return;
-        if (shell == null  ||  shell.isDisposed())
+        if (display == null  ||  display.isDisposed())
             return;
-        shell.getDisplay().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
-                if (shell.isDisposed())
+                if (display.isDisposed())
                     return;
                 switch (rescale)
                 {
@@ -618,14 +630,14 @@ public class Controller implements ArchiveFetchJobListener
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        if (shell == null  ||  shell.isDisposed())
+        if (display == null  ||  display.isDisposed())
             return;
-        shell.getDisplay().asyncExec(new Runnable()
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
-                if (shell.isDisposed())
+                if (display.isDisposed())
                     return;
                 final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
                             job.getPVItem().getDisplayName());

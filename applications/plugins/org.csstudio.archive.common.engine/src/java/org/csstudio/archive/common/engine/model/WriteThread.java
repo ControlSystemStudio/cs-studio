@@ -15,7 +15,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveWriterService;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.stats.Average;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.platform.data.ITimestamp;
@@ -263,12 +263,12 @@ public class WriteThread implements Runnable {
     long write() throws OsgiServiceUnavailableException, ArchiveServiceException {
         int totalCount = 0;
 
-        final LinkedList<IArchiveSample2<Object, ICssAlarmValueType<Object>>> allSamples = Lists.newLinkedList();
+        final LinkedList<IArchiveSample<Object, ICssAlarmValueType<Object>>> allSamples = Lists.newLinkedList();
 
         for (final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel : _channelMap.values()) {
             final SampleBuffer<Object,
                                ICssAlarmValueType<Object>,
-                               IArchiveSample2<Object, ICssAlarmValueType<Object>>> buffer = channel.getSampleBuffer();
+                               IArchiveSample<Object, ICssAlarmValueType<Object>>> buffer = channel.getSampleBuffer();
 
             // Update max buffer length etc. before we start to remove samples
             buffer.updateStats();

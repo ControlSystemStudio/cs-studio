@@ -30,9 +30,10 @@ import org.csstudio.archive.common.engine.model.MonitoredArchiveChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
+import org.epics.pvmanager.TypeSupport;
 
 
 /**
@@ -48,6 +49,16 @@ import org.csstudio.domain.desy.types.TypeSupportException;
 public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
+    /**
+     * Constructor.
+     * @param type
+     * @param typeSupportFamily
+     */
+    public ArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
+        super(type, ArchiveEngineTypeSupport.class);
+    }
+
+
     private static final String[] SCALAR_TYPE_PACKAGES =
         new String[]{"java.lang",
                      "org.csstudio.domain.desy.epics.types"};
@@ -62,8 +73,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
         /**
          * Constructor.
          */
-        public ConcreteArchiveEngineTypeSupport() {
-            // Empty
+        public ConcreteArchiveEngineTypeSupport(@Nonnull final Class<V> type) {
+            super(type);
         }
         /**
          * {@inheritDoc}
@@ -102,14 +113,14 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
         }
         EpicsIValueTypeSupport.install();
 
-        TypeSupport.addTypeSupport(Long.class, new ConcreteArchiveEngineTypeSupport<Long>());
-        TypeSupport.addTypeSupport(Integer.class, new ConcreteArchiveEngineTypeSupport<Integer>());
-        TypeSupport.addTypeSupport(Short.class, new ConcreteArchiveEngineTypeSupport<Short>());
-        TypeSupport.addTypeSupport(Byte.class, new ConcreteArchiveEngineTypeSupport<Byte>());
-        TypeSupport.addTypeSupport(Double.class, new ConcreteArchiveEngineTypeSupport<Double>());
-        TypeSupport.addTypeSupport(Float.class, new ConcreteArchiveEngineTypeSupport<Float>());
-        TypeSupport.addTypeSupport(String.class, new ConcreteArchiveEngineTypeSupport<String>());
-        TypeSupport.addTypeSupport(EpicsEnumTriple.class, new ConcreteArchiveEngineTypeSupport<EpicsEnumTriple>());
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Long>(Long.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Integer>(Integer.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Short>(Short.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Byte>(Byte.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Double>(Double.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Float>(Float.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnumTriple>(EpicsEnumTriple.class));
 
         INSTALLED = true;
     }
@@ -123,11 +134,11 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
-        Class<V> typeClass = TypeSupport.createTypeClassFromString(dataType,
+        Class<V> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
                                                                    SCALAR_TYPE_PACKAGES);
         boolean scalar = true;
         if (typeClass == null) {
-            typeClass = TypeSupport.createTypeClassFromMultiScalarString(dataType,
+            typeClass = BaseTypeConversionSupport.createTypeClassFromMultiScalarString(dataType,
                                                                          MULTI_SCALAR_TYPE_PACKAGES);
             if (typeClass == null) {
                 throw new TypeSupportException("Data type " + dataType + " for channel " +
@@ -136,7 +147,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             scalar = false;
         }
         final ArchiveEngineTypeSupport<V> support =
-            (ArchiveEngineTypeSupport<V>) cachedTypeSupportFor(ArchiveEngineTypeSupport.class,
+            (ArchiveEngineTypeSupport<V>) findTypeSupportFor(ArchiveEngineTypeSupport.class,
                                                                typeClass);
 
         if (scalar) {
@@ -157,15 +168,4 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     @Nonnull
     protected abstract ArchiveChannel<Collection<V>, ICssAlarmValueType<Collection<V>>>
     createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    @Nonnull
-    public final Class<? extends TypeSupport<V>> getTypeSupportFamily() {
-        return (Class<? extends TypeSupport<V>>) ArchiveEngineTypeSupport.class;
-    }
 }

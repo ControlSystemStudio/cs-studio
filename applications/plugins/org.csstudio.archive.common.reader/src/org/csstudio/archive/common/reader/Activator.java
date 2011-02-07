@@ -29,6 +29,12 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activator for reader bundle.
+ *
+ * @author bknerr
+ * @since 03.02.2011
+ */
 public class Activator implements BundleActivator {
 
     /**

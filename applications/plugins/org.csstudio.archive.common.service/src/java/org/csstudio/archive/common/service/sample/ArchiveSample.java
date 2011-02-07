@@ -24,39 +24,30 @@ package org.csstudio.archive.common.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Data transfer object for sample.
  *
  * @author bknerr
- * @since 21.12.2010
+ * @since 24.01.2011
  * @param <V> the data value type
- * @param <T> the css value type
- * @param <A> the alarm type
+ * @param <T> the css value type with alarm information
  */
 public class ArchiveSample<V,
-                           T extends ICssAlarmValueType<V>,
-                           A extends IAlarm & Comparable<? super A>> implements IArchiveSample<T, A> {
+                           T extends ICssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;
-    private final TimeInstant _timestamp;
-    private final A _alarm;
 
     /**
      * Constructor.
      */
     public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
-                         @Nonnull final T data,
-                         @Nonnull final TimeInstant ts,
-                         @Nonnull final A alarm) {
+                          @Nonnull final T data) {
         _channelId = channelId;
         _value = data;
-        _timestamp = ts;
-        _alarm = alarm;
     }
 
     /**
@@ -73,22 +64,6 @@ public class ArchiveSample<V,
     @Override
     public T getData() {
         return _value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public A getAlarm() {
-        return _alarm;
     }
 
 }

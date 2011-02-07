@@ -33,22 +33,24 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveReaderService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveEngineAdapter;
-import org.csstudio.archive.common.service.mysqlimpl.adapter.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
+import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
+import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
+import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
@@ -96,7 +98,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>, IValue> {
         /**
          * Constructor.
          */
@@ -105,7 +107,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> from) {
+         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>> from) {
              try {
                  // TODO (bknerr) : support lookup for every single value... check performance
                  final Object min = from.getMinimum();
@@ -167,8 +169,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
-    private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
-
 
 
     /**
@@ -177,7 +177,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public
     <V, T extends ICssValueType<V> & IHasAlarm>
-    boolean writeSamples(@Nonnull final Collection<IArchiveSample2<V, T>> samples) throws ArchiveServiceException {
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
        //                   And apparently the type leads to Object instead of generic type...damn
@@ -220,26 +220,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         //
         // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
-
-        IArchiveChannel channel = null;
-        try {
-            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
-            if (channel != null) {
-                return ADAPT_MGR.adapt(channel.getLatestTimestamp());
-            }
-            return null;
-        } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Channel information could not be retrieved.", e);
-        }
     }
 
     /**
@@ -334,6 +314,43 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         return false;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntries(monitorStates);
+                }
+            });
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
+        try {
+            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
+                @Override
+                @CheckForNull
+                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
+                    return daoManager.getArchiverMgmtDao().createMgmtEntry(entry);
+                }
+            });
+      } catch (final ArchiveDaoException e) {
+          throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+      }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -355,29 +372,32 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                                         @Nonnull final ITimestamp end,
                                         @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
-        final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
-        final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-
         try {
+            final DesyArchiveRequestType desyType = validateRequestType(type);
+
+            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> samples =
-                DAO_MGR.getSampleDao().retrieveSamples(type, channel, s, e);
+            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
+                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =
                 Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
                                  Predicates.<IValue>notNull());
             return iValues;
 
-        } catch (final IllegalArgumentException iae) {
-            throw new ArchiveServiceException("Sample retrieval failed. Unsupported archive request type " + type.getTypeIdentifier(), iae);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
+        } catch (final RequestTypeParameterException re) {
+            throw new ArchiveServiceException("Sample retrieval failed.", re);
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -388,4 +408,13 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         return ImmutableSet.<IArchiveRequestType>builder().addAll(EnumSet.allOf(DesyArchiveRequestType.class)).build();
     }
 
+    @CheckForNull
+    private DesyArchiveRequestType validateRequestType(@CheckForNull final IArchiveRequestType type) throws RequestTypeParameterException {
+        try {
+            return DesyArchiveRequestType.class.cast(type);
+        } catch(final ClassCastException cce) {
+            throw new RequestTypeParameterException("Request type is not the correct type instance!" +
+                                                    " Use one the type instances returned by the service interface or null", cce);
+        }
+    }
 }

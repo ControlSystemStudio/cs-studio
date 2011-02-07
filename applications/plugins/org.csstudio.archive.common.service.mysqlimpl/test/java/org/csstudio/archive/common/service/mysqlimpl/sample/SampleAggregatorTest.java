@@ -37,6 +37,8 @@ import org.junit.Test;
  */
 public class SampleAggregatorTest {
 
+    private static EpicsAlarm ALARM = new EpicsAlarm(EpicsAlarmSeverity.INVALID, EpicsAlarmStatus.BADSUB);
+
     @Test
     public void initTest() {
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
@@ -55,7 +57,7 @@ public class SampleAggregatorTest {
         final SampleAggregator agg = new SampleAggregator(1.0, null, TimeInstantBuilder.buildFromNow());
 
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(2.0, null, ts);
+        agg.aggregateNewVal(2.0, ALARM, ts);
 
         Assert.assertEquals(Double.valueOf(1.5), agg.getAvg());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMin());
@@ -66,7 +68,7 @@ public class SampleAggregatorTest {
 
 
         final TimeInstant ts3 = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(3.0, null, -1.0, 20.0, ts3);
+        agg.aggregateNewVal(3.0, ALARM, -1.0, 20.0, ts3);
         Assert.assertEquals(Double.valueOf(2.0), agg.getAvg());
         Assert.assertEquals(Double.valueOf(-1.0), agg.getMin());
         Assert.assertEquals(Double.valueOf(20.0), agg.getMax());

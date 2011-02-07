@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Level;
 import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.archive.common.service.sample.IArchiveSample2;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ICssValueType;
 
@@ -28,7 +28,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  */
 public class SampleBuffer<V,
                           T extends ICssValueType<V> & IHasAlarm,
-                          S extends IArchiveSample2<V, T>> extends ForwardingBlockingQueue<S>
+                          S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,

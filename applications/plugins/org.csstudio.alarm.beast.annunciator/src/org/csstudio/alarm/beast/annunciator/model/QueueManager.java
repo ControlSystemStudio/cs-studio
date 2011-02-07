@@ -13,19 +13,19 @@ import org.csstudio.utility.speech.Translation;
 
 /** Queue Manager for the JMS-to-speech tool.
  *  Reads messages from queue, annunciates them, notifies listener.
- *  
+ *
  *  @author Katia Danilova
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")
 public class QueueManager implements Runnable
-{  
+{
     /** Code used to wake the queue manager; not spoken */
     final static private String MAGIC_EXIT_MESSAGE = "PleaseDoExitNow?!";
-   
+
     final private JMSAnnunciatorListener listener;
     final private SpeechPriorityQueue queue;
     final private Translation translations[];
@@ -34,13 +34,13 @@ public class QueueManager implements Runnable
 
     /** Set to <code>false</code> to stop thread */
     private volatile boolean run = true;
-   
+
     /** Initialize Queue Manager
      *  @param listener Listener to notify about progress
      *  @param queue SpeechPriorityQueue where the messages and Severity information will arrive
      *  @param translations Translations to use or <code>null</code>
      *  @param threshold max. number of queues messages to allow
-     */   
+     */
     public QueueManager(final JMSAnnunciatorListener listener,
                         final SpeechPriorityQueue queue,
                         final Translation translations[],
@@ -58,10 +58,11 @@ public class QueueManager implements Runnable
     /** Start the queue manager thread */
     public void start()
     {
-        thread.start();      
+        thread.start();
     }
 
 	/** method run is the code to be executed by new thread */
+    @Override
     public void run()
     {
         // The main application will NOT exit when this thread exits.
@@ -83,6 +84,14 @@ public class QueueManager implements Runnable
             Annunciator speech = null;
             try
             {
+                // TODO Check missing annunciations on Linux
+                // Sometimes, the annunciation fails with a console message
+                //    LINE UNAVAILABLE: Format is ...
+                // Messages are still displayed OK, there is no exception
+                // from FreeTTS
+                // Maybe it helps to always get/close the annunciator within the
+                // while loop?
+
                 // Create annunciator
                 speech = AnnunciatorFactory.getAnnunciator();
                 if (translations != null)

@@ -4,7 +4,7 @@ Bundle-Name: CSS JUnit4 Plugin Testsuite
 Bundle-SymbolicName: org.csstudio.testsuite
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.testsuite.Activator
-Bundle-Vendor: Desy
+Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="1.1.0",

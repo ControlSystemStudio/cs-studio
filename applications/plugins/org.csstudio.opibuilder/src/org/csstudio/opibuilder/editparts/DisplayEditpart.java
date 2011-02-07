@@ -120,6 +120,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			IWidgetPropertyChangeHandler showEditRangeHandler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
+					figure.repaint();
 					return true;
 				}
 			};		
