@@ -105,6 +105,10 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	    public SubtreeNode build() {
 	        final SubtreeNode node = new SubtreeNode(_name, _configurationType, _source);
 	        if (_parent != null) {
+                boolean couldAdd = _parent.addChild(node);
+                if (!couldAdd) {
+                    throw new IllegalStateException("Could not add node '" + node.getName() + "' to parent '" + _parent.getName() + "'");
+                }
 	            _parent.addChild(node);
 	        }
 	        return node;
@@ -112,8 +116,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	}
 
 	/**
-	 * Creates a new node with the specified parent. The node will register
-	 * itself as a child at the parent node.
+	 * Creates a new node.
 	 *
 	 * @param name the name of this node.
 	 * @param configurationType the object class of this node.
@@ -157,6 +160,16 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	        removeChild(child);
         }
 	}
+
+	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean canAddChild(@Nonnull final String name) {
+        return !_childrenPVMap.containsKey(name)
+                && !_childrenSubtreeMap.containsKey(name);
+    }
 
 	/**
 	 * {@inheritDoc}

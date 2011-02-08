@@ -151,7 +151,7 @@ public class IArchiveRequestTypeUnitTest {
             p = art.getParameter(TEST_PARAM_I.getName(),
                                  TEST_PARAM_I.getValueType());
             Assert.assertNotNull(p);
-            Assert.assertEquals(Integer.valueOf(1000), p.getValue());
+            Assert.assertEquals(Integer.valueOf(4711), p.getValue());
         }
         {
             final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);

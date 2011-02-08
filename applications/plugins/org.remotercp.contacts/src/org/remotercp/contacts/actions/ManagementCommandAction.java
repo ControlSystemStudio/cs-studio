@@ -42,7 +42,7 @@ import org.remotercp.contacts.dialogs.ManagementCommandParametersDialog;
 public class ManagementCommandAction extends AbstractUserDependentAction {
 	
 	private static final String AUTHORIZATION_ID = "remoteManagement";
-	private static final boolean DEFAULT_PERMISSION = false; // FIXME must be false! true for tests
+	private static final boolean DEFAULT_PERMISSION = false; // false: will not work without authorization provider
 	
 	private final CommandDescription _command;
 	private final IManagementCommandService _service;

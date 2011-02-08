@@ -81,8 +81,8 @@ public interface IArchiveRequestType {
      * @param newValue
      * @throws RequestTypeParameterException
      */
-    <T> void setParameter(@Nonnull final String id, @Nonnull final T newValue) throws RequestTypeParameterException;
-    <T> void setParameter(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
+    void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException;
+    void setParameter(@Nonnull final String id, @Nonnull final String newValue) throws RequestTypeParameterException;
 
     /**
      * Returns the parameter with the given id, if it exists and its value's type matches the given type.

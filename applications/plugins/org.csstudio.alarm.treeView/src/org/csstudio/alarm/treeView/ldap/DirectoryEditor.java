@@ -216,13 +216,10 @@ public final class DirectoryEditor {
      *            the original.
      * @param target
      *            the target.
-     * @throws DirectoryEditException
-     *             if an error occurs.
      */
     @Nonnull
     private static IAlarmTreeNode copyProcessVariableNode(@Nonnull final IAlarmProcessVariableNode node,
-                                                          @Nonnull final IAlarmSubtreeNode target)
-    throws DirectoryEditException {
+                                                          @Nonnull final IAlarmSubtreeNode target) {
 
         final IAlarmProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName(),
                                                                                target.getSource())
@@ -251,28 +248,44 @@ public final class DirectoryEditor {
 
 
     /**
-     * Creates an entry for a process variable record (eren) in the directory
-     * below the given parent.
-     *
      * @param parent
-     *            the parent node.
      * @param recordName
-     *            the name of the process variable record.
-     * @param pvNodeListener TODO
+     * @return true, if a node with the name 'recordName'
+     */
+    public static boolean canCreateProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
+                                                         @Nonnull final String recordName) {
+        return parent.canAddChild(recordName);
+    }
+    
+    /**
+     * Creates an entry for a process variable record (eren) in the directory
+     * below the given parent. 
+     * 
+     * Precondition: canCreateProcessVariableRecord(parent, recordName) must be true, else
+     * an IllegalStateException is thrown.
+     *
+     * @param parent the parent node
+     * @param recordName the name of the process variable record
+     * @param pvNodeListener the listener for life cycle tracking
      */
     @CheckForNull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
                                                                     @Nonnull final String recordName,
                                                                     @Nonnull final IProcessVariableNodeListener pvNodeListener) {
-
-        final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName, parent
-                .getSource()).setParent(parent).setListener(pvNodeListener).build();
-
+        // guard
+        if (!parent.canAddChild(recordName)) {
+            throw new IllegalStateException("node '" + recordName + "' cannot be added to target '" + parent.getName() + "'");
+        }
+        
+        final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName,
+                                                                               parent.getSource())
+                .setParent(parent).setListener(pvNodeListener).build();
+        
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());
-
+        
         retrieveInitialStateSynchronously(node);
-
+        
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
         }

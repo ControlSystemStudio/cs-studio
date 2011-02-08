@@ -20,6 +20,7 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import java.util.Queue;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -46,7 +47,7 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
      * Constructor.
      * @param site
      * @param viewer
-     * @param connection TODO
+     * @param alarmTreeView
      * @param modificationItems
      */
     CreateRecordAction(@Nonnull final IWorkbenchPartSite site,
@@ -61,9 +62,11 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     protected ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                     @Nonnull final String name) {
+        // the precondition of DirectoryEditor.createProcessVariableRecord has already been checked in AbstractCreateComponentAction
+        // before the call to createComponent
         ITreeModificationItem result = DirectoryEditor.createProcessVariableRecord(parent, name, _alarmTreeView.getPVNodeListener());
         IAlarmConnection connection = _alarmTreeView.getConnection();
         if (connection != null) {

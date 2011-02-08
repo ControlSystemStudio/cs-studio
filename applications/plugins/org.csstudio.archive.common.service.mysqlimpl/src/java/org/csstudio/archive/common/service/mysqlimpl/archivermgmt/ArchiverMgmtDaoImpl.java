@@ -21,8 +21,9 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.archivermgmt;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -70,10 +71,10 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
 
             return "(" +
                    Joiner.on(",").join(from.getChannelId().longValue(),
-                                       from.getStatus().name(),
+                                       "'" + from.getStatus().name() + "'", // TODO (bknerr) : once we use hibernate...
                                        from.getEngineId().longValue(),
-                                       from.getTimestamp().formatted(),
-                                       from.getInfo()) +
+                                       "'" + from.getTimestamp().formatted() + "'",
+                                       "'"  + from.getInfo() + "'") +
                     ")";
         }
     }
@@ -114,8 +115,8 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
         final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + values;
 
-        performSingleSQLStmtExecution(stmtStr, "creation of monitor states");
-        return false;
+        final int updates = performSingleSQLStmtExecution(stmtStr, "creation of monitor states");
+        return true;
     }
 
 
@@ -126,12 +127,15 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
      * @param stmtDesc
      * @throws ArchiveDaoException
      */
-    private void performSingleSQLStmtExecution(@Nonnull final String stmtStr,
+    private int performSingleSQLStmtExecution(@Nonnull final String stmtStr,
                                                @Nonnull final String stmtDesc) throws ArchiveDaoException {
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         try {
-            stmt = getConnection().createStatement();
-            stmt.execute(stmtStr);
+            final Connection connection = getConnection();
+            stmt = connection.prepareStatement(stmtStr);
+            final int updates = stmt.executeUpdate();
+            connection.commit();
+            return updates;
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException(stmtDesc + " failed.", e);
         } catch (final SQLException e) {

@@ -106,10 +106,10 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
      */
     @Override
     @Nonnull
-    public <T> void setParameter(@Nonnull final String id, @Nonnull final T newValue) throws RequestTypeParameterException {
+    public void setParameter(@Nonnull final String id, @Nonnull final Object newValue) throws RequestTypeParameterException {
 
         @SuppressWarnings("unchecked")
-        final IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) getParameterById(id);
+        final IArchiveRequestTypeParameter<Object> param = (IArchiveRequestTypeParameter<Object>) getParameterById(id);
         setParameterValue(newValue, param);
     }
 
@@ -118,11 +118,11 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
      */
     @Override
     @Nonnull
-    public <T> void setParameter(@Nonnull final String id, @Nonnull final String newStrValue) throws RequestTypeParameterException {
+    public void setParameter(@Nonnull final String id, @Nonnull final String newStrValue) throws RequestTypeParameterException {
 
         @SuppressWarnings("unchecked")
-        final IArchiveRequestTypeParameter<T> param = (IArchiveRequestTypeParameter<T>) getParameterById(id);
-        final T newValue = param.toValue(newStrValue);
+        final IArchiveRequestTypeParameter<Object> param = (IArchiveRequestTypeParameter<Object>) getParameterById(id);
+        final Object newValue = param.toValue(newStrValue);
         setParameterValue(newValue, param);
     }
 
@@ -142,7 +142,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
 
     private <T> void setParameterValue(@Nonnull final T newValue,
                                        @Nonnull final IArchiveRequestTypeParameter<T> param) throws RequestTypeParameterException {
-        final Object oldValue = param.getValue();
+        final T oldValue = param.getValue();
         if (newValue.equals(oldValue)) {
             return; // identity
         }
@@ -155,6 +155,6 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         if (param == null) {
             throw new RequestTypeParameterException("Parameter with identifying name " + id + " unknown.", null);
         }
-        return (IArchiveRequestTypeParameter<?>) param.clone();
+        return param;
     }
 }

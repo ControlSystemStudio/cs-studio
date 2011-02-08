@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Archive Engine 2
 Bundle-SymbolicName: org.csstudio.archive.common.engine;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS, Bastian Knerr <bastian.knerr@desy.de> - DESY
+Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
