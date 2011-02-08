@@ -46,6 +46,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -71,6 +72,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISaveablePart;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.part.ViewPart;
@@ -85,7 +88,7 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * @author Joerg Rathlev
  * @author Bastian Knerr
  */
-public final class AlarmTreeView extends ViewPart {
+public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
 
     /**
      * The ID of this view.
@@ -262,23 +265,7 @@ public final class AlarmTreeView extends ViewPart {
      * Queue that stores all modifications that have to be applied to the LDAP store on
      * {@link org.csstudio.alarm.treeView.views.actions.SaveInLdapAction}.
      */
-    private final Queue<ITreeModificationItem> _ldapModificationItems =
-        new ConcurrentLinkedQueue<ITreeModificationItem>() {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void clear() {
-            getSaveInLdapAction().setEnabled(false);
-            super.clear();
-        }
-
-        @Override
-        public boolean add(@Nonnull final ITreeModificationItem arg0) {
-            getSaveInLdapAction().setEnabled(true);
-            return super.add(arg0);
-        }
-    };
+    private final Queue<ITreeModificationItem> _ldapModificationItems = new LdapModificationQueue();
 
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
@@ -876,5 +863,80 @@ public final class AlarmTreeView extends ViewPart {
      */
     public void addLdapTreeModificationItem(@Nonnull final ITreeModificationItem item) {
         _ldapModificationItems.add(item);
+    }
+
+
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        getSaveInLdapAction().run();
+    }
+
+    @Override
+    public void doSaveAs() {
+        // not yet implemented: may save to xml instead of ldap
+    }
+
+    @Override
+    public boolean isDirty() {
+        return getSaveInLdapAction().isEnabled();
+    }
+
+    @Override
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
+
+    @Override
+    public boolean isSaveOnCloseNeeded() {
+        return true;
+    }
+
+    @Override
+    public int promptToSaveOnClose() {
+        // not yet implemented: provide own dialog: be able to save as xml, tell count of unsaved items
+        return ISaveablePart2.DEFAULT;
+    }
+
+
+    /**
+     * This queue contains the modification items about to be stored in ldap. Additions occur at each change to the alarm tree.
+     * After a save into the ldap database the queue is cleared. The state of the queue is tracked to make the enclosing view
+     * behave like an editor.
+     * 
+     * @author jpenning
+     */
+    private class LdapModificationQueue extends ConcurrentLinkedQueue<ITreeModificationItem> {
+        private static final long serialVersionUID = 1L;
+    
+        public LdapModificationQueue() {
+            // Nothing to do
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public void clear() {
+            getSaveInLdapAction().setEnabled(false);
+            firePropertyChange(ISaveablePart.PROP_DIRTY);
+            super.clear();
+        }
+    
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public ITreeModificationItem remove() {
+            ITreeModificationItem result = super.remove();
+            if (isEmpty()) {
+                getSaveInLdapAction().setEnabled(false);
+                firePropertyChange(ISaveablePart.PROP_DIRTY);
+            }
+            return result;
+        }
+        
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public boolean add(@Nonnull final ITreeModificationItem arg0) {
+            getSaveInLdapAction().setEnabled(true);
+            firePropertyChange(ISaveablePart.PROP_DIRTY);
+            return super.add(arg0);
+        }
     }
 }
