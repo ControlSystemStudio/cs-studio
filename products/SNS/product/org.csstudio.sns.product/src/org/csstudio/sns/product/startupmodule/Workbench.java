@@ -1,14 +1,13 @@
 package org.csstudio.sns.product.startupmodule;
 
-import java.util.Dictionary;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.workspace.RelaunchConstants;
-import org.csstudio.sns.product.Activator;
 import org.csstudio.sns.product.ApplicationWorkbenchAdvisor;
 import org.csstudio.sns.product.Messages;
 import org.csstudio.sns.startuphelper.StartupAuthenticationHelper;
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.ProjectExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
@@ -18,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -81,9 +79,13 @@ public class Workbench implements WorkbenchExtPoint {
         //authenticate user
         StartupAuthenticationHelper.authenticate(username, password);
         
+      OpenDocumentEventProcessor openDocProcessor = 
+    	  (OpenDocumentEventProcessor) parameters.get(
+    			  OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
+        
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
-                        new ApplicationWorkbenchAdvisor());
+                        new ApplicationWorkbenchAdvisor(openDocProcessor));
 
         // Plain exit from IWorkbench.close()
         if (returnCode != PlatformUI.RETURN_RESTART)
