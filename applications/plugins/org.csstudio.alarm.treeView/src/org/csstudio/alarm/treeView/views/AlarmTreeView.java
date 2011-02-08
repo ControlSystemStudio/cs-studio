@@ -42,8 +42,10 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
+import org.csstudio.alarm.treeView.views.actions.SaveInLdapSecureAction;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -72,6 +74,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -164,7 +167,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     /**
      * Action to persist current Alarm Tree View in LDAP.
      */
-    private Action _saveInLdapAction;
+    private AbstractUserDependentAction _saveInLdapAction;
 
     /**
      * The import xml file action.
@@ -448,7 +451,6 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-
         final GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -471,8 +473,8 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         contributeToActionBars();
 
         createAndScheduleConnectionJob();
-
         addDragAndDropSupport();
+        trackModificationItemsForWarning();
     }
 
     @Nonnull
@@ -571,8 +573,8 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
         manager.add(_toggleFilterAction);
         manager.add(new Separator());
-        manager.add(_showMessageAreaAction);
         manager.add(_showPropertyViewAction);
+        manager.add(_showMessageAreaAction);
         manager.add(_saveInLdapAction);
         manager.add(_reloadAction);
         manager.add(new Separator());
@@ -903,6 +905,28 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         return ISaveablePart2.DEFAULT;
     }
 
+    
+    /**
+     * track changes to the tree. if an ldap sourced tree is modified and no permission to save it into ldap is given,
+     * a warning appears in the message area.
+     */
+    private void trackModificationItemsForWarning() {
+        addPropertyListener(new IPropertyListener() {
+            
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void propertyChanged(Object source, int propId) {
+                if ((propId == ISaveablePart.PROP_DIRTY) && !_saveInLdapAction.hasPermission()) {
+                    if (_ldapModificationItems.isEmpty()) {
+                        _myMessageArea.clearMessage();
+                    } else {
+                        _myMessageArea.showMessage(SWT.ICON_WARNING, "Warning", "You made changes to the tree but are not allowed to save them" +
+                        		" into LDAP (no permission). But you may save top level nodes into an xml file.");
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * This queue contains the modification items about to be stored in ldap. Additions occur at each change to the alarm tree.
@@ -921,9 +945,9 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         @SuppressWarnings("synthetic-access")
         @Override
         public void clear() {
+            super.clear();
             getSaveInLdapAction().setEnabled(false);
             firePropertyChange(ISaveablePart.PROP_DIRTY);
-            super.clear();
         }
     
         @SuppressWarnings("synthetic-access")
@@ -940,9 +964,12 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         @SuppressWarnings("synthetic-access")
         @Override
         public boolean add(@Nonnull final ITreeModificationItem arg0) {
-            getSaveInLdapAction().setEnabled(true);
-            firePropertyChange(ISaveablePart.PROP_DIRTY);
-            return super.add(arg0);
+            boolean result = super.add(arg0);
+            if (result) {
+                getSaveInLdapAction().setEnabled(true);
+                firePropertyChange(ISaveablePart.PROP_DIRTY);
+            }
+            return result;
         }
     }
 }

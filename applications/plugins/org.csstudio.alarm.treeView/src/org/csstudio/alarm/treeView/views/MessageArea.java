@@ -23,6 +23,11 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.annotation.Nonnull;
 
 import org.eclipse.swt.SWT;
@@ -76,20 +81,19 @@ public final class MessageArea {
                                                     false,
                                                     1,
                                                     2));
-        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
 
         _messageAreaMessage = new Label(_messageArea, SWT.WRAP);
-        _messageAreaMessage.setText("No message");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
         _messageAreaDescription = new Label(_messageArea, SWT.WRAP);
-        _messageAreaDescription.setText("Currently there is no message to display.");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaDescription
                 .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+        clearMessage();
     }
 
     /**
@@ -104,12 +108,29 @@ public final class MessageArea {
     public void showMessage(final int icon, @Nonnull final String message, @Nonnull final String description) {
         _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
         _messageAreaMessage.setText(message);
-        _messageAreaDescription.setText(description);
+        
+        
+        String dateOut = DateFormat.getDateTimeInstance().format(new Date());
+
+        _messageAreaDescription.setText(dateOut + " " + description);
         _messageArea.layout();
 
         show();
     }
 
+    
+    /**
+     * Reset to the default message and hide.
+     */
+    public void clearMessage() {
+        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+        _messageAreaMessage.setText("No message");
+        _messageAreaDescription.setText("");
+        _messageArea.layout();
+
+        hide();
+    }
+    
     /**
      * Makes the message area visible.
      */
