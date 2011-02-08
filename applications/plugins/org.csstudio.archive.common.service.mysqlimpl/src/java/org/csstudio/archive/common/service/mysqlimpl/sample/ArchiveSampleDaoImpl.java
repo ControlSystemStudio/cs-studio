@@ -38,7 +38,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
@@ -79,8 +78,6 @@ import com.google.common.collect.Maps;
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
-
-    private static final Integer SQL_TIMEOUT = MySQLArchiveServicePreference.SQL_TIMEOUT.getValue();
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveSampleDaoImpl.class);
@@ -136,19 +133,20 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
-        Statement stmt = null;
+        final Statement stmt = null;
+
 
         // TODO (bknerr) : LOG warning if single statement size is too large.
         // and when com.mysql.jdbc.PacketTooBigException:
         // Packet for query is too large (45804672 > 1048576).
         // You can change this value on the server by setting the max_allowed_packet' variable.
         try {
-            stmt = composeStatements(samples); // batches three statements for different tables: samples, samples_m, samples_h
-            if (stmt != null) {
-                stmt.setQueryTimeout(SQL_TIMEOUT);
-                stmt.executeBatch();
-                getConnection().commit();
-            }
+            getDaoMgr().submitStatementsToBatch(composeStatements(samples));
+//            stmt = composeStatements(samples); // batches three statements for different tables: samples, samples_m, samples_h
+//            if (stmt != null) {
+//                stmt.executeBatch();
+//                getConnection().commit();
+//            }
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
@@ -162,7 +160,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private <V, T extends ITimedCssValueType<V> & IHasAlarm>
-        Statement composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
@@ -257,6 +255,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     // CHECKSTYLE OFF: ParameterNumber
+    @Nonnull
     private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
@@ -285,6 +284,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                               agg.getMax());
     }
 
+    @CheckForNull
     private Double isDataConvertibleToDouble(@Nonnull final Object data) {
         try {
             return ArchiveTypeConversionSupport.toDouble(data);
@@ -299,6 +299,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                        @Nonnull final Duration duration) {
 
         final TimeInstant lastWriteTime = agg.getResetTimestamp();
+        if (lastWriteTime == null) {
+
+        }
         final TimeInstant dueTime = lastWriteTime.plusMillis(duration.getMillis());
         if (timestamp.isBefore(dueTime)) {
             return false; // not yet due, don't write
@@ -313,31 +316,23 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
 
     @CheckForNull
-    private Statement joinStringsToStatementBatch(@Nonnull final List<String> values,
+    private List<String> joinStringsToStatementBatch(@Nonnull final List<String> values,
                                                   @Nonnull final List<String> valuesPerMinute,
                                                   @Nonnull final List<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
-
-        Statement stmt = null;
+        final List<String> statements = Lists.newLinkedList();
         if (!values.isEmpty()) {
-            stmt = getConnection().createStatement();
-            stmt.addBatch(Joiner.on(" ").join(_insertSamplesStmt, Joiner.on(", ").join(values)));
+            statements.add(Joiner.on(" ").join(_insertSamplesStmt, Joiner.on(", ").join(values)));
         }
         if (!valuesPerMinute.isEmpty()) {
             final String stmtStr = Joiner.on(" ").join(_insertSamplesPerMinuteStmt, Joiner.on(", ").join(valuesPerMinute));
-            if (stmt == null) {
-                stmt = getConnection().createStatement();
-            }
-            stmt.addBatch(stmtStr);
+            statements.add(stmtStr);
         }
         if (!valuesPerHour.isEmpty()) {
             final String stmtStr = Joiner.on(" ").join(_insertSamplesPerHourStmt, Joiner.on(", ").join(valuesPerHour));
-            if (stmt == null) {
-                stmt = getConnection().createStatement();
-            }
-            stmt.addBatch(stmtStr);
+            statements.add(stmtStr);
         }
-        return stmt;
+        return statements;
     }
 
     /**
@@ -346,11 +341,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Nonnull
     private <T extends ITimedCssValueType<?> & IHasAlarm>
-        String createSampleValueStmtStr(final ArchiveChannelId channelId,
-                                        final ArchiveSeverityId sevId,
-                                        final ArchiveStatusId statusId,
-                                        final T value,
-                                        final TimeInstant timestamp) {
+        String createSampleValueStmtStr(@Nonnull final ArchiveChannelId channelId,
+                                        @Nonnull final ArchiveSeverityId sevId,
+                                        @Nonnull final ArchiveStatusId statusId,
+                                        @Nonnull final T value,
+                                        @Nonnull final TimeInstant timestamp) {
             try {
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted() + "'",

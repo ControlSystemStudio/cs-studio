@@ -21,15 +21,11 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.archivermgmt;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -102,7 +98,7 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
         final String sqlValue = M2S_FUNC.apply(entry);
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + sqlValue;
 
-        performSingleSQLStmtExecution(stmtStr, "creation of monitor state");
+        getDaoMgr().submitStatementToBatch(stmtStr);
         return null;
     }
 
@@ -110,39 +106,14 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
      * {@inheritDoc}
      */
     @Override
-    public boolean createMgmtEntries(final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveDaoException {
+    public boolean createMgmtEntries(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveDaoException {
 
         final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + values;
 
-        final int updates = performSingleSQLStmtExecution(stmtStr, "creation of monitor states");
+        getDaoMgr().submitStatementToBatch(stmtStr);
+
         return true;
-    }
-
-
-    /**
-     * TODO (bknerr) : extract these patterns to be used for all daos (probably with exception handler)
-     *
-     * @param stmtStr
-     * @param stmtDesc
-     * @throws ArchiveDaoException
-     */
-    private int performSingleSQLStmtExecution(@Nonnull final String stmtStr,
-                                               @Nonnull final String stmtDesc) throws ArchiveDaoException {
-        PreparedStatement stmt = null;
-        try {
-            final Connection connection = getConnection();
-            stmt = connection.prepareStatement(stmtStr);
-            final int updates = stmt.executeUpdate();
-            connection.commit();
-            return updates;
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException(stmtDesc + " failed.", e);
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException(stmtDesc + " failed.", e);
-        } finally {
-            closeStatement(stmt, "Closing of statement for '" + stmtDesc + "' failed.");
-        }
     }
 
 }

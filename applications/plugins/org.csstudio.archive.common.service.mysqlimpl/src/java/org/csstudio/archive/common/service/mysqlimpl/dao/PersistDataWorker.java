@@ -37,7 +37,8 @@ import com.google.common.collect.Lists;
 
 /**
  * Persistence layer worker for batched statements.
- * Intended to be scheduled periodically and if necessary on demand (when the queue is getting big).
+ * Intended to be scheduled periodically and if necessary on demand
+ * (when the queue is getting big or the contained statements reach the max allowed packet size).
  *
  * @author bknerr
  * @since 08.02.2011

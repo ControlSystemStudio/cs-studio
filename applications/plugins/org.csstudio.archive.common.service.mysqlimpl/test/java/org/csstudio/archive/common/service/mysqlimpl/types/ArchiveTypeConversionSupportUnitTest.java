@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.junit.Assert;

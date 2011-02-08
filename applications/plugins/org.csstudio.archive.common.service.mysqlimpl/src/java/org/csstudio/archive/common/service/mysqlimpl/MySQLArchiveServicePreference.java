@@ -41,11 +41,14 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
         new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
 
+    public static final MySQLArchiveServicePreference<Integer> PERIOD =
+        new MySQLArchiveServicePreference<Integer>("periodInS", 5);
+
     public static final MySQLArchiveServicePreference<Integer> PORT =
-        new MySQLArchiveServicePreference<Integer>("port", -1);
+        new MySQLArchiveServicePreference<Integer>("port", 3306);
 
     public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
-        new MySQLArchiveServicePreference<String>("databaseName", "NOT PUBLIC");
+        new MySQLArchiveServicePreference<String>("databaseName", "archive");
 
     public static final MySQLArchiveServicePreference<String> USER =
         new MySQLArchiveServicePreference<String>("user", "NOT PUBLIC");

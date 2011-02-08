@@ -51,7 +51,7 @@ public interface IArchiveSampleDao {
      * @throws ArchiveSampleDaoException
      */
     <V, T extends ITimedCssValueType<V> & IHasAlarm>
-    void createSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
+    void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
     /**
@@ -60,6 +60,7 @@ public interface IArchiveSampleDao {
      * @param e
      * @return
      */
+    @Nonnull
     <V, T extends ITimedCssAlarmValueType<V>>
     Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                          @Nonnull IArchiveChannel channel,

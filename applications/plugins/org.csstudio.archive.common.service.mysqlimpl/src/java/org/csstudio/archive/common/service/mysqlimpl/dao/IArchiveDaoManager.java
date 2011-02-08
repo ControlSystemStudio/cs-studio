@@ -14,6 +14,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
+import java.util.List;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -84,5 +86,16 @@ public interface IArchiveDaoManager extends IDaoManager {
      */
     @Nonnull
     IArchiveStatusDao getStatusDao();
+
+    /**
+     * Submits the given SQL statements for optimized (typically delayed) persisting.
+     * @param composeStatements
+     */
+    void submitStatementsToBatch(@Nonnull final List<String> sqlStatements);
+    /**
+     * Submits the given SQL statements for optimized (typically delayed) persisting.
+     * @param composeStatements
+     */
+    void submitStatementToBatch(@Nonnull final String sqlStatement);
 
 }

@@ -41,7 +41,6 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
@@ -235,7 +234,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, @Nonnull final IValue value) throws ArchiveServiceException {
         // TODO Auto-generated method stub
 
     }
@@ -256,13 +255,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
-                @Override
-                @CheckForNull
-                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
-                    return daoManager.getArchiverMgmtDao().createMgmtEntries(monitorStates);
-                }
-            });
+            DAO_MGR.getArchiverMgmtDao().createMgmtEntries(monitorStates);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
         }
@@ -274,13 +267,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
-                @Override
-                @CheckForNull
-                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
-                    return daoManager.getArchiverMgmtDao().createMgmtEntry(entry);
-                }
-            });
+            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(entry);
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }

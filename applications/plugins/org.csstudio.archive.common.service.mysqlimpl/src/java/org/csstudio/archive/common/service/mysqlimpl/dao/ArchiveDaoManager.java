@@ -36,9 +36,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +45,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
@@ -81,111 +80,79 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     INSTANCE;
 
-//    public interface IDaoCommand {
+////    public interface IDaoCommand {
+////        @CheckForNull
+////        Object execute(@Nonnull final IDaoManager daoManager) throws ArchiveDaoException;
+////    }
+//    public interface IArchiveDaoCommand {
 //        @CheckForNull
-//        Object execute(@Nonnull final IDaoManager daoManager) throws ArchiveDaoException;
+//        Object execute(IArchiveDaoManager daoManager) throws ArchiveDaoException;
 //    }
-    public interface IArchiveDaoCommand {
-        @CheckForNull
-        Object execute(IArchiveDaoManager daoManager) throws ArchiveDaoException;
-    }
+//
+//    @Override
+//    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//            return command.execute(this);
+//    }
+//
+//    @Override
+//    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        try{
+//            return command.execute(this);
+//        } finally {
+//            try {
+//                getConnection().close();
+//            } catch (final ArchiveConnectionException e) {
+//                throw new ArchiveDaoException("Connection could not be established.", e);
+//            } catch (final SQLException e) {
+//                throw new ArchiveDaoException("Connection could not be closed.", e);
+//            }
+//        }
+//    }
+//    @Override
+//    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        Connection connection = null;
+//        try {
+//            try {
+//                connection = getConnection();
+//                connection.setAutoCommit(false);
+//                final Object returnValue = command.execute(this);
+//                connection.commit();
+//                return returnValue;
+//            } catch (final Exception e) {
+//                if (connection != null) {
+//                    LOG.warn("DAO command execution failed. Rollback.", e);
+//                    connection.rollback();
+//                }
+//                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
+//            } finally {
+//                if (connection != null) {
+//                    connection.setAutoCommit(true);
+//                }
+//            }
+//        } catch (final SQLException e1) {
+//            throw new ArchiveDaoException("DAO command and rollback failed", e1);
+//        }
+//    }
+//    @CheckForNull
+//    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        return executeAndClose(new IArchiveDaoCommand(){
+//            @Override
+//            @CheckForNull
+//            public Object execute(@Nonnull final IArchiveDaoManager manager) throws ArchiveDaoException {
+//                return manager.transaction(command);
+//            }
+//        });
+//    }
 
-
-    public IArchiveDaoManager _manager;
-
-    @Override
-    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
-            return command.execute(this);
-    }
-
-    @Override
-    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
-        try{
-            return command.execute(this);
-        } finally {
-            try {
-                getConnection().close();
-            } catch (final ArchiveConnectionException e) {
-                throw new ArchiveDaoException("Connection could not be established.", e);
-            } catch (final SQLException e) {
-                throw new ArchiveDaoException("Connection could not be closed.", e);
-            }
-        }
-    }
-    @Override
-    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
-        Connection connection = null;
-        try {
-            try {
-                connection = getConnection();
-                connection.setAutoCommit(false);
-                final Object returnValue = command.execute(this);
-                connection.commit();
-                return returnValue;
-            } catch (final Exception e) {
-                if (connection != null) {
-                    LOG.warn("DAO command execution failed. Rollback.", e);
-                    connection.rollback();
-                }
-                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
-            } finally {
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                }
-            }
-        } catch (final SQLException e1) {
-            throw new ArchiveDaoException("DAO command and rollback failed", e1);
-        }
-    }
-    @CheckForNull
-    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
-        return executeAndClose(new IArchiveDaoCommand(){
-            @Override
-            @CheckForNull
-            public Object execute(@Nonnull final IArchiveDaoManager manager) throws ArchiveDaoException {
-                return manager.transaction(command);
-            }
-        });
-    }
-
-
+    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
     static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
-
-    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
     private final ScheduledExecutorService _executor = Executors.newScheduledThreadPool(5);
 
-    private static final class SqlStatementBatch {
-
-        long _sizeInBytes = 0;
-        BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
-
-        public SqlStatementBatch() {
-            // Empty
-        }
-        public boolean submitStatement(@Nonnull final String statement) {
-            if (_sizeInBytes + statement.length()*2 < 65636) {
-                _statements.add(statement);
-                return true;
-            }
-            return false;
-        }
-        @Nonnull
-        public BlockingQueue<String> getQueue() {
-            return _statements;
-        }
-        /**
-         * @return
-         */
-        public int size() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-    }
     private final SqlStatementBatch _sqlStatementBatch;
 
     private String _databaseName;
@@ -217,17 +184,29 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
         _executor.scheduleAtFixedRate(new PersistDataWorker(this, _sqlStatementBatch.getQueue()),
                                       0,
-                                      5,
+                                      MySQLArchiveServicePreference.PERIOD.getValue(),
                                       TimeUnit.SECONDS);
     }
 
-    public void submitSqlStatement(@Nonnull final String stmt) {
-
-        if (_sqlStatementBatch.size() + stmt.codePointCount(0, stmt.length()) > _maxAllowedPacket) {
-            _executor.execute(new PersistDataWorker(this, _sqlStatementBatch.getQueue())); // execute immediately
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void submitStatementsToBatch(@Nonnull final List<String> stmts) {
+        for (final String stmt : stmts) {
+            submitStatementToBatch(stmt);
         }
-        _sqlStatements.add(stmt); //non blocking add
-
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void submitStatementToBatch(@Nonnull final String stmt) {
+        if (_sqlStatementBatch.size() + stmt.codePointCount(0, stmt.length()) > _maxAllowedPacket) {
+            // execute immediately
+            _executor.execute(new PersistDataWorker(this, _sqlStatementBatch.getQueue()));
+        }
+        _sqlStatementBatch.submitStatement(stmt);
     }
 
     /**
@@ -247,7 +226,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             mailer.addText("filepath to statements file");
             mailer.close();
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
+            // TODO (bknerr) : handle exceptions on notifications
             e.printStackTrace();
         }
 
@@ -358,6 +337,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
             try {
+                _executor.shutdown(); // handles all already submitted tasks
                 connection.close();
                 _archiveConnection.set(null);
             } catch (final SQLException e) {

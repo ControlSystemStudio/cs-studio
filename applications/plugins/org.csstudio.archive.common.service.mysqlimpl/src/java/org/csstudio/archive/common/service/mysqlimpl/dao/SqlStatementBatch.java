@@ -21,29 +21,34 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-import java.sql.Connection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
-
 /**
- * General DAO Manager interface.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 02.02.2011
+ * @since 08.02.2011
  */
-public interface IDaoManager {
+public final class SqlStatementBatch {
 
+    private long _sizeInBytes = 0;
+    private final BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
+
+    public SqlStatementBatch() {
+        // Empty
+    }
+    public void submitStatement(@Nonnull final String statement) {
+        _statements.add(statement); // non blocking add
+        _sizeInBytes += statement.codePointCount(0, statement.length()) * 2;
+    }
     @Nonnull
-    Connection getConnection() throws ArchiveConnectionException;
-
-//    @CheckForNull
-//    Object execute(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-//
-//    @CheckForNull
-//    Object executeAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-//
-//    @CheckForNull
-//    Object transaction(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
+    public BlockingQueue<String> getQueue() {
+        return _statements;
+    }
+    public long size() {
+        return _sizeInBytes;
+    }
 }
