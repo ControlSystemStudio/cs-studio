@@ -172,6 +172,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				layout();
+				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
 		});
