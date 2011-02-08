@@ -31,7 +31,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
 
@@ -80,10 +80,13 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          * {@inheritDoc}
          */
         @Override
-        protected ArchiveChannel<V, ICssAlarmValueType<V>> createArchiveChannel(final IArchiveChannel cfg) throws TypeSupportException {
-            MonitoredArchiveChannel<V, ICssAlarmValueType<V>> channel;
+        @Nonnull
+        protected ArchiveChannel<V, ITimedCssAlarmValueType<V>>
+            createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+
+            MonitoredArchiveChannel<V, ITimedCssAlarmValueType<V>> channel;
             try {
-                channel = new MonitoredArchiveChannel<V, ICssAlarmValueType<V>>(cfg.getName(), cfg.getId());
+                channel = new MonitoredArchiveChannel<V, ITimedCssAlarmValueType<V>>(cfg.getName(), cfg.getId());
             } catch (final Exception e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -93,10 +96,13 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          * {@inheritDoc}
          */
         @Override
-        protected ArchiveChannel<Collection<V>, ICssAlarmValueType<Collection<V>>> createMultiScalarArchiveChannel(final IArchiveChannel cfg) throws TypeSupportException {
-            MonitoredArchiveChannel<Collection<V>, ICssAlarmValueType<Collection<V>>> channel;
+        @Nonnull
+        protected ArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>>
+            createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+
+            MonitoredArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>> channel;
             try {
-                channel = new MonitoredArchiveChannel<Collection<V>, ICssAlarmValueType<Collection<V>>>(cfg.getName(), cfg.getId());
+                channel = new MonitoredArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>>(cfg.getName(), cfg.getId());
             } catch (final Exception e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -130,7 +136,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
      * @return
      * @throws TypeSupportException
      */
-    public static <V> ArchiveChannel<V, ICssAlarmValueType<V>>
+    @Nonnull
+    public static <V> ArchiveChannel<V, ITimedCssAlarmValueType<V>>
     toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
@@ -147,25 +154,24 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             scalar = false;
         }
         final ArchiveEngineTypeSupport<V> support =
-            (ArchiveEngineTypeSupport<V>) findTypeSupportFor(ArchiveEngineTypeSupport.class,
-                                                               typeClass);
+            (ArchiveEngineTypeSupport<V>) findTypeSupportFor(ArchiveEngineTypeSupport.class, typeClass);
 
         if (scalar) {
             return support.createArchiveChannel(cfg);
         }
-//        else {
+//        else { TODO (bknerr) : can it be supported throughout the service impl?
 //         // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
 //            return (ArchiveChannel<V, ICssAlarmValueType<V>>) support.createMultiScalarArchiveChannel(cfg);
 //        }
-        return null;
+        throw new TypeSupportException("No archive engine type support found for " + cfg.getDataType(), null);
 
     }
 
     @Nonnull
-    protected abstract ArchiveChannel<V, ICssAlarmValueType<V>>
+    protected abstract ArchiveChannel<V, ITimedCssAlarmValueType<V>>
     createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 
     @Nonnull
-    protected abstract ArchiveChannel<Collection<V>, ICssAlarmValueType<Collection<V>>>
+    protected abstract ArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>>
     createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 }

@@ -19,16 +19,11 @@ import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntryId;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
-import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
@@ -37,19 +32,18 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
  *  @author Kay Kasemir
  *  @author Bastian Knerr
  */
-public class EngineModel {
+public final class EngineModel {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
-    final public static String VERSION = "1.2.3"; //$NON-NLS-1$
+    public static String VERSION = "1.2.3"; //$NON-NLS-1$
 
     /** Name of this model */
     private String _name = "DESY Archive Engine";  //$NON-NLS-1$
@@ -75,8 +69,7 @@ public class EngineModel {
 //    final ScanThread scan_thread = new ScanThread(scanner);
 
     /** Engine states */
-    public enum State
-    {
+    public enum State {
         /** Initial model state before <code>start()</code> */
         IDLE,
         /** Running model, state after <code>start()</code> */
@@ -104,8 +97,7 @@ public class EngineModel {
     /** Write batch size */
     private int batch_size = 500;
 
-//    /** Buffer reserve (N times what's ideally needed) */
-//    private double buffer_reserve = 2.0;
+    private IArchiveEngine _engine;
 
     /**
      * Construct model that writes to archive
@@ -123,8 +115,7 @@ public class EngineModel {
 
     /** Read preference settings */
     @SuppressWarnings("nls")
-    private void applyPreferences()
-    {
+    private void applyPreferences() {
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null) {
             return;
@@ -136,38 +127,35 @@ public class EngineModel {
     }
 
     /** @return Name (description) */
-    final public String getName() {
+    public String getName() {
         return _name;
     }
 
     /** @return Seconds into the future that should be ignored */
-    public static long getIgnoredFutureSeconds()
-    {
+    public static long getIgnoredFutureSeconds() {
         // TODO make configurable
         // 1 day
         return 24*60*60;
     }
 
     /** @return Write period in seconds */
-    final public int getWritePeriod()
-    {
+    public int getWritePeriod() {
         return write_period;
     }
 
     /** @return Write batch size */
-    final public int getBatchSize()
-    {
+    public int getBatchSize() {
         return batch_size;
     }
 
     /** @return Current model state */
-    final public State getState()
+    public State getState()
     {
         return state;
     }
 
     /** @return Start time of the engine or <code>null</code> if not running */
-    final public ITimestamp getStartTime()
+    public ITimestamp getStartTime()
     {
         return start_time;
     }
@@ -185,29 +173,29 @@ public class EngineModel {
     }
 
     /** @return Number of groups */
-    final public int getGroupCount()
+    public int getGroupCount()
     {
         return _groupMap.size();
     }
 
     /** @return Group by that name or <code>null</code> if not found */
-    final public ArchiveGroup getGroup(final String name)
+    public ArchiveGroup getGroup(final String name)
     {
         return _groupMap.get(name);
     }
 
     /** @return Number of channels */
-    final public int getChannelCount() {
+    public int getChannelCount() {
         return _channelMap.size();
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final public ArchiveChannel<?, ?> getChannel(final String name) {
+    public ArchiveChannel<?, ?> getChannel(final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final public Collection<ArchiveChannel<?, ?>> getChannels() {
+    public Collection<ArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
 
@@ -215,13 +203,15 @@ public class EngineModel {
 
 
     /** Start processing all channels and writing to archive. */
-    final public void start() throws Exception {
+    public void start() throws Exception {
 
         start_time = TimestampFactory.now();
         state = State.RUNNING;
         _writeThread.start(write_period, batch_size);
+
         for (final ArchiveGroup group : _groupMap.values()) {
-            group.start();
+            group.start(_engine.getId(),
+                        ArchiverMgmtEntry.ARCHIVER_START);
             // Check for stop request.
             // Unfortunately, we don't check inside group.start(),
             // which could have run for some time....
@@ -233,8 +223,7 @@ public class EngineModel {
     }
 
     /** @return Timestamp of end of last write run */
-    public ITimestamp getLastWriteTime()
-    {
+    public ITimestamp getLastWriteTime() {
         return _writeThread.getLastWriteTime();
     }
 
@@ -251,7 +240,7 @@ public class EngineModel {
     }
 
     /** @see Scanner#getIdlePercentage() */
-//    final public double getIdlePercentage()
+//    public double getIdlePercentage()
 //    {
 //        return scanner.getIdlePercentage();
 //    }
@@ -260,7 +249,7 @@ public class EngineModel {
      *  Merely updates the model state.
      *  @see #getState()
      */
-    final public void requestStop()
+    public void requestStop()
     {
         state = State.SHUTDOWN_REQUESTED;
     }
@@ -269,7 +258,7 @@ public class EngineModel {
      *  Merely updates the model state.
      *  @see #getState()
      */
-    final public void requestRestart()
+    public void requestRestart()
     {
         state = State.RESTART_REQUESTED;
     }
@@ -289,8 +278,7 @@ public class EngineModel {
 
     /** Stop monitoring the channels, flush the write buffers. */
     @SuppressWarnings("nls")
-    final public void stop() throws Exception
-    {
+    public void stop() throws Exception {
         state = State.STOPPING;
         LOG.info("Stopping scanner");
         // Stop scanning
@@ -300,7 +288,7 @@ public class EngineModel {
         // Disconnect from network
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
-            group.stop();
+            group.stop(_engine.getId(), ArchiverMgmtEntry.ARCHIVER_STOP);
         }
         // Flush all values out
         LOG.info("Stopping writer");
@@ -321,7 +309,7 @@ public class EngineModel {
      * @throws ArchiveReadConfigException
      */
     @SuppressWarnings("nls")
-    public final void readConfig(final String engineName, final int port) throws ArchiveReadConfigException {
+    public void readConfig(@Nonnull final String engineName, final int port) throws ArchiveReadConfigException {
         try {
             if (state != State.IDLE) {
                 LOG.error("Read configuration while state " + state + ". Should be " + State.IDLE);
@@ -330,36 +318,30 @@ public class EngineModel {
             _name = engineName;
 
             final IArchiveEngineConfigService configService = Activator.getDefault().getArchiveEngineConfigService();
-            final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
 
-            final IArchiveEngine engine = configService.findEngine(_name);
-            if (engine == null) {
+            _engine = configService.findEngine(_name);
+            if (_engine == null) {
                 LOG.error("Unknown engine '" + _name + "'.");
                 return;
             }
             // Is the configuration consistent?
-            if (engine.getUrl().getPort() != port) {
+            if (_engine.getUrl().getPort() != port) {
                 LOG.error("Engine " + _name + " running on port " + port +
-                          " while configuration requires " + engine.getUrl().toString());
+                          " while configuration requires " + _engine.getUrl().toString());
                 return;
             }
 
-            final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(engine.getId());
-            final Collection<IArchiverMgmtEntry> monitorStates = Lists.newLinkedList();
+            final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
-                configureGroup(configService, engine, monitorStates, groupCfg);
+                configureGroup(configService, groupCfg);
             }
-            writerService.writeMonitorModeInformation(monitorStates);
-
         } catch (final Exception e) {
             handleExceptions(e);
         }
     }
 
     private void configureGroup(@Nonnull final IArchiveEngineConfigService configService,
-                                @Nonnull final IArchiveEngine engine,
-                                @Nonnull final Collection<IArchiverMgmtEntry> monitorStates,
                                 @Nonnull final IArchiveChannelGroup groupCfg) throws ArchiveServiceException,
                                                                                      TypeSupportException {
         final ArchiveGroup group = addGroup(groupCfg);
@@ -369,15 +351,8 @@ public class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel =
+            final ArchiveChannel<Object, ITimedCssAlarmValueType<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
-
-            monitorStates.add(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                    channelCfg.getId(),
-                                                    ArchiverMonitorStatus.ON,
-                                                    engine.getId(),
-                                                    TimeInstantBuilder.buildFromNow(),
-                                                    ArchiverMgmtEntry.ARCHIVER_START));
 
             _writeThread.addChannel(channel);
 
@@ -405,7 +380,7 @@ public class EngineModel {
 
     /** Remove all channels and groups. */
     @SuppressWarnings("nls")
-    public final void clearConfig() {
+    public void clearConfig() {
         if (state != State.IDLE) {
             throw new IllegalStateException("Only allowed in IDLE state");
         }
@@ -439,6 +414,7 @@ public class EngineModel {
         }
     }
 
+    @Nonnull
     public Collection<ArchiveGroup> getGroups() {
         return _groupMap.values();
     }
@@ -455,7 +431,7 @@ public class EngineModel {
 //   *  @throws Exception on error from channel creation
 //   */
 //  @SuppressWarnings("nls")
-//  final public <T> ArchiveChannel<T> addChannel(final String channelName,
+//  public <T> ArchiveChannel<T> addChannel(final String channelName,
 //                                            final ArchiveGroup group,
 //                                            final Enablement enablement,
 //                                            final boolean monitor,

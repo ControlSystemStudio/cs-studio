@@ -58,9 +58,9 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
@@ -314,8 +314,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private Statement joinStringsToStatementBatch(@Nonnull final List<String> values,
-                                                          @Nonnull final List<String> valuesPerMinute,
-                                                          @Nonnull final List<String> valuesPerHour)
+                                                  @Nonnull final List<String> valuesPerMinute,
+                                                  @Nonnull final List<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
 
         Statement stmt = null;

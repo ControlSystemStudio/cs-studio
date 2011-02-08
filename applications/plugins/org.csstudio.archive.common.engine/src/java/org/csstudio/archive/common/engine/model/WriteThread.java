@@ -17,7 +17,7 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.stats.Average;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -45,7 +45,7 @@ public class WriteThread implements Runnable {
     /** Minimum write period [seconds] */
     private static final double MIN_WRITE_PERIOD = 5.0;
 
-    private final ConcurrentMap<String, ArchiveChannel<Object, ICssAlarmValueType<Object>>> _channelMap =
+    private final ConcurrentMap<String, ArchiveChannel<Object, ITimedCssAlarmValueType<Object>>> _channelMap =
         Maps.newConcurrentMap();
 
     /** Flag that tells the write thread to run or quit. */
@@ -83,7 +83,7 @@ public class WriteThread implements Runnable {
     }
 
     /** Add a channel's buffer that this thread reads */
-    public void addChannel(final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel) {
+    public void addChannel(final ArchiveChannel<Object, ITimedCssAlarmValueType<Object>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
@@ -125,14 +125,12 @@ public class WriteThread implements Runnable {
     }
 
     /** @return Timestamp of end of last write run */
-    public ITimestamp getLastWriteTime()
-    {
+    public ITimestamp getLastWriteTime() {
         return last_write_stamp;
     }
 
     /** @return Average number of values per write run */
-    public double getWriteCount()
-    {
+    public double getWriteCount() {
         return write_count.get();
     }
 
@@ -263,12 +261,12 @@ public class WriteThread implements Runnable {
     long write() throws OsgiServiceUnavailableException, ArchiveServiceException {
         int totalCount = 0;
 
-        final LinkedList<IArchiveSample<Object, ICssAlarmValueType<Object>>> allSamples = Lists.newLinkedList();
+        final LinkedList<IArchiveSample<Object, ITimedCssAlarmValueType<Object>>> allSamples = Lists.newLinkedList();
 
-        for (final ArchiveChannel<Object, ICssAlarmValueType<Object>> channel : _channelMap.values()) {
+        for (final ArchiveChannel<Object, ITimedCssAlarmValueType<Object>> channel : _channelMap.values()) {
             final SampleBuffer<Object,
-                               ICssAlarmValueType<Object>,
-                               IArchiveSample<Object, ICssAlarmValueType<Object>>> buffer = channel.getSampleBuffer();
+                               ITimedCssAlarmValueType<Object>,
+                               IArchiveSample<Object, ITimedCssAlarmValueType<Object>>> buffer = channel.getSampleBuffer();
 
             // Update max buffer length etc. before we start to remove samples
             buffer.updateStats();

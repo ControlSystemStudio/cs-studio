@@ -29,15 +29,16 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * DB bean for ArchiverMgmtEntry. 
- * 
+ * DB bean for ArchiverMgmtEntry.
+ *
  * @author bknerr
  * @since 02.02.2011
  */
 public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
 
-    public static final String ARCHIVER_START = "Startup"; 
-    
+    public static final String ARCHIVER_START = "Archiver Started";
+    public static final String ARCHIVER_STOP = "Archiver Stopped";
+
     private final ArchiverMgmtEntryId _id;
     private final ArchiveChannelId _channelId;
     private final ArchiverMonitorStatus _status;
@@ -61,7 +62,7 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
         _timestamp = time;
         _info = info;
     }
-    
+
     /**
      * {@inheritDoc}
      */

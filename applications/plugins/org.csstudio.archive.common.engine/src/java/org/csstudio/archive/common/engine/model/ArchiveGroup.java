@@ -13,6 +13,10 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+
 import com.google.common.collect.MapMaker;
 
 /** A group of archived channels.
@@ -35,7 +39,7 @@ public class ArchiveGroup
 //    private ArchiveChannel enabling_channel = null;
 
     /** Is the group currently enabled? */
-    private boolean enabled = true;
+    private final boolean enabled = true;
 
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
@@ -125,14 +129,16 @@ public class ArchiveGroup
 //    }
 
     /** @return <code>true</code> if group is currently enabled */
-    final public boolean isEnabled()
-    {
+    public boolean isEnabled() {
         return enabled ;
     }
 
-    /** Start all the channels in group */
-    final void start() throws Exception
-    {
+    /** Start all the channels in group
+     * @param engineId
+     * @return */
+    @Nonnull
+    final void start(@Nonnull final ArchiveEngineId engineId,
+                     @Nonnull final String info) throws Exception {
         if (is_running) {
             return;
         }
@@ -142,34 +148,32 @@ public class ArchiveGroup
 //        if (enabling_channel != null  &&
 //            enabling_channel.getEnablement() == Enablement.Enabling)
 //            enable(false);
+
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.start();
+            channel.start(engineId, info);
         }
     }
 
-    /** Stop all the channels in group */
-    final void stop()
-    {
+    /**
+     * Stop all the channels in group
+     * @throws ArchiveServiceException
+     * @throws OsgiServiceUnavailableException
+     */
+    public void stop(@Nonnull final ArchiveEngineId engineId,
+                     @Nonnull final String info) throws OsgiServiceUnavailableException, ArchiveServiceException {
         if (!is_running) {
             return;
         }
         is_running = false;
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.stop();
+            channel.stop(engineId, info);
         }
     }
 
-    /** Enable or disable the group (and all channels in it) */
-    final void enable(final boolean enable)
-    {
-        enabled = enable;
-//        for (ArchiveChannel<?> channel : channels)
-//            channel.computeEnablement();
-    }
 
     @Override
-    final public String toString()
-    {
+    @Nonnull
+    public String toString() {
         return "ArchiveGroup " + getName(); //$NON-NLS-1$
     }
 

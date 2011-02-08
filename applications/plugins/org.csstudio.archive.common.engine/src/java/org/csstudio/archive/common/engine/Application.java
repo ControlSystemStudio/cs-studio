@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
@@ -27,8 +29,7 @@ import org.epics.pvmanager.sim.SimulationDataSource;
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
-public class Application implements IApplication
-{
+public class Application implements IApplication {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
 
     /** Database URL, user, password */
@@ -50,7 +51,7 @@ public class Application implements IApplication
      *  @return <code>true</code> if OK.
      */
     @SuppressWarnings("nls")
-    private boolean getSettings(final String args[])
+    private boolean getSettings(@Nonnull final String args[])
     {
         // Create the parser and run it.
         final ArgParser parser = new ArgParser();

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.common.service.ArchiveEngineConfigServiceTracker;
 import org.csstudio.archive.common.service.ArchiveWriterServiceTracker;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
@@ -43,15 +45,14 @@ public class Activator extends Plugin {
     }
 
     /** @return the shared instance */
-    public static Activator getDefault()
-    {
+    @Nonnull
+    public static Activator getDefault() {
         return INSTANCE;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void start(final BundleContext context) throws Exception
-    {
+    public void start(@Nonnull final BundleContext context) throws Exception {
         super.start(context);
 
         _archiveEngineConfigServiceTracker = new ArchiveEngineConfigServiceTracker(context);
@@ -65,7 +66,7 @@ public class Activator extends Plugin {
      * {@inheritDoc}
      */
     @Override
-    public void stop(final BundleContext context) throws Exception {
+    public void stop(@Nonnull final BundleContext context) throws Exception {
 
         if (_archiveEngineConfigServiceTracker != null) {
             _archiveEngineConfigServiceTracker.close();
@@ -85,6 +86,7 @@ public class Activator extends Plugin {
      * @return the archive service or <code>null</code> if not available.
      * @throws OsgiServiceUnavailableException
      */
+    @Nonnull
     public IArchiveEngineConfigService getArchiveEngineConfigService() throws OsgiServiceUnavailableException
     {
         final IArchiveEngineConfigService service =
@@ -100,6 +102,7 @@ public class Activator extends Plugin {
      * @return the archive service or <code>null</code> if not available.
      * @throws OsgiServiceUnavailableException
      */
+    @Nonnull
     public IArchiveWriterService getArchiveWriterService() throws OsgiServiceUnavailableException
     {
         final IArchiveWriterService service =
