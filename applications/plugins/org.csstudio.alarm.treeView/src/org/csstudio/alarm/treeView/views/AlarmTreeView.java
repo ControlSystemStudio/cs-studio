@@ -237,6 +237,11 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     private Action _showPropertyViewAction;
 
     /**
+     * the action to show / hide the message area
+     */
+    private Action _showMessageAreaAction;
+
+    /**
      * Action to retrieve the initial state of subtrees.
      */
     private Action _retrieveInitialStateAction;
@@ -272,8 +277,6 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
 
     // Listener for the life cycle of the pv-nodes in the tree. Used for de/registering pvs at the underlying system.
     private IProcessVariableNodeListener _processVariableNodeListener;
-
-
 
     /**
      * Constructor.
@@ -400,6 +403,8 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                                                                               modificationItems);
 
         _showPropertyViewAction = AlarmTreeViewActionFactory.createShowPropertyViewAction(site);
+        
+        _showMessageAreaAction = AlarmTreeViewActionFactory.createShowMessageAreaAction(_myMessageArea);
 
         _toggleFilterAction =
             AlarmTreeViewActionFactory.createToggleFilterAction(this, viewer, currentAlarmFilter);
@@ -566,6 +571,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
     private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
         manager.add(_toggleFilterAction);
         manager.add(new Separator());
+        manager.add(_showMessageAreaAction);
         manager.add(_showPropertyViewAction);
         manager.add(_saveInLdapAction);
         manager.add(_reloadAction);

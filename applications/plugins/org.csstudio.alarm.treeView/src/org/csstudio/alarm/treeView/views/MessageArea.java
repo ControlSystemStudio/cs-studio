@@ -79,13 +79,13 @@ public final class MessageArea {
         _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
 
         _messageAreaMessage = new Label(_messageArea, SWT.WRAP);
-        _messageAreaMessage.setText("Test message");
+        _messageAreaMessage.setText("No message");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
         _messageAreaDescription = new Label(_messageArea, SWT.WRAP);
-        _messageAreaDescription.setText("This is an explanation of the test message.");
+        _messageAreaDescription.setText("Currently there is no message to display.");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaDescription
@@ -93,7 +93,7 @@ public final class MessageArea {
     }
 
     /**
-     * Sets the message displayed in the message area of this view part.
+     * Sets the message displayed in the message area of this view part. The message area is shown.
      *
      * @param icon the icon to be displayed next to the message. Must be one of
      *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
@@ -107,10 +107,18 @@ public final class MessageArea {
         _messageAreaDescription.setText(description);
         _messageArea.layout();
 
+        show();
+    }
+
+    /**
+     * Makes the message area visible.
+     */
+    public void show() {
         _messageArea.setVisible(true);
         ((GridData) _messageArea.getLayoutData()).exclude = false;
         _messageArea.getParent().layout();
     }
+
 
     /**
      * Hides the message displayed in this view part.
@@ -119,6 +127,24 @@ public final class MessageArea {
         _messageArea.setVisible(false);
         ((GridData) _messageArea.getLayoutData()).exclude = true;
         _messageArea.getParent().layout();
+    }
+
+    /**
+     * @return true, if the message area is visible
+     */
+    public boolean isVisible() {
+        return _messageArea.isVisible();
+    }
+    
+    /**
+     * Makes visible or hides, resp.
+     */
+    public void toggleVisibility() {
+        if (isVisible()) {
+            hide();
+        } else {
+            show();
+        }
     }
 
 }

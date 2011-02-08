@@ -42,6 +42,7 @@ import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
+import org.csstudio.alarm.treeView.views.MessageArea;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -80,8 +81,23 @@ public final class AlarmTreeViewActionFactory {
      * The ID of the property view.
      */
     public static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
-
-
+    
+    /**
+     * @param messageArea
+     * @return
+     */
+    @Nonnull
+    public static Action createShowMessageAreaAction(@Nonnull final MessageArea messageArea) {
+        
+        ShowMessageAreaAction action = new ShowMessageAreaAction(messageArea);
+        action.setText("msg");
+        action.setToolTipText("Show message area");
+        action.setImageDescriptor(AlarmTreePlugin
+                .getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() + "/details_view.gif"));
+        
+        return action;
+    }
+    
     /**
      * @param site
      * @return
