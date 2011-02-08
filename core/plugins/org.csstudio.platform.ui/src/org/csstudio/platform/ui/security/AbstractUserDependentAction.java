@@ -217,7 +217,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 * Updates the enabled state depending on user permission.
 	 */
 	protected void updateState() {
-		boolean enableState = _enable && (enabledWithoutAuthorization || SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission));
+		boolean enableState = _enable && (enabledWithoutAuthorization || hasPermission());
 		super.setEnabled(enableState);
 	}
 
@@ -226,13 +226,21 @@ public abstract class AbstractUserDependentAction extends Action implements
 	 */
 	@Override
 	public final void run() {
-		if (SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission)) {
+		if (hasPermission()) {
 			doWork();
 		}else {
 			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Failed",
 					"You are not authorized to perform this action!");
 		}
 	}
+
+    /**
+     * @return <code>true</code> if the user has the permission;
+     *         <code>false</code> otherwise
+     */
+    public boolean hasPermission() {
+        return SecurityFacade.getInstance().canExecute(getRightId(), _defaultPermission);
+    }
 
 	/**
 	 * This method holds the protected code. It's called by <code>run()</code>.
