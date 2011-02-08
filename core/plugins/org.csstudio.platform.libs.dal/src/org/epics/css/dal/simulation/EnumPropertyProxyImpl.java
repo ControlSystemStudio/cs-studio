@@ -22,6 +22,8 @@
 
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
+
 public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long>
 {
 	/**
@@ -36,7 +38,7 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long>
 		try {
 			valueProvider.set(0L);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }

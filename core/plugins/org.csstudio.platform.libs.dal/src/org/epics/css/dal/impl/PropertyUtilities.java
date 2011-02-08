@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
@@ -88,7 +89,7 @@ public class PropertyUtilities
 
 				return c;
 			} catch (Throwable e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
 			}
 		}
 
@@ -105,7 +106,7 @@ public class PropertyUtilities
 
 				return c;
 			} catch (Throwable e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
 			}
 		}
 

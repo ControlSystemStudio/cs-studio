@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -92,7 +93,7 @@ public class EPICSPlug extends AbstractPlug
 			try {
 				r.run();
 			} catch (Throwable th) {
-				th.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Sheduled task had unhandled error.", th);
 			}
 		}
 	}
@@ -376,7 +377,6 @@ public class EPICSPlug extends AbstractPlug
 				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 0;
 				sb.append(coreThreads+".");
-				//System.out.println(sb.toString());
 				getLogger().warn(sb.toString());
 			}
 		}
@@ -386,7 +386,6 @@ public class EPICSPlug extends AbstractPlug
 				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 1;
 				sb.append(coreThreads+".");
-				//System.out.println(sb.toString());
 				getLogger().warn(sb.toString());
 			}
 			if (maxThreads < 0 || maxThreads < coreThreads) {
@@ -394,7 +393,6 @@ public class EPICSPlug extends AbstractPlug
 				sb.append("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
 				maxThreads = coreThreads;
 				sb.append(maxThreads+".");
-				//System.out.println(sb.toString());
 				getLogger().warn(sb.toString());
 			}
 		}
@@ -430,7 +428,6 @@ public class EPICSPlug extends AbstractPlug
 		if (!use_jni) {
 			context = createJCAContext();
 		} else {
-			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
 			
 			if (System.getProperties().containsKey(JNI_FLUSH_TIMER_DELAY)) {
@@ -448,7 +445,7 @@ public class EPICSPlug extends AbstractPlug
 						try {
 							getContext().flushIO();
 						} catch (Throwable th) {
-							th.printStackTrace();
+							Logger.getLogger(this.getClass()).warn("Flush IO error.", th);
 						}
 					}
 					
@@ -648,7 +645,7 @@ public class EPICSPlug extends AbstractPlug
 				// CAJ will take care of optimization
 				getContext().flushIO();
 			} catch (Throwable th) {
-				th.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Flush IO error.", th);
 			}
 		}
 	}
@@ -690,7 +687,6 @@ public class EPICSPlug extends AbstractPlug
 			return c;
 
 		} catch (Throwable th) {
-			th.printStackTrace();
 			// rethrow to abort EPICS plug instance creation
 			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
 		}
@@ -719,7 +715,6 @@ public class EPICSPlug extends AbstractPlug
 			return c;
 
 		} catch (Throwable th) {
-			th.printStackTrace();
 			// rethrow to abort EPICS plug instance creation
 			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
 		}

@@ -23,12 +23,25 @@
 package org.epics.css.dal.epics;
 
 import gov.aps.jca.CAException;
+import gov.aps.jca.CAStatusException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.TimeStamp;
 import gov.aps.jca.event.PutListener;
+import gov.aps.jca.jni.JNIException;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CommonDataTypes;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqProperty;
@@ -57,19 +70,8 @@ import org.epics.css.dal.impl.PatternPropertyImpl;
 import org.epics.css.dal.impl.StringPropertyImpl;
 import org.epics.css.dal.impl.StringSeqPropertyImpl;
 import org.epics.css.dal.proxy.PropertyProxy;
-
 import org.epics.css.dal.spi.AbstractFactory;
 import org.epics.css.dal.spi.Plugs;
-
-import java.lang.reflect.Array;
-
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * Convenience method for work with JCA and CAJ.
@@ -782,6 +784,56 @@ public final class PlugUtilities
 		return null;
 	}
 	
+	
+	public static final String toShortErrorReport(Throwable t) {
+		StringBuilder sb= new StringBuilder(128);
+		
+		try {
+			appendShortErrorReport(t, sb);
+			
+			while (t.getCause()!=null) {
+				sb.append(", caused by ");
+				appendShortErrorReport(t.getCause(), sb);
+				t= t.getCause();
+			}
+		} catch (IOException e) {
+			Logger.getLogger(PlugUtilities.class).warn("Unhandled exception.", e);
+		}
+		
+		
+		return sb.toString();
+	}
+	
+	public static final void appendShortErrorReport(Throwable t, Appendable buffer) throws IOException {
+		//if (t instanceof CAException) {
+		if (t instanceof CAStatusException) {
+			CAStatusException e= (CAStatusException)t;
+			buffer.append("CA status error:'");
+			buffer.append(e.getStatus().toString());
+			buffer.append("'");
+			if (e.getMessage()!=null) {
+				buffer.append(", message'");
+				buffer.append(e.getMessage());
+				buffer.append("'");
+			}
+		//} else if (t instanceof TimeoutException) {
+		//} else if (t instanceof ConfigurationException) {
+		} else if (t instanceof JNIException){
+			JNIException e= (JNIException)t;
+			buffer.append("JNI error:'");
+			buffer.append(e.getStatus().toString());
+			buffer.append("'");
+			if (e.getMessage()!=null) {
+				buffer.append(", message'");
+				buffer.append(e.getMessage());
+				buffer.append("'");
+			}
+		} else {
+			buffer.append("error:'");
+			buffer.append(t.toString());
+			buffer.append("'");
+		}
+	}
 }
 
 /* __oOo__ */

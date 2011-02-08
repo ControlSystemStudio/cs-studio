@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
@@ -126,7 +127,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 			try {
 				l[i].dynamicValueConditionChange(pe);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Event handler error, continuing.", e);
 			}
 		}
 	}
@@ -304,7 +305,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 //				characteristics = PropertyProxyUtilities.getCharacteristics(dissector,getNumericType());
 			} catch (ConnectionFailed e) {
 				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),null));
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
 				return new HashMap<String, Object>();
 			}
 		}

@@ -56,6 +56,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
@@ -85,6 +86,8 @@ import org.epics.css.dal.proxy.SyncPropertyProxy;
 import org.epics.css.dal.simple.impl.DataUtil;
 import org.epics.css.dal.simple.impl.DynamicValueConditionConverterUtil;
 import org.epics.css.dal.spi.Plugs;
+
+import sun.security.action.GetLongAction;
 
 import com.cosylab.epics.caj.CAJChannel;
 import com.cosylab.util.BitCondition;
@@ -236,11 +239,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			try {
 				channel.removeConnectionListener(this);
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// we ignore
 			} catch (CAException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Removing CA listener: "+PlugUtilities.toShortErrorReport(e), e);
 			}
 		}
 		// destory channel
@@ -486,7 +487,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			try {
 				l[i].characteristicsChange(ev);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Removing CA listener: "+PlugUtilities.toShortErrorReport(e), e);
 			}
 		}
 	}
@@ -507,7 +508,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			try {
 				l[i].dynamicValueConditionChange(ev);
 			} catch (Throwable th) {
-				th.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Error in event handler, continuing", th);
 			}
 		}
 	}
@@ -908,9 +909,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				}
 				ch.dispose();
 			} catch (IllegalStateException e1) {
-				e1.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Characteristic failed.", e1);
 			} catch (CAException e1) {
-				e1.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Characteristic failed: "+PlugUtilities.toShortErrorReport(e1), e1);
 			}			
 		}
 
@@ -937,11 +938,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					try {
 						value= PropertyUtilities.verifyCharacteristic(PropertyProxyImpl.this, characteristics[i], getCharacteristic(characteristics[i]));
 						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	value, characteristics[i],
-								value != null, null, condition, null, true));
+								value != null, null, condition, null, i+1 == characteristics.length));
 
 					} catch (DataExchangeException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						r.addResponse(new ResponseImpl<Object>(PropertyProxyImpl.this, r,	null, characteristics[i],
+								false, e, condition, null, i+1 == characteristics.length));
 					}
 				}
 			}
@@ -1054,7 +1055,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 //				 Maps JCA states to DAL states
 				gov.aps.jca.Channel.ConnectionState c= channel.getConnectionState();
 				if (c==null) {
-					System.err.println(PropertyProxyImpl.class.getName()+": JCA connection state for "+channel.getName()+" is NULL, connection event ignored!");
+					Logger.getLogger(PropertyProxyImpl.class).debug(PropertyProxyImpl.class.getName()+": JCA connection state for "+channel.getName()+" is NULL, connection event ignored!");
 					return;
 				} 
 				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {

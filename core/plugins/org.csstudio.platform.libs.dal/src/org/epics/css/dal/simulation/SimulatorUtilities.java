@@ -127,7 +127,6 @@ public final class SimulatorUtilities
 				return (Class<?extends PropertyProxy<?>>)Class.forName(n);
 			} catch (ClassNotFoundException e) {
 				// noop
-				//e.printStackTrace();
 			}
 		}
 		
@@ -140,7 +139,6 @@ public final class SimulatorUtilities
 				return (Class<?extends PropertyProxy<?>>)Class.forName(n);
 			} catch (ClassNotFoundException e) {
 				// noop
-				//e.printStackTrace();
 			}
 		}
 

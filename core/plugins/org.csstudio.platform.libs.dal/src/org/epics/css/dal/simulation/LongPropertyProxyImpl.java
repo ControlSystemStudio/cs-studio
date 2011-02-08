@@ -22,6 +22,8 @@
 
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Simulation implementation of PropertyProxyImpl for datatype Long
@@ -42,7 +44,7 @@ public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>
 		try {
 			valueProvider.set(0L);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }
