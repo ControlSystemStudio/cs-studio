@@ -29,22 +29,30 @@ public class RetrieveInitialStateJob extends Job {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(RetrieveInitialStateJob.class);
     
-    private IAlarmSubtreeNode _rootNode;
+    private List<IAlarmSubtreeNode> _rootNodes;
     
     public RetrieveInitialStateJob() {
         super("Retrieve initial alarm state");
     }
     
-    public void setRootNode(@Nonnull final IAlarmSubtreeNode rootNode) {
-        _rootNode = rootNode;
+    public void setRootNodes(@Nonnull final List<IAlarmSubtreeNode> rootNodes) {
+        _rootNodes = rootNodes;
     }
     
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
+
         
         try {
-            retrieveInitialAlarmState();
+            // guard
+            if (_rootNodes == null) {
+                return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "No XML based nodes found");
+            }
+            
+            for (IAlarmSubtreeNode rootNode : _rootNodes) {
+                retrieveInitialAlarmState(rootNode);
+            }
         } finally {
             monitor.done();
         }
@@ -52,12 +60,12 @@ public class RetrieveInitialStateJob extends Job {
         return Status.OK_STATUS;
     }
     
-    private void retrieveInitialAlarmState() {
-        if (_rootNode == null) {
+    private void retrieveInitialAlarmState(@Nonnull final IAlarmSubtreeNode rootNode) {
+        if (rootNode == null) {
             throw new IllegalStateException("Root node must not be null");
         }
         
-        final List<IAlarmProcessVariableNode> pvNodes = _rootNode.findAllProcessVariableNodes();
+        final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
         
         final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
         

@@ -23,6 +23,8 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import java.util.Collections;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -69,7 +71,7 @@ public final class JobFactory {
             @Override
             public void done(IJobChangeEvent event) {
                 if (event.getResult() == Status.OK_STATUS) {
-                    retrieveInitialStateJob.setRootNode(rootNode);
+                    retrieveInitialStateJob.setRootNodes(Collections.singletonList(rootNode));
                     retrieveInitialStateJob.schedule();
                 }
             }
@@ -92,11 +94,8 @@ public final class JobFactory {
             @Override
             public void done(IJobChangeEvent event) {
                 if (event.getResult() == Status.OK_STATUS) {
-                    IAlarmSubtreeNode xmlRootNode = importXmlFileJob.getXmlRootNode();
-                    if (xmlRootNode != null) {
-                        retrieveInitialStateJob.setRootNode(xmlRootNode);
-                        retrieveInitialStateJob.schedule();
-                    }
+                    retrieveInitialStateJob.setRootNodes(importXmlFileJob.getXmlRootNodes());
+                    retrieveInitialStateJob.schedule();
                 }
             }
         });

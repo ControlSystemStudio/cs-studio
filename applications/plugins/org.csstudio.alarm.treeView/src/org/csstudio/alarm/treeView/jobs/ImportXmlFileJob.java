@@ -29,6 +29,8 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +75,7 @@ public final class ImportXmlFileJob extends Job {
     
     private final IAlarmConfigurationService _configService;
     private final IAlarmSubtreeNode _rootNode;
-    private IAlarmSubtreeNode _xmlRootNode = null;
+    private List<IAlarmSubtreeNode> _xmlRootNodes = null;
     private String _filePath;
     private final AlarmTreeView _alarmTreeView;
     
@@ -102,6 +104,7 @@ public final class ImportXmlFileJob extends Job {
         monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
         
         try {
+            _xmlRootNodes = new ArrayList<IAlarmSubtreeNode>();
             final ContentModel<LdapEpicsAlarmcfgConfiguration> model = _configService
                     .retrieveInitialContentModelFromFile(_filePath);
             
@@ -119,7 +122,7 @@ public final class ImportXmlFileJob extends Job {
                 return Status.CANCEL_STATUS;
             }
             
-            retrieveXMLRootNode();
+            retrieveXMLRootNodes();
         } catch (final CreateContentModelException e) {
             return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not import file: "
                     + e.getMessage(), e);
@@ -139,13 +142,14 @@ public final class ImportXmlFileJob extends Job {
         return Status.OK_STATUS;
     }
     
-    private void retrieveXMLRootNode() {
-        _xmlRootNode = null;
+    /**
+     * the top level children with source XML are collected
+     */
+    private void retrieveXMLRootNodes() {
         List<IAlarmTreeNode> children = _rootNode.getChildren();
         for (IAlarmTreeNode child : children) {
             if ( (child instanceof IAlarmSubtreeNode) && (child.getSource() == TreeNodeSource.XML)) {
-                _xmlRootNode = (IAlarmSubtreeNode) child;
-                break;
+                _xmlRootNodes.add((IAlarmSubtreeNode) child);
             }
         }
         
@@ -223,7 +227,7 @@ public final class ImportXmlFileJob extends Job {
     }
     
     @CheckForNull
-    public IAlarmSubtreeNode getXmlRootNode() {
-        return _xmlRootNode;
+    public List<IAlarmSubtreeNode> getXmlRootNodes() {
+        return _xmlRootNodes;
     }
 }
