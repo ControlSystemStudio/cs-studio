@@ -93,12 +93,13 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 		// the parent should be the widget with minimum nested depth
 		AbstractContainerModel parent = minDepthWidget.getParent();		
 		
-		int borderWidth = 1;
+		int borderWidth = 0;
 		
 		if(groupingContainerModel.getBorderStyle()== BorderStyle.GROUP_BOX)
 			borderWidth = 30;
 		
 		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN, true);
+		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 		
 		compoundCommand.add(new WidgetCreateCommand(groupingContainerModel,
 				parent, new Rectangle(minX, minY, maxX-minX + borderWidth, maxY-minY + borderWidth), false));
