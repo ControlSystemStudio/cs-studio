@@ -62,6 +62,7 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simple.impl.DataUtil;
 import org.epics.css.dal.simulation.ps.PowerSupplyImpl;
+import org.epics.css.dal.spi.Plugs;
 
 import com.cosylab.naming.URIName;
 
@@ -123,7 +124,7 @@ public class SimulatorPlug extends AbstractPlug
 	private ThreadPoolExecutor executor;
 	private Timer timer;
 	private DirContext simulatorContext;
-	public static final String PLUG_TYPE = "Simulator";
+	public static final String PLUG_TYPE = Plugs.SIMULATOR_PLUG_TYPE;
 	public static final String SCHEME_SUFFIX = "Simulator";
 	public static final String DEFAULT_AUTHORITY = "DEFAULT";
 

@@ -32,7 +32,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.Plugs;
 
 /**
@@ -83,7 +82,7 @@ final class PlugRegistry {
 	 */
 	public void configurePlugs(final Properties p) {
 		// the simulator plug should be always there!
-		SimulatorUtilities.configureSimulatorPlug(p);
+		Plugs.configureSimulatorPlug(p);
 
 		String[] s = Plugs.getPlugNames(p);
 		Set<String> set = new HashSet<String>(Arrays.asList(s));

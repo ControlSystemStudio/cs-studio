@@ -23,7 +23,6 @@
 package org.epics.css.dal.epics;
 
 import org.epics.css.dal.impl.DefaultApplicationContext;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 
 /**
  * Default EPICS application context.
@@ -38,7 +37,7 @@ public class EPICSApplicationContext extends DefaultApplicationContext {
 	 */
 	public EPICSApplicationContext(String name) {
 		super(name);
-		SimulatorUtilities.configureSimulatorPlug(getConfiguration());
+		//SimulatorUtilities.configureSimulatorPlug(getConfiguration());
 		PlugUtilities.configureEPICSPlug(getConfiguration());
 		
 		/*

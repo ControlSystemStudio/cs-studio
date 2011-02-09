@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.csstudio.sds</name>
+	<name>org.csstudio.platform.libs.dal.simulator</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -25,11 +25,4 @@
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>widgets</name>
-			<type>2</type>
-			<location>/home/cosy/C::/Entwicklung/eclipse_workspaces/runtime-sds2/SDS Demo Display/Testcases/widgets</location>
-		</link>
-	</linkedResources>
 </projectDescription>

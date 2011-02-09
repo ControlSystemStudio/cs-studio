@@ -25,21 +25,16 @@
  */
 package org.epics.css.dal.simulation;
 
-import com.cosylab.naming.URIName;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
 
-import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DoubleSeqProperty;
-import org.epics.css.dal.DoubleSeqSimpleProperty;
-import org.epics.css.dal.DoubleSimpleProperty;
-import org.epics.css.dal.EnumProperty;
-import org.epics.css.dal.EnumSimpleProperty;
-import org.epics.css.dal.LongProperty;
-import org.epics.css.dal.LongSimpleProperty;
-import org.epics.css.dal.PatternProperty;
-import org.epics.css.dal.PatternSimpleProperty;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+
 import org.epics.css.dal.SimpleProperty;
-import org.epics.css.dal.StringProperty;
-import org.epics.css.dal.StringSimpleProperty;
 import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.device.PowerSupply;
 import org.epics.css.dal.proxy.DeviceProxy;
@@ -47,18 +42,7 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.simulation.ps.PSDeviceProxy;
 import org.epics.css.dal.spi.Plugs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
+import com.cosylab.naming.URIName;
 
 
 /**
@@ -87,30 +71,7 @@ public final class SimulatorUtilities
 	 */
 	public static void configureSimulatorPlug(Properties p)
 	{
-		String[] s = Plugs.getPlugNames(p);
-		Set<String> set = new HashSet<String>(Arrays.asList(s));
-
-		if (!set.contains(SimulatorPlug.PLUG_TYPE)) {
-			set.add(SimulatorPlug.PLUG_TYPE);
-
-			StringBuffer sb = new StringBuffer();
-
-			for (Iterator iter = set.iterator(); iter.hasNext();) {
-				if (sb.length() > 0) {
-					sb.append(',');
-				}
-
-				sb.append(iter.next());
-			}
-
-			p.put(Plugs.PLUGS, sb.toString());
-		}
-
-		p.put(Plugs.PLUGS_DEFAULT, SimulatorPlug.PLUG_TYPE);
-		p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + SimulatorPlug.PLUG_TYPE,
-		    PropertyFactoryImpl.class.getName());
-		p.put(Plugs.PLUG_DEVICE_FACTORY_CLASS + SimulatorPlug.PLUG_TYPE,
-		    DeviceFactoryImpl.class.getName());
+		Plugs.configureSimulatorPlug(p);
 	}
 
 	@SuppressWarnings("unchecked")
