@@ -2,7 +2,7 @@ package org.csstudio.startuphelper.module;
 
 import java.util.Map;
 
-import org.csstudio.platform.ui.workbench.CssWorkbenchAdvisor;
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.WorkbenchExtPoint;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -42,7 +42,10 @@ public class DefaultWorkbench implements WorkbenchExtPoint {
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#runWorkbench(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
 	public Object runWorkbench(Display display, IApplicationContext context, Map<String, Object> parameters) throws Exception {
-		int returnCode = PlatformUI.createAndRunWorkbench(display, new CssWorkbenchAdvisor());
+		
+		int returnCode = PlatformUI.createAndRunWorkbench(display, new DefaultWorkbenchAdvisor(
+				(OpenDocumentEventProcessor) parameters.get(
+						OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR)));
 		if (returnCode == PlatformUI.RETURN_RESTART) {
         	// Something called IWorkbench.restart().
             // Is this supposed to be a RESTART or RELAUNCH?

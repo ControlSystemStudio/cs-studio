@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.5.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.5.2.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/about.gif"/>

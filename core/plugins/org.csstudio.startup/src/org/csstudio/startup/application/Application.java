@@ -84,17 +84,22 @@ public class Application implements IApplication {
     /** {@inheritDoc} */
     public Object start(IApplicationContext context) throws Exception
 	{
-		// Create the display
+    	// Create the display
 	    final Display display = PlatformUI.createDisplay();
+
 		if (display == null) {
 			System.err.println("No display"); //$NON-NLS-1$
 			return EXIT_OK;
 		}
+		
+        OpenDocumentEventProcessor openDocProcessor 
+        	= new OpenDocumentEventProcessor(display);
+
 		handleDisplayDebugging(display);
 		
 		try 
 		{
-			return startApplication(context, display);
+			return startApplication(context, display, openDocProcessor);
 		}
 		finally 
 		{
@@ -192,6 +197,7 @@ public class Application implements IApplication {
 	 * 
 	 * @param context this application's context
 	 * @param display the display of the application
+     * @param openDocProcessor 
 	 * @return the exit code of any of the first executed segment that provided one. 
 	 * 			If no other exit code is given the code returned by 
 	 * 			{@link #startWorkbench(Display, IApplicationContext)} is returned by
@@ -200,9 +206,10 @@ public class Application implements IApplication {
 	 * @throws Exception if anything went wrong during the execution of any of the segments
 	 */
 	protected Object startApplication(final IApplicationContext context, 
-	        final Display display) throws Exception
+	        final Display display, OpenDocumentEventProcessor openDocProcessor) throws Exception
     {
 		parameters = readStartupParameters(display,context);
+		parameters.put(OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR, openDocProcessor);
 		Object exitCode = parameters.get(StartupParametersExtPoint.EXIT_CODE);
         if (exitCode != null)
             return exitCode;
@@ -524,4 +531,6 @@ public class Application implements IApplication {
 	    if (t != null)
 	        t.printStackTrace(System.err);
 	}
+
+	
 }
