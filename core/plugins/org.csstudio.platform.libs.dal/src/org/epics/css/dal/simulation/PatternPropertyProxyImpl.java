@@ -24,6 +24,8 @@ package org.epics.css.dal.simulation;
 
 import java.util.BitSet;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Simulation implementation of PropertyProxyImpl for datatype Long
@@ -44,7 +46,7 @@ public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet>
 		try {
 			valueProvider.set(new BitSet());
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }

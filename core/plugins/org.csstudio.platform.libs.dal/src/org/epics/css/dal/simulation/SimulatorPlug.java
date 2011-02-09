@@ -36,6 +36,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.EnumPropertyCharacteristics;
@@ -86,7 +87,7 @@ public class SimulatorPlug extends AbstractPlug
 			try {
 				r.run();
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 			}
 		}
 	}
@@ -557,7 +558,6 @@ public class SimulatorPlug extends AbstractPlug
 
 			return simulatorContext;
 		} catch (NamingException e) {
-			e.printStackTrace();
 			throw new RuntimeException("Failed to instantiate context.", e);
 		}
 	}

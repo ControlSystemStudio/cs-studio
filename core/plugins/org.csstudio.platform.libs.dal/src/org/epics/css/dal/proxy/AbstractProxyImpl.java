@@ -24,6 +24,7 @@ package org.epics.css.dal.proxy;
 
 import com.cosylab.util.ListenerList;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.IdentifierUtilities;
@@ -103,7 +104,7 @@ public abstract class AbstractProxyImpl implements Proxy
 		try {
 			l.connectionStateChange(e);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			Logger.getLogger(this.getClass()).error("Failed to forward listener.", ex);
 		}
 	}
 
@@ -153,7 +154,7 @@ public abstract class AbstractProxyImpl implements Proxy
 			try {
 				l[i].connectionStateChange(e);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Exception in event handler, continuing.", ex);
 			}
 		}
 	}
