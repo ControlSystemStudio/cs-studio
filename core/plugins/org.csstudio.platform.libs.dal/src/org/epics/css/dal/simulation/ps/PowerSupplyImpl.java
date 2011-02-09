@@ -26,6 +26,7 @@ import com.cosylab.naming.URIName;
 
 import com.cosylab.util.BitCondition;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.PatternProperty;
@@ -91,12 +92,8 @@ public class PowerSupplyImpl extends AbstractDeviceImpl implements PowerSupply
 						new CommandProxyImpl(devp, this,
 						    this.getClass().getMethod("turnOff", null))
 					};
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 			}
 
 			((PSDeviceProxy)devp).initalizeCommands(commands);
@@ -189,8 +186,7 @@ public class PowerSupplyImpl extends AbstractDeviceImpl implements PowerSupply
 				ctx.bind(uri, new PatternPropertyProxyImpl(p.getUniqueName()),
 				    attr);
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Simulator error.", e);
 			}
 
 			PropertyProxy proxy = deviceProxy.getPropertyProxy(name);

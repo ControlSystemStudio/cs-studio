@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.SequencePropertyCharacteristics;
 
 
@@ -50,7 +51,7 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>
 				valueProvider.set(dSeq);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }

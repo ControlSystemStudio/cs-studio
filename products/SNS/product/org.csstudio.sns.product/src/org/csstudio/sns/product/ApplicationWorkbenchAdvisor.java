@@ -1,5 +1,7 @@
 package org.csstudio.sns.product;
 
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -10,7 +12,14 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
-    @Override
+	private OpenDocumentEventProcessor openDocProcessor;
+	
+    public ApplicationWorkbenchAdvisor(
+			OpenDocumentEventProcessor openDocProcessor) {
+    	this.openDocProcessor = openDocProcessor;
+    }
+
+	@Override
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
                     IWorkbenchWindowConfigurer configurer)
     {
@@ -29,5 +38,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     public String getInitialWindowPerspectiveId()
     {
         return CSS_Perspective.ID;
+    }
+    
+    @Override
+    public void eventLoopIdle(Display display) {
+    	if(openDocProcessor != null)
+    		openDocProcessor.catchUp(display);
+    	super.eventLoopIdle(display);
     }
 }

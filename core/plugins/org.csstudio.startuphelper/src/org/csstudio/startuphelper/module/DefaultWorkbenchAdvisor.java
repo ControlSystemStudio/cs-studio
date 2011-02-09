@@ -19,14 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.ui.workbench;
+package org.csstudio.startuphelper.module;
 
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
+import org.csstudio.platform.ui.workbench.WorkbenchActionBuilder;
+import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
@@ -34,15 +37,14 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
- * The workbench advisor for the control system studio. <br>
+ * The workbench advisor for the control system studio. It supports open file from command line.<br>
  * 
  * @see WorkbenchAdvisor
  * 
  * @author Alexander Will, Xihui Chen
- * @deprecated Use org.csstudio.startuphelper.module.DefaultWorkbenchAdvisor instead, 
- * which supports opening file from command line. 
+ * 
  */
-public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
+public class DefaultWorkbenchAdvisor extends WorkbenchAdvisor {
 	/**
 	 * The initial window width.
 	 */
@@ -72,6 +74,12 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * Monitors user logins and updates the status bar accordingly.
 	 */
 	private IUserManagementListener _userListener;
+
+	private OpenDocumentEventProcessor openDocProcessor;
+	
+	public DefaultWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
+		this.openDocProcessor = openDocProcessor;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -167,5 +175,12 @@ public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 		_workbenchConfigurer.setSaveAndRestore(true);
 
 		super.initialize(configurer);
+	}
+	
+	@Override
+	public void eventLoopIdle(Display display) {
+		if(openDocProcessor != null)
+			openDocProcessor.catchUp(display);
+		super.eventLoopIdle(display);
 	}
 }

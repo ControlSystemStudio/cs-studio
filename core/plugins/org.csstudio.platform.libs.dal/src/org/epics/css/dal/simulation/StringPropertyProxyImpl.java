@@ -22,6 +22,8 @@
 
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Simulation implementation of PropertyProxyImpl for datatype String
@@ -42,7 +44,7 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String>
 		try {
 			valueProvider.set("");
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }

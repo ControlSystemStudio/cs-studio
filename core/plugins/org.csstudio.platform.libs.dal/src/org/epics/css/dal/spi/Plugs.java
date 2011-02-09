@@ -376,7 +376,7 @@ public final class Plugs
 				try {
 					return Long.parseLong(s);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(Plugs.class).warn("System defined property "+CONNECTION_TIMEOUT+" could not be parsed as long.", e);
 				}
 			}
 		}
@@ -417,7 +417,7 @@ public final class Plugs
 				try {
 					return Long.parseLong(s);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(Plugs.class).warn("System defined property "+INITIAL_CONNECTION_TIMEOUT+" could not be parsed as long.", e);
 				}
 			}
 		}

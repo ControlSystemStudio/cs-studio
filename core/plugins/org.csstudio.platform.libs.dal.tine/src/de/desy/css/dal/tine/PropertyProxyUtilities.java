@@ -25,6 +25,7 @@ package de.desy.css.dal.tine;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
@@ -570,7 +571,7 @@ public class PropertyProxyUtilities {
 			try {
 				TINEPlug.getInstance().getCharacteristics(name);
 			} catch (ConnectionFailed e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyProxyUtilities.class).error("Characteristics failed.", e);
 				return null;
 			}
 		}
@@ -647,7 +648,7 @@ public class PropertyProxyUtilities {
 			try {
 				TINEPlug.getInstance().getCharacteristics(name);
 			} catch (ConnectionFailed e) {
-				e.printStackTrace();
+				Logger.getLogger(PropertyProxyUtilities.class).error("Characteristics failed.", e);
 				return null;
 			}
 		}

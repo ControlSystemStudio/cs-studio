@@ -1,5 +1,6 @@
 package org.epics.css.dal.simple.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
@@ -83,7 +84,7 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		try {
 			return (MetaData) property.getCharacteristic(CharacteristicInfo.C_META_DATA.getName());
 		} catch (DataExchangeException e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).error("Metadata extraction failed.", e);
 			return null;
 		}
 	}

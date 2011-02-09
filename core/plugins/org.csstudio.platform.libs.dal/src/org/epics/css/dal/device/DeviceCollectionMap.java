@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.group.DeviceGroupEvent;
 import org.epics.css.dal.group.DeviceGroupListener;
 
@@ -203,7 +204,7 @@ public class DeviceCollectionMap<T extends AbstractDevice>
 				try {
 					l[i].membersAdded(event);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
 				}
 			}
 		} else {
@@ -211,7 +212,7 @@ public class DeviceCollectionMap<T extends AbstractDevice>
 				try {
 					l[i].membersRemoved(event);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
 				}
 			}
 		}
