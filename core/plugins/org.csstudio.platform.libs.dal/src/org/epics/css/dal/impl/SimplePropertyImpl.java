@@ -321,7 +321,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 					monitors.add(defaultMonitor);
 				}
 			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).fatal("Could not create defautl monitor.", e);
+				Logger.getLogger(this.getClass()).fatal("Failed to create default monitor: "+e.getMessage(), e);
 				if (defaultMonitor!=null) {
 					defaultMonitor.destroy();
 					defaultMonitor=null;
