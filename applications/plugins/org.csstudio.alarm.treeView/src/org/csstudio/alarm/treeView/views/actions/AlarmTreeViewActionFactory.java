@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
+import org.csstudio.alarm.treeView.jobs.RetrieveInitialStateJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -388,8 +389,9 @@ public final class AlarmTreeViewActionFactory {
      */
     @Nonnull
     public static Action createRetrieveInitialStateAction(@Nonnull final IWorkbenchPartSite site,
+                                                          @Nonnull final RetrieveInitialStateJob retrieveInitialStateJob,
                                                           @Nonnull final TreeViewer viewer) {
-        Action action = new RetrieveInitialStateAction(site, viewer);
+        Action action = new RetrieveInitialStateAction(site, retrieveInitialStateJob, viewer);
         action.setText("Retrieve initial state");
         action.setToolTipText("Retrieve initial state");
         return action;

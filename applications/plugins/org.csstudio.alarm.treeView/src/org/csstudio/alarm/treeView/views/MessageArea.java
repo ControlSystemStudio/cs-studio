@@ -23,9 +23,7 @@
  */
 package org.csstudio.alarm.treeView.views;
 
-import java.sql.Time;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.annotation.Nonnull;

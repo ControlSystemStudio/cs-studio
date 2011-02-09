@@ -30,7 +30,6 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

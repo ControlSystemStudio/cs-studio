@@ -407,7 +407,9 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
 
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
         
-        _retrieveInitialStateAction = AlarmTreeViewActionFactory.createRetrieveInitialStateAction(site, viewer);
+        _retrieveInitialStateAction = AlarmTreeViewActionFactory.createRetrieveInitialStateAction(site, 
+                                                                                                  JobFactory.createRetrieveInitialStateJob(),
+                                                                                                  viewer);
     }
     // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
 
