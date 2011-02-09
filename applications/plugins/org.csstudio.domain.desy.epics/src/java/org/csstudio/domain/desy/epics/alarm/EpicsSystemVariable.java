@@ -21,14 +21,13 @@
  */
 package org.csstudio.domain.desy.epics.alarm;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.ISystemVariable;
-import org.csstudio.domain.desy.SystemVariableId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.system.AbstractAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * An EPICS system variable is tightly bound to EpicsAlarms
@@ -38,65 +37,23 @@ import org.csstudio.domain.desy.types.ITimedCssValueType;
  * @param <V> the base value type
  * @param <T> the css variable type
  */
-public class EpicsSystemVariable<V, T extends ITimedCssValueType<V>> implements ISystemVariable<V, T>, IHasAlarm {
-
-    private final SystemVariableId _id;
-    private final String _name;
-    private final T _value;
-    private final EpicsAlarm _alarm;
+public class EpicsSystemVariable<V, T extends ICssValueType<V>>
+    extends AbstractAlarmSystemVariable<V, T, EpicsAlarm> {
 
 
     /**
      * Constructor.
-     * @param id
      * @param name
-     * @param value
+     * @param data
+     * @param origin the control system from which this variable originates
+     * @param timestamp
      * @param alarm
      */
-    public EpicsSystemVariable(@Nonnull final SystemVariableId id,
-                               @Nonnull final String name,
-                               @Nonnull final T value,
+    public EpicsSystemVariable(@Nonnull final String name,
+                               @Nonnull final T data,
+                               @Nonnull final ControlSystem origin,
+                               @Nonnull final TimeInstant timestamp,
                                @Nullable final EpicsAlarm alarm) {
-        _id = id;
-        _name = name;
-        _value = value;
-        // TODO (bknerr) : Check for plausibility whether the contained status makes sense for type T.
-        _alarm = alarm;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public SystemVariableId getId() {
-        return _id;
-    }
-
-    /**
-     * Gets the name (also called channel identifier).
-     * @return the name
-     */
-    @Nonnull
-    public String getName() {
-        return _name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public T getData() {
-        return _value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public EpicsAlarm getAlarm() {
-        return _alarm;
+        super(name, data, origin, timestamp, alarm);
     }
 }

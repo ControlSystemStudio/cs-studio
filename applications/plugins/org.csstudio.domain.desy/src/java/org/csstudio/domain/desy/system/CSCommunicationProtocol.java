@@ -19,43 +19,36 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
 
 /**
- * This is until the great awesome abstraction of the different 'control system' used at DESY.
- * Where, unfortunately, 'control system' is not defined. I just learned that TINE is 'not' a
- * control system in the sense EPICS is supposed to be... (ask S. Rettig-Labusga).
- *
- * Open questions:
- * see {@link org.csstudio.platform.model.pvs.ControlSystemEnum}
+ * Communication protocols of the control system existing at DESY.
  *
  * @author bknerr
  * @since 09.02.2011
  */
-public enum ControlSystemType {
-    EPICS(CSCommunicationProtocol.CA),
-    DOOCS(CSCommunicationProtocol.TINE), // instead of TINE (which is somehow component)
-    TANGO(CSCommunicationProtocol.CORBA);
+public enum CSCommunicationProtocol {
+    TINE("tine"),
+    CA("ca", "epics"),
+    CORBA("corba");
 
-    private final ImmutableSet<CSCommunicationProtocol> _protocols;
+    private final ImmutableSet<String> _prefixes;
 
     /**
      * Constructor.
-     * @param prot at least one protocol has to be specified per control system type
-     * @param prots further permitted protocols by this control system type
+     *
+     * @param prefixes varargs of allowed prefixes for this protocol
      */
-    private ControlSystemType(@Nonnull final CSCommunicationProtocol prot, @Nonnull final CSCommunicationProtocol... prots) {
-        _protocols = Sets.immutableEnumSet(prot, prots);
+    private CSCommunicationProtocol(@Nonnull final String... prefixes) {
+        _prefixes = ImmutableSet.<String>builder().add(prefixes).build();
     }
 
     @Nonnull
-    public ImmutableSet<CSCommunicationProtocol> getProtocols() {
-        return _protocols;
+    public ImmutableSet<String> getPrefixes() {
+        return _prefixes;
     }
 }

@@ -19,12 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * System variables are the fundamental atomic components of any system.
@@ -35,13 +36,24 @@ import org.csstudio.domain.desy.types.ITimedCssValueType;
  * It is identifiable and features to any given time a unique value/state or a set of the same that
  * is unique to that time.
  *
+ * FIXME (bknerr) : conflicting with the ICssValueType and its derived types - get rid of them, use this one
+ *
  * @author bknerr
  * @since 04.11.2010
  *
  * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<V, T extends ITimedCssValueType<V>> extends Identifiable<SystemVariableId> {
+public interface ISystemVariable<V, T extends ICssValueType<V>> extends IHasTimeStamp,
+                                                                        Identifiable<SystemVariableId> {
+
+    /**
+     * The descriptive (and usually but not necessarily) unique name for this variable in the
+     * context of its origin ({@link ControlSystem}.
+     * @return the name
+     */
+    @Nonnull
+    String getName();
 
     /**
      * The datum entity (value(s) and/or state(s) of this system variable.
@@ -49,6 +61,13 @@ public interface ISystemVariable<V, T extends ITimedCssValueType<V>> extends Ide
      */
     @Nonnull
     T getData();
+
+    /**
+     * The control system in whose context this variable exists.
+     * @return the control system
+     */
+    @Nonnull
+    ControlSystem getOrigin();
 
 }
 

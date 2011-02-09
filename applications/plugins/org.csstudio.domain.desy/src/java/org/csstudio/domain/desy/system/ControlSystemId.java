@@ -19,36 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableSet;
+import org.csstudio.domain.desy.common.id.Id;
 
 /**
- * Communication protocols of the control system existing at DESY.
+ * The identifier for a distinct control system.
  *
  * @author bknerr
  * @since 09.02.2011
  */
-public enum CSCommunicationProtocol {
-    TINE("tine"),
-    CA("ca", "epics"),
-    CORBA("corba");
+public class ControlSystemId extends Id<ControlSystemId> {
 
-    private final ImmutableSet<String> _prefixes;
+    private static final long serialVersionUID = 4284891439602761307L;
 
     /**
      * Constructor.
-     *
-     * @param prefixes varargs of allowed prefixes for this protocol
+     * @param value
      */
-    private CSCommunicationProtocol(@Nonnull final String... prefixes) {
-        _prefixes = ImmutableSet.<String>builder().add(prefixes).build();
-    }
-
-    @Nonnull
-    public ImmutableSet<String> getPrefixes() {
-        return _prefixes;
+    protected ControlSystemId(@Nonnull final String value) {
+        super(value);
     }
 }
