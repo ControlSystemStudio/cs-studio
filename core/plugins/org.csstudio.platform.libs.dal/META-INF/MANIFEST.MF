@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.csstudio.platform.libs.log4j
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
@@ -25,7 +25,6 @@ Export-Package: com.cosylab.application.state,
  org.epics.css.dal.commands,
  org.epics.css.dal.context,
  org.epics.css.dal.device,
- org.epics.css.dal.directory,
  org.epics.css.dal.group,
  org.epics.css.dal.impl,
  org.epics.css.dal.proxy,

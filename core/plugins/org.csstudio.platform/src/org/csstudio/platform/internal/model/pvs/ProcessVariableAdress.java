@@ -24,13 +24,10 @@
  */
 package org.csstudio.platform.internal.model.pvs;
 
-import javax.naming.NamingException;
-
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.simpledal.ValueType;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 
 /**
  * {@link IProcessVariableAddress} implementation.
@@ -137,12 +134,11 @@ final class ProcessVariableAdress implements IProcessVariableAddress {
 		RemoteInfo remoteInfo = null;
 
 		if (_controlSystem.isSupportedByDAL()) {
-			try {
-				remoteInfo = new RemoteInfo(_property, "DEFAULT",
-						_controlSystem.getResponsibleDalPlugId());
-			} catch (NamingException e) {
-				e.printStackTrace();
-			}
+			remoteInfo = new RemoteInfo(
+					_controlSystem.getResponsibleDalPlugId()
+					,_property
+					,null
+					,null);
 		}
 		return remoteInfo;
 	}

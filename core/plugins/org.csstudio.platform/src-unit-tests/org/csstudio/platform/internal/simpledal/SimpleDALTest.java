@@ -2,20 +2,15 @@ package org.csstudio.platform.internal.simpledal;
 
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.csstudio.platform.internal.simpledal.dal.DalConnector;
-import org.csstudio.platform.internal.simpledal.dal.EpicsUtil;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -23,13 +18,8 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.simulation.PropertyProxyImpl;
-import org.epics.css.dal.simulation.SimulatorPlug;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.PropertyFactory;
 
 public class SimpleDALTest extends TestCase {
@@ -162,9 +152,9 @@ public class SimpleDALTest extends TestCase {
 			assertTrue("isCharacteristic()==false",ia.isCharacteristic());
 			assertEquals("severity", ia.getCharacteristic());
 
-			PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			System.out.println("PP: "+pp.getUniqueName());
-			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
+			//PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getRemoteName());
+			//System.out.println("PP: "+pp.getUniqueName());
+			//pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
 			
 			IPVVListener l = new IPVVListener();
 			connectionService.register(l, ia, ValueType.STRING);
@@ -257,7 +247,7 @@ public class SimpleDALTest extends TestCase {
 		
 		try {
 			
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(1000));
+			//SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(1000));
 			
 			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S1";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
@@ -287,7 +277,7 @@ public class SimpleDALTest extends TestCase {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} finally {
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
+			//SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
 		}
 		
 	}

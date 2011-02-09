@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.epics.css.dal.context;
+package org.epics.css.dal.simulation;
 
 import com.cosylab.naming.Escaper;
 import com.cosylab.naming.URIName;

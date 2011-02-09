@@ -2,20 +2,15 @@ package org.csstudio.platform.internal.simpledal;
 
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.csstudio.platform.internal.simpledal.dal.DalConnector;
-import org.csstudio.platform.internal.simpledal.dal.EpicsUtil;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -23,13 +18,9 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.simulation.PropertyProxyImpl;
-import org.epics.css.dal.simulation.SimulatorPlug;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.PropertyFactory;
 
 public class SimpleDALTest extends TestCase {
@@ -116,15 +107,15 @@ public class SimpleDALTest extends TestCase {
 			System.out.println(ia.toString());
 			System.out.println(ia.toDalRemoteInfo().toString());
 		
-			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 		
 			System.out.println(d);
 			
 			d= d+1.0;
 			
-			connectionService.writeValueAsynchronously(ia, d, ValueType.DOUBLE, null);
+			connectionService.writeValueSynchronously(ia, d, ValueType.DOUBLE);
 			
-			double d1= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			double d1= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			
 			System.out.println(d);
 			
@@ -151,7 +142,7 @@ public class SimpleDALTest extends TestCase {
 			
 			System.out.println("RI: "+ia.toDalRemoteInfo().toString());
 		
-			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 		
 			rawName= rawName+"[severity]";
 			
@@ -162,32 +153,32 @@ public class SimpleDALTest extends TestCase {
 			assertTrue("isCharacteristic()==false",ia.isCharacteristic());
 			assertEquals("severity", ia.getCharacteristic());
 
-			PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			System.out.println("PP: "+pp.getUniqueName());
-			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
+			//PropertyProxyImpl pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getRemoteName());
+			//System.out.println("PP: "+pp.getUniqueName());
+			//pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), new Timestamp(),"STATUS1"));
+			
+			String s= connectionService.readValueSynchronously(ia,ValueType.STRING);
+			System.out.println("severity: "+s);
+			assertNotNull(s);
+			assertEquals(DynamicValueState.ALARM.toString(), s);
 			
 			IPVVListener l = new IPVVListener();
 			connectionService.register(l, ia, ValueType.STRING);
-
-			String s= connectionService.readValueSynchronously(ia, ValueType.STRING);
-			System.out.println("severity: "+s);
-			assertNotNull(s);
-			//assertEquals(DynamicValueState.ALARM.toString(), s);
 			
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1[test]";
 			IProcessVariableAddress ia1= addressFactory.createProcessVariableAdress(rawName);
 			connectionService.register(l, ia1, ValueType.STRING);
 			
-			/*pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getName());
-			System.out.println("PP: "+pp.getUniqueName());
-			pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR), new Timestamp(),"STATUS2"));
+			//pp= SimulatorPlug.getInstance().getSimulatedPropertyProxy(ia.toDalRemoteInfo().getRemoteName());
+			//System.out.println("PP: "+pp.getUniqueName());
+			//pp.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR), new Timestamp(),"STATUS2"));
 			assertNotNull(l.value);
-			assertEquals(DynamicValueState.ERROR.toString(), l.value);*/
+			assertEquals(DynamicValueState.ERROR.toString(), l.value);
 			
 
-			/*pp.simulateCharacteristicChange("test", "T");
+			//pp.simulateCharacteristicChange("test", "T");
 			assertNotNull(l.value);
-			assertEquals("T", l.value);*/
+			assertEquals("T", l.value);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -234,7 +225,7 @@ public class SimpleDALTest extends TestCase {
 				assertEquals(rawName, ia.getRawName());
 				assertTrue(ia.isCharacteristic());
 				
-				Object o= connectionService.readValueSynchronously(ia, ValueType.OBJECT);
+				Object o= connectionService.readValueSynchronously(ia,ValueType.OBJECT);
 				
 				System.out.println("RI: "+ia.toDalRemoteInfo().toString()+" "+o);
 				
@@ -257,25 +248,25 @@ public class SimpleDALTest extends TestCase {
 		
 		try {
 			
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(1000));
+			//SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(1000));
 			
 			String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S1";
 			IProcessVariableAddress ia= addressFactory.createProcessVariableAdress(rawName);
-			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(0.0, d, 0.0001);
 			
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S2";
 			ia= addressFactory.createProcessVariableAdress(rawName);
-			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
-			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			connectionService.writeValueSynchronously(ia, 10.0, ValueType.DOUBLE);
+			d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 		
 			rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:S3";
 			ia= addressFactory.createProcessVariableAdress(rawName);
 			IPVVListener l= new IPVVListener();
 			connectionService.register(l, ia, ValueType.DOUBLE);
-			connectionService.writeValueAsynchronously(ia, 10.0,  ValueType.DOUBLE, null);
-			d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
+			connectionService.writeValueSynchronously(ia, 10.0, ValueType.DOUBLE);
+			d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);
 			assertNotNull(l.state);
@@ -287,7 +278,7 @@ public class SimpleDALTest extends TestCase {
 			e.printStackTrace();
 			fail(e.getMessage());
 		} finally {
-			SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
+			//SimulatorUtilities.putConfiguration(SimulatorUtilities.CONNECTION_DELAY, new Long(0));			
 		}
 		
 	}
@@ -307,7 +298,7 @@ public class SimpleDALTest extends TestCase {
 			assertNotNull(pp);
 			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
-			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
+			connectionService.writeValueSynchronously(ia, 10.0, ValueType.DOUBLE);
 			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
 			assertNotNull(l.value);
@@ -326,7 +317,7 @@ public class SimpleDALTest extends TestCase {
 			l.value=null;
 			Thread.sleep(1100);
 			assertNull(l.value);
-			//assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
