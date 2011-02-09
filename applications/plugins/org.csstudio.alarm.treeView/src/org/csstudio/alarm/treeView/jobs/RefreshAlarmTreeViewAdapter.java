@@ -23,22 +23,12 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.IAlarmInitItem;
-import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.alarm.treeView.model.PVNodeItem;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -52,9 +42,6 @@ import org.eclipse.jface.viewers.TreeViewer;
  * @since 20.05.2010
  */
 class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
-
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(RefreshAlarmTreeViewAdapter.class);
 
     private final AlarmTreeView _alarmTreeView;
     private final IAlarmSubtreeNode _adapterRootNode;
@@ -73,8 +60,6 @@ class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
     @Override
     public void done(@Nullable final IJobChangeEvent innerEvent) {
 
-        retrieveInitialStateSynchronously(_adapterRootNode);
-
         final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
 
         alarmListener.startUpdateProcessing();
@@ -89,24 +74,6 @@ class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
                 }
             }
         });
-    }
-
-    private void retrieveInitialStateSynchronously(@Nonnull final IAlarmSubtreeNode rootNode) {
-
-        final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
-
-        final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
-
-        for (final IAlarmProcessVariableNode pvNode : pvNodes) {
-            initItems.add(new PVNodeItem(pvNode));
-        }
-
-        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
-        if (alarmService != null) {
-            alarmService.retrieveInitialState(initItems);
-        } else {
-            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
-        }
     }
 
 }

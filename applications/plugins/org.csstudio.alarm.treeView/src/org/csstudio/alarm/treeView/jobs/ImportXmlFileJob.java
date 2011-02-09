@@ -30,9 +30,11 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
@@ -68,13 +70,13 @@ import org.eclipse.core.runtime.jobs.Job;
  * @since 19.05.2010
  */
 public final class ImportXmlFileJob extends Job {
-
+    
     private final IAlarmConfigurationService _configService;
     private final IAlarmSubtreeNode _rootNode;
+    private IAlarmSubtreeNode _xmlRootNode = null;
     private String _filePath;
     private final AlarmTreeView _alarmTreeView;
-
-
+    
     /**
      * Constructor.
      * @param alarmTreeView
@@ -90,49 +92,65 @@ public final class ImportXmlFileJob extends Job {
         _configService = configService;
         _rootNode = rootNode;
     }
-
+    
     public void setXmlFilePath(@Nonnull final String filePath) {
         _filePath = filePath;
     }
-
+    
     @Override
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
-
+        
         try {
-            final ContentModel<LdapEpicsAlarmcfgConfiguration> model =
-                _configService.retrieveInitialContentModelFromFile(_filePath);
-
-
+            final ContentModel<LdapEpicsAlarmcfgConfiguration> model = _configService
+                    .retrieveInitialContentModelFromFile(_filePath);
+            
             final IStatus status = checkForExistingFacilities(model, _rootNode);
             if (!status.isOK()) {
                 return status;
             }
-
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, _alarmTreeView.getPVNodeListener(), model, monitor, TreeNodeSource.XML);
+            
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode,
+                                                            _alarmTreeView.getPVNodeListener(),
+                                                            model,
+                                                            monitor,
+                                                            TreeNodeSource.XML);
             if (canceled) {
                 return Status.CANCEL_STATUS;
             }
-
+            
+            retrieveXMLRootNode();
         } catch (final CreateContentModelException e) {
-            return new Status(IStatus.ERROR,
-                              AlarmTreePlugin.PLUGIN_ID,
-                              "Could not import file: " + e.getMessage(), e);
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not import file: "
+                    + e.getMessage(), e);
         } catch (final NamingException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Could not properly build the full alarm tree: " + e.getMessage(), e);
+                              "Could not properly build the full alarm tree: " + e.getMessage(),
+                              e);
         } catch (final FileNotFoundException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
-                              "Could not properly open the input file stream: " + e.getMessage(), e);
+                              "Could not properly open the input file stream: " + e.getMessage(),
+                              e);
         } finally {
             monitor.done();
         }
         return Status.OK_STATUS;
     }
-
-
+    
+    private void retrieveXMLRootNode() {
+        _xmlRootNode = null;
+        List<IAlarmTreeNode> children = _rootNode.getChildren();
+        for (IAlarmTreeNode child : children) {
+            if ( (child instanceof IAlarmSubtreeNode) && (child.getSource() == TreeNodeSource.XML)) {
+                _xmlRootNode = (IAlarmSubtreeNode) child;
+                break;
+            }
+        }
+        
+    }
+    
     /**
      * Checks whether a facility from the imported XML file does already exist in the LDAP (might
      * not be visible in the current alarm tree view if not set in the preferences) or in the current
@@ -146,30 +164,30 @@ public final class ImportXmlFileJob extends Job {
      */
     @Nonnull
     private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
-                                               @Nonnull final IAlarmSubtreeNode rootNode)
-        throws NamingException {
-
-
+                                               @Nonnull final IAlarmSubtreeNode rootNode) throws NamingException {
+        
         final Set<String> existingFacilityNames = new HashSet<String>();
-
+        
         existingFacilityNames.addAll(getExistingFacilityNamesFromLdap());
-
+        
         existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
-
-        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap =
-            model.getByType(FACILITY);
-
+        
+        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap = model
+                .getByType(FACILITY);
+        
         existingFacilityNames.retainAll(facilityMap.keySet());
-
+        
         if (!existingFacilityNames.isEmpty()) {
-            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID,
-                              "Following facility names from XML file already exist in the current view or in LDAP.\n" +
-                              "Please rename them in your file to import:\n" + existingFacilityNames.toString(), null);
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                              "Following facility names from XML file already exist in the current view or in LDAP.\n"
+                                      + "Please rename them in your file to import:\n"
+                                      + existingFacilityNames.toString(),
+                              null);
         }
         return Status.OK_STATUS;
     }
-
-
+    
     @Nonnull
     private Set<String> getExistingFacilitiesFromView(@Nonnull final IAlarmSubtreeNode rootNode) {
         final Set<String> facilities = new HashSet<String>();
@@ -178,28 +196,34 @@ public final class ImportXmlFileJob extends Job {
         }
         return facilities;
     }
-
-
+    
     @Nonnull
-    private Set<String> getExistingFacilityNamesFromLdap()
-        throws NamingException {
-
+    private Set<String> getExistingFacilityNamesFromLdap() throws NamingException {
+        
         final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
         if (service == null) {
             throw new ServiceUnavailableException("LDAP service not available. Existing facilities could not be retrieved from LDAP.");
         }
-
-        final ILdapSearchResult searchResult =
-            service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-                                                      any(FACILITY.getNodeTypeName()),
-                                                      SearchControls.ONELEVEL_SCOPE);
+        
+        final ILdapSearchResult searchResult = service
+                .retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(),
+                                                                  UNIT.getUnitTypeValue()),
+                                                   any(FACILITY.getNodeTypeName()),
+                                                   SearchControls.ONELEVEL_SCOPE);
         final Set<SearchResult> set = searchResult.getAnswerSet();
         final Set<String> facilityNamesInLdap = new HashSet<String>();
         for (final SearchResult row : set) {
-            final LdapName fullLdapName= parseSearchResult(row);
-            final LdapName partLdapName = removeRdns(fullLdapName, UNIT.getNodeTypeName(), Direction.FORWARD);
+            final LdapName fullLdapName = parseSearchResult(row);
+            final LdapName partLdapName = removeRdns(fullLdapName,
+                                                     UNIT.getNodeTypeName(),
+                                                     Direction.FORWARD);
             facilityNamesInLdap.add(partLdapName.toString());
         }
         return facilityNamesInLdap;
+    }
+    
+    @CheckForNull
+    public IAlarmSubtreeNode getXmlRootNode() {
+        return _xmlRootNode;
     }
 }

@@ -28,9 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
 import org.csstudio.alarm.treeView.jobs.JobFactory;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;

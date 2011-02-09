@@ -29,21 +29,26 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
  * Job factory for the alarm tree view.
+ * 
+ * The factory ensures proper concatenation of jobs, e.g. after initial import the alarm state is retrieved and then the view is updated.
  *
  * @author jpenning
  * @since 09.02.2011
  */
 public final class JobFactory {
     
-//    private static final Logger LOG = CentralLogger.getInstance().getLogger(JobFactory.class);
+    //    private static final Logger LOG = CentralLogger.getInstance().getLogger(JobFactory.class);
     
-    private static final IAlarmConfigurationService CONFIG_SERVICE =
-        AlarmTreePlugin.getDefault().getAlarmConfigurationService();
-
+    private static final IAlarmConfigurationService CONFIG_SERVICE = AlarmTreePlugin.getDefault()
+            .getAlarmConfigurationService();
+    
     @Nonnull
     public static ConnectionJob createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
         final ConnectionJob connectionJob = new ConnectionJob(alarmTreeView);
@@ -59,8 +64,18 @@ public final class JobFactory {
                                                                    rootNode,
                                                                    CONFIG_SERVICE);
         
-        importInitConfigJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                                 rootNode));
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        importInitConfigJob.addJobChangeListener(new JobChangeAdapter() {
+            @Override
+            public void done(IJobChangeEvent event) {
+                if (event.getResult() == Status.OK_STATUS) {
+                    retrieveInitialStateJob.setRootNode(rootNode);
+                    retrieveInitialStateJob.schedule();
+                }
+            }
+        });
+        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
+                                                                                     rootNode));
         
         return importInitConfigJob;
     }
@@ -71,10 +86,30 @@ public final class JobFactory {
         final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(alarmTreeView,
                                                                        CONFIG_SERVICE,
                                                                        rootNode);
-        importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                              rootNode));
+        
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        importXmlFileJob.addJobChangeListener(new JobChangeAdapter() {
+            @Override
+            public void done(IJobChangeEvent event) {
+                if (event.getResult() == Status.OK_STATUS) {
+                    IAlarmSubtreeNode xmlRootNode = importXmlFileJob.getXmlRootNode();
+                    if (xmlRootNode != null) {
+                        retrieveInitialStateJob.setRootNode(xmlRootNode);
+                        retrieveInitialStateJob.schedule();
+                    }
+                }
+            }
+        });
+        
+        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
+                                                                                     rootNode));
         
         return importXmlFileJob;
+    }
+    
+    @Nonnull
+    public static RetrieveInitialStateJob createRetrieveInitialStateJob() {
+        return new RetrieveInitialStateJob();
     }
     
     /**
