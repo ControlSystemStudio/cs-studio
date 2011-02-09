@@ -9,3 +9,4 @@ Export-Package: org.custommonkey.xmlunit,
  org.custommonkey.xmlunit.jaxp13,
  org.custommonkey.xmlunit.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

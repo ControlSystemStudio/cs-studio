@@ -4,7 +4,7 @@ Bundle-Name: LDAP Authorization Plug-in
 Bundle-SymbolicName: org.csstudio.platform.ldapAuthorization;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.platform.internal.ldapauthorization.Activator
-Bundle-Vendor: DESY
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform

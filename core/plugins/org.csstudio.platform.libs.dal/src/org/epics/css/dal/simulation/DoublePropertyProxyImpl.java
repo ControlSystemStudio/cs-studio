@@ -22,6 +22,8 @@
 
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
+
 
 
 /**
@@ -43,7 +45,7 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>
 		try {
 			valueProvider.set(0.0);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 }

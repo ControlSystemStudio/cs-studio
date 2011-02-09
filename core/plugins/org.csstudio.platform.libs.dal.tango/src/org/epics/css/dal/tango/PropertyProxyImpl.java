@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
@@ -396,7 +397,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 			try {
 				l[i].dynamicValueConditionChange(pe);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Event handler error, continuing.", e);
 			}
 		}
 	}

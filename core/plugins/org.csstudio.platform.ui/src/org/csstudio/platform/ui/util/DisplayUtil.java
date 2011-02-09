@@ -59,6 +59,10 @@ public class DisplayUtil
             }
         }
     }
+    
+    public boolean isExtensionSupported(String ext){
+    	return actions.containsKey(ext);
+    }
 
     /** @return Singleton instance */
     public static DisplayUtil getInstance()

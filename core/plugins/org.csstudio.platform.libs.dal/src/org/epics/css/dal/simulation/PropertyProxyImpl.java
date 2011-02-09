@@ -25,6 +25,7 @@
  */
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
@@ -247,7 +248,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 			try {
 				l[i].characteristicsChange(ev);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 			}
 		}
 		
@@ -268,7 +269,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 			try {
 				l[i].dynamicValueConditionChange(ev);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 			}
 		}
 	}

@@ -71,8 +71,6 @@ public class CommandSupport implements Command
 			return method.invoke(host, parameters);
 		} catch (Throwable e) {
 			throw new RemoteException(this, "Unable to execute command", e);
-//			e.printStackTrace();
-//			return null;
 		}
 	}
 

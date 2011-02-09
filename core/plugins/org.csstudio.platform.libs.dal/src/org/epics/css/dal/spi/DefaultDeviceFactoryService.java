@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.spi;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LifecycleState;
 import org.epics.css.dal.impl.DefaultApplicationContext;
@@ -150,7 +151,7 @@ public class DefaultDeviceFactoryService implements DeviceFactoryService
 				context = (AbstractApplicationContext)appContextClass.getConstructor(String.class)
 					.newInstance("DefaultContext");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).info("System defined context '"+defaultCtx+"' failed to instantiate, internal defautl will be used instead.", e);
 			}
 		}
 

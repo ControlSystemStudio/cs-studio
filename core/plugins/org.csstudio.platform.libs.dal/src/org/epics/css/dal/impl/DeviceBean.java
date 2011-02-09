@@ -292,9 +292,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 					prop.initialize(pp, dp);
 					prop.refresh();
 				} catch (Exception e) {
-					//TODO log exception!!
-					System.out.println("Problem on re-inizializing property " + pns[i]+":");
-					e.printStackTrace();
+					Logger.getLogger(DeviceBean.class).warn("Problem on re-inizializing property " + pns[i]+".",e);
 				}
 			}
 		}

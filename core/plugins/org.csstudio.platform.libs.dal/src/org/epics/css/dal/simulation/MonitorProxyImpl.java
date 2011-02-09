@@ -25,6 +25,7 @@
  */
 package org.epics.css.dal.simulation;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
@@ -137,7 +138,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 				    proxy.getCondition(), null, false);
 			addResponse(r);
 		} catch (DataExchangeException e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 	}
 

@@ -63,8 +63,7 @@ public final class DirectoryUtilities
 				p.load(fis);
 			}
 		} catch (Exception e) {
-			// TODO: should be logged somewhere
-			//			e.printStackTrace();
+			// TODO: exception should be logged somewhere
 			return (DirContext)new InitialContextFactoryImpl().getInitialContext(System
 			    .getProperties());
 		}

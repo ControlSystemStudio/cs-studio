@@ -4,13 +4,13 @@ Created-By: Apache Maven
 Built-By: ceki
 Build-Jdk: 1.6.0_16
 Bundle-Description: The slf4j API
-Bundle-Version: 1.6.1
+Bundle-Version: 1.6.1.qualifier
 Implementation-Version: 1.6.1
 Implementation-Title: slf4j-api
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.csstudio.platform.libs.slf4j
 Bundle-Name: slf4j.api
-Bundle-Vendor: SLF4J.ORG
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.slf4j;version=1.6.1, org.slf4j.spi;version=1.6.1, 
  org.slf4j.helpers;version=1.6.1
