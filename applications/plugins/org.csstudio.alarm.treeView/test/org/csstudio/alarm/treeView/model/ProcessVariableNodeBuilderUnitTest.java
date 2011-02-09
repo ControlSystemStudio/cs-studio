@@ -26,10 +26,6 @@ import java.sql.Date;
 
 import junit.framework.Assert;
 
-import org.csstudio.alarm.treeView.model.Alarm;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Test;
