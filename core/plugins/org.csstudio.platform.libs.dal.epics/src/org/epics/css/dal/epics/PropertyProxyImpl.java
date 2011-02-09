@@ -217,7 +217,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			try {
 				this.channel = plug.getContext().createChannel(name, this);
 			} catch (Throwable th) {
-				throw new RemoteException(this, "Failed create CA channel", th);
+				throw new RemoteException(this, "Failed create CA channel: "+PlugUtilities.toShortErrorReport(th), th);
 			}
 			abortConnectionTask = plug.schedule(new AbortConnectionRunnable(), Plugs.getInitialConnectionTimeout(plug.getConfiguration()), 0);
 		}
@@ -383,7 +383,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			
 			return toJavaValue(event.getDBR());
 		} catch (CAException e) {
-			throw new DataExchangeException(this, "Get failed.", e);
+			throw new DataExchangeException(this, "Get failed: "+PlugUtilities.toShortErrorReport(e), e);
 		} catch (TimeoutException e) {
 			throw new DataExchangeException(this, "Get failed with timeout.", e);
 		}
@@ -404,7 +404,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			// put does not affect on pendIO
 			plug.flushIO();
 		} catch (CAException e) {
-			throw new DataExchangeException(this, "Set failed.", e);
+			throw new DataExchangeException(this, "Set failed: "+PlugUtilities.toShortErrorReport(e), e);
 		}
 	}
 
@@ -429,7 +429,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			addMonitor(m);
 			return m;
 		} catch (Throwable th) {
-			throw new RemoteException(this, "Failed to create new monitor.", th);
+			throw new RemoteException(this, "Failed to create new monitor: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 

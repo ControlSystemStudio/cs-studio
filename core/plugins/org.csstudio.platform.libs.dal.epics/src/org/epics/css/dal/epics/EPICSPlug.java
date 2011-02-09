@@ -645,7 +645,7 @@ public class EPICSPlug extends AbstractPlug
 				// CAJ will take care of optimization
 				getContext().flushIO();
 			} catch (Throwable th) {
-				Logger.getLogger(this.getClass()).warn("Flush IO error.", th);
+				Logger.getLogger(this.getClass()).warn("Flush IO error: "+PlugUtilities.toShortErrorReport(th), th);
 			}
 		}
 	}
@@ -688,7 +688,7 @@ public class EPICSPlug extends AbstractPlug
 
 		} catch (Throwable th) {
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
+			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 	
@@ -716,7 +716,7 @@ public class EPICSPlug extends AbstractPlug
 
 		} catch (Throwable th) {
 			// rethrow to abort EPICS plug instance creation
-			throw new RemoteException(this,"Failed to initilze EPICS plug", th);
+			throw new RemoteException(this,"Failed to initilze EPICS plug: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
 
