@@ -93,6 +93,8 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	
 	@Override
 	public void rotate90(boolean clockwise) {
+		boolean oldLock = isLocked();
+		setPropertyValue(PROP_LOCK_CHILDREN, false);
 		Point center = new Point(getWidth()/2, getHeight()/2);
 		for(AbstractWidgetModel abstractWidgetModel : getChildren()){
 			abstractWidgetModel.rotate90(clockwise, center);
@@ -108,7 +110,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
 			abstractWidgetModel.setLocation(
 					abstractWidgetModel.getLocation().translate(-dx, -dy));
 		}
-		
+		setPropertyValue(PROP_LOCK_CHILDREN, oldLock);
 	}
 	
 }
