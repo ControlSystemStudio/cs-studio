@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView.views;
+package org.csstudio.alarm.treeView.jobs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,7 @@ import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.PVNodeItem;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
+import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -50,7 +51,7 @@ import org.eclipse.jface.viewers.TreeViewer;
  * @version $Revision$
  * @since 20.05.2010
  */
-public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
+class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(RefreshAlarmTreeViewAdapter.class);
@@ -63,7 +64,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
      * @param rootNode
      * @param alarmTreeView
      */
-    RefreshAlarmTreeViewAdapter(@Nonnull final AlarmTreeView alarmTreeView,
+    public RefreshAlarmTreeViewAdapter(@Nonnull final AlarmTreeView alarmTreeView,
                                 @Nonnull final IAlarmSubtreeNode rootNode) {
         _alarmTreeView = alarmTreeView;
         _adapterRootNode = rootNode;

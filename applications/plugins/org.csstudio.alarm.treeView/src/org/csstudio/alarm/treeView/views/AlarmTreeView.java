@@ -32,8 +32,7 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
-import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
-import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
+import org.csstudio.alarm.treeView.jobs.JobFactory;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
@@ -42,7 +41,6 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
-import org.csstudio.alarm.treeView.views.actions.SaveInLdapSecureAction;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
@@ -275,9 +273,6 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems = new LdapModificationQueue();
 
-    private static final IAlarmConfigurationService CONFIG_SERVICE =
-        AlarmTreePlugin.getDefault().getAlarmConfigurationService();
-
     // Listener for the life cycle of the pv-nodes in the tree. Used for de/registering pvs at the underlying system.
     private IProcessVariableNodeListener _processVariableNodeListener;
 
@@ -356,7 +351,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                                @Nonnull final Queue<ITreeModificationItem> modificationItems) {
 
         _reloadAction =
-            AlarmTreeViewActionFactory.createReloadAction(createImportInitialConfigJob(rootNode),
+            AlarmTreeViewActionFactory.createReloadAction(JobFactory.createImportInitialConfigJob(this, rootNode),
                                                           site,
                                                           alarmListener,
                                                           viewer,
@@ -368,7 +363,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
                                                                               modificationItems);
 
         _importXmlFileAction =
-            AlarmTreeViewActionFactory.createImportXmlFileAction(createImportXmlFileJob(rootNode),
+            AlarmTreeViewActionFactory.createImportXmlFileAction(JobFactory.createImportXmlFileJob(this, rootNode),
                                                                  site,
                                                                  alarmListener,
                                                                  viewer);
@@ -417,34 +412,6 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         _retrieveInitialStateAction = AlarmTreeViewActionFactory.createRetrieveInitialStateAction(site, viewer);
     }
     // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
-
-    @Nonnull
-    private ConnectionJob createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
-        final ConnectionJob connectionJob = new ConnectionJob(alarmTreeView);
-
-        return connectionJob;
-    }
-
-    @Nonnull
-    private Job createImportInitialConfigJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-
-        final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, CONFIG_SERVICE);
-
-        importInitConfigJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
-
-        return importInitConfigJob;
-    }
-
-
-    @Nonnull
-    private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(this,
-                                                                       CONFIG_SERVICE,
-                                                                       rootNode);
-        importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
-
-        return importXmlFileJob;
-    }
 
     /**
      * {@inheritDoc}
@@ -825,7 +792,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
-        final ConnectionJob connectionJob = createConnectionJob(this);
+        final ConnectionJob connectionJob = JobFactory.createConnectionJob(this);
 
         // Gain access to the connection
         connectionJob.addJobChangeListener(new JobChangeAdapter() {
@@ -851,7 +818,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
-        final Job importInitialConfigJob = createImportInitialConfigJob(rootNode);
+        final Job importInitialConfigJob = JobFactory.createImportInitialConfigJob(this, rootNode);
 
         // This means updates will be queued for later application.
         _alarmListener.startUpdateProcessing();
