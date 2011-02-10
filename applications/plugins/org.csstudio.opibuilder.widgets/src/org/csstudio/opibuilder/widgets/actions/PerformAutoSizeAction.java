@@ -2,6 +2,10 @@ package org.csstudio.opibuilder.widgets.actions;
 
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.SetBoundsCommand;
+import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
@@ -12,26 +16,36 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.action.IAction;
 
-/**The action will auto size the group according its children.
+/**The action will auto size the container according to the bounds of its children.
  * @author Xihui Chen
  *
  */
-public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
+public class PerformAutoSizeAction extends AbstractWidgetTargetAction{
 
 
 	public void run(IAction action) {
-		if(getContainerModel().getChildren().size() <=0){
+		if(getContainerEditpart().getChildren().size() <=0){
 			return;
 		}
 		CompoundCommand compoundCommand = new CompoundCommand("Perform AutoSize");	
 		
-		GroupingContainerModel containerModel = getContainerModel();
+		AbstractContainerEditpart containerEditpart = getContainerEditpart();
+		AbstractContainerModel containerModel = containerEditpart.getWidgetModel();
+		
+		
+		//temporary unlock children so children will not be resized.
+		if(containerEditpart instanceof GroupingContainerEditPart){				
+			compoundCommand.add(new SetWidgetPropertyCommand(containerModel, 
+					GroupingContainerModel.PROP_LOCK_CHILDREN, false));
+		}			
+		
 		IFigure figure = getContainerFigure();
 
 		int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, 
 		maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
 		
-		for(AbstractWidgetModel widget : containerModel.getChildren()){
+		for(Object editpart : containerEditpart.getChildren()){
+			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
 			int leftX = widget.getLocation().x;
 			int upY = widget.getLocation().y;
 			int rightX = widget.getLocation().x + widget.getSize().width;
@@ -55,14 +69,24 @@ public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
 						maxY - minY + figure.getInsets().top + figure.getInsets().bottom))));
 		
 
-		for(AbstractWidgetModel widget : containerModel.getChildren()){
+		for(Object editpart : containerEditpart.getChildren()){
+			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
 			compoundCommand.add(new SetBoundsCommand(widget, new Rectangle(
 					widget.getLocation().translate(tranlateSize.getNegated()), 
 					widget.getSize())));
+		}	
+		
+		//recover lock
+		if(containerEditpart instanceof GroupingContainerEditPart){			
+			Object oldvalue = containerEditpart.getWidgetModel()
+			.getPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN);
+			compoundCommand.add(new SetWidgetPropertyCommand(containerModel,
+					GroupingContainerModel.PROP_LOCK_CHILDREN, oldvalue));
 		}
 		
-			execute(compoundCommand);
+		execute(compoundCommand);	
 		
+	
 	}
 
 
@@ -71,8 +95,8 @@ public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
 	 * 
 	 * @return a list with all widget models that are currently selected
 	 */
-	protected final GroupingContainerModel getContainerModel() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
+	protected final AbstractContainerEditpart getContainerEditpart() {
+		return (AbstractContainerEditpart)selection.getFirstElement();
 	}
 
 	/**
@@ -81,7 +105,7 @@ public class PerformAutoSizeOnGroupAction extends AbstractWidgetTargetAction{
 	 * @return a list with all widget models that are currently selected
 	 */
 	protected final IFigure getContainerFigure() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getFigure();
+		return ((AbstractContainerEditpart)selection.getFirstElement()).getFigure();
 	}
 		
 		

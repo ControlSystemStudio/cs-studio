@@ -80,10 +80,11 @@ public final class GraphicalFeedbackChildEditPolicy extends ResizableEditPolicy 
 					.createDragSourceFeedbackFigure(
 							(AbstractWidgetModel) _child.getModel(),
 							getInitialFeedbackBounds());
-
-			addFeedback(feedbackFigure);
-
-			return feedbackFigure;
+			if(feedbackFigure != null){
+				addFeedback(feedbackFigure);
+				return feedbackFigure;
+			}
+			return super.createDragSourceFeedbackFigure();
 		}
 
 		/**

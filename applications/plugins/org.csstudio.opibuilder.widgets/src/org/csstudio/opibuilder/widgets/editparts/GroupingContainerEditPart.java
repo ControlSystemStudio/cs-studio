@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -105,6 +108,32 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		};
 		setPropertyChangeHandler(GroupingContainerModel.PROP_SHOW_SCROLLBAR, showBarHandler);
 		
+		
+		
+		//use property listener because it doesn't need to be queued in GUIRefreshThread.
+		getWidgetModel().getProperty(
+				AbstractWidgetModel.PROP_WIDTH).addPropertyChangeListener(
+						new PropertyChangeListener() {
+			
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							resizeChildren((Integer)(evt.getNewValue()),
+									(Integer)(evt.getOldValue()), true);
+
+						}
+		});		
+		
+		getWidgetModel().getProperty(
+				AbstractWidgetModel.PROP_HEIGHT).addPropertyChangeListener(
+						new PropertyChangeListener() {
+			
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							resizeChildren((Integer)(evt.getNewValue()),
+									(Integer)(evt.getOldValue()), false);
+						}
+		});		
+		
 	}
 	/**
 	* @param lock true if the children should be locked.
@@ -132,6 +161,21 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 		return result;
 	}
 	
+	
+	private void resizeChildren(int newValue, int oldValue, boolean isWidth){
+		if(!getWidgetModel().isLocked())
+			return;
+		double ratio = (newValue-oldValue)/(double)oldValue;
+		for(AbstractWidgetModel child : getWidgetModel().getChildren()){
+			if(isWidth){
+				child.setX((int) (child.getX()*(1+ratio)));
+				child.setWidth((int) (child.getWidth()*(1+ratio)));
+			}else {
+				child.setY((int) (child.getY()*(1+ratio)));
+				child.setHeight((int) (child.getHeight()*(1+ratio)));
+			}				
+		}
+	}
 	
 	
 

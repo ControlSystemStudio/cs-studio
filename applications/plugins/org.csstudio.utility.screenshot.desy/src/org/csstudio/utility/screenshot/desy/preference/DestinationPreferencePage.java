@@ -27,6 +27,7 @@ import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,10 +37,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class DestinationPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
 {
-    public DestinationPreferencePage()
-    {
-        super(GRID);
-        
+    public DestinationPreferencePage() {
+        super();
         setPreferenceStore(DestinationPlugin.getDefault().getPreferenceStore());
     }
 
@@ -49,11 +48,11 @@ public class DestinationPreferencePage extends FieldEditorPreferencePage impleme
     }*/
 
     @Override
-    public void createFieldEditors()
-    {
-        Composite parent = getFieldEditorParent();
-        // parent.setLayout(new GridLayout());
-        // parent.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+    public void createFieldEditors() {
+        
+    	Composite parent = getFieldEditorParent();
+        parent.setLayout(new GridLayout(1, true));
+        parent.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
         
         Composite mailAddress = createGroup(parent, "DestinationPreferencePage.GROUP_MAIL_ADDRESS");
         addField(new StringFieldEditor(DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, LogbookSenderMessages.getString("DestinationPreferencePage.MAIL_ADDRESS_SENDER"), mailAddress));
@@ -68,16 +67,17 @@ public class DestinationPreferencePage extends FieldEditorPreferencePage impleme
         addField(new AddRemoveListFieldEditor(DestinationPreferenceConstants.GROUP_NAMES, LogbookSenderMessages.getString("DestinationPreferencePage.GROUP_NAMES"), groupNames));
     }
 
-    private Composite createGroup(Composite composite, String label)
-    {
-        Group group = new Group(composite, 0);
-        group.setText(LogbookSenderMessages.getString(label));
-        group.setLayout(new GridLayout());
-        group.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+    private Composite createGroup(Composite composite, String label) {
         
-        return new Composite(group, 0);
+    	Group group = new Group(composite, 0);
+        group.setText(LogbookSenderMessages.getString(label));
+        group.setLayout(new GridLayout(1, false));
+        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+        
+        return new Composite(group, SWT.NONE);
     }
 
-    
-    public void init(IWorkbench workbench) { }
+    public void init(IWorkbench workbench) {
+    	// Can be empty
+    }
 }

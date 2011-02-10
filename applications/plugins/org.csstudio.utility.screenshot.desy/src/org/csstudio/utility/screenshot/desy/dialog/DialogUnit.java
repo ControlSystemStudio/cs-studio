@@ -25,40 +25,41 @@ package org.csstudio.utility.screenshot.desy.dialog;
 
 import org.eclipse.swt.graphics.Rectangle;
 
-public final class DialogUnit
-{
-    private final static int baseUnitX  = 6;
+public final class DialogUnit {
+    
+	private final static int baseUnitX  = 6;
     private final static int baseUnitY  = 13;
     private final static int CORRECTION = 18;
 
-    private DialogUnit() { }
+    private DialogUnit() {
+    	// Avoid instantiation of the class
+    }
     
-    public final static int mapUnitX(int unitX)
-    {
+    public final static int mapUnitX(int unitX) {
         return (unitX * baseUnitX) / 4;
     }
 
-    public final static int mapUnitY(int unitY)
-    {
+    public final static int mapUnitY(int unitY) {
         return (unitY * baseUnitY) / 8;
     }
     
-    public final static int mapUnitYWithCorrection(int unitY)
-    {
+    public final static int mapUnitYWithCorrection(int unitY) {
         return ((unitY * baseUnitY) / 8) - CORRECTION;
     }
     
-    public final static Rectangle mapUnits(Rectangle r)
-    {
-        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x), DialogUnit.mapUnitYWithCorrection(r.y), DialogUnit.mapUnitX(r.width), DialogUnit.mapUnitY(r.height));
-        
+    public final static Rectangle mapUnits(Rectangle r) {
+        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x),
+        		DialogUnit.mapUnitYWithCorrection(r.y),
+        		DialogUnit.mapUnitX(r.width),
+        		DialogUnit.mapUnitY(r.height));
         return rect;
     }
     
-    public final static Rectangle mapUnitsWithoutCorrection(Rectangle r)
-    {
-        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x), DialogUnit.mapUnitY(r.y), DialogUnit.mapUnitX(r.width), DialogUnit.mapUnitY(r.height));
-        
+    public final static Rectangle mapUnitsWithoutCorrection(Rectangle r) {
+        Rectangle rect = new Rectangle(DialogUnit.mapUnitX(r.x),
+        		DialogUnit.mapUnitY(r.y),
+        		DialogUnit.mapUnitX(r.width),
+        		DialogUnit.mapUnitY(r.height));
         return rect;
     }
 }
