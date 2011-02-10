@@ -24,9 +24,6 @@ package org.csstudio.alarm.treeView.model;
 
 import junit.framework.Assert;
 
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Test;
 

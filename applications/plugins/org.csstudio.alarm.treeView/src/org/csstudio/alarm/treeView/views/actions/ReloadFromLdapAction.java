@@ -83,7 +83,7 @@ public final class ReloadFromLdapAction extends Action {
         if (!_ldapModificationItems.isEmpty()) {
             willReload = MessageDialog
                     .openConfirm(_site.getShell(), "Unsaved items", getMessageWithUnsavedItems()
-                            + "\nDo you want to reload from ldap (Ok) or keep unsaved items (Cancel)?");
+                            + "\nDo you want to reload from LDAP (Ok) or keep unsaved items (Cancel)?");
         }
         if (willReload) {
             reloadFromLdap();

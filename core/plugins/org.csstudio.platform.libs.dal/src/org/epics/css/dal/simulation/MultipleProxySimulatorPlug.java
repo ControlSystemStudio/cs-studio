@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueCondition;
@@ -133,7 +134,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 					    proxy.getCondition(), null, false);
 				addResponse(r);
 			} catch (DataExchangeException e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 			}
 		}
 
@@ -414,7 +415,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 			return proxy;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
 		}
 		return null;
 	}

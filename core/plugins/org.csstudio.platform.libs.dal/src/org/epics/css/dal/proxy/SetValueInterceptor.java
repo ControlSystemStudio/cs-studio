@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.proxy;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
@@ -87,7 +88,7 @@ public class SetValueInterceptor<T> implements ResponseListener<T>
 				wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
 				    .getDefaultTimeout());
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
 			}
 		}
 

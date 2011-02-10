@@ -391,15 +391,6 @@
                tooltip="Remove the group container.">
          </action>
          <action
-               class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeOnGroupAction"
-               enablesFor="1"
-               icon="icons/autoSizeGroup.png"
-               id="org.csstudio.opibuilder.widgets.performAutoSize"
-               label="Perform AutoSize"
-               menubarPath="group"
-               tooltip="Perform AutoSize on the selected Group Container.">
-         </action>
-         <action
                class="org.csstudio.opibuilder.widgets.actions.SelectAllInGroupAction"
                enablesFor="1"
                icon="icons/select_all.png"
@@ -500,6 +491,26 @@
                menubarPath="group"
                tooltip="Reload OPI into this container.">
          </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.performAutoSize"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractContainerEditpart">
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeAction"
+               enablesFor="1"
+               icon="icons/autoSizeGroup.png"
+               id="org.csstudio.opibuilder.widgets.performAutoSize"
+               label="Perform Auto Size"
+               menubarPath="group"
+               tooltip="Perform Auto Size on the selected Container.">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
       </objectContribution>
    </extension>
    <extension

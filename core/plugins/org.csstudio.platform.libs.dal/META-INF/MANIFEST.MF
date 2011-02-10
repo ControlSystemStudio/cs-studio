@@ -34,3 +34,4 @@ Export-Package: com.cosylab.application.state,
  org.epics.css.dal.simulation,
  org.epics.css.dal.simulation.ps,
  org.epics.css.dal.spi
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning

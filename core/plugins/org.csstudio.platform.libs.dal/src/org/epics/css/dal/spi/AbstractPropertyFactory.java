@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -120,7 +121,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 					try {
 						wait(60000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
 					}
 				}
 				
@@ -231,7 +232,7 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 						try {
 							wait(60000);
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							Logger.getLogger(this.getClass()).debug("Wait interrupted.", e);
 						}
 					}
 					

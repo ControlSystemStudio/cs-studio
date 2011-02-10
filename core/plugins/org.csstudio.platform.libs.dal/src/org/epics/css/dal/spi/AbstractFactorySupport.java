@@ -23,6 +23,7 @@
 package org.epics.css.dal.spi;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LifecycleEvent;
 import org.epics.css.dal.context.LifecycleListener;
@@ -79,10 +80,11 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 				if (plug != null)
 					plug.releaseInstance();
 			} catch (Throwable e) {
-				if (plug != null)
+				if (plug != null) {
 					plug.getLogger().log(Level.WARN, "Unable to release factory.",e);
-				else 
-					e.printStackTrace();
+				} else {
+					Logger.getLogger(this.getClass()).warn("Unable to release factory.", e);
+				}
 			}
 		}
 
@@ -142,7 +144,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 						.getMethod("getInstance", new Class[]{ AbstractApplicationContext.class })
 						.invoke(null, new Object[]{ ctx });
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).debug("Heuristic plug instantiation failed, another try available.", e);
 			}
 			
 			if (plug == null) {
@@ -151,7 +153,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 						.getMethod("getInstance", new Class[]{ Properties.class })
 						.invoke(null, new Object[]{ ctx.getConfiguration() });
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(this.getClass()).fatal("Heuristic plug instantiation failed twice.", e);
 					throw new RuntimeException("Plug '" + getPlugClass()
 					    + "' is not correctly implemented. ", e);
 				}

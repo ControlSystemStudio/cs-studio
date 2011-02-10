@@ -169,3 +169,4 @@ Export-Package: fr.esrf.Tango,
  org.omg.TimeBase
 Bundle-ClassPath: .,
  libs/TangORB-7.1.0.jar
+Bundle-Vendor: Desy <css-developer@desy.de>, Helge Rickens

@@ -15,3 +15,4 @@ Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .
 Export-Package: org.csstudio.platform.libs.dal.epics,
  org.epics.css.dal.epics
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
