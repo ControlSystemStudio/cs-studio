@@ -21,7 +21,7 @@ class ExternalAnnunciator extends BaseAnnunciator
      *  Must take the text as an argument.
      */
     private static final String SAY = "say"; //$NON-NLS-1$
-    
+
     /** Timeout for the command to finish */
     private static final long TIMEOUT_MILLI = 60*1000;
 
@@ -29,13 +29,13 @@ class ExternalAnnunciator extends BaseAnnunciator
     static class StreamDumper extends Thread
     {
         final private InputStream stream;
-        
+
         StreamDumper(final InputStream stream)
         {
             super("ExternalAnnunciatorStreamDumper"); //$NON-NLS-1$
             this.stream = stream;
         }
-        
+
         @Override
         public void run()
         {
@@ -60,11 +60,12 @@ class ExternalAnnunciator extends BaseAnnunciator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void say(final String something) throws Exception
     {
         // Translate text
         final String text = applyTranslations(something);
-        
+
         // Start external command
         final String command[] = new String[] { SAY, text };
         final Process process = new ProcessBuilder(command).start();
@@ -87,6 +88,7 @@ class ExternalAnnunciator extends BaseAnnunciator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         // NOP
