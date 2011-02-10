@@ -30,6 +30,6 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
  * @since 06.12.2010
  * @param <T> basic type of the Css value type
  */
-public interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
+public interface ITimedCssAlarmValueType<T> extends ITimedCssValueType<T>, IHasAlarm {
     // Empty
 }

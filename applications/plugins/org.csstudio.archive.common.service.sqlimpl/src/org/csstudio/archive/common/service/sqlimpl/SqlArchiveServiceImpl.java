@@ -47,7 +47,7 @@ import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -302,7 +302,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ICssValueType<V> & IHasAlarm>
+    public <V, T extends ITimedCssValueType<V> & IHasAlarm>
     boolean writeSamples(final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
       throw new ArchiveServiceException("Not implemented", null);
     }

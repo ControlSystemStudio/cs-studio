@@ -81,7 +81,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void start(final BundleContext context) throws Exception {
+    public void start(@Nonnull final BundleContext context) throws Exception {
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
@@ -116,9 +116,10 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void stop(final BundleContext bundleContext) throws Exception {
+    public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 
 	    // Services are automatically unregistered
+
 	    ArchiveDaoManager.INSTANCE.disconnect();
 	}
 }

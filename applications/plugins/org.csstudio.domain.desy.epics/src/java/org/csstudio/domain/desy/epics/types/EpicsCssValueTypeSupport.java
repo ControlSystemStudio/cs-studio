@@ -30,7 +30,7 @@ import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -179,7 +179,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 
         @Override
         @Nonnull
-        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Byte> cssValue, 
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<Byte> cssValue, 
                                                      @Nonnull final Byte min, 
                                                      @Nonnull final Byte max) throws TypeSupportException {
             return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
@@ -227,7 +227,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 
         @Override
         @Nonnull
-        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Long> cssValue, 
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<Long> cssValue, 
                                                      @Nonnull final Long min, 
                                                      @Nonnull final Long max) throws TypeSupportException {
             return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
@@ -282,7 +282,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 
         @Override
         @Nonnull
-        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Integer> cssValue, 
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<Integer> cssValue, 
                                                      @Nonnull final Integer min, 
                                                      @Nonnull final Integer max) throws TypeSupportException {
             return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
@@ -329,7 +329,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 
         @Override
         @Nonnull
-        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Double> cssValue, 
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<Double> cssValue, 
                                                      @Nonnull final Double min, 
                                                      @Nonnull final Double max) throws TypeSupportException {
             return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
@@ -379,7 +379,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
 
         @Override
         @Nonnull
-        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<Float> cssValue, 
+        protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<Float> cssValue, 
                                                      @Nonnull final Float min, 
                                                      @Nonnull final Float max) throws TypeSupportException {
             return createMinMaxDoubleValueFromNumber(cssValue.getTimestamp(), cssValue.getAlarm(), cssValue.getValueData(), min, max);
@@ -457,7 +457,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
     }
 
     @CheckForNull
-    public static <T> IValue toIValue(@Nonnull final ICssAlarmValueType<T> cssValue) throws TypeSupportException {
+    public static <T> IValue toIValue(@Nonnull final ITimedCssAlarmValueType<T> cssValue) throws TypeSupportException {
         final T valueData = cssValue.getValueData();
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
@@ -474,7 +474,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
      * @return
      * @throws TypeSupportException 
      */
-    public static <T> IValue toIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<T> cssValue,
+    public static <T> IValue toIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<T> cssValue,
                                                   @Nonnull final T min,
                                                   @Nonnull final T max) throws TypeSupportException {
         final T valueData = cssValue.getValueData();
@@ -506,7 +506,7 @@ public abstract class EpicsCssValueTypeSupport<T> extends TypeSupport<T> {
                                               @Nonnull final EpicsAlarm alarm,
                                               @Nonnull final TimeInstant timestamp) throws TypeSupportException;
     @CheckForNull
-    protected IValue convertToIMinMaxDoubleValue(@Nonnull final ICssAlarmValueType<T> cssValue,
+    protected IValue convertToIMinMaxDoubleValue(@Nonnull final ITimedCssAlarmValueType<T> cssValue,
                                                  @SuppressWarnings("unused") @Nonnull final T min,
                                                  @SuppressWarnings("unused") @Nonnull final T max) throws TypeSupportException {
         throw new TypeSupportException("Type " + cssValue.getValueData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);

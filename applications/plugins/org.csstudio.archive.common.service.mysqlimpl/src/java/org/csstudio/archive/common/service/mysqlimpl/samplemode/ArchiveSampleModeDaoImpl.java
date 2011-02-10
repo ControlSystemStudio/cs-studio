@@ -74,12 +74,9 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     /**
      * {@inheritDoc}
      */
-    // CHECKSTYLE OFF: CyclomaticComplexity
-    //                 CC is due to try catch blocks
     @Override
     @CheckForNull
-    public IArchiveSampleMode retrieveSampleModeById(final ArchiveSampleModeId id) throws ArchiveDaoException {
-    // CHECKSTYLE ON: CyclomaticComplexity
+    public IArchiveSampleMode retrieveSampleModeById(@Nonnull final ArchiveSampleModeId id) throws ArchiveDaoException {
 
         IArchiveSampleMode mode = _sampleModeCache.get(id);
         if (mode != null) {

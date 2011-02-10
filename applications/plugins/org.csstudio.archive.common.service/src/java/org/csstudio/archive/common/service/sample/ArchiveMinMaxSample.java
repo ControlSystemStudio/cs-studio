@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 
 /**
  * TODO (bknerr) : find a better abstraction for this object (@see {@link IArchiveMinMaxSample}).
@@ -37,7 +37,7 @@ import org.csstudio.domain.desy.types.ICssAlarmValueType;
  * @param <T> the css value type
  */
 public class ArchiveMinMaxSample<V,
-                                 T extends ICssAlarmValueType<V>>
+                                 T extends ITimedCssAlarmValueType<V>>
                                 extends ArchiveSample<V, T>
                                 implements IArchiveMinMaxSample<V, T> {
 

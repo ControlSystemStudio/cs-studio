@@ -19,27 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.archive.common.service.mysqlimpl.dao;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import javax.annotation.concurrent.GuardedBy;
 
 /**
- * Read-only interface for archive sample. 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 08.02.2011
  */
-public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
-    
-    @Nonnull
-    ArchiveChannelId getChannelId();
+public enum SqlStatementBatch {
+    INSTANCE;
 
+    @GuardedBy("this")
+    private long _sizeInBytes = 0;
+
+    private final BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
+
+    private SqlStatementBatch() {
+        // Empty
+    }
+    public void submitStatement(@Nonnull final String statement) {
+        _statements.add(statement); // non blocking add
+        synchronized (this) {
+            _sizeInBytes += statement.codePointCount(0, statement.length()) * 2;
+        }
+    }
     @Nonnull
-    T getData();
+    public BlockingQueue<String> getQueue() {
+        return _statements;
+    }
+    public synchronized long sizeInBytes() {
+        return _sizeInBytes;
+    }
 }

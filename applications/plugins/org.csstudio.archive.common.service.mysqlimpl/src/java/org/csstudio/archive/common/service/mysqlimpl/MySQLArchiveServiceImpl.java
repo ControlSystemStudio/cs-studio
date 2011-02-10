@@ -41,7 +41,6 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
@@ -54,8 +53,8 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -98,7 +97,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @since 22.12.2010
      */
     private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>, IValue> {
+            Function<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>, IValue> {
         /**
          * Constructor.
          */
@@ -107,64 +106,24 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         }
 
         @Override
-         public IValue apply(final IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>> from) {
-             try {
-                 // TODO (bknerr) : support lookup for every single value... check performance
-                 final Object min = from.getMinimum();
-                 final Object max = from.getMaximum();
-                 if (min != null && max != null) {
-                     return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
-                 }
+        @CheckForNull
+        public IValue apply(@Nonnull final IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>> from) {
+            try {
+                // TODO (bknerr) : support lookup for every single value... check performance
+                final Object min = from.getMinimum();
+                final Object max = from.getMaximum();
+                if (min != null && max != null) {
+                    return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
+                }
                 return EpicsCssValueTypeSupport.toIValue(from.getData());
             } catch (final TypeSupportException e) {
                 return null;
             }
-         }
+        }
     }
     private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
 
-//    /**
-//     * Converter function with email error.
-//     *
-//     * @author bknerr
-//     * @since 20.12.2010
-//     */
-//    private static final class IValueWithId2ICssAlarmValueFunction implements
-//            Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> {
-//        /**
-//         * Constructor.
-//         */
-//        public IValueWithId2ICssAlarmValueFunction() {
-//            // EMPTY
-//        }
-//
-//        @SuppressWarnings("synthetic-access")
-//        @Override
-//        @CheckForNull
-//        public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
-//            try {
-//                return ADAPT_MGR.adapt(valWithId);
-//
-//            } catch (final TypeSupportException e) {
-//                final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
-//                LOG.error(msg, e);
-//                try {
-//                    final EMailSender mailer =new EMailSender("smtp.desy.de",
-//                                                              "archive.service@dontreply",
-//                                                              "bastian.knerr@desy.de",
-//                                                              msg);
-//                    mailer.addText(e.getMessage() + "\n" + e.getCause());
-//                    mailer.close();
-//                } catch (final IOException ioe) {
-//                    LOG.error("Closing of mailer for error message failed.", ioe);
-//                }
-//                return null;
-//            }
-//        }
-//    }
-//    private static final IValueWithId2ICssAlarmValueFunction IVALUE_2_CSS_VALUE_FUNC =
-//        new IValueWithId2ICssAlarmValueFunction();
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
@@ -176,16 +135,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     public
-    <V, T extends ICssValueType<V> & IHasAlarm>
+    <V, T extends ITimedCssValueType<V> & IHasAlarm>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
-
-        // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
-       //                   And apparently the type leads to Object instead of generic type...damn
         try {
-//            final Collection<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
-//                Collections2.filter(Collections2.transform(samples, IVALUE_2_CSS_VALUE_FUNC),
-//                                    Predicates.<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>notNull());
-
             DAO_MGR.getSampleDao().createSamples(samples);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
@@ -198,28 +150,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Deprecated
     @Override
-    public void writeMetaData(@Nonnull final String channelName, final IValue sample) {
-        // FIXME (bknerr) : check the conception of meta data coming out of caj,jca or whatever
-
-        // Metadata are partly themselves record fields (for numerics), which might be again
-        // configured and registered channels, hence having channel configurations that then have
-        // again meta data and so on.
-        //
-        // Question:
-        // could we treat all channels = 'record fields' exactly the same in the archiver, just as samples in the sample table
-        // and let the archive reading clients handle the relations between the record fields (whether they
-        // belong to the 'same' record or influence each other in any way is only of interest for the archive reading
-        // tool not for the archive).
-        // How about that:
-        // Consider making the channel id in the rdb split into two columns, record and field.
-        // Hence, asking about a channel's VAL samples, e.g. <record>.<field>=kryoBox.VAL can easily be
-        // modified by the client to ask additionally, if channelType of kryoBox.VAL is numeric, get the samples for
-        // channel kryoBox.deadband, kryoBox.HIHI and kryoBox.LOLO or how these are called. That can
-        // be called meta data or whatever. But the archivereader wouldn't notice any difference, and just
-        // deliver type safe sample collections.
-        //
-        // Sidenote; it is envisioned to have several control systems. Hence record and field might not
-        // be appropriate. Generify this idea.
+    public void writeMetaData(@Nonnull final String channelName,
+                              @Nonnull final IValue sample) {
+        // this meta data concept does not exist in this impl
     }
 
     /**
@@ -261,7 +194,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> getGroupsForEngine(final ArchiveEngineId id) throws ArchiveServiceException {
+    public Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
         } catch (final ArchiveDaoException e) {
@@ -274,7 +207,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public Collection<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
+    public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
         } catch (final ArchiveDaoException e) {
@@ -287,7 +220,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
+    @CheckForNull
+    public IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
         try {
             return DAO_MGR.getSampleModeDao().retrieveSampleModeById(sampleModeId);
         } catch (final ArchiveDaoException e) {
@@ -300,7 +234,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * {@inheritDoc}
      */
     @Override
-    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, @Nonnull final IValue value) throws ArchiveServiceException {
         // TODO Auto-generated method stub
 
     }
@@ -321,13 +255,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
-                @Override
-                @CheckForNull
-                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
-                    return daoManager.getArchiverMgmtDao().createMgmtEntries(monitorStates);
-                }
-            });
+            DAO_MGR.getArchiverMgmtDao().createMgmtEntries(monitorStates);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
         }
@@ -339,13 +267,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
     @Override
     public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
         try {
-            DAO_MGR.executeAndClose(new IArchiveDaoCommand() {
-                @Override
-                @CheckForNull
-                public Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException {
-                    return daoManager.getArchiverMgmtDao().createMgmtEntry(entry);
-                }
-            });
+            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(entry);
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }
@@ -356,9 +278,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Iterable<IValue> readSamples(final String channelName,
-                                        final ITimestamp start,
-                                        final ITimestamp end) throws ArchiveServiceException {
+    public Iterable<IValue> readSamples(@Nonnull final String channelName,
+                                        @Nonnull final ITimestamp start,
+                                        @Nonnull final ITimestamp end) throws ArchiveServiceException {
         return readSamples(channelName, start, end, null);
     }
 
@@ -383,7 +305,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ICssAlarmValueType<Object>>> samples =
+            final Iterable<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>> samples =
                 DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =

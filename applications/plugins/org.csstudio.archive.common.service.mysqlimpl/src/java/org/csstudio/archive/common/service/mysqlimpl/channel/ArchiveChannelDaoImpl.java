@@ -97,8 +97,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         }
     }
 
-    private IArchiveChannel getChannelFromResult(final ResultSet result) throws SQLException,
-    ClassNotFoundException {
+    @Nonnull
+    private IArchiveChannel getChannelFromResult(@Nonnull final ResultSet result) throws SQLException,
+                                                                                         ClassNotFoundException {
         // id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(1));
         final String name = result.getString(2);
@@ -189,7 +190,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannel> retrieveChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveDaoException {
+    public Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveDaoException {
 
         final Collection<IArchiveChannel> filteredList = getChannelsByGroupIdFromCache(groupId);
         if (!filteredList.isEmpty()) {

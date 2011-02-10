@@ -19,36 +19,64 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.types;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * System variables are the fundamental atomic components of any system.
- * A system variables is an entity in form of a value or state (set of values/states) to a given
- * time instant.
- * A complete system is composed of a non-empty set of system variables.
- *
- * It is identifiable and features to any given time a unique value/state or a set of the same that
- * is unique to that time.
+ * Abstract class for an alarm bearing css value type of base type <T>
  *
  * @author bknerr
- * @since 04.11.2010
- *
- * @param <V> the basic type of the value(s) of the system variable
- * @param <T> the type of the system variable
+ * @since 07.12.2010
+ * @param <T> the basic value type of the datum/data
  */
-public interface ISystemVariable<V, T extends ICssValueType<V>> extends Identifiable<SystemVariableId> {
+public class TimedCssAlarmValueType<T> implements ITimedCssAlarmValueType<T> {
+
+    private final T _data;
+    private final IAlarm _alarm;
+    private final TimeInstant _timestamp;
 
     /**
-     * The datum entity (value(s) and/or state(s) of this system variable.
-     * @return the variable
+     * Constructor.
      */
+    public TimedCssAlarmValueType(@Nonnull final T data,
+                                     @Nullable final IAlarm alarm,
+                                     @Nonnull final TimeInstant timestamp) {
+        _data = data;
+        _alarm = alarm;
+        _timestamp = timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    T getData();
+    public T getValueData() {
+        return _data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IAlarm getAlarm() {
+        return _alarm;
+    }
 
 }
-

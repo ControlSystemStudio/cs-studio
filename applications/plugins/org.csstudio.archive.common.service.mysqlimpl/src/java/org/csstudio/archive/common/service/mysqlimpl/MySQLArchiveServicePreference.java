@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.AbstractPreference;
 
 /**
@@ -33,11 +35,20 @@ import org.csstudio.platform.AbstractPreference;
  */
 public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
-    public static final MySQLArchiveServicePreference<String> URL =
-        new MySQLArchiveServicePreference<String>("url", "NOT PUBLIC");
+    public static final MySQLArchiveServicePreference<String> HOST =
+        new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<String> FAILOVER_URL =
-        new MySQLArchiveServicePreference<String>("failover_url", "NOT PUBLIC");
+    public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
+        new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
+
+    public static final MySQLArchiveServicePreference<Integer> PERIOD =
+        new MySQLArchiveServicePreference<Integer>("periodInS", 5);
+
+    public static final MySQLArchiveServicePreference<Integer> PORT =
+        new MySQLArchiveServicePreference<Integer>("port", 3306);
+
+    public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
+        new MySQLArchiveServicePreference<String>("databaseName", "archive");
 
     public static final MySQLArchiveServicePreference<String> USER =
         new MySQLArchiveServicePreference<String>("user", "NOT PUBLIC");
@@ -45,21 +56,22 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> PASSWORD =
         new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<String> DATABASE_NAME =
-        new MySQLArchiveServicePreference<String>("database_name", "NOT PUBLIC");
+    public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET =
+        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 16384);
 
-    public static final MySQLArchiveServicePreference<Boolean> AUTO_CONNECT =
-        new MySQLArchiveServicePreference<Boolean>("auto_connect", Boolean.FALSE);
+    public static final MySQLArchiveServicePreference<String> SMTP_HOST =
+        new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<Integer> SQL_TIMEOUT =
-        new MySQLArchiveServicePreference<Integer>("sql_timeout", 30*60);
+    public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
+        new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
 
     /**
      * Constructor.
      * @param keyAsString
      * @param defaultValue
      */
-    protected MySQLArchiveServicePreference(final String keyAsString, final T defaultValue) {
+    protected MySQLArchiveServicePreference(@Nonnull final String keyAsString,
+                                            @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
@@ -68,6 +80,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
      */
     @SuppressWarnings("unchecked")
     @Override
+    @Nonnull
     protected Class<? extends AbstractPreference<T>> getClassType() {
         return (Class<? extends AbstractPreference<T>>) MySQLArchiveServicePreference.class;
     }
@@ -76,6 +89,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected String getPluginID() {
         return Activator.PLUGIN_ID;
     }

@@ -177,7 +177,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      * @throws TypeSupportException
      */
     @CheckForNull
-    public static <T> T fromScalarArchiveString(final Class<T> typeClass, @Nonnull final String value) throws TypeSupportException {
+    public static <T> T fromScalarArchiveString(@Nonnull final Class<T> typeClass,
+                                                @Nonnull final String value) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
                                                                    typeClass);

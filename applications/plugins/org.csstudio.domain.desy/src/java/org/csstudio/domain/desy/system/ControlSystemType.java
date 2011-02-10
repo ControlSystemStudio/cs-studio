@@ -19,27 +19,44 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 
 /**
- * Read-only interface for archive sample. 
- * 
+ * This is until the great awesome abstraction of the different 'control system' used at DESY.
+ * Where, unfortunately, 'control system' is not defined. I just learned that TINE is 'not' a
+ * control system in the sense EPICS is supposed to be... (ask S. Rettig-Labusga).
+ *
+ * Open questions:
+ * see {@link org.csstudio.platform.model.pvs.ControlSystemEnum}
+ *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 09.02.2011
  */
-public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
-    
-    @Nonnull
-    ArchiveChannelId getChannelId();
+public enum ControlSystemType {
+    EPICS(CSCommunicationProtocol.CA),
+    DOOCS(CSCommunicationProtocol.TINE),
+    TANGO(CSCommunicationProtocol.CORBA);
+
+    private final ImmutableSet<CSCommunicationProtocol> _protocols;
+
+    /**
+     * Constructor.
+     * @param prot at least one protocol has to be specified per control system type
+     * @param prots further permitted protocols by this control system type
+     */
+    private ControlSystemType(@Nonnull final CSCommunicationProtocol prot,
+                              @Nonnull final CSCommunicationProtocol... prots) {
+        _protocols = Sets.immutableEnumSet(prot, prots);
+    }
 
     @Nonnull
-    T getData();
+    public ImmutableSet<CSCommunicationProtocol> getProtocols() {
+        return _protocols;
+    }
 }

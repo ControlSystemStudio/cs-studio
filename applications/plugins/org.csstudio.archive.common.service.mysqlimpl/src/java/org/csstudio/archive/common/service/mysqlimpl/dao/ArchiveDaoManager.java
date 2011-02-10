@@ -22,22 +22,30 @@
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_URL;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.EMAIL_ADDRESS;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.URL;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
@@ -54,10 +62,11 @@ import org.csstudio.archive.common.service.mysqlimpl.severity.ArchiveSeverityDao
 import org.csstudio.archive.common.service.mysqlimpl.severity.IArchiveSeverityDao;
 import org.csstudio.archive.service.common.mysqlimpl.status.ArchiveStatusDaoImpl;
 import org.csstudio.archive.service.common.mysqlimpl.status.IArchiveStatusDao;
+import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
-import com.google.common.collect.Maps;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
  * The archive dao manager.
@@ -67,90 +76,95 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveDaoManager implements IDaoManager {
+public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     INSTANCE;
 
-    /**
-     * TODO (bknerr) : Implement DAO command structure
-     *
-     * @author bknerr
-     * @since 03.02.2011
-     */
-    public interface IArchiveDaoCommand {
-        @CheckForNull
-        Object execute(@Nonnull final ArchiveDaoManager daoManager) throws ArchiveDaoException;
-    }
+////    public interface IDaoCommand {
+////        @CheckForNull
+////        Object execute(@Nonnull final IDaoManager daoManager) throws ArchiveDaoException;
+////    }
+//    public interface IArchiveDaoCommand {
+//        @CheckForNull
+//        Object execute(IArchiveDaoManager daoManager) throws ArchiveDaoException;
+//    }
+//
+//    @Override
+//    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//            return command.execute(this);
+//    }
+//
+//    @Override
+//    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        try{
+//            return command.execute(this);
+//        } finally {
+//            try {
+//                getConnection().close();
+//            } catch (final ArchiveConnectionException e) {
+//                throw new ArchiveDaoException("Connection could not be established.", e);
+//            } catch (final SQLException e) {
+//                throw new ArchiveDaoException("Connection could not be closed.", e);
+//            }
+//        }
+//    }
+//    @Override
+//    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        Connection connection = null;
+//        try {
+//            try {
+//                connection = getConnection();
+//                connection.setAutoCommit(false);
+//                final Object returnValue = command.execute(this);
+//                connection.commit();
+//                return returnValue;
+//            } catch (final Exception e) {
+//                if (connection != null) {
+//                    LOG.warn("DAO command execution failed. Rollback.", e);
+//                    connection.rollback();
+//                }
+//                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
+//            } finally {
+//                if (connection != null) {
+//                    connection.setAutoCommit(true);
+//                }
+//            }
+//        } catch (final SQLException e1) {
+//            throw new ArchiveDaoException("DAO command and rollback failed", e1);
+//        }
+//    }
+//    @CheckForNull
+//    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
+//        return executeAndClose(new IArchiveDaoCommand(){
+//            @Override
+//            @CheckForNull
+//            public Object execute(@Nonnull final IArchiveDaoManager manager) throws ArchiveDaoException {
+//                return manager.transaction(command);
+//            }
+//        });
+//    }
 
-    @Override
-    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
-            return command.execute(this);
-    }
-    @Override
-    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
-        try{
-            return command.execute(this);
-        } finally {
-            try {
-                getConnection().close();
-            } catch (final ArchiveConnectionException e) {
-                throw new ArchiveDaoException("Connection could not be established.", e);
-            } catch (final SQLException e) {
-                throw new ArchiveDaoException("Connection could not be closed.", e);
-            }
-        }
-    }
-    @Override
-    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
-        Connection connection = null;
-        try {
-            try {
-                connection = getConnection();
-                connection.setAutoCommit(false);
-                final Object returnValue = command.execute(this);
-                connection.commit();
-                return returnValue;
-            } catch (final Exception e) {
-                if (connection != null) {
-                    LOG.warn("DAO command execution failed. Rollback.", e);
-                    connection.rollback();
-                }
-                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
-            } finally {
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                }
-            }
-        } catch (final SQLException e1) {
-            throw new ArchiveDaoException("DAO command and rollback failed", e1);
-        }
-    }
-    @CheckForNull
-    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
-        return executeAndClose(new IArchiveDaoCommand(){
-            @Override
-            public Object execute(final ArchiveDaoManager manager) throws ArchiveDaoException{
-                return manager.transaction(command);
-            }
-        });
-    }
-
-
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
+    private static final int KBYTE_SIZE = 1024;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
-    private String _url;
-    private String _failoverUrl;
-    private String _user;
-    private String _password;
+    static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
+    static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
+
+    // TODO (bknerr) : number of threads?
+    // get no of cpus and expected no of archive engines, and available archive connections
+    final ScheduledExecutorService _executor = Executors.newScheduledThreadPool(5);
+
+    final SqlStatementBatch _sqlStatementBatch;
+
     private String _databaseName;
+    private Integer _maxAllowedPacketInBytes;
 
     /**
      * Any thread owns a connection.
      */
-    private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
+    private final ThreadLocal<Connection> _archiveConnection =
+        new ThreadLocal<Connection>();
 
     /**
      * DAOs.
@@ -168,18 +182,137 @@ public enum ArchiveDaoManager implements IDaoManager {
      * Constructor.
      */
     private ArchiveDaoManager() {
-        // EMPTY
+        _sqlStatementBatch = SqlStatementBatch.INSTANCE;
+
+        /**
+         * Add shutdown hook.
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void run() {
+                // submit an executor that processes immediately what's left in the queue
+                _executor.execute(new PersistDataWorker("ShutdownWorker" + PersistDataWorker.i,
+                                                        INSTANCE,
+                                                        _sqlStatementBatch.getQueue()));
+                _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
+                try {
+                    if (!_executor.awaitTermination(MySQLArchiveServicePreference.PERIOD.getValue() + 1, TimeUnit.SECONDS)) {
+                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                        final List<Runnable> droppedTasks = _executor.shutdownNow();
+                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
+                    }
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+
+        _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
+                                                            this,
+                                                            _sqlStatementBatch.getQueue()),
+                                      0,
+//                                      MySQLArchiveServicePreference.PERIOD.getValue(),
+                                      100,
+                                      TimeUnit.SECONDS);
     }
 
     /**
-     * Connects with the RDB instance the given preferences.
+     * {@inheritDoc}
+     */
+    @Override
+    public void submitStatementsToBatch(@Nonnull final List<String> stmts) {
+        for (final String stmt : stmts) {
+            submitStatementToBatch(stmt);
+        }
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void submitStatementToBatch(@Nonnull final String stmt) {
+        final int bytesToAdd = stmt.codePointCount(0, stmt.length())*2;
+        synchronized (this) {
+            if (_sqlStatementBatch.sizeInBytes() + bytesToAdd > _maxAllowedPacketInBytes) {
+                // when the worker's batch is exceeding the allowed packet size
+                // schedule a new worker at the same period
+//                _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
+//                                                                    this,
+//                                                                    _sqlStatementBatch.getQueue()),
+//                                              0,
+//                                              MySQLArchiveServicePreference.PERIOD.getValue(),
+//                                              TimeUnit.SECONDS);
+            }
+            _sqlStatementBatch.submitStatement(stmt);
+        }
+    }
+
+    /**
+     * FIXME (bknerr) : data rescue on failover fail not yet implemented!
+     * @param statements
+     */
+    static void rescueData(@Nonnull final List<String> statements) {
+        LOG.info("Failed statements" + statements.size());
+
+        EMailSender mailer;
+        try {
+            mailer = new EMailSender(SMTP_HOST.getValue(),
+                                                       "DontReply@MySQLArchiver",
+                                                       EMAIL_ADDRESS.getValue(),
+                                                       "[MySQL archiver notification]: Failed failover");
+            mailer.addText("Statements rescued:\n");
+            mailer.addText("filepath to statements file");
+            mailer.close();
+        } catch (final IOException e) {
+            // TODO (bknerr) : handle exceptions on notifications
+            e.printStackTrace();
+        }
+
+    }
+
+    @Nonnull
+    private MysqlDataSource createDataSource() {
+
+        final MysqlDataSource ds = new MysqlDataSource();
+        String hosts = HOST.getValue();
+        final String failoverHost = FAILOVER_HOST.getValue();
+        if (!StringUtil.isBlank(failoverHost)) {
+            hosts += "," + failoverHost;
+        }
+        ds.setServerName(hosts);
+        ds.setPort(PORT.getValue());
+        _databaseName = DATABASE_NAME.getValue();
+        ds.setDatabaseName(_databaseName);
+        ds.setUser(USER.getValue());
+        ds.setPassword(PASSWORD.getValue());
+        ds.setFailOverReadOnly(false);
+
+        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
+        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
+            LOG.warn("MaxAllowedPacket Connection Parameter out of recommended range [" +
+                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
+            _maxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
+        } else {
+            _maxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
+        }
+        ds.setMaxAllowedPacket(_maxAllowedPacketInBytes);
+
+        return ds;
+    }
+
+    /**
+     * Connects with the RDB instance for the given datasource.
+     *
      * An existing connection is closed and an new connection is established.
-     * @param prefs
+     *
+     * @param ds the mysql data source
      * @return connection the newly established connection
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    public Connection connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
+    public Connection connect(@Nonnull final MysqlDataSource ds) throws ArchiveConnectionException {
 
         Connection connection = _archiveConnection.get();
         try {
@@ -187,37 +320,30 @@ public enum ArchiveDaoManager implements IDaoManager {
                 _archiveConnection.set(null);
                 connection.close();
             }
-            _url = (String) prefs.get(URL.getKeyAsString());
-            _failoverUrl = (String) prefs.get(FAILOVER_URL.getKeyAsString());
-            _user = (String) prefs.get(USER.getKeyAsString());
-            _password = (String) prefs.get(PASSWORD.getKeyAsString());
-            _databaseName = (String) prefs.get(DATABASE_NAME.getKeyAsString());
-
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
-            connection = DriverManager.getConnection(_url, _user, _password);
+            connection = ds.getConnection();
+
             if (connection != null) {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection: " +
-                              meta.getDatabaseProductName() +
-                              " " +
-                              meta.getDatabaseProductVersion());
+                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection:\n" +
+                              meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
                 } else {
+                    // Constructor call -> LOG.debug not possible, not yet initialised
                     CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("No meta data for MySQL connection");
                 }
-                // allow for transactions? -> yes
-                connection.setAutoCommit(false);
-
+                // set to true to enable failover to other host
+                connection.setAutoCommit(true);
                 _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
             handleExceptions(e);
         }
-        if (connection == null || StringUtil.isBlank(_databaseName )) {
-            throw new ArchiveConnectionException("Either connection or database name is blank (null or empty).", null);
+        if (connection == null || StringUtil.isBlank(_databaseName)) {
+            throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
     }
@@ -245,20 +371,9 @@ public enum ArchiveDaoManager implements IDaoManager {
         }
     }
 
-    public void reconnect() throws ArchiveConnectionException {
-        final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
-        connect(prefs);
-    }
-
-    private Map<String, Object> createConnectionPrefsFromEclipsePrefs() {
-        final Map<String, Object> prefs = Maps.newHashMap();
-        prefs.put(URL.getKeyAsString(), URL.getValue());
-        prefs.put(FAILOVER_URL.getKeyAsString(), FAILOVER_URL.getValue());
-        prefs.put(USER.getKeyAsString(), USER.getValue());
-        prefs.put(PASSWORD.getKeyAsString(), PASSWORD.getValue());
-        prefs.put(DATABASE_NAME.getKeyAsString(), DATABASE_NAME.getValue());
-        return prefs;
-    }
+//    public void reconnect() throws ArchiveConnectionException {
+//        connect(createDataSource());
+//    }
 
     /**
      * Disconnects the connection for the owning thread.
@@ -268,9 +383,11 @@ public enum ArchiveDaoManager implements IDaoManager {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
             try {
+                _executor.shutdown(); // handles all already submitted tasks
                 connection.close();
+                _archiveConnection.set(null);
             } catch (final SQLException e) {
-                throw new ArchiveConnectionException("Archive disconnection failed. Ignore.", e);
+                throw new ArchiveConnectionException("Archive disconnection failed!", e);
             }
         }
     }
@@ -279,6 +396,7 @@ public enum ArchiveDaoManager implements IDaoManager {
     /**
      * Returns the current connection for the owning thread.
      * This method is invoked by the dedicated daos to retrieve their connection.
+     * A connection's datasource is configured via the plugin_customization.ini
      *
      * @return the connection
      * @throws ArchiveConnectionException
@@ -291,19 +409,24 @@ public enum ArchiveDaoManager implements IDaoManager {
         if (connection == null) {
             // the calling thread has not yet a connection registered.
             // for now create a new one for this one
-            return connect(createConnectionPrefsFromEclipsePrefs());
+            return connect(createDataSource());
         }
         return connection;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @CheckForNull
     public String getDatabaseName() {
         return _databaseName;
     }
 
     /**
-     * @return the archive channel dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveChannelDao getChannelDao() {
         if (_archiveChannelDao == null) {
@@ -313,8 +436,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archiver management dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiverMgmtDao getArchiverMgmtDao() {
         if (_archiverMgmtDao == null) {
@@ -324,8 +448,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive channel group dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveChannelGroupDao getChannelGroupDao() {
         if (_archiveChannelGroupDao == null) {
@@ -335,8 +460,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive sample mode dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveSampleModeDao getSampleModeDao() {
         if (_archiveSampleModeDao == null) {
@@ -346,8 +472,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive sample dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveSampleDao getSampleDao() {
         if (_archiveSampleDao == null) {
@@ -357,8 +484,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive engine dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveEngineDao getEngineDao() {
         if (_archiveEngineDao == null) {
@@ -368,8 +496,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive severity dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveSeverityDao getSeverityDao() {
         if (_archiveSeverityDao == null) {
@@ -379,8 +508,9 @@ public enum ArchiveDaoManager implements IDaoManager {
     }
 
     /**
-     * @return the archive status dao
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public IArchiveStatusDao getStatusDao() {
         if (_archiveStatusDao == null) {

@@ -24,7 +24,7 @@ package org.csstudio.archive.common.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * The read-only interface of a sample featuring minimum and maximum values (not necessarily, but 
@@ -40,7 +40,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <T> the type of the composite system value (with alarm and timestamp)
  */
 public interface IArchiveMinMaxSample<V,
-                                      T extends ICssValueType<V> & IHasAlarm>
+                                      T extends ITimedCssValueType<V> & IHasAlarm>
     extends IArchiveSample<V, T> {
 
     @Nonnull

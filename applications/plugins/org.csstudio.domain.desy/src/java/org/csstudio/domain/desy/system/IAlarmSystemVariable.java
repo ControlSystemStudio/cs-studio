@@ -19,27 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.domain.desy.system;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
- * Read-only interface for archive sample. 
- * 
+ * The alarm loaded system variable.
+ *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 09.02.2011
+ *
+ * @param <V> the basic type of the value(s) of the system variable
+ * @param <T> the type of the system variable
  */
-public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
-    
-    @Nonnull
-    ArchiveChannelId getChannelId();
-
-    @Nonnull
-    T getData();
+public interface IAlarmSystemVariable<V,
+                                      T extends ICssValueType<V>> extends ISystemVariable<V, T>,
+                                                                          IHasAlarm {
+    // Empty
 }

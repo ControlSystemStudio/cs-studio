@@ -19,64 +19,55 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.system;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
- * Abstract class for an alarm bearing css value type of base type <T>
+ * System variables are the fundamental atomic components of any system.
+ * A system variables is an entity in form of a value or state (set of values/states) to a given
+ * time instant.
+ * A complete system is composed of a non-empty set of system variables.
+ *
+ * It is identifiable and features to any given time a unique value/state or a set of the same that
+ * is unique to that time.
+ *
+ * FIXME (bknerr) : conflicting with the ICssValueType and its derived types - get rid of them, use this one
  *
  * @author bknerr
- * @since 07.12.2010
- * @param <T> the basic value type of the datum/data
+ * @since 04.11.2010
+ *
+ * @param <V> the basic type of the value(s) of the system variable
+ * @param <T> the type of the system variable
  */
-public class CssAlarmValueType<T> implements ICssAlarmValueType<T> {
-
-    private final T _data;
-    private final IAlarm _alarm;
-    private final TimeInstant _timestamp;
+public interface ISystemVariable<V, T extends ICssValueType<V>> extends IHasTimeStamp,
+                                                                        Identifiable<SystemVariableId> {
 
     /**
-     * Constructor.
+     * The descriptive (and usually but not necessarily) unique name for this variable in the
+     * context of its origin ({@link ControlSystem}.
+     * @return the name
      */
-    public CssAlarmValueType(@Nonnull final T data,
-                                     @Nullable final IAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        _data = data;
-        _alarm = alarm;
-        _timestamp = timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public T getValueData() {
-        return _data;
-    }
+    String getName();
 
     /**
-     * {@inheritDoc}
+     * The datum entity (value(s) and/or state(s) of this system variable.
+     * @return the variable
      */
-    @Override
     @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
+    T getData();
 
     /**
-     * {@inheritDoc}
+     * The control system in whose context this variable exists.
+     * @return the control system
      */
-    @Override
-    @CheckForNull
-    public IAlarm getAlarm() {
-        return _alarm;
-    }
+    @Nonnull
+    ControlSystem getOrigin();
 
 }
+

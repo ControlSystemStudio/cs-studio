@@ -23,11 +23,9 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import java.sql.Connection;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager.IArchiveDaoCommand;
 
 /**
  * General DAO Manager interface.
@@ -40,12 +38,12 @@ public interface IDaoManager {
     @Nonnull
     Connection getConnection() throws ArchiveConnectionException;
 
-    @CheckForNull
-    Object execute(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-
-    @CheckForNull
-    Object executeAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-
-    @CheckForNull
-    Object transaction(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
+//    @CheckForNull
+//    Object execute(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
+//
+//    @CheckForNull
+//    Object executeAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
+//
+//    @CheckForNull
+//    Object transaction(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
 }

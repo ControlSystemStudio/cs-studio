@@ -19,27 +19,36 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
+package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import com.google.common.collect.ImmutableSet;
 
 /**
- * Read-only interface for archive sample. 
- * 
+ * Communication protocols of the control system existing at DESY.
+ *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 09.02.2011
  */
-public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
-    
-    @Nonnull
-    ArchiveChannelId getChannelId();
+public enum CSCommunicationProtocol {
+    TINE("tine"),
+    CA("ca", "epics"),
+    CORBA("corba");
+
+    private final ImmutableSet<String> _prefixes;
+
+    /**
+     * Constructor.
+     *
+     * @param prefixes varargs of allowed prefixes for this protocol
+     */
+    private CSCommunicationProtocol(@Nonnull final String... prefixes) {
+        _prefixes = ImmutableSet.<String>builder().add(prefixes).build();
+    }
 
     @Nonnull
-    T getData();
+    public ImmutableSet<String> getPrefixes() {
+        return _prefixes;
+    }
 }

@@ -19,41 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.alarm;
+package org.csstudio.domain.desy.types;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.csstudio.domain.desy.system.AbstractAlarmSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /**
- * An EPICS system variable is tightly bound to EpicsAlarms
+ * Base value type with a timestamp.
  *
  * @author bknerr
- * @since 17.11.2010
- * @param <V> the base value type
- * @param <T> the css variable type
+ * @since 26.11.2010
+ * @param <T>
  */
-public class EpicsSystemVariable<V, T extends ICssValueType<V>>
-    extends AbstractAlarmSystemVariable<V, T, EpicsAlarm> {
-
-
-    /**
-     * Constructor.
-     * @param name
-     * @param data
-     * @param origin the control system from which this variable originates
-     * @param timestamp
-     * @param alarm
-     */
-    public EpicsSystemVariable(@Nonnull final String name,
-                               @Nonnull final T data,
-                               @Nonnull final ControlSystem origin,
-                               @Nonnull final TimeInstant timestamp,
-                               @Nullable final EpicsAlarm alarm) {
-        super(name, data, origin, timestamp, alarm);
-    }
+public interface ITimedCssValueType<T> extends ICssValueType<T>, IHasTimeStamp {
+    // Empty
 }

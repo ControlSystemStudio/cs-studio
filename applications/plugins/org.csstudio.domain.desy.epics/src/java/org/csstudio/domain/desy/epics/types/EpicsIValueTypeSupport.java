@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
@@ -70,7 +70,7 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    public static <R extends ICssAlarmValueType<?>, T extends IValue>
+    public static <R extends ITimedCssAlarmValueType<?>, T extends IValue>
         R toCssType(@Nonnull final T value) throws TypeSupportException {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
