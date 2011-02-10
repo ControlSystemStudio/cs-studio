@@ -68,7 +68,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId engId) throws ArchiveDaoException {
+    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
         try {

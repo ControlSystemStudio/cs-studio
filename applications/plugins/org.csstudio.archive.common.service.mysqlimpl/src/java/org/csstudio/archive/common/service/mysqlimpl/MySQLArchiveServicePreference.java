@@ -57,7 +57,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET =
-        new MySQLArchiveServicePreference<Integer>("maxAllowedPacket", 65536);
+        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 16384);
 
     public static final MySQLArchiveServicePreference<String> SMTP_HOST =
         new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");

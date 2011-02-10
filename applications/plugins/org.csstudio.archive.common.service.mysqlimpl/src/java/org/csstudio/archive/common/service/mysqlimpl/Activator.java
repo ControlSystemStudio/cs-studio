@@ -119,6 +119,7 @@ public class Activator implements BundleActivator {
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 
 	    // Services are automatically unregistered
+
 	    ArchiveDaoManager.INSTANCE.disconnect();
 	}
 }

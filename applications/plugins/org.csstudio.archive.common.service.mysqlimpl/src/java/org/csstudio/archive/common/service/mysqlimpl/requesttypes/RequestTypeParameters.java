@@ -81,7 +81,8 @@ public final class RequestTypeParameters {
          * {@inheritDoc}
          */
         @Override
-        public Double toValue(final String value) throws RequestTypeParameterException {
+        @Nonnull
+        public Double toValue(@Nonnull final String value) throws RequestTypeParameterException {
             try {
                 return Double.parseDouble(value);
             } catch (final NumberFormatException e) {

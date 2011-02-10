@@ -25,6 +25,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 /**
  * TODO (bknerr) :
@@ -32,23 +33,28 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 08.02.2011
  */
-public final class SqlStatementBatch {
+public enum SqlStatementBatch {
+    INSTANCE;
 
+    @GuardedBy("this")
     private long _sizeInBytes = 0;
+
     private final BlockingQueue<String> _statements = new LinkedBlockingQueue<String>();
 
-    public SqlStatementBatch() {
+    private SqlStatementBatch() {
         // Empty
     }
     public void submitStatement(@Nonnull final String statement) {
         _statements.add(statement); // non blocking add
-        _sizeInBytes += statement.codePointCount(0, statement.length()) * 2;
+        synchronized (this) {
+            _sizeInBytes += statement.codePointCount(0, statement.length()) * 2;
+        }
     }
     @Nonnull
     public BlockingQueue<String> getQueue() {
         return _statements;
     }
-    public long size() {
+    public synchronized long sizeInBytes() {
         return _sizeInBytes;
     }
 }

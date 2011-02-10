@@ -31,7 +31,9 @@ import java.util.concurrent.BlockingQueue;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
 
@@ -43,22 +45,39 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 08.02.2011
  */
-final class PersistDataWorker implements Runnable {
+public class PersistDataWorker implements Runnable {
+
+    private static final Logger LOG =
+            CentralLogger.getInstance().getLogger(PersistDataWorker.class);
+
+    private final String _name;
 
     private final IArchiveDaoManager _manager;
+
     private final List<String> _batchedStatements;
     private final BlockingQueue<String> _queuedStatements;
 
+    public static int i = 0;
+    public int me = i;
 
     /**
      * Constructor.
      * @param sqlStatements
      */
-    public PersistDataWorker(@Nonnull final IArchiveDaoManager manager,
+    public PersistDataWorker(@Nonnull final String name,
+                             @Nonnull final IArchiveDaoManager manager,
                              @Nonnull final BlockingQueue<String> sqlStatements) {
+        _name = name;
+        i++;
+
         _manager = manager;
         _queuedStatements = sqlStatements;
         _batchedStatements = Lists.newLinkedList();
+    }
+
+    @Nonnull
+    protected IArchiveDaoManager getManager() {
+        return _manager;
     }
 
     /**
@@ -66,14 +85,18 @@ final class PersistDataWorker implements Runnable {
      */
     @Override
     public void run() {
+        LOG.info("RUN: " + me);
+
         Statement sqlStmt = null;
+        Connection connection = null;
         try {
-            final Connection connection = _manager.getConnection();
+            connection = _manager.getConnection();
             sqlStmt = connection.createStatement();
 
             while (_queuedStatements.peek() != null) {
                 final String queuedStmt = _queuedStatements.poll();
                 _batchedStatements.add(queuedStmt);
+                LOG.info(queuedStmt.length() + "\t\t" + queuedStmt.getBytes().length);
                 sqlStmt.addBatch(queuedStmt);
             }
             sqlStmt.executeBatch();
@@ -90,12 +113,30 @@ final class PersistDataWorker implements Runnable {
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
+            try {
+                finalizeWorker();
+            } catch (final ArchiveConnectionException e) {
+                LOG.warn("Connection retrieval for close failed on termination of worker");
+            } catch (final SQLException e) {
+                LOG.warn("Closing of connection failed on termination of worker");
+            }
         }
+    }
+
+    /**
+     * Called in finally block at the end of the {@link PersistDataWorker#run()} method.
+     * Can be overridden for instance to close the thread's own connection.
+     *
+     * @throws SQLException
+     * @throws ArchiveConnectionException
+     */
+    protected void finalizeWorker() throws SQLException, ArchiveConnectionException {
+        // Empty
     }
 
     private static void processFailedBatch(@Nonnull final List<String> batchedStatements,
                                            @Nonnull final BatchUpdateException be) {
-        // NOT all statements have been successfully executed!
+        // NOT all statements have been successfully executed! (Depends on RDBM)
         final int[] updateCounts = be.getUpdateCounts();
         if (updateCounts.length == batchedStatements.size()) {
             // All statements have been tried executed, look for the failed ones
@@ -121,11 +162,16 @@ final class PersistDataWorker implements Runnable {
     private static List<String> findFailedStatements(@Nonnull final int[] updateCounts,
                                                      @Nonnull final List<String> allStmts) {
         final List<String> failedStmts = Lists.newLinkedList();
-        for (int i=0; i<updateCounts.length; i++) {
-            if (updateCounts[i] == Statement.EXECUTE_FAILED) {
-                failedStmts.add(allStmts.get(i));
+        for (int j = 0; j < updateCounts.length; j++) {
+            if (updateCounts[j] == Statement.EXECUTE_FAILED) {
+                failedStmts.add(allStmts.get(j));
             }
         }
         return failedStmts;
+    }
+
+    @Nonnull
+    public String getName() {
+        return _name;
     }
 }

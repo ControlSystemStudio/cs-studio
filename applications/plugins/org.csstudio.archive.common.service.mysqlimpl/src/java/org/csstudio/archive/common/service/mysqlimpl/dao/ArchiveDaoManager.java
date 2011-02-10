@@ -144,6 +144,8 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 //        });
 //    }
 
+    private static final int KBYTE_SIZE = 1024;
+
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
@@ -151,12 +153,12 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
-    private final ScheduledExecutorService _executor = Executors.newScheduledThreadPool(5);
+    final ScheduledExecutorService _executor = Executors.newScheduledThreadPool(5);
 
-    private final SqlStatementBatch _sqlStatementBatch;
+    final SqlStatementBatch _sqlStatementBatch;
 
     private String _databaseName;
-    private Integer _maxAllowedPacket;
+    private Integer _maxAllowedPacketInBytes;
 
     /**
      * Any thread owns a connection.
@@ -180,11 +182,40 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * Constructor.
      */
     private ArchiveDaoManager() {
-        _sqlStatementBatch = new SqlStatementBatch();
+        _sqlStatementBatch = SqlStatementBatch.INSTANCE;
 
-        _executor.scheduleAtFixedRate(new PersistDataWorker(this, _sqlStatementBatch.getQueue()),
+        /**
+         * Add shutdown hook.
+         */
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void run() {
+                // submit an executor that processes immediately what's left in the queue
+                _executor.execute(new PersistDataWorker("ShutdownWorker" + PersistDataWorker.i,
+                                                        INSTANCE,
+                                                        _sqlStatementBatch.getQueue()));
+                _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
+                try {
+                    if (!_executor.awaitTermination(MySQLArchiveServicePreference.PERIOD.getValue() + 1, TimeUnit.SECONDS)) {
+                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                        final List<Runnable> droppedTasks = _executor.shutdownNow();
+                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
+                    }
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+
+        _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
+                                                            this,
+                                                            _sqlStatementBatch.getQueue()),
                                       0,
-                                      MySQLArchiveServicePreference.PERIOD.getValue(),
+//                                      MySQLArchiveServicePreference.PERIOD.getValue(),
+                                      100,
                                       TimeUnit.SECONDS);
     }
 
@@ -202,11 +233,20 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      */
     @Override
     public void submitStatementToBatch(@Nonnull final String stmt) {
-        if (_sqlStatementBatch.size() + stmt.codePointCount(0, stmt.length()) > _maxAllowedPacket) {
-            // execute immediately
-            _executor.execute(new PersistDataWorker(this, _sqlStatementBatch.getQueue()));
+        final int bytesToAdd = stmt.codePointCount(0, stmt.length())*2;
+        synchronized (this) {
+            if (_sqlStatementBatch.sizeInBytes() + bytesToAdd > _maxAllowedPacketInBytes) {
+                // when the worker's batch is exceeding the allowed packet size
+                // schedule a new worker at the same period
+//                _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
+//                                                                    this,
+//                                                                    _sqlStatementBatch.getQueue()),
+//                                              0,
+//                                              MySQLArchiveServicePreference.PERIOD.getValue(),
+//                                              TimeUnit.SECONDS);
+            }
+            _sqlStatementBatch.submitStatement(stmt);
         }
-        _sqlStatementBatch.submitStatement(stmt);
     }
 
     /**
@@ -248,8 +288,16 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         ds.setUser(USER.getValue());
         ds.setPassword(PASSWORD.getValue());
         ds.setFailOverReadOnly(false);
-        _maxAllowedPacket = MAX_ALLOWED_PACKET.getValue();
-        ds.setMaxAllowedPacket(_maxAllowedPacket);
+
+        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
+        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
+            LOG.warn("MaxAllowedPacket Connection Parameter out of recommended range [" +
+                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
+            _maxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
+        } else {
+            _maxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
+        }
+        ds.setMaxAllowedPacket(_maxAllowedPacketInBytes);
 
         return ds;
     }
@@ -281,16 +329,14 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection: " +
-                              meta.getDatabaseProductName() +
-                              " " +
-                              meta.getDatabaseProductVersion());
+                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection:\n" +
+                              meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
                 } else {
+                    // Constructor call -> LOG.debug not possible, not yet initialised
                     CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("No meta data for MySQL connection");
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);
-
                 _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
@@ -325,9 +371,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         }
     }
 
-    public void reconnect() throws ArchiveConnectionException {
-        connect(createDataSource());
-    }
+//    public void reconnect() throws ArchiveConnectionException {
+//        connect(createDataSource());
+//    }
 
     /**
      * Disconnects the connection for the owning thread.

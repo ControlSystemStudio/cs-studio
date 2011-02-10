@@ -255,7 +255,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     // CHECKSTYLE OFF: ParameterNumber
-    @Nonnull
+    @CheckForNull
     private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
@@ -300,7 +300,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         final TimeInstant lastWriteTime = agg.getResetTimestamp();
         if (lastWriteTime == null) {
-
+            return true;
         }
         final TimeInstant dueTime = lastWriteTime.plusMillis(duration.getMillis());
         if (timestamp.isBefore(dueTime)) {
@@ -362,30 +362,36 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     /**
      * The averaged VALUES component for table sample_*:
-     * "(channel_id, smpl_time, highest_sev_id, avg_val, min_val, max_val),"
+     * "(channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val)"
      * @throws ArchiveSeverityDaoException
      */
     @Nonnull
     private String createReducedSampleValueString(@Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final TimeInstant timestamp,
                                                   @Nonnull final EpicsAlarm highestAlarm,
-                                                  @Nonnull final Double avg,
-                                                  @Nonnull final Double min,
-                                                  @Nonnull final Double max) throws ArchiveDaoException {
-        // write for all samples_x (channel_id, smpl_time, highest_sev_id, avg_val, min_val, max_val)
+                                                  @CheckForNull final Double avg,
+                                                  @CheckForNull final Double min,
+                                                  @CheckForNull final Double max) throws ArchiveDaoException {
+        // write for all samples_x (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val)
         ArchiveSeverityId sevId = null;
         if (highestAlarm != null) {
             sevId = getDaoMgr().getSeverityDao().retrieveSeverityId(highestAlarm.getSeverity());
         }
         final int sevIdInt = sevId == null ? ArchiveSeverityId.NONE.intValue() : sevId.intValue();
-        final String valueStr =
-            "(" + channelId.intValue() + ", '" +
-                  timestamp.formatted() + "', " +
-                  sevIdInt + ", " +
-                  avg + ", " +
-                  min + ", " +
-                  max + ")";
 
+        if (avg == null) {
+            throw new ArchiveDaoException("Average value must not be null on write reduced samples.", null);
+        }
+
+        final String valueStr =
+            "(" +
+            Joiner.on(",").join(channelId.intValue(),
+                                "'" + timestamp.formatted() + "'",
+                                sevIdInt,
+                                avg,
+                                min == null ? avg : min,
+                                max == null ? avg : max) +
+            ")";
         return valueStr;
     }
 
