@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-    <extensionContent id="org.csstudio.desy.linde.product.overview" name="CSS Linde" style="style.css" path="overview/@">
+    <extensionContent id="org.csstudio.desy.controlroom.product.overview" name="CSS Controlroom" style="style.css" path="overview/@">
         <group id="content-group" style-id="content-group">
             <link id="csslinde" label="CSS on an island" style-id="content-link"
-                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.desy.linde.product/intro/css.html" >
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.desy.controlroom.product/intro/css.html" >
 				<text>
 				  CSS is a collection of control system tools.
 				  This version of CSS helps to get you started. It is called 'Island' because it does not

@@ -172,7 +172,7 @@ public final class AlarmTreeBuilder {
      * canceled.
      *
      * @param rootNode the root node for the alarm tree
-     * @param pvNodeListener TODO
+     * @param pvNodeListener listener on the pv
      * @param model the content model
      * @param monitor the progress monitor
      * @return cancel status, true if it has been canceled, false otherwise

@@ -50,7 +50,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </win>
    </launcher>
 
-   <intro introId="org.csstudio.desy.controlroom.product.intro"/>
+   <intro introId="org.eclipse.ui.intro.universal"/>
 
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>

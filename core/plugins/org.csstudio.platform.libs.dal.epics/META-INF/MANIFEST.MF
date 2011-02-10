@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.csstudio.platform.libs.dal.epics;singleton:=true
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.dal.epics.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.csstudio.platform,
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit,
+ org.csstudio.platform,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.libs.epics;visibility:=reexport
 Eclipse-LazyStart: true
@@ -13,3 +15,4 @@ Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .
 Export-Package: org.csstudio.platform.libs.dal.epics,
  org.epics.css.dal.epics
+Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning

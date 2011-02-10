@@ -4,7 +4,7 @@ Bundle-Name: LDAP Authorization UI
 Bundle-SymbolicName: org.csstudio.platform.ldapAuthorization.ui;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.platform.internal.ldapauthorization.ui.Activator
-Bundle-Vendor: DESY
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
