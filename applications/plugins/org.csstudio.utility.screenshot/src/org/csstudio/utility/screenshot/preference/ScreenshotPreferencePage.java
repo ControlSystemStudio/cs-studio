@@ -28,6 +28,7 @@ import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -50,12 +51,13 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
     public void createFieldEditors() {
         
     	Composite parent = getFieldEditorParent();
-    	parent.setLayout(new GridLayout(2, false));
+        parent.setLayout(new GridLayout(2, true));
+        parent.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
     	
-        //Composite mailServer = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_SERVER");
+        // Composite mailServer = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_SERVER");
         addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_SERVER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_SERVER_NAME"), parent));
 
-        //Composite mailAddress = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_ADDRESS");
+        // Composite mailAddress = createGroup(parent, "ScreenshotPreferencePage.GROUP_MAIL_ADDRESS");
         addField(new StringFieldEditor(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, ScreenshotMessages.getString("ScreenshotPreferencePage.MAIL_ADDRESS_SENDER"), parent));
         
         // Composite copyMail = createGroup(parent, "ScreenshotPreferencePage.GROUP_COPY_MAIL");
@@ -67,12 +69,9 @@ public class ScreenshotPreferencePage extends FieldEditorPreferencePage
 //    	Group group = new Group(composite, 0);
 //        group.setText(ScreenshotMessages.getString(label));
 //
-//    	group.setLayout(new GridLayout(2, false));
-//    	group.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 1, 1));
+//        group.setLayout(new GridLayout(2, true));
+//        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 //
-//        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-//        group.setLayoutData(gridData);
-//        
 //        return new Composite(group, 0);
 //    }
     
