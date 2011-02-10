@@ -28,8 +28,11 @@ import org.csstudio.utility.screenshot.MailEntry;
 import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -51,63 +54,59 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 
-public class MailSenderDialog extends Dialog implements SelectionListener
-{
-    private Shell               parentShell     = null;
-    private MailEntry           mailEntry       = null;
-    private Button              buttonSend      = null;
-    private Button              buttonCancel    = null;
-    private Button              btnClearMEntry  = null;
-    private Button              btnCarbonCopy   = null;
-    private Label               labelFrom       = null;
-    private Label               labelTo         = null;
-    private Label               labelList       = null;
-    private Label               labelSubject    = null;
-    private Label               labelMailText   = null;
-    private Label               labelDummyRow1  = null;
-    private Label               labelDummyRow4  = null;
-    private Text                textFrom        = null;
-    private Text                textTo          = null;
-    private Text                textSubject     = null;
-    private Text                textMailText    = null;
-    private ComboHistoryHelper  addressHelper   = null;  
-    private ComboViewer         cbvAddresses    = null;
+public class MailSenderDialog extends Dialog implements SelectionListener {
+    
+	private Shell parentShell = null;
+    private MailEntry mailEntry = null;
+    private Button buttonSend = null;
+    private Button buttonCancel = null;
+    private Button btnClearMEntry = null;
+    private Button btnCarbonCopy = null;
+    private Label labelFrom = null;
+    private Label labelTo = null;
+    private Label labelList = null;
+    private Label labelSubject = null;
+    private Label labelMailText = null;
+    private Label labelDummyRow1 = null;
+    private Label labelDummyRow4 = null;
+    private Text textFrom = null;
+    private Text textTo = null;
+    private Text textSubject = null;
+    private Text textMailText = null;
+    private ComboHistoryHelper addressHelper = null;  
+    private ComboViewer cbvAddresses = null;
 
-    private final int INIT_WIDTH  = DialogUnit.mapUnitX(432);
+    private final int INIT_WIDTH = DialogUnit.mapUnitX(432);
     private final int INIT_HEIGHT = DialogUnit.mapUnitY(310);
     
-    private static final String  ADR_LIST_TAG = "mail_list";
+    private static final String ADR_LIST_TAG = "mail_list";
 
     /**
      * 
      * @param w
      */
-    
-    public MailSenderDialog(Shell shell)
-    {
-        super(shell);
+    public MailSenderDialog(Shell shell) {
         
+    	super(shell);
         parentShell = shell;
-        
         setBlockOnOpen(true);
     }
     
     /**
      * 
      */
-    
-    protected void configureShell(Shell shell)
-    {
-        super.configureShell(shell);
+    @Override
+	protected void configureShell(Shell shell) {
         
+    	super.configureShell(shell);
         shell.setText(ScreenshotPlugin.getDefault().getNameAndVersion() + ScreenshotMessages.getString("MailSenderDialog.DIALOG_TITLE"));
     }
 
     /**
      * 
      */
-    
-    protected void initializeBounds()
+    @Override
+	protected void initializeBounds()
     {
         Rectangle rect = parentShell.getBounds();        
 
@@ -117,10 +116,10 @@ public class MailSenderDialog extends Dialog implements SelectionListener
     /**
      * 
      */
-    
-    protected Control createDialogArea(Composite parent)
-    {
-        String temp = null;
+    @Override
+	protected Control createDialogArea(Composite parent) {
+        
+    	String temp = null;
         GridData gd = null;        
 
         GridLayout layout = new GridLayout(7, true);
@@ -160,25 +159,29 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         labelFrom.setLayoutData(gd);
         
         textFrom = new Text(parent, SWT.SINGLE | SWT.BORDER);
-        textFrom.setText(ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER));
+        
+        IPreferencesService pref = Platform.getPreferencesService();
+        String txt = pref.getString(ScreenshotPlugin.PLUGIN_ID, ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER, "css-user@desy.de", null);
+        textFrom.setText(txt);
+        
         gd = new GridData();
         gd.horizontalSpan = 4;
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;        
         textFrom.setLayoutData(gd);
-        if(mailEntry != null)
-        {
-            temp = mailEntry.getMailFromAddress();
+        if(mailEntry != null) {
             
-            if(temp != null)
-            {
+        	temp = mailEntry.getMailFromAddress();
+            if(temp != null) {
                 textFrom.setText(temp);
             }
         }
         
         btnCarbonCopy = new Button(parent, SWT.CHECK);
         btnCarbonCopy.setText(ScreenshotMessages.getString("MailSenderDialog.LABEL_COPY"));
-        btnCarbonCopy.setSelection(false);
+        
+        boolean sendCopy = pref.getBoolean(ScreenshotPlugin.PLUGIN_ID, ScreenshotPreferenceConstants.COPY_TO_SENDER, false, null);
+        btnCarbonCopy.setSelection(sendCopy);
         gd = new GridData();
         gd.horizontalSpan = 2;
         gd.grabExcessHorizontalSpace = true;
@@ -243,10 +246,9 @@ public class MailSenderDialog extends Dialog implements SelectionListener
             }            
         };
 
-        cbvAddresses.getCombo().addDisposeListener(new DisposeListener()
-        {
-            public void widgetDisposed(DisposeEvent e)
-            {
+        cbvAddresses.getCombo().addDisposeListener(new DisposeListener() {
+            
+        	public void widgetDisposed(DisposeEvent e) {
                 addressHelper.saveSettings();
             }
         });
@@ -316,10 +318,10 @@ public class MailSenderDialog extends Dialog implements SelectionListener
     /**
      * 
      */
-    
-    protected Control createButtonBar(Composite parent)
-    {
-        Label labelDummy = null;
+    @Override
+	protected Control createButtonBar(Composite parent) {
+        
+    	Label labelDummy = null;
         GridData gd = null;
         
         labelDummy = new Label(parent, 0);
@@ -405,29 +407,24 @@ public class MailSenderDialog extends Dialog implements SelectionListener
         return result;
     }
 
-    public void widgetDefaultSelected(SelectionEvent event)
-    {
+    public void widgetDefaultSelected(SelectionEvent event) {
         widgetSelected(event);
     }
     
-    public void widgetSelected(SelectionEvent event)
-    {
-        if(event.widget instanceof Button)
-        {
+    public void widgetSelected(SelectionEvent event) {
+        
+    	if(event.widget instanceof Button) {
             Button source = (Button)event.widget;
             
             if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_SEND")) == 0)
             {
                 createMailEntry();
-                
-                this.setReturnCode(Dialog.OK);
-                                
+                this.setReturnCode(Window.OK);
                 this.close();
             }
             else if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CANCEL")) == 0)
             {
-                this.setReturnCode(Dialog.CANCEL);
-    
+                this.setReturnCode(Window.CANCEL);
                 this.close();
             }
             else if(source.getText().compareToIgnoreCase(ScreenshotMessages.getString("MailSenderDialog.BUTTON_CLEAR")) == 0)
