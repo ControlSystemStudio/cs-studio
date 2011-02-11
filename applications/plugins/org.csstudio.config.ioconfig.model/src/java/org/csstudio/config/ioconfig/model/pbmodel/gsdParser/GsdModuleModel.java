@@ -64,7 +64,7 @@ public class GsdModuleModel {
     /**
      * The number of the Module.
      */
-    private int _moduleNumber;
+    private int _moduleNumber = -1;
 
     /**
      * The parent gsd Slave Model.
@@ -160,6 +160,10 @@ public class GsdModuleModel {
      * @param moduleNumber
      *            the number of this Module.
      */
+    public final void setModuleNumber(final int moduleNumber) {
+        _moduleNumber = moduleNumber;
+    }
+    
     public final void setModuleNumber(final String moduleNumber) {
         try {
             _moduleNumber = Integer.parseInt(moduleNumber);
