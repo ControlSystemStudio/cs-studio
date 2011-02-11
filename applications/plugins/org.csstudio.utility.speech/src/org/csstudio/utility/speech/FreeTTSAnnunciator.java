@@ -28,7 +28,7 @@ class FreeTTSAnnunciator extends BaseAnnunciator
 	{
 		this(DEFAULT_VOICE);
 	}
-	
+
 	/** Construct annunciator with certain voice
 	 *  @param voice_name Name of the voice
 	 *  @throws Exception on error
@@ -48,7 +48,7 @@ class FreeTTSAnnunciator extends BaseAnnunciator
         // Allocate resources for the voice.
         voice.allocate();
     }
-	
+
 	/** @return Array of voice names */
     public static String[] getVoiceNames()
     {
@@ -61,12 +61,14 @@ class FreeTTSAnnunciator extends BaseAnnunciator
     }
 
     /** {@inheritDoc} */
+    @Override
     public void say(final String something)
     {
     	voice.speak(applyTranslations(something));
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         voice.deallocate();
