@@ -51,17 +51,17 @@ public class TextFigure extends Figure implements Introspectable{
 			textLocation = POINT_ZERO;
 			return;
 		}
-		Rectangle clientArea = getClientArea();		
+		Rectangle textArea = getTextArea();		
 		Dimension textSize = getTextSize();
 			int x=0;
-			if(clientArea.width > textSize.width){
+			if(textArea.width > textSize.width){
 				
 				switch (horizontalAlignment) {
 				case CENTER:
-					x = (clientArea.width - textSize.width)/2;
+					x = (textArea.width - textSize.width)/2;
 					break;
 				case RIGHT:
-					x = clientArea.width - textSize.width;
+					x = textArea.width - textSize.width;
 					break;
 				case LEFT:
 				default:					
@@ -70,13 +70,13 @@ public class TextFigure extends Figure implements Introspectable{
 			}
 			
 			int y=0;
-			if(clientArea.height > textSize.height){
+			if(textArea.height > textSize.height){
 				switch (verticalAlignment) {
 				case MIDDLE:
-					y = (clientArea.height - textSize.height)/2;
+					y = (textArea.height - textSize.height)/2;
 					break;
 				case BOTTOM:
-					y =clientArea.height - textSize.height;
+					y =textArea.height - textSize.height;
 					break;
 				case TOP:
 				default:
@@ -135,7 +135,11 @@ public class TextFigure extends Figure implements Introspectable{
 
 	public String getText() {
 		return text;
-	}	
+	}
+	
+	protected Rectangle getTextArea(){
+		return getClientArea();
+	}
 
 	
 	protected Point getTextLocation() {
@@ -183,10 +187,10 @@ public class TextFigure extends Figure implements Introspectable{
 		super.paintFigure(graphics);
 		if(text.length() == 0)
 			return;
-		Rectangle clientArea = getClientArea();
-		graphics.translate(clientArea.x, clientArea.y);
+		Rectangle textArea = getTextArea();
+		graphics.translate(textArea.x, textArea.y);
 		graphics.drawText(text, getTextLocation());
-		graphics.translate(-clientArea.x, -clientArea.y);		
+		graphics.translate(-textArea.x, -textArea.y);		
 	}
 	
 	public void setHorizontalAlignment(H_ALIGN hAlignment) {
