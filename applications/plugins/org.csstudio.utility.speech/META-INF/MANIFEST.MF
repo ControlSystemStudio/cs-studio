@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Speech Plug-in
 Bundle-SymbolicName: org.csstudio.utility.speech
-Bundle-Version: 1.2.5.qualifier
+Bundle-Version: 1.2.6.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4;bundle-version="4.3.1"
 Export-Package: org.csstudio.utility.speech
@@ -18,3 +18,4 @@ Bundle-ClassPath: lib/cmu_time_awb.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Description: Library to generate speech output using FreeTTS or external program
