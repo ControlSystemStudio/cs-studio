@@ -30,13 +30,13 @@ import javax.annotation.Nullable;
  * @author bknerr
  * @since 03.02.2011
  */
-public class ArchiveReadConfigException extends Exception {
+public class EngineModelException extends Exception {
     private static final long serialVersionUID = -6528784167665678920L;
 
     /**
      * Constructor.
      */
-    public ArchiveReadConfigException(@Nonnull final String msg, @Nullable final Exception e) {
+    public EngineModelException(@Nonnull final String msg, @Nullable final Exception e) {
         super(msg, e);
     }
 }

@@ -99,11 +99,6 @@ class ChannelResponse extends AbstractResponse
         html.tableLine(new String[]
         { Messages.HTTP_QueueMax, Integer.toString(stats.getMaxSize()) });
 
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_QueueCapacity,
-            Integer.toString(buffer.getCapacity())
-        });
 
         final int overrun_count = stats.getOverruns();
         String overruns = Integer.toString(overrun_count);

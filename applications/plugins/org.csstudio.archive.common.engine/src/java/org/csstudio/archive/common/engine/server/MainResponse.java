@@ -121,11 +121,6 @@ class MainResponse extends AbstractResponse
         }
         html.tableLine(new String[]
         {
-            Messages.HTTP_BatchSize,
-            model.getBatchSize() + " samples"
-        });
-        html.tableLine(new String[]
-        {
             Messages.HTTP_WritePeriod,
             model.getWritePeriod() + " sec"
         });
@@ -156,13 +151,6 @@ class MainResponse extends AbstractResponse
         {
             Messages.HTTP_WriteDuration,
             String.format("%.1f sec", model.getAvgWriteDuration())
-        });
-
-        html.tableLine(new String[]
-        {
-         // TODO (bknerr) : do I need that
-            Messages.HTTP_Idletime,
-            String.format("%.1f %%", -1.0f/* model.getIdlePercentage() */)
         });
 
         final Runtime runtime = Runtime.getRuntime();

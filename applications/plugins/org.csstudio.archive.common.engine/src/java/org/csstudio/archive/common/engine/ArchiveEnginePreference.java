@@ -31,8 +31,12 @@ import org.csstudio.platform.AbstractPreference;
  *
  * @author bknerr
  * @since 16.11.2010
+ * @param <T> the type of the preference
  */
 public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
+
+    public static final ArchiveEnginePreference<Long> WRITE_PERIOD =
+        new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(7));
 
     /**
      * Constructor.

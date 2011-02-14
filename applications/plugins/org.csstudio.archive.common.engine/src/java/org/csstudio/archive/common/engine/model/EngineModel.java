@@ -11,12 +11,13 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentMap;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
+import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
@@ -44,13 +45,13 @@ public final class EngineModel {
         CentralLogger.getInstance().getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
-    public static String VERSION = "1.2.3"; //$NON-NLS-1$
+    public static String VERSION = "1.0.0";
 
     /** Name of this model */
     private String _name = "DESY Archive Engine";  //$NON-NLS-1$
 
     /** Thread that writes to the <code>archive</code> */
-    final private WriteExecutor _writeExecutor;
+    private final WriteExecutor _writeExecutor;
 
     /**
      * All channels
@@ -84,27 +85,20 @@ public final class EngineModel {
     }
 
     /** Engine state */
-    private State state = State.IDLE;
+    private volatile State _state = State.IDLE;
 
     /** Start time of the model */
-    private ITimestamp start_time = null;
+    private ITimestamp _startTime = null;
 
     /** Write period in seconds */
     private long _writePeriod = 30;
-
-    /** Maximum number of repeat counts for scanned channels */
-    private int max_repeats = 60;
-
-    /** Write batch size */
-    private int batch_size = 500;
 
     private IArchiveEngine _engine;
 
     /**
      * Construct model that writes to archive
      */
-    public EngineModel()
-        throws OsgiServiceUnavailableException, ArchiveConnectionException {
+    public EngineModel() {
 
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
@@ -121,22 +115,13 @@ public final class EngineModel {
         if (prefs == null) {
             return;
         }
-        _writePeriod = prefs.getLong(Activator.PLUGIN_ID, "write_period", _writePeriod, null);
-        max_repeats = prefs.getInt(Activator.PLUGIN_ID, "max_repeats", max_repeats, null);
-        batch_size = prefs.getInt(Activator.PLUGIN_ID, "batch_size", batch_size, null);
-        //buffer_reserve = prefs.getDouble(Activator.PLUGIN_ID, "buffer_reserve", buffer_reserve, null);
+        _writePeriod = ArchiveEnginePreference.WRITE_PERIOD.getValue();
     }
 
     /** @return Name (description) */
+    @Nonnull
     public String getName() {
         return _name;
-    }
-
-    /** @return Seconds into the future that should be ignored */
-    public static long getIgnoredFutureSeconds() {
-        // TODO make configurable
-        // 1 day
-        return 24*60*60;
     }
 
     /** @return Write period in seconds */
@@ -144,44 +129,39 @@ public final class EngineModel {
         return _writePeriod;
     }
 
-    /** @return Write batch size */
-    public int getBatchSize() {
-        return batch_size;
-    }
-
     /** @return Current model state */
-    public State getState()
-    {
-        return state;
+    @Nonnull
+    public State getState() {
+        return _state;
     }
 
     /** @return Start time of the engine or <code>null</code> if not running */
-    public ITimestamp getStartTime()
-    {
-        return start_time;
+    @CheckForNull
+    public ITimestamp getStartTime() {
+        return _startTime;
     }
 
     /**
      *  Add new group if not already exists.
      *
      *  @param _name Name of the group to find or add.
-     *  @return ArchiveGroup
+     *  @return ArchiveGroup the already existing or, if not, newly added group
      */
-    private final ArchiveGroup addGroup(final IArchiveChannelGroup groupCfg) {
+    @Nonnull
+    private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
         _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName, groupCfg.getId().longValue()));
         return _groupMap.get(groupName);
     }
 
     /** @return Number of groups */
-    public int getGroupCount()
-    {
+    public int getGroupCount() {
         return _groupMap.size();
     }
 
     /** @return Group by that name or <code>null</code> if not found */
-    public ArchiveGroup getGroup(final String name)
-    {
+    @CheckForNull
+    public ArchiveGroup getGroup(@Nonnull final String name) {
         return _groupMap.get(name);
     }
 
@@ -191,39 +171,39 @@ public final class EngineModel {
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    public ArchiveChannel<?, ?> getChannel(final String name) {
+    @CheckForNull
+    public ArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
+    @Nonnull
     public Collection<ArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
 
+    /**
+     * Start processing all channels and writing to archive.
+     * @throws EngineModelException
+     */
+    public void start() throws EngineModelException {
 
-
-
-    /** Start processing all channels and writing to archive. */
-    public void start() throws Exception {
-
-        start_time = TimestampFactory.now();
-        state = State.RUNNING;
+        _startTime = TimestampFactory.now();
+        _state = State.RUNNING;
         _writeExecutor.start(_writePeriod);
 
         for (final ArchiveGroup group : _groupMap.values()) {
             group.start(_engine.getId(),
                         ArchiverMgmtEntry.ARCHIVER_START);
             // Check for stop request.
-            // Unfortunately, we don't check inside group.start(),
-            // which could have run for some time....
-            if (state == State.SHUTDOWN_REQUESTED) {
+            if (_state == State.SHUTDOWN_REQUESTED) {
                 break;
             }
         }
-        //scan_thread.start();
     }
 
     /** @return Timestamp of end of last write run */
+    @CheckForNull
     public ITimestamp getLastWriteTime() {
         return _writeExecutor.getLastWriteTime();
     }
@@ -243,7 +223,7 @@ public final class EngineModel {
      *  @see #getState()
      */
     public void requestStop() {
-        state = State.SHUTDOWN_REQUESTED;
+        _state = State.SHUTDOWN_REQUESTED;
     }
 
     /** Ask the model to restart.
@@ -251,7 +231,7 @@ public final class EngineModel {
      *  @see #getState()
      */
     public void requestRestart() {
-        state = State.RESTART_REQUESTED;
+        _state = State.RESTART_REQUESTED;
     }
 
     /** Reset engine statistics */
@@ -264,10 +244,13 @@ public final class EngineModel {
         }
     }
 
-    /** Stop monitoring the channels, flush the write buffers. */
+    /**
+     * Stop monitoring the channels, flush the write buffers.
+     * @throws EngineModelException
+     */
     @SuppressWarnings("nls")
-    public void stop() throws Exception {
-        state = State.STOPPING;
+    public void stop() throws EngineModelException {
+        _state = State.STOPPING;
         //LOG.info("Stopping scanner");
         // Stop scanning
         //scan_thread.stop();
@@ -282,25 +265,22 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        // Close the engine config connection
-        // Activator.getDefault().getArchiveEngineConfigService().disconnect();
-
         // Update state
-        state = State.IDLE;
-        start_time = null;
+        _state = State.IDLE;
+        _startTime = null;
     }
 
 
     /** Read configuration of model from RDB.
      *  @param p_name Name of engine in RDB
      *  @param port Current HTTPD port
-     * @throws ArchiveReadConfigException
+     * @throws EngineModelException
      */
     @SuppressWarnings("nls")
-    public void readConfig(@Nonnull final String engineName, final int port) throws ArchiveReadConfigException {
+    public void readConfig(@Nonnull final String engineName, final int port) throws EngineModelException {
         try {
-            if (state != State.IDLE) {
-                LOG.error("Read configuration while state " + state + ". Should be " + State.IDLE);
+            if (_state != State.IDLE) {
+                LOG.error("Read configuration while state " + _state + ". Should be " + State.IDLE);
                 return;
             }
             _name = engineName;
@@ -349,18 +329,18 @@ public final class EngineModel {
         }
     }
 
-    private void handleExceptions(@Nonnull final Exception inE) throws ArchiveReadConfigException {
+    private void handleExceptions(@Nonnull final Exception inE) throws EngineModelException {
         final String msg = "Failure during archive engine configuration retrieval: ";
         try {
             throw inE;
         } catch (final OsgiServiceUnavailableException e) {
-            throw new ArchiveReadConfigException(msg + "Service unavailable.", e);
+            throw new EngineModelException(msg + "Service unavailable.", e);
         } catch (final ArchiveServiceException e) {
-            throw new ArchiveReadConfigException(msg + "Internal service exception.", e);
+            throw new EngineModelException(msg + "Internal service exception.", e);
         } catch (final MalformedURLException e) {
-            throw new ArchiveReadConfigException(msg + "Engine url malformed.", e);
+            throw new EngineModelException(msg + "Engine url malformed.", e);
         } catch (final TypeSupportException e) {
-            throw new ArchiveReadConfigException(msg + "Channel type not supported.", e);
+            throw new EngineModelException(msg + "Channel type not supported.", e);
         } catch (final Exception re) {
             throw new RuntimeException(re);
         }
@@ -369,12 +349,11 @@ public final class EngineModel {
     /** Remove all channels and groups. */
     @SuppressWarnings("nls")
     public void clearConfig() {
-        if (state != State.IDLE) {
+        if (_state != State.IDLE) {
             throw new IllegalStateException("Only allowed in IDLE state");
         }
         _groupMap.clear();
         _channelMap.clear();
-        //scanner.clear();
     }
 
     /** Write debug info to stdout */
@@ -388,7 +367,6 @@ public final class EngineModel {
             buf.append("): ");
             buf.append(channel.getMechanism());
 
-            buf.append(channel.isEnabled() ? ", enabled" : ", DISABLED");
             buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
             buf.append(channel.getInternalState() + ")");
             buf.append(", value " + channel.getCurrentValue());
@@ -401,115 +379,4 @@ public final class EngineModel {
     public Collection<ArchiveGroup> getGroups() {
         return _groupMap.values();
     }
-
-
-//  /** Add a channel to the engine under given group.
-//   *  @param channelName Channel name
-//   *  @param group Name of the group to which to add
-//   *  @param enablement How channel acts on the group
-//   *  @param monitor Monitor or scan?
-//   *  @param sample_val Sample mode configuration value: 'delta' for monitor
-//   *  @param period Estimated update period [seconds]
-//   *  @return {@link ArchiveChannel}
-//   *  @throws Exception on error from channel creation
-//   */
-//  @SuppressWarnings("nls")
-//  public <T> ArchiveChannel<T> addChannel(final String channelName,
-//                                            final ArchiveGroup group,
-//                                            final Enablement enablement,
-//                                            final boolean monitor,
-//                                            final double sample_val,
-//                                            final double period) throws Exception
-//  {
-//      if (state != State.IDLE) {
-//          throw new Exception("Cannot add channel while " + state); //$NON-NLS-1$
-//      }
-
-      // Is this an existing channel?
-//      ArchiveChannel<T> channel = getChannel(channelName);
-
-      // For the engine, channels can be in more than one group
-      // if configuration matches.
-//      if (channel != null)
-//      {
-//          final String gripe = String.format(
-//                  "Group '%s': Channel '%s' already in group '%s'",
-//                   group.getName(), channelName, channel.getGroup(0).getName());
-//          if (channel.getEnablement() != enablement) {
-//              throw new Exception(gripe + " with different enablement");
-//          }
-//          if (// Now monitor, but not before?
-//              monitor && channel instanceof ScannedArchiveChannel
-//              ||
-//              // Or now scanned, but before monitor, or other scan rate?
-//              !monitor
-//               && (channel instanceof MonitoredArchiveChannel
-//                   || ((ScannedArchiveChannel)channel).getPeriod() != period)) {
-//              throw new Exception(gripe + " with different sample mechanism");
-//          }
-//      }
-//      else
-//      {   // Channel is new to this engine.
-          // See if there's already a sample in the archive,
-          // because we won't be able to go back-in-time before that sample.
-//        IValue last_sample = null;
-//
-//        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-//
-//        final ITimestamp lastTimestamp  =
-//            service.getLatestTimestampForChannel(channelName);
-
-//        if (lastTimestamp != null) {
-//            // Create fake string sample with that time
-//            last_sample = ValueFactory.createStringValue(last_stamp,
-//                                                         ValueFactory.createOKSeverity(),
-//                                                         "",
-//                                                         IValue.Quality.Original,
-//                                                         new String [] { "Last timestamp in archive" });
-//        }
-
-          // Determine buffer capacity
-          //int buffer_capacity = (int) (write_period / period * buffer_reserve);
-          // When scan or update period exceeds write period,
-          // simply use the reserve for the capacity
-//          if (buffer_capacity < buffer_reserve) {
-//              buffer_capacity = (int)buffer_reserve;
-//          }
-
-          // Create new channel
-//          if (monitor)
-//          {
-//              if (sample_val > 0) {
-//                  channel = new DeltaArchiveChannel(channelName, enablement,
-//                          buffer_capacity, last_sample, period, sample_val);
-//              } else {
-
-//
-//                  channel = new MonitoredArchiveChannel<T>(channelName,
-//                                                        enablement,
-//                                                        buffer_capacity,
-//                                                        last_sample,
-//                                                        period);
-////              }
-//          }
-//          else
-//          {
-//              channel = new ScannedArchiveChannel(channelName, enablement,
-//                                      buffer_capacity, last_sample, period,
-//                                      max_repeats);
-//              scanner.add((ScannedArchiveChannel) channel, period);
-//          }
-//          synchronized (this)
-//          {
-//              channels.add(channel);
-//              channel_by_name.put(channel.getName(), channel);
-//          }
-//          writer.addChannel(channel);
-//      }
-//      // Connect new or old channel to group
-//      channel.addGroup(group);
-//      group.add(channel);
-//
-//      return channel;
-//  }
 }

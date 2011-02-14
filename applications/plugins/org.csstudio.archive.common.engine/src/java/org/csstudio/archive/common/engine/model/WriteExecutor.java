@@ -251,7 +251,7 @@ public class WriteExecutor {
     }
 
     /** Stop the write thread, after performing a final write. */
-    public void shutdown() throws Exception {
+    public void shutdown() {
         _executor.execute(new WriteWorker(this, "Shutdown worker", _channelMap.values(), 0L)); // execute immediately
         _executor.shutdown();
     }

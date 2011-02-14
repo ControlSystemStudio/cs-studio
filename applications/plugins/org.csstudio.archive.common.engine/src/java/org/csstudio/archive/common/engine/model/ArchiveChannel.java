@@ -204,35 +204,43 @@ public abstract class ArchiveChannel<V,
      * Start archiving this channel.
      * @param engineId
      * @param info human readable info about the start of this channel
+     * @throws EngineModelException
      */
     public void start(@Nonnull final ArchiveEngineId engineId,
-                      @Nonnull final String info) throws Exception {
+                      @Nonnull final String info) throws EngineModelException {
+        try {
         if (_isRunning) {
             return;
         }
         synchronized (this) {
             _isRunning = true;
-            _pv.start();
+                _pv.start();
         }
 
-        // persist the start of monitoring
-        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-        service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                  _id,
-                                                                  ArchiverMonitorStatus.ON,
-                                                                  engineId,
-                                                                  TimeInstantBuilder.buildFromNow(),
-                                                                  info));
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.ON,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        } catch (final Exception e) {
+            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel startup", e);
+        }
 
     }
 
     /**
      * Stop archiving this channel
-     * @throws OsgiServiceUnavailableException
-     * @throws ArchiveServiceException
+     * @throws EngineModelException
      */
     public void stop(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws OsgiServiceUnavailableException, ArchiveServiceException {
+                     @Nonnull final String info) throws EngineModelException {
     	if (!_isRunning) {
             return;
         }
@@ -241,14 +249,20 @@ public abstract class ArchiveChannel<V,
     	}
         _pv.stop();
 
-        // persist the start of monitoring
-        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-        service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                  _id,
-                                                                  ArchiverMonitorStatus.OFF,
-                                                                  engineId,
-                                                                  TimeInstantBuilder.buildFromNow(),
-                                                                  info));
+        try {
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.OFF,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        }
     }
 
     /** @return Most recent value of the channel's PV */

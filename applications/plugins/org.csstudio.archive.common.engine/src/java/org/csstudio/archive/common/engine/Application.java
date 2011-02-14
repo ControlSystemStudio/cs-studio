@@ -16,6 +16,8 @@ import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.server.EngineHttpServerException;
 import org.csstudio.archive.common.engine.server.EngineServer;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
@@ -86,7 +88,7 @@ public class Application implements IApplication {
      */
     @Override
     @SuppressWarnings("nls")
-    public Object start(@Nonnull final IApplicationContext context) throws Exception {
+    public Object start(@Nonnull final IApplicationContext context) {
         final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
@@ -100,24 +102,15 @@ public class Application implements IApplication {
         try {
             _model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
-            EngineServer httpServer;
-            try {
-                httpServer = new EngineServer(_model, _port);
-            } catch (final Exception ex) {
-                LOG.fatal("Cannot start server on port " + _port + ": " + ex.getMessage(), ex);
-                return EXIT_OK;
-            }
+            final EngineServer httpServer = new EngineServer(_model, _port);
 
             boolean run = true;
             while (run) {
                 LOG.info("Reading configuration '" + _engineName + "'");
                 final BenchmarkTimer timer = new BenchmarkTimer();
-                try {
-                    _model.readConfig(_engineName, _port);
-                } catch (final Exception ex) {
-                    LOG.fatal(ex.getMessage());
-                    return EXIT_OK;
-                }
+
+                _model.readConfig(_engineName, _port);
+
                 timer.stop();
                 LOG.info("Read configuration: " + _model.getChannelCount() +
                             " channels in " + timer.toString());
@@ -128,8 +121,7 @@ public class Application implements IApplication {
                 _model.start();
                 while (true) {
                     Thread.sleep(1000);
-                    if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED)
-                    {
+                    if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
                         run = false;
                         break;
                     }
@@ -146,9 +138,13 @@ public class Application implements IApplication {
             LOG.info("ArchiveEngine stopped");
             httpServer.stop();
 
-        } catch (final Exception ex) {
-            LOG.fatal("Unhandled Main Loop Error", ex);
-            ex.printStackTrace();
+        } catch (final EngineHttpServerException e) {
+            LOG.fatal("Cannot start server on port " + _port + ": " + e.getMessage(), e);
+            return EXIT_OK;
+        } catch (final EngineModelException e) {
+            LOG.error("Archive engine model error - try to shutdown.", e);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         return EXIT_OK;

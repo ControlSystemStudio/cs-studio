@@ -13,9 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 import com.google.common.collect.MapMaker;
 
@@ -23,8 +21,7 @@ import com.google.common.collect.MapMaker;
  *  Each channel is in exactly one group.
  *  @author Kay Kasemir
  */
-public class ArchiveGroup
-{
+public class ArchiveGroup {
     /** Name of this group */
     final private String _name;
 
@@ -34,12 +31,6 @@ public class ArchiveGroup
      *  thread to traverse
      */
     private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
-
-    /** (At most) one of the channels might be 'enabling' or 'disabling' */
-//    private ArchiveChannel enabling_channel = null;
-
-    /** Is the group currently enabled? */
-    private final boolean enabled = true;
 
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
@@ -123,31 +114,24 @@ public class ArchiveGroup
         return _channelMap.get(name);
 	}
 
-//    final public ArchiveChannel getEnablingChannel()
-//    {
-//        return enabling_channel;
-//    }
 
     /** @return <code>true</code> if group is currently enabled */
     public boolean isEnabled() {
-        return enabled ;
+        return true ;
     }
 
     /** Start all the channels in group
      * @param engineId
-     * @return */
+     * @return
+     * @throws EngineModelException
+     */
     @Nonnull
     final void start(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws Exception {
+                     @Nonnull final String info) throws EngineModelException {
         if (is_running) {
             return;
         }
         is_running = true;
-        // If we have an 'enabling' channel,
-        // disable the group until we get the OK from that channel
-//        if (enabling_channel != null  &&
-//            enabling_channel.getEnablement() == Enablement.Enabling)
-//            enable(false);
 
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.start(engineId, info);
@@ -156,11 +140,10 @@ public class ArchiveGroup
 
     /**
      * Stop all the channels in group
-     * @throws ArchiveServiceException
-     * @throws OsgiServiceUnavailableException
+     * @throws EngineModelException
      */
     public void stop(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws OsgiServiceUnavailableException, ArchiveServiceException {
+                     @Nonnull final String info) throws EngineModelException {
         if (!is_running) {
             return;
         }
@@ -168,6 +151,12 @@ public class ArchiveGroup
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.stop(engineId, info);
         }
+    }
+
+    public void restart(@Nonnull final ArchiveEngineId engineId,
+                        @Nonnull final String info) throws EngineModelException {
+        stop(engineId, info);
+        start(engineId, info);
     }
 
 

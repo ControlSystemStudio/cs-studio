@@ -126,7 +126,6 @@ class GroupResponse extends AbstractResponse
                 Integer.toString(buffer.size()),
                 String.format("%.1f", stats.getAverageSize()),
                 Integer.toString(stats.getMaxSize()),
-                Integer.toString(buffer.getCapacity()),
                 overruns,
             });
         }
