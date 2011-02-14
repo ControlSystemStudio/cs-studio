@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
-	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
+	public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 	
 	private TextIndicatorModel widgetModel;
 	private FormatEnum format;

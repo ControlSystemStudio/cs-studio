@@ -12,7 +12,11 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
@@ -134,56 +138,8 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
 					String text = (String)newValue;
-					/*IValue value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
-					if(value instanceof IDoubleValue){
-						try {
-							Double d = Double.parseDouble(text);
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, d);
-						} catch (NumberFormatException e) {
-							
-						}
-					}else if(value instanceof ILongValue || value instanceof IEnumeratedValue){
-						try {
-							Integer l = Integer.parseInt(text);
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, l);
-						} catch (NumberFormatException e) {							
-						}
-					}else if(value instanceof IStringValue){
-					*/	
-					//}
-					((TextFigure)figure).setText(text);
-					FormatEnum formatEnum = getWidgetModel().getFormat();
-						switch (formatEnum){						
-						case DECIAML:						
-							try {
-								DecimalFormat format = new DecimalFormat();
-								double value = format.parse(text).doubleValue();
-								double min = getWidgetModel().getMinimum();
-								double max = getWidgetModel().getMaximum();
-								double coValue = Math.max(min, Math.min(value, max));
-								if(coValue != value)
-									((TextFigure)figure).setText(format.format(coValue));
-								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, coValue);
-							} catch (ParseException e) {
-								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
-							}
-							break;
-						case HEX:
-							Integer[] iString = new Integer[text.length()];
-							char[] textChars = text.toCharArray();
-							
-							for (int ii = 0; ii< text.length(); ii++){
-								iString[ii] = Integer.valueOf(textChars[ii]);
-							}
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, iString);
-							break;
-						case DEFAULT:					
-						case STRING:
-						default:
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
-							break;
-						
-						}
+					//((TextFigure)figure).setText(text);					
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, parseString(text));					
 					return false;
 				}
 			};			
@@ -286,6 +242,116 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	protected void performDirectEdit(){
 		new LabelEditManager(this, 
 				new LabelCellEditorLocator((Figure)getFigure()), false).show();
+	}
+	
+	@Override
+	protected int getUpdateSuppressTime() {
+		return -1;
+	}
+	
+	/**Parse string to a value according PV value type and format
+	 * @param text
+	 * @return value
+	 */
+	private Object parseString(final String text){
+		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		FormatEnum formatEnum = getWidgetModel().getFormat();
+
+		if(pvValue == null || pvValue instanceof IStringValue){
+			return text;
+		}
+		
+		if(pvValue instanceof IDoubleValue){
+			switch (formatEnum) {
+			case HEX:
+				return parseHEX(text, true);
+			case STRING:
+				if(((IDoubleValue)pvValue).getValues().length > 1){
+					return parseCharArray(text);
+				}
+			case DECIAML:
+			case DEFAULT:
+			case EXP:			
+			default:
+				return parseDouble(text, true);
+			}
+		}
+		
+		if(pvValue instanceof ILongValue){
+			switch (formatEnum) {
+			case HEX:
+				return parseHEX(text, true);
+			case STRING:
+				if(((ILongValue)pvValue).getValues().length > 1){
+					return parseCharArray(text);
+				}
+			case DECIAML:
+			case DEFAULT:
+			case EXP:			
+			default:
+				return parseDouble(text, true);
+			}
+		}
+		
+		if(pvValue instanceof IEnumeratedValue){
+			switch (formatEnum) {
+			case HEX:
+				return parseHEX(text, true);
+			case STRING:
+				return text;
+			case DEFAULT:				
+			case DECIAML:			
+			case EXP:			
+			default:
+				return parseDouble(text, true);
+			}
+		}
+		
+		return text;
+		
+	}
+
+	private Integer[] parseCharArray(final String text) {
+		Integer[] iString = new Integer[text.length()];
+		char[] textChars = text.toCharArray();
+		
+		for (int ii = 0; ii< text.length(); ii++){
+			iString[ii] = Integer.valueOf(textChars[ii]);
+		}
+		return iString;
+	}
+	
+	private Object parseDouble(final String text, final boolean coerce){
+		DecimalFormat format = new DecimalFormat();
+		try {
+			double value = format.parse(text).doubleValue();
+			if(coerce){
+				double min = getWidgetModel().getMinimum();
+				double max = getWidgetModel().getMaximum();
+				return Math.max(min, Math.min(value, max));
+			}
+			return value;
+		} catch (ParseException e) {
+			return text;
+		}		
+	}
+	
+	private Object parseHEX(final String text, final boolean coerce){
+		String valueText = text;
+		if(text.startsWith(TextIndicatorEditPart.HEX_PREFIX)){
+			valueText = text.substring(2);
+		}
+		try {
+			int i = Integer.parseInt(valueText, 16);		
+			if(coerce){
+				double min = getWidgetModel().getMinimum();
+				double max = getWidgetModel().getMaximum();
+				return Math.max(min, Math.min(i, max));
+			}
+			return i;
+		} catch (NumberFormatException e) {
+			return text;
+		}
 	}
 	
 	
