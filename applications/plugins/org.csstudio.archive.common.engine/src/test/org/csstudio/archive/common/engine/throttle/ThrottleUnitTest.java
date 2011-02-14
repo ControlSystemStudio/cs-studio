@@ -5,10 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.common.throttle;
+package org.csstudio.archive.common.engine.throttle;
 
 import static org.junit.Assert.*;
 
+import org.csstudio.archive.common.throttle.Throttle;
 import org.junit.Test;
 
 /** Test of the <code>Throttle</code>

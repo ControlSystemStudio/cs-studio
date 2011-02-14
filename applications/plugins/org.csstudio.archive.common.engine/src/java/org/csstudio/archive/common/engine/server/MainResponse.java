@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.common.engine.Messages;
-import org.csstudio.archive.common.engine.RDBArchiveEnginePreferences;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -157,12 +156,6 @@ class MainResponse extends AbstractResponse
         {
             Messages.HTTP_WriteDuration,
             String.format("%.1f sec", model.getAvgWriteDuration())
-        });
-
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_SQLTimeout,
-            PeriodFormat.formatSeconds(RDBArchiveEnginePreferences.getSQLTimeout())
         });
 
         html.tableLine(new String[]

@@ -28,11 +28,6 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class Application implements IApplication {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
 
-    /** Database URL, user, password */
-    private final String url = RDBArchiveEnginePreferences.getURL(),
-                   user = RDBArchiveEnginePreferences.getUser(),
-                   password = RDBArchiveEnginePreferences.getPassword();
-
     /** HTTP Server port */
     private int _port;
 
@@ -92,28 +87,12 @@ public class Application implements IApplication {
     @Override
     @SuppressWarnings("nls")
     public Object start(@Nonnull final IApplicationContext context) throws Exception {
-        final String[] args =
-            (String[]) context.getArguments().get("application.args");
+        final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
         }
         // Install the type supports for these engines
         ArchiveEngineTypeSupport.install();
-
-        // Install the data sources
-//        final CompositeDataSource dataSource = new CompositeDataSource();
-//        dataSource.putDataSource("sim", SimulationDataSource.simulatedData());
-//        dataSource.putDataSource("epics", JCASupport.jca());
-//        dataSource.setDefaultDataSource("epics");
-//
-//        PVManager.setDefaultDataSource(dataSource);
-
-//        if (url == null)
-//        {
-//            System.out.println(
-//                    "No Database URL. Set via preferences or command-line");
-//            return EXIT_OK;
-//        }
 
         // Setup groups, channels, writer
         // This is all single-threaded!
