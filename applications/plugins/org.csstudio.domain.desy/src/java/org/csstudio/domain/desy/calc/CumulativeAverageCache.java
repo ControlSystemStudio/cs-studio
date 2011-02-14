@@ -52,12 +52,8 @@ public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Dou
                                            @Nonnull final Double nextVal) {
 
         if (accVal != null) {
-            return accVal + nextVal;
-
-            // performs better than the following lines on every accumulation but may
-            // result in precision loss or even overflow for a lot of very large values before resetting.
-            //final int n = getNumberOfAccumulations();
-            //result = curVal + (nextVal - curVal)/(n + 1);
+            final int n = getNumberOfAccumulations();
+            return accVal + (nextVal - accVal)/(n + 1);
         } else {
             return nextVal;
         }
@@ -69,13 +65,6 @@ public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Dou
     @Override
     @CheckForNull
     public Double getValue() {
-        final Double accVal = super.getValue();
-        if (accVal != null) {
-            final int n = getNumberOfAccumulations();
-            if (n > 0) {
-                return accVal / n;
-            }
-        }
-        return null;
+        return super.getValue();
     }
 }

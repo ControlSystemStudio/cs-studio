@@ -51,8 +51,8 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
     }
 
     public void accumulate(@Nonnull final A nextValue) {
-        _num++;
         final R val = calculateAccumulation(_accumulatedValue.getValue(), nextValue);
+        _num++;
         _accumulatedValue.setValue(val);
     }
 
@@ -77,7 +77,8 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
 
     /**
      * Calculates the accumulation from the present value in the cache and the newly arriving
-     * value. The return value will become the cached value for the next accumulation.
+     * value. The return value will become the cached value for the next accumulation.<br/>
+     * Note that on call of this method, the accumulation counter has not yet been increased.
      *
      * @param accumulatedValue the currently accumulated value in the cache.
      * @param nextValue the new value to be accumulated
