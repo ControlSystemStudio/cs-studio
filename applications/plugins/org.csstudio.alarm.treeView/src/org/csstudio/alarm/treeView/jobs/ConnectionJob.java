@@ -21,6 +21,9 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -28,6 +31,7 @@ import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeConnectionMonitor;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
@@ -61,10 +65,12 @@ public final class ConnectionJob extends Job {
 
     @Nonnull
     private IAlarmResource createNewAlarmResource() {
-        // JMS: topics: default,    facilities: don't care,      filename: don't care
-        // DAL: topics: don't care, facilities: from tree prefs, filename: ok
+        // JMS: topics: from tree prefs, facilities: don't care,               filename: don't care
+        // DAL: topics: don't care,      facilities: from alarm service prefs, filename: ok
+        
+        String[] topicArray = AlarmTreePreference.JMS_QUEUE.getValue().split(",");
         final IAlarmResource alarmResource =
-            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(null, null);
+            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(Arrays.asList(topicArray), null);
         return alarmResource;
     }
 
