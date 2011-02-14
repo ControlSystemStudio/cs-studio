@@ -35,9 +35,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.CheckForNull;
@@ -66,6 +69,7 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
+import com.google.common.collect.Sets;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -144,6 +148,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 //        });
 //    }
 
+    private static final int MIN_PERIOD_S = 1;
+    private static final int MAX_PERIOD_S = 60;
+    private static final int DEFAULT_PERIOD_S = 5;
     private static final int KBYTE_SIZE = 1024;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -151,14 +158,24 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
     static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
 
+
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
-    final ScheduledExecutorService _executor = Executors.newScheduledThreadPool(5);
+    private final int _cpus = Runtime.getRuntime().availableProcessors();
+    private final ScheduledThreadPoolExecutor _executor =
+        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
+    private final SortedSet<PersistDataWorker> _submittedWorkers = Sets.newTreeSet(new Comparator<PersistDataWorker>() {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int compare(@Nonnull final PersistDataWorker arg0, @Nonnull final PersistDataWorker arg1) {
+            return Long.valueOf(arg0.getPeriod()).compareTo(Long.valueOf(arg1.getPeriod()));
+        }
+    });
 
-    final SqlStatementBatch _sqlStatementBatch;
+    private final SqlStatementBatch _sqlStatementBatch;
 
-    private String _databaseName;
-    private Integer _maxAllowedPacketInBytes;
 
     /**
      * Any thread owns a connection.
@@ -179,11 +196,87 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private IArchiveStatusDao _archiveStatusDao;
 
     /**
+     * Prefs from plugin_customization.
+     */
+    private String _prefHost;
+    private String _prefFailoverHost;
+    private String _prefUser;
+    private String _prefPassword;
+    private Integer _prefPort;
+    private String _prefDatabaseName;
+    private Integer _prefPeriodInS;
+    private Integer _prefMaxAllowedPacketInBytes;
+
+    private String _prefMailHost;
+    private String _prefEmailReceiver;
+
+    private MysqlDataSource _dataSource;
+
+    /**
      * Constructor.
      */
     private ArchiveDaoManager() {
+
+        loadAndCheckPreferences();
+        _dataSource = createDataSource();
+
         _sqlStatementBatch = SqlStatementBatch.INSTANCE;
 
+        addGracefullyShutdownHook();
+
+        submitNewPersistDataWorker();
+    }
+
+
+    private void loadAndCheckPreferences() {
+        _prefHost = HOST.getValue();
+        _prefFailoverHost = FAILOVER_HOST.getValue();
+        _prefPort = PORT.getValue();
+        _prefDatabaseName = DATABASE_NAME.getValue();
+        _prefUser = USER.getValue();
+        _prefPassword = PASSWORD.getValue();
+
+        _prefPeriodInS = MySQLArchiveServicePreference.PERIOD.getValue();
+        if (_prefPeriodInS < MIN_PERIOD_S || _prefPeriodInS > MAX_PERIOD_S) {
+            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
+                     MIN_PERIOD_S + "," + MAX_PERIOD_S+ "]." +
+                     "Set to " + DEFAULT_PERIOD_S + "s.");
+            _prefPeriodInS = DEFAULT_PERIOD_S;
+        }
+
+        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
+        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
+            LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
+                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
+            _prefMaxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
+        } else {
+            _prefMaxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
+        }
+
+        _prefMailHost = SMTP_HOST.getValue();
+        _prefEmailReceiver = EMAIL_ADDRESS.getValue();
+    }
+
+    @Nonnull
+    private MysqlDataSource createDataSource() {
+
+        final MysqlDataSource ds = new MysqlDataSource();
+        String hosts = _prefHost;
+        if (!StringUtil.isBlank(_prefFailoverHost)) {
+            hosts += "," + _prefFailoverHost;
+        }
+        ds.setServerName(hosts);
+        ds.setPort(_prefPort);
+        ds.setDatabaseName(_prefDatabaseName);
+        ds.setUser(_prefUser);
+        ds.setPassword(_prefPassword);
+        ds.setFailOverReadOnly(false);
+        ds.setMaxAllowedPacket(_prefMaxAllowedPacketInBytes);
+
+        return ds;
+    }
+
+    private void addGracefullyShutdownHook() {
         /**
          * Add shutdown hook.
          */
@@ -194,12 +287,12 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             @Override
             public void run() {
                 // submit an executor that processes immediately what's left in the queue
-                _executor.execute(new PersistDataWorker("ShutdownWorker" + PersistDataWorker.i,
-                                                        INSTANCE,
-                                                        _sqlStatementBatch.getQueue()));
+                _executor.execute(new PersistDataWorker("ShutdownWorker",
+                                                        _sqlStatementBatch.getQueue(),
+                                                        Integer.valueOf(0)));
                 _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
                 try {
-                    if (!_executor.awaitTermination(MySQLArchiveServicePreference.PERIOD.getValue() + 1, TimeUnit.SECONDS)) {
+                    if (!_executor.awaitTermination(_prefPeriodInS + 1, TimeUnit.SECONDS)) {
                         LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                         final List<Runnable> droppedTasks = _executor.shutdownNow();
                         LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
@@ -209,14 +302,17 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                 }
             }
         });
+    }
 
-        _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
-                                                            this,
-                                                            _sqlStatementBatch.getQueue()),
+    private void submitNewPersistDataWorker() {
+        final PersistDataWorker newWorker = new PersistDataWorker("FixedRateWorker:" + _submittedWorkers.size(),
+                                                                  _sqlStatementBatch.getQueue(),
+                                                                  _prefPeriodInS);
+        _executor.scheduleAtFixedRate(newWorker,
                                       0,
-//                                      MySQLArchiveServicePreference.PERIOD.getValue(),
-                                      100,
+                                      newWorker.getPeriod(),
                                       TimeUnit.SECONDS);
+        _submittedWorkers.add(newWorker);
     }
 
     /**
@@ -233,37 +329,67 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      */
     @Override
     public void submitStatementToBatch(@Nonnull final String stmt) {
-        final int bytesToAdd = stmt.codePointCount(0, stmt.length())*2;
         synchronized (this) {
-            if (_sqlStatementBatch.sizeInBytes() + bytesToAdd > _maxAllowedPacketInBytes) {
-                // when the worker's batch is exceeding the allowed packet size
-                // schedule a new worker at the same period
-//                _executor.scheduleAtFixedRate(new PersistDataWorker("FixedRateWorker" + PersistDataWorker.i,
-//                                                                    this,
-//                                                                    _sqlStatementBatch.getQueue()),
-//                                              0,
-//                                              MySQLArchiveServicePreference.PERIOD.getValue(),
-//                                              TimeUnit.SECONDS);
+            if (anotherWorkerRequired()) {
+                submitNewPersistDataWorker();
             }
             _sqlStatementBatch.submitStatement(stmt);
         }
     }
 
     /**
+     * Checks whether we need another worker.
+     * First check is whether the blocking queue of statements exceeds the max allowed packet size.
+     * If so, is there still space in the thread pool for another periodic task.
+     * If not so, is there the possibility to replace a rarely scheduled task with a task with higher
+     * frequency.
+     * If not so, FIXME (bknerr) : start a data rescue worker to save the stuff to disc and inform the staff per email
+     * @return
+     */
+    private boolean anotherWorkerRequired() {
+        // Is it necessary?
+        if (_sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes) {
+            // Yes, is still space in the pool for another worker?
+            if (_executor.getPoolSize() < _executor.getCorePoolSize()) {
+                return true; // Yes
+            } else {
+                // No, but perhaps we could enhance the frequency of the scheduled tasks?
+                final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
+                final PersistDataWorker oldestWorker = it.next();
+                final long period = oldestWorker.getPeriod();
+                if (Long.valueOf(period).intValue() <= _prefPeriodInS) {
+                    // No
+                    // FIXME (bknerr) : handle pool and thread frequency exhaustion
+                    // notify staff, rescue data to disc with dedicated worker
+                    return false;
+                }
+                // Yes, lower the frequency and remove the oldest periodic worker, return true
+                _prefPeriodInS = Math.max(_prefPeriodInS>>1, MIN_PERIOD_S);
+                _executor.remove(oldestWorker);
+                it.remove();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * FIXME (bknerr) : data rescue on failover fail not yet implemented!
      * @param statements
      */
-    static void rescueData(@Nonnull final List<String> statements) {
+    void rescueData(@Nonnull final List<String> statements) {
         LOG.info("Failed statements" + statements.size());
 
         EMailSender mailer;
         try {
-            mailer = new EMailSender(SMTP_HOST.getValue(),
-                                                       "DontReply@MySQLArchiver",
-                                                       EMAIL_ADDRESS.getValue(),
-                                                       "[MySQL archiver notification]: Failed failover");
+            mailer = new EMailSender(_prefMailHost,
+                                     "DontReply@MySQLArchiver",
+                                     _prefEmailReceiver,
+                                     "[MySQL archiver notification]: Failed failover");
             mailer.addText("Statements rescued:\n");
-            mailer.addText("filepath to statements file");
+            for (final String stmt : statements) {
+                //mailer.addText(stmt);
+            }
             mailer.close();
         } catch (final IOException e) {
             // TODO (bknerr) : handle exceptions on notifications
@@ -272,35 +398,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     }
 
-    @Nonnull
-    private MysqlDataSource createDataSource() {
-
-        final MysqlDataSource ds = new MysqlDataSource();
-        String hosts = HOST.getValue();
-        final String failoverHost = FAILOVER_HOST.getValue();
-        if (!StringUtil.isBlank(failoverHost)) {
-            hosts += "," + failoverHost;
-        }
-        ds.setServerName(hosts);
-        ds.setPort(PORT.getValue());
-        _databaseName = DATABASE_NAME.getValue();
-        ds.setDatabaseName(_databaseName);
-        ds.setUser(USER.getValue());
-        ds.setPassword(PASSWORD.getValue());
-        ds.setFailOverReadOnly(false);
-
-        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
-        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
-            LOG.warn("MaxAllowedPacket Connection Parameter out of recommended range [" +
-                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
-            _maxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
-        } else {
-            _maxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
-        }
-        ds.setMaxAllowedPacket(_maxAllowedPacketInBytes);
-
-        return ds;
-    }
 
     /**
      * Connects with the RDB instance for the given datasource.
@@ -342,7 +439,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         } catch (final Exception e) {
             handleExceptions(e);
         }
-        if (connection == null || StringUtil.isBlank(_databaseName)) {
+        if (connection == null || StringUtil.isBlank(_prefDatabaseName)) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
@@ -404,12 +501,10 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     @Override
     @Nonnull
     public Connection getConnection() throws ArchiveConnectionException {
-        // TODO (bknerr) : put here connection pooling
         final Connection connection = _archiveConnection.get();
         if (connection == null) {
             // the calling thread has not yet a connection registered.
-            // for now create a new one for this one
-            return connect(createDataSource());
+            return connect(_dataSource);
         }
         return connection;
     }
@@ -420,7 +515,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     @Override
     @CheckForNull
     public String getDatabaseName() {
-        return _databaseName;
+        return _prefDatabaseName;
     }
 
     /**

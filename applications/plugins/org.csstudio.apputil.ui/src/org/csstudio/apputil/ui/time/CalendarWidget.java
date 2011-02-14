@@ -88,8 +88,8 @@ public class CalendarWidget extends Composite
         
         Label l = new Label(box, SWT.NONE);
         l.setText(Messages.Time_Time);
-
-        time = new DateTime(box, SWT.TIME | SWT.SHORT);
+        // SWT.MEDIUM to include seconds as needed by BOY
+        time = new DateTime(box, SWT.TIME | SWT.MEDIUM);
         gd = new GridData();
         
         // New row

@@ -53,13 +53,17 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		precision = widgetModel.getPrecision();
 		
 		
-		TextFigure labelFigure = new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
+		TextFigure labelFigure = createTextFigure(); 
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				widgetModel.getFont().getFontData()));
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		return labelFigure;
+	}
+	
+	protected TextFigure createTextFigure(){
+		return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 	
 	@Override

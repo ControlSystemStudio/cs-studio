@@ -84,14 +84,6 @@ public class QueueManager implements Runnable
             Annunciator speech = null;
             try
             {
-                // TODO Check missing annunciations on Linux
-                // Sometimes, the annunciation fails with a console message
-                //    LINE UNAVAILABLE: Format is ...
-                // Messages are still displayed OK, there is no exception
-                // from FreeTTS
-                // Maybe it helps to always get/close the annunciator within the
-                // while loop?
-
                 // Create annunciator
                 speech = AnnunciatorFactory.getAnnunciator();
                 if (translations != null)

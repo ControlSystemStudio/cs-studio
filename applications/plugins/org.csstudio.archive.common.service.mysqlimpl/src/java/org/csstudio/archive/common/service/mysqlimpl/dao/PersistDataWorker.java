@@ -51,33 +51,22 @@ public class PersistDataWorker implements Runnable {
             CentralLogger.getInstance().getLogger(PersistDataWorker.class);
 
     private final String _name;
-
-    private final IArchiveDaoManager _manager;
+    private final long _period;
 
     private final List<String> _batchedStatements;
     private final BlockingQueue<String> _queuedStatements;
-
-    public static int i = 0;
-    public int me = i;
-
     /**
      * Constructor.
      * @param sqlStatements
      */
     public PersistDataWorker(@Nonnull final String name,
-                             @Nonnull final IArchiveDaoManager manager,
-                             @Nonnull final BlockingQueue<String> sqlStatements) {
+                             @Nonnull final BlockingQueue<String> sqlStatements,
+                             @Nonnull final long period) {
         _name = name;
-        i++;
+        _period = period;
 
-        _manager = manager;
         _queuedStatements = sqlStatements;
         _batchedStatements = Lists.newLinkedList();
-    }
-
-    @Nonnull
-    protected IArchiveDaoManager getManager() {
-        return _manager;
     }
 
     /**
@@ -85,12 +74,12 @@ public class PersistDataWorker implements Runnable {
      */
     @Override
     public void run() {
-        LOG.info("RUN: " + me);
+        LOG.info("RUN: " + _name);
 
         Statement sqlStmt = null;
         Connection connection = null;
         try {
-            connection = _manager.getConnection();
+            connection = ArchiveDaoManager.INSTANCE.getConnection();
             sqlStmt = connection.createStatement();
 
             while (_queuedStatements.peek() != null) {
@@ -103,13 +92,13 @@ public class PersistDataWorker implements Runnable {
 
         } catch (final ArchiveConnectionException se) {
             ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Drain unpersisted statements to file system.");
-            ArchiveDaoManager.rescueData(_batchedStatements);
+            ArchiveDaoManager.INSTANCE.rescueData(_batchedStatements);
         } catch (final BatchUpdateException be) {
             ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Drain unpersisted statements to file system.");
             processFailedBatch(_batchedStatements, be);
         } catch (final SQLException se) {
             ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.");
-            ArchiveDaoManager.rescueData(_batchedStatements);
+            ArchiveDaoManager.INSTANCE.rescueData(_batchedStatements);
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
@@ -141,10 +130,10 @@ public class PersistDataWorker implements Runnable {
         if (updateCounts.length == batchedStatements.size()) {
             // All statements have been tried executed, look for the failed ones
             final List<String> failedStmts = findFailedStatements(updateCounts, batchedStatements);
-            ArchiveDaoManager.rescueData(failedStmts);
+            ArchiveDaoManager.INSTANCE.rescueData(failedStmts);
         } else {
             // Not all statements have been tried to be executed - safe only the failed ones
-            ArchiveDaoManager.rescueData(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
+            ArchiveDaoManager.INSTANCE.rescueData(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
         }
     }
 
@@ -173,5 +162,9 @@ public class PersistDataWorker implements Runnable {
     @Nonnull
     public String getName() {
         return _name;
+    }
+
+    public long getPeriod() {
+        return _period;
     }
 }

@@ -12,14 +12,15 @@ package org.csstudio.utility.speech;
  */
 abstract public class BaseAnnunciator implements Annunciator
 {
-    protected Translation translations[] = null; 
+    protected Translation translations[] = null;
 
     /** Define translations */
+    @Override
     public void setTranslations(final Translation[] translations)
     {
         this.translations = translations;
     }
-    
+
     /** Apply all translations to input
      *  @param something Text to speak
      *  @return Text after applying all translations
