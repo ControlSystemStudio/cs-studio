@@ -252,11 +252,10 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Most recent value of the channel's PV */
+    @Nonnull
     public String getCurrentValue() {
-        synchronized (this)
-        {
-            if (mostRecentValue == null)
-             {
+        synchronized (this) {
+            if (mostRecentValue == null) {
                 return "null"; //$NON-NLS-1$
             }
             return mostRecentValue.getValueData().toString();
@@ -269,6 +268,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Last value written to archive */
+    @Nonnull
     public final String getLastArchivedValue() {
         synchronized (this) {
             if (_lastArchivedValue == null) {
@@ -279,6 +279,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Sample buffer */
+    @Nonnull
     public final SampleBuffer<V, T, IArchiveSample<V, T>> getSampleBuffer() {
         return _buffer;
     }
@@ -292,26 +293,6 @@ public abstract class ArchiveChannel<V,
         }
     }
 
-    /** Enable or disable groups based on received value */
-//    final private void handleEnablement(final IValue value)
-//    {
-//        if (enablement == Enablement.Passive)
-//         {
-//            throw new Error("Not to be called when passive"); //$NON-NLS-1$
-//        }
-//        // Get boolean value (true <==> >0.0)
-//        final double number = ValueUtil.getDouble(value);
-//        final boolean yes = number > 0.0;
-//        // Do we enable or disable based on that value?
-//        final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
-//        // Check which group needs to _change_
-//        for (final ArchiveGroup group : groups)
-//        {
-//            if (group.isEnabled() != enable) {
-//                group.enable(enable);
-//            }
-//        }
-//    }
 
     protected boolean handleNewSample(@Nonnull final IArchiveSample<V, T> sample) {
         synchronized (this) {

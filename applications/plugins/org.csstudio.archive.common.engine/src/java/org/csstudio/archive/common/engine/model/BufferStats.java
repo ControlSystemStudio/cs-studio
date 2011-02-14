@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import org.csstudio.archive.common.stats.Average;
+import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 
 /** Buffer statistics
  *  @author Kay Kasemir
@@ -15,11 +15,11 @@ import org.csstudio.archive.common.stats.Average;
 public class BufferStats
 {
     private int max_size = 0;
-    
-    private Average average_size = new Average();
+
+    private final CumulativeAverageCache _avgSize = new CumulativeAverageCache();
 
     private int overruns = 0;
-    
+
     /** @return Maximum queue size so far
      *  @see #reset()
      */
@@ -31,7 +31,7 @@ public class BufferStats
     /** @return (Exponential) moving average of queue size. */
     synchronized public final double getAverageSize()
     {
-        return average_size.get();
+        return _avgSize.getValue();
     }
 
     /** @return Number of buffer overruns. */
@@ -44,20 +44,21 @@ public class BufferStats
     synchronized public void reset()
     {
         max_size = 0;
-        average_size.reset();
+        _avgSize.clear();
         overruns = 0;
     }
-    
+
     /** Update the buffer stats.
      *  @param size Current buffer size.
      */
-    synchronized public void updateSizes(int size)
+    synchronized public void updateSizes(final int size)
     {
-        if (size > max_size)
+        if (size > max_size) {
             max_size = size;
-        average_size.update(size);
+        }
+        _avgSize.accumulate(Double.valueOf(size));
     }
-    
+
     /** Add an overrun. */
     synchronized public void addOverrun()
     {

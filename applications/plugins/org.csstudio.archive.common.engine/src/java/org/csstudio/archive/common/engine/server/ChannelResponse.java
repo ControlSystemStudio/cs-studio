@@ -122,15 +122,13 @@ class ChannelResponse extends AbstractResponse
             Messages.HTTP_Group,
             Messages.HTTP_Enabled,
         });
-        for (int i=0; i<channel.getGroupCount(); ++i)
-        {
-            final ArchiveGroup group = channel.getGroup(i);
+        for (final ArchiveGroup group : channel.getGroups()) {
             html.tableLine(new String[]
-            {
-                HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
-                group.isEnabled() ? Messages.HTTP_Enabled
-                                  : Messages.HTTP_Disabled,
-            });
+                                      {
+                                       HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                       group.isEnabled() ? Messages.HTTP_Enabled
+                                                         : Messages.HTTP_Disabled,
+                                      });
         }
         html.closeTable();
 

@@ -32,6 +32,7 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
@@ -49,7 +50,7 @@ public final class EngineModel {
     private String _name = "DESY Archive Engine";  //$NON-NLS-1$
 
     /** Thread that writes to the <code>archive</code> */
-    final private WriteThread _writeThread;
+    final private WriteExecutor _writeExecutor;
 
     /**
      * All channels
@@ -89,7 +90,7 @@ public final class EngineModel {
     private ITimestamp start_time = null;
 
     /** Write period in seconds */
-    private int write_period = 30;
+    private long _writePeriod = 30;
 
     /** Maximum number of repeat counts for scanned channels */
     private int max_repeats = 60;
@@ -110,7 +111,7 @@ public final class EngineModel {
 
         applyPreferences();
 
-        _writeThread = new WriteThread();
+        _writeExecutor = new WriteExecutor();
     }
 
     /** Read preference settings */
@@ -120,7 +121,7 @@ public final class EngineModel {
         if (prefs == null) {
             return;
         }
-        write_period = prefs.getInt(Activator.PLUGIN_ID, "write_period", write_period, null);
+        _writePeriod = prefs.getLong(Activator.PLUGIN_ID, "write_period", _writePeriod, null);
         max_repeats = prefs.getInt(Activator.PLUGIN_ID, "max_repeats", max_repeats, null);
         batch_size = prefs.getInt(Activator.PLUGIN_ID, "batch_size", batch_size, null);
         //buffer_reserve = prefs.getDouble(Activator.PLUGIN_ID, "buffer_reserve", buffer_reserve, null);
@@ -139,8 +140,8 @@ public final class EngineModel {
     }
 
     /** @return Write period in seconds */
-    public int getWritePeriod() {
-        return write_period;
+    public long getWritePeriod() {
+        return _writePeriod;
     }
 
     /** @return Write batch size */
@@ -207,7 +208,7 @@ public final class EngineModel {
 
         start_time = TimestampFactory.now();
         state = State.RUNNING;
-        _writeThread.start(write_period, batch_size);
+        _writeExecutor.start(_writePeriod);
 
         for (final ArchiveGroup group : _groupMap.values()) {
             group.start(_engine.getId(),
@@ -224,33 +225,24 @@ public final class EngineModel {
 
     /** @return Timestamp of end of last write run */
     public ITimestamp getLastWriteTime() {
-        return _writeThread.getLastWriteTime();
+        return _writeExecutor.getLastWriteTime();
     }
 
     /** @return Average number of values per write run */
-    public double getWriteCount()
-    {
-        return _writeThread.getWriteCount();
+    public double getAvgWriteCount() {
+        return _writeExecutor.getAvgWriteCount();
     }
 
     /** @return  Average duration of write run in seconds */
-    public double getWriteDuration()
-    {
-        return _writeThread.getWriteDuration();
+    public double getAvgWriteDuration() {
+        return _writeExecutor.getAvgWriteDuration();
     }
-
-    /** @see Scanner#getIdlePercentage() */
-//    public double getIdlePercentage()
-//    {
-//        return scanner.getIdlePercentage();
-//    }
 
     /** Ask the model to stop.
      *  Merely updates the model state.
      *  @see #getState()
      */
-    public void requestStop()
-    {
+    public void requestStop() {
         state = State.SHUTDOWN_REQUESTED;
     }
 
@@ -258,18 +250,14 @@ public final class EngineModel {
      *  Merely updates the model state.
      *  @see #getState()
      */
-    public void requestRestart()
-    {
+    public void requestRestart() {
         state = State.RESTART_REQUESTED;
     }
 
     /** Reset engine statistics */
-    public void reset()
-    {
-        _writeThread.reset();
-        //scanner.reset();
-        synchronized (this)
-        {
+    public void reset() {
+        _writeExecutor.reset();
+        synchronized (this) {
             for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
                 channel.reset();
             }
@@ -280,7 +268,7 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void stop() throws Exception {
         state = State.STOPPING;
-        LOG.info("Stopping scanner");
+        //LOG.info("Stopping scanner");
         // Stop scanning
         //scan_thread.stop();
         // Assert that scanning has stopped before we add 'off' events
@@ -290,9 +278,9 @@ public final class EngineModel {
         for (final ArchiveGroup group : _groupMap.values()) {
             group.stop(_engine.getId(), ArchiverMgmtEntry.ARCHIVER_STOP);
         }
-        // Flush all values out
-        LOG.info("Stopping writer");
-        _writeThread.shutdown();
+
+        LOG.info("Shutting down writer");
+        _writeExecutor.shutdown();
 
         // Close the engine config connection
         // Activator.getDefault().getArchiveEngineConfigService().disconnect();
@@ -354,7 +342,7 @@ public final class EngineModel {
             final ArchiveChannel<Object, ITimedCssAlarmValueType<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
 
-            _writeThread.addChannel(channel);
+            _writeExecutor.addChannel(channel);
 
             _channelMap.putIfAbsent(channel.getName(), channel);
             group.add(channel);
@@ -396,12 +384,7 @@ public final class EngineModel {
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
-            for (int i=0; i<channel.getGroupCount(); ++i) {
-                if (i > 0) {
-                    buf.append(", ");
-                }
-                buf.append(channel.getGroup(i).getName());
-            }
+            buf.append(Joiner.on(",").join(channel.getGroups()));
             buf.append("): ");
             buf.append(channel.getMechanism());
 

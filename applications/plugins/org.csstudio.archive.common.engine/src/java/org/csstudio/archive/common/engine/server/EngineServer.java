@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.server;
 
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
@@ -19,52 +22,49 @@ import org.osgi.service.http.HttpService;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EngineServer
-{
+public class EngineServer {
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(EngineServer.class);
+
     /** TCP port used by the web server */
-    final private int port;
-    
+    private final int _port;
+
     /** Construct and start the server
      *  @param model Model to serve
      *  @param port TCP port
      *  @throws Exception on error
      */
-    public EngineServer(final EngineModel model,
-                        final int port) throws Exception
-    {
-        this.port = port;
+    public EngineServer(@Nonnull final EngineModel model,
+                        final int port) throws Exception {
+        this._port = port;
         final BundleContext context =
             Activator.getDefault().getBundle().getBundleContext();
         final HttpService http = HttpServiceHelper.createHttpService(context, port);
-        
-        final HttpContext http_context = http.createDefaultHttpContext();
-        http.registerResources("/", "/webroot", http_context);
-        
-        http.registerServlet("/main", new MainResponse(model), null, http_context);
-        http.registerServlet("/groups", new GroupsResponse(model), null, http_context);
-        http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
-        http.registerServlet("/group", new GroupResponse(model), null, http_context);
-        http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
-        http.registerServlet("/channels", new ChannelListResponse(model), null, http_context);
-        http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
-        http.registerServlet("/restart", new RestartResponse(model), null, http_context);
-        http.registerServlet("/reset", new ResetResponse(model), null, http_context);
-        http.registerServlet("/stop", new StopResponse(model), null, http_context);
-        http.registerServlet("/debug", new DebugResponse(model), null, http_context);
-        
-        CentralLogger.getInstance().getLogger(this).info("Engine HTTP Server port " + port);
+
+        final HttpContext httpContext = http.createDefaultHttpContext();
+        http.registerResources("/", "/webroot", httpContext);
+
+        http.registerServlet("/main", new MainResponse(model), null, httpContext);
+        http.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
+        http.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
+        http.registerServlet("/group", new GroupResponse(model), null, httpContext);
+        http.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
+        http.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
+        http.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
+        http.registerServlet("/restart", new RestartResponse(model), null, httpContext);
+        http.registerServlet("/reset", new ResetResponse(model), null, httpContext);
+        http.registerServlet("/stop", new StopResponse(model), null, httpContext);
+        http.registerServlet("/debug", new DebugResponse(model), null, httpContext);
+
+        LOG.info("Engine HTTP Server port " + port);
     }
 
     /** Stop the server */
-    public void stop()
-    {
-        try
-        {
-            HttpServiceHelper.stopHttpService(port);
-        }
-        catch (Exception ex)
-        {
-            CentralLogger.getInstance().getLogger(this).warn(ex);
+    public void stop() {
+        try {
+            HttpServiceHelper.stopHttpService(_port);
+        } catch (final Exception ex) {
+            LOG.warn(ex);
         }
     }
 }

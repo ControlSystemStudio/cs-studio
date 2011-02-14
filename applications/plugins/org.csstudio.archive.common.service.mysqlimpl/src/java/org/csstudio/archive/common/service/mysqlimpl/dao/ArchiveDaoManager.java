@@ -164,24 +164,28 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private final int _cpus = Runtime.getRuntime().availableProcessors();
     private final ScheduledThreadPoolExecutor _executor =
         (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
-    private final SortedSet<PersistDataWorker> _submittedWorkers = Sets.newTreeSet(new Comparator<PersistDataWorker>() {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int compare(@Nonnull final PersistDataWorker arg0, @Nonnull final PersistDataWorker arg1) {
-            return Long.valueOf(arg0.getPeriod()).compareTo(Long.valueOf(arg1.getPeriod()));
-        }
-    });
+    /**
+     * Sorted set for submitted periodic workers - decreasing by period
+     */
+    private final SortedSet<PersistDataWorker> _submittedWorkers =
+        Sets.newTreeSet(new Comparator<PersistDataWorker>() {
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public int compare(@Nonnull final PersistDataWorker arg0,
+                                               @Nonnull final PersistDataWorker arg1) {
+                                return Long.valueOf(arg0.getPeriod()).compareTo(Long.valueOf(arg1.getPeriod()));
+                            }
+                        });
 
+    /**
+     * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL
+     * statements.
+     */
     private final SqlStatementBatch _sqlStatementBatch;
 
 
-    /**
-     * Any thread owns a connection.
-     */
-    private final ThreadLocal<Connection> _archiveConnection =
-        new ThreadLocal<Connection>();
 
     /**
      * DAOs.
@@ -194,6 +198,17 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private IArchiveSampleModeDao _archiveSampleModeDao;
     private IArchiveSeverityDao _archiveSeverityDao;
     private IArchiveStatusDao _archiveStatusDao;
+
+    /**
+     * The datasource that specifies the connections.
+     */
+    private MysqlDataSource _dataSource;
+
+    /**
+     * Any thread owns a connection.
+     */
+    private final ThreadLocal<Connection> _archiveConnection =
+        new ThreadLocal<Connection>();
 
     /**
      * Prefs from plugin_customization.
@@ -210,7 +225,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private String _prefMailHost;
     private String _prefEmailReceiver;
 
-    private MysqlDataSource _dataSource;
 
     /**
      * Constructor.
@@ -245,7 +259,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         }
 
         final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
-        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
+
+        // TODO (bknerr) : test code for minimum size
+        if (maxAllowedPacketInKB < 1 || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
             LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
                      KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
             _prefMaxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
@@ -284,6 +300,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             /**
              * {@inheritDoc}
              */
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
                 // submit an executor that processes immediately what's left in the queue
@@ -295,7 +312,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                     if (!_executor.awaitTermination(_prefPeriodInS + 1, TimeUnit.SECONDS)) {
                         LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                         final List<Runnable> droppedTasks = _executor.shutdownNow();
-                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
+                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks might not have been executed."); //optional **
                     }
                 } catch (final InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -467,10 +484,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             throw new RuntimeException(re);
         }
     }
-
-//    public void reconnect() throws ArchiveConnectionException {
-//        connect(createDataSource());
-//    }
 
     /**
      * Disconnects the connection for the owning thread.

@@ -151,12 +151,12 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_WriteCount,
-            (int)model.getWriteCount() + " samples"
+            (int)model.getAvgWriteCount() + " samples"
         });
         html.tableLine(new String[]
         {
             Messages.HTTP_WriteDuration,
-            String.format("%.1f sec", model.getWriteDuration())
+            String.format("%.1f sec", model.getAvgWriteDuration())
         });
 
         html.tableLine(new String[]

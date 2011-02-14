@@ -174,7 +174,7 @@ public class ArchiveGroup
     @Override
     @Nonnull
     public String toString() {
-        return "ArchiveGroup " + getName(); //$NON-NLS-1$
+        return getName();
     }
 
     @Nonnull
