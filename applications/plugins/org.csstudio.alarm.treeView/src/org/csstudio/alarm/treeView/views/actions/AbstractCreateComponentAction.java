@@ -69,20 +69,25 @@ public abstract class AbstractCreateComponentAction extends Action {
         if (selected instanceof SubtreeNode) {
             final SubtreeNode parent = (SubtreeNode) selected;
             final String name = promptForRecordName();
-            if ( (name != null) && !name.equals("") && parent.canAddChild(name)) {
-                final ITreeModificationItem item = createComponent(parent, name);
-                if (item != null) {
-                    _ldapModificationItems.add(item);
+            if ( (name != null) && !name.equals("")) {
+                if (parent.canAddChild(name)) {
+                    final ITreeModificationItem item = createComponent(parent, name);
+                    if (item != null) {
+                        _ldapModificationItems.add(item);
+                    }
+                    _viewer.refresh(parent);
+                } else {
+                    String message = "Node '" + name + "' cannot be added to component '"
+                            + parent.getName() + "'.\n" + "Does it already exist?";
+                    MessageDialog.openWarning(_site.getShell(), "Error adding record", message);
                 }
-                _viewer.refresh(parent);
-            } else {
-                String message = "Node '" + name + "' cannot be added to component '" + parent.getName() + "'.\n" +
-                		"Does it already exist?";
-                MessageDialog.openWarning(_site.getShell(), "Error adding record", message);
-            }
+            } // else ignore, cancel was pressed or empty string
         }
     }
 
+    /**
+     * @return null if no useful value was entered, else the value
+     */
     @CheckForNull
     private String promptForRecordName() {
         final InputDialog dialog = new InputDialog(_site.getShell(),
