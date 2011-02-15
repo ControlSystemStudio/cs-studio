@@ -21,9 +21,13 @@
  */
 package org.csstudio.archive.common.engine;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.AbstractPreference;
+import org.csstudio.platform.logging.CentralLogger;
 
 
 /**
@@ -35,8 +39,20 @@ import org.csstudio.platform.AbstractPreference;
  */
 public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
 
+    private static URL DEFAULT_RESCUE_URL;
+    static {
+        try {
+            DEFAULT_RESCUE_URL = new URL("file://./engineRescue");
+        } catch (final MalformedURLException e) {
+            CentralLogger.getInstance().error(ArchiveEnginePreference.class,
+                                              "Default URL preference for rescue dir not well formed.");
+        }
+    }
+
     public static final ArchiveEnginePreference<Long> WRITE_PERIOD =
         new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(7));
+    public static final ArchiveEnginePreference<URL> DATA_RESCUE_DIR =
+        new ArchiveEnginePreference<URL>("dataRescueDir", DEFAULT_RESCUE_URL);
 
     /**
      * Constructor.

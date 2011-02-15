@@ -49,7 +49,7 @@ public class SampleBuffer<V,
     private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    final private BufferStats _stats = new BufferStats();
+    private final BufferStats _stats = new BufferStats();
 
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
@@ -110,6 +110,7 @@ public class SampleBuffer<V,
     }
 
     /** @return Buffer statistics. */
+    @Nonnull
     public BufferStats getBufferStats() {
         return _stats;
     }
@@ -121,20 +122,21 @@ public class SampleBuffer<V,
 
     @SuppressWarnings("nls")
     @Override
+    @Nonnull
     public String toString() {
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
             _channelName,
             super.size(),
             _stats.getMaxSize(),
-            _stats.getAverageSize(),
-            _stats.getOverruns());
+            _stats.getAverageSize());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected BlockingQueue<S> delegate() {
         return _samples;
     }

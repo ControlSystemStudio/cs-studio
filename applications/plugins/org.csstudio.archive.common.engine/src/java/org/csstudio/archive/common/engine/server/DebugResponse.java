@@ -34,7 +34,7 @@ class DebugResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Debug");
 
         html.text("Engine wrote debug info ....");
-        model.dumpDebugInfo();
+        _model.dumpDebugInfo();
         
         html.close();
     }

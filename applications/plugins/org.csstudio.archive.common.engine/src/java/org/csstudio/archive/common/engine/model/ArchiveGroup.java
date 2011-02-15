@@ -89,13 +89,6 @@ public class ArchiveGroup {
 //            enabling_channel = null;
     }
 
-    /** @return Number of channels in group
-     *  @see #getChannel(int)
-     */
-    final public int getChannelCount() {
-        return _channelMap.size();
-    }
-
     /** @return Channel
      *  @param i Channel index
      *  @see #getChannelCount()

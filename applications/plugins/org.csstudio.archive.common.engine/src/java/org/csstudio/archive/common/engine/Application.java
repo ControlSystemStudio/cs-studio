@@ -36,8 +36,10 @@ public class Application implements IApplication {
     /** Request file */
     private String _engineName;
 
-    /** Application model */
+    /** Engine model */
     private EngineModel _model;
+
+    private volatile boolean _run = true;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
@@ -99,30 +101,29 @@ public class Application implements IApplication {
         // Setup groups, channels, writer
         // This is all single-threaded!
         LOG.info("Archive Engine " + EngineModel.VERSION);
+        _run = true;
         try {
             _model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             final EngineServer httpServer = new EngineServer(_model, _port);
 
-            boolean run = true;
-            while (run) {
-                LOG.info("Reading configuration '" + _engineName + "'");
+            while (_run) {
+                LOG.info("Reading configuration for engine '" + _engineName + "'");
                 final BenchmarkTimer timer = new BenchmarkTimer();
 
                 _model.readConfig(_engineName, _port);
 
                 timer.stop();
-                LOG.info("Read configuration: " + _model.getChannelCount() +
-                            " channels in " + timer.toString());
+                LOG.info("Read configuration: " + _model.getChannels().size() + " channels in " + timer.toString());
 
                 // Run until model gets stopped via HTTPD or #stop()
-                LOG.info("Running, CA addr list: "
-                    + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
+                LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
                 _model.start();
+
                 while (true) {
                     Thread.sleep(1000);
                     if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
-                        run = false;
+                        _run = false;
                         break;
                     }
                     if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {

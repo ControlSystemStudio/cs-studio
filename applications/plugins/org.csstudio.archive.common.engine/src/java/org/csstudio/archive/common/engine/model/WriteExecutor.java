@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -23,34 +24,30 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.joda.time.Duration;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-/** Thread that writes values from multiple <code>SampleBuffer</code>s
- *  to an <code>RDBArchiveServer</code>.
- *  <p>
- *  When there are write errors, it sets the sample buffer error state
- *  and tries to reconnect to the database and write again until successful.
- *  Since the Oracle batch mechanism doesn't tell us what exactly failed
- *  in a batch, all the samples that were part of the batch might
- *  be lost.
- *  The channels that add samples to the sample buffer supposedly notice
- *  the error condition and add a special indicator once we recover.
+/**
+ * Executor wrapper to handle the archive writer pool.
+ * The write worker is periodically scheduled to submit all samples from the channels' samplebuffers
+ * to the persistence layer via the archive service.
  *
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
  */
 public class WriteExecutor {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteExecutor.class);
 
     /** Minimum write period [seconds] */
-    private static final long MIN_WRITE_PERIOD_S = 5;
+    private static final long MIN_WRITE_PERIOD_MS = 5000;
 
     /**
      * The independent worker to write/submit the samples to the persistence layer.
@@ -66,30 +63,31 @@ public class WriteExecutor {
         private final WriteExecutor _exec;
         private final String _name;
         private final Collection<ArchiveChannel<Object, ITimedCssAlarmValueType<Object>>> _channels;
-        private final long _periodInS;
+        private final long _periodInMS;
 
         /** Average number of values per write run */
         final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
         /** Average duration of write run */
         final CumulativeAverageCache _avgWriteDurationInMS = new CumulativeAverageCache();
 
-        ITimestamp _lastTimeWrite;
-
+        TimeInstant _lastTimeWrite;
 
         /**
          * Constructor.
-         * @param string
-         * @param values
+         * @param exec
+         * @param name
+         * @param channels
+         * @param periodInMS
          */
         public WriteWorker(@Nonnull final WriteExecutor exec,
                            @Nonnull final String name,
                            @Nonnull final Collection<ArchiveChannel<Object, ITimedCssAlarmValueType<Object>>> channels,
-                           final long periodInS) {
+                           final long periodInMS) {
             _exec = exec;
             _name = name;
-            WORKER_LOG.info(_name + " started with period " + periodInS + "s");
+            WORKER_LOG.info(_name + " started with period " + periodInMS + "ms");
             _channels = channels;
-            _periodInS = periodInS;
+            _periodInMS = periodInMS;
         }
 
         /**
@@ -104,10 +102,10 @@ public class WriteExecutor {
                 final long written = write();
 
                 timer.stop();
-                _lastTimeWrite = TimestampFactory.now();
+                _lastTimeWrite = TimeInstantBuilder.buildFromNow();
 
                 final long durationInMS = timer.getMilliseconds();
-                if (durationInMS >= _periodInS) {
+                if (durationInMS >= _periodInMS) {
                     _exec.enhanceWriterThroughput(this);
                 }
 
@@ -150,8 +148,8 @@ public class WriteExecutor {
             return totalCount;
         }
 
-        public long getPeriodInS() {
-            return _periodInS;
+        public long getPeriodInMS() {
+            return _periodInMS;
         }
     }
 
@@ -159,7 +157,7 @@ public class WriteExecutor {
         Maps.newConcurrentMap();
     private ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
     private WriteWorker _writeWorker;
-    private long _writePeriodInS;
+    private long _writePeriodInMS;
 
 
     /**
@@ -170,16 +168,16 @@ public class WriteExecutor {
     }
 
     void enhanceWriterThroughput(@Nonnull final WriteWorker writeWorker) throws InterruptedException {
-        final long currentPeriod = writeWorker.getPeriodInS();
-        if (currentPeriod > MIN_WRITE_PERIOD_S) {
+        final long currentPeriodInMS = writeWorker.getPeriodInMS();
+        if (currentPeriodInMS > MIN_WRITE_PERIOD_MS) {
             _executor.shutdown();
-            _executor.awaitTermination(currentPeriod, TimeUnit.SECONDS);
+            _executor.awaitTermination(currentPeriodInMS, TimeUnit.MILLISECONDS);
             _executor.shutdownNow();
 
             _executor = Executors.newSingleThreadScheduledExecutor();
 
-            _writePeriodInS = Math.max(currentPeriod>>1, MIN_WRITE_PERIOD_S);
-            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInS,
+            _writePeriodInMS = Math.max(currentPeriodInMS>>1, MIN_WRITE_PERIOD_MS);
+            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
                                                         0L);
         } else {
             LOG.warn("Archive writer duration exceeds minimum period.");
@@ -189,16 +187,16 @@ public class WriteExecutor {
     }
 
     @Nonnull
-    private WriteWorker submitAndScheduleWriteWorker(final long writePeriodInS,
-                                                     final long delayInS) {
+    private WriteWorker submitAndScheduleWriteWorker(final long writePeriodInMS,
+                                                     final long delayInMS) {
         final WriteWorker writeWorker = new WriteWorker(this,
                                                         "Periodic Archive Engine Writer",
                                                         _channelMap.values(),
-                                                        writePeriodInS);
+                                                        writePeriodInMS);
         _executor.scheduleAtFixedRate(writeWorker,
-                                 delayInS,
-                                 writeWorker.getPeriodInS(),
-                                 TimeUnit.SECONDS);
+                                      delayInMS,
+                                      writeWorker.getPeriodInMS(),
+                                      TimeUnit.MILLISECONDS);
         return writeWorker;
     }
 
@@ -212,47 +210,56 @@ public class WriteExecutor {
      */
     public void start(final long pWritePeriod) {
         if (_writeWorker != null) {
-            LOG.warn("Worker has already been submitted with period (s): " + _writeWorker.getPeriodInS());
+            LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
             return;
         }
         long writePeriod = pWritePeriod;
-        if (writePeriod < MIN_WRITE_PERIOD_S) {
+        if (writePeriod < MIN_WRITE_PERIOD_MS) {
             LOG.warn("Adjusting write period from "
-                    + pWritePeriod + " to " + MIN_WRITE_PERIOD_S);
-            writePeriod = MIN_WRITE_PERIOD_S;
+                    + pWritePeriod + " to " + MIN_WRITE_PERIOD_MS);
+            writePeriod = MIN_WRITE_PERIOD_MS;
         }
-        _writePeriodInS = writePeriod;
+        _writePeriodInMS = writePeriod;
 
-        submitAndScheduleWriteWorker(_writePeriodInS,
-                                     MIN_WRITE_PERIOD_S);
+        _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
+                                                    0L);
 
     }
 
     /** Reset statistics */
     public void reset() {
-        _writeWorker._avgWriteCount.clear();
-        _writeWorker._avgWriteDurationInMS.clear();
+        if (_writeWorker != null) {
+            _writeWorker._avgWriteCount.clear();
+            _writeWorker._avgWriteDurationInMS.clear();
+        }
     }
 
     /** @return Timestamp of end of last write run */
-    @Nonnull
-    public ITimestamp getLastWriteTime() {
-        return _writeWorker._lastTimeWrite;
+    @CheckForNull
+    public TimeInstant getLastWriteTime() {
+        return _writeWorker != null ? _writeWorker._lastTimeWrite : null;
     }
 
     /** @return Average number of values per write run */
-    public double getAvgWriteCount() {
-        return _writeWorker._avgWriteCount.getValue();
+    @CheckForNull
+    public Double getAvgWriteCount() {
+        return _writeWorker != null ? _writeWorker._avgWriteCount.getValue() : null;
     }
 
-    /** @return  Average duration of write run in seconds */
-    public double getAvgWriteDuration() {
-        return _writeWorker._avgWriteDurationInMS.getValue();
+    /** @return  Average duration of write run */
+    @CheckForNull
+    public Duration getAvgWriteDuration() {
+        final Double doubleDurMS = _writeWorker._avgWriteDurationInMS.getValue();
+        return _writeWorker != null ? new Duration(doubleDurMS.longValue()) : null;
     }
 
-    /** Stop the write thread, after performing a final write. */
+    /**
+     * Stop all write workers, after having submitted a directly executed shutdown worker that
+     * shall empty the channels' sample buffers.
+     * Gracefully shutdown of the executor.
+     */
     public void shutdown() {
-        _executor.execute(new WriteWorker(this, "Shutdown worker", _channelMap.values(), 0L)); // execute immediately
+        _executor.execute(new WriteWorker(this, "Shutdown worker", _channelMap.values(), 0L));
         _executor.shutdown();
     }
 }

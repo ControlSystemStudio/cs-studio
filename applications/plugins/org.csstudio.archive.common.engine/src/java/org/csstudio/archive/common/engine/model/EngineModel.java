@@ -24,16 +24,15 @@ import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.joda.time.Duration;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.MapMaker;
 
 /** Data model of the archive engine.
@@ -88,10 +87,10 @@ public final class EngineModel {
     private volatile State _state = State.IDLE;
 
     /** Start time of the model */
-    private ITimestamp _startTime = null;
+    private TimeInstant _startTime = null;
 
     /** Write period in seconds */
-    private long _writePeriod = 30;
+    private final long _writePeriodInMS;
 
     private IArchiveEngine _engine;
 
@@ -103,19 +102,9 @@ public final class EngineModel {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
-        applyPreferences();
+        _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD.getValue();
 
         _writeExecutor = new WriteExecutor();
-    }
-
-    /** Read preference settings */
-    @SuppressWarnings("nls")
-    private void applyPreferences() {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null) {
-            return;
-        }
-        _writePeriod = ArchiveEnginePreference.WRITE_PERIOD.getValue();
     }
 
     /** @return Name (description) */
@@ -124,9 +113,9 @@ public final class EngineModel {
         return _name;
     }
 
-    /** @return Write period in seconds */
-    public long getWritePeriod() {
-        return _writePeriod;
+    /** @return Write period in milliseconds */
+    public long getWritePeriodInMS() {
+        return _writePeriodInMS;
     }
 
     /** @return Current model state */
@@ -137,7 +126,7 @@ public final class EngineModel {
 
     /** @return Start time of the engine or <code>null</code> if not running */
     @CheckForNull
-    public ITimestamp getStartTime() {
+    public TimeInstant getStartTime() {
         return _startTime;
     }
 
@@ -154,20 +143,15 @@ public final class EngineModel {
         return _groupMap.get(groupName);
     }
 
-    /** @return Number of groups */
-    public int getGroupCount() {
-        return _groupMap.size();
-    }
-
     /** @return Group by that name or <code>null</code> if not found */
     @CheckForNull
     public ArchiveGroup getGroup(@Nonnull final String name) {
         return _groupMap.get(name);
     }
 
-    /** @return Number of channels */
-    public int getChannelCount() {
-        return _channelMap.size();
+    @Nonnull
+    public Collection<ArchiveGroup> getGroups() {
+        return _groupMap.values();
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
@@ -188,9 +172,9 @@ public final class EngineModel {
      */
     public void start() throws EngineModelException {
 
-        _startTime = TimestampFactory.now();
+        _startTime = TimeInstantBuilder.buildFromNow();
         _state = State.RUNNING;
-        _writeExecutor.start(_writePeriod);
+        _writeExecutor.start(_writePeriodInMS);
 
         for (final ArchiveGroup group : _groupMap.values()) {
             group.start(_engine.getId(),
@@ -204,17 +188,19 @@ public final class EngineModel {
 
     /** @return Timestamp of end of last write run */
     @CheckForNull
-    public ITimestamp getLastWriteTime() {
+    public TimeInstant getLastWriteTime() {
         return _writeExecutor.getLastWriteTime();
     }
 
     /** @return Average number of values per write run */
-    public double getAvgWriteCount() {
+    @CheckForNull
+    public Double getAvgWriteCount() {
         return _writeExecutor.getAvgWriteCount();
     }
 
-    /** @return  Average duration of write run in seconds */
-    public double getAvgWriteDuration() {
+    /** @return  Average duration of write run in milliseconds */
+    @CheckForNull
+    public Duration getAvgWriteDuration() {
         return _writeExecutor.getAvgWriteDuration();
     }
 
@@ -235,7 +221,7 @@ public final class EngineModel {
     }
 
     /** Reset engine statistics */
-    public void reset() {
+    public void resetStats() {
         _writeExecutor.reset();
         synchronized (this) {
             for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
@@ -251,11 +237,6 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void stop() throws EngineModelException {
         _state = State.STOPPING;
-        //LOG.info("Stopping scanner");
-        // Stop scanning
-        //scan_thread.stop();
-        // Assert that scanning has stopped before we add 'off' events
-        //scan_thread.join();
         // Disconnect from network
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
@@ -352,6 +333,8 @@ public final class EngineModel {
         if (_state != State.IDLE) {
             throw new IllegalStateException("Only allowed in IDLE state");
         }
+        _name = null;
+        _engine = null;
         _groupMap.clear();
         _channelMap.clear();
     }
@@ -363,20 +346,16 @@ public final class EngineModel {
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
-            buf.append(Joiner.on(",").join(channel.getGroups()));
+            //buf.append(Joiner.on(",").join(channel.getGroups()));
             buf.append("): ");
             buf.append(channel.getMechanism());
 
             buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
             buf.append(channel.getInternalState() + ")");
-            buf.append(", value " + channel.getCurrentValue());
+            buf.append(", value " + channel.getCurrentValueAsString());
             buf.append(", last stored " + channel.getLastArchivedValue());
             System.out.println(buf.toString());
         }
     }
 
-    @Nonnull
-    public Collection<ArchiveGroup> getGroups() {
-        return _groupMap.values();
-    }
 }

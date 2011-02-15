@@ -148,9 +148,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 //        });
 //    }
 
-    private static final int MIN_PERIOD_S = 1;
-    private static final int MAX_PERIOD_S = 60;
-    private static final int DEFAULT_PERIOD_S = 5;
+    private static final int MIN_PERIOD_MS = 3000;
+    private static final int MAX_PERIOD_MS = 60000;
+    private static final int DEFAULT_PERIOD_MS = 5000;
     private static final int KBYTE_SIZE = 1024;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -163,7 +163,8 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     // get no of cpus and expected no of archive engines, and available archive connections
     private final int _cpus = Runtime.getRuntime().availableProcessors();
     private final ScheduledThreadPoolExecutor _executor =
-        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
+//        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
+    (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
     /**
      * Sorted set for submitted periodic workers - decreasing by period
      */
@@ -219,7 +220,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
-    private Integer _prefPeriodInS;
+    private Integer _prefPeriodInMS;
     private Integer _prefMaxAllowedPacketInBytes;
 
     private String _prefMailHost;
@@ -250,12 +251,12 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         _prefUser = USER.getValue();
         _prefPassword = PASSWORD.getValue();
 
-        _prefPeriodInS = MySQLArchiveServicePreference.PERIOD.getValue();
-        if (_prefPeriodInS < MIN_PERIOD_S || _prefPeriodInS > MAX_PERIOD_S) {
+        _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
+        if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
             LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-                     MIN_PERIOD_S + "," + MAX_PERIOD_S+ "]." +
-                     "Set to " + DEFAULT_PERIOD_S + "s.");
-            _prefPeriodInS = DEFAULT_PERIOD_S;
+                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
+                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
+            _prefPeriodInMS = DEFAULT_PERIOD_MS;
         }
 
         final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
@@ -303,13 +304,15 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
+                LOG.info("Killed");
                 // submit an executor that processes immediately what's left in the queue
-                _executor.execute(new PersistDataWorker("ShutdownWorker",
-                                                        _sqlStatementBatch.getQueue(),
-                                                        Integer.valueOf(0)));
+                _executor.scheduleAtFixedRate(new PersistDataWorker("ShutdownWorker",
+                                                                    _sqlStatementBatch.getQueue(),
+                                                                    Integer.valueOf(0)),
+                                              0L, 0L, TimeUnit.SECONDS);
                 _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
                 try {
-                    if (!_executor.awaitTermination(_prefPeriodInS + 1, TimeUnit.SECONDS)) {
+                    if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
                         LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                         final List<Runnable> droppedTasks = _executor.shutdownNow();
                         LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks might not have been executed."); //optional **
@@ -324,7 +327,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private void submitNewPersistDataWorker() {
         final PersistDataWorker newWorker = new PersistDataWorker("FixedRateWorker:" + _submittedWorkers.size(),
                                                                   _sqlStatementBatch.getQueue(),
-                                                                  _prefPeriodInS);
+                                                                  _prefPeriodInMS);
         _executor.scheduleAtFixedRate(newWorker,
                                       0,
                                       newWorker.getPeriod(),
@@ -367,21 +370,23 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         // Is it necessary?
         if (_sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes) {
             // Yes, is still space in the pool for another worker?
-            if (_executor.getPoolSize() < _executor.getCorePoolSize()) {
+            final int poolSize = _executor.getPoolSize();
+            final int corePoolSize = _executor.getCorePoolSize();
+            if (poolSize < corePoolSize) {
                 return true; // Yes
             } else {
                 // No, but perhaps we could enhance the frequency of the scheduled tasks?
                 final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
                 final PersistDataWorker oldestWorker = it.next();
                 final long period = oldestWorker.getPeriod();
-                if (Long.valueOf(period).intValue() <= _prefPeriodInS) {
+                if (Long.valueOf(period).intValue() <= MIN_PERIOD_MS) {
                     // No
                     // FIXME (bknerr) : handle pool and thread frequency exhaustion
                     // notify staff, rescue data to disc with dedicated worker
                     return false;
                 }
                 // Yes, lower the frequency and remove the oldest periodic worker, return true
-                _prefPeriodInS = Math.max(_prefPeriodInS>>1, MIN_PERIOD_S);
+                _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
                 _executor.remove(oldestWorker);
                 it.remove();
                 return true;
@@ -494,10 +499,13 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         if (connection != null) {
             try {
                 _executor.shutdown(); // handles all already submitted tasks
+                _executor.awaitTermination(MIN_PERIOD_MS, TimeUnit.MILLISECONDS);
                 connection.close();
                 _archiveConnection.set(null);
             } catch (final SQLException e) {
                 throw new ArchiveConnectionException("Archive disconnection failed!", e);
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }

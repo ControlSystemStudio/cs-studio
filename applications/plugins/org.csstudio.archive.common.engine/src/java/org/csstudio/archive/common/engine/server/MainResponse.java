@@ -12,22 +12,23 @@ import java.net.InetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.Platform;
+import org.joda.time.Duration;
 
 /** Provide web page with engine overview.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class MainResponse extends AbstractResponse
-{
+class MainResponse extends AbstractResponse {
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -63,26 +64,27 @@ class MainResponse extends AbstractResponse
 
         html.tableLine(new String[] { Messages.HTTP_Version, EngineModel.VERSION });
 
-        html.tableLine(new String[] { Messages.HTTP_Description, model.getName() });
+        html.tableLine(new String[] { Messages.HTTP_Description, _model.getName() });
 
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
 
-        html.tableLine(new String[] { Messages.HTTP_State, model.getState().name() });
-        final ITimestamp start = model.getStartTime();
+        html.tableLine(new String[] { Messages.HTTP_State, _model.getState().name() });
+        final TimeInstant start = _model.getStartTime();
         if (start != null)
         {
             html.tableLine(new String[]
             {
                 Messages.HTTP_StartTime,
-                start.format(ITimestamp.Format.DateTimeSeconds)
+                start.formatted()
             });
 
-            final double up_secs =
-                TimestampFactory.now().toDouble() - start.toDouble();
+            final Duration dur = new Duration(start.getInstant(),
+                                              TimeInstantBuilder.buildFromNow().getInstant());
+
             html.tableLine(new String[]
             {
                 Messages.HTTP_Uptime,
-                PeriodFormat.formatSeconds(up_secs)
+                TimeInstant.STD_DURATION_FMT.print(dur.toPeriod())
             });
         }
 
@@ -92,12 +94,12 @@ class MainResponse extends AbstractResponse
             Platform.getInstanceLocation().getURL().getFile().toString()
         });
 
-        final int group_count = model.getGroupCount();
+        final int group_count = _model.getGroups().size();
         int total_channel_count = 0;
         int connect_count = 0;
-        for (final ArchiveGroup group : model.getGroups()) {
+        for (final ArchiveGroup group : _model.getGroups()) {
 
-            final int channel_count = group.getChannelCount();
+            final int channel_count = group.getChannels().size();
             for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
 
                 if (channel.isConnected()) {
@@ -122,7 +124,7 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_WritePeriod,
-            model.getWritePeriod() + " sec"
+            _model.getWritePeriodInMS() + " ms"
         });
 
         // Currently in 'Write Error' state?
@@ -134,23 +136,32 @@ class MainResponse extends AbstractResponse
              : "OK")
         });
 
-        final ITimestamp last_write_time = model.getLastWriteTime();
+        final TimeInstant lastWriteTime = _model.getLastWriteTime();
         html.tableLine(new String[]
         {
-          Messages.HTTP_LastWriteTime,
-          (last_write_time == null
-          ? Messages.HTTP_Never
-          : last_write_time.format(ITimestamp.Format.DateTimeSeconds))
+            Messages.HTTP_LAST_WRITETIME,
+           (lastWriteTime == null ? Messages.HTTP_Never :
+                                    lastWriteTime.formatted())
         });
+        final Double avgWriteCount = _model.getAvgWriteCount();
         html.tableLine(new String[]
         {
             Messages.HTTP_WriteCount,
-            (int)model.getAvgWriteCount() + " samples"
+            (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
+                                     "NO") + " samples"
         });
+        final Duration avgWriteDuration = _model.getAvgWriteDuration();
+        String printDur = "NONE";
+        if (avgWriteDuration != null) {
+            printDur = TimeInstant.STD_DURATION_FMT.print(avgWriteDuration.toPeriod());
+            if (StringUtil.isBlank(printDur)) {
+                printDur = "<1s";
+            }
+        }
         html.tableLine(new String[]
         {
             Messages.HTTP_WriteDuration,
-            String.format("%.1f sec", model.getAvgWriteDuration())
+            printDur
         });
 
         final Runtime runtime = Runtime.getRuntime();

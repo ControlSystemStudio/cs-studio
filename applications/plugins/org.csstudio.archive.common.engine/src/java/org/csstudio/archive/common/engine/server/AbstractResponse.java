@@ -26,14 +26,14 @@ abstract class AbstractResponse extends HttpServlet
     /** Required by Serializable */
     private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
-    final protected EngineModel model;
+    final protected EngineModel _model;
 
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(final EngineModel model)
     {
-        this.model = model;
+        this._model = model;
     }
 
     /** {@inheritDoc} */
