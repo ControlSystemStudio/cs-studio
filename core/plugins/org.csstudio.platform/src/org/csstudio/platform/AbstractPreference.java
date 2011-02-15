@@ -24,6 +24,8 @@
 package org.csstudio.platform;
 
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * Example:
  * {@code}static final Preference<Integer> TIME = new Preference<Integer>("Time", 3600);
+ * 
+ * Supported explicit types:<br/>
+ * <li> java.util.String </li>
+ * <li> java.util.Integer </li>
+ * <li> java.util.Long </li>
+ * <li> java.util.Float </li>
+ * <li> java.util.Double </li>
+ * <li> java.util.Boolean </li>
+ * <li> java.net.URL </li>
  *
  *
  * @author jpenning
@@ -101,6 +112,12 @@ public abstract class AbstractPreference<T> {
             result = prefs.getDouble(getPluginID(), getKeyAsString(), (Double) _defaultValue, null);
         } else if (_type.equals(Boolean.class)) {
             result = prefs.getBoolean(getPluginID(), getKeyAsString(), (Boolean) _defaultValue, null);
+        } else if (_type.equals(URL.class)) {
+            try {
+                result = new URL(prefs.getString(getPluginID(), getKeyAsString(), _defaultValue.toString(), null));
+            } catch (final MalformedURLException e) {
+                LOG.error("URL preference is not well formed.", e);
+            }
         }
 
         assert result != null : "result must not be null";
