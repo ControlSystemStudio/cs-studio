@@ -78,10 +78,11 @@ public class AlarmTreeView extends ViewPart
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
-            // TODO When the configuration action is 'wide' because the config names are >3..4 chars,
-            //      the remaining toolbar buttons will not always correctly lay out.
-            //      Instead of 'wrapping' around to the next line,
-            //      they can just vanish at the right edge of the view.
+            // TODO Toolbar layout problems on some OS/WS.
+            // On OS X/cocoa, Toolbar buttons 'wrap' around to the next
+            // line when the view is too small.
+            // On Linux/GTK, however, buttons vanish at the right edge of the view.
+            // Tried SWT.Resize listener with toolbar.update(true), no improvement.
             if (Preferences.isConfigSelectionAllowed())
         	{
         		toolbar.add(new SelectConfigurationAction(model));
