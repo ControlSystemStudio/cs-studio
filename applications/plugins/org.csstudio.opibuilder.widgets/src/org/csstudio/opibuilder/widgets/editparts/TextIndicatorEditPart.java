@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
-	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
+	public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 	
 	private TextIndicatorModel widgetModel;
 	private FormatEnum format;
@@ -53,13 +53,17 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		precision = widgetModel.getPrecision();
 		
 		
-		TextFigure labelFigure = new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
+		TextFigure labelFigure = createTextFigure(); 
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				widgetModel.getFont().getFontData()));
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		return labelFigure;
+	}
+	
+	protected TextFigure createTextFigure(){
+		return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 	
 	@Override
