@@ -24,6 +24,8 @@ package org.csstudio.domain.desy.calc;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.ValueCache;
 
@@ -37,6 +39,9 @@ import org.epics.pvmanager.ValueCache;
  * @param <R> the return type of the accumulation result
  */
 public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
+
+    private static final Logger LOG =
+            CentralLogger.getInstance().getLogger(AbstractAccumulatorCache.class);
 
     private final ValueCache<R> _accumulatedValue;
     private int _num;
@@ -52,6 +57,10 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
 
     public void accumulate(@Nonnull final A nextValue) {
         final R val = calculateAccumulation(_accumulatedValue.getValue(), nextValue);
+        if (_num + 1 >= Integer.MAX_VALUE) {
+            LOG.warn("Potential accumulation overflow detected - accumulator is cleared.");
+            clear();
+        }
         _num++;
         _accumulatedValue.setValue(val);
     }
