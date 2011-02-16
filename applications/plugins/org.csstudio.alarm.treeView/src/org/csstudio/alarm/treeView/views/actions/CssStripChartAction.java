@@ -63,7 +63,7 @@ public final class CssStripChartAction extends Action {
     public void run() {
         final IAlarmTreeNode node = getSelectedNode();
         if (node != null) {
-            final IPath path = new Path(node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART));
+            final IPath path = new Path(node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART));
 
             // The following code assumes that the path is relative to
             // the Eclipse workspace.

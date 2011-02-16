@@ -66,7 +66,8 @@ public final class JobFactory {
                                                                    rootNode,
                                                                    CONFIG_SERVICE);
         
-        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob(alarmTreeView,
+                                                                                     rootNode);
         importInitConfigJob.addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(IJobChangeEvent event) {
@@ -76,9 +77,6 @@ public final class JobFactory {
                 }
             }
         });
-        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                                     rootNode));
-        
         return importInitConfigJob;
     }
     
@@ -89,7 +87,8 @@ public final class JobFactory {
                                                                        CONFIG_SERVICE,
                                                                        rootNode);
         
-        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob(alarmTreeView,
+                                                                                     rootNode);
         importXmlFileJob.addJobChangeListener(new JobChangeAdapter() {
             @Override
             public void done(IJobChangeEvent event) {
@@ -100,15 +99,16 @@ public final class JobFactory {
             }
         });
         
-        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                                     rootNode));
-        
         return importXmlFileJob;
     }
     
     @Nonnull
-    public static RetrieveInitialStateJob createRetrieveInitialStateJob() {
-        return new RetrieveInitialStateJob();
+    public static RetrieveInitialStateJob createRetrieveInitialStateJob(@Nonnull final AlarmTreeView alarmTreeView,
+                                                                        @Nonnull final IAlarmSubtreeNode rootNode) {
+        RetrieveInitialStateJob retrieveInitialStateJob = new RetrieveInitialStateJob();
+        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
+                                                                                     rootNode));
+        return retrieveInitialStateJob;
     }
     
     /**

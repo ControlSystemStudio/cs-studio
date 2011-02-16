@@ -61,7 +61,8 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<String>("configFileName", "res/alarmServiceConfig.xml");
 
     public static final AlarmPreference<String> ALARMSERVICE_TOPICS =
-        new AlarmPreference<String>("topics", "ALARM;ACK;");
+//        new AlarmPreference<String>("topics", "ALARM;ACK;");
+    new AlarmPreference<String>("topics", "SMOKETEST;ACK;");
 
     public static final AlarmPreference<String> ALARMSERVICE_FACILITIES =
         new AlarmPreference<String>("facilities", "Test;");

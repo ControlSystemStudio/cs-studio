@@ -64,12 +64,12 @@ public class AlarmTreePreferencePage
 		jmsGroup.setLayout(new GridLayout(2, false));
 
 		addField(new StringFieldEditor(
-				AlarmTreePreference.JMS_URL_PRIMARY.getValue(),
+				AlarmTreePreference.JMS_URL_PRIMARY.getKeyAsString(),
 				"First transport URI:", jmsGroup));
 		addField(new StringFieldEditor(
-				AlarmTreePreference.JMS_URL_SECONDARY.getValue(),
+				AlarmTreePreference.JMS_URL_SECONDARY.getKeyAsString(),
 				"Second transport URI:", jmsGroup));
-		addField(new StringFieldEditor(AlarmTreePreference.JMS_QUEUE.getValue(),
+		addField(new StringFieldEditor(AlarmTreePreference.JMS_QUEUE.getKeyAsString(),
 				"Topics:", jmsGroup));
 	}
 
