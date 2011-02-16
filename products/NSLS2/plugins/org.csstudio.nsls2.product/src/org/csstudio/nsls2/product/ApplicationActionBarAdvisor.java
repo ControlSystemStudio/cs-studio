@@ -30,6 +30,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	 */
 	private static final String MENU_TOOLBAR_LOGIN = "css_login";
 
+	private IWorkbenchWindow window;
 	/**
 	 * Group ID of switch user and logout toolbar
 	 */
@@ -41,8 +42,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private IAction save;
 	private IAction save_as;
 	private IAction save_all;
+	private IAction importAction;
+	private IAction exportAction;
 	private IAction logout;
 	private IAction quit;
+	
 	private IAction new_window;
 	private IContributionItem open_windows;
 	private IAction intro;
@@ -54,6 +58,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
+		window = configurer.getWindowConfigurer().getWindow();
 	}
 
 	protected void makeActions(IWorkbenchWindow window) {
@@ -74,6 +79,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		save_all = ActionFactory.SAVE_ALL.create(window);
 		register(save_all);
+
+		importAction = ActionFactory.IMPORT.create(window);
+		register(importAction);
+
+		exportAction = ActionFactory.EXPORT.create(window);
+		register(exportAction);
 
 		logout = new LogoutAction(window);
 		register(logout);
@@ -100,9 +111,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		menu_perspectives = ContributionItemFactory.PERSPECTIVES_SHORTLIST
 				.create(window);
 		menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
-		
+
 		intro = ActionFactory.INTRO.create(window);
-        register(intro);
+		register(intro);
 
 	}
 
@@ -137,6 +148,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		menu_file.add(save);
 		menu_file.add(save_as);
 		menu_file.add(new Separator());
+		menu_file.add(importAction);
+        menu_file.add(exportAction);
+        menu_file.add(new Separator());
 		menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
 		menu_file.add(new Separator());
 		menu_file.add(logout);
@@ -224,8 +238,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		file_bar.add(create_new);
 		file_bar.add(save);
-		file_bar
-				.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
+		file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
 		file_bar.add(new Separator());
 
 		user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
