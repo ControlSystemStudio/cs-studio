@@ -366,7 +366,6 @@ public class MasterDBO extends AbstractNodeDBO {
             ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
-            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setAutoclear(isAutoclear());
             copy.setDataControlTime(getDataControlTime());
             copy.setRedundant(getRedundant());
