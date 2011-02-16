@@ -67,7 +67,7 @@ public class ModifyLdapAttributeModificationItem extends AbstractTreeModificatio
     @Override
     @Nonnull
     public String getDescription() {
-        return "MODIFY LDAP ATTRIBUTE FAILED: " + _propId.getLdapAttribute() + "=" + _attrValue + " for node " + _ldapName;
+        return "MODIFY LDAP ATTRIBUTE: " + _propId.getLdapAttribute() + "=" + _attrValue + " for node " + _ldapName;
     }
 
     /**
@@ -80,9 +80,14 @@ public class ModifyLdapAttributeModificationItem extends AbstractTreeModificatio
             throw new AlarmTreeModificationException("Attribute modification failed.",
                                                      new ServiceUnavailableException("LDAP service unavailable."));
         }
-        final ModificationItem item =
-            new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
-                                 new BasicAttribute(_propId.getLdapAttribute(), _attrValue));
+
+        ModificationItem item = null;
+        if (_attrValue.isEmpty()) {
+            item = new ModificationItem(DirContext.REMOVE_ATTRIBUTE, new BasicAttribute(_propId.getLdapAttribute()));
+        } else {
+            item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+                                        new BasicAttribute(_propId.getLdapAttribute(), _attrValue));
+        }
 
         try {
             service.modifyAttributes(_ldapName, new ModificationItem[] {item});

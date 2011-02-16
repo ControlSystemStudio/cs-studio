@@ -104,7 +104,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     static boolean containsOnlyPVNodes(@Nonnull final List<IAlarmTreeNode> nodes) {
         for (final IAlarmTreeNode node : nodes) {
-            if (! (node instanceof ProcessVariableNode)) {
+            if (!(node instanceof ProcessVariableNode)) {
                 return false;
             }
         }
@@ -661,12 +661,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      *         <code>false</code> otherwise.
      */
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node)
-                    .getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
-            return display != null && display.matches(".+\\.css-sds");
-        }
-        return false;
+        return isDisplayUrl(node, EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
     }
     
     /**
@@ -676,9 +671,14 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      * @return <code>true</code> if the node has a display, <code>false</code> otherwise.
      */
     private boolean hasCssDisplay(@Nonnull final Object node) {
+        return isDisplayUrl(node, EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY);
+    }
+    
+    private boolean isDisplayUrl(@Nonnull final Object node, @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node)
-                    .getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
+            String display = ((IAlarmTreeNode) node)
+                    .getInheritedPropertyWithUrlProtocol(attribute);
+            return display != null && display.matches(".+\\.css-sds");
         }
         return false;
     }
@@ -691,8 +691,10 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      */
     private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node)
-                    .getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
+            String string = ((IAlarmTreeNode) node)
+                    .getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART);
+            // dot must not be checked for: .plt is valid and .sds-plt also
+            return string != null && string.endsWith("plt");
         }
         return false;
     }
@@ -705,11 +707,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      *         otherwise.
      */
     private boolean hasHelpGuidance(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node)
-                    .getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
-        }
-        return false;
+        return isNonEmptyString(node, EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE);
     }
     
     /**
@@ -720,9 +718,14 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
      *         otherwise.
      */
     private boolean hasHelpPage(@Nonnull final Object node) {
+        return isNonEmptyString(node, EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE);
+    }
+
+    private boolean isNonEmptyString(@Nonnull final Object node, @Nonnull final EpicsAlarmcfgTreeNodeAttribute attribute) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node)
-                    .getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
+            String string = ((IAlarmTreeNode) node)
+                    .getInheritedPropertyWithUrlProtocol(attribute);
+            return (string != null) && (!string.isEmpty());
         }
         return false;
     }
@@ -828,7 +831,7 @@ public final class AlarmTreeView extends ViewPart implements ISaveablePart2 {
         
         // The directory is read in the background. Until then, set the viewer's
         // input to a placeholder object.
-        _viewer.setInput(new Object[] { new PendingUpdateAdapter() });
+        _viewer.setInput(new Object[] {new PendingUpdateAdapter()});
         
         // Start the directory reader job.
         progressService.schedule(importInitialConfigJob, 0, true);

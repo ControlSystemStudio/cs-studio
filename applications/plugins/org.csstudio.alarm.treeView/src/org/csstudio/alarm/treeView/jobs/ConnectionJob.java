@@ -22,7 +22,6 @@
 package org.csstudio.alarm.treeView.jobs;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;

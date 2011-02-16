@@ -21,40 +21,44 @@
  */
 package org.csstudio.alarm.treeView.jface;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import org.csstudio.alarm.treeView.model.UrlValidator;
+import org.csstudio.alarm.treeView.model.UrlValidator.Result;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
 /**
  * JFace cell editor validator for URLs.
+ * This is used for validating properties of the alarm tree nodes.
+ * @see org.csstudio.alarm.treeView.model.IAlarmTreeNode
+ *
+ * The validator allows for strings without a protocol. In this case it silently assumes the file: protocol.
+ * The method getInheritedPropertyWithUrlProtocol in the alarm tree node does vice versa and appends
+ * the file: protocol if not present.
  *
  * @author bknerr
+ * @author jpenning
  * @since 09.12.2010
  */
 final class UrlCellEditorValidator implements ICellEditorValidator {
+    
     @Override
     @CheckForNull
     public String isValid(@Nullable final Object value) {
         if (value instanceof URL) {
             return null;
         }
+        
         if (value instanceof String) {
-            if ( ((String) value).isEmpty()) {
-                return null;
-            } else {
-                try {
-                    @SuppressWarnings("unused")
-                    final URL url = new URL((String) value);
-                    return null;
-                } catch (final MalformedURLException e) {
-                    return "Malformed URL! Please enter a valid file or web path.";
-                }
+            if (UrlValidator.checkUrl((String) value) == Result.URL_INVALID) {
+                return "Malformed URL! Please enter a valid file or web path.";
             }
+            return null;
         }
         return "Entered value is not valid. Please enter a String representation of a URL.";
     }
+    
 }
