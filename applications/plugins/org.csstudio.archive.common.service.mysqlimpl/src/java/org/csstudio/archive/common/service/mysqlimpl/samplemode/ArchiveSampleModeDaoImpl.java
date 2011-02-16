@@ -62,7 +62,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize database schema
     private final String _selectSampleModeByIdStmt =
-        "SELECT name FROM archive_new.sample_mode where id=?";
+        "SELECT name FROM archive.sample_mode where id=?";
 
     /**
      * Constructor.
@@ -74,12 +74,9 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     /**
      * {@inheritDoc}
      */
-    // CHECKSTYLE OFF: CyclomaticComplexity
-    //                 CC is due to try catch blocks
     @Override
     @CheckForNull
-    public IArchiveSampleMode retrieveSampleModeById(final ArchiveSampleModeId id) throws ArchiveDaoException {
-    // CHECKSTYLE ON: CyclomaticComplexity
+    public IArchiveSampleMode retrieveSampleModeById(@Nonnull final ArchiveSampleModeId id) throws ArchiveDaoException {
 
         IArchiveSampleMode mode = _sampleModeCache.get(id);
         if (mode != null) {
@@ -104,13 +101,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
         } catch (final IllegalArgumentException e) {
             LOG.warn("Sample mode for id " + id.intValue() + " does not exist in the archive.");
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectSampleModeByIdStmt + " failed.");
-                }
-            }
+            closeStatement(stmt, "Closing of statement " + _selectSampleModeByIdStmt + " failed.");
         }
         return mode;
     }

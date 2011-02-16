@@ -46,8 +46,8 @@ public final class SaveInLdapSecureAction extends AbstractUserDependentAction {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveInLdapSecureAction.class);
 
-    private static final String RIGHT_ID = "operating";
-    private static final boolean DEFAULT_PERMISSION = false;
+    private static final String RIGHT_ID = "alarmConfiguration";
+    private static final boolean DEFAULT_PERMISSION = true;
 
     private final IWorkbenchPartSite _site;
     private final Queue<ITreeModificationItem> _ldapModifications;
@@ -110,4 +110,5 @@ public final class SaveInLdapSecureAction extends AbstractUserDependentAction {
             }
         }
     }
+
 }

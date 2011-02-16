@@ -23,6 +23,9 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import javax.annotation.Nonnull;
 
 import org.eclipse.swt.SWT;
@@ -76,24 +79,23 @@ public final class MessageArea {
                                                     false,
                                                     1,
                                                     2));
-        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
 
         _messageAreaMessage = new Label(_messageArea, SWT.WRAP);
-        _messageAreaMessage.setText("Test message");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
         _messageAreaDescription = new Label(_messageArea, SWT.WRAP);
-        _messageAreaDescription.setText("This is an explanation of the test message.");
         // Be careful if changing the GridData below! The label will not wrap
         // correctly for some settings.
         _messageAreaDescription
                 .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+
+        clearMessage();
     }
 
     /**
-     * Sets the message displayed in the message area of this view part.
+     * Sets the message displayed in the message area of this view part. The message area is shown.
      *
      * @param icon the icon to be displayed next to the message. Must be one of
      *            <code>SWT.ICON_ERROR</code>, <code>SWT.ICON_INFORMATION</code>,
@@ -104,13 +106,38 @@ public final class MessageArea {
     public void showMessage(final int icon, @Nonnull final String message, @Nonnull final String description) {
         _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
         _messageAreaMessage.setText(message);
-        _messageAreaDescription.setText(description);
+        
+        
+        String dateOut = DateFormat.getDateTimeInstance().format(new Date());
+
+        _messageAreaDescription.setText(dateOut + " " + description);
         _messageArea.layout();
 
+        show();
+    }
+
+    
+    /**
+     * Reset to the default message and hide.
+     */
+    public void clearMessage() {
+        _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
+        _messageAreaMessage.setText("No message");
+        _messageAreaDescription.setText("");
+        _messageArea.layout();
+
+        hide();
+    }
+    
+    /**
+     * Makes the message area visible.
+     */
+    public void show() {
         _messageArea.setVisible(true);
         ((GridData) _messageArea.getLayoutData()).exclude = false;
         _messageArea.getParent().layout();
     }
+
 
     /**
      * Hides the message displayed in this view part.
@@ -119,6 +146,24 @@ public final class MessageArea {
         _messageArea.setVisible(false);
         ((GridData) _messageArea.getLayoutData()).exclude = true;
         _messageArea.getParent().layout();
+    }
+
+    /**
+     * @return true, if the message area is visible
+     */
+    public boolean isVisible() {
+        return _messageArea.isVisible();
+    }
+    
+    /**
+     * Makes visible or hides, resp.
+     */
+    public void toggleVisibility() {
+        if (isVisible()) {
+            hide();
+        } else {
+            show();
+        }
     }
 
 }

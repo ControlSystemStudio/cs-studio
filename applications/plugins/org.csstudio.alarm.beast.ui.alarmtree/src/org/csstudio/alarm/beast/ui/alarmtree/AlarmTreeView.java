@@ -78,7 +78,12 @@ public class AlarmTreeView extends ViewPart
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
-        	if (Preferences.isConfigSelectionAllowed())
+            // TODO Toolbar layout problems on some OS/WS.
+            // On OS X/cocoa, Toolbar buttons 'wrap' around to the next
+            // line when the view is too small.
+            // On Linux/GTK, however, buttons vanish at the right edge of the view.
+            // Tried SWT.Resize listener with toolbar.update(true), no improvement.
+            if (Preferences.isConfigSelectionAllowed())
         	{
         		toolbar.add(new SelectConfigurationAction(model));
         		toolbar.add(new Separator());

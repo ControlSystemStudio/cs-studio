@@ -29,10 +29,9 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.AbstractTypeSupport;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.CssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedMetaData;
@@ -42,6 +41,7 @@ import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
+import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
@@ -56,7 +56,7 @@ import com.google.common.primitives.Longs;
  * @param <R> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmValueType<?>, T extends IValue>
+public abstract class AbstractIValueConversionTypeSupport<R extends ITimedCssAlarmValueType<?>, T extends IValue>
     extends EpicsIValueTypeSupport<T> {
 
     static final Logger LOG =
@@ -67,22 +67,18 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
     /**
      * Constructor.
      */
-    AbstractIValueConversionTypeSupport() {
-        // Don't instantiate outside this class
+    AbstractIValueConversionTypeSupport(@Nonnull final Class<T> clazz) {
+        super(clazz);
     }
 
     public static void install() {
         if (INSTALLED) {
             return;
         }
-        AbstractTypeSupport.addTypeSupport(IDoubleValue.class,
-                                           new IDoubleValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IEnumeratedValue.class,
-                                           new IEnumeratedValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(ILongValue.class,
-                                           new ILongValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
-        AbstractTypeSupport.addTypeSupport(IStringValue.class,
-                                           new IStringValueConversionTypeSupport(), TYPE_SUPPORTS, CALC_TYPE_SUPPORTS);
+        TypeSupport.addTypeSupport(new IDoubleValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IEnumeratedValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new ILongValueConversionTypeSupport());
+        TypeSupport.addTypeSupport(new IStringValueConversionTypeSupport());
 
         INSTALLED = true;
     }
@@ -95,17 +91,17 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
      * @since 15.12.2010
      */
     private static final class IStringValueConversionTypeSupport extends
-            AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IStringValue> {
+            AbstractIValueConversionTypeSupport<ITimedCssAlarmValueType<?>, IStringValue> {
         /**
          * Constructor.
          */
         public IStringValueConversionTypeSupport() {
-            // Empty
+            super(IStringValue.class);
         }
 
         @Override
         @CheckForNull
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IStringValue value)  {
+        public ITimedCssAlarmValueType<?> convertToCssType(@Nonnull final IStringValue value)  {
 
             final String[] values = value.getValues();
             if (values == null || values.length == 0) {
@@ -115,11 +111,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
-                return new CssAlarmValueType<String>(values[0],
+                return new TimedCssAlarmValueType<String>(values[0],
                                                      alarm,
                                                      timestamp);
             }
-            return new CssAlarmValueType<List<String>>(Lists.newArrayList(values),
+            return new TimedCssAlarmValueType<List<String>>(Lists.newArrayList(values),
                                                        alarm,
                                                        timestamp);
         }
@@ -132,17 +128,17 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
      * @since 15.12.2010
      */
     private static final class ILongValueConversionTypeSupport extends
-            AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, ILongValue> {
+            AbstractIValueConversionTypeSupport<ITimedCssAlarmValueType<?>, ILongValue> {
         /**
          * Constructor.
          */
         public ILongValueConversionTypeSupport() {
-            // Empty
+            super(ILongValue.class);
         }
 
         @CheckForNull
         @Override
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final ILongValue value)  {
+        public ITimedCssAlarmValueType<?> convertToCssType(@Nonnull final ILongValue value)  {
 
             final long[] values = value.getValues();
             if (values == null || values.length == 0) {
@@ -152,11 +148,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
-                return new CssAlarmValueType<Long>(Long.valueOf(values[0]),
+                return new TimedCssAlarmValueType<Long>(Long.valueOf(values[0]),
                                                    alarm,
                                                    timestamp);
             }
-            return new CssAlarmValueType<List<Long>>(Lists.newArrayList(Longs.asList(values)),
+            return new TimedCssAlarmValueType<List<Long>>(Lists.newArrayList(Longs.asList(values)),
                                                      alarm,
                                                      timestamp);
         }
@@ -169,15 +165,15 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
      * @since 15.12.2010
      */
     private static final class IDoubleValueConversionTypeSupport extends
-            AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IDoubleValue> {
+            AbstractIValueConversionTypeSupport<ITimedCssAlarmValueType<?>, IDoubleValue> {
 
         public IDoubleValueConversionTypeSupport() {
-            // Empty
+            super(IDoubleValue.class);
         }
 
         @CheckForNull
         @Override
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IDoubleValue value) {
+        public ITimedCssAlarmValueType<?> convertToCssType(@Nonnull final IDoubleValue value) {
 
             final double[] values = value.getValues();
             if (values == null || values.length == 0) {
@@ -187,11 +183,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
             if (values.length == 1) {
-                return new CssAlarmValueType<Double>(Double.valueOf(values[0]),
+                return new TimedCssAlarmValueType<Double>(Double.valueOf(values[0]),
                                                      alarm,
                                                      timestamp);
             }
-            return new CssAlarmValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values)),
+            return new TimedCssAlarmValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values)),
                                                        alarm,
                                                        timestamp);
         }
@@ -204,10 +200,10 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
      * @since 15.12.2010
      */
     private static final class IEnumeratedValueConversionTypeSupport extends
-            AbstractIValueConversionTypeSupport<ICssAlarmValueType<?>, IEnumeratedValue> {
+            AbstractIValueConversionTypeSupport<ITimedCssAlarmValueType<?>, IEnumeratedValue> {
 
         public IEnumeratedValueConversionTypeSupport() {
-            // Empty
+            super(IEnumeratedValue.class);
         }
         /**
          * {@inheritDoc}
@@ -220,7 +216,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
          */
         @Override
         @CheckForNull
-        public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value)  {
+        public ITimedCssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value)  {
         // CHECKSTYLE ON: CyclomaticComplexity
 
             // This is a nice example for what happens when physicists 'design' programs.
@@ -255,7 +251,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
             final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
 
-            return new CssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
+            return new TimedCssAlarmValueType<EpicsEnumTriple>(eVal, alarm, timestamp);
         }
     }
 

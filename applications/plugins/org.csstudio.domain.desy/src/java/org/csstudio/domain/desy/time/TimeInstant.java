@@ -28,6 +28,8 @@ import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 
 /**
@@ -46,7 +48,17 @@ import org.joda.time.format.DateTimeFormatter;
  * @author bknerr
  * @since 16.11.2010
  */
-public class TimeInstant implements Comparable<TimeInstant> {
+public final class TimeInstant implements Comparable<TimeInstant> {
+
+    public static final DateTimeFormatter STD_TIME_FMT =
+        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final PeriodFormatter STD_DURATION_FMT =
+        new PeriodFormatterBuilder().appendHours()
+                                    .appendSuffix(":")
+                                    .appendMinutes()
+                                    .appendSuffix(":")
+                                    .appendSeconds()
+                                    .toFormatter();
 
     private static final int NANOS_PER_SECOND = 1000000000;
     private static final int NANOS_PER_MILLIS = 1000000;
@@ -139,7 +151,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @param seconds seconds from start of epoch 1970-01-01T00:00:00Z.
      * @param fracSecNanos fractal nanos of the second.
      */
-    TimeInstant(@Nonnull final long millis, @Nonnull final long fracSecMillis) {
+    TimeInstant(@Nonnull final long millis,
+                @Nonnull final long fracSecMillis) {
         _fracMillisInNanos = fracSecMillis;
         _instant = new Instant(millis);
     }
@@ -240,15 +253,6 @@ public class TimeInstant implements Comparable<TimeInstant> {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss").print(_instant) + "." + _fracMillisInNanos;
-    }
-
-
     public boolean isAfter(@Nonnull final TimeInstant other) {
         if (this.compareTo(other) == 1) {
             return true;
@@ -305,5 +309,22 @@ public class TimeInstant implements Comparable<TimeInstant> {
         }
 
         return new TimeInstant(new Instant(getMillis() + addMillis), newNanos);
+    }
+
+    /**
+     * Formats the instant with the standard time formatter of this class.
+     * @return the formatted time string
+     */
+    @Nonnull
+    public String formatted() {
+        return formatted(STD_TIME_FMT);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return formatted() + "." + _fracMillisInNanos;
     }
 }

@@ -30,13 +30,13 @@ public class Application implements IApplication
     private String url = RDBArchivePreferences.getURL(),
                    user = RDBArchivePreferences.getUser(),
                    password = RDBArchivePreferences.getPassword();
-    
+
     /** HTTP Server port */
     private int port;
-    
+
     /** Request file */
     private String engine_name;
-    
+
     /** Application model */
     private EngineModel model;
 
@@ -81,7 +81,7 @@ public class Application implements IApplication
             System.out.println(parser.getHelp());
             return false;
         }
-        
+
         // Check arguments
         if (engine_name_opt.get() == null)
         {
@@ -100,6 +100,7 @@ public class Application implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -107,7 +108,7 @@ public class Application implements IApplication
             (String []) context.getArguments().get("application.args");
         if (!getSettings(args))
             return EXIT_OK;
-        
+
         if (url == null)
         {
             System.out.println(
@@ -144,7 +145,7 @@ public class Application implements IApplication
                                 + port + ": " + ex.getMessage(), ex);
                 return EXIT_OK;
             }
-            
+
             boolean run = true;
             while (run)
             {
@@ -162,7 +163,7 @@ public class Application implements IApplication
                 timer.stop();
                 logger.info("Read configuration: " + model.getChannelCount() +
                             " channels in " + timer.toString());
-        
+
                 // Run until model gets stopped via HTTPD or #stop()
                 logger.info("Running, CA addr list: "
                     + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
@@ -183,7 +184,7 @@ public class Application implements IApplication
                 model.stop();
                 model.clearConfig();
             }
-            
+
             archive.close();
             logger.info("ArchiveEngine stopped");
             server.stop();
@@ -193,11 +194,12 @@ public class Application implements IApplication
             logger.fatal("Unhandled Main Loop Error", ex);
             ex.printStackTrace();
         }
-        
+
         return EXIT_OK;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         if (model != null)

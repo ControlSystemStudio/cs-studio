@@ -83,8 +83,8 @@ public class SampleAggregator {
 
     void aggregateNewVal(@Nonnull final Double newVal,
                          @Nonnull final EpicsAlarm alarm,
-                         @Nullable final Double min,
-                         @Nullable final Double max,
+                         @Nonnull final Double min,
+                         @Nonnull final Double max,
                          @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(newVal);
         _minVal = Ordering.natural().nullsLast().min(newVal, min, max, _minVal);

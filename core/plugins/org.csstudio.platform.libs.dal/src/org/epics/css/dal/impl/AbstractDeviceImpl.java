@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
@@ -234,7 +235,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 				try {
 					properties.put(names[i], createProperty(names[i]));
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(AbstractDeviceImpl.class).error("Unhandled exception.", e);
 				}
 			}
 		}
@@ -351,7 +352,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 				p = createProperty(name);
 				properties.put(name, p);
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(AbstractDeviceImpl.class).error("Unhandled exception.", e);
 			}
 		}
 
@@ -383,7 +384,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 * @param e an exception to handle.
 	 */
 	protected void handleException(Exception e) {
-		 e.printStackTrace();
+		Logger.getLogger(AbstractDeviceImpl.class).error("Unhandled exception.", e);
 	}
 
 	/* (non-Javadoc)
@@ -721,7 +722,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 		property.addPropertyChangeListener(propertyInterceptor);
 		
 		if (property.getConnectionState() != ConnectionState.CONNECTED) {
-			System.err.println("Property '" + name +"' is not connected. Waiting for connection to be established...");
+			Logger.getLogger(AbstractDeviceImpl.class).debug("Property '" + name +"' is not connected. Waiting for connection to be established...");
 		}
 		LinkBlocker.blockUntillConnected(property,Plugs.getConnectionTimeout(null, 30000) * 2, true);
 

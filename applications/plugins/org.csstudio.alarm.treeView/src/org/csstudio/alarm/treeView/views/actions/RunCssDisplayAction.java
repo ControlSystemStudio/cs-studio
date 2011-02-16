@@ -67,7 +67,7 @@ public final class RunCssDisplayAction extends Action {
         final Object selected = selection.getFirstElement();
         if (selected instanceof IAlarmTreeNode) {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-            final IPath path = new Path(node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+            final IPath path = new Path(node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
             final Map<String, String> aliases = new HashMap<String, String>();
             if (node instanceof ProcessVariableNode) {
                 aliases.put("channel", node.getName());

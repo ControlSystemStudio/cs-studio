@@ -65,7 +65,7 @@ public abstract class AbstractArchiveDao {
     }
 
     @Nonnull
-    protected ArchiveDaoManager getDaoMgr() {
+    protected IArchiveDaoManager getDaoMgr() {
         return _mgr;
     }
 

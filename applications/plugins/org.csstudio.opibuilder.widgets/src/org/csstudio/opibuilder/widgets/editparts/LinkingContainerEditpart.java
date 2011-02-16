@@ -136,22 +136,27 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel);
 			AbstractContainerModel loadTarget = tempDisplayModel;
+			
 			if(!getWidgetModel().getGroupName().trim().equals("")){ //$NON-NLS-1$
 				AbstractWidgetModel group = 
 					tempDisplayModel.getChildByName(getWidgetModel().getGroupName());
-				if(group != null && group instanceof AbstractContainerModel)
-					loadTarget = (AbstractContainerModel) group;
+				if(group != null && group instanceof AbstractContainerModel){
+					loadTarget = (AbstractContainerModel) group;									
+				}
 			}
-			if(tempDisplayModel.getMacrosInput().isInclude_parent_macros())
-				tempDisplayModel.setMacroMap(
+			//Load system macro
+			if(loadTarget.getMacrosInput().isInclude_parent_macros())
+				loadTarget.setMacroMap(
 						(LinkedHashMap<String, String>) tempDisplayModel.getParentMacroMap());
-			tempDisplayModel.getMacroMap().putAll(tempDisplayModel.getMacrosInput().getMacrosMap());
-			tempDisplayModel.getMacroMap().putAll(getWidgetModel().getMacroMap());	
+			//Load macro from its macrosInput
+			loadTarget.getMacroMap().putAll(loadTarget.getMacrosInput().getMacrosMap());
+			//It also include the macros on this linking container. It will replace the old one too. 
+			loadTarget.getMacroMap().putAll(getWidgetModel().getMacroMap());	
 			for(AbstractWidgetModel child : loadTarget.getChildren()){	
-				getWidgetModel().addChild(child, false);
+				getWidgetModel().addChild(child, false); //don't change model's parent.
 			}
-			getWidgetModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
-			tempDisplayModel.removeAllChildren();
+			getWidgetModel().setBackgroundColor(loadTarget.getBackgroundColor());
+			//tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
 			loadingErrorLabel.setLocation(0, 0);
@@ -167,6 +172,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				layout();
+				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
 		});

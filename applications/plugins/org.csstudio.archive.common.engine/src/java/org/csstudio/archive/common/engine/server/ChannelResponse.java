@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
-import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
@@ -30,20 +29,18 @@ class ChannelResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {   // Locate the group
         final String channel_name = req.getParameter("name");
-        if (channel_name == null)
-        {
+        if (channel_name == null) {
             resp.sendError(400, "Missing channel name");
             return;
         }
-        final ArchiveChannel channel = model.getChannel(channel_name);
-        if (channel == null)
-        {
+        final ArchiveChannel<?, ?> channel = _model.getChannel(channel_name);
+        if (channel == null) {
             resp.sendError(400, "Unknown channel " + channel_name);
             return;
         }
@@ -62,30 +59,24 @@ class ChannelResponse extends AbstractResponse
                         : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
         html.tableLine(new String[]
         { Messages.HTTP_Connected, connected });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_InternalState, channel.getInternalState() });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_Mechanism, channel.getMechanism() });
 
         html.tableLine(new String[]
-        { Messages.HTTP_CurrentValue, channel.getCurrentValue() });
-
-        html.tableLine(new String[]
-        { Messages.HTTP_LastArchivedValue, channel.getLastArchivedValue() });
-
-        html.tableLine(new String[]
-        { Messages.HTTP_Enablement, channel.getEnablement().toString() });
+        { Messages.HTTP_CurrentValue, channel.getCurrentValueAsString() });
 
         html.tableLine(new String[]
         {
             Messages.HTTP_State,
-            channel.isEnabled() ? Messages.HTTP_Enabled 
+            channel.isEnabled() ? Messages.HTTP_Enabled
                                 : HTMLWriter.makeRedText(Messages.HTTP_Disabled)
         });
-        
-        final SampleBuffer buffer = channel.getSampleBuffer();
+
+        final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
         html.tableLine(new String[]
         { Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
 
@@ -99,40 +90,8 @@ class ChannelResponse extends AbstractResponse
         html.tableLine(new String[]
         { Messages.HTTP_QueueMax, Integer.toString(stats.getMaxSize()) });
 
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_QueueCapacity,
-            Integer.toString(buffer.getCapacity())
-        });
-
-        final int overrun_count = stats.getOverruns();
-        String overruns = Integer.toString(overrun_count);
-        if (overrun_count > 0)
-            overruns = HTMLWriter.makeRedText(overruns);
-        html.tableLine(new String[]
-        { Messages.HTTP_QueueOverruns, overruns });
-
         html.closeTable();
 
-        // Table of all the groups to which this channel belongs
-        html.h2("Group Membership");
-        html.openTable(1, new String[]
-        {
-            Messages.HTTP_Group,
-            Messages.HTTP_Enabled,
-        });
-        for (int i=0; i<channel.getGroupCount(); ++i)
-        {
-            final ArchiveGroup group = channel.getGroup(i);
-            html.tableLine(new String[]
-            {
-                HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
-                group.isEnabled() ? Messages.HTTP_Enabled
-                                  : Messages.HTTP_Disabled,
-            });
-        }
-        html.closeTable();
-        
         html.close();
     }
 }

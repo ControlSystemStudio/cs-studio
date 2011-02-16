@@ -26,24 +26,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 
 /**
- * TODO (bknerr) :
+ * TODO (bknerr) : find a better abstraction for this object (@see {@link IArchiveMinMaxSample}).
  *
  * @author bknerr
  * @since 11.01.2011
  * @param <V> the data value type
  * @param <T> the css value type
- * @param <A> the alarm type
  */
 public class ArchiveMinMaxSample<V,
-                                 T extends ICssAlarmValueType<V>,
-                                 A extends IAlarm & Comparable<? super A>>
-                                extends ArchiveSampleDTO<V, T, A>
-                                implements IArchiveMinMaxSample<V, T, A> {
+                                 T extends ITimedCssAlarmValueType<V>>
+                                extends ArchiveSample<V, T>
+                                implements IArchiveMinMaxSample<V, T> {
 
     private final V _minimum;
     private final V _maximum;
@@ -53,11 +49,9 @@ public class ArchiveMinMaxSample<V,
      */
     public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
                                @Nonnull final T data,
-                               @Nonnull final TimeInstant ts,
-                               @Nonnull final A alarm,
                                @Nullable final V min,
                                @Nullable final V max) {
-        super(channelId, data, ts, alarm);
+        super(channelId, data);
         _minimum = min;
         _maximum = max;
     }
@@ -65,10 +59,8 @@ public class ArchiveMinMaxSample<V,
      * Constructor.
      */
     public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
-                               @Nonnull final T data,
-                               @Nonnull final TimeInstant ts,
-                               @Nonnull final A alarm) {
-        super(channelId, data, ts, alarm);
+                               @Nonnull final T data) {
+        super(channelId, data);
         _minimum = null;
         _maximum = null;
     }

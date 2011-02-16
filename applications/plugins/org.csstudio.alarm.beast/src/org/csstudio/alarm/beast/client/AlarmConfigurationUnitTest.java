@@ -49,7 +49,9 @@ public class AlarmConfigurationUnitTest
     		System.out.println("Skipping test: no alarm_rdb_* settings found.");
     		return null;
     	}
-		return new AlarmConfiguration(url, user, password, root, writable);
+    	final AlarmConfiguration config = new AlarmConfiguration(url, user, password);
+    	config.readConfiguration(root, writable);
+    	return config;
     }
 
     @Test

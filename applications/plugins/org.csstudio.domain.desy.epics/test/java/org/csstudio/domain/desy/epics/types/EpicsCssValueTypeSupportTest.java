@@ -27,8 +27,8 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.CssAlarmValueType;
-import org.csstudio.domain.desy.types.ICssAlarmValueType;
+import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -58,8 +58,8 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testFloat() throws TypeSupportException {
         final Float input = Float.valueOf(1.0F);
-        final ICssAlarmValueType<Float> cssVal =
-            new CssAlarmValueType<Float>(input,
+        final ITimedCssAlarmValueType<Float> cssVal =
+            new TimedCssAlarmValueType<Float>(input,
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                     TimeInstantBuilder.buildFromNow());
 
@@ -75,8 +75,8 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testDouble() throws TypeSupportException {
         final Double input = Double.valueOf(1.0);
-        final ICssAlarmValueType<Double> cssVal =
-            new CssAlarmValueType<Double>(input,
+        final ITimedCssAlarmValueType<Double> cssVal =
+            new TimedCssAlarmValueType<Double>(input,
                                           new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                                           TimeInstantBuilder.buildFromNow());
 
@@ -92,8 +92,8 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testByte() throws TypeSupportException {
         final Byte input = Byte.valueOf((byte) 12);
-        final ICssAlarmValueType<Byte> cssVal =
-            new CssAlarmValueType<Byte>(input,
+        final ITimedCssAlarmValueType<Byte> cssVal =
+            new TimedCssAlarmValueType<Byte>(input,
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                     TimeInstantBuilder.buildFromNow());
 
@@ -109,8 +109,8 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testInteger() throws TypeSupportException {
         final Integer input = Integer.valueOf(1);
-        final ICssAlarmValueType<Integer> cssVal =
-            new CssAlarmValueType<Integer>(input,
+        final ITimedCssAlarmValueType<Integer> cssVal =
+            new TimedCssAlarmValueType<Integer>(input,
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                     TimeInstantBuilder.buildFromNow());
 
@@ -126,8 +126,8 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testLong() throws TypeSupportException {
         final Long input = Long.valueOf(1L);
-        final ICssAlarmValueType<Long> cssVal =
-            new CssAlarmValueType<Long>(input,
+        final ITimedCssAlarmValueType<Long> cssVal =
+            new TimedCssAlarmValueType<Long>(input,
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                     TimeInstantBuilder.buildFromNow());
 
@@ -142,8 +142,8 @@ public class EpicsCssValueTypeSupportTest {
 
     @Test
     public void testDoubleCollection() throws TypeSupportException {
-        final ICssAlarmValueType<Collection<Double>> cssVal =
-            new CssAlarmValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0)),
+        final ITimedCssAlarmValueType<Collection<Double>> cssVal =
+            new TimedCssAlarmValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0)),
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                     TimeInstantBuilder.buildFromNow());
 
@@ -158,8 +158,8 @@ public class EpicsCssValueTypeSupportTest {
 
     @Test
     public void testEpicsEnumTripleCollection() throws TypeSupportException {
-        final ICssAlarmValueType<Collection<EpicsEnumTriple>> cssVal =
-            new CssAlarmValueType<Collection<EpicsEnumTriple>>(Lists.newArrayList(EpicsEnumTriple.createInstance(Integer.valueOf(1), "ON", null),
+        final ITimedCssAlarmValueType<Collection<EpicsEnumTriple>> cssVal =
+            new TimedCssAlarmValueType<Collection<EpicsEnumTriple>>(Lists.newArrayList(EpicsEnumTriple.createInstance(Integer.valueOf(1), "ON", null),
                                                                                   EpicsEnumTriple.createInstance(Integer.valueOf(0), "OFF", null)),
                                                                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
                                                                TimeInstantBuilder.buildFromNow());

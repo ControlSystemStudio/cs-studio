@@ -22,12 +22,12 @@
 
 package org.epics.css.dal.spi;
 
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LifecycleState;
 import org.epics.css.dal.impl.DefaultApplicationContext;
-import org.epics.css.dal.simulation.DeviceFactoryImpl;
-
-import java.util.ArrayList;
 
 
 /**
@@ -94,7 +94,7 @@ public class DefaultDeviceFactoryService implements DeviceFactoryService
 				throw new IllegalArgumentException(
 				    "Could not load factory implementation: " + t);
 			}
-
+			
 			if (cl != null) {
 				try {
 					DeviceFactory df = (DeviceFactory)cl.newInstance();
@@ -106,12 +106,14 @@ public class DefaultDeviceFactoryService implements DeviceFactoryService
 					    "Could not instantiate '" + cl.getName()
 					    + "' factory implementation: " + t);
 				}
+			} else {
+				throw new IllegalArgumentException(
+					    "Could not find factory implementation information in configuration.");
 			}
 
-			DeviceFactoryImpl simulator = new DeviceFactoryImpl();
-			simulator.initialize(ctx, linkPolicy);
-
-			return simulator;
+			//DeviceFactoryImpl simulator = new DeviceFactoryImpl();
+			//simulator.initialize(ctx, linkPolicy);
+			//return simulator;
 		}
 
 		Class cl;
@@ -150,7 +152,7 @@ public class DefaultDeviceFactoryService implements DeviceFactoryService
 				context = (AbstractApplicationContext)appContextClass.getConstructor(String.class)
 					.newInstance("DefaultContext");
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).info("System defined context '"+defaultCtx+"' failed to instantiate, internal defautl will be used instead.", e);
 			}
 		}
 

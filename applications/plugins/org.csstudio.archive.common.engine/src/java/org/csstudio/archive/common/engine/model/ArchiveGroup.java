@@ -7,156 +7,160 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+
+import com.google.common.collect.MapMaker;
 
 /** A group of archived channels.
  *  Each channel is in exactly one group.
  *  @author Kay Kasemir
  */
-public class ArchiveGroup
-{
+public class ArchiveGroup {
     /** Name of this group */
-    final private String name;
-    
+    final private String _name;
+
     /** All the channels in this group
      *  <p>
      *  Using thread-safe array to allow HTTPD as well as main
      *  thread to traverse
      */
-    final private CopyOnWriteArrayList<ArchiveChannel> channels =
-                                new CopyOnWriteArrayList<ArchiveChannel>();
-    
-    /** (At most) one of the channels might be 'enabling' or 'disabling' */
-    private ArchiveChannel enabling_channel = null;
-        
-    /** Is the group currently enabled? */
-    private boolean enabled = true;
-    
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
+
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
-    
-    public ArchiveGroup(final String name)
-    {
-        this.name = name;
+
+    /**
+     * Constructor.
+     *
+     * @param name the name of the group
+     * @param numOfChannels the initial capacity for the number of channels (for performance
+     * reasons), doesnt have to be exact.
+     */
+    public ArchiveGroup(@Nonnull final String name,
+                        @Nonnull final Long groupId)    {
+        _name = name;
+        // After Kay's comment, there are two threads that might work on groups.
+        _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
     }
-    
+
     /** @return Name of this group */
-    final public String getName()
-    {
-        return name;
+    final public String getName() {
+        return _name;
     }
-    
-    /** Add channel to group 
+
+    /** Add channel to group
      *  @param channel Channel to add
-     *  @exception When trying to add multiple enabling channels
      */
     @SuppressWarnings("nls")
-    final void add(final ArchiveChannel channel) throws Exception
-    {
-        if (is_running)
+    final void add(final ArchiveChannel<?, ?> channel) {
+        if (is_running) {
             throw new Error("Running"); //$NON-NLS-1$
-        // Is this an 'active' channel?
-        if (channel.getEnablement() != Enablement.Passive)
-        {
-            if (enabling_channel != null)
-                throw new Exception(
-                    String.format("Group '%s': "
-                                  + "Cannot add enabling channel '%s', "
-                                  + "already enabled by '%s'",
-                                  name, channel.getName(), enabling_channel.getName()));
-            enabling_channel = channel;
         }
-        channels.add(channel);
+        // Is this an 'active' channel?
+//        if (channel.getEnablement() != Enablement.Passive)
+//        {
+//            if (enabling_channel != null)
+//                throw new Exception(
+//                    String.format("Group '%s': "
+//                                  + "Cannot add enabling channel '%s', "
+//                                  + "already enabled by '%s'",
+//                                  name, channel.getName(), enabling_channel.getName()));
+//            enabling_channel = channel;
+//        }
+        _channelMap.put(channel.getName(), channel);
     }
 
     /** Remove channel from group */
-    final void remove(final ArchiveChannel channel)
+    final void remove(final ArchiveChannel<?, ?> channel)
     {
         if (is_running)
+         {
             throw new Error("Running"); //$NON-NLS-1$
-        channels.remove(channel);
+        }
+        _channelMap.remove(channel.getName());
         // Was this the enabling channel?
-        if (enabling_channel == channel)
-            enabling_channel = null;
+//        if (enabling_channel == channel)
+//            enabling_channel = null;
     }
-    
-    /** @return Number of channels in group
-     *  @see #getChannel(int)
-     */
-    final public int getChannelCount()
-    {
-        return channels.size();
-    }
-    
+
     /** @return Channel
      *  @param i Channel index
      *  @see #getChannelCount()
      */
-    final public ArchiveChannel getChannel(final int i)
-    {
-        return channels.get(i);
-    }
+//    final public ArchiveChannel<?> getChannel(final int i) {
+//        return channels.get(i);
+//    }
 
     /** Locate a channel by name.
-	 *  
+	 *
 	 *  @param channel_name
 	 *  @return Channel or <code>null</code>s
 	 */
-    final public ArchiveChannel findChannel(String channel_name)
-	{
-		for (ArchiveChannel channel : channels)
-			if (channel.getName().equals(channel_name))
-				return channel;
-		return null;
+    @CheckForNull
+    public final ArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
+        return _channelMap.get(name);
 	}
 
-    final public ArchiveChannel getEnablingChannel()
-    {
-        return enabling_channel;
-    }
 
     /** @return <code>true</code> if group is currently enabled */
-    final public boolean isEnabled()
-    {
-        return enabled ;
+    public boolean isEnabled() {
+        return true ;
     }
 
-    /** Start all the channels in group */
-    final void start() throws Exception
-    {
-        if (is_running)
-        	return;
+    /** Start all the channels in group
+     * @param engineId
+     * @return
+     * @throws EngineModelException
+     */
+    @Nonnull
+    final void start(@Nonnull final ArchiveEngineId engineId,
+                     @Nonnull final String info) throws EngineModelException {
+        if (is_running) {
+            return;
+        }
         is_running = true;
-        // If we have an 'enabling' channel,
-        // disable the group until we get the OK from that channel
-        if (enabling_channel != null  &&
-            enabling_channel.getEnablement() == Enablement.Enabling)
-            enable(false);
-        for (ArchiveChannel channel : channels)
-            channel.start();
+
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            channel.start(engineId, info);
+        }
     }
 
-    /** Stop all the channels in group */
-    final void stop()
-    {
-        if (!is_running)
-        	return;
+    /**
+     * Stop all the channels in group
+     * @throws EngineModelException
+     */
+    public void stop(@Nonnull final ArchiveEngineId engineId,
+                     @Nonnull final String info) throws EngineModelException {
+        if (!is_running) {
+            return;
+        }
         is_running = false;
-        for (ArchiveChannel channel : channels)
-            channel.stop();
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            channel.stop(engineId, info);
+        }
     }
 
-    /** Enable or disable the group (and all channels in it) */
-    final void enable(final boolean enable)
-    {
-        enabled = enable;
-        for (ArchiveChannel channel : channels)
-            channel.computeEnablement();
+    public void restart(@Nonnull final ArchiveEngineId engineId,
+                        @Nonnull final String info) throws EngineModelException {
+        stop(engineId, info);
+        start(engineId, info);
     }
+
 
     @Override
-    final public String toString()
-    {
-        return "ArchiveGroup " + getName(); //$NON-NLS-1$
+    @Nonnull
+    public String toString() {
+        return getName();
+    }
+
+    @Nonnull
+    public Collection<ArchiveChannel<?, ?>>getChannels() {
+        return _channelMap.values();
     }
 }

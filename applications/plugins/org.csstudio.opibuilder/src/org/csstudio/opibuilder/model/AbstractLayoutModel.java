@@ -16,9 +16,9 @@ public abstract class AbstractLayoutModel extends AbstractWidgetModel {
 	@Override
 	protected void configureBaseProperties() {
 		super.configureBaseProperties();
-		removeProperty(PROP_BORDER_COLOR);
-		removeProperty(PROP_BORDER_STYLE);
-		removeProperty(PROP_BORDER_WIDTH);
+		setPropertyVisible(PROP_BORDER_COLOR,false);
+		setPropertyVisible(PROP_BORDER_STYLE,false);
+		setPropertyVisible(PROP_BORDER_WIDTH,false);
 		setPropertyVisible(PROP_SCRIPTS,false);
 		setPropertyVisible(PROP_VISIBLE,false);
 		setPropertyVisible(PROP_ENABLED,false);

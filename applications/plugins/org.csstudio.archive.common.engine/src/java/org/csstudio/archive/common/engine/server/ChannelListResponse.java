@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
-import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
 /** Provide web page with list of channels (by pattern).
@@ -30,7 +29,7 @@ class ChannelListResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -42,7 +41,7 @@ class ChannelListResponse extends AbstractResponse
             return;
         }
         final Pattern pattern = Pattern.compile(name);
-        
+
         // HTML table similar to group's list of channels
         final HTMLWriter html =
             new HTMLWriter(resp, "Archive Channels for pattern '" + name + "'");
@@ -50,7 +49,6 @@ class ChannelListResponse extends AbstractResponse
         html.openTable(1, new String[]
         {
             Messages.HTTP_Channel,
-            Messages.HTTP_Group,
             Messages.HTTP_Connected,
             Messages.HTTP_InternalState,
             Messages.HTTP_Mechanism,
@@ -58,38 +56,27 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_CurrentValue,
             Messages.HTTP_LastArchivedValue,
         });
-       
-        for (int i=0; i<model.getChannelCount(); ++i)
-        {
-            final ArchiveChannel channel = model.getChannel(i);
+
+        for (final ArchiveChannel<?,?> channel : _model.getChannels()) {
             // Filter by channel name pattern
-            if (!pattern.matcher(channel.getName()).matches())
+            if (!pattern.matcher(channel.getName()).matches()) {
                 continue;
-            final StringBuilder groups = new StringBuilder();
-            for (int g=0; g<channel.getGroupCount(); ++g)
-            {
-                if (g > 0)
-                    groups.append(", ");
-                final ArchiveGroup group = channel.getGroup(i);
-                groups.append(HTMLWriter.makeLink(
-                            "group?name=" + group.getName(), group.getName()));
             }
+//            final List<String> groupNamesWithLinks = new ArrayList<String>();
+//            for (final ArchiveGroup group : channel.getGroups()) {
+//                groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
+//            }
             html.tableLine(new String[]
-            {
-                HTMLWriter.makeLink("channel?name=" + channel.getName(),
-                        channel.getName()),
-                groups.toString(),
-                channel.isConnected()
-                    ? Messages.HTTP_Connected
-                    : HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
-                channel.getInternalState(),
-                channel.getMechanism(),
-                channel.isEnabled()
-                    ? Messages.HTTP_Enabled 
-                    : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                channel.getCurrentValue(),
-                channel.getLastArchivedValue(),
-            });
+                                      {HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                       //Joiner.on(", ").join(groupNamesWithLinks),
+                                       channel.isConnected() ? Messages.HTTP_Connected :
+                                                               HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
+                                       channel.getInternalState(),
+                                       channel.getMechanism(),
+                                       channel.isEnabled() ? Messages.HTTP_Enabled :
+                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
+                                       channel.getCurrentValueAsString(),
+                                       channel.getLastArchivedValue()});
         }
         html.closeTable();
         html.close();

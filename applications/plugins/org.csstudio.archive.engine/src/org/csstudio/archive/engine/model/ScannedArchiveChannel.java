@@ -29,7 +29,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
     final private int max_repeats;
     private int repeats = 0;
     private Logger log;
-    
+
     /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public ScannedArchiveChannel(final String name,
                                  Enablement enablement, final int buffer_capacity,
@@ -44,7 +44,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
         if (! log.isDebugEnabled())
             log = null;
     }
-    
+
     /** @return Scan period in seconds */
     final public double getPeriod()
     {
@@ -72,6 +72,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
      *  Try to add the most recent value to the archive.
      *  Skip repeated values, unless we exceed the max. repeat count.
      */
+    @Override
     final public void run()
     {
         if (! isEnabled())
@@ -145,7 +146,7 @@ public class ScannedArchiveChannel extends ArchiveChannel implements Runnable
             final int[] v1 = ((IEnumeratedValue) val1).getValues();
             final int[] v2 = ((IEnumeratedValue) val2).getValues();
             if (!Arrays.equals(v1, v2))
-                return false;            
+                return false;
         }
         else if (val1 instanceof ILongValue)
         {

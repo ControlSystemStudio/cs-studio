@@ -21,11 +21,6 @@
  */
 package org.csstudio.alarm.table.internal.localization;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import javax.annotation.Nonnull;
-
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -35,7 +30,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public final class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.table.internal.localization.messages"; //$NON-NLS-1$
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
@@ -45,15 +39,6 @@ public final class Messages extends NLS {
         // Nothing to do
     }
     
-    @Nonnull
-    public static String getString(@Nonnull final String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
-    }
-    
     // CHECKSTYLE:OFF
 
     public static String ExpertSearchDialog_Button_And;
@@ -61,18 +46,6 @@ public final class Messages extends NLS {
     public static String ExpertSearchDialog_Button_Del;
     public static String ExpertSearchDialog_Label_And;
     public static String ExpertSearchDialog_Label_Or;
-    
-    public static String JMSPreferencePage_ALARM_PRIMERY_SERVER;
-    public static String JMSPreferencePage_ALARM_SECONDARY_SERVER;
-    public static String JMSPreferencePage_ALARM_CONTEXT_FACTORY;
-    public static String JMSPreferencePage_ALARM_PROVIDER_URL;
-    public static String JMSPreferencePage_ALARM_QUEUE_NAME;
-    public static String JMSPreferencePage_ALARM_SENDER_URL;
-    public static String JMSPreferencePage_LOG_PRIMERY_SERVER;
-    public static String JMSPreferencePage_LOG_SECONDARY_SERVER;
-    public static String JMSPreferencePage_LOG_CONTEXT_FACTORY;
-    public static String JMSPreferencePage_LOG_PROVIDER_URL;
-    public static String JMSPreferencePage_LOG_QUEUE_NAME;
     
     public static String JmsLogPreferencePage_sound;
     
@@ -136,7 +109,6 @@ public final class Messages extends NLS {
     
     public static String LogViewArchive_3days;
     public static String LogViewArchive_day;
-    public static String LogViewArchive_expert;
     public static String LogViewArchive_from;
     public static String LogViewArchive_NoMessageInDB;
     public static String LogViewArchive_period;
@@ -144,22 +116,9 @@ public final class Messages extends NLS {
     public static String LogViewArchive_user;
     public static String LogViewArchive_week;
     public static String LogViewArchive_count;
+    public static String LogViewArchive_nextButton;
     
     public static String newColumnName;
-    
-    public static String StartEnd_AbsEnd;
-    public static String StartEnd_AbsEnd_TT;
-    public static String StartEnd_AbsStart;
-    public static String StartEnd_AbsStart_TT;
-    public static String StartEnd_EndTime;
-    public static String StartEnd_EndTime_TT;
-    public static String StartEnd_RelEnd;
-    public static String StartEnd_RelEnd_TT;
-    public static String StartEnd_RelStart;
-    public static String StartEnd_RelStart_TT;
-    public static String StartEnd_StartExceedsEnd;
-    public static String StartEnd_StartTime;
-    public static String StartEnd_StartTime_TT;
     
     public static String ViewArchive_7;
     public static String ViewArchive_8;
@@ -182,6 +141,8 @@ public final class Messages extends NLS {
     public static String ViewArchive_27;
     public static String ViewArchive_28;
     
+    
+    public static String ViewArchiveCommandGroup;
     public static String ViewArchiveExcelExportButton;
     public static String ViewArchive_deleteButton;
     public static String ViewArchive_fromTime;

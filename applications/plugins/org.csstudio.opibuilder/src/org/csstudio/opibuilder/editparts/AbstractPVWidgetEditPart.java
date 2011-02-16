@@ -534,7 +534,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {				
-				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null){ //activate suppress timer
+				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null && getUpdateSuppressTime() >0){ //activate suppress timer
 					synchronized (this) {
 						if(updateSuppressTimer == null || timerTask == null)
 							initUpdateSuppressTimer();
@@ -575,7 +575,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			getWidgetModel().getProperty(controlPVValuePropId);
 		pvValueListeners = pvValueProperty.getAllPropertyChangeListeners();
 		pvValueProperty.removeAllPropertyChangeListeners();
-		updateSuppressTimer.start(timerTask, UPDATE_SUPPRESS_TIME);
+		updateSuppressTimer.start(timerTask, getUpdateSuppressTime());
+	}
+	
+	/**
+	 * @return the time needed to suppress reading back from PV after writing. 
+	 * No need to suppress if returned value <=0 
+	 */
+	protected int getUpdateSuppressTime(){
+		return UPDATE_SUPPRESS_TIME;
 	}
 	
 }

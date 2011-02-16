@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DataAccess;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
@@ -54,6 +55,8 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
+
+import sun.security.action.GetLongAction;
 
 import com.cosylab.util.ListenerList;
 
@@ -318,7 +321,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 					monitors.add(defaultMonitor);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(this.getClass()).fatal("Failed to create default monitor: "+e.getMessage(), e);
 				if (defaultMonitor!=null) {
 					defaultMonitor.destroy();
 					defaultMonitor=null;
@@ -406,9 +409,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 				MonitorProxy mp = proxy.createMonitor(mm[i],null);
 				mm[i].initialize(mp);
 			} catch (Exception e) {
-				//TODO Handle exception!!
-				System.out.println("Problem on re-inizializing monitor on property"+getName()+" :");
-				e.printStackTrace();
+				Logger.getLogger(SimplePropertyImpl.class).warn("Problem on re-inizializing monitor on property"+getName()+".",e);
 			}
 		}
 		// catch the identifier
@@ -461,7 +462,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 			try {
 				l[i].propertyChange(e);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				Logger.getLogger(this.getClass()).error("Exception in event handler, continuing.", ex);
 			}
 		}
 	}

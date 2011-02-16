@@ -7,64 +7,83 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.server;
 
+import javax.annotation.Nonnull;
+import javax.servlet.ServletException;
+
+import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 
 /** Web server for the engine.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EngineServer
-{
+public class EngineServer {
+    private static final String EX_MSG = "Engine HTTP server could not be instantiated.";
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(EngineServer.class);
+
     /** TCP port used by the web server */
-    final private int port;
-    
+    private final int _port;
+
     /** Construct and start the server
      *  @param model Model to serve
      *  @param port TCP port
+     * @throws EngineHttpServerException
+     * @throws InvalidSyntaxException
+     * @throws
      *  @throws Exception on error
      */
-    public EngineServer(final EngineModel model,
-                        final int port) throws Exception
-    {
-        this.port = port;
+    public EngineServer(@Nonnull final EngineModel model,
+                        final int port) throws EngineHttpServerException {
+        this._port = port;
         final BundleContext context =
             Activator.getDefault().getBundle().getBundleContext();
-        final HttpService http = HttpServiceHelper.createHttpService(context, port);
-        
-        final HttpContext http_context = http.createDefaultHttpContext();
-        http.registerResources("/", "/webroot", http_context);
-        
-        http.registerServlet("/main", new MainResponse(model), null, http_context);
-        http.registerServlet("/groups", new GroupsResponse(model), null, http_context);
-        http.registerServlet("/disconnected", new DisconnectedResponse(model), null, http_context);
-        http.registerServlet("/group", new GroupResponse(model), null, http_context);
-        http.registerServlet("/channel", new ChannelResponse(model), null, http_context);
-        http.registerServlet("/channels", new ChannelListResponse(model), null, http_context);
-        http.registerServlet("/environment", new EnvironmentResponse(model), null, http_context);
-        http.registerServlet("/restart", new RestartResponse(model), null, http_context);
-        http.registerServlet("/reset", new ResetResponse(model), null, http_context);
-        http.registerServlet("/stop", new StopResponse(model), null, http_context);
-        http.registerServlet("/debug", new DebugResponse(model), null, http_context);
-        
-        CentralLogger.getInstance().getLogger(this).info("Engine HTTP Server port " + port);
+        HttpService http;
+        try {
+            http = HttpServiceHelper.createHttpService(context, port);
+
+            final HttpContext httpContext = http.createDefaultHttpContext();
+            http.registerResources("/", "/webroot", httpContext);
+
+            http.registerServlet("/main", new MainResponse(model), null, httpContext);
+            http.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
+            http.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
+            http.registerServlet("/group", new GroupResponse(model), null, httpContext);
+            http.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
+            http.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
+            http.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
+            http.registerServlet("/restart", new RestartResponse(model), null, httpContext);
+            http.registerServlet("/reset", new ResetResponse(model), null, httpContext);
+            http.registerServlet("/stop", new StopResponse(model), null, httpContext);
+            http.registerServlet("/debug", new DebugResponse(model), null, httpContext);
+
+        } catch (final InvalidSyntaxException e) {
+            throw new EngineHttpServerException(EX_MSG, e);
+        } catch (final ServletException e) {
+            throw new EngineHttpServerException(EX_MSG, e);
+        } catch (final NamespaceException e) {
+            throw new EngineHttpServerException(EX_MSG, e);
+        } catch (final Exception e) {
+            throw new EngineHttpServerException(EX_MSG, e);
+        }
+        LOG.info("Engine HTTP Server port " + port);
     }
 
     /** Stop the server */
-    public void stop()
-    {
-        try
-        {
-            HttpServiceHelper.stopHttpService(port);
-        }
-        catch (Exception ex)
-        {
-            CentralLogger.getInstance().getLogger(this).warn(ex);
+    public void stop() {
+        try {
+            HttpServiceHelper.stopHttpService(_port);
+        } catch (final Exception ex) {
+            LOG.warn(ex);
         }
     }
 }

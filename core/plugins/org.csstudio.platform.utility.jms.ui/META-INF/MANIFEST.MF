@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jms Utility Ui Plug-in
 Bundle-SymbolicName: org.csstudio.platform.utility.jms.ui;singleton:=true
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.platform.utility.jms.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.utility.jms.ui
 Bundle-Localization: plugin
+Bundle-Vendor: Desy <css-developer@desy.de>, Markus Möller

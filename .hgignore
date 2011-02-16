@@ -35,7 +35,4 @@ syntax: regexp
 ^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.settings$
 ^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.settings$
-
-syntax: regexp
-^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.classpath$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.classpath$

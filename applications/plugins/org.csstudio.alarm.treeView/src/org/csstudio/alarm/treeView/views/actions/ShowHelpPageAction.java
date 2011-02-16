@@ -63,7 +63,7 @@ public final class ShowHelpPageAction extends Action {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
             URL helpPage;
             try {
-                helpPage = new URL(node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE));
+                helpPage = new URL(node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE));
             } catch (final MalformedURLException e1) {
                 LOG.warn("URL property of node " + node.getName() + " was malformed.");
                 helpPage = null;

@@ -21,7 +21,7 @@
             name="CSS (EPICS)">
          <property
                name="appName"
-               value="CSS (EPICS)">
+               value="Css">
          </property>
          <property
                name="startupForegroundColor"

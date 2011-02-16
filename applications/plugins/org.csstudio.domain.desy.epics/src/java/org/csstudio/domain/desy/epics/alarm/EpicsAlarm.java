@@ -35,7 +35,7 @@ import org.csstudio.domain.desy.alarm.IAlarm;
  *
  * Epics alarms are comparable by their severity field.<br>
  *
- * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting it's alarm.
+ * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting its alarm.
  *
  * @author Bastian Knerr
  */

@@ -59,6 +59,7 @@ public interface IArchiveSeverityDao {
      * @return
      * @throws ArchiveDaoException
      */
-    IArchiveSeverity retrieveSeverityById(ArchiveSeverityId id) throws ArchiveDaoException;
+    @CheckForNull
+    IArchiveSeverity retrieveSeverityById(@Nonnull final ArchiveSeverityId id) throws ArchiveDaoException;
 
 }

@@ -22,12 +22,15 @@
 
 package org.epics.css.dal.spi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.varia.NullAppender;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 
 
 /**
@@ -108,6 +111,8 @@ public final class Plugs
 	 * DAL default initial connection timeout value in milliseconds. Used if INITIAL_CONNECTION_TIMEOUT is not defined.
 	 */
 	public static final long DEFAULT_INITIAL_CONNECTION_TIMEOUT = 200;
+
+	public static final String SIMULATOR_PLUG_TYPE = "Simulator";
 
 	private static Plugs plugs;
 	
@@ -376,7 +381,7 @@ public final class Plugs
 				try {
 					return Long.parseLong(s);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(Plugs.class).warn("System defined property "+CONNECTION_TIMEOUT+" could not be parsed as long.", e);
 				}
 			}
 		}
@@ -417,7 +422,7 @@ public final class Plugs
 				try {
 					return Long.parseLong(s);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(Plugs.class).warn("System defined property "+INITIAL_CONNECTION_TIMEOUT+" could not be parsed as long.", e);
 				}
 			}
 		}
@@ -513,7 +518,7 @@ public final class Plugs
 	private Plugs(Properties properties)
 	{
 		this.properties = properties;
-		SimulatorUtilities.configureSimulatorPlug(properties);
+		configureSimulatorPlug(properties);
 	}
 
 	/**
@@ -593,6 +598,38 @@ public final class Plugs
 			}
 		}
 		properties.setProperty(PLUGS, sb.toString());
+	}
+
+	/**
+	 * Loads to properties configuration, which enables EPICS plug.
+	 * @param p configuration
+	 */
+	public static void configureSimulatorPlug(Properties p)
+	{
+		String[] s = getPlugNames(p);
+		Set<String> set = new HashSet<String>(Arrays.asList(s));
+	
+		if (!set.contains(SIMULATOR_PLUG_TYPE)) {
+			set.add(SIMULATOR_PLUG_TYPE);
+	
+			StringBuffer sb = new StringBuffer();
+	
+			for (Iterator iter = set.iterator(); iter.hasNext();) {
+				if (sb.length() > 0) {
+					sb.append(',');
+				}
+	
+				sb.append(iter.next());
+			}
+	
+			p.put(PLUGS, sb.toString());
+		}
+	
+		p.put(PLUGS_DEFAULT, SIMULATOR_PLUG_TYPE);
+		p.put(PLUG_PROPERTY_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
+			"org.epics.css.dal.simulation.PropertyFactoryImpl");
+		p.put(PLUG_DEVICE_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
+		    "/org.epics.css.dal.simulation.DeviceFactoryImpl");
 	}
 	
 }

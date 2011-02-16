@@ -14,3 +14,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.nameSpaceBrowser.ui,
  org.csstudio.utility.nameSpaceBrowser.utility
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY

@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
+import org.csstudio.alarm.treeView.jobs.RetrieveInitialStateJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -42,7 +43,9 @@ import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
+import org.csstudio.alarm.treeView.views.MessageArea;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -80,8 +83,23 @@ public final class AlarmTreeViewActionFactory {
      * The ID of the property view.
      */
     public static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
-
-
+    
+    /**
+     * @param messageArea
+     * @return
+     */
+    @Nonnull
+    public static Action createShowMessageAreaAction(@Nonnull final MessageArea messageArea) {
+        
+        ShowMessageAreaAction action = new ShowMessageAreaAction(messageArea);
+        action.setText("msg");
+        action.setToolTipText("Show message area");
+        action.setImageDescriptor(AlarmTreePlugin
+                .getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() + "/details_view.gif"));
+        
+        return action;
+    }
+    
     /**
      * @param site
      * @return
@@ -240,7 +258,7 @@ public final class AlarmTreeViewActionFactory {
     /**
      * @param site
      * @param viewer
-     * @param alarmTreeView TODO
+     * @param alarmTreeView
      * @param modificationItems
      * @return
      */
@@ -371,8 +389,9 @@ public final class AlarmTreeViewActionFactory {
      */
     @Nonnull
     public static Action createRetrieveInitialStateAction(@Nonnull final IWorkbenchPartSite site,
+                                                          @Nonnull final RetrieveInitialStateJob retrieveInitialStateJob,
                                                           @Nonnull final TreeViewer viewer) {
-        Action action = new RetrieveInitialStateAction(site, viewer);
+        Action action = new RetrieveInitialStateAction(site, retrieveInitialStateJob, viewer);
         action.setText("Retrieve initial state");
         action.setToolTipText("Retrieve initial state");
         return action;
@@ -406,12 +425,12 @@ public final class AlarmTreeViewActionFactory {
      * @return
      */
     @Nonnull
-    public static Action createSaveInLdapAction(@Nonnull final IAlarmSubtreeNode rootNode,
+    public static AbstractUserDependentAction createSaveInLdapAction(@Nonnull final IAlarmSubtreeNode rootNode,
                                                 @Nonnull final IWorkbenchPartSite site,
                                                 @Nonnull final TreeViewer viewer,
                                                 @Nonnull final Queue<ITreeModificationItem> modifications) {
 
-        final Action saveInLdapAction = new SaveInLdapSecureAction(site, modifications);
+        final AbstractUserDependentAction saveInLdapAction = new SaveInLdapSecureAction(site, modifications);
         saveInLdapAction.setToolTipText("Save in LDAP");
         saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
                                                                                "/saveinldap.gif"));

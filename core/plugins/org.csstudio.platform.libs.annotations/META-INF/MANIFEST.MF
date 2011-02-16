@@ -7,3 +7,5 @@ Export-Package: javax.annotation,
  javax.annotation.concurrent,
  javax.annotation.meta
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -307,5 +309,18 @@ public final class StringUtil {
         return list;
     }
 
-
+    /**
+     * Returns the size of the string measured in bytes.
+     * Computes the number of unicode 'code points', which is equivalent to 
+     * {@link String#getBytes()}.length, but without having to copy the string to a byte array.
+     * 
+     * @param s the string 
+     * @return the number of bytes of the unicode characters
+     */
+    public static int getSizeInBytes(@Nullable final String s) {
+        if (isBlank(s)) {
+            return 0;
+        }
+        return s.codePointCount(0, s.length());
+    }
 }

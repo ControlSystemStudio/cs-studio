@@ -391,8 +391,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		DynamicValueProperty property = null;
 
 		try {
-			org.epics.css.dal.context.RemoteInfo oldRi = getProcessVariableAddress().toDalRemoteInfo();
-			RemoteInfo ri = new RemoteInfo(oldRi.getPlugType(), oldRi.getName(), null, null);
+			RemoteInfo ri = getProcessVariableAddress().toDalRemoteInfo();
 
 			PropertyFactory factory = DALPropertyFactoriesProvider.getInstance().getPropertyFactory(
 					getProcessVariableAddress().getControlSystem());

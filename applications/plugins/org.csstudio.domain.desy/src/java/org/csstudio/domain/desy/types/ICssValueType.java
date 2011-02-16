@@ -23,16 +23,14 @@ package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.IHasTimeStamp;
-
 /**
- * Base value type with a timestamp.
+ * Base value type.
  *
  * @author bknerr
  * @since 26.11.2010
  * @param <T>
  */
-public interface ICssValueType<T> extends IHasTimeStamp {
+public interface ICssValueType<T> {
 
     /**
      * Returns the value datum/data.

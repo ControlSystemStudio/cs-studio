@@ -391,7 +391,12 @@ public class SlaveEditor extends AbstractNodeEditor {
     private int getUserPrmDataValue(@Nonnull ExtUserPrmDataRef extUserPrmDataRef,
                                     @Nonnull ExtUserPrmData extUserPrmData) {
         List<String> prmUserDataList = _slave.getPrmUserDataList();
-        String value = extUserPrmDataRef.getValue();
+        /* Fix: hrickens (02.02.2011)
+         * Bei dem Fix für das GSD File BIMF5861.GSD hab ich festgestellt das value und Index verwechselt wurden.
+         * TODO: Prüfen ob andere GSD - Files noch ordnungsgemäss funktionieren  
+         */
+//        String value = extUserPrmDataRef.getValue();
+        String value = extUserPrmDataRef.getIndex();
         int intVal = ProfibusConfigXMLGenerator.getInt(value);
         String string = prmUserDataList.get(intVal);
         int val = getValueFromBitMask(extUserPrmData, string);
@@ -1119,7 +1124,12 @@ public class SlaveEditor extends AbstractNodeEditor {
                     Object prmTextObject = _prmTextCV.get(i);
                     if (prmTextObject instanceof ComboViewer) {
                         ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getValue());
+                        /* Fix: hrickens (02.02.2011)
+                         * Bei dem Fix für das GSD File BIMF5861.GSD hab ich festgestellt das value und Index verwechselt wurden.
+                         * TODO: Prüfen ob andere GSD - Files noch ordnungsgemäss funktionieren  
+                         */
+//                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getValue());
+                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getIndex());
                     } else if (prmTextObject instanceof Text) {
                         Text prmText = (Text) prmTextObject;
                         extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);

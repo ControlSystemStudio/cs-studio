@@ -30,5 +30,7 @@ public final class DestinationPreferenceConstants
     public static final String LOGBOOK_NAMES = "logbooks";
     public static final String GROUP_NAMES = "groups";
 
-    private DestinationPreferenceConstants() { }
+    private DestinationPreferenceConstants() {
+    	// Avoid instantiation
+    }
 }

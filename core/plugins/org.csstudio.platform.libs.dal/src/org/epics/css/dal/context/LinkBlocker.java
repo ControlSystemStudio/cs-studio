@@ -25,6 +25,8 @@
  */
 package org.epics.css.dal.context;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Convenience class, whcih blocks current thread until provided <code>Linkable</code>
@@ -107,7 +109,7 @@ public class LinkBlocker<C extends Linkable> extends LinkAdapter<C>
 		try {
 			wait(timeout);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.getLogger(LinkBlocker.class).debug("Wait interrupted.", e);
 		}
 
 		if (throwException) {

@@ -80,8 +80,8 @@ public final class ImportInitialConfigJob extends Job {
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
 
+        final long startTime = System.currentTimeMillis();
         try {
-            final long startTime = System.currentTimeMillis();
             ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
 
             TreeNodeSource source;
@@ -100,9 +100,6 @@ public final class ImportInitialConfigJob extends Job {
             if (canceled) {
                 return Status.CANCEL_STATUS;
             }
-
-            final long endTime = System.currentTimeMillis();
-            LOG.debug("Directory reader time: " + (endTime - startTime) + "ms");
         } catch (final CreateContentModelException e) {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
@@ -119,6 +116,8 @@ public final class ImportInitialConfigJob extends Job {
                                       "Opening File!\n" +
                                       "Could not properly open the input file stream: " + e.getMessage());
         } finally {
+            final long endTime = System.currentTimeMillis();
+            LOG.debug("Directory reader time: " + (endTime - startTime) + " mecs");
             monitor.done();
         }
         return Status.OK_STATUS;

@@ -7,58 +7,30 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import org.apache.log4j.Logger;
-import org.csstudio.apputil.time.PeriodFormat;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir
+ *  @param <V> the base type of the value
+ *  @param <T> the css alarm value type with time info
  */
-@SuppressWarnings("nls")
-public class MonitoredArchiveChannel extends ArchiveChannel
-{
-    /** Estimated period of change in seconds */
-    final private double period_estimate;
-    private Logger log;
+public class MonitoredArchiveChannel<V,
+                                     T extends ITimedCssValueType<V> & IHasAlarm> extends ArchiveChannel<V, T> {
 
-    /** @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
-    public MonitoredArchiveChannel(final String name,
-                                   final Enablement enablement,
-                                   final int buffer_capacity,
-                                   final IValue last_archived_value,
-                                   final double period_estimate) throws Exception
-    {
-        super(name, enablement, buffer_capacity, last_archived_value);
-        this.period_estimate = period_estimate;
-        log = CentralLogger.getInstance().getLogger(this);
-        if (! log.isDebugEnabled())
-            log = null;
+
+    public MonitoredArchiveChannel(@Nonnull final String name,
+                                   @Nonnull final ArchiveChannelId channelId) throws EngineModelException {
+        super(name, channelId);
     }
 
-    @Override
-    public String getMechanism()
-    {
-        return "on change [" + PeriodFormat.formatSeconds(period_estimate) + "]";
-    }
 
-    /** Attempt to add each new value to the buffer. */
     @Override
-    protected boolean handleNewValue(final IValue value)
-    {
-        if (super.handleNewValue(value))
-        {
-            if (log != null)
-                log.debug(getName() + " wrote first sample " + value);
-            return true;
-        }
-        if (isEnabled())
-        {
-            if (log != null)
-                log.debug(getName() + " writes " + value);
-            addValueToBuffer(value);
-            return true;
-        }
-        return false;
+    public String getMechanism() {
+        //return "on change [" + PeriodFormat.formatSeconds(period_estimate) + "]";
+        return "MONITOR (on change)";// + PeriodFormat.formatSeconds(period_estimate) + "]";
     }
 }

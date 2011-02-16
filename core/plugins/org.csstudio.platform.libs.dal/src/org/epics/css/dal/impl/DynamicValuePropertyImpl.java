@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
@@ -560,7 +561,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connected(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}else if (connectionState == ConnectionState.CONNECTION_FAILED) {
@@ -568,7 +569,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connectionFailed(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}	else if (connectionState == ConnectionState.CONNECTION_LOST) {
@@ -576,7 +577,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].connectionLost(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		} else if (connectionState == ConnectionState.DISCONNECTED) {
@@ -584,7 +585,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].disconnected(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		} else if (connectionState == ConnectionState.DESTROYED) {
@@ -592,7 +593,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				try {
 					l[i].destroyed(e);
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
 				}
 			}
 		}

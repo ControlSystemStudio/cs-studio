@@ -91,11 +91,11 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 		IGraphicalFeedbackFactory feedbackFactory = 
 			WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
-		Command cmd;
-		if(feedbackFactory != null){
+		Command cmd = null;
+		if(feedbackFactory != null)
 			cmd = feedbackFactory.createChangeBoundsCommand(
-					widgetModel, request, (Rectangle)constraint);
-		}else		
+					widgetModel, request, (Rectangle)constraint);			
+		if(cmd == null)
 			cmd = new WidgetSetConstraintCommand(
 					widgetModel, request, (Rectangle)constraint);
 		
@@ -225,12 +225,13 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if(feedbackFactory != null){
 			Shape feedbackFigure = feedbackFactory
 				.createSizeOnDropFeedback(request);
-			if(feedbackFigure != null)
+			if(feedbackFigure != null){
 				addFeedback(feedbackFigure);
-			return feedbackFigure;
-		}else{
-			return super.createSizeOnDropFeedback(request);
-		}	
+				return feedbackFigure;
+			}			
+		}
+		return super.createSizeOnDropFeedback(request);
+		
 	}
 	
 	@Override

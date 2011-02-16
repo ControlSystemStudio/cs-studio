@@ -23,12 +23,16 @@ package org.csstudio.archive.common.reader;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
-import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * The plugin.xml registers this factory for ArchiveReaders
@@ -37,83 +41,117 @@ import org.csstudio.platform.data.ITimestamp;
  * @author bknerr
  * @since 22.12.2010
  */
-public class DesyArchiveReaderFactory implements ArchiveReaderFactory {
+// CHECKSTYLE:OFF Due to misleading 'Class X must be declared as 'abstract' warning'.
+//                Seems to be a CS 5.3 problem
+public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
+// CHECKSTYLE:ON
+
+    /**
+     * The DESY archive reader implementation.
+     *
+     * @author bknerr
+     * @since 03.02.2011
+     */
+    private static final class DesyArchiveReader implements ArchiveReader {
+        /**
+         * Constructor.
+         */
+        public DesyArchiveReader() {
+            // Empty
+        }
+
+        @Override
+        public String getServerName() {
+            return "Which is not in ArchiveInfo already?";
+        }
+
+        @Override
+        public String getURL() {
+            return "The URL should not be read-only at most by the ArchiveReader client!";
+        }
+
+        @Override
+        public String getDescription() {
+            return "Description of what now?";
+        }
+
+        @Override
+        public int getVersion() {
+            return 10;
+        }
+
+        @Override
+        public ArchiveInfo[] getArchiveInfos() {
+            return new ArchiveInfo[] {new ArchiveInfo("Desy Archive", "Optimized MySql", 5)};
+        }
+
+        @Override
+        public String[] getNamesByPattern(final int key, final String globPattern) throws Exception {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public String[] getNamesByRegExp(final int key, final String regExp) throws Exception {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public ValueIterator getRawValues(final int key,
+                                          final String name,
+                                          final ITimestamp start,
+                                          final ITimestamp end) throws Exception {
+
+
+
+            return new DesyArchiveValueIterator(name, start, end, getRawType());
+        }
+
+        private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
+            final IArchiveReaderService s = Activator.getDefault().getArchiveReaderService();
+            final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
+            for (final IArchiveRequestType type : types) {
+                // this should have been decided type safe by the client app (typically the user)...
+                if (type.getTypeIdentifier().equals("RAW")) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public ValueIterator getOptimizedValues(final int key,
+                                                final String name,
+                                                final ITimestamp start,
+                                                final ITimestamp end,
+                                                final int count) throws Exception {
+            return new DesyArchiveValueIterator(name, start, end, null);
+        }
+
+        @Override
+        public void cancel() {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void close() {
+            // TODO Auto-generated method stub
+        }
+    }
+
+    /**
+     * Constructor.
+     */
+    public DesyArchiveReaderFactory() {
+        // Empty
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ArchiveReader getArchiveReader(@Nonnull final String url) throws Exception {
-        return new ArchiveReader() {
-
-            @Override
-            public String getServerName() {
-                return "Which is not in ArchiveInfo already?";
-            }
-
-            @Override
-            public String getURL() {
-                return "The URL should not be read-only at most by the ArchiveReader client!";
-            }
-
-            @Override
-            public String getDescription() {
-                return "Description of what now?";
-            }
-
-            @Override
-            public int getVersion() {
-                return 10;
-            }
-
-            @Override
-            public ArchiveInfo[] getArchiveInfos() {
-                return new ArchiveInfo[] { new ArchiveInfo("Desy Archive", "Optimized MySql", 5) };
-            }
-
-            @Override
-            public String[] getNamesByPattern(final int key, final String glob_pattern) throws Exception {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public String[] getNamesByRegExp(final int key, final String reg_exp) throws Exception {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public ValueIterator getRawValues(final int key, 
-                                              final String name, 
-                                              final ITimestamp start, 
-                                              final ITimestamp end) throws UnknownChannelException, Exception {
-                return new DesyArchiveValueIterator(name, start, end, DesyArchiveValueIterator.RAW_TYPE);
-            }
-
-            @Override
-            public ValueIterator getOptimizedValues(final int key,
-                                                    final String name,
-                                                    final ITimestamp start,
-                                                    final ITimestamp end,
-                                                    final int count) throws UnknownChannelException,
-                                                              Exception {
-                return new DesyArchiveValueIterator(name, start, end, null);
-            }
-
-            @Override
-            public void cancel() {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void close() {
-                // TODO Auto-generated method stub
-
-            }
-
-        };
+        return new DesyArchiveReader();
     }
-
 }

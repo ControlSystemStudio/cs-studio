@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupDTO;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
@@ -52,7 +52,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelGroupByEngineIdStmt =
-        "SELECT id, name, enabling_channel_id FROM archive_new.channel_group WHERE engine_id=? ORDER BY name";
+        "SELECT id, name, enabling_channel_id FROM archive.channel_group WHERE engine_id=? ORDER BY name";
 
 
     /**
@@ -68,7 +68,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId engId) throws ArchiveDaoException {
+    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
         try {
@@ -84,7 +84,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
                 final String name = result.getString(2);
                 final ArchiveChannelId chanId = new ArchiveChannelId(result.getInt(3));
 
-                groups.add(new ArchiveChannelGroupDTO(id,
+                groups.add(new ArchiveChannelGroup(id,
                                                       name,
                                                       chanId));
             }

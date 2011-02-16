@@ -7,154 +7,137 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.log4j.Level;
-import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.platform.data.IValue;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
-/** Buffer for the samples of one channel.
- *  <p>
- *  Assumes that one thread adds samples, while a different
- *  thread removes them.
- *  When the queue capacity is exceeded, older samples get dropped.
+/**
+ * Buffer for the samples of one channel.
+ * <p>
+ * Assumes that one thread adds samples, while a different
+ * thread removes them.
+ * When the queue capacity is exceeded, older samples get dropped.
+ *
+ * Is implemented atop of LinkedBlockingQueue with Forwarding pattern. Hence,
+ * a producer consumer scenario can be assumed.
  *
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
+ *
+ *  @param <V> the base value type
+ *  @param <T> the css value type atop the base value
+ *  @param <S> the archive sample type atop the channel and the css value type
  */
-public class SampleBuffer extends ForwardingBlockingQueue<IValue>
+public class SampleBuffer<V,
+                          T extends ITimedCssValueType<V> & IHasAlarm,
+                          S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
      *  to decouple stuff).
      */
-    final private String channel_name;
+    final private String _channelName;
 
     /** The actual samples in a thread-save queue. */
-//    final private RingBuffer<IValue> samples;
-    private final BlockingQueue<IValue> samples;
-    private final int capacity;
+    private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    final private BufferStats stats = new BufferStats();
-
-    /** Number of overruns when new string of overruns started, or <code>null</code> */
-    private Integer start_of_overruns;
-
-    /** Logger for overrun messages */
-    final private static ThrottledLogger overrun_msg =
-        new ThrottledLogger(Level.WARN, "log_overrun"); //$NON-NLS-1$
+    private final BufferStats _stats = new BufferStats();
 
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
      */
     private static volatile boolean error = false;
 
-    /** Create sample buffer of given capacity */
-    SampleBuffer(final String channel_name, final int cap)
-    {
+    /**
+     * Create sample buffer with flexible capacity
+     */
+    SampleBuffer(@Nonnull final String channelName) {
         super();
 
-        this.channel_name = channel_name;
-        //samples = new RingBuffer<IValue>(capacity);
-        capacity = cap;
-        samples = new ArrayBlockingQueue<IValue>(capacity, true); // step by step to a producer consumer pattern
+        this._channelName = channelName;
+        _samples = new LinkedBlockingQueue<S>(); // step by step to a producer consumer pattern
     }
 
     /** @return channel name of this buffer */
-    String getChannelName()
-    {
-        return channel_name;
-    }
-
-    /** @return Queue capacity, i.e. maximum queue size. */
-    public int getCapacity()
-    {
-        return capacity;
+    @Nonnull
+    String getChannelName() {
+        return _channelName;
     }
 
     /** @return <code>true</code> if currently experiencing write errors */
-    public static boolean isInErrorState()
-    {
+    public static boolean isInErrorState() {
         return error;
     }
 
     /** Set the error state. */
-    static void setErrorState(final boolean error)
-    {
+    static void setErrorState(final boolean error) {
         SampleBuffer.error = error;
     }
 
-    /** Add a sample to the queue, maybe dropping older samples */
+    /**
+     * Add a sample to the queue, maybe dropping older samples
+     */
     @Override
     @SuppressWarnings("nls")
-    public boolean add(final IValue value)
-    {
-    	synchronized (samples)
-        {
-    	    //if (samples.isFull())
-    	    if (!super.offer(value)) // is full, value not appended to queue
-            {   // Note start of overruns, then drop older sample
-                if (start_of_overruns == null) {
-                    start_of_overruns = Integer.valueOf(stats.getOverruns());
-                }
-                stats.addOverrun();
+    public boolean add(@Nonnull final S value) {
+    	synchronized (_samples) {
+    	    if (!super.offer(value)) {
 
                 while (!super.offer(value)) { // TODO (bknerr) : not yet a strategy
                     if (super.poll() == null) { // drop samples as long appending doesn't work.
                         throw new IllegalStateException("Sample buffer cannot append value, although queue is empty (poll returns null).");
                     }
                 }
-            }
-            else if (start_of_overruns != null)
-            {   // Ending a string of overruns. Maybe log it.
-                final int overruns = stats.getOverruns() - start_of_overruns;
-                overrun_msg.log(channel_name + ": " + overruns + " overruns");
-                start_of_overruns = null;
+            } else { // sample could not be put into sample buffer
+                // FIXME (bknerr) : sample could not be added to buffer - rescue data
+
             }
         }
     	return true;
     }
 
     /** Update stats with current values */
-    void updateStats()
-    {
-        stats.updateSizes(super.size());
+    void updateStats() {
+        _stats.updateSizes(super.size());
     }
 
     /** @return Buffer statistics. */
-    public BufferStats getBufferStats()
-    {
-        return stats;
+    @Nonnull
+    public BufferStats getBufferStats() {
+        return _stats;
     }
 
     /** Reset statistics */
-    public void reset()
-    {
-        start_of_overruns = null;
-        stats.reset();
+    public void statsReset() {
+        _stats.reset();
     }
 
     @SuppressWarnings("nls")
     @Override
-    public String toString()
-    {
+    @Nonnull
+    public String toString() {
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
-            channel_name,
+            _channelName,
             super.size(),
-            stats.getMaxSize(),
-            stats.getAverageSize(),
-            stats.getOverruns());
+            _stats.getMaxSize(),
+            _stats.getAverageSize());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected BlockingQueue<IValue> delegate() {
-        return samples;
+    @Nonnull
+    protected BlockingQueue<S> delegate() {
+        return _samples;
     }
 }

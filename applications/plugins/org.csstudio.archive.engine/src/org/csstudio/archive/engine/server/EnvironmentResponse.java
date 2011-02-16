@@ -55,6 +55,7 @@ class EnvironmentResponse extends AbstractResponse
             return value;
         }
 
+        @Override
         public int compareTo(final NameValue other)
         {
             return name.compareTo(other.name);
@@ -76,12 +77,12 @@ class EnvironmentResponse extends AbstractResponse
 	        return name.equals(other.name);
         }
     }
-    
+
     EnvironmentResponse(final EngineModel model)
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -89,7 +90,7 @@ class EnvironmentResponse extends AbstractResponse
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_MainTitle);
 
         html.openTable(1, new String[] { "Property", "Value" });
-        
+
         // This looks very inefficient, but I don't think it matters.
         // Get all properties into Array, ...
         final Properties properties = System.getProperties();
@@ -110,7 +111,7 @@ class EnvironmentResponse extends AbstractResponse
             html.tableLine(new String[] { prop.getName(), prop.getValue() });
         }
         html.closeTable();
-        
+
         html.close();
     }
 

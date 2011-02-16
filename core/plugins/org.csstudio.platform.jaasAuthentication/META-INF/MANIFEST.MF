@@ -4,7 +4,7 @@ Bundle-Name: JAAS Authentication Plug-in
 Bundle-SymbolicName: org.csstudio.platform.jaasAuthentication;singleton:=true
 Bundle-Version: 1.1.1.qualifier
 Bundle-Activator: org.csstudio.platform.internal.jaasauthentication.Activator
-Bundle-Vendor: DESY
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.platform
 Eclipse-LazyStart: true

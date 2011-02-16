@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
@@ -47,7 +46,6 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		childrenProperty = new AbstractWidgetProperty(
 				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Object checkValue(Object value) {
 				if(value instanceof List)
@@ -73,7 +71,6 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		selectionProperty = new AbstractWidgetProperty(
 				PROP_SELECTION, "selection", WidgetPropertyCategory.Behavior, null){
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public Object checkValue(Object value) {
 				if(value instanceof List)
@@ -224,7 +221,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		this.macroMap = macroMap;
 	}
 	
-	public Map<String, String> getMacroMap() {
+	public LinkedHashMap<String, String> getMacroMap() {
 		return macroMap;
 	}	
 
@@ -236,7 +233,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	/**
 	 * @return the macros of its parent.
 	 */
-	public Map<String, String> getParentMacroMap(){
+	public LinkedHashMap<String, String> getParentMacroMap(){
 		if(getParent() != null)
 			return getParent().getMacroMap();
 		else

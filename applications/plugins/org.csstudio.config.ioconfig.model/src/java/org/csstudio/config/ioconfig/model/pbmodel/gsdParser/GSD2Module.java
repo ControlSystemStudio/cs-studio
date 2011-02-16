@@ -40,6 +40,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
  */
 public final class GSD2Module {
     
+    private static int _generatedModule;
+
     /**
      * Default Constructor.
      */
@@ -53,6 +55,7 @@ public final class GSD2Module {
      * @return A List of all Modules from this GSD-File.
      */
     public static HashMap<Integer, GsdModuleModel> parse(final GSDFileDBO gsdFile, final GsdSlaveModel slaveModel) {
+        _generatedModule = 0;
         String file = gsdFile.getGSDFile(); 
         HashMap<Integer, GsdModuleModel> gsdPartModules = new HashMap<Integer, GsdModuleModel>();
         StringReader sr = new StringReader(file);
@@ -89,9 +92,15 @@ public final class GSD2Module {
                     if(line.endsWith("\\")){
                         followModule=true;
                     }
-                }else if(line.trim().equals("EndModule")){
+                }else if(line.trim().compareToIgnoreCase("EndModule")==0){
                     foundModule=false;
-                    gsdPartModules.put(gSDModule.getModuleNumber(),gSDModule);
+                    int moduleNumber = gSDModule.getModuleNumber();
+                    if(moduleNumber<0) {
+                        moduleNumber = getGeneratedModuleNr();
+                        gSDModule.setModuleNumber(moduleNumber);
+                    }
+                    gsdPartModules.put(moduleNumber,gSDModule);
+                    updateGeneratedModuleNr(moduleNumber);
                 // Auswertung weiterer Parameter
                 }else if(foundModule){
 //                  Don't needed.                
@@ -127,6 +136,24 @@ public final class GSD2Module {
             e.printStackTrace();
         }
         return gsdPartModules;
+    }
+
+    /**
+     * @param moduleNumber
+     */
+    private static void updateGeneratedModuleNr(int moduleNumber) {
+        if(_generatedModule>moduleNumber) {
+            _generatedModule++; 
+        }else {
+            _generatedModule = moduleNumber+1;
+        }
+    }
+
+    /**
+     * @return
+     */
+    private static int getGeneratedModuleNr() {
+        return _generatedModule;
     }
 
 }

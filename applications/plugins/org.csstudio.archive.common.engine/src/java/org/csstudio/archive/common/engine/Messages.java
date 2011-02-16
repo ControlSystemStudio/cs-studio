@@ -20,10 +20,10 @@ public class Messages
     final public static String HTTP_ChannelCount = "Channels";
     final public static String HTTP_ChannelInfo = "Channel Info";
     final public static String HTTP_Channels = "Channels";
-    final public static String HTTP_Connected = "Connected";
+    public static final String HTTP_Connected = "Yes";
     final public static String HTTP_Description = "Description";
     final public static String HTTP_Disabled = "Disabled";
-    final public static String HTTP_Disconnected = "Disconnected";
+    public static final String HTTP_Disconnected = "No";
     final public static String HTTP_DisconnectedTitle = "Disconnected Channels";
     final public static String HTTP_Enabled = "Enabled";
     final public static String HTTP_Enablement = "Enablement";
@@ -35,7 +35,7 @@ public class Messages
     final public static String HTTP_InternalState = "Internal State";
     final public static String HTTP_CurrentValue = "Current Value";
     final public static String HTTP_LastArchivedValue = "Last Archived Value";
-    final public static String HTTP_LastWriteTime = "Last Written";
+    public static final String HTTP_LAST_WRITETIME = "Last Written";
     final public static String HTTP_MainTitle = "Archive Engine";
     final public static String HTTP_Mechanism = "Mechanism";
     final public static String HTTP_Never = "never";
@@ -50,6 +50,7 @@ public class Messages
     final public static String HTTP_Status = "Status";
     final public static String HTTP_SQLTimeout = "SQL Timeout";
     final public static String HTTP_Total = "Total";
+    public static final String HTTP_TIMESTAMP = "TimeStamp";
     final public static String HTTP_Uptime = "Uptime";
     final public static String HTTP_Version = "Version";
     final public static String HTTP_Workspace = "Workspace";

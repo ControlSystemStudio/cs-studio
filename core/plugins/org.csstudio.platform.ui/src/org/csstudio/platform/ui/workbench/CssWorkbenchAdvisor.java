@@ -38,8 +38,9 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
  * 
  * @see WorkbenchAdvisor
  * 
- * @author Alexander Will
- * 
+ * @author Alexander Will, Xihui Chen
+ * @deprecated Use org.csstudio.startuphelper.module.DefaultWorkbenchAdvisor instead, 
+ * which supports opening file from command line. 
  */
 public class CssWorkbenchAdvisor extends WorkbenchAdvisor {
 	/**

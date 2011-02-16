@@ -75,8 +75,7 @@ public class AuthorizeIdView extends ViewPart {
     private TableViewer _groupRoleTableViewer;
     private TableViewer _registeredAuthorizeIdTableViewer;
     
-    //    private static final String SECURITY_ID = "AuthorizeId";
-    private static final String SECURITY_ID = "remoteManagement";
+    private static final String SECURITY_ID = "AuthorizeId";
     
     /**
      * Creates a view for the plugin.
@@ -196,7 +195,7 @@ public class AuthorizeIdView extends ViewPart {
         /**
          * "New" button for the first table.
          */
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         final Button _new = new Button(parent, SWT.PUSH);
         _new.setText(Messages.AuthorizeIdView_NEW);
         _new.setEnabled(canExecute);

@@ -2,10 +2,6 @@ package org.csstudio.platform.internal.simpledal;
 
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -14,7 +10,6 @@ import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
@@ -23,14 +18,9 @@ import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqAccess;
-import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.SequencePropertyCharacteristics;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.simulation.PropertyProxyImpl;
-import org.epics.css.dal.simulation.SimulatorPlug;
-import org.epics.css.dal.simulation.SimulatorUtilities;
 import org.epics.css.dal.spi.PropertyFactory;
 
 public class SimpleDAL_EPICSTest extends TestCase {

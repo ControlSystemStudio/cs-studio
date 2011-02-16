@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -24,37 +24,22 @@ package org.csstudio.archive.common.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.time.IHasTimeStamp;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
- * Read only interface of a sample value in the archive.
- *
- * FIXME (bknerr) : NOT identifiable in its current design, see 'show create table sample' in rdb.
- *
+ * Read-only interface for archive sample. 
+ * 
  * @author bknerr
- * @since 11.11.2010
- * @param <T> the type of the composite system value (with alarm and timestamp)
- * @param <A> the comparable alarm type
+ * @since 24.01.2011
+ * @param <V> the data value type
+ * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample<T extends ICssValueType<?> & IHasAlarm,
-                                A extends IAlarm & Comparable<? super A>>
-       extends IHasAlarm, IHasTimeStamp /*, Identifiable<ArchiveSampleId> */ {
-
+public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
+    
     @Nonnull
     ArchiveChannelId getChannelId();
 
     @Nonnull
     T getData();
-
-    @Override
-    @Nonnull
-    TimeInstant getTimestamp();
-
-    @Override
-    @Nonnull
-    A getAlarm();
 }

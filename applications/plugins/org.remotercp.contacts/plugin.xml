@@ -87,4 +87,11 @@
                style="push"/>
       </actionSet>
    </extension>
+    <extension
+          point="org.csstudio.platform.authorizationId">
+       <id
+             description="Permission for remote management commands"
+             id="remoteManagement">
+       </id>
+    </extension>
 </plugin>

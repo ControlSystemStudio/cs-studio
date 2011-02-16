@@ -32,6 +32,15 @@ import org.eclipse.core.runtime.Platform;
 /**
  * An enumeration for all available control system prefixes.
  * 
+ * TODO (bknerr, all) : define control system vs control system's communication protocol
+ * questions: <br/>
+ * <li> DOOCS vs TINE, control system or communication protocol
+ * <li> distinguish system's by type AND id? (think of more than one system with the same type?)
+ * <li> isn't the 'protocol' prefix of a control system rather the protocol's id than the control system's id <br/>
+ *      (what if a control system offers more than one communication protocol?) 
+ * <li> versions of control systems? different or parameterized types?
+ * <li> technical: to allow for general use, the types shouldn't implement IAdaptable originally
+ * 
  * @author Sven Wende
  * 
  */
@@ -84,7 +93,7 @@ public enum ControlSystemEnum implements IAdaptable {
 
 	public String getIconPrefix() {
 		return _icon;
-	};
+	}
 	
 	public String getPrefix() {
 		return _prefix;
@@ -133,7 +142,8 @@ public enum ControlSystemEnum implements IAdaptable {
 		return result;
 	}
 
-	public Object getAdapter(Class adapter) {
+	@Override
+    public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 }

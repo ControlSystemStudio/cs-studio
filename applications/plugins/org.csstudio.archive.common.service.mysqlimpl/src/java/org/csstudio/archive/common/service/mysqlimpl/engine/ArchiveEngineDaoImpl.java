@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.engine.ArchiveEngineDTO;
+import org.csstudio.archive.common.service.engine.ArchiveEngine;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
@@ -54,7 +54,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectEngineByNameStmt =
-        "SELECT id, url FROM archive_new.engine WHERE name=?";
+        "SELECT id, url FROM archive.engine WHERE name=?";
 
 
     /**
@@ -81,7 +81,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
                 // id, url
                 final int id = result.getInt(1);
                 final String url = result.getString(2);
-                return new ArchiveEngineDTO(new ArchiveEngineId(id),
+                return new ArchiveEngine(new ArchiveEngineId(id),
                                             new URL(url));
             }
         } catch (final ArchiveConnectionException e) {

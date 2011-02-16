@@ -78,14 +78,14 @@ public class DisplayModel extends AbstractContainerModel {
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON, "Show Close Button", 
 				WidgetPropertyCategory.Display, true));		
 		
-		removeProperty(PROP_BORDER_COLOR);
-		removeProperty(PROP_BORDER_STYLE);
-		removeProperty(PROP_BORDER_WIDTH);
-		removeProperty(PROP_VISIBLE);
-		removeProperty(PROP_ENABLED);
-		removeProperty(PROP_TOOLTIP);
-		removeProperty(PROP_ACTIONS);
-		removeProperty(PROP_FONT);
+		setPropertyVisible(PROP_BORDER_COLOR, false);
+		setPropertyVisible(PROP_BORDER_STYLE, false);
+		setPropertyVisible(PROP_BORDER_WIDTH, false);
+		setPropertyVisible(PROP_VISIBLE, false);
+		setPropertyVisible(PROP_ENABLED, false);
+		setPropertyVisible(PROP_TOOLTIP, false);
+		setPropertyVisible(PROP_ACTIONS, false);
+		setPropertyVisible(PROP_FONT, false);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");

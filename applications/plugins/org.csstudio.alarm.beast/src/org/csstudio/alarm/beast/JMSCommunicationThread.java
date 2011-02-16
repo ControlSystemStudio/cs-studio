@@ -291,4 +291,11 @@ abstract public class JMSCommunicationThread
                     "JMS shutdown error " + ex.getMessage(), ex);
         }
     }
+
+    /** @return JMS server info */
+    @Override
+    public String toString()
+    {
+        return getJMSServerName();
+    }
 }

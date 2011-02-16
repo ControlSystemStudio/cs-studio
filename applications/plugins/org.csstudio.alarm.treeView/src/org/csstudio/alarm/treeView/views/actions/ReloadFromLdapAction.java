@@ -29,6 +29,7 @@ import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
@@ -78,6 +79,25 @@ public final class ReloadFromLdapAction extends Action {
      */
     @Override
     public void run() {
+        boolean willReload = true;
+        if (!_ldapModificationItems.isEmpty()) {
+            willReload = MessageDialog
+                    .openConfirm(_site.getShell(), "Unsaved items", getMessageWithUnsavedItems()
+                            + "\nDo you want to reload from LDAP (Ok) or keep unsaved items (Cancel)?");
+        }
+        if (willReload) {
+            reloadFromLdap();
+        }
+    }
+    
+    private String getMessageWithUnsavedItems() {
+        boolean single = _ldapModificationItems.size() == 1;
+        String result = "There " + (single ? "is " : "are ") + _ldapModificationItems.size()
+                + " unsaved item" +  (single ? "." : "s.");
+        return result;
+    }
+
+    private void reloadFromLdap() {
         // Remove all recent modifications from the queue
         _ldapModificationItems.clear();
 

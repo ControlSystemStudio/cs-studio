@@ -23,12 +23,12 @@ class DisconnectedResponse extends AbstractResponse
 {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
-    
+
     DisconnectedResponse(final EngineModel model)
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -36,31 +36,29 @@ class DisconnectedResponse extends AbstractResponse
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);
         html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_Group });
 
-        final int group_count = model.getGroupCount();
+
+
         int disconnected = 0;
-        for (int i=0; i<group_count; ++i)
-        {
-            final ArchiveGroup group = model.getGroup(i);
-            final int channel_count = group.getChannelCount();
-            for (int j=0; j<channel_count; ++j)
-            {
-                final ArchiveChannel channel = group.getChannel(j);
-                if (channel.isConnected())
+        for (final ArchiveGroup group : _model.getGroups()) {
+            for (final ArchiveChannel<?,?> channel : group.getChannels()) {
+                if (channel.isConnected()) {
                     continue;
+                }
                 ++disconnected;
                 html.tableLine(new String[]
-                {
-                    Integer.toString(disconnected),
-                    HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
-                    HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
-                } );
+                                          {
+                                           Integer.toString(disconnected),
+                                           HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                           HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                          } );
             }
         }
         html.closeTable();
 
-        if (disconnected == 0)
-            html.h2("All channels are connected");            
-        
+        if (disconnected == 0) {
+            html.h2("All channels are connected");
+        }
+
         html.close();
     }
 }

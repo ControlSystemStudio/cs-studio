@@ -16,3 +16,4 @@ Bundle-ClassPath: .,
  etc/
 Export-Package: de.desy.css.dal.tine,
  org.csstudio.platform.libs.dal.tine
+Bundle-Vendor: Desy <css-developer@desy.de>, Helge Rickens

@@ -9,15 +9,30 @@ package org.csstudio.archive.common.engine.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.log4j.Level;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
+
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.engine.ThrottledLogger;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.archive.common.engine.Activator;
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntryId;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.archive.common.service.sample.ArchiveSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -27,28 +42,33 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class ArchiveChannel
-{
-    /** Throttled log for NaN samples */
-    private static ThrottledLogger trouble_sample_log =
-                    new ThrottledLogger(Level.INFO, "log_trouble_samples"); //$NON-NLS-1$
+public abstract class ArchiveChannel<V,
+                                     T extends ITimedCssValueType<V> & IHasAlarm> {
+    static final Logger PV_LOG = CentralLogger.getInstance().getLogger(PVListener.class);
+
+    /** Channel name.
+     *  This is the name by which the channel was created,
+     *  not the PV name that might include decorations.
+     */
+    private final String _name;
+
+    final ArchiveChannelId _id;
+
+    /** Control system PV */
+    private final PV _pv;
+
+
+    /** Buffer of received samples, periodically written */
+    private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
 
     /** Group to which this channel belongs.
      *  <p>
      *  Using thread safe array so that HTTPD can access
      *  as well as main thread and PV
      */
-    final private CopyOnWriteArrayList<ArchiveGroup> groups =
+    private final CopyOnWriteArrayList<ArchiveGroup> _groups =
                                 new CopyOnWriteArrayList<ArchiveGroup>();
 
-    /** Channel name.
-     *  This is the name by which the channel was created,
-     *  not the PV name that might include decorations.
-     */
-    final private String name;
-
-    /** Control system PV */
-    final private PV pv;
 
     /** Is this channel currently running?
      *  <p>
@@ -57,463 +77,232 @@ abstract public class ArchiveChannel
      *  want to log that, so we keep track of
      *  the 'running' state.
      */
-    private boolean is_running = false;
-
-    /** Do we need to log a 'write error' sample?
-     *  <p>
-     *  The sample buffer will indicate write errors.
-     *  While in error, we keep adding samples, which
-     *  will probably cause overrides.
-     *  When we can write again, we add one info sample.
-     */
-    private boolean need_write_error_sample = false;
-
-    /** Do we need to log a 'first' sample?
-     *  <p>
-     *  After startup, or after a network disconnect,
-     *  the first sample we receive
-     *  might be time-stamped days ago,
-     *  while the archive has an 'off' or 'disconnected' info sample
-     *  that's already newer.
-     *  This flag is used to force one initial
-     *  sample into the archive with current time stamp.
-     */
-    private boolean need_first_sample = true;
-
-    /** How channel affects its groups */
-    final private Enablement enablement;
-
-    /** Is this channel currently enabled? */
-    private boolean enabled = true;
+    @GuardedBy("this")
+    volatile boolean _isRunning = false;
 
     /** Most recent value of the PV.
      *  <p>
      *  This is the value received from the PV,
      *  is is not necessarily written to the archive.
      *  <p>
-     *  SYNC:Lock on <code>this</code> for access.
      */
-    protected IValue most_recent_value = null;
+    @GuardedBy("this")
+    protected T _mostRecentValue;
+
+    /**
+     * The most recent value send to the archive.
+     */
+    @GuardedBy("this")
+    protected T _lastArchivedValue;
 
     /** Counter for received values (monitor updates) */
-    private long received_value_count = 0;
+    private long _receivedValueCount = 0;
 
-    /** Last value in the archive, i.e. the one most recently written.
-     *  <p>
-     *  SYNC: Lock on <code>this</code> for access.
-     */
-    protected IValue last_archived_value = null;
 
-    /** Buffer of received samples, periodically written */
-    private final SampleBuffer buffer;
-
-    private Logger log;
 
     /** Construct an archive channel
      *  @param name Name of the channel (PV)
      *  @param enablement How channel affects its groups
      *  @param buffer_capacity Size of sample buffer
      *  @param last_archived_value Last value from storage, or <code>null</code>.
-     *  @throws Exception On error in PV setup
+     * @throws EngineModelException
      */
-    public ArchiveChannel(final String name,
-                          final Enablement enablement,
-                          final int buffer_capacity,
-                          final IValue last_archived_value) throws Exception
-    {
-        this.name = name;
-        this.enablement = enablement;
-        this.last_archived_value = last_archived_value;
-        this.buffer = new SampleBuffer(name, buffer_capacity);
-        log = CentralLogger.getInstance().getLogger(this);
-        if (last_archived_value == null) {
-            log.info(name + ": No known last value");
-        }
-        if (!log.isDebugEnabled()) {
-            log = null;
-        }
+    public ArchiveChannel(@Nonnull final String name,
+                          @Nonnull final ArchiveChannelId id) throws EngineModelException {
+        _name = name;
+        _id = id;
+        _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
-        pv = PVFactory.createPV(name);
-        pv.addListener(new PVListener()
-        {
+        try {
+            _pv = PVFactory.createPV(name);
+        } catch (final Exception e) {
+            throw new EngineModelException("Connection to pv failed for channel " + name, null);
+        }
+        _pv.addListener(new PVListener() {
             @Override
-            public void pvValueUpdate(final PV pv)
-            {
-                // PV already suppresses updates after 'stop', but check anyway
-                if (is_running)
-                {
-                    final IValue value = pv.getValue();
-                    if (enablement != Enablement.Passive) {
-                        handleEnablement(value);
+            public void pvValueUpdate(@Nonnull final PV pv) {
+                try {
+                    if (_isRunning) { // PV already suppresses updates after 'stop', but check anyway
+                        final IValue value = pv.getValue();
+                        final ITimedCssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
+                        @SuppressWarnings("unchecked")
+                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) cssValue);
+                        handleNewSample(sample);
                     }
-                    handleNewValue(value);
+                } catch (final TypeSupportException e) {
+                    PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
+                    return;
+                } catch (final Throwable t) {
+                    PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage());
                 }
             }
-
             @Override
-            public void pvDisconnected(final PV pv)
-            {
-                if (is_running) {
-                    handleDisconnected();
+            public void pvDisconnected(@CheckForNull final PV pv) {
+                if (_isRunning && pv != null) {
+                    handleDisconnectionInformation(pv);
                 }
             }
         });
     }
 
+    protected void handleDisconnectionInformation(@Nonnull final PV pv) {
+
+        final String someMoreInfo = pv.getStateInfo();
+
+    }
+
     /** @return Name of channel */
-    final public String getName()
-    {
-        return name;
-    }
-
-    /** @return How channel affects its groups */
-    final public Enablement getEnablement()
-    {
-        return enablement;
-    }
-
-    /** @return <code>true</code> if channel is currently enabled */
-    final public boolean isEnabled()
-    {
-        return enabled ;
+    @Nonnull
+    public String getName() {
+        return _name;
     }
 
     /** @return Short description of sample mechanism */
-    abstract public String getMechanism();
-
-    /** @return Number of Groups to which this channel belongs */
-    final public int getGroupCount()
-    {
-        return groups.size();
-    }
-
-    /** @return One Group to which this channel belongs */
-    final public ArchiveGroup getGroup(final int index)
-    {
-        return groups.get(index);
-    }
-
-    /** Tell channel that it belogs to group */
-    final void addGroup(final ArchiveGroup group)
-    {
-        groups.add(group);
-    }
-
-    /** Tell channel that it no longer belogs to group */
-    final void removeGroup(final ArchiveGroup group)
-    {
-        if (!groups.remove(group)) {
-            throw new Error("Channel " + getName() + " doesn't belong to group"
-                            + group.getName());
-        }
-    }
+    @Nonnull
+    public abstract String getMechanism();
 
     /** @return <code>true</code> if connected */
-    final public boolean isConnected()
-    {
-        return pv.isConnected();
+    public boolean isConnected() {
+        return _pv.isConnected();
     }
 
     /** @return Human-readable info on internal state of PV */
-    public String getInternalState()
-    {
-        return pv.getStateInfo();
+    @CheckForNull
+    public String getInternalState() {
+        return _pv.getStateInfo();
     }
 
-    /** Start archiving this channel. */
-    final void start() throws Exception
-    {
-        is_running = true;
-        need_first_sample = true;
-        pv.start();
-    }
-
-    /** Stop archiving this channel */
-    final void stop()
-    {
-    	if (!is_running) {
+    /**
+     * Start archiving this channel.
+     * @param engineId
+     * @param info human readable info about the start of this channel
+     * @throws EngineModelException
+     */
+    public void start(@Nonnull final ArchiveEngineId engineId,
+                      @Nonnull final String info) throws EngineModelException {
+        try {
+        if (_isRunning) {
             return;
         }
-        is_running = false;
-        pv.stop();
-        addInfoToBuffer(ValueButcher.createOff());
+        synchronized (this) {
+            _isRunning = true;
+            _pv.start();
+        }
+
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.ON,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        } catch (final Exception e) {
+            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel startup", e);
+        }
+
+    }
+
+    /**
+     * Stop archiving this channel
+     * @throws EngineModelException
+     */
+    public void stop(@Nonnull final ArchiveEngineId engineId,
+                     @Nonnull final String info) throws EngineModelException {
+    	if (!_isRunning) {
+            return;
+        }
+    	synchronized (this) {
+    	    _isRunning = false;
+    	}
+        _pv.stop();
+
+        try {
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.OFF,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        }
     }
 
     /** @return Most recent value of the channel's PV */
-    final public String getCurrentValue()
-    {
-        synchronized (this)
-        {
-            if (most_recent_value == null)
-             {
+    @Nonnull
+    public String getCurrentValueAsString() {
+        synchronized (this) {
+            if (_mostRecentValue == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return most_recent_value.toString();
+            return _mostRecentValue.getValueData().toString();
         }
     }
 
+    @Nonnull
+    public T getMostRecentValue() {
+        return _mostRecentValue;
+    }
+
     /** @return Count of received values */
-    synchronized public long getReceivedValues()
-    {
-        return received_value_count;
+    public final synchronized long getReceivedValues() {
+        return _receivedValueCount;
     }
 
     /** @return Last value written to archive */
-    final public String getLastArchivedValue()
-    {
-        synchronized (this)
-        {
-            if (last_archived_value == null)
-             {
+    @Nonnull
+    public final String getLastArchivedValue() {
+        synchronized (this) {
+            if (_lastArchivedValue == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return last_archived_value.toString();
+            return _lastArchivedValue.getValueData().toString();
         }
     }
 
     /** @return Sample buffer */
-    final public SampleBuffer getSampleBuffer()
-    {
-        return buffer;
+    @Nonnull
+    public final SampleBuffer<V, T, IArchiveSample<V, T>> getSampleBuffer() {
+        return _buffer;
     }
 
 
     /** Reset counters */
-    public void reset()
-    {
-        buffer.reset();
-        synchronized (this)
-        {
-            received_value_count = 0;
+    public void reset() {
+        _buffer.statsReset();
+        synchronized (this) {
+            _receivedValueCount = 0;
         }
     }
 
-    /** Enable or disable groups based on received value */
-    final private void handleEnablement(final IValue value)
-    {
-        if (enablement == Enablement.Passive)
-         {
-            throw new Error("Not to be called when passive"); //$NON-NLS-1$
-        }
-        // Get boolean value (true <==> >0.0)
-        final double number = ValueUtil.getDouble(value);
-        final boolean yes = number > 0.0;
-        // Do we enable or disable based on that value?
-        final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
-        // Check which group needs to _change_
-        for (final ArchiveGroup group : groups)
-        {
-            if (group.isEnabled() != enable) {
-                group.enable(enable);
-            }
-        }
-    }
 
-    /** Called for each value received from PV.
-     *  <p>
-     *  Base class remembers the <code>most_recent_value</code>,
-     *  and asserts that one 'first' sample is archived.
-     *  Derived class <b>must</b> call <code>super()</code>.
-     *
-     *  @param value Value received from PV
-     *
-     *  @return true if the value was already written because
-     *               it's the first value after startup or error,
-     *               so there's no need to write that sample again.
-     */
-    protected boolean handleNewValue(final IValue value)
-    {
-        synchronized (this)
-        {
-            ++received_value_count;
-            most_recent_value = value;
+    protected boolean handleNewSample(@Nonnull final IArchiveSample<V, T> sample) {
+        synchronized (this) {
+            ++_receivedValueCount;
+            _mostRecentValue = sample.getData();
         }
-        // NaN test
-        if (value instanceof IDoubleValue)
-        {
-            final IDoubleValue dbl = (IDoubleValue) value;
-            if (Double.isNaN(dbl.getValue())) {
-                trouble_sample_log.log("'" + getName() + "': NaN "
-                        + value.format());
-            }
-
-        }
-        if (!enabled) {
-            return false;
-        }
-
-        // Did we recover from write errors?
-        if (need_write_error_sample &&
-            SampleBuffer.isInErrorState() == false)
-        {
-            need_write_error_sample = false;
-            if (log != null) {
-                log.debug(getName() + " wrote error sample");
-            }
-            addInfoToBuffer(ValueButcher.createWriteError());
-            need_first_sample = true;
-        }
-        // Is this the first sample after startup or an error?
-        if (!need_first_sample) {
-            return false;
-        }
-        need_first_sample = false;
-        final IValue updated = ValueButcher.transformTimestampToNow(value);
-        if (log != null) {
-            log.debug(getName() + " wrote first sample " + updated);
-        }
-        addInfoToBuffer(updated);
+        _buffer.add(sample);
         return true;
-    }
 
-    /** Handle a disconnect event.
-     *  <p>
-     *  Base class clears the <code>most_recent_value</code> and
-     *  adds a 'disconnected' info sample.
-     *  Subclasses may override, but must call <code>super()</code>.
-     */
-    protected void handleDisconnected()
-    {
-        synchronized (this)
-        {
-            most_recent_value = null;
-        }
-        if (log != null) {
-            log.debug(getName() + " wrote disconnect sample");
-        }
-        addInfoToBuffer(ValueButcher.createDisconnected());
-        need_first_sample = true;
-    }
-
-    /** Add given info value to buffer, tweaking its time stamp if necessary
-     *  @param value Value to archive
-     */
-    final protected void addInfoToBuffer(IValue value)
-    {
-        synchronized (this)
-        {
-            if (last_archived_value != null)
-            {
-                final ITimestamp last = last_archived_value.getTime();
-                if (last.isGreaterOrEqual(value.getTime()))
-                {   // Patch the time stamp
-                    final ITimestamp next =
-                        TimestampFactory.createTimestamp(last.seconds()+1, 0);
-                    value = ValueButcher.transformTimestamp(value, next);
-                }
-                // else: value is OK as is
-            }
-        }
-        addValueToBuffer(value);
-    }
-
-    /** @param time Timestamp to check
-     *  @return <code>true</code> if time is too far into the future; better ignore.
-     */
-    private boolean isFuturistic(final ITimestamp time)
-    {
-        final long threshold = System.currentTimeMillis()/1000 + EngineModel.getIgnoredFutureSeconds();
-        return time.seconds() >= threshold;
-    }
-
-    /** Add given sample to buffer, performing a back-in-time check,
-     *  updating the sample buffer error state.
-     *  @param value Value to archive
-     *  @return <code>false</code> if value failed back-in-time or future check,
-     *          <code>true</code> if value was added.
-     */
-    final protected boolean addValueToBuffer(final IValue value)
-    {
-        // Suppress samples that are too far in the future
-        final ITimestamp time = value.getTime();
-
-        if (isFuturistic(time))
-        {
-            trouble_sample_log.log("'" + getName() + "': Futuristic " + value);
-            return false;
-        }
-
-        synchronized (this)
-        {
-            if (last_archived_value != null &&
-                last_archived_value.getTime().isGreaterOrEqual(time))
-            {   // Cannot use this sample because of back-in-time problem.
-                // Usually this is NOT an error:
-                // We logged an initial sample, disconnected, disabled, ...,
-                // and now we got an update from the IOC which still
-                // carries the old, original time stamp of the PV,
-                // and that's back in time...
-                trouble_sample_log.log(getName() + " skips back-in-time:\n" +
-                        "last: " + last_archived_value.toString() + "\n" +
-                        "new : " + value.toString());
-                return false;
-            }
-            // else ...
-	        last_archived_value = value;
-        }
-        buffer.add(value);
-        if (SampleBuffer.isInErrorState()) {
-            need_write_error_sample = true;
-        }
-        return true;
-    }
-
-    /** Determine if the channel is enabled.
-     *  <p>
-     *  Checks all groups to which the channel belongs.
-     *  If they're all disabled, so is the channel.
-     */
-    final void computeEnablement()
-    {
-        // 'Active' channels always stay enabled
-        if (enablement != Enablement.Passive) {
-            return;
-        }
-        for (final ArchiveGroup group : groups)
-        {
-            if (group.isEnabled())
-            {   // Found at least one enabled group
-                updateEnabledState(true);
-                return;
-            }
-        }
-        // else: All groups are disabled
-        updateEnabledState(false);
-    }
-
-    /** Update the enablement state in case of change */
-    final private void updateEnabledState(final boolean new_enabled_state)
-    {
-        // Any change?
-        if (new_enabled_state == enabled) {
-            return;
-        }
-        enabled = new_enabled_state;
-        // In case this arrived after shutdown, don't log it.
-        if (!is_running) {
-            return;
-        }
-        if (enabled)
-        {   // If we have the 'current' value of the PV...
-            IValue value;
-            synchronized (this)
-            {
-                value = most_recent_value;
-            }
-            if (value != null)
-            {   // Add to the buffer with timestamp 'now' to show
-                // the re-enablement
-                value = ValueButcher.transformTimestampToNow(value);
-                addValueToBuffer(value);
-            }
-        } else {
-            addInfoToBuffer(ValueButcher.createDisabled());
-        }
     }
 
     @Override
-    public String toString()
-    {
+    @Nonnull
+    public String toString() {
         return "Channel " + getName() + ", " + getMechanism();
+    }
+
+    @Deprecated
+    public boolean isEnabled() {
+        return true;
     }
 }

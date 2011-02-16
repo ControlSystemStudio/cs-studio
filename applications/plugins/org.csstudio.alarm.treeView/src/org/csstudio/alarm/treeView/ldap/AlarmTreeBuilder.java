@@ -109,11 +109,11 @@ public final class AlarmTreeBuilder {
      * Creates the initial alarm tree with all subtrees that end with records.
      * Can be canceled.
      * @param parentNode
-     * @param pvNodeListener TODO
+     * @param pvNodeListener
      * @param modelNode
      * @param monitor
      * @return cancel status, true if canceled, false otherwise
-     * @throws NamingException
+     * @throws NamingException thrown if underlying jms cannot access attribute map or if name clash by child nodes is found
      */
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
                                               @Nonnull final IProcessVariableNodeListener pvNodeListener,
@@ -124,10 +124,9 @@ public final class AlarmTreeBuilder {
         IAlarmTreeNode newNode;
 
         if (RECORD.equals(modelNode.getType())) {
+            guardForNameClash(parentNode, simpleName);
             newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).setListener(pvNodeListener).build();
-
             ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, EpicsAlarmSeverity.UNKNOWN, new Date(0L)));
-
         } else {
             newNode = parentNode.getChild(simpleName);
             if (newNode == null) { // do not create a new subtree node if it already exists
@@ -157,6 +156,14 @@ public final class AlarmTreeBuilder {
         return false;
     }
 
+    private static void guardForNameClash(@Nonnull final IAlarmSubtreeNode parentNode,
+                                          @Nonnull final String simpleName) throws NamingException {
+        if (!parentNode.canAddChild(simpleName)) {
+            throw new NamingException("Record '" + simpleName + "' cannot be added to component '" + parentNode.getName() + "'." +
+            		"\nCheck for name clash within the children of the component.");
+        }
+    }
+
 
     /**
      * Retrieves the alarm tree information for the facilities given in the
@@ -165,10 +172,10 @@ public final class AlarmTreeBuilder {
      * canceled.
      *
      * @param rootNode the root node for the alarm tree
-     * @param pvNodeListener TODO
+     * @param pvNodeListener listener on the pv
      * @param model the content model
      * @param monitor the progress monitor
-     * @return cancel status, true if it has been canceled, falseotherwise
+     * @return cancel status, true if it has been canceled, false otherwise
      * @throws NamingException
      */
     public static boolean build(@Nonnull final IAlarmSubtreeNode rootNode,

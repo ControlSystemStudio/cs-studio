@@ -32,7 +32,7 @@ import org.eclipse.draw2d.IFigure;
 public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
 {
     /** Data Browser controller for D.B. Model and Plot, used in run mode */
-    private Controller controller;
+    private Controller controller = null;
 
     /** @return Casted widget model */
     @Override
@@ -116,7 +116,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         {
             try
             {
-                if (!controller.isRunning())
+                if (controller != null  &&  !controller.isRunning())
                     controller.start();
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         // In run mode, stop the controller, which will stop the model
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-            if (controller.isRunning())
+            if (controller != null  &&  controller.isRunning())
                 controller.stop();
         }
         super.deactivate();

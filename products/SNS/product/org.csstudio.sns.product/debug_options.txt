@@ -10,6 +10,11 @@
 #
 # kasemirk@ornl.gov
 
+# P2 info
+#org.eclipse.equinox.p2.engine/profileregistry/debug = true
+#org.eclipse.equinox.p2.engine/engine/debug = true
+#org.eclipse.equinox.p2.engine/enginesession/debug = true
+
 # Enable debugging of UI plugin,
 # required for any of the following to take effect
 org.eclipse.ui/debug=true

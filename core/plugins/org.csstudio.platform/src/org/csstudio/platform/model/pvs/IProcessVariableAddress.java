@@ -22,7 +22,7 @@
 package org.csstudio.platform.model.pvs;
 
 import org.csstudio.platform.simpledal.ValueType;
-import org.epics.css.dal.context.RemoteInfo;
+import org.epics.css.dal.simple.RemoteInfo;
 
 /**
  * A process variable address provides consistent and convinient access to the

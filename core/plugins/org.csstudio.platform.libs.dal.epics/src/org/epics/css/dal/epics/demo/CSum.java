@@ -36,9 +36,6 @@ import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.epics.EPICSApplicationContext;
 import org.epics.css.dal.epics.EPICSPlug;
-import org.epics.css.dal.simulation.PropertyProxyImpl;
-import org.epics.css.dal.simulation.RandomNoiseValueProvider;
-import org.epics.css.dal.simulation.SimulatorPlug;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.LinkPolicy;
 import org.epics.css.dal.spi.PropertyFactory;
@@ -147,7 +144,8 @@ public class CSum implements Runnable {
 	 */
 	public void run() {
 		ctx= new EPICSApplicationContext("ChannelExplorer");
-		factoryA= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,SimulatorPlug.PLUG_TYPE);
+		//factoryA= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,SimulatorPlug.PLUG_TYPE);
+		factoryA= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,"Simulator");
 		factoryB= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,EPICSPlug.PLUG_TYPE);
 		
 		
@@ -174,10 +172,10 @@ public class CSum implements Runnable {
 			propB= factoryB.getProperty(nameB,DoubleProperty.class,null);
 
 			// a little trick to make simulation more interesting.
-			PropertyProxyImpl<Double> sim= (PropertyProxyImpl<Double>)SimulatorPlug.getInstance().getPropertyProxy(nameA);
-			sim.setValueSync(10.0);
-			sim.setValueProvider(new RandomNoiseValueProvider<Double>(10.0,0.5));
-			SimulatorPlug.getInstance().releaseProxy(sim);
+			//PropertyProxyImpl<Double> sim= (PropertyProxyImpl<Double>)SimulatorPlug.getInstance().getPropertyProxy(nameA);
+			//sim.setValueSync(10.0);
+			//sim.setValueProvider(new RandomNoiseValueProvider<Double>(10.0,0.5));
+			//SimulatorPlug.getInstance().releaseProxy(sim);
 
 			
 			

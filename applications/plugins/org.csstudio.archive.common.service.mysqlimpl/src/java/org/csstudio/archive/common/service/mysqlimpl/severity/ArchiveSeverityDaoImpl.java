@@ -33,7 +33,7 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.severity.ArchiveSeverityDTO;
+import org.csstudio.archive.common.service.severity.ArchiveSeverity;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
@@ -59,9 +59,9 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectSeverityByNameStmt =
-        "SELECT id FROM archive_new.severity WHERE name=?";
+        "SELECT id FROM archive.severity WHERE name=?";
     private final String _selectSeverityByIdStmt =
-        "SELECT name FROM archive_new.severity WHERE id=?";
+        "SELECT name FROM archive.severity WHERE id=?";
 
     /**
      * Constructor.
@@ -100,7 +100,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final ArchiveSeverityId id = new ArchiveSeverityId(result.getInt(1));
-                final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, sev.name());
+                final IArchiveSeverity newSev = new ArchiveSeverity(id, sev.name());
 
                 _severityCacheByEnum.put(sev, newSev);
                 _severityCacheById.put(id, newSev);
@@ -132,7 +132,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final String name = result.getString(1);
-                final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, name);
+                final IArchiveSeverity newSev = new ArchiveSeverity(id, name);
 
                 _severityCacheById.put(id, newSev);
                 _severityCacheByEnum.put(EpicsAlarmSeverity.parseSeverity(name), newSev);
