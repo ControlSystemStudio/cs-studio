@@ -22,7 +22,6 @@
 package org.csstudio.domain.desy.system;
 
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * The alarm loaded system variable.
@@ -30,11 +29,9 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @author bknerr
  * @since 09.02.2011
  *
- * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface IAlarmSystemVariable<V,
-                                      T extends ICssValueType<V>> extends ISystemVariable<V, T>,
-                                                                          IHasAlarm {
+public interface IAlarmSystemVariable<T> extends ISystemVariable<T>,
+                                                 IHasAlarm {
     // Empty
 }

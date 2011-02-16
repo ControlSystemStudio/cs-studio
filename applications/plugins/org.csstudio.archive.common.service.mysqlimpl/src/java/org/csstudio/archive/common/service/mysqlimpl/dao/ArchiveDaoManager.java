@@ -69,6 +69,7 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -83,70 +84,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     INSTANCE;
-
-////    public interface IDaoCommand {
-////        @CheckForNull
-////        Object execute(@Nonnull final IDaoManager daoManager) throws ArchiveDaoException;
-////    }
-//    public interface IArchiveDaoCommand {
-//        @CheckForNull
-//        Object execute(IArchiveDaoManager daoManager) throws ArchiveDaoException;
-//    }
-//
-//    @Override
-//    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//            return command.execute(this);
-//    }
-//
-//    @Override
-//    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        try{
-//            return command.execute(this);
-//        } finally {
-//            try {
-//                getConnection().close();
-//            } catch (final ArchiveConnectionException e) {
-//                throw new ArchiveDaoException("Connection could not be established.", e);
-//            } catch (final SQLException e) {
-//                throw new ArchiveDaoException("Connection could not be closed.", e);
-//            }
-//        }
-//    }
-//    @Override
-//    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        Connection connection = null;
-//        try {
-//            try {
-//                connection = getConnection();
-//                connection.setAutoCommit(false);
-//                final Object returnValue = command.execute(this);
-//                connection.commit();
-//                return returnValue;
-//            } catch (final Exception e) {
-//                if (connection != null) {
-//                    LOG.warn("DAO command execution failed. Rollback.", e);
-//                    connection.rollback();
-//                }
-//                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
-//            } finally {
-//                if (connection != null) {
-//                    connection.setAutoCommit(true);
-//                }
-//            }
-//        } catch (final SQLException e1) {
-//            throw new ArchiveDaoException("DAO command and rollback failed", e1);
-//        }
-//    }
-//    @CheckForNull
-//    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        return executeAndClose(new IArchiveDaoCommand(){
-//            @Override
-//            @CheckForNull
-//            public Object execute(@Nonnull final IArchiveDaoManager manager) throws ArchiveDaoException {
-//                return manager.transaction(command);
-//            }
-//        });
-//    }
 
     private static final int MIN_PERIOD_MS = 3000;
     private static final int MAX_PERIOD_MS = 60000;
@@ -185,8 +122,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * statements.
      */
     private final SqlStatementBatch _sqlStatementBatch;
-
-
 
     /**
      * DAOs.
@@ -304,32 +239,32 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
-                LOG.info("Killed");
-                // submit an executor that processes immediately what's left in the queue
-                _executor.scheduleAtFixedRate(new PersistDataWorker("ShutdownWorker",
-                                                                    _sqlStatementBatch.getQueue(),
-                                                                    Integer.valueOf(0)),
-                                              0L, 0L, TimeUnit.SECONDS);
-                _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
-                try {
-                    if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
-                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                        final List<Runnable> droppedTasks = _executor.shutdownNow();
-                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks might not have been executed."); //optional **
+                if (!_executor.isTerminating()) {
+                    _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
+                                                            _sqlStatementBatch.getQueue(),
+                                                            Integer.valueOf(0)));
+                    _executor.shutdown();
+                    try {
+                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
+                            LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                            final List<String> statements = Lists.newLinkedList();
+                            _sqlStatementBatch.getQueue().drainTo(statements);
+                            rescueData(statements);
+                        }
+                    } catch (final InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
                 }
             }
         });
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("FixedRateWorker:" + _submittedWorkers.size(),
+        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _submittedWorkers.size(),
                                                                   _sqlStatementBatch.getQueue(),
                                                                   _prefPeriodInMS);
         _executor.scheduleAtFixedRate(newWorker,
-                                      0,
+                                      0L,
                                       newWorker.getPeriod(),
                                       TimeUnit.SECONDS);
         _submittedWorkers.add(newWorker);
@@ -400,7 +335,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * @param statements
      */
     void rescueData(@Nonnull final List<String> statements) {
-        LOG.info("Failed statements" + statements.size());
+        LOG.info("Rescue statements" + statements.size());
 
         EMailSender mailer;
         try {
@@ -471,8 +406,8 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * To reduce the readability of the invoking method. Catches checked exceptions, wraps them in
      * dedicated abstraction level exception. Rethrows any other exception as new RuntimeException.
      *
-     * @param e
-     * @throws Throwable
+     * @param e Exception to handle
+     * @throws RuntimeException wrapper for unhandled exception
      */
     private void handleExceptions(@Nonnull final Exception e) throws ArchiveConnectionException {
         try {
@@ -498,14 +433,10 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
             try {
-                _executor.shutdown(); // handles all already submitted tasks
-                _executor.awaitTermination(MIN_PERIOD_MS, TimeUnit.MILLISECONDS);
                 connection.close();
                 _archiveConnection.set(null);
             } catch (final SQLException e) {
                 throw new ArchiveConnectionException("Archive disconnection failed!", e);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
             }
         }
     }

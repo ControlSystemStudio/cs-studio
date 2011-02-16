@@ -30,6 +30,9 @@ import javax.annotation.Nonnull;
  * @since 09.02.2011
  */
 public class ControlSystem {
+    public static final ControlSystem EPICS_DEFAULT =
+        new ControlSystem(new ControlSystemId(0L),
+                          ControlSystemType.EPICS);
 
     private final ControlSystemId _id;
     private final ControlSystemType _type;

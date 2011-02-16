@@ -37,8 +37,8 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <V> the base value type
  * @param <T> the css variable type
  */
-public class EpicsSystemVariable<V, T extends ICssValueType<V>>
-    extends AbstractAlarmSystemVariable<V, T, EpicsAlarm> {
+public class EpicsSystemVariable<T>
+    extends AbstractAlarmSystemVariable<T, EpicsAlarm> {
 
 
     /**
@@ -50,7 +50,7 @@ public class EpicsSystemVariable<V, T extends ICssValueType<V>>
      * @param alarm
      */
     public EpicsSystemVariable(@Nonnull final String name,
-                               @Nonnull final T data,
+                               @Nonnull final ICssValueType<T> data,
                                @Nonnull final ControlSystem origin,
                                @Nonnull final TimeInstant timestamp,
                                @Nullable final EpicsAlarm alarm) {

@@ -33,20 +33,17 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @author bknerr
  * @since 09.02.2011
  *
- * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  * @param <A> the type of the alarm
  */
-public abstract class AbstractAlarmSystemVariable<V,
-                                                  T extends ICssValueType<V>,
-                                                  A extends IAlarm>  implements IAlarmSystemVariable<V, T> {
+public abstract class AbstractAlarmSystemVariable<T,
+                                                  A extends IAlarm>  implements IAlarmSystemVariable<T> {
 
 
 
 
-    private final SystemVariableId _id;
     private final String _name;
-    private final T _data;
+    private final ICssValueType<T> _data;
     private final ControlSystem _origin;
     private final A _alarm;
     private final TimeInstant _timestamp;
@@ -55,13 +52,10 @@ public abstract class AbstractAlarmSystemVariable<V,
      * Constructor.
      */
     public AbstractAlarmSystemVariable(@Nonnull final String name,
-                                       @Nonnull final T data,
+                                       @Nonnull final ICssValueType<T> data,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
                                        @Nonnull final A alarm) {
-        // generate uid for any system variable instead of -1
-        _id = new SystemVariableId(-1);
-
         _name = name;
         _data = data;
         _origin = origin;
@@ -79,16 +73,7 @@ public abstract class AbstractAlarmSystemVariable<V,
      */
     @Override
     @Nonnull
-    public SystemVariableId getId() {
-        return _id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public T getData() {
+    public ICssValueType<T> getData() {
         return _data;
     }
 

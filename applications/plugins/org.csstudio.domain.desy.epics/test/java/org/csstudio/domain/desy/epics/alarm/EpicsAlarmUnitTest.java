@@ -19,34 +19,49 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.system;
+package org.csstudio.domain.desy.epics.alarm;
 
-import javax.annotation.Nonnull;
+import junit.framework.Assert;
 
-import org.csstudio.domain.desy.common.id.Id;
+import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.system.ControlSystemType;
+import org.junit.Test;
 
 /**
- * The identifier for a distinct control system.
+ * Tests the EPICS alarm class.
  *
  * @author bknerr
- * @since 09.02.2011
+ * @since 16.02.2011
  */
-public class ControlSystemId extends Id<ControlSystemId> {
+public class EpicsAlarmUnitTest {
 
-    private static final long serialVersionUID = 4284891439602761307L;
-
-    /**
-     * Constructor.
-     * @param value
-     */
-    protected ControlSystemId(@Nonnull final String value) {
-        super(value);
+    @Test
+    public void testParseFromAndToString() {
+        final String rep = "ALARM(EPICS:MINOR,COMM)";
+        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
+        Assert.assertNotNull(parsed);
+        Assert.assertEquals(ControlSystemType.EPICS, parsed.getOrigin());
+        Assert.assertEquals(rep, parsed.toString());
     }
-    /**
-     * Constructor.
-     * @param value
-     */
-    protected ControlSystemId(final long value) {
-        super(value);
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testParseFromStringFailed() {
+        final String rep = "ALRM(EPICS:MINOR,COMM)";
+        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
+        Assert.assertNotNull(parsed);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testParseFromStringFailed2() {
+        final String rep = "ALARM(PICS:MINOR,COMM)";
+        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
+        Assert.assertNotNull(parsed);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testParseFromStringFailed3() {
+        final String rep = "ALARM(EPICS:MINOR,FOO)";
+        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
+        Assert.assertNotNull(parsed);
     }
 }

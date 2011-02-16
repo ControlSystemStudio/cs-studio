@@ -24,11 +24,10 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -43,7 +42,7 @@ import org.csstudio.utility.pv.PVListener;
  */
 @SuppressWarnings("nls")
 public abstract class ArchiveChannel<V,
-                                     T extends ITimedCssValueType<V> & IHasAlarm> {
+                                     T extends IAlarmSystemVariable<V>> {
     static final Logger PV_LOG = CentralLogger.getInstance().getLogger(PVListener.class);
 
     /** Channel name.
@@ -52,7 +51,7 @@ public abstract class ArchiveChannel<V,
      */
     private final String _name;
 
-    final ArchiveChannelId _id;
+    private final ArchiveChannelId _id;
 
     /** Control system PV */
     private final PV _pv;
@@ -87,16 +86,16 @@ public abstract class ArchiveChannel<V,
      *  <p>
      */
     @GuardedBy("this")
-    protected T _mostRecentValue;
+    protected T _mostRecentSample;
 
     /**
      * The most recent value send to the archive.
      */
     @GuardedBy("this")
-    protected T _lastArchivedValue;
+    protected T _lastArchivedSample;
 
     /** Counter for received values (monitor updates) */
-    private long _receivedValueCount = 0;
+    private long _receivedSampleCount = 0;
 
 
 
@@ -119,14 +118,14 @@ public abstract class ArchiveChannel<V,
             throw new EngineModelException("Connection to pv failed for channel " + name, null);
         }
         _pv.addListener(new PVListener() {
+            @SuppressWarnings("unchecked")
             @Override
             public void pvValueUpdate(@Nonnull final PV pv) {
                 try {
                     if (_isRunning) { // PV already suppresses updates after 'stop', but check anyway
                         final IValue value = pv.getValue();
-                        final ITimedCssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
-                        @SuppressWarnings("unchecked")
-                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) cssValue);
+                        final EpicsSystemVariable<V> sv = (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value);
+                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv);
                         handleNewSample(sample);
                     }
                 } catch (final TypeSupportException e) {
@@ -241,31 +240,31 @@ public abstract class ArchiveChannel<V,
     @Nonnull
     public String getCurrentValueAsString() {
         synchronized (this) {
-            if (_mostRecentValue == null) {
+            if (_mostRecentSample == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return _mostRecentValue.getValueData().toString();
+            return _mostRecentSample.getData().getValueData().toString();
         }
     }
 
     @Nonnull
     public T getMostRecentValue() {
-        return _mostRecentValue;
+        return _mostRecentSample;
     }
 
     /** @return Count of received values */
     public final synchronized long getReceivedValues() {
-        return _receivedValueCount;
+        return _receivedSampleCount;
     }
 
     /** @return Last value written to archive */
     @Nonnull
     public final String getLastArchivedValue() {
         synchronized (this) {
-            if (_lastArchivedValue == null) {
+            if (_lastArchivedSample == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return _lastArchivedValue.getValueData().toString();
+            return _lastArchivedSample.getData().getValueData().toString();
         }
     }
 
@@ -280,15 +279,15 @@ public abstract class ArchiveChannel<V,
     public void reset() {
         _buffer.statsReset();
         synchronized (this) {
-            _receivedValueCount = 0;
+            _receivedSampleCount = 0;
         }
     }
 
 
     protected boolean handleNewSample(@Nonnull final IArchiveSample<V, T> sample) {
         synchronized (this) {
-            ++_receivedValueCount;
-            _mostRecentValue = sample.getData();
+            ++_receivedSampleCount;
+            _mostRecentSample = sample.getSystemVariable();
         }
         _buffer.add(sample);
         return true;

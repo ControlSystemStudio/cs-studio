@@ -24,9 +24,9 @@ import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -55,19 +55,13 @@ public final class EngineModel {
     /**
      * All channels
      */
-    final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Groups of archived channels
      *  <p>
      *  @see channels about thread safety
      */
-    final ConcurrentMap<String, ArchiveGroup> _groupMap;
-
-//    /** Scanner for scanned channels */
-//    final Scanner scanner = new Scanner();
-//
-//    /** Thread that runs the scanner */
-//    final ScanThread scan_thread = new ScanThread(scanner);
+    private final ConcurrentMap<String, ArchiveGroup> _groupMap;
 
     /** Engine states */
     public enum State {
@@ -300,7 +294,7 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, ITimedCssAlarmValueType<Object>> channel =
+            final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
 
             _writeExecutor.addChannel(channel);

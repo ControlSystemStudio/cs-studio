@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy.time;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -48,7 +50,9 @@ import org.joda.time.format.PeriodFormatterBuilder;
  * @author bknerr
  * @since 16.11.2010
  */
-public final class TimeInstant implements Comparable<TimeInstant> {
+public final class TimeInstant implements Comparable<TimeInstant>, Serializable {
+
+    private static final long serialVersionUID = 3157468437971986526L;
 
     public static final DateTimeFormatter STD_TIME_FMT =
         DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
@@ -324,6 +328,7 @@ public final class TimeInstant implements Comparable<TimeInstant> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String toString() {
         return formatted() + "." + _fracMillisInNanos;
     }

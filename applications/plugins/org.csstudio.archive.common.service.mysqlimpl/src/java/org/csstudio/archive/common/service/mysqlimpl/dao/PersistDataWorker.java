@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.Lists;
 
@@ -85,7 +86,7 @@ public class PersistDataWorker implements Runnable {
             while (_queuedStatements.peek() != null) {
                 final String queuedStmt = _queuedStatements.poll();
                 _batchedStatements.add(queuedStmt);
-                LOG.info(queuedStmt.length() + "\t\t" + queuedStmt.getBytes().length);
+                LOG.info("Stmt size:\t" + StringUtil.getSizeInBytes(queuedStmt));
                 sqlStmt.addBatch(queuedStmt);
             }
             sqlStmt.executeBatch();

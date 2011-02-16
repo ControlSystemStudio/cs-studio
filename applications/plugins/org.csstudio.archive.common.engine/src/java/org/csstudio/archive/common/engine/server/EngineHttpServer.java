@@ -25,11 +25,11 @@ import org.osgi.service.http.NamespaceException;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EngineServer {
+public class EngineHttpServer {
     private static final String EX_MSG = "Engine HTTP server could not be instantiated.";
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(EngineServer.class);
+        CentralLogger.getInstance().getLogger(EngineHttpServer.class);
 
     /** TCP port used by the web server */
     private final int _port;
@@ -42,7 +42,7 @@ public class EngineServer {
      * @throws
      *  @throws Exception on error
      */
-    public EngineServer(@Nonnull final EngineModel model,
+    public EngineHttpServer(@Nonnull final EngineModel model,
                         final int port) throws EngineHttpServerException {
         this._port = port;
         final BundleContext context =

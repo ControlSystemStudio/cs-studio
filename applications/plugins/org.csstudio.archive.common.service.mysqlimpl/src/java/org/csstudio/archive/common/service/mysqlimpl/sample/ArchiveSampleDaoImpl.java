@@ -51,15 +51,13 @@ import org.csstudio.archive.common.service.severity.IArchiveSeverity;
 import org.csstudio.archive.common.service.status.ArchiveStatus;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.ITimedCssValueType;
-import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
@@ -129,7 +127,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ITimedCssValueType<V> & IHasAlarm>
+    public <V, T extends IAlarmSystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
@@ -159,7 +157,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <V, T extends ITimedCssValueType<V> & IHasAlarm>
+    private <V, T extends IAlarmSystemVariable<V>>
         List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
@@ -169,7 +167,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         for (final IArchiveSample<V, T> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
-            final T data = sample.getData();
+            final T data = sample.getSystemVariable();
             final EpicsAlarm alarm = (EpicsAlarm) data.getAlarm(); // FIXME (bknerr) : how to cope with alarms that don't have severities and status?
             final TimeInstant timestamp = data.getTimestamp();
 
@@ -190,7 +188,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                     data,
                                                     timestamp));
 
-                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(data.getValueData().getClass())) {
+                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(data.getData().getValueData().getClass())) {
                     writeReducedData(channelId,
                                      data,
                                      alarm,
@@ -340,7 +338,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs),"
      */
     @Nonnull
-    private <T extends ITimedCssValueType<?> & IHasAlarm>
+    private <T extends IAlarmSystemVariable<?>>
         String createSampleValueStmtStr(@Nonnull final ArchiveChannelId channelId,
                                         @Nonnull final ArchiveSeverityId sevId,
                                         @Nonnull final ArchiveStatusId statusId,
@@ -352,7 +350,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   timestamp.getFractalSecondsInNanos(),
                                                   sevId.intValue(),
                                                   statusId.intValue(),
-                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getValueData()) + "'") +
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData().getValueData()) + "'") +
                        ")";
             } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
@@ -401,7 +399,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @Nonnull
-    public <V, T extends ITimedCssAlarmValueType<V>>
+    public <V, T extends IAlarmSystemVariable<V>>
     Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                          @Nonnull final IArchiveChannel channel,
                                                          @Nonnull final TimeInstant s,
@@ -462,7 +460,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
 
     @SuppressWarnings("unchecked")
-    private <V, T extends ITimedCssAlarmValueType<V>>
+    @Nonnull
+    private <V, T extends IAlarmSystemVariable<V>>
     IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                            @Nonnull final String dataType,
                                                            @Nonnull final ArchiveChannelId channelId,
@@ -509,7 +508,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                 EpicsAlarmStatus.parseStatus(st.getName()));
         final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
 
-        final T data = (T) new TimedCssAlarmValueType<V>(value, alarm, timeInstant);
+        //final T data = (T) new TimedCssAlarmValueType<V>(value, alarm, timeInstant);
+
+        final T v = SystemVariableSupport.create(channelId.toString(),
+                                                 data,
+                                                 origin,
+                                                 timestamp,
+                                                 alarm);
+
 
         final ArchiveMinMaxSample<V, T> sample =
             new ArchiveMinMaxSample<V, T>(channelId, data, min, max);

@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
@@ -49,10 +49,10 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
 
     /**
      * Constructor for a new EpicsIValue support.
-     * 
+     *
      * @param type the supported type
      */
-    public EpicsIValueTypeSupport(Class<T> type) {
+    public EpicsIValueTypeSupport(final Class<T> type) {
         super(type, EpicsIValueTypeSupport.class);
     }
 
@@ -68,16 +68,30 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
      * @param <R>
      * @param <T>
      */
+//    @SuppressWarnings("unchecked")
+//    @CheckForNull
+//    public static <R extends ITimedCssAlarmValueType<?>,
+//                   T extends IValue>
+//    R toCssType(@Nonnull final T value) throws TypeSupportException {
+//
+//        final Class<T> typeClass = (Class<T>) value.getClass();
+//        final AbstractIValueConversionTypeSupport<R, T> support =
+//            (AbstractIValueConversionTypeSupport<R, T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
+//                                                                           typeClass);
+//        return support.convertToCssType(value);
+//    }
+
     @SuppressWarnings("unchecked")
     @CheckForNull
-    public static <R extends ITimedCssAlarmValueType<?>, T extends IValue>
-        R toCssType(@Nonnull final T value) throws TypeSupportException {
+    public static <T extends IValue>
+    EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
+                                            @Nonnull final T value) throws TypeSupportException {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
-        final AbstractIValueConversionTypeSupport<R, T> support =
-            (AbstractIValueConversionTypeSupport<R, T>) findTypeSupportFor(EpicsIValueTypeSupport.class, 
+        final AbstractIValueConversionTypeSupport<T> support =
+            (AbstractIValueConversionTypeSupport<T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
                                                                            typeClass);
-        return support.convertToCssType(value);
+        return support.convertToSystemVariable(name, value);
     }
 
     /**

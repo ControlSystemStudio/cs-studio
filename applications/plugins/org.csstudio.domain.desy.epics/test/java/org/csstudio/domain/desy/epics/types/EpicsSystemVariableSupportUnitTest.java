@@ -26,9 +26,11 @@ import java.util.Collection;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TimedCssAlarmValueType;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
+import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
@@ -46,11 +48,11 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 22.12.2010
  */
-public class EpicsCssValueTypeSupportTest {
+public class EpicsSystemVariableSupportUnitTest {
 
     @Before
     public void setup() {
-        EpicsCssValueTypeSupport.install();
+        EpicsSystemVariableSupport.install();
     }
 
 
@@ -58,12 +60,14 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testFloat() throws TypeSupportException {
         final Float input = Float.valueOf(1.0F);
-        final ITimedCssAlarmValueType<Float> cssVal =
-            new TimedCssAlarmValueType<Float>(input,
-                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                    TimeInstantBuilder.buildFromNow());
+        final IAlarmSystemVariable<Float> cssVal =
+            new EpicsSystemVariable<Float>("NONE",
+                                            new CssValueType<Float>(input),
+                                            ControlSystem.EPICS_DEFAULT,
+                                            TimeInstantBuilder.buildFromNow(),
+                                            new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double value = ((IDoubleValue) iVal).getValue();
@@ -75,12 +79,15 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testDouble() throws TypeSupportException {
         final Double input = Double.valueOf(1.0);
-        final ITimedCssAlarmValueType<Double> cssVal =
-            new TimedCssAlarmValueType<Double>(input,
-                                          new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                                          TimeInstantBuilder.buildFromNow());
+        final IAlarmSystemVariable<Double> cssVal =
+            new EpicsSystemVariable<Double>("NONE",
+                    new CssValueType<Double>(input),
+                    ControlSystem.EPICS_DEFAULT,
+                    TimeInstantBuilder.buildFromNow(),
+                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double value = ((IDoubleValue) iVal).getValue();
@@ -92,12 +99,14 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testByte() throws TypeSupportException {
         final Byte input = Byte.valueOf((byte) 12);
-        final ITimedCssAlarmValueType<Byte> cssVal =
-            new TimedCssAlarmValueType<Byte>(input,
-                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                    TimeInstantBuilder.buildFromNow());
+        final IAlarmSystemVariable<Byte> cssVal =
+        new EpicsSystemVariable<Byte>("NONE",
+                new CssValueType<Byte>(input),
+                ControlSystem.EPICS_DEFAULT,
+                TimeInstantBuilder.buildFromNow(),
+                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -109,12 +118,13 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testInteger() throws TypeSupportException {
         final Integer input = Integer.valueOf(1);
-        final ITimedCssAlarmValueType<Integer> cssVal =
-            new TimedCssAlarmValueType<Integer>(input,
-                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                    TimeInstantBuilder.buildFromNow());
-
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        final IAlarmSystemVariable<Integer> cssVal =
+        new EpicsSystemVariable<Integer>("NONE",
+                new CssValueType<Integer>(input),
+                ControlSystem.EPICS_DEFAULT,
+                TimeInstantBuilder.buildFromNow(),
+                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -126,12 +136,15 @@ public class EpicsCssValueTypeSupportTest {
     @Test
     public void testLong() throws TypeSupportException {
         final Long input = Long.valueOf(1L);
-        final ITimedCssAlarmValueType<Long> cssVal =
-            new TimedCssAlarmValueType<Long>(input,
-                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                    TimeInstantBuilder.buildFromNow());
+        final IAlarmSystemVariable<Long> cssVal =
 
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        new EpicsSystemVariable<Long>("NONE",
+                new CssValueType<Long>(input),
+                ControlSystem.EPICS_DEFAULT,
+                TimeInstantBuilder.buildFromNow(),
+                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
+
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -142,12 +155,13 @@ public class EpicsCssValueTypeSupportTest {
 
     @Test
     public void testDoubleCollection() throws TypeSupportException {
-        final ITimedCssAlarmValueType<Collection<Double>> cssVal =
-            new TimedCssAlarmValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0)),
-                    new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                    TimeInstantBuilder.buildFromNow());
-
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        final IAlarmSystemVariable<Collection<Double>> cssVal =
+        new EpicsSystemVariable<Collection<Double>>("NONE",
+                new CssValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0))),
+                ControlSystem.EPICS_DEFAULT,
+                TimeInstantBuilder.buildFromNow(),
+                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double[] values = ((IDoubleValue) iVal).getValues();
@@ -158,13 +172,16 @@ public class EpicsCssValueTypeSupportTest {
 
     @Test
     public void testEpicsEnumTripleCollection() throws TypeSupportException {
-        final ITimedCssAlarmValueType<Collection<EpicsEnumTriple>> cssVal =
-            new TimedCssAlarmValueType<Collection<EpicsEnumTriple>>(Lists.newArrayList(EpicsEnumTriple.createInstance(Integer.valueOf(1), "ON", null),
-                                                                                  EpicsEnumTriple.createInstance(Integer.valueOf(0), "OFF", null)),
-                                                               new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB),
-                                                               TimeInstantBuilder.buildFromNow());
+        final IAlarmSystemVariable<Collection<EpicsEnumTriple>> cssVal =
+            new EpicsSystemVariable<Collection<EpicsEnumTriple>>("NONE",
+                                                                 new CssValueType<Collection<EpicsEnumTriple>>(
+                                                                         Lists.newArrayList(EpicsEnumTriple.createInstance(Integer.valueOf(1), "ON", null),
+                                                                                            EpicsEnumTriple.createInstance(Integer.valueOf(0), "OFF", null))),
+                ControlSystem.EPICS_DEFAULT,
+                TimeInstantBuilder.buildFromNow(),
+                new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsCssValueTypeSupport.toIValue(cssVal);
+        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IEnumeratedValue);
         final int[] values = ((IEnumeratedValue) iVal).getValues();

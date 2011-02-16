@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,62 +19,35 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.sample;
-
-import java.io.Serializable;
+package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-
 /**
- * Data transfer object for sample.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 24.01.2011
- * @param <V> the data value type
- * @param <T> the css value type with alarm information
+ * @since 16.02.2011
+ * @param <T> the base value type
  */
-public class ArchiveSample<V,
-                           T extends IAlarmSystemVariable<V>> implements IArchiveSample<V, T>,
-                                                                                   Serializable {
+public class CssValueType<T> implements ICssValueType<T> {
 
-    private static final long serialVersionUID = -2244316283884247177L;
-
-    private final ArchiveChannelId _channelId;
-    private final T _sysVar;
+    private final T _data;
 
     /**
      * Constructor.
      */
-    public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
-                         @Nonnull final T data) {
-        _channelId = channelId;
-        _sysVar = data;
+    public CssValueType(@Nonnull final T data) {
+        _data = data;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    @Nonnull
+    public T getValueData() {
+        return _data;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public T getSystemVariable() {
-        return _sysVar;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public V getValue() {
-        return _sysVar.getData().getValueData();
-    }
 }
