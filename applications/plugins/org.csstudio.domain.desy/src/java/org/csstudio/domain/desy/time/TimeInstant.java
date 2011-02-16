@@ -28,6 +28,8 @@ import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 
 /**
@@ -48,7 +50,15 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public final class TimeInstant implements Comparable<TimeInstant> {
 
-    public static final DateTimeFormatter STD_TIME_FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter STD_TIME_FMT =
+        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final PeriodFormatter STD_DURATION_FMT =
+        new PeriodFormatterBuilder().appendHours()
+                                    .appendSuffix(":")
+                                    .appendMinutes()
+                                    .appendSuffix(":")
+                                    .appendSeconds()
+                                    .toFormatter();
 
     private static final int NANOS_PER_SECOND = 1000000000;
     private static final int NANOS_PER_MILLIS = 1000000;

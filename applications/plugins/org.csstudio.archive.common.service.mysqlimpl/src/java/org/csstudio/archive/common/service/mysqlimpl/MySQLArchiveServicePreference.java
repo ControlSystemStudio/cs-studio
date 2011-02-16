@@ -42,7 +42,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<Integer> PERIOD =
-        new MySQLArchiveServicePreference<Integer>("periodInS", 5);
+        new MySQLArchiveServicePreference<Integer>("periodInMS", 5);
 
     public static final MySQLArchiveServicePreference<Integer> PORT =
         new MySQLArchiveServicePreference<Integer>("port", 3306);

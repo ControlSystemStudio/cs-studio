@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.server;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
-import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
-
-import com.google.common.base.Joiner;
 
 /** Provide web page with list of channels (by pattern).
  *  @author Kay Kasemir
@@ -54,7 +49,6 @@ class ChannelListResponse extends AbstractResponse
         html.openTable(1, new String[]
         {
             Messages.HTTP_Channel,
-            Messages.HTTP_Group,
             Messages.HTTP_Connected,
             Messages.HTTP_InternalState,
             Messages.HTTP_Mechanism,
@@ -63,31 +57,26 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_LastArchivedValue,
         });
 
-        for (final ArchiveChannel<?,?> channel : model.getChannels()) {
+        for (final ArchiveChannel<?,?> channel : _model.getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches()) {
                 continue;
             }
-            final List<String> groupNamesWithLinks = new ArrayList<String>();
-            for (final ArchiveGroup group : channel.getGroups()) {
-                groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
-            }
+//            final List<String> groupNamesWithLinks = new ArrayList<String>();
+//            for (final ArchiveGroup group : channel.getGroups()) {
+//                groupNamesWithLinks.add(HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()));
+//            }
             html.tableLine(new String[]
-                                      {
-                                       HTMLWriter.makeLink("channel?name=" + channel.getName(),
-                                                           channel.getName()),
-                                                           Joiner.on(", ").join(groupNamesWithLinks),
-                                                           channel.isConnected()
-                                                           ? Messages.HTTP_Connected
-                                                           : HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
-                                                           channel.getInternalState(),
-                                                           channel.getMechanism(),
-                                                           channel.isEnabled()
-                                                           ? Messages.HTTP_Enabled
-                                                           : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                                                           channel.getCurrentValue(),
-                                                           channel.getLastArchivedValue(),
-                                      });
+                                      {HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
+                                       //Joiner.on(", ").join(groupNamesWithLinks),
+                                       channel.isConnected() ? Messages.HTTP_Connected :
+                                                               HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
+                                       channel.getInternalState(),
+                                       channel.getMechanism(),
+                                       channel.isEnabled() ? Messages.HTTP_Enabled :
+                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
+                                       channel.getCurrentValueAsString(),
+                                       channel.getLastArchivedValue()});
         }
         html.closeTable();
         html.close();

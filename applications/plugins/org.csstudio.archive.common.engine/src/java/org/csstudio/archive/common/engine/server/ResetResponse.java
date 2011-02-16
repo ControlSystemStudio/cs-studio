@@ -34,7 +34,7 @@ class ResetResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Reset");
 
         html.text("Engine statistics are reset");
-        model.reset();
+        _model.resetStats();
         
         html.close();
     }

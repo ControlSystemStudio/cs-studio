@@ -37,8 +37,6 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
-import com.google.common.collect.Lists;
-
 /** Base for archived channels.
  *
  *  @author Kay Kasemir
@@ -80,7 +78,7 @@ public abstract class ArchiveChannel<V,
      *  the 'running' state.
      */
     @GuardedBy("this")
-    private volatile boolean _isRunning = false;
+    volatile boolean _isRunning = false;
 
     /** Most recent value of the PV.
      *  <p>
@@ -89,7 +87,7 @@ public abstract class ArchiveChannel<V,
      *  <p>
      */
     @GuardedBy("this")
-    protected T mostRecentValue;
+    protected T _mostRecentValue;
 
     /**
      * The most recent value send to the archive.
@@ -107,24 +105,25 @@ public abstract class ArchiveChannel<V,
      *  @param enablement How channel affects its groups
      *  @param buffer_capacity Size of sample buffer
      *  @param last_archived_value Last value from storage, or <code>null</code>.
-     *  @throws Exception On error in PV setup
+     * @throws EngineModelException
      */
     public ArchiveChannel(@Nonnull final String name,
-                          @Nonnull final ArchiveChannelId id) throws Exception {
+                          @Nonnull final ArchiveChannelId id) throws EngineModelException {
         _name = name;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
-        _pv = PVFactory.createPV(name);
+        try {
+            _pv = PVFactory.createPV(name);
+        } catch (final Exception e) {
+            throw new EngineModelException("Connection to pv failed for channel " + name, null);
+        }
         _pv.addListener(new PVListener() {
-
             @Override
-            public void pvValueUpdate(final PV pv) {
+            public void pvValueUpdate(@Nonnull final PV pv) {
                 try {
-                    // PV already suppresses updates after 'stop', but check anyway
-                    if (_isRunning) {
+                    if (_isRunning) { // PV already suppresses updates after 'stop', but check anyway
                         final IValue value = pv.getValue();
-
                         final ITimedCssAlarmValueType<V> cssValue = EpicsIValueTypeSupport.toCssType(value);
                         @SuppressWarnings("unchecked")
                         final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) cssValue);
@@ -137,9 +136,8 @@ public abstract class ArchiveChannel<V,
                     PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage());
                 }
             }
-
             @Override
-            public void pvDisconnected(final PV pv) {
+            public void pvDisconnected(@CheckForNull final PV pv) {
                 if (_isRunning && pv != null) {
                     handleDisconnectionInformation(pv);
                 }
@@ -147,9 +145,6 @@ public abstract class ArchiveChannel<V,
         });
     }
 
-    /**
-     * @param pv
-     */
     protected void handleDisconnectionInformation(@Nonnull final PV pv) {
 
         final String someMoreInfo = pv.getStateInfo();
@@ -157,6 +152,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Name of channel */
+    @Nonnull
     public String getName() {
         return _name;
     }
@@ -164,30 +160,6 @@ public abstract class ArchiveChannel<V,
     /** @return Short description of sample mechanism */
     @Nonnull
     public abstract String getMechanism();
-
-    /** @return Number of Groups to which this channel belongs */
-    public int getGroupCount() {
-        return _groups.size();
-    }
-
-    /** @return One Group to which this channel belongs */
-    @CheckForNull
-    public ArchiveGroup getGroup(final int index) {
-        return _groups.get(index);
-    }
-
-    /** Tell channel that it belogs to group */
-    public void addGroup(@Nonnull final ArchiveGroup group) {
-        _groups.add(group);
-    }
-
-    /** Tell channel that it no longer belogs to group */
-    public void removeGroup(@Nonnull final ArchiveGroup group) {
-        if (!_groups.remove(group)) {
-            throw new Error("Channel " + getName() + " doesn't belong to group"
-                            + group.getName());
-        }
-    }
 
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
@@ -204,9 +176,11 @@ public abstract class ArchiveChannel<V,
      * Start archiving this channel.
      * @param engineId
      * @param info human readable info about the start of this channel
+     * @throws EngineModelException
      */
     public void start(@Nonnull final ArchiveEngineId engineId,
-                      @Nonnull final String info) throws Exception {
+                      @Nonnull final String info) throws EngineModelException {
+        try {
         if (_isRunning) {
             return;
         }
@@ -215,24 +189,30 @@ public abstract class ArchiveChannel<V,
             _pv.start();
         }
 
-        // persist the start of monitoring
-        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-        service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                  _id,
-                                                                  ArchiverMonitorStatus.ON,
-                                                                  engineId,
-                                                                  TimeInstantBuilder.buildFromNow(),
-                                                                  info));
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.ON,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        } catch (final Exception e) {
+            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel startup", e);
+        }
 
     }
 
     /**
      * Stop archiving this channel
-     * @throws OsgiServiceUnavailableException
-     * @throws ArchiveServiceException
+     * @throws EngineModelException
      */
     public void stop(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws OsgiServiceUnavailableException, ArchiveServiceException {
+                     @Nonnull final String info) throws EngineModelException {
     	if (!_isRunning) {
             return;
         }
@@ -241,34 +221,45 @@ public abstract class ArchiveChannel<V,
     	}
         _pv.stop();
 
-        // persist the start of monitoring
-        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-        service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                  _id,
-                                                                  ArchiverMonitorStatus.OFF,
-                                                                  engineId,
-                                                                  TimeInstantBuilder.buildFromNow(),
-                                                                  info));
-    }
-
-    /** @return Most recent value of the channel's PV */
-    public String getCurrentValue() {
-        synchronized (this)
-        {
-            if (mostRecentValue == null)
-             {
-                return "null"; //$NON-NLS-1$
-            }
-            return mostRecentValue.getValueData().toString();
+        try {
+            // persist the start of monitoring
+            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
+                                                                      _id,
+                                                                      ArchiverMonitorStatus.OFF,
+                                                                      engineId,
+                                                                      TimeInstantBuilder.buildFromNow(),
+                                                                      info));
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
         }
     }
 
+    /** @return Most recent value of the channel's PV */
+    @Nonnull
+    public String getCurrentValueAsString() {
+        synchronized (this) {
+            if (_mostRecentValue == null) {
+                return "null"; //$NON-NLS-1$
+            }
+            return _mostRecentValue.getValueData().toString();
+        }
+    }
+
+    @Nonnull
+    public T getMostRecentValue() {
+        return _mostRecentValue;
+    }
+
     /** @return Count of received values */
-    public synchronized long getReceivedValues() {
+    public final synchronized long getReceivedValues() {
         return _receivedValueCount;
     }
 
     /** @return Last value written to archive */
+    @Nonnull
     public final String getLastArchivedValue() {
         synchronized (this) {
             if (_lastArchivedValue == null) {
@@ -279,6 +270,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Sample buffer */
+    @Nonnull
     public final SampleBuffer<V, T, IArchiveSample<V, T>> getSampleBuffer() {
         return _buffer;
     }
@@ -292,31 +284,11 @@ public abstract class ArchiveChannel<V,
         }
     }
 
-    /** Enable or disable groups based on received value */
-//    final private void handleEnablement(final IValue value)
-//    {
-//        if (enablement == Enablement.Passive)
-//         {
-//            throw new Error("Not to be called when passive"); //$NON-NLS-1$
-//        }
-//        // Get boolean value (true <==> >0.0)
-//        final double number = ValueUtil.getDouble(value);
-//        final boolean yes = number > 0.0;
-//        // Do we enable or disable based on that value?
-//        final boolean enable = enablement == Enablement.Enabling ? yes : !yes;
-//        // Check which group needs to _change_
-//        for (final ArchiveGroup group : groups)
-//        {
-//            if (group.isEnabled() != enable) {
-//                group.enable(enable);
-//            }
-//        }
-//    }
 
     protected boolean handleNewSample(@Nonnull final IArchiveSample<V, T> sample) {
         synchronized (this) {
             ++_receivedValueCount;
-            mostRecentValue = sample.getData();
+            _mostRecentValue = sample.getData();
         }
         _buffer.add(sample);
         return true;
@@ -327,11 +299,6 @@ public abstract class ArchiveChannel<V,
     @Nonnull
     public String toString() {
         return "Channel " + getName() + ", " + getMechanism();
-    }
-
-    @Nonnull
-    public Iterable<ArchiveGroup> getGroups() {
-        return Lists.newArrayList(_groups);
     }
 
     @Deprecated

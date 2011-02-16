@@ -12,8 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Level;
-import org.csstudio.archive.common.engine.ThrottledLogger;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ITimedCssValueType;
@@ -51,14 +49,7 @@ public class SampleBuffer<V,
     private final BlockingQueue<S> _samples;
 
     /** Statistics */
-    final private BufferStats stats = new BufferStats();
-
-    /** Number of overruns when new string of overruns started, or <code>null</code> */
-    private Integer start_of_overruns;
-
-    /** Logger for overrun messages */
-    final private static ThrottledLogger overrun_msg =
-        new ThrottledLogger(Level.WARN, "log_overrun"); //$NON-NLS-1$
+    private final BufferStats _stats = new BufferStats();
 
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
@@ -81,16 +72,8 @@ public class SampleBuffer<V,
         return _channelName;
     }
 
-    /** @return Queue capacity, i.e. maximum queue size. */
-    @Deprecated
-    public int getCapacity() {
-        // for being a linked queue now, there isn't a fixed capacity
-        return -1;
-    }
-
     /** @return <code>true</code> if currently experiencing write errors */
-    public static boolean isInErrorState()
-    {
+    public static boolean isInErrorState() {
         return error;
     }
 
@@ -107,56 +90,53 @@ public class SampleBuffer<V,
     public boolean add(@Nonnull final S value) {
     	synchronized (_samples) {
     	    if (!super.offer(value)) {
-                //stats.addOverrun(); // @deprecated - no overruns possible
 
                 while (!super.offer(value)) { // TODO (bknerr) : not yet a strategy
                     if (super.poll() == null) { // drop samples as long appending doesn't work.
                         throw new IllegalStateException("Sample buffer cannot append value, although queue is empty (poll returns null).");
                     }
                 }
-            } else if (start_of_overruns != null) {   // Ending a string of overruns. Maybe log it.
-                final int overruns = stats.getOverruns() - start_of_overruns;
-                overrun_msg.log(_channelName + ": " + overruns + " overruns");
-                start_of_overruns = null;
+            } else { // sample could not be put into sample buffer
+                // FIXME (bknerr) : sample could not be added to buffer - rescue data
+
             }
         }
     	return true;
     }
 
     /** Update stats with current values */
-    void updateStats()
-    {
-        stats.updateSizes(super.size());
+    void updateStats() {
+        _stats.updateSizes(super.size());
     }
 
     /** @return Buffer statistics. */
-    public BufferStats getBufferStats()
-    {
-        return stats;
+    @Nonnull
+    public BufferStats getBufferStats() {
+        return _stats;
     }
 
     /** Reset statistics */
     public void statsReset() {
-        start_of_overruns = null;
-        stats.reset();
+        _stats.reset();
     }
 
     @SuppressWarnings("nls")
     @Override
+    @Nonnull
     public String toString() {
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
             _channelName,
             super.size(),
-            stats.getMaxSize(),
-            stats.getAverageSize(),
-            stats.getOverruns());
+            _stats.getMaxSize(),
+            _stats.getAverageSize());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected BlockingQueue<S> delegate() {
         return _samples;
     }

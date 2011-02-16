@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ITimedCssValueType;
-import org.csstudio.platform.data.IValue;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir
@@ -23,10 +22,8 @@ public class MonitoredArchiveChannel<V,
                                      T extends ITimedCssValueType<V> & IHasAlarm> extends ArchiveChannel<V, T> {
 
 
-    /** @throws Exception
-     * @see ArchiveChannel#ArchiveChannel(String, int, IValue) */
     public MonitoredArchiveChannel(@Nonnull final String name,
-                                   @Nonnull final ArchiveChannelId channelId) throws Exception {
+                                   @Nonnull final ArchiveChannelId channelId) throws EngineModelException {
         super(name, channelId);
     }
 

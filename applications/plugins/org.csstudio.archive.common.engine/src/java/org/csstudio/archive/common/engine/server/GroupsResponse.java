@@ -47,14 +47,13 @@ class GroupsResponse extends AbstractResponse
             Messages.HTTP_QueueAvg,
             Messages.HTTP_QueueMax,
         });
-        final int group_count = model.getGroupCount();
         int total_channels = 0;
         int total_connect = 0;
         long total_received_values = 0;
         // Per group lines
-        for (final ArchiveGroup group : model.getGroups()) {
+        for (final ArchiveGroup group : _model.getGroups()) {
 
-            final int channel_count = group.getChannelCount();
+            final int channel_count = group.getChannels().size();
             int connect_count = 0;
             double queue_avg = 0;
             int queue_max = 0;

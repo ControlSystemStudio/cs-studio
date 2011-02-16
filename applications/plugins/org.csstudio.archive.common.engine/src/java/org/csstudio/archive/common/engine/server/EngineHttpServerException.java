@@ -19,24 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.model;
+package org.csstudio.archive.common.engine.server;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Exception for archive read configuration.
+ * Dedicated exception to handle http service exceptions.
  *
  * @author bknerr
- * @since 03.02.2011
+ * @since 14.02.2011
  */
-public class ArchiveReadConfigException extends Exception {
-    private static final long serialVersionUID = -6528784167665678920L;
+public class EngineHttpServerException extends Exception {
+
+    private static final long serialVersionUID = 6625543457175539914L;
 
     /**
      * Constructor.
      */
-    public ArchiveReadConfigException(@Nonnull final String msg, @Nullable final Exception e) {
+    public EngineHttpServerException(@Nonnull final String msg, @Nullable final Exception e) {
         super(msg, e);
     }
 }

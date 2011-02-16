@@ -30,6 +30,9 @@ import javax.annotation.Nonnull;
  * The returned value on {@link CumulativeAverageCache#getValue()} is the sum over all
  * accumulated values divided by their number.
  *
+ * Note that for a long running average the value for the number of accumulated values may get quite
+ * large. Hence, the accumulation with its division by n+1 may lead to problems, although an
+ * overflow is avoided in the super class.
  *
  * @author bknerr
  * @since 26.11.2010
@@ -52,30 +55,10 @@ public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Dou
                                            @Nonnull final Double nextVal) {
 
         if (accVal != null) {
-            return accVal + nextVal;
-
-            // performs better than the following lines on every accumulation but may
-            // result in precision loss or even overflow for a lot of very large values before resetting.
-            //final int n = getNumberOfAccumulations();
-            //result = curVal + (nextVal - curVal)/(n + 1);
+            final int n = getNumberOfAccumulations();
+            return accVal + (nextVal - accVal)/(n + 1);
         } else {
             return nextVal;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public Double getValue() {
-        final Double accVal = super.getValue();
-        if (accVal != null) {
-            final int n = getNumberOfAccumulations();
-            if (n > 0) {
-                return accVal / n;
-            }
-        }
-        return null;
     }
 }

@@ -24,8 +24,14 @@
 package org.csstudio.platform;
 
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -44,6 +50,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * Example:
  * {@code}static final Preference<Integer> TIME = new Preference<Integer>("Time", 3600);
+ * 
+ * Supported explicit types:<br/>
+ * <li> java.util.String </li>
+ * <li> java.util.Integer </li>
+ * <li> java.util.Long </li>
+ * <li> java.util.Float </li>
+ * <li> java.util.Double </li>
+ * <li> java.util.Boolean </li>
+ * <li> java.net.URL </li>
  *
  *
  * @author jpenning
@@ -56,63 +71,124 @@ public abstract class AbstractPreference<T> {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractPreference.class);
 
+    interface PrefStrategy<T> {
+        @Nonnull
+        T getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final T defaultValue);
+    }
+    private static Map<Class<?>, PrefStrategy<?>> TYPE_MAP = new HashMap<Class<?>, PrefStrategy<?>>();
+    static {
+        TYPE_MAP.put(Integer.class, new PrefStrategy<Integer>() {
+            @Override
+            @Nonnull
+            public Integer getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Integer defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getInt(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(Long.class, new PrefStrategy<Long>() {
+            @Override
+            @Nonnull
+            public Long getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Long defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getLong(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(Float.class, new PrefStrategy<Float>() {
+            @Override
+            @Nonnull
+            public Float getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Float defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getFloat(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(Double.class, new PrefStrategy<Double>() {
+            @Override
+            @Nonnull
+            public Double getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Double defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getDouble(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(Boolean.class, new PrefStrategy<Boolean>() {
+            @Override
+            @Nonnull
+            public Boolean getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Boolean defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getBoolean(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(String.class, new PrefStrategy<String>() {
+            @Override
+            @Nonnull
+            public String getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final String defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return prefs.getString(context, key, defaultValue, null);
+            }
+        });
+        TYPE_MAP.put(URL.class, new PrefStrategy<URL>() {
+            @Override
+            @Nonnull
+            public URL getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final URL defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                try {
+                    return new URL(prefs.getString(context, key, defaultValue.toString(), null));
+                } catch (final MalformedURLException e) {
+                    CentralLogger.getInstance().error(AbstractPreference.class, 
+                                                      "URL preference is not well formed.", e);
+                    throw new IllegalArgumentException("URL preference not well-formed. " +
+                                                       "That is not supposed to happen, since the defaultValue is by definition of type URL.");
+                }
+            }
+         });
+    }
+    
+    
     private final String _keyAsString;
     private final T _defaultValue;
-    private final Class<?> _type;
+    private final Class<T> _type;
 
     /**
      * Constructor.
      * @param keyAsString the string used to define the preference in initializers
      * @param defaultValue the value used if none is defined in initializers. The type is derived from this value and must match T.
      */
-    protected AbstractPreference(final String keyAsString, final T defaultValue) {
+    @SuppressWarnings("unchecked")
+    protected AbstractPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         assert keyAsString != null : "keyAsString must not be null";
         assert defaultValue != null : "defaultValue must not be null";
 
         _keyAsString = keyAsString;
         _defaultValue = defaultValue;
-        _type = defaultValue.getClass();
+        _type = (Class<T>) defaultValue.getClass();
     }
 
+    @Nonnull
     public final String getKeyAsString() {
         assert _keyAsString != null : "_keyAsString must not be null";
 
         return _keyAsString;
     }
 
+    
+    
     /**
      * @return the correctly typed value
      */
     @SuppressWarnings("unchecked")
+    @Nonnull
     public final T getValue() {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-
-        Object result = null;
-
-        if (_type.equals(String.class)) {
-            result = prefs.getString(getPluginID(), getKeyAsString(), (String) _defaultValue, null);
-        } else if (_type.equals(Integer.class)) {
-            result = prefs.getInt(getPluginID(), getKeyAsString(), (Integer) _defaultValue, null);
-        } else if (_type.equals(Long.class)) {
-            result = prefs.getLong(getPluginID(), getKeyAsString(), (Long) _defaultValue, null);
-        } else if (_type.equals(Float.class)) {
-            result = prefs.getFloat(getPluginID(), getKeyAsString(), (Float) _defaultValue, null);
-        } else if (_type.equals(Double.class)) {
-            result = prefs.getDouble(getPluginID(), getKeyAsString(), (Double) _defaultValue, null);
-        } else if (_type.equals(Boolean.class)) {
-            result = prefs.getBoolean(getPluginID(), getKeyAsString(), (Boolean) _defaultValue, null);
-        }
-
-        assert result != null : "result must not be null";
-        return (T) result;
+        PrefStrategy<T> prefAction = (PrefStrategy<T>) TYPE_MAP.get(_type);
+        return prefAction.getResult(getPluginID(), getKeyAsString(), _defaultValue);
     }
 
+    @Nonnull
     public final String getDefaultAsString() {
         assert _defaultValue != null : "_defaultValue must not be null";
 
         return _defaultValue.toString();
     }
 
+    @Nonnull
     public final T getDefaultValue() {
         assert _defaultValue != null : "_defaultValue must not be null";
 
@@ -125,24 +201,24 @@ public abstract class AbstractPreference<T> {
      *
      * @return a list of all preferences
      */
-    @SuppressWarnings("unchecked")
+    @Nonnull
     public List<AbstractPreference<?>> getAllPreferences() {
 
-        final Class<? extends AbstractPreference> clazz = getClassType();
+        final Class<? extends AbstractPreference<?>> clazz = getClassType();
 
         final Field[] fields = clazz.getFields();
 
         final List<AbstractPreference<?>> list = new ArrayList<AbstractPreference<?>>();
-            for (final Field field : fields) {
-                if (field.getType().equals(clazz)) {
-                    try {
-                        final Object pref = field.get(null); // for static fields param is ignored
-                        list.add((AbstractPreference<?>) pref);
-                    } catch (final IllegalAccessException e) {
-                        LOG.error("One of the preferences constants in class " + clazz.getName() + " is not accessible.", e);
-                    }
+        for (final Field field : fields) {
+            if (field.getType().equals(clazz)) {
+                try {
+                    final Object pref = field.get(null); // for static fields param is ignored
+                    list.add((AbstractPreference<?>) pref);
+                } catch (final IllegalAccessException e) {
+                    LOG.error("One of the preferences constants in class " + clazz.getName() + " is not accessible.", e);
                 }
             }
+        }
         return list;
     }
 
@@ -150,11 +226,13 @@ public abstract class AbstractPreference<T> {
      * Returns the runtime (sub-)class of this object.
      * @return the runtime (sub-)class of this object
      */
+    @Nonnull
     protected abstract Class<? extends AbstractPreference<T>> getClassType();
 
     /**
      * @return the subclass has to define the plugin ID, this is used as the qualifier for preference retrieval.
      */
+    @Nonnull
     protected abstract String getPluginID();
 
 }

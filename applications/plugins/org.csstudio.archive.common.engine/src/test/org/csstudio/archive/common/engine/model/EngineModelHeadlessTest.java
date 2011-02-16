@@ -43,7 +43,7 @@ public class EngineModelHeadlessTest
         model.readConfig(config, port);
         timer.stop();
 
-        final int count = model.getChannelCount();
+        final int count = model.getChannels().size();
         System.out.println("Channel count: " + count);
         System.out.println("Runtime      : " + timer);
         System.out.println("Channels/sec : " + count/timer.getSeconds());

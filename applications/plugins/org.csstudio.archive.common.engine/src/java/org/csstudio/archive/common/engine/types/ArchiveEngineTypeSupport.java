@@ -26,6 +26,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.model.MonitoredArchiveChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
@@ -87,7 +88,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             MonitoredArchiveChannel<V, ITimedCssAlarmValueType<V>> channel;
             try {
                 channel = new MonitoredArchiveChannel<V, ITimedCssAlarmValueType<V>>(cfg.getName(), cfg.getId());
-            } catch (final Exception e) {
+            } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
             return channel;
@@ -103,7 +104,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             MonitoredArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>> channel;
             try {
                 channel = new MonitoredArchiveChannel<Collection<V>, ITimedCssAlarmValueType<Collection<V>>>(cfg.getName(), cfg.getId());
-            } catch (final Exception e) {
+            } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
             return channel;
