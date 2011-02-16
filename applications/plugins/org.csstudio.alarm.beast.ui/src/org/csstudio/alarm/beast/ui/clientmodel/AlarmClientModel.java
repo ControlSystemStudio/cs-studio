@@ -260,7 +260,32 @@ public class AlarmClientModel
         final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
-        // Clear old data
+        // Check if we need to create a NEW communicator,
+        // or configure existing communicator to queue updates.
+        final AlarmClientCommunicator comm;
+        synchronized (communicator_lock)
+        {
+            if (communicator == null)
+            {
+                try
+                {
+                    communicator = new AlarmClientCommunicator(this);
+                    communicator.start();
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).error("Cannot start AlarmClientCommunicator", ex); //$NON-NLS-1$
+                    return;
+                }
+            }
+            // Queue received events until we read the whole configuration
+            communicator.setQueueMode(true);
+            comm = communicator;
+        }
+
+        // Clear old data.
+        // If updates arrived now from JMS, we'd get 'unknown PV ...' warnings,
+        // but since the JMS communicator is in 'queue' mode, that should not happen.
         synchronized (this)
         {
             // Prevent a flurry of events while items with alarms are added
@@ -313,30 +338,14 @@ public class AlarmClientModel
             return;
         }
 
-        // Check if we need to create a NEW communicator
-        final AlarmClientCommunicator comm;
-        synchronized (communicator_lock)
-        {
-	        if (communicator == null)
-	        {
-		    	try
-		    	{
-			    	communicator = new AlarmClientCommunicator(this);
-			        communicator.start();
-		    	}
-		    	catch (Exception ex)
-		    	{
-		    		CentralLogger.getInstance().getLogger(this).error("Cannot start AlarmClientCommunicator", ex); //$NON-NLS-1$
-		    		return;
-		    	}
-	        }
-            // Queue received events until we read the whole configuration
-	        communicator.setQueueMode(true);
-	        comm = communicator;
-        }
-
+        // Presumably connected to JMS and RDB,
+        // but assert that we are really connected to JMS:
         // While we read the RDB, new alarms could arrive.
         // To avoid missing them, assert that we are connected to JMS.
+        // Used to block for JMS connection before connecting to RDB,
+        // but this way both types of errors are more obvious:
+        // RDB error -> exception right away
+        // JMS problem -> will usually still check RDB, so we know that's OK, then hang in here
         int wait = 0;
         while (!comm.isConnected())
         {
