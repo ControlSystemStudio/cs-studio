@@ -65,7 +65,6 @@ public class FacilityDBO extends AbstractNodeDBO {
     public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
-        copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
         return copy;
     }
 

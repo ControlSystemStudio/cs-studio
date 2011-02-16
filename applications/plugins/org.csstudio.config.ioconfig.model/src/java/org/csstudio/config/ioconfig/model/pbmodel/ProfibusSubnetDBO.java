@@ -454,7 +454,6 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
             IocDBO ioc = (IocDBO) parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
             copy.setDescription(getDescription());
-            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
             copy.setGap(getGap());

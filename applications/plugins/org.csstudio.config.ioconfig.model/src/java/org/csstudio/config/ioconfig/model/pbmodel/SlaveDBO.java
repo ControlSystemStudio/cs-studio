@@ -468,7 +468,6 @@ public class SlaveDBO extends AbstractNodeDBO {
         if (parentNode instanceof MasterDBO) {
             MasterDBO master = (MasterDBO) parentNode;
             SlaveDBO copy = new SlaveDBO(master);
-            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setFdlAddress(getFdlAddress());
             copy.setGroupIdent(getGroupIdent());
             copy.setGSDFile(getGSDFile());
