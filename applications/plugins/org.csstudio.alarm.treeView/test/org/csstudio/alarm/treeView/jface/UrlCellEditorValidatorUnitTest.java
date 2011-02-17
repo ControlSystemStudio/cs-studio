@@ -14,22 +14,37 @@ import org.junit.Test;
 public class UrlCellEditorValidatorUnitTest {
     
     private static final String ENTERED_VALUE_IS_NOT_VALID = "Entered value is not valid.";
-    // private static final String MALFORMED_URL = "Malformed URL!";
-
+    private static final String MALFORMED_URL = "Malformed URL!";
+    
     @Test
     public void testUrlIsOk() throws MalformedURLException {
         UrlCellEditorValidator validator = new UrlCellEditorValidator();
-        Assert.assertEquals(null, validator.isValid(new URL("file://test")));
+        Assert.assertNull(validator.isValid(new URL("file://test")));
     }
     
     @Test
-    public void testStrings() {
+    public void testValidStringsWithProtocol() {
+        UrlCellEditorValidator validator = new UrlCellEditorValidator();
+        Assert.assertNull(validator.isValid("file://bla"));
+        Assert.assertNull(validator.isValid("file:bla"));
+        Assert.assertNull(validator.isValid("http://www.desy.de"));
+        Assert.assertNull(validator.isValid("http:desy"));
+    }
+    
+    @Test
+    public void testValidStringsWithoutProtocol() {
+        UrlCellEditorValidator validator = new UrlCellEditorValidator();
+        Assert.assertNull(validator.isValid(""));
+        Assert.assertNull(validator.isValid("bla"));
+    }
+    
+    @Test
+    public void testInvalidStrings() {
         UrlCellEditorValidator validator = new UrlCellEditorValidator();
         Assert.assertTrue(validator.isValid(null).startsWith(ENTERED_VALUE_IS_NOT_VALID));
-        Assert.assertEquals(null, validator.isValid(""));
-        Assert.assertEquals(null, validator.isValid("file://bla"));
+        Assert.assertTrue(validator.isValid("xttp:desy").startsWith(MALFORMED_URL));
     }
-
+    
     @Test
     public void testOtherThanStringOrURL() {
         UrlCellEditorValidator validator = new UrlCellEditorValidator();

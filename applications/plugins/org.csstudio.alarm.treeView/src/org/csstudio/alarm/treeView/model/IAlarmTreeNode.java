@@ -89,13 +89,27 @@ public interface IAlarmTreeNode {
      * Returns the value of a property. If the property is not set on this node,
      * the value will be inherited from its parent node.
      *
-     * @param property
-     *            the property.
+     * @param property the property
      * @return the property value, or <code>null</code> if the property is not
      *         set on this node or a parent node.
      */
     @CheckForNull
     String getInheritedProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
+
+    
+    /**
+     * Returns the value of a property. If the property is not set on this node,
+     * the value will be inherited from its parent node.
+     * This should be called when the property string is used as an URL. When defined, the file: protocol may be
+     * omitted in the URL string as a convenience to the user. It is silently added here if no valid URL protocol is present
+     * in the string.
+     * 
+     * @param property the property
+     * @return the property value, or <code>null</code> if the property is not
+     *         set on this node or a parent node.
+     */
+    @CheckForNull
+    String getInheritedPropertyWithUrlProtocol(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
 
     /**
      * Returns the property value that is set on this node. The value is not

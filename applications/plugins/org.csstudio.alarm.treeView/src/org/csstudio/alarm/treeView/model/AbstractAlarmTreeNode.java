@@ -31,6 +31,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.treeView.model.UrlValidator.Result;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.utils.LdapUtils;
@@ -140,6 +141,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
             }
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public final String getInheritedPropertyWithUrlProtocol(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property) {
+        String urlAsString = getInheritedProperty(property);
+        if (UrlValidator.checkUrl(urlAsString) == Result.URL_HAS_NO_PROTOCOL) {
+            // try to append file protocol and get happy ever after.
+            // this mirrors the behavior of the UrlCellValidator which allows for leaving out the file: protocol
+            return "file:" + urlAsString;
+        }
+        return urlAsString;
     }
 
     /**
