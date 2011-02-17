@@ -18,7 +18,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.basic.epics.application"
-            name="CSS (EPICS)">
+            name="Css">
          <property
                name="appName"
                value="Css">
