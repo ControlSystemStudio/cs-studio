@@ -57,7 +57,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         final boolean running = getExecutionMode() == ExecutionMode.RUN_MODE;
         // In edit mode, display the file name
         final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(running ? null : model.getFilename().toString(),
+            new DataBrowserWidgetFigure(running ? null : model.getPlainFilename().toString(),
                     model.isToolbarVisible());
 
         if (running)
