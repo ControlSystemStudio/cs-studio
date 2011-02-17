@@ -5,9 +5,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -28,15 +31,13 @@ final class LongSystemVariableSupport extends EpicsSystemVariableSupport<Long> {
 
     @Override
     @Nonnull
-    protected IValue convertToIValue(@Nonnull final Long data,
-                                     @Nonnull final EpicsAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                            EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                            alarm.getStatus().toString(),
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Long> sysVar) {
+        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
+                                            EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
+                                            sysVar.getAlarm().getStatus().toString(),
                                             null,
                                             null,
-                                            new long[] {data.longValue()});
+                                            new long[] {sysVar.getData().getValueData().longValue()});
     }
 
     @Override
@@ -58,9 +59,34 @@ final class LongSystemVariableSupport extends EpicsSystemVariableSupport<Long> {
                                                  @Nonnull final Long min,
                                                  @Nonnull final Long max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
-                                                 sysVar.getAlarm(),
+                                                 (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData().getValueData(),
                                                  min,
                                                  max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected EpicsSystemVariable<Long> createEpicsVariable(@Nonnull final String name,
+                                                              @Nonnull final Long value,
+                                                              @Nonnull final ControlSystem system,
+                                                              @Nonnull final TimeInstant timestamp) {
+        return new EpicsSystemVariable<Long>(name, new CssValueType<Long>(value), system, timestamp, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EpicsSystemVariable<Collection<Long>> createCollectionEpicsVariable(final String name,
+                                                                                  final Class<?> typeClass,
+                                                                                  final Collection<Long> values,
+                                                                                  final ControlSystem system,
+                                                                                  final TimeInstant timestamp) throws TypeSupportException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

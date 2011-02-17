@@ -86,7 +86,7 @@ public abstract class ArchiveChannel<V,
      *  <p>
      */
     @GuardedBy("this")
-    protected T _mostRecentSample;
+    protected T _mostRecentSysVar;
 
     /**
      * The most recent value send to the archive.
@@ -240,16 +240,16 @@ public abstract class ArchiveChannel<V,
     @Nonnull
     public String getCurrentValueAsString() {
         synchronized (this) {
-            if (_mostRecentSample == null) {
+            if (_mostRecentSysVar == null) {
                 return "null"; //$NON-NLS-1$
             }
-            return _mostRecentSample.getData().getValueData().toString();
+            return _mostRecentSysVar.getData().getValueData().toString();
         }
     }
 
     @Nonnull
     public T getMostRecentValue() {
-        return _mostRecentSample;
+        return _mostRecentSysVar;
     }
 
     /** @return Count of received values */
@@ -287,7 +287,7 @@ public abstract class ArchiveChannel<V,
     protected boolean handleNewSample(@Nonnull final IArchiveSample<V, T> sample) {
         synchronized (this) {
             ++_receivedSampleCount;
-            _mostRecentSample = sample.getSystemVariable();
+            _mostRecentSysVar = sample.getSystemVariable();
         }
         _buffer.add(sample);
         return true;

@@ -26,9 +26,12 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
+import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
@@ -45,7 +48,7 @@ import org.epics.pvmanager.TypeSupport;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class EpicsSystemVariableSupport<T> extends TypeSupport<T> {
+public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
     private static boolean INSTALLED = false;
@@ -53,8 +56,9 @@ public abstract class EpicsSystemVariableSupport<T> extends TypeSupport<T> {
     /**
      * Constructor.
      */
+    @SuppressWarnings("unchecked")
     protected EpicsSystemVariableSupport(@Nonnull final Class<T> type) {
-        super(type, EpicsSystemVariableSupport.class);
+        super(type, (Class<? extends SystemVariableSupport<T>>) EpicsSystemVariableSupport.class);
     }
 
     public static void install() {
@@ -75,15 +79,31 @@ public abstract class EpicsSystemVariableSupport<T> extends TypeSupport<T> {
         INSTALLED = true;
     }
 
+    @Nonnull
+    protected static IValue createMinMaxDoubleValueFromNumber(@Nonnull final TimeInstant timestamp,
+                                                              @Nonnull final EpicsAlarm alarm,
+                                                              @Nonnull final Number valueData,
+                                                              @Nonnull final Number min,
+                                                              @Nonnull final Number max) {
+        return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp),
+                                                    EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
+                                                    alarm.getStatus().toString(),
+                                                    null,
+                                                    null,
+                                                    new double[]{ valueData.doubleValue() },
+                                                    min.doubleValue(),
+                                                    max.doubleValue());
+    }
+
     @CheckForNull
-    public static <T> IValue toIValue(@Nonnull final IAlarmSystemVariable<T> sysVar) throws TypeSupportException {
-        final T valueData = sysVar.getData().getValueData();
+    protected IValue collectionToIValue(@Nonnull final Class<?> typeClass,
+                                        @Nonnull final Collection<T> data,
+                                        @Nonnull final EpicsAlarm alarm,
+                                        @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
-        final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsSystemVariableSupport<T> support =
             (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
-        // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
-        return support.convertToIValue(valueData, (EpicsAlarm) sysVar.getAlarm(), sysVar.getTimestamp());
+        return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
     @CheckForNull
@@ -100,49 +120,75 @@ public abstract class EpicsSystemVariableSupport<T> extends TypeSupport<T> {
         return support.convertToIMinMaxDoubleValue(sysVar, min, max);
     }
 
+
+    @Override
+    @Nonnull
+    protected EpicsSystemVariable<T> createVariable(@Nonnull final String name,
+                                                    @Nonnull final T value,
+                                                    @Nonnull final ControlSystem system,
+                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+        @SuppressWarnings("unchecked")
+        final Class<T> typeClass = (Class<T>) value.getClass();
+        final EpicsSystemVariableSupport<T> support =
+            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+        return support.createEpicsVariable(name, value, system, timestamp);
+    }
+
+
     @CheckForNull
-    protected IValue toIValue(@Nonnull final Class<?> typeClass,
-                              @Nonnull final Collection<T> data,
-                              @Nonnull final EpicsAlarm alarm,
-                              @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+    protected EpicsSystemVariable<?>
+    createEpicsVariableFromCollection(@Nonnull final String name,
+                                      @Nonnull final Class<?> typeClass,
+                                      @Nonnull final Collection<T> data,
+                                      @Nonnull final ControlSystem system,
+                                      @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsSystemVariableSupport<T> support =
             (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
-        return support.convertCollectionToIValue(data, alarm, timestamp);
+        return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
     }
 
-    @CheckForNull
-    protected abstract IValue convertCollectionToIValue(Collection<T> data,
-                                                        EpicsAlarm alarm,
-                                                        TimeInstant timestamp) throws TypeSupportException;
 
-    @CheckForNull
-    protected abstract IValue convertToIValue(@Nonnull final T data,
-                                              @Nonnull final EpicsAlarm alarm,
-                                              @Nonnull final TimeInstant timestamp) throws TypeSupportException;
-    @CheckForNull
-    protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
-                                                 @SuppressWarnings("unused") @Nonnull final T min,
-                                                 @SuppressWarnings("unused") @Nonnull final T max) throws TypeSupportException {
-        throw new TypeSupportException("Type " + sysVar.getData().getValueData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
-    }
 
     @Nonnull
-    static IValue createMinMaxDoubleValueFromNumber(@Nonnull final TimeInstant timestamp,
-                                                    @Nonnull final IAlarm ialarm,
-                                                    @Nonnull final Number valueData,
-                                                    @Nonnull final Number min,
-                                                    @Nonnull final Number max) {
-        // TODO (bknerr) : well thats not quite right again, Epics specifics shouldn't be here
-        final EpicsAlarm alarm = (EpicsAlarm) ialarm;
-        return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                                    EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                                    alarm.getStatus().toString(),
-                                                    null,
-                                                    null,
-                                                    new double[]{ valueData.doubleValue() },
-                                                    min.doubleValue(),
-                                                    max.doubleValue());
-    }
+    protected abstract EpicsSystemVariable<T>
+    createEpicsVariable(@Nonnull final String name,
+                        @Nonnull final T value,
+                        @Nonnull final ControlSystem system,
+                        @Nonnull final TimeInstant timestamp) throws TypeSupportException;
 
+    @Nonnull
+    protected abstract EpicsSystemVariable<Collection<T>>
+    createCollectionEpicsVariable(@Nonnull final String name,
+                                  @Nonnull final Class<?> typeClass,
+                                  @Nonnull final Collection<T> data,
+                                  @Nonnull final ControlSystem system,
+                                  @Nonnull final TimeInstant timestamp) throws TypeSupportException;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected IValue convertToIValue(@Nonnull final IAlarmSystemVariable<T> sysVar) throws TypeSupportException {
+        // Safe cast!
+        return convertEpicsSystemVariableToIValue((EpicsSystemVariable<T>) sysVar);
+    }
+    @Nonnull
+    protected abstract IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<T> sysVar) throws TypeSupportException;
+
+    @Nonnull
+    protected abstract IValue convertCollectionToIValue(@Nonnull final Collection<T> data,
+                                                        @Nonnull final EpicsAlarm alarm,
+                                                        @Nonnull final TimeInstant timestamp) throws TypeSupportException;
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected ControlSystemType getControlSystemType() {
+        return ControlSystemType.EPICS_V3;
+    }
 }

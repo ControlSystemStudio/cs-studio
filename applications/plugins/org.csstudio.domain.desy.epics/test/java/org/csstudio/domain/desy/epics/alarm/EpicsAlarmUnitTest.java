@@ -40,7 +40,7 @@ public class EpicsAlarmUnitTest {
         final String rep = "ALARM(EPICS:MINOR,COMM)";
         final IAlarm parsed = EpicsAlarm.parseFrom(rep);
         Assert.assertNotNull(parsed);
-        Assert.assertEquals(ControlSystemType.EPICS, parsed.getOrigin());
+        Assert.assertEquals(ControlSystemType.EPICS_V3, parsed.getControlSystemType());
         Assert.assertEquals(rep, parsed.toString());
     }
 

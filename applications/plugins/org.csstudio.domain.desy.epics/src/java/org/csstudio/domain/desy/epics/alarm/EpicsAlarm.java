@@ -157,12 +157,12 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable 
      */
     @Override
     @Nonnull
-    public ControlSystemType getOrigin() {
+    public ControlSystemType getControlSystemType() {
         return getStaticOrigin();
     }
 
     @Nonnull
     private static ControlSystemType getStaticOrigin() {
-        return ControlSystemType.EPICS;
+        return ControlSystemType.EPICS_V3;
     }
 }

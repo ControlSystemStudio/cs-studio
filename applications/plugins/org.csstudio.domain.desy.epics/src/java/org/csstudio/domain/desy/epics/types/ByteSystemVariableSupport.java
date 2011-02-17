@@ -5,9 +5,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -28,18 +31,7 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
         super(Byte.class);
     }
 
-    @Override
-    @Nonnull
-    protected IValue convertToIValue(@Nonnull final Byte data,
-                                     @Nonnull final EpicsAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                            EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                            alarm.getStatus().toString(),
-                                            null,
-                                            null,
-                                            new long[]{ data.longValue() });
-    }
+
 
     @Override
     @Nonnull
@@ -67,6 +59,49 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
     protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<Byte> sysVar,
                                                  @Nonnull final Byte min,
                                                  @Nonnull final Byte max) throws TypeSupportException {
-        return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(), sysVar.getAlarm(), sysVar.getData().getValueData(), min, max);
+        return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
+                                                 (EpicsAlarm) sysVar.getAlarm(),
+                                                 sysVar.getData().getValueData(), min, max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected EpicsSystemVariable<Byte> createEpicsVariable(@Nonnull final String name,
+                                                            @Nonnull final Byte value,
+                                                            @Nonnull final ControlSystem system,
+                                                            @Nonnull final TimeInstant timestamp) {
+        return new EpicsSystemVariable<Byte>(name, new CssValueType<Byte>(value), system, timestamp, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EpicsSystemVariable<Collection<Byte>> createCollectionEpicsVariable(final String name,
+                                                                            final Class<?> typeClass,
+                                                                            final Collection<Byte> values,
+                                                                            final ControlSystem system,
+                                                                            final TimeInstant timestamp) throws TypeSupportException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Byte> sysVar) {
+        return ValueFactory.createLongValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
+                                            EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
+                                            sysVar.getAlarm().getStatus().toString(),
+                                            null,
+                                            null,
+                                            new long[]{ sysVar.getData().getValueData().longValue() });
     }
 }

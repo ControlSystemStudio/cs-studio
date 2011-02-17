@@ -26,8 +26,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.types.CssValueType;
+import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
@@ -45,15 +49,13 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
 
     @Override
     @Nonnull
-    protected IValue convertToIValue(@Nonnull final EpicsEnumTriple data,
-                                     @Nonnull final EpicsAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                                  EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                                  alarm.getStatus().toString(),
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<EpicsEnumTriple> sysVar) {
+        return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
+                                                  EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
+                                                  sysVar.getAlarm().getStatus().toString(),
                                                   null,
                                                   null,
-                                                  new int[] {data.getIndex().intValue()});
+                                                  new int[] {sysVar.getData().getValueData().getIndex().intValue()});
     }
 
     @Override
@@ -75,5 +77,30 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                                   null,
                                                   null,
                                                   Ints.toArray(ints));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected EpicsSystemVariable<EpicsEnumTriple> createEpicsVariable(@Nonnull final String name,
+                                                            @Nonnull final EpicsEnumTriple value,
+                                                            @Nonnull final ControlSystem system,
+                                                            @Nonnull final TimeInstant timestamp) {
+        return new  EpicsSystemVariable<EpicsEnumTriple>(name, new CssValueType<EpicsEnumTriple>(value), system, timestamp, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EpicsSystemVariable<Collection<EpicsEnumTriple>> createCollectionEpicsVariable(final String name,
+                                                                                             final Class<?> typeClass,
+                                                                                             final Collection<EpicsEnumTriple> values,
+                                                                                             final ControlSystem system,
+                                                                                             final TimeInstant timestamp) throws TypeSupportException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

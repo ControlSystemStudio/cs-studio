@@ -58,5 +58,5 @@ public interface IAlarm /* extends Alarm */ {
     IAlarm parseFrom(@Nonnull final String strRep) throws Exception; // TODO (bknerr) : dedicatd exception
 */
     @Nonnull
-    ControlSystemType getOrigin();
+    ControlSystemType getControlSystemType();
 }

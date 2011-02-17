@@ -26,9 +26,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
@@ -47,15 +50,13 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
 
     @Override
     @Nonnull
-    protected IValue convertToIValue(@Nonnull final Float data,
-                                     @Nonnull final EpicsAlarm alarm,
-                                     @Nonnull final TimeInstant timestamp) {
-        return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp),
-                                              EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
-                                              alarm.getStatus().toString(),
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Float> sysVar) {
+        return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
+                                              EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
+                                              sysVar.getAlarm().getStatus().toString(),
                                               null,
                                               null,
-                                              new double[] {data.doubleValue()});
+                                              new double[] {sysVar.getData().getValueData().doubleValue()});
     }
 
     @Override
@@ -85,9 +86,34 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                                  @Nonnull final Float min,
                                                  @Nonnull final Float max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
-                                                 sysVar.getAlarm(),
+                                                 (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData().getValueData(),
                                                  min,
                                                  max);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    protected EpicsSystemVariable<Float> createEpicsVariable(@Nonnull final String name,
+                                                              @Nonnull final Float value,
+                                                              @Nonnull final ControlSystem system,
+                                                              @Nonnull final TimeInstant timestamp) {
+        return new EpicsSystemVariable<Float>(name, new CssValueType<Float>(value), system, timestamp, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected EpicsSystemVariable<Collection<Float>> createCollectionEpicsVariable(final String name,
+                                                                                   final Class<?> typeClass,
+                                                                                   final Collection<Float> values,
+                                                                                   final ControlSystem system,
+                                                                                   final TimeInstant timestamp) throws TypeSupportException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

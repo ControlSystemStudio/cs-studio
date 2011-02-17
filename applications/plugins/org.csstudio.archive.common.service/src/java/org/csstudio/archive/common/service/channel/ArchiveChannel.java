@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -51,7 +52,7 @@ public class ArchiveChannel implements IArchiveChannel {
 
     private final TimeInstant _latestTimestamp;
 
-    private final double _sampleValue;
+    private final ControlSystem _system;
 
     /**
      * Constructor.
@@ -62,7 +63,6 @@ public class ArchiveChannel implements IArchiveChannel {
      * @param sampleModeId
      * @param smplPer
      * @param ltstTimestamp
-     * @param sampleValue
      *
      * CHECKSTYLE OFF: ParameterNumber
      */
@@ -73,7 +73,7 @@ public class ArchiveChannel implements IArchiveChannel {
                              @Nonnull final ArchiveSampleModeId sampleModeId,
                              final double smplPer,
                              @Nullable final TimeInstant ltstTimestamp,
-                             final double sampleValue) {
+                             @Nonnull final ControlSystem system) {
         // CHECKSTYLE  ON : ParameterNumber
         _id = id;
         _name = name;
@@ -82,7 +82,7 @@ public class ArchiveChannel implements IArchiveChannel {
         _sampleModeId = sampleModeId;
         _samplePeriod = smplPer;
         _latestTimestamp = ltstTimestamp;
-        _sampleValue = sampleValue;
+        _system = system;
     }
 
     /**
@@ -145,7 +145,8 @@ public class ArchiveChannel implements IArchiveChannel {
      * {@inheritDoc}
      */
     @Override
-    public double getSampleValue() {
-        return _sampleValue;
+    @Nonnull
+    public ControlSystem getControlSystem() {
+        return _system;
     }
 }

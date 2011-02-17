@@ -60,27 +60,6 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
         AbstractIValueConversionTypeSupport.install();
     }
 
-    /**
-     * Tries to convert the given IValue type and its accompanying parms to the css value type.
-     * @param value the value to be converted
-     * @return the conversion result
-     * @throws TypeSupportException when conversion failed.
-     * @param <R>
-     * @param <T>
-     */
-//    @SuppressWarnings("unchecked")
-//    @CheckForNull
-//    public static <R extends ITimedCssAlarmValueType<?>,
-//                   T extends IValue>
-//    R toCssType(@Nonnull final T value) throws TypeSupportException {
-//
-//        final Class<T> typeClass = (Class<T>) value.getClass();
-//        final AbstractIValueConversionTypeSupport<R, T> support =
-//            (AbstractIValueConversionTypeSupport<R, T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
-//                                                                           typeClass);
-//        return support.convertToCssType(value);
-//    }
-
     @SuppressWarnings("unchecked")
     @CheckForNull
     public static <T extends IValue>

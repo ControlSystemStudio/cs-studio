@@ -36,17 +36,10 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @param <T> the type of the system variable
  * @param <A> the type of the alarm
  */
-public abstract class AbstractAlarmSystemVariable<T,
-                                                  A extends IAlarm>  implements IAlarmSystemVariable<T> {
+public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
+    extends AbstractSystemVariable<T> implements IAlarmSystemVariable<T> {
 
-
-
-
-    private final String _name;
-    private final ICssValueType<T> _data;
-    private final ControlSystem _origin;
     private final A _alarm;
-    private final TimeInstant _timestamp;
 
     /**
      * Constructor.
@@ -56,43 +49,12 @@ public abstract class AbstractAlarmSystemVariable<T,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
                                        @Nonnull final A alarm) {
-        _name = name;
-        _data = data;
-        _origin = origin;
-        _timestamp = time;
+        super(name, data, origin, time);
         _alarm = alarm;
-
         // plausibility check
-//        if (!_origin.getType().getClass().isAssignableFrom(alarm.getClass()) {
-//            throw new IllegalArgumentException("Control system type and alarm type do not match.");
-//        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ICssValueType<T> getData() {
-        return _data;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ControlSystem getOrigin() {
-        return _origin;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
+        if (!origin.getType().equals(alarm.getControlSystemType())) {
+            throw new IllegalArgumentException("Control system type and alarm type do not match.");
+        }
     }
 
     /**
@@ -103,14 +65,4 @@ public abstract class AbstractAlarmSystemVariable<T,
     public A getAlarm() {
         return _alarm;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getName() {
-        return _name;
-    }
-
 }

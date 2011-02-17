@@ -23,37 +23,70 @@ package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssValueType;
+
 /**
- * An identifiable control system of a distinct type.
+ * Replacement for my very own ICssValueStuff
  *
  * @author bknerr
  * @since 09.02.2011
+ *
+ * @param <T> the type of the system variable
  */
-public class ControlSystem {
-    public static final ControlSystem EPICS_DEFAULT =
-        new ControlSystem(new ControlSystemId(0L),
-                          ControlSystemType.EPICS_V3);
+public abstract class AbstractSystemVariable<T>  implements ISystemVariable<T> {
 
-    private final ControlSystemId _id;
-    private final ControlSystemType _type;
+    private final String _name;
+    private final ICssValueType<T> _data;
+    private final ControlSystem _origin;
+    private final TimeInstant _timestamp;
 
     /**
      * Constructor.
      */
-    public ControlSystem(@Nonnull final ControlSystemId id,
-                         @Nonnull final ControlSystemType type) {
-
-        _id = id;
-        _type = type;
+    public AbstractSystemVariable(@Nonnull final String name,
+                                  @Nonnull final ICssValueType<T> data,
+                                  @Nonnull final ControlSystem origin,
+                                  @Nonnull final TimeInstant time) {
+        _name = name;
+        _data = data;
+        _origin = origin;
+        _timestamp = time;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    public ControlSystemId getId() {
-        return _id;
+    public ICssValueType<T> getData() {
+        return _data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    public ControlSystemType getType() {
-        return _type;
+    public ControlSystem getOrigin() {
+        return _origin;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
     }
 }

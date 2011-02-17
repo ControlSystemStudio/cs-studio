@@ -39,7 +39,7 @@ import com.google.common.collect.Sets;
  * @since 09.02.2011
  */
 public enum ControlSystemType {
-    EPICS(CSCommunicationProtocol.CA),
+    EPICS_V3(CSCommunicationProtocol.CA),
     DOOCS(CSCommunicationProtocol.TINE),
     TANGO(CSCommunicationProtocol.CORBA);
 
