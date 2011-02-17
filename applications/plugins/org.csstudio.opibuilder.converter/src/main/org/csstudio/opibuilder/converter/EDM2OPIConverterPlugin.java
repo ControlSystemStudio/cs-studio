@@ -82,7 +82,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 			OpiWriter.getInstance().writeColorDef(System.getProperty("edm2xml.colorsOutput"));
 			opiColorFolder.refreshLocal(IResource.DEPTH_ONE, null);
 		} catch (Exception e) {
-			String message = "Failed to convert color file." + e;
+			String message = "Failed to convert color file. " + e.getMessage();
 			CentralLogger.getInstance().error(this, message, e);
 			ConsoleService.getInstance().writeError(message);
 		}			
