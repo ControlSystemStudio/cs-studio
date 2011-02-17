@@ -107,9 +107,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 final V min = from.getMinimum();
                 final V max = from.getMaximum();
                 if (min != null && max != null) {
-                    return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from, min, max);
+                    return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
                 }
-                return EpicsSystemVariableSupport.toIValue(from);
+                return EpicsSystemVariableSupport.toIValue(from.getSystemVariable());
             } catch (final TypeSupportException e) {
                 return null;
             }
