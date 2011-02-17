@@ -43,7 +43,10 @@ public class EdmFont extends EdmAttribute {
 		}
 
 		Pattern p = Pattern.compile("(\\w*?)-(\\w*?)-([ri])-(\\d.*?\\.\\d)");
-		Matcher m = p.matcher(getValue(0));
+		
+		String fontString = getValue(0);
+		
+		Matcher m = p.matcher(fontString);
 
 		String nameStr = "";
 		String weightStr = "";
@@ -57,7 +60,7 @@ public class EdmFont extends EdmAttribute {
 			sizeStr = m.group(4);
 		}
 		catch (Exception e) {
-			throw new EdmException(EdmException.FONT_FORMAT_ERROR, "Invalid font format.");
+			throw new EdmException(EdmException.FONT_FORMAT_ERROR, fontString + "is an invalid font format.");
 		}
 
 		name = nameStr;
