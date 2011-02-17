@@ -480,7 +480,7 @@ public class EPICS_V3_PV
             }
             else if (new_value instanceof Integer)
             {
-                final double val = ((Integer)new_value).intValue();
+                final int val = ((Integer)new_value).intValue();
                 channel_ref.getChannel().put(val);
             }
             else if (new_value instanceof Integer [])
