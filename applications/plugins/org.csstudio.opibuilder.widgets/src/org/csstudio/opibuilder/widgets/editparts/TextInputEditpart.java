@@ -9,6 +9,7 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
@@ -31,6 +32,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.osgi.util.NLS;
 
 /**The editpart for text input widget.)
  * @author Xihui Chen
@@ -138,8 +140,15 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
 					String text = (String)newValue;
-					//((TextFigure)figure).setText(text);					
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, parseString(text));					
+					//((TextFigure)figure).setText(text);		
+					
+					try {
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, parseString(text));
+					} catch (Exception e) {
+						String msg = NLS.bind("Failed to write value to PV {0}: illegal input : {1} \n",
+								getPV(AbstractPVWidgetModel.PROP_PVNAME).getName(), text) + e.toString();
+						ConsoleService.getInstance().writeError(msg);
+					}					
 					return false;
 				}
 			};			
@@ -252,8 +261,9 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	/**Parse string to a value according PV value type and format
 	 * @param text
 	 * @return value
+	 * @throws ParseException 
 	 */
-	private Object parseString(final String text){
+	private Object parseString(final String text) throws ParseException{
 		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		FormatEnum formatEnum = getWidgetModel().getFormat();
 
@@ -264,6 +274,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		if(pvValue instanceof IDoubleValue){
 			switch (formatEnum) {
 			case HEX:
+			case HEX64:
 				return parseHEX(text, true);
 			case STRING:
 				if(((IDoubleValue)pvValue).getValues().length > 1){
@@ -280,6 +291,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		if(pvValue instanceof ILongValue){
 			switch (formatEnum) {
 			case HEX:
+			case HEX64:
 				return parseHEX(text, true);
 			case STRING:
 				if(((ILongValue)pvValue).getValues().length > 1){
@@ -296,6 +308,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		if(pvValue instanceof IEnumeratedValue){
 			switch (formatEnum) {
 			case HEX:
+			case HEX64:
 				return parseHEX(text, true);
 			case STRING:
 				return text;
@@ -321,38 +334,49 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		return iString;
 	}
 	
-	private Object parseDouble(final String text, final boolean coerce){
+	private Object parseDouble(final String text, final boolean coerce) throws ParseException {
 		DecimalFormat format = new DecimalFormat();
-		try {
-			double value = format.parse(text).doubleValue();
-			if(coerce){
-				double min = getWidgetModel().getMinimum();
-				double max = getWidgetModel().getMaximum();
-				return Math.max(min, Math.min(value, max));
-			}
-			return value;
-		} catch (ParseException e) {
-			return text;
-		}		
+
+		double value = format.parse(text).doubleValue();
+		if (coerce) {
+			double min = getWidgetModel().getMinimum();
+			double max = getWidgetModel().getMaximum();
+			if(value<min){
+				value = min;
+			}else if(value>max)
+				value=max;			
+		}
+		return value;
+
 	}
 	
-	private Object parseHEX(final String text, final boolean coerce){
-		String valueText = text;
-		if(text.startsWith(TextIndicatorEditPart.HEX_PREFIX)){
+	private Object parseHEX(final String text, final boolean coerce) {
+		String valueText = text.trim();
+		if (text.startsWith(TextIndicatorEditPart.HEX_PREFIX)) {
 			valueText = text.substring(2);
 		}
-		try {
-			int i = Integer.parseInt(valueText, 16);		
-			if(coerce){
-				double min = getWidgetModel().getMinimum();
-				double max = getWidgetModel().getMaximum();
-				return Math.max(min, Math.min(i, max));
-			}
-			return i;
-		} catch (NumberFormatException e) {
-			return text;
+		if(valueText.contains(" ")){  //$NON-NLS-1$
+			valueText = valueText.substring(0, valueText.indexOf(' '));  
 		}
+		long i = Long.parseLong(valueText, 16);
+		if (coerce) {			
+			double min = getWidgetModel().getMinimum();
+			double max = getWidgetModel().getMaximum();
+			if(i<min){
+				i=(long) min;
+			}else if(i>max)
+				i=(long) max;		
+		}
+		return (int)i;  //EPICS_V3_PV doesn't support Long
+
 	}
 	
+	@Override
+	protected String formatValue(Object newValue, String propId, IFigure figure) {
+		String text = super.formatValue(newValue, propId, figure);
+		getWidgetModel().setPropertyValue(TextInputModel.PROP_TEXT, text, false);
+		return text;
+		
+	}
 	
 }

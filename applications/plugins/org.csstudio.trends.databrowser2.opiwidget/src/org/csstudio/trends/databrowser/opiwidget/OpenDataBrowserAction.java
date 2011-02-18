@@ -29,7 +29,7 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
         // In run mode, we always seem to receive the absolute path.
         // In edit mode, a relative path it not resolved
         // unless it's first converted to the absolute path.
-        IPath filename = edit_part.getWidgetModel().getFilename();
+        IPath filename = edit_part.getWidgetModel().getExpandedFilename();
         if(!filename.isAbsolute())
             filename = ResourceUtil.buildAbsolutePath(edit_part.getWidgetModel(), filename);
         try

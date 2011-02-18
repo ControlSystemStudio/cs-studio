@@ -96,10 +96,11 @@ public class EPICS_V3_PV
      *  <code>true</code> if we want to receive value updates.
      */
     private volatile boolean running = false;
-    
+
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
+        @Override
         public void getCompleted(final GetEvent event)
         {   // This runs in a CA thread
             if (event.getStatus().isSuccessful())
@@ -115,7 +116,8 @@ public class EPICS_V3_PV
             // Subscribe, but outside of callback (JCA deadlocks)
             PVContext.scheduleCommand(new Runnable()
             {
-            	public void run()
+            	@Override
+                public void run()
             	{
                     subscribe();
             	}
@@ -143,6 +145,7 @@ public class EPICS_V3_PV
             got_response = false;
         }
 
+        @Override
         public void getCompleted(final GetEvent event)
         {   // This runs in a CA thread
             if (event.getStatus().isSuccessful())
@@ -217,18 +220,21 @@ public class EPICS_V3_PV
     }
 
     /** @return Returns the name. */
+    @Override
     public String getName()
     {
         return EPICSPVFactory.PREFIX + "://" + name;
     }
 
     /** @return CSS type ID for IProcessVariable */
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue getValue(final double timeout_seconds) throws Exception
     {
         final long end_time = System.currentTimeMillis() +
@@ -273,12 +279,14 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue getValue()
     {
         return value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addListener(final PVListener listener)
     {
     	listeners.add(listener);
@@ -288,8 +296,9 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeListener(final PVListener listener)
-    { 
+    {
     	listeners.remove(listener);
     }
 
@@ -414,6 +423,7 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public void start() throws Exception
     {
         if (running) {
@@ -424,28 +434,33 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isRunning()
     {   return running;  }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConnected()
     {
         return connected;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isWriteAllowed()
     {
         return connected && channel_ref.getChannel().getWriteAccess();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getStateInfo()
     {
         return state.toString();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         running = false;
@@ -454,6 +469,7 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setValue(final Object new_value) throws Exception
     {
         if (!isConnected()) {
@@ -480,7 +496,7 @@ public class EPICS_V3_PV
             }
             else if (new_value instanceof Integer)
             {
-                final double val = ((Integer)new_value).intValue();
+                final int val = ((Integer)new_value).intValue();
                 channel_ref.getChannel().put(val);
             }
             else if (new_value instanceof Integer [])
@@ -499,6 +515,7 @@ public class EPICS_V3_PV
     }
 
     /** ConnectionListener interface. */
+    @Override
     public void connectionChanged(final ConnectionEvent ev)
     {
     	// This runs in a CA thread
@@ -510,6 +527,7 @@ public class EPICS_V3_PV
         	// the channel_ref which might still be null.
             PVContext.scheduleCommand(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     handleConnected((Channel) ev.getSource());
@@ -523,6 +541,7 @@ public class EPICS_V3_PV
             connected = false;
             PVContext.scheduleCommand(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     unsubscribe();
@@ -590,6 +609,7 @@ public class EPICS_V3_PV
     }
 
    /** MonitorListener interface. */
+    @Override
     public void monitorChanged(final MonitorEvent ev)
     {
         final Logger log = Activator.getLogger();

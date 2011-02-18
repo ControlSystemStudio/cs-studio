@@ -9,15 +9,20 @@ package org.csstudio.trends.databrowser.opiwidget;
 
 import java.io.InputStream;
 
+import org.csstudio.apputil.macros.InfiniteLoopException;
+import org.csstudio.apputil.macros.MacroTable;
+import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /** Model for persisting data browser widget configuration.
  *
@@ -62,10 +67,29 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
                 WidgetPropertyCategory.Display, false));
     }
 
-    /** @return Path to data browser configuration file */
-    public IPath getFilename()
+    /** @return Path to data browser configuration file, including macros */
+    public IPath getPlainFilename()
     {
         return (IPath) getPropertyValue(PROP_FILENAME);
+    }
+
+    /** @return Path to data browser configuration file, macros are expanded */
+    public IPath getExpandedFilename()
+    {
+        IPath path = getPlainFilename();
+
+        final MacroTable macros = new MacroTable(getParent().getMacroMap());
+        try
+        {
+            final String new_path = MacroUtil.replaceMacros(path.toPortableString(), macros);
+            path = new Path(new_path);
+        }
+        catch (InfiniteLoopException e)
+        {
+            CentralLogger.getInstance().getLogger(this).warn("Recursive macros in Data Browser widget " + getName()); //$NON-NLS-1$
+        }
+
+        return path;
     }
 
     /** @return Tool bar visibility */
@@ -81,7 +105,7 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
     public Model createDataBrowserModel() throws CoreException, Exception
     {
         final Model model = new Model();
-        final InputStream input = ResourceUtil.pathToInputStream(getFilename());
+        final InputStream input = ResourceUtil.pathToInputStream(getExpandedFilename());
         model.read(input);
         return model;
     }
@@ -90,6 +114,6 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
     @Override
     public String toString()
     {
-        return "DataBrowserWidgetModel: " + getFilename().toString();
+        return "DataBrowserWidgetModel: " + getPlainFilename().toString();
     }
 }
