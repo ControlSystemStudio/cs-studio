@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
@@ -90,6 +91,7 @@ public interface IArchiveDaoManager extends IDaoManager {
     /**
      * @return
      */
+    @Nonnull
     IArchiveControlSystemDao getControlSystemDao();
 
     /**

@@ -19,7 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.controlsystem;
+
+import org.csstudio.domain.desy.common.id.Id;
 
 /**
  * TODO (bknerr) :
@@ -27,6 +29,21 @@ package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
  * @author bknerr
  * @since 17.02.2011
  */
-public class ArchiveControlSystem extends IArchiveControlSystem {
+public class ArchiveControlSystemId extends Id<ArchiveControlSystemId> {
 
+    private static final long serialVersionUID = 1771548850977602836L;
+
+    /**
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
+     */
+    public static final ArchiveControlSystemId NONE = new ArchiveControlSystemId(-1L);
+
+    /**
+     * Constructor.
+     *
+     * @param value the value
+     */
+    public ArchiveControlSystemId(final long value) {
+        super(value);
+    }
 }

@@ -190,8 +190,7 @@ public abstract class ArchiveChannel<V,
 
             // persist the start of monitoring
             final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                      _id,
+            service.writeMonitorModeInformation(new ArchiverMgmtEntry(_id,
                                                                       ArchiverMonitorStatus.ON,
                                                                       engineId,
                                                                       TimeInstantBuilder.buildFromNow(),

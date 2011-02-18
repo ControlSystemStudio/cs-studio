@@ -30,7 +30,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -38,14 +37,12 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleMode;
-import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.platform.data.ITimestamp;
 
 import com.google.common.base.Function;
@@ -129,16 +126,7 @@ public enum ArchiveEngineAdapter {
     public static IArchiveChannel adapt(@Nonnull final ChannelConfig channel,
                                  @Nullable final ITimestamp lastTimestamp) {
 
-        final IArchiveChannel cfg = new ArchiveChannel(new ArchiveChannelId(channel.getId()),
-                                                          channel.getName(),
-                                                          "<not set>",
-                                                          new ArchiveChannelGroupId(channel.getGroupId()),
-                                                          new ArchiveSampleModeId(channel.getSampleMode().getId()),
-                                                          channel.getSamplePeriod(),
-                                                          BaseTypeConversionSupport.toTimeInstant(lastTimestamp),
-                                                          channel.getSampleValue());
-
-        return cfg;
+        return null;
     }
 
     /**

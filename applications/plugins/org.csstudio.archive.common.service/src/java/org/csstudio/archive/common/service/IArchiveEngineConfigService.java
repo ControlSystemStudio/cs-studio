@@ -62,7 +62,7 @@ public interface IArchiveEngineConfigService {
      *  @throws ArchiveServiceException
      */
     @Nonnull
-    Collection<IArchiveChannelGroup> getGroupsForEngine(ArchiveEngineId id) throws ArchiveServiceException;
+    Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException;
 
     /**
      * @param group_config

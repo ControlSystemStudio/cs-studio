@@ -24,6 +24,8 @@ package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
@@ -39,5 +41,5 @@ public interface IArchiveControlSystemDao {
      * @throws ArchiveStatusDaoException
      */
     @CheckForNull
-    ArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+    IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
 }

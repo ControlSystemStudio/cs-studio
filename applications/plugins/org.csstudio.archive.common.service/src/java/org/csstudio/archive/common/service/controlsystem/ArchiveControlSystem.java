@@ -19,31 +19,68 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.controlsystem;
 
-import org.csstudio.domain.desy.common.id.Id;
+import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.system.ControlSystemType;
 
 /**
- * TODO (bknerr) :
+ * Archive control system bean.
  *
  * @author bknerr
  * @since 17.02.2011
  */
-public class ArchiveControlSystemId extends Id<ArchiveControlSystemId> {
+public class ArchiveControlSystem implements IArchiveControlSystem {
 
-    private static final long serialVersionUID = 1771548850977602836L;
-
-    /**
-     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
-     */
-    public static final ArchiveControlSystemId NONE = new ArchiveControlSystemId(-1L);
+    private final ArchiveControlSystemId _id;
+    private final String _name;
+    private final ControlSystemType _type;
 
     /**
      * Constructor.
-     *
-     * @param value the value
      */
-    public ArchiveControlSystemId(final long value) {
-        super(value);
+    public ArchiveControlSystem(@Nonnull final String name,
+                                @Nonnull final ControlSystemType type) {
+        this(ArchiveControlSystemId.NONE, name, type);
+
     }
+    /**
+     * Constructor.
+     */
+    public ArchiveControlSystem(@Nonnull final ArchiveControlSystemId id,
+                                @Nonnull final String name,
+                                @Nonnull final ControlSystemType type) {
+        _id = id;
+        _name = name;
+        _type = type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveControlSystemId getId() {
+        return _id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ControlSystemType getType() {
+        return _type;
+    }
+
 }

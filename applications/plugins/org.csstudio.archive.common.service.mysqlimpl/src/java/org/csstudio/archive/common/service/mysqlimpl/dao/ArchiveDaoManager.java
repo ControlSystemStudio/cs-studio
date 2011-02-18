@@ -55,6 +55,8 @@ import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoIm
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
@@ -134,6 +136,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private IArchiveSampleModeDao _archiveSampleModeDao;
     private IArchiveSeverityDao _archiveSeverityDao;
     private IArchiveStatusDao _archiveStatusDao;
+    private IArchiveControlSystemDao _archiveControlSystemDao;
 
     /**
      * The datasource that specifies the connections.
@@ -564,5 +567,17 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             _archiveStatusDao = new ArchiveStatusDaoImpl(this);
         }
         return _archiveStatusDao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public IArchiveControlSystemDao getControlSystemDao() {
+        if (_archiveControlSystemDao == null) {
+            _archiveControlSystemDao = new ArchiveControlSystemDaoImpl(this);
+        }
+        return _archiveControlSystemDao;
     }
 }

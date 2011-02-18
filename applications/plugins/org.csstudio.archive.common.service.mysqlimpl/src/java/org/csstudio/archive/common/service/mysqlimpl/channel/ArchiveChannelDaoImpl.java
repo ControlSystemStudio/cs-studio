@@ -38,11 +38,14 @@ import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
+import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.system.ControlSystemId;
+import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
@@ -65,18 +68,21 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
     private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
 
+    public static final String TAB = "channel";
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+
+    private final String _selectChannelPrefix =
+        "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
+                 CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
+                "FROM " + getDaoMgr().getDatabaseName() + "." + TAB + ", " + getDaoMgr().getDatabaseName() + "." + CS_TAB;
+    private final String _selectChannelSuffix = "AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
-    private final String _selectChannelByNameStmt =
-        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time, control_system_id FROM " +
-        getDaoMgr().getDatabaseName() + ".channel WHERE name=?";
-    private final String _selectChannelByIdStmt =
-        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time, control_system_id FROM " +
-        getDaoMgr().getDatabaseName() + ".channel WHERE id=?";
-    private final String _selectChannelsByGroupId =
-        "SELECT id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time, control_system_id FROM " +
-        getDaoMgr().getDatabaseName() + ".channel WHERE group_id=? ORDER BY name";
+    private final String _selectChannelByNameStmt = _selectChannelPrefix + " WHERE " + TAB + ".name=? " + _selectChannelSuffix;
+    private final String _selectChannelByIdStmt =   _selectChannelPrefix + " WHERE " + TAB + ".id=? " + _selectChannelSuffix;
+    private final String _selectChannelsByGroupId = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
+                                                    " ORDER BY " + TAB + ".name";
 
     /**
      * Constructor.
@@ -103,30 +109,36 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     @Nonnull
     private IArchiveChannel getChannelFromResult(@Nonnull final ResultSet result) throws SQLException,
-                                                                                         ClassNotFoundException {
+                                                                                         ClassNotFoundException,
+                                                                                         ArchiveDaoException {
         // id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time
-        final ArchiveChannelId id = new ArchiveChannelId(result.getLong("id"));
-        final String name = result.getString("name");
-        final String datatype = result.getString("datatype");
-        final long groupId = result.getLong("group_id");
-        final int sampleMode = result.getInt("sample_mode_id");
-        final double samplePeriod = result.getDouble("sample_period");
-        final Timestamp lastSampleTime = result.getTimestamp("last_sample_time");
+        final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
+        final String name = result.getString(TAB + ".name");
+        final String datatype = result.getString(TAB + ".datatype");
+        final long groupId = result.getLong(TAB + ".group_id");
+        //final int sampleMode = result.getInt("sample_mode_id");
+        //final double samplePeriod = result.getDouble("sample_period");
+        final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
         final TimeInstant time = lastSampleTime == null ? null :
                                                     TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
-        final ControlSystemId csId = new ControlSystemId(result.getInt("control_system_id"));
 
-        getDaoMgr().getControlSystemDao().retrieveControlSystemById(csId);
+        final ArchiveControlSystemId csId = new ArchiveControlSystemId(result.getLong(CS_TAB + ".id"));
+        final String csName = result.getString(CS_TAB + ".name");
+        final String csType = result.getString(CS_TAB + ".type");
+
+        final IArchiveControlSystem cs = new ArchiveControlSystem(csId,
+                                                                  csName,
+                                                                  Enum.valueOf(ControlSystemType.class, csType));
 
         final IArchiveChannel channel =
             new ArchiveChannel(id,
                                name,
                                datatype,
                                new ArchiveChannelGroupId(groupId),
-                               new ArchiveSampleModeId(sampleMode),
-                               samplePeriod,
+//                               new ArchiveSampleModeId(sampleMode),
+//                               samplePeriod,
                                time,
-                               system);
+                               cs);
 
         _channelCacheByName.put(name, channel);
         _channelCacheById.put(id, channel);

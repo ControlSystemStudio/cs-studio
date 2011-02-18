@@ -24,9 +24,8 @@ package org.csstudio.archive.common.service.channel;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -43,10 +42,10 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     @Nonnull
     ArchiveChannelGroupId getGroupId();
 
-    @Nonnull
-    ArchiveSampleModeId getSampleModeId();
-
-    double getSamplePeriod();
+//    @Nonnull
+//    ArchiveSampleModeId getSampleModeId();
+//
+//    double getSamplePeriod();
 
     @Nonnull
     TimeInstant getLatestTimestamp();
@@ -56,6 +55,6 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     String getDataType();
 
     @Nonnull
-    ControlSystem getControlSystem();
+    IArchiveControlSystem getControlSystem();
 
 }

@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
@@ -45,6 +46,7 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
@@ -443,7 +445,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                            @Nonnull final ResultSet result) throws SQLException,
                                                                                                    ArchiveDaoException,
                                                                                                    TypeSupportException {
-        // (sample_time, severity_id, ...) or (sample_time, highest_severity_id, ...)
         final String dataType = channel.getDataType();
         final Timestamp timestamp = result.getTimestamp(1);
 //        final ArchiveSeverityId sevId = new ArchiveSeverityId(result.getInt(2));
@@ -483,9 +484,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 //        final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
 //                                                EpicsAlarmStatus.parseStatus(st.getName()));
         final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
+        final IArchiveControlSystem cs = channel.getControlSystem();
         final ISystemVariable<V> sysVar = SystemVariableSupport.create(channel.getName(),
                                                                        value,
-                                                                       channel.getControlSystem(),
+                                                                       new ControlSystem(cs.getName(), cs.getType()),
                                                                        timeInstant);
 
         final ArchiveMinMaxSample<V, T> sample =

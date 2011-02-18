@@ -19,9 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.controlsystem;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.system.ControlSystemType;
 
 /**
  * Read-only interface for archive control system.
@@ -29,6 +32,11 @@ import org.csstudio.domain.desy.common.id.Identifiable;
  * @author bknerr
  * @since 17.02.2011
  */
-public interface IArchiveControlSystem extends Identifiable<ArchiveControlSystemId>{
+public interface IArchiveControlSystem extends Identifiable<ArchiveControlSystemId> {
 
+    @Nonnull
+    String getName();
+
+    @Nonnull
+    ControlSystemType getType();
 }
