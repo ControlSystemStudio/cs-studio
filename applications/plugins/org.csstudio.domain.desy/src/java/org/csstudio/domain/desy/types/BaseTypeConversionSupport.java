@@ -99,21 +99,21 @@ public abstract class BaseTypeConversionSupport {
      * Tries to create a {@link Class} object for the element type for a generic {@link java.util.Collection},
      * such as "Set&lt;Byte&gt;" as {@param datatype} shall return Class&lt;Byte&gt;.<br/>
      * Recognized patterns for collection describing strings are Collection<*>, List<*>, Set<*>, and
-     * Vector<*>
+     * Vector<*>!
      *
      * @param <T>
      * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
-     * @param packages the packages to try for the element type, e.g. typically "java.lang".
+     * @param scalarPackages the packages to try for the element type, e.g. typically "java.lang".
      * @return the class object or <code>null</code>
      */
     @CheckForNull
     public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                    @Nonnull final String... packages) {
+                                                                    @Nonnull final String... scalarPackages) {
         final Pattern p = Pattern.compile("^(Collection|List|Set|Vector)<(.+)>$");
         final Matcher m = p.matcher(datatype);
         if (m.matches()) {
             final String elementType = m.group(2); // e.g. Byte from List<Byte>
-            return createTypeClassFromString(elementType, packages);
+            return createTypeClassFromString(elementType, scalarPackages);
         }
         return null;
     }

@@ -42,6 +42,7 @@ import java.util.SortedSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -115,9 +116,10 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                             @Override
                             public int compare(@Nonnull final PersistDataWorker arg0,
                                                @Nonnull final PersistDataWorker arg1) {
-                                return Long.valueOf(arg0.getPeriod()).compareTo(Long.valueOf(arg1.getPeriod()));
+                                return Long.valueOf(arg0.getPeriodInMS()).compareTo(Long.valueOf(arg1.getPeriodInMS()));
                             }
                         });
+    AtomicInteger _workerId = new AtomicInteger(0);
 
     /**
      * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL
@@ -244,7 +246,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             public void run() {
                 if (!_executor.isTerminating()) {
                     _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
-                                                            _sqlStatementBatch.getQueue(),
+                                                            _sqlStatementBatch,
                                                             Integer.valueOf(0)));
                     _executor.shutdown();
                     try {
@@ -263,13 +265,13 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _submittedWorkers.size(),
-                                                                  _sqlStatementBatch.getQueue(),
+        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
+                                                                  _sqlStatementBatch,
                                                                   _prefPeriodInMS);
         _executor.scheduleAtFixedRate(newWorker,
                                       0L,
-                                      newWorker.getPeriod(),
-                                      TimeUnit.SECONDS);
+                                      newWorker.getPeriodInMS(),
+                                      TimeUnit.MILLISECONDS);
         _submittedWorkers.add(newWorker);
     }
 
@@ -316,7 +318,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                 // No, but perhaps we could enhance the frequency of the scheduled tasks?
                 final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
                 final PersistDataWorker oldestWorker = it.next();
-                final long period = oldestWorker.getPeriod();
+                final long period = oldestWorker.getPeriodInMS();
                 if (Long.valueOf(period).intValue() <= MIN_PERIOD_MS) {
                     // No
                     // FIXME (bknerr) : handle pool and thread frequency exhaustion
@@ -325,8 +327,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                 }
                 // Yes, lower the frequency and remove the oldest periodic worker, return true
                 _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
-                _executor.remove(oldestWorker);
-                it.remove();
+                LOG.info("Remove Worker: " + oldestWorker.getName());
+//                _executor.remove(oldestWorker);
+//                it.remove();
                 return true;
             }
         }
@@ -338,7 +341,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * @param statements
      */
     void rescueData(@Nonnull final List<String> statements) {
-        LOG.info("Rescue statements" + statements.size());
+        LOG.info("Rescue statements " + statements.size());
 
         EMailSender mailer;
         try {
@@ -348,7 +351,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                                      "[MySQL archiver notification]: Failed failover");
             mailer.addText("Statements rescued:\n");
             for (final String stmt : statements) {
-                //mailer.addText(stmt);
+                mailer.addText(stmt + "\n");
             }
             mailer.close();
         } catch (final IOException e) {

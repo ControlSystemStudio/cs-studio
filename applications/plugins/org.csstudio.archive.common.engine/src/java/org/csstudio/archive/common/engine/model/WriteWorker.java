@@ -99,6 +99,7 @@ final class WriteWorker implements Runnable {
      */
     @Override
     public void run() {
+        WORKER_LOG.info("RUN: " + TimeInstantBuilder.buildFromNow().formatted());
         final BenchmarkTimer timer = new BenchmarkTimer();
         try {
             timer.start();

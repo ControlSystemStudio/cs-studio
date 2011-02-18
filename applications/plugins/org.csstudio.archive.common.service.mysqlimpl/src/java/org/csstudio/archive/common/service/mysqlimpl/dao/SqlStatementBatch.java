@@ -24,8 +24,11 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
+
+import org.csstudio.platform.util.StringUtil;
 
 /**
  * TODO (bknerr) :
@@ -47,9 +50,25 @@ public enum SqlStatementBatch {
     public void submitStatement(@Nonnull final String statement) {
         _statements.add(statement); // non blocking add
         synchronized (this) {
-            _sizeInBytes += statement.codePointCount(0, statement.length()) * 2;
+            _sizeInBytes += StringUtil.getSizeInBytes(statement);
         }
     }
+
+    @CheckForNull
+    public String peek() {
+        return _statements.peek();
+    }
+
+    @CheckForNull
+    public synchronized String poll() {
+        final String polled = _statements.poll();
+        if (polled == null) {
+            return null;
+        }
+        _sizeInBytes -= StringUtil.getSizeInBytes(polled);
+        return polled;
+    }
+
     @Nonnull
     public BlockingQueue<String> getQueue() {
         return _statements;
@@ -57,4 +76,6 @@ public enum SqlStatementBatch {
     public synchronized long sizeInBytes() {
         return _sizeInBytes;
     }
+
+
 }

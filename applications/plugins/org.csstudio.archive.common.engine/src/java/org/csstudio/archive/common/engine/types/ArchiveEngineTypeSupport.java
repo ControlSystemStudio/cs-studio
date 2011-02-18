@@ -137,6 +137,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
      * @return
      * @throws TypeSupportException
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static <V>
     ArchiveChannel<V, IAlarmSystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
@@ -147,7 +148,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
         boolean scalar = true;
         if (typeClass == null) {
             typeClass = BaseTypeConversionSupport.createTypeClassFromMultiScalarString(dataType,
-                                                                         MULTI_SCALAR_TYPE_PACKAGES);
+                                                                                       SCALAR_TYPE_PACKAGES);
             if (typeClass == null) {
                 throw new TypeSupportException("Data type " + dataType + " for channel " +
                                                cfg.getName() + " is unknown.", null);

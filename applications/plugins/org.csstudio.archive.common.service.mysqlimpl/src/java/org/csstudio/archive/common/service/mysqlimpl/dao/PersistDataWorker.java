@@ -26,13 +26,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
@@ -55,13 +55,13 @@ public class PersistDataWorker implements Runnable {
     private final long _period;
 
     private final List<String> _batchedStatements;
-    private final BlockingQueue<String> _queuedStatements;
+    private final SqlStatementBatch _queuedStatements;
     /**
      * Constructor.
      * @param sqlStatements
      */
     public PersistDataWorker(@Nonnull final String name,
-                             @Nonnull final BlockingQueue<String> sqlStatements,
+                             @Nonnull final SqlStatementBatch sqlStatements,
                              @Nonnull final long period) {
         _name = name;
         _period = period;
@@ -75,20 +75,21 @@ public class PersistDataWorker implements Runnable {
      */
     @Override
     public void run() {
-        LOG.info("RUN: " + _name);
+        LOG.info("RUN: " + _name + " - " + TimeInstantBuilder.buildFromNow().formatted());
 
         Statement sqlStmt = null;
         Connection connection = null;
         try {
             connection = ArchiveDaoManager.INSTANCE.getConnection();
             sqlStmt = connection.createStatement();
-
+            long size = 0;
             while (_queuedStatements.peek() != null) {
                 final String queuedStmt = _queuedStatements.poll();
                 _batchedStatements.add(queuedStmt);
-                LOG.info("Stmt size:\t" + StringUtil.getSizeInBytes(queuedStmt));
                 sqlStmt.addBatch(queuedStmt);
+                size += StringUtil.getSizeInBytes(queuedStmt);
             }
+            LOG.info("Batched stmt size:\t" + size);
             sqlStmt.executeBatch();
 
         } catch (final ArchiveConnectionException se) {
@@ -165,7 +166,7 @@ public class PersistDataWorker implements Runnable {
         return _name;
     }
 
-    public long getPeriod() {
+    public long getPeriodInMS() {
         return _period;
     }
 }
