@@ -25,7 +25,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
- * Cumulative average with exponential decay of older values.
+ * Cumulative average with exponential decay of older values.<br/>
+ * Accumulated values are multiplied by 'decay' for any accumulation, the newly arriving value
+ * is multiplied by (1-decay).
  *
  * @author bknerr
  * @since 15.02.2011

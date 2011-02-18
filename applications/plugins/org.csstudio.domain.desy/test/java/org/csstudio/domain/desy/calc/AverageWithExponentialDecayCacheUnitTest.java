@@ -72,6 +72,31 @@ public class AverageWithExponentialDecayCacheUnitTest {
         Assert.assertEquals(0, cache.getNumberOfAccumulations());
         Assert.assertTrue(Double.valueOf(1.0).equals(cache.getDecay()));
         Assert.assertNull(cache.getValue());
+    }
 
+    @Test
+    public void test() {
+        final AverageWithExponentialDecayCache cache = new AverageWithExponentialDecayCache(0.2);
+
+        cache.accumulate(1.0);
+        Assert.assertEquals(1, cache.getNumberOfAccumulations());
+        Assert.assertTrue(Double.valueOf(1.0).equals(cache.getValue()));
+
+        cache.accumulate(2.0);
+        Assert.assertEquals(2, cache.getNumberOfAccumulations());
+        // 1.0*0.2 + 2.0*0.8 = 1.8
+        Assert.assertTrue(Double.valueOf(1.8).equals(cache.getValue()));
+
+        cache.accumulate(3.0);
+        Assert.assertEquals(3, cache.getNumberOfAccumulations());
+        // x0*decay^2 + x1*decay^1*(1-decay) + x2(1-decay)
+        // (1.0*0.2 + 2.0*0.8)*0.2 + 3.0*0.8 = 2.76
+        Assert.assertTrue(Double.valueOf((1.0*0.2 + 2.0*0.8)*0.2 + 3.0*0.8).equals(cache.getValue()));
+
+        cache.accumulate(1.5);
+        Assert.assertEquals(4, cache.getNumberOfAccumulations());
+        // x0*decay^3 + x1*decay^2*(1-decay) + x2*decay^1*(1-decay) + x3*(1-decay)
+        // ((1.0*0.2 + 2.0*0.8)*0.2 + 3.0*0.8)*0.2 + 1.5*0.8
+        Assert.assertTrue(Double.valueOf(((1.0*0.2 + 2.0*0.8)*0.2 + 3.0*0.8)*0.2 + 1.5*0.8).equals(cache.getValue()));
     }
 }
