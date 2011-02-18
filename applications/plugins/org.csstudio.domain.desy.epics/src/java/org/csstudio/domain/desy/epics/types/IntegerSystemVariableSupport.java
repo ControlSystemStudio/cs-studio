@@ -84,7 +84,7 @@ final class IntegerSystemVariableSupport extends EpicsSystemVariableSupport<Inte
                                                               @Nonnull final Integer value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Integer>(name, new CssValueType<Integer>(value), system, timestamp, null);
+        return new EpicsSystemVariable<Integer>(name, new CssValueType<Integer>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

@@ -23,7 +23,7 @@ package org.csstudio.archive.common.service.sample;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
  * The read-only interface of a sample featuring minimum and maximum values (not necessarily, but
@@ -39,7 +39,7 @@ import org.csstudio.domain.desy.system.IAlarmSystemVariable;
  * @param <T> the type of the composite system value (with alarm and timestamp)
  */
 public interface IArchiveMinMaxSample<V,
-                                      T extends IAlarmSystemVariable<V>>
+                                      T extends ISystemVariable<V>>
     extends IArchiveSample<V, T> {
 
     @Nonnull

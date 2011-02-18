@@ -125,7 +125,7 @@ public abstract class ArchiveChannel<V,
                     if (_isRunning) { // PV already suppresses updates after 'stop', but check anyway
                         final IValue value = pv.getValue();
                         final EpicsSystemVariable<V> sv = (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value);
-                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv);
+                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv, sv.getAlarm());
                         handleNewSample(sample);
                     }
                 } catch (final TypeSupportException e) {

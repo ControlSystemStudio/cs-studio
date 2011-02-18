@@ -77,7 +77,7 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
                                                 @Nonnull final ControlSystem system,
                                                 @Nonnull final TimeInstant time) throws TypeSupportException {
 
-        final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(system);
+        final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(system.getType());
         if (familyClass != null) {
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =
@@ -86,7 +86,7 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
         }
         throw new TypeSupportException("System variable support for system " + system.getType() + " unknown.", null);
     }
-    @CheckForNull
+    @Nonnull
     protected abstract ISystemVariable<T> createVariable(@Nonnull final String name,
                                                          @Nonnull final T value,
                                                          @Nonnull final ControlSystem system,

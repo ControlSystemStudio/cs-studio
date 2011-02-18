@@ -19,34 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.system;
+package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.common.id.Id;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * The identifier for a distinct control system.
+ * Read-only interface for archive control system.
  *
  * @author bknerr
- * @since 09.02.2011
+ * @since 17.02.2011
  */
-public class ControlSystemId extends Id<ControlSystemId> {
+public interface IArchiveControlSystem extends Identifiable<ArchiveControlSystemId>{
 
-    private static final long serialVersionUID = 4284891439602761307L;
-
-    /**
-     * Constructor.
-     * @param value
-     */
-    protected ControlSystemId(@Nonnull final String value) {
-        super(value);
-    }
-    /**
-     * Constructor.
-     * @param value
-     */
-    public ControlSystemId(final long value) {
-        super(value);
-    }
 }

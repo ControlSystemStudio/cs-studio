@@ -75,7 +75,7 @@ final class StringSystemVariableSupport extends EpicsSystemVariableSupport<Strin
                                                               @Nonnull final String value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<String>(name, new CssValueType<String>(value), system, timestamp, null);
+        return new EpicsSystemVariable<String>(name, new CssValueType<String>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

@@ -88,6 +88,11 @@ public interface IArchiveDaoManager extends IDaoManager {
     IArchiveStatusDao getStatusDao();
 
     /**
+     * @return
+     */
+    IArchiveControlSystemDao getControlSystemDao();
+
+    /**
      * Submits the given SQL statements for optimized (typically delayed) persisting.
      * @param composeStatements
      */
@@ -97,5 +102,6 @@ public interface IArchiveDaoManager extends IDaoManager {
      * @param composeStatements
      */
     void submitStatementToBatch(@Nonnull final String sqlStatement);
+
 
 }

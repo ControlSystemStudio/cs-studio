@@ -23,7 +23,6 @@ package org.csstudio.domain.desy.epics.types;
 
 import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -56,13 +55,13 @@ final class IStringValueConversionTypeSupport extends
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
                                                              @Nonnull final IStringValue value) throws TypeSupportException {
 
         final String[] values = value.getValues();
         if (values == null || values.length == 0) {
-            return null;
+            throw new TypeSupportException("IStringValue doesn't have any values. Conversion failed.", null);
         }
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),

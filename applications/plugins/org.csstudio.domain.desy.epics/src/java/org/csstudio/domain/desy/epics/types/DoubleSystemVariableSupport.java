@@ -74,7 +74,7 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
                                                               @Nonnull final Double value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new  EpicsSystemVariable<Double>(name, new CssValueType<Double>(value), system, timestamp, null);
+        return new  EpicsSystemVariable<Double>(name, new CssValueType<Double>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

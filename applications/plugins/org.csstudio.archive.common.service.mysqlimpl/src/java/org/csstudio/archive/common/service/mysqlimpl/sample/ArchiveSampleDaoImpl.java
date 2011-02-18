@@ -45,9 +45,8 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -351,12 +350,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   @CheckForNull final Double min,
                                                   @CheckForNull final Double max) throws ArchiveDaoException {
         // write for all samples_x (channel_id, sample_time, highest_severity_id, avg_val, min_val, max_val)
-        final ArchiveSeverityId sevId = null;
+//        final ArchiveSeverityId sevId = null;
 //        if (highestAlarm != null) {
 //            sevId = getDaoMgr().getSeverityDao().retrieveSeverityId(highestAlarm.getSeverity());
 //        }
 //        final int sevIdInt = sevId == null ? ArchiveSeverityId.NONE.intValue() : sevId.intValue();
-
         if (avg == null) {
             throw new ArchiveDaoException("Average value must not be null on write reduced samples.", null);
         }
@@ -385,17 +383,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
-        final String dataType = channel.getDataType();
-        final String channelName = channel.getName();
-        final ControlSystem system = channel.getControlSystem();
-        final ArchiveChannelId channelId = channel.getId();
-
         PreparedStatement stmt = null;
         try {
-            final DesyArchiveRequestType reqType = determineRequestType(type, dataType, s, e);
+            final DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
 
             stmt = dispatchRequestTypeToStatement(reqType);
-            stmt.setInt(1, channelId.intValue());
+            stmt.setInt(1, channel.getId().intValue());
             stmt.setTimestamp(2, new Timestamp(s.getMillis()));
             stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1000));
 
@@ -490,16 +483,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 //        final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.parseSeverity(sev.getName()),
 //                                                EpicsAlarmStatus.parseStatus(st.getName()));
         final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
-
-        final T v = SystemVariableSupport.create(channel.getName(),
-                                                 value,
-                                                 channel.getControlSystem(),
-                                                 timestamp);
-
+        final ISystemVariable<V> sysVar = SystemVariableSupport.create(channel.getName(),
+                                                                       value,
+                                                                       channel.getControlSystem(),
+                                                                       timeInstant);
 
         final ArchiveMinMaxSample<V, T> sample =
-            new ArchiveMinMaxSample<V, T>(channelId, data, min, max);
-
+            new ArchiveMinMaxSample<V, T>(channel.getId(), (T) sysVar, null, min, max);
         return sample;
     }
 

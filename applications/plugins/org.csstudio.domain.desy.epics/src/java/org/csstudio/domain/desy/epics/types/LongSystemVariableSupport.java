@@ -74,7 +74,7 @@ final class LongSystemVariableSupport extends EpicsSystemVariableSupport<Long> {
                                                               @Nonnull final Long value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Long>(name, new CssValueType<Long>(value), system, timestamp, null);
+        return new EpicsSystemVariable<Long>(name, new CssValueType<Long>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

@@ -57,11 +57,12 @@ final class ILongValueConversionTypeSupport extends
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
                                                              @Nonnull final ILongValue value) throws TypeSupportException {
         final long[] values = value.getValues();
         if (values == null || values.length == 0) {
-            return null;
+            throw new TypeSupportException("ILongValue doesn't have any values. Conversion failed.", null);
         }
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),

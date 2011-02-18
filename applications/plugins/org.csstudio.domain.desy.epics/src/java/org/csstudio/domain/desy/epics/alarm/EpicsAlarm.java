@@ -46,9 +46,12 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  */
 public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable {
 
+    public static final EpicsAlarm UNKNOWN = new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
+                                                            EpicsAlarmStatus.UNKNOWN);
     private static final String ALARM_PREFIX = "ALARM";
 
     private static final long serialVersionUID = -8711934153987547032L;
+
 
     private final EpicsAlarmSeverity _severity;
     private final EpicsAlarmStatus _status;
@@ -84,8 +87,6 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable 
     public EpicsAlarmStatus getStatus() {
         return _status;
     }
-
-
 
     /**
      * {@inheritDoc}

@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -58,31 +57,27 @@ final class IEnumeratedValueConversionTypeSupport extends
      * CHECKSTYLE OFF: CyclomaticComplexity (accepted here as we'll get rid of I*Values anyway)
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsSystemVariable<EpicsEnumTriple> convertToSystemVariable(@Nonnull final String name,
                                                                            @Nonnull final IEnumeratedValue value) throws TypeSupportException {
         // This is a nice example for what happens when physicists 'design' programs.
         // (...and I already got rid of an unsafe cast)
         final int[] values = value.getValues();
         if (values == null || values.length <= 0) {
-            LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!");
-            return null;
+            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!", null);
         }
         final IEnumeratedMetaData metaData = value.getMetaData();
         if (metaData == null) {
-            LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any metadata!");
-            return null;
+            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any metadata!", null);
         }
         final String[] states = metaData.getStates();
         final int index = values[0];
         if (states == null || index < 0 || index >= states.length) {
-            LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue's index cannot be linked to a state!");
-            return null;
+            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue's index cannot be linked to a state!", null);
         }
         final String state = states[index];
         if (StringUtil.isBlank(state)) {
-            LOG.warn("EnumeratedValue conversion failed, since IEnumeratedValue's state is null or empty string!");
-            return null;
+            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue's state is null or empty string!", null);
         }
 
         // Now I know that IEnumeratedValue has been concisely filled, yeah.

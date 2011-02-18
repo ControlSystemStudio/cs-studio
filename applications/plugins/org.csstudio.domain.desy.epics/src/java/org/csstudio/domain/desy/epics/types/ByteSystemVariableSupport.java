@@ -73,7 +73,7 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
                                                             @Nonnull final Byte value,
                                                             @Nonnull final ControlSystem system,
                                                             @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Byte>(name, new CssValueType<Byte>(value), system, timestamp, null);
+        return new EpicsSystemVariable<Byte>(name, new CssValueType<Byte>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

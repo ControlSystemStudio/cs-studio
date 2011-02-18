@@ -29,6 +29,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
@@ -67,7 +68,7 @@ public class EpicsSystemVariableSupportUnitTest {
                                             TimeInstantBuilder.buildFromNow(),
                                             new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double value = ((IDoubleValue) iVal).getValue();
@@ -87,7 +88,7 @@ public class EpicsSystemVariableSupportUnitTest {
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
 
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double value = ((IDoubleValue) iVal).getValue();
@@ -106,7 +107,7 @@ public class EpicsSystemVariableSupportUnitTest {
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -124,7 +125,7 @@ public class EpicsSystemVariableSupportUnitTest {
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -144,7 +145,7 @@ public class EpicsSystemVariableSupportUnitTest {
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof ILongValue);
         final long value = ((ILongValue) iVal).getValue();
@@ -161,7 +162,7 @@ public class EpicsSystemVariableSupportUnitTest {
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IDoubleValue);
         final double[] values = ((IDoubleValue) iVal).getValues();
@@ -181,7 +182,7 @@ public class EpicsSystemVariableSupportUnitTest {
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
-        final IValue iVal = EpicsSystemVariableSupport.toIValue(cssVal);
+        final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
         Assert.assertTrue(iVal instanceof IEnumeratedValue);
         final int[] values = ((IEnumeratedValue) iVal).getValues();

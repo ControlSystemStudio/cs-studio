@@ -24,7 +24,7 @@ package org.csstudio.archive.common.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
  * Read-only interface for archive sample.
@@ -34,7 +34,7 @@ import org.csstudio.domain.desy.system.IAlarmSystemVariable;
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample<V, T extends IAlarmSystemVariable<V>> {
+public interface IArchiveSample<V, T extends ISystemVariable<V>> {
 
     @Nonnull
     ArchiveChannelId getChannelId();

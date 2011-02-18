@@ -67,13 +67,13 @@ public class ArchiveChannel implements IArchiveChannel {
      * CHECKSTYLE OFF: ParameterNumber
      */
     public ArchiveChannel(@Nonnull final ArchiveChannelId id,
-                             @Nonnull final String name,
-                             @Nonnull final String type,
-                             @Nonnull final ArchiveChannelGroupId grpId,
-                             @Nonnull final ArchiveSampleModeId sampleModeId,
-                             final double smplPer,
-                             @Nullable final TimeInstant ltstTimestamp,
-                             @Nonnull final ControlSystem system) {
+                          @Nonnull final String name,
+                          @Nonnull final String type,
+                          @Nonnull final ArchiveChannelGroupId grpId,
+                          @Nonnull final ArchiveSampleModeId sampleModeId,
+                          final double smplPer,
+                          @Nullable final TimeInstant ltstTimestamp,
+                          @Nonnull final ControlSystem system) {
         // CHECKSTYLE  ON : ParameterNumber
         _id = id;
         _name = name;

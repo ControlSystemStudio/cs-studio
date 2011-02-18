@@ -101,7 +101,7 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                                               @Nonnull final Float value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Float>(name, new CssValueType<Float>(value), system, timestamp, null);
+        return new EpicsSystemVariable<Float>(name, new CssValueType<Float>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

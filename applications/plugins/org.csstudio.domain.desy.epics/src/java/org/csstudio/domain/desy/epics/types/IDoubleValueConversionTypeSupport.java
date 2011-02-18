@@ -54,11 +54,12 @@ final class IDoubleValueConversionTypeSupport extends
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
                                                              @Nonnull final IDoubleValue value) throws TypeSupportException {
         final double[] values = value.getValues();
         if (values == null || values.length == 0) {
-            return null;
+            throw new TypeSupportException("IValue doesn't have any values. Conversion failed.", null);
         }
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),

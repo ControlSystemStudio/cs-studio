@@ -22,7 +22,6 @@
 package org.csstudio.domain.desy.epics.alarm;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.system.AbstractAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -53,7 +52,16 @@ public class EpicsSystemVariable<T>
                                @Nonnull final ICssValueType<T> data,
                                @Nonnull final ControlSystem origin,
                                @Nonnull final TimeInstant timestamp,
-                               @Nullable final EpicsAlarm alarm) {
+                               @Nonnull final EpicsAlarm alarm) {
         super(name, data, origin, timestamp, alarm);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public EpicsAlarm getAlarm() {
+        return super.getAlarm();
     }
 }

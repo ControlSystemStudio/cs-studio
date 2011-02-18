@@ -88,7 +88,7 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                                             @Nonnull final EpicsEnumTriple value,
                                                             @Nonnull final ControlSystem system,
                                                             @Nonnull final TimeInstant timestamp) {
-        return new  EpicsSystemVariable<EpicsEnumTriple>(name, new CssValueType<EpicsEnumTriple>(value), system, timestamp, null);
+        return new  EpicsSystemVariable<EpicsEnumTriple>(name, new CssValueType<EpicsEnumTriple>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**

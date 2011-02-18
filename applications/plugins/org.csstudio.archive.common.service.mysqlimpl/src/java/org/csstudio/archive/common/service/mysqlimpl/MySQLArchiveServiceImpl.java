@@ -51,6 +51,7 @@ import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.TypeSupportException;
@@ -107,7 +108,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 final V min = from.getMinimum();
                 final V max = from.getMaximum();
                 if (min != null && max != null) {
-                    return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
+                    return SystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
+                    //return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
                 }
                 return EpicsSystemVariableSupport.toIValue(from.getSystemVariable());
             } catch (final TypeSupportException e) {

@@ -22,7 +22,6 @@
 package org.csstudio.domain.desy.epics.types;
 
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -69,7 +68,7 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
         INSTALLED = true;
     }
 
-    @CheckForNull
+    @Nonnull
     protected abstract EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
                                                                       @Nonnull final T value) throws TypeSupportException;
 }
