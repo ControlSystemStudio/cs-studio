@@ -52,7 +52,7 @@ static class TextIndicatorEditCommand extends Command	{
 	
 	public void execute() {
 		oldText = label.getText();
-		label.setText(newText);
+		label.setPropertyValue(TextIndicatorModel.PROP_TEXT, newText, true);//setText(newText);
 	}
 	
 	public void undo() {
