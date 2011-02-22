@@ -157,6 +157,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	
 	private ConnectionHandler connectionHandler;
+
+
+	private List<ScriptData> scriptDataList;
 	
 	@Override
 	public void activate() {
@@ -193,7 +196,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				//script and rules execution
 				pvMap.clear();				
 				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();	
-				List<ScriptData> scriptDataList = new ArrayList<ScriptData>(scriptsInput.getScriptList());
+				scriptDataList = new ArrayList<ScriptData>(scriptsInput.getScriptList());
 				for(RuleData rd : getWidgetModel().getRulesInput().getRuleDataList()){
 					scriptDataList.add(rd.convertToScriptData());
 				}
@@ -282,7 +285,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			for(String id : getWidgetModel().getAllPropertyIDs()){
 				getWidgetModel().getProperty(id).removeAllPropertyChangeListeners();//removePropertyChangeListener(propertyListenerMap.get(id));				
 			}
-			if(executionMode == ExecutionMode.RUN_MODE){					
+			if(executionMode == ExecutionMode.RUN_MODE){	
+				//remove script listeners before stopping PV.
+				for(ScriptData scriptData : scriptDataList){
+					ScriptService.getInstance().unRegisterScript(scriptData);
+				}
 				for(PV pv : pvMap.values())
 					pv.stop();
 			}			
