@@ -1,5 +1,5 @@
 #!/bin/bash
-MANIFESTLIST=`find .. | grep MANIFEST.MF | sort`
+MANIFESTLIST=`find .. | grep MANIFEST.MF | grep -v "/build/" | sort`
 
 #echo "<html>"
 #echo "<body>"
