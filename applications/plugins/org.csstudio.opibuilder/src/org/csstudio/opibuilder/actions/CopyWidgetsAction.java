@@ -72,7 +72,6 @@ public class CopyWidgetsAction extends SelectionAction {
 				new Transfer[]{OPIWidgetsTransfer.getInstance()});
 		Display.getCurrent().asyncExec(new Runnable() {
 			
-			@Override
 			public void run() {
 				IAction pasteAction = ((ActionRegistry)((OPIEditor)getWorkbenchPart()).getAdapter(ActionRegistry.class)).
 				getAction(ActionFactory.PASTE.getId());
