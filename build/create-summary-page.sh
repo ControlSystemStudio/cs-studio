@@ -57,14 +57,14 @@ do
   echo "  <td>" $MANIFEST "</td>"
   echo "  </tr>"
 done
+echo "</table>"
 
-if [ -n $BUILD_TAG ]
+if [ -n "$BUILD_TAG" ]
 then
   echo "<p>Built by Jenkins (" $BUILD_TAG ")</p>"
 fi
 echo "<p>Built by parsing each plugin's MANIFEST.MF, using properties Bundle-Name, Bundle-Version, Bundle-Vendor, Bundle-Description</p>"
 
-echo "</table>"
 echo "</body>"
 echo "</html>"
 
