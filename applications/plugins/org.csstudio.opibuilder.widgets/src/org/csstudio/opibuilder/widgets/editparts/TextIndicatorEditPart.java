@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
-	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
+	public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 	
 	private TextIndicatorModel widgetModel;
 	private FormatEnum format;
@@ -53,13 +53,17 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		precision = widgetModel.getPrecision();
 		
 		
-		TextFigure labelFigure = new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
+		TextFigure labelFigure = createTextFigure(); 
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				widgetModel.getFont().getFontData()));
 		labelFigure.setOpaque(!widgetModel.isTransparent());
 		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		return labelFigure;
+	}
+	
+	protected TextFigure createTextFigure(){
+		return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 	
 	@Override
@@ -254,11 +258,11 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 * @param newValue
 	 * @return
 	 */
-	private void formatValue(Object newValue, String propId, IFigure figure) {
+	protected String formatValue(Object newValue, String propId, IFigure figure) {
 		
 		
 		if(getExecutionMode() != ExecutionMode.RUN_MODE)
-			return;
+			return null;
 		IValue value = null;
 			
 
@@ -281,11 +285,21 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			break;
 		case HEX:	
 			if(value instanceof IDoubleValue)
-				text = HEX_PREFIX + Long.toHexString((long) ((IDoubleValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString((int) ((IDoubleValue)value).getValue()).toUpperCase();
 			else if(value instanceof ILongValue)
-				text = HEX_PREFIX + Long.toHexString(((ILongValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString((int) ((ILongValue)value).getValue()).toUpperCase();
 			else if(value instanceof IEnumeratedValue)
-				text = HEX_PREFIX + Integer.toHexString(((IEnumeratedValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
+			else
+				text = value.format();			
+			break;
+		case HEX64:
+			if(value instanceof IDoubleValue)
+				text = HEX_PREFIX + Long.toHexString((long) ((IDoubleValue)value).getValue()).toUpperCase();
+			else if(value instanceof ILongValue)
+				text = HEX_PREFIX + Long.toHexString((long) ((ILongValue)value).getValue()).toUpperCase();
+			else if(value instanceof IEnumeratedValue)
+				text = HEX_PREFIX + Long.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
 			else
 				text = value.format();			
 			break;
@@ -309,6 +323,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		if(isAutoSize)
 			performAutoSize(figure);
 		
+		return text;
 	}
 
 	@Override

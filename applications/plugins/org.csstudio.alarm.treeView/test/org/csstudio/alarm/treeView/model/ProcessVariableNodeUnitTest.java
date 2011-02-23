@@ -126,6 +126,21 @@ public class ProcessVariableNodeUnitTest {
     }
 
     @Test
+    public void testPropertyWithUrlProtocol() throws Exception {
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
+        assertEquals("file:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "/foo");
+        assertEquals("file:/foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "http:foo");
+        assertEquals("http:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "xttp:foo");
+        assertEquals("xttp:foo", _node.getInheritedPropertyWithUrlProtocol(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+    }
+
+    @Test
     public void testProcessVariableNodeListener() throws Exception {
         final StringBuilder wasAddedString = new StringBuilder();
         final StringBuilder wasRemovedString = new StringBuilder();

@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy.time;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -28,6 +30,8 @@ import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 
 /**
@@ -46,9 +50,19 @@ import org.joda.time.format.DateTimeFormatter;
  * @author bknerr
  * @since 16.11.2010
  */
-public final class TimeInstant implements Comparable<TimeInstant> {
+public final class TimeInstant implements Comparable<TimeInstant>, Serializable {
 
-    public static final DateTimeFormatter STD_TIME_FMT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private static final long serialVersionUID = 3157468437971986526L;
+
+    public static final DateTimeFormatter STD_TIME_FMT =
+        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final PeriodFormatter STD_DURATION_FMT =
+        new PeriodFormatterBuilder().appendHours()
+                                    .appendSuffix(":")
+                                    .appendMinutes()
+                                    .appendSuffix(":")
+                                    .appendSeconds()
+                                    .toFormatter();
 
     private static final int NANOS_PER_SECOND = 1000000000;
     private static final int NANOS_PER_MILLIS = 1000000;
@@ -314,6 +328,7 @@ public final class TimeInstant implements Comparable<TimeInstant> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String toString() {
         return formatted() + "." + _fracMillisInNanos;
     }

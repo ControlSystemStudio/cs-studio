@@ -22,6 +22,11 @@
 package org.csstudio.domain.desy.alarm;
 
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.system.ControlSystemType;
+
+
 /**
  * Interface of an alarm.
  *
@@ -34,7 +39,8 @@ package org.csstudio.domain.desy.alarm;
  * implementation.
  *
  * TODO (bknerr, jhatje, jpenning, hrickens) : The 'identifiable system feature' may be
- * {@link IProcessVariable} or {@link IControlSystemItem} or any of the many others. I introduced
+ * {@link org.csstudio.platform.model.IProcessVariable} or
+ * {@link org.csstudio.platform.model.IControlSystemItem} or any of the many others. I introduced
  * {@link org.csstudio.domain.desy.system.ISystemVariable} for now, was not sure which one if any to take.
  * Gabriele has a very strong library (pvmanager), but it is not conceptually based around
  * identifiable system variables.
@@ -42,6 +48,15 @@ package org.csstudio.domain.desy.alarm;
  * @author bknerr
  * @since 04.11.2010
  */
-public interface IAlarm {
-    // Marker
+public interface IAlarm /* extends Alarm */ {
+
+/*    *//**
+     * Any system may have its specific info that does not quite match the general Alarm stuff.
+     * @return
+     *//*
+    @Nonnull
+    IAlarm parseFrom(@Nonnull final String strRep) throws Exception; // TODO (bknerr) : dedicatd exception
+*/
+    @Nonnull
+    ControlSystemType getControlSystemType();
 }

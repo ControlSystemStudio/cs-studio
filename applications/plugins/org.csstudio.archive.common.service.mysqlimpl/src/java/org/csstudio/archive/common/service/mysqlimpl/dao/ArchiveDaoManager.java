@@ -42,6 +42,7 @@ import java.util.SortedSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -55,6 +56,8 @@ import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoIm
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
@@ -69,6 +72,7 @@ import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
@@ -84,73 +88,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
     INSTANCE;
 
-////    public interface IDaoCommand {
-////        @CheckForNull
-////        Object execute(@Nonnull final IDaoManager daoManager) throws ArchiveDaoException;
-////    }
-//    public interface IArchiveDaoCommand {
-//        @CheckForNull
-//        Object execute(IArchiveDaoManager daoManager) throws ArchiveDaoException;
-//    }
-//
-//    @Override
-//    public Object execute(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//            return command.execute(this);
-//    }
-//
-//    @Override
-//    public Object executeAndClose(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        try{
-//            return command.execute(this);
-//        } finally {
-//            try {
-//                getConnection().close();
-//            } catch (final ArchiveConnectionException e) {
-//                throw new ArchiveDaoException("Connection could not be established.", e);
-//            } catch (final SQLException e) {
-//                throw new ArchiveDaoException("Connection could not be closed.", e);
-//            }
-//        }
-//    }
-//    @Override
-//    public Object transaction(final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        Connection connection = null;
-//        try {
-//            try {
-//                connection = getConnection();
-//                connection.setAutoCommit(false);
-//                final Object returnValue = command.execute(this);
-//                connection.commit();
-//                return returnValue;
-//            } catch (final Exception e) {
-//                if (connection != null) {
-//                    LOG.warn("DAO command execution failed. Rollback.", e);
-//                    connection.rollback();
-//                }
-//                throw new ArchiveDaoException("DAO command failed but has been rollbacked", e);
-//            } finally {
-//                if (connection != null) {
-//                    connection.setAutoCommit(true);
-//                }
-//            }
-//        } catch (final SQLException e1) {
-//            throw new ArchiveDaoException("DAO command and rollback failed", e1);
-//        }
-//    }
-//    @CheckForNull
-//    public Object transactionAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException {
-//        return executeAndClose(new IArchiveDaoCommand(){
-//            @Override
-//            @CheckForNull
-//            public Object execute(@Nonnull final IArchiveDaoManager manager) throws ArchiveDaoException {
-//                return manager.transaction(command);
-//            }
-//        });
-//    }
-
-    private static final int MIN_PERIOD_S = 1;
-    private static final int MAX_PERIOD_S = 60;
-    private static final int DEFAULT_PERIOD_S = 5;
+    private static final int MIN_PERIOD_MS = 3000;
+    private static final int MAX_PERIOD_MS = 60000;
+    private static final int DEFAULT_PERIOD_MS = 5000;
     private static final int KBYTE_SIZE = 1024;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -163,25 +103,29 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     // get no of cpus and expected no of archive engines, and available archive connections
     private final int _cpus = Runtime.getRuntime().availableProcessors();
     private final ScheduledThreadPoolExecutor _executor =
-        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
-    private final SortedSet<PersistDataWorker> _submittedWorkers = Sets.newTreeSet(new Comparator<PersistDataWorker>() {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int compare(@Nonnull final PersistDataWorker arg0, @Nonnull final PersistDataWorker arg1) {
-            return Long.valueOf(arg0.getPeriod()).compareTo(Long.valueOf(arg1.getPeriod()));
-        }
-    });
-
-    private final SqlStatementBatch _sqlStatementBatch;
-
+//        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
+    (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
+    /**
+     * Sorted set for submitted periodic workers - decreasing by period
+     */
+    private final SortedSet<PersistDataWorker> _submittedWorkers =
+        Sets.newTreeSet(new Comparator<PersistDataWorker>() {
+                            /**
+                             * {@inheritDoc}
+                             */
+                            @Override
+                            public int compare(@Nonnull final PersistDataWorker arg0,
+                                               @Nonnull final PersistDataWorker arg1) {
+                                return Long.valueOf(arg0.getPeriodInMS()).compareTo(Long.valueOf(arg1.getPeriodInMS()));
+                            }
+                        });
+    AtomicInteger _workerId = new AtomicInteger(0);
 
     /**
-     * Any thread owns a connection.
+     * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL
+     * statements.
      */
-    private final ThreadLocal<Connection> _archiveConnection =
-        new ThreadLocal<Connection>();
+    private final SqlStatementBatch _sqlStatementBatch;
 
     /**
      * DAOs.
@@ -194,6 +138,18 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private IArchiveSampleModeDao _archiveSampleModeDao;
     private IArchiveSeverityDao _archiveSeverityDao;
     private IArchiveStatusDao _archiveStatusDao;
+    private IArchiveControlSystemDao _archiveControlSystemDao;
+
+    /**
+     * The datasource that specifies the connections.
+     */
+    private MysqlDataSource _dataSource;
+
+    /**
+     * Any thread owns a connection.
+     */
+    private final ThreadLocal<Connection> _archiveConnection =
+        new ThreadLocal<Connection>();
 
     /**
      * Prefs from plugin_customization.
@@ -204,13 +160,12 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
-    private Integer _prefPeriodInS;
+    private Integer _prefPeriodInMS;
     private Integer _prefMaxAllowedPacketInBytes;
 
     private String _prefMailHost;
     private String _prefEmailReceiver;
 
-    private MysqlDataSource _dataSource;
 
     /**
      * Constructor.
@@ -236,16 +191,18 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         _prefUser = USER.getValue();
         _prefPassword = PASSWORD.getValue();
 
-        _prefPeriodInS = MySQLArchiveServicePreference.PERIOD.getValue();
-        if (_prefPeriodInS < MIN_PERIOD_S || _prefPeriodInS > MAX_PERIOD_S) {
+        _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
+        if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
             LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-                     MIN_PERIOD_S + "," + MAX_PERIOD_S+ "]." +
-                     "Set to " + DEFAULT_PERIOD_S + "s.");
-            _prefPeriodInS = DEFAULT_PERIOD_S;
+                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
+                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
+            _prefPeriodInMS = DEFAULT_PERIOD_MS;
         }
 
         final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
-        if (maxAllowedPacketInKB < KBYTE_SIZE || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
+
+        // TODO (bknerr) : test code for minimum size
+        if (maxAllowedPacketInKB < 1 || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
             LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
                      KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
             _prefMaxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
@@ -284,34 +241,37 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             /**
              * {@inheritDoc}
              */
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
-                // submit an executor that processes immediately what's left in the queue
-                _executor.execute(new PersistDataWorker("ShutdownWorker",
-                                                        _sqlStatementBatch.getQueue(),
-                                                        Integer.valueOf(0)));
-                _executor.shutdown(); // gracefully shutdown (wait for all formerly submitted workers to finish
-                try {
-                    if (!_executor.awaitTermination(_prefPeriodInS + 1, TimeUnit.SECONDS)) {
-                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                        final List<Runnable> droppedTasks = _executor.shutdownNow();
-                        LOG.warn("Executor was abruptly shut down. " + droppedTasks.size() + " tasks will not be executed."); //optional **
+                if (!_executor.isTerminating()) {
+                    _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
+                                                            _sqlStatementBatch,
+                                                            Integer.valueOf(0)));
+                    _executor.shutdown();
+                    try {
+                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
+                            LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                            final List<String> statements = Lists.newLinkedList();
+                            _sqlStatementBatch.getQueue().drainTo(statements);
+                            rescueData(statements);
+                        }
+                    } catch (final InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
-                } catch (final InterruptedException e) {
-                    Thread.currentThread().interrupt();
                 }
             }
         });
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("FixedRateWorker:" + _submittedWorkers.size(),
-                                                                  _sqlStatementBatch.getQueue(),
-                                                                  _prefPeriodInS);
+        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
+                                                                  _sqlStatementBatch,
+                                                                  _prefPeriodInMS);
         _executor.scheduleAtFixedRate(newWorker,
-                                      0,
-                                      newWorker.getPeriod(),
-                                      TimeUnit.SECONDS);
+                                      0L,
+                                      newWorker.getPeriodInMS(),
+                                      TimeUnit.MILLISECONDS);
         _submittedWorkers.add(newWorker);
     }
 
@@ -350,23 +310,26 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         // Is it necessary?
         if (_sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes) {
             // Yes, is still space in the pool for another worker?
-            if (_executor.getPoolSize() < _executor.getCorePoolSize()) {
+            final int poolSize = _executor.getPoolSize();
+            final int corePoolSize = _executor.getCorePoolSize();
+            if (poolSize < corePoolSize) {
                 return true; // Yes
             } else {
                 // No, but perhaps we could enhance the frequency of the scheduled tasks?
                 final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
                 final PersistDataWorker oldestWorker = it.next();
-                final long period = oldestWorker.getPeriod();
-                if (Long.valueOf(period).intValue() <= _prefPeriodInS) {
+                final long period = oldestWorker.getPeriodInMS();
+                if (Long.valueOf(period).intValue() <= MIN_PERIOD_MS) {
                     // No
                     // FIXME (bknerr) : handle pool and thread frequency exhaustion
                     // notify staff, rescue data to disc with dedicated worker
                     return false;
                 }
                 // Yes, lower the frequency and remove the oldest periodic worker, return true
-                _prefPeriodInS = Math.max(_prefPeriodInS>>1, MIN_PERIOD_S);
-                _executor.remove(oldestWorker);
-                it.remove();
+                _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
+                LOG.info("Remove Worker: " + oldestWorker.getName());
+//                _executor.remove(oldestWorker);
+//                it.remove();
                 return true;
             }
         }
@@ -378,7 +341,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * @param statements
      */
     void rescueData(@Nonnull final List<String> statements) {
-        LOG.info("Failed statements" + statements.size());
+        LOG.info("Rescue statements " + statements.size());
 
         EMailSender mailer;
         try {
@@ -388,7 +351,7 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
                                      "[MySQL archiver notification]: Failed failover");
             mailer.addText("Statements rescued:\n");
             for (final String stmt : statements) {
-                //mailer.addText(stmt);
+                mailer.addText(stmt + "\n");
             }
             mailer.close();
         } catch (final IOException e) {
@@ -449,8 +412,8 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * To reduce the readability of the invoking method. Catches checked exceptions, wraps them in
      * dedicated abstraction level exception. Rethrows any other exception as new RuntimeException.
      *
-     * @param e
-     * @throws Throwable
+     * @param e Exception to handle
+     * @throws RuntimeException wrapper for unhandled exception
      */
     private void handleExceptions(@Nonnull final Exception e) throws ArchiveConnectionException {
         try {
@@ -468,10 +431,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         }
     }
 
-//    public void reconnect() throws ArchiveConnectionException {
-//        connect(createDataSource());
-//    }
-
     /**
      * Disconnects the connection for the owning thread.
      * @throws ArchiveConnectionException
@@ -480,7 +439,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         final Connection connection = _archiveConnection.get();
         if (connection != null) {
             try {
-                _executor.shutdown(); // handles all already submitted tasks
                 connection.close();
                 _archiveConnection.set(null);
             } catch (final SQLException e) {
@@ -612,5 +570,17 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
             _archiveStatusDao = new ArchiveStatusDaoImpl(this);
         }
         return _archiveStatusDao;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public IArchiveControlSystemDao getControlSystemDao() {
+        if (_archiveControlSystemDao == null) {
+            _archiveControlSystemDao = new ArchiveControlSystemDaoImpl(this);
+        }
+        return _archiveControlSystemDao;
     }
 }

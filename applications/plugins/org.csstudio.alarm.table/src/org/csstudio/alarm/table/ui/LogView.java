@@ -52,6 +52,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -420,14 +421,10 @@ public class LogView extends ViewPart {
     void addControlListenerToColumns(final String colSetPref, final String topicSetPref) {
         final TableColumn[] columns = _tableViewer.getTable().getColumns();
         for (final TableColumn tableColumn : columns) {
-            tableColumn.addControlListener(new ControlListener() {
-
+            tableColumn.addControlListener(new ControlAdapter() {
+                @Override
                 public void controlResized(final ControlEvent e) {
                     _columnMapping.saveColumn(colSetPref, topicSetPref);
-                }
-
-                public void controlMoved(final ControlEvent e) {
-                    // do nothing
                 }
             });
         }

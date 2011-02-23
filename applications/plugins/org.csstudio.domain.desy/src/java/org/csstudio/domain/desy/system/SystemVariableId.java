@@ -34,6 +34,11 @@ public class SystemVariableId extends Id<SystemVariableId> {
     private static final long serialVersionUID = 5396769641454253229L;
 
     /**
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
+     */
+    public static final SystemVariableId NONE = new SystemVariableId(-1L);
+
+    /**
      * Constructor.
      * @param id the id
      */

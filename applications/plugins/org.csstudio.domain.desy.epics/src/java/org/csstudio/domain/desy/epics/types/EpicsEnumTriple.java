@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -63,16 +64,20 @@ public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
      * @param second
      * @param third
      */
-    protected EpicsEnumTriple(final Integer first, final String second, final Integer third) {
+    protected EpicsEnumTriple(@Nonnull final Integer first,
+                              @Nonnull final String second,
+                              @Nullable final Integer third) {
         super(first, second, third);
     }
-
+    @Nonnull
     public Integer getIndex() {
         return super.getFirst();
     }
+    @Nonnull
     public String getState() {
         return super.getSecond();
     }
+    @CheckForNull
     public Integer getRaw() {
         return super.getThird();
     }
@@ -82,6 +87,11 @@ public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
      */
     @Override
     public String toString() {
-        return "(" + Joiner.on(",").join(getIndex(), getState(), getRaw()) + ")";
+        final Integer raw = getRaw();
+        String rawStr = "null";
+        if (raw != null) {
+            rawStr = raw.toString();
+        }
+        return "(" + Joiner.on(",").join(getIndex(), getState(), rawStr) + ")";
     }
 }

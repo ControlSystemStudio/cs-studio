@@ -1,0 +1,2698 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>800</height>
+  <name>Display</name>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>1000</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>6</grid_space>
+  <actions hook="false" />
+  <y>-1</y>
+  <x>-1</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_1</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_2</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_3</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_4</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_5</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_6</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_7</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_8</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_9</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_10</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_11</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemo1</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_1</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoLongIn</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_2</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoState</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_3</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoStringIn</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_4</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoBI</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_12</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_13</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_14</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_5</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Display</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>126</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_6</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Decimal</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>90</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>394</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_7</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Default</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>258</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_15</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_16</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_17</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_18</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_19</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_8</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Exponential</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>90</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>515</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_20</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_21</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_22</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_23</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_24</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_9</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>HEX</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>90</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>635</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_25</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemo1</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>78</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_26</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoLongIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>114</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_27</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoState</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>150</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_28</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoStringIn</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>186</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_29</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoBI</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>222</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_10</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>String</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>90</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>48</y>
+    <tooltip />
+    <x>761</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_11</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoMbbi</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_30</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_31</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_32</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_33</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_34</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_35</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoMbbi</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>258</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_12</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoCompress</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_36</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_37</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_38</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_39</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_40</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_41</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoCompress</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>288</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <name>Label_13</name>
+    <transparent>true</transparent>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>EpicsDemoWaveform</text>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>121</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip />
+    <x>11</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_42</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>137</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_43</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>269</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_44</name>
+    <format_type>1</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>389</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_45</name>
+    <format_type>2</format_type>
+    <precision_from_pv>false</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>3</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>510</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_46</name>
+    <format_type>3</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color name="Major" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>630</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Input_47</name>
+    <format_type>4</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>EpicsDemoWaveform</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Input</widget_type>
+    <enabled>true</enabled>
+    <text />
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>3</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>0</horizontal_alignment>
+    <actions hook="false" />
+    <y>318</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>756</x>
+  </widget>
+</display>

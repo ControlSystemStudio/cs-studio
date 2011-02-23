@@ -53,8 +53,6 @@ public class Activator implements BundleActivator {
 
     private static Activator INSTANCE;
 
-
-
     /**
      * Don't instantiate.
      * Called by framework.
@@ -102,8 +100,8 @@ public class Activator implements BundleActivator {
                                 propsWr);
 
         final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
-        propsWr.put("service.vendor", "DESY");
-        propsWr.put("service.description", "MySQL archive reader service implementation");
+        propsRd.put("service.vendor", "DESY");
+        propsRd.put("service.description", "MySQL archive reader service implementation");
         LOG.info("Register MySQL archive reader service");
 
         context.registerService(IArchiveReaderService.class.getName(),

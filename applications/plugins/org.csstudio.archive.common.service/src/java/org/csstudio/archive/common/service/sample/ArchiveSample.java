@@ -21,11 +21,13 @@
  */
 package org.csstudio.archive.common.service.sample;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
  * Data transfer object for sample.
@@ -36,18 +38,23 @@ import org.csstudio.domain.desy.types.ITimedCssValueType;
  * @param <T> the css value type with alarm information
  */
 public class ArchiveSample<V,
-                           T extends ITimedCssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
+                           T extends ISystemVariable<V>> implements IArchiveSample<V, T> {
+
+    private static final long serialVersionUID = -2244316283884247177L;
 
     private final ArchiveChannelId _channelId;
-    private final T _value;
+    private final T _sysVar;
+    private final IAlarm _alarm;
 
     /**
      * Constructor.
      */
     public ArchiveSample(@Nonnull final ArchiveChannelId channelId,
-                          @Nonnull final T data) {
+                         @Nonnull final T data,
+                         @Nullable final IAlarm alarm) {
         _channelId = channelId;
-        _value = data;
+        _sysVar = data;
+        _alarm = alarm;
     }
 
     /**
@@ -62,8 +69,20 @@ public class ArchiveSample<V,
      * {@inheritDoc}
      */
     @Override
-    public T getData() {
-        return _value;
+    public T getSystemVariable() {
+        return _sysVar;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public V getValue() {
+        return _sysVar.getData().getValueData();
+    }
+
+    @CheckForNull
+    public IAlarm getAlarm() {
+        return _alarm;
+    }
 }

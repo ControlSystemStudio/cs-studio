@@ -23,7 +23,6 @@ package org.csstudio.domain.desy.system;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
 import org.csstudio.domain.desy.time.IHasTimeStamp;
 import org.csstudio.domain.desy.types.ICssValueType;
 
@@ -41,11 +40,9 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @author bknerr
  * @since 04.11.2010
  *
- * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<V, T extends ICssValueType<V>> extends IHasTimeStamp,
-                                                                        Identifiable<SystemVariableId> {
+public interface ISystemVariable<T> extends IHasTimeStamp {
 
     /**
      * The descriptive (and usually but not necessarily) unique name for this variable in the
@@ -60,7 +57,7 @@ public interface ISystemVariable<V, T extends ICssValueType<V>> extends IHasTime
      * @return the variable
      */
     @Nonnull
-    T getData();
+    ICssValueType<T> getData();
 
     /**
      * The control system in whose context this variable exists.

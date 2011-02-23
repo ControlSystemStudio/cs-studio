@@ -21,7 +21,9 @@
  */
 package org.csstudio.domain.desy.system;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -33,99 +35,36 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @author bknerr
  * @since 09.02.2011
  *
- * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  * @param <A> the type of the alarm
  */
-public abstract class AbstractAlarmSystemVariable<V,
-                                                  T extends ICssValueType<V>,
-                                                  A extends IAlarm>  implements IAlarmSystemVariable<V, T> {
+public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
+    extends AbstractSystemVariable<T> implements IAlarmSystemVariable<T> {
 
-
-
-
-    private final SystemVariableId _id;
-    private final String _name;
-    private final T _data;
-    private final ControlSystem _origin;
     private final A _alarm;
-    private final TimeInstant _timestamp;
 
     /**
      * Constructor.
      */
     public AbstractAlarmSystemVariable(@Nonnull final String name,
-                                       @Nonnull final T data,
+                                       @Nonnull final ICssValueType<T> data,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
-                                       @Nonnull final A alarm) {
-        // generate uid for any system variable instead of -1
-        _id = new SystemVariableId(-1);
-
-        _name = name;
-        _data = data;
-        _origin = origin;
-        _timestamp = time;
+                                       @Nullable final A alarm) {
+        super(name, data, origin, time);
         _alarm = alarm;
-
         // plausibility check
-//        if (!_origin.getType().getClass().isAssignableFrom(alarm.getClass()) {
-//            throw new IllegalArgumentException("Control system type and alarm type do not match.");
-//        }
+        if (!origin.getType().equals(alarm.getControlSystemType())) {
+            throw new IllegalArgumentException("Control system type and alarm type do not match.");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public SystemVariableId getId() {
-        return _id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public T getData() {
-        return _data;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ControlSystem getOrigin() {
-        return _origin;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
+    @CheckForNull
     public A getAlarm() {
         return _alarm;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getName() {
-        return _name;
-    }
-
 }

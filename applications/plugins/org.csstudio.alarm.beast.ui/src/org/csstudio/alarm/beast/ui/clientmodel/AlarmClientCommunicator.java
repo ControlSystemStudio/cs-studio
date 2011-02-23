@@ -60,6 +60,12 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         {
             model.updatePV(info);
         }
+
+        @Override
+        public String toString()
+        {
+            return info.toString();
+        }
     }
 
     /** Action to enable/disable a PV */

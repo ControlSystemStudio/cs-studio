@@ -23,10 +23,8 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.common.collect.Ordering;
@@ -49,8 +47,8 @@ public class SampleAggregator {
     private Double _lastWrittenValue;
     private TimeInstant _lastSampleTimeStamp;
     private TimeInstant _resetTimeStamp;
-    private EpicsAlarm _highestAlarm;
-    private EpicsAlarm _lowestAlarm;
+//    private EpicsAlarm _highestAlarm;
+//    private EpicsAlarm _lowestAlarm;
 
 
     /**
@@ -60,7 +58,7 @@ public class SampleAggregator {
      * @param timestamp
      */
     public SampleAggregator(@Nonnull final Double firstVal,
-                            @Nullable final EpicsAlarm firstAlarm,
+//                            @Nullable final EpicsAlarm firstAlarm,
                             @Nonnull final TimeInstant timestamp) {
 
         _avg.accumulate(firstVal);
@@ -69,28 +67,28 @@ public class SampleAggregator {
         _maxVal = firstVal;
         _lastWrittenValue = null;
 
-        _highestAlarm = firstAlarm;
-        _lowestAlarm = firstAlarm;
+//        _highestAlarm = firstAlarm;
+//        _lowestAlarm = firstAlarm;
         _lastSampleTimeStamp = timestamp;
         _resetTimeStamp = _lastSampleTimeStamp;
     }
 
     void aggregateNewVal(@Nonnull final Double newVal,
-                         @Nonnull final EpicsAlarm alarm,
+//                         @Nonnull final EpicsAlarm alarm,
                          @Nonnull final TimeInstant timestamp) {
-        aggregateNewVal(newVal, alarm, newVal, newVal, timestamp);
+        aggregateNewVal(newVal, /*alarm,*/ newVal, newVal, timestamp);
     }
 
     void aggregateNewVal(@Nonnull final Double newVal,
-                         @Nonnull final EpicsAlarm alarm,
+//                         @Nonnull final EpicsAlarm alarm,
                          @Nonnull final Double min,
                          @Nonnull final Double max,
                          @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(newVal);
         _minVal = Ordering.natural().nullsLast().min(newVal, min, max, _minVal);
         _maxVal = Ordering.natural().nullsFirst().max(newVal, min, max, _maxVal);
-        _lowestAlarm = Ordering.natural().nullsLast().max(alarm, _lowestAlarm);
-        _highestAlarm = Ordering.natural().nullsFirst().max(alarm, _highestAlarm);
+//        _lowestAlarm = Ordering.natural().nullsLast().max(alarm, _lowestAlarm);
+//        _highestAlarm = Ordering.natural().nullsFirst().max(alarm, _highestAlarm);
         _lastSampleTimeStamp = timestamp;
     }
 
@@ -106,8 +104,8 @@ public class SampleAggregator {
         _lastWrittenValue = _avg.getValue();
         _minVal = null;
         _maxVal = null;
-        _highestAlarm = null;
-        _lowestAlarm = null;
+//        _highestAlarm = null;
+//        _lowestAlarm = null;
 
         _avg.clear();
     }
@@ -123,10 +121,10 @@ public class SampleAggregator {
     public Double getMax() {
         return _maxVal;
     }
-    @CheckForNull
-    public EpicsAlarm getHighestAlarm() {
-        return _highestAlarm;
-    }
+//    @CheckForNull
+//    public EpicsAlarm getHighestAlarm() {
+//        return _highestAlarm;
+//    }
     @CheckForNull
     public Double getAverageBeforeReset() {
         return _lastWrittenValue;

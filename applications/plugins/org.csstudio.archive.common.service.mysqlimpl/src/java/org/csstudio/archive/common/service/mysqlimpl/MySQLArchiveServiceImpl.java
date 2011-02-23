@@ -49,12 +49,11 @@ import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsCssValueTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariableSupport;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
 import org.csstudio.domain.desy.types.TypeSupportException;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -82,13 +81,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
 
     INSTANCE;
 
-    /**
-     * Constructor.
-     */
-    private MySQLArchiveServiceImpl() {
-        ArchiveTypeConversionSupport.install();
-        EpicsCssValueTypeSupport.install();
-    }
+    static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
+    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+
 
     /**
      * Static converter function.
@@ -96,8 +91,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      * @author bknerr
      * @since 22.12.2010
      */
-    private static final class ArchiveSampleToIValueFunction implements
-            Function<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>, IValue> {
+    private static final class ArchiveSampleToIValueFunction<V> implements
+            Function<IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>, IValue> {
         /**
          * Constructor.
          */
@@ -107,35 +102,40 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
 
         @Override
         @CheckForNull
-        public IValue apply(@Nonnull final IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>> from) {
+        public IValue apply(@Nonnull final IArchiveMinMaxSample<V, IAlarmSystemVariable<V>> from) {
             try {
                 // TODO (bknerr) : support lookup for every single value... check performance
-                final Object min = from.getMinimum();
-                final Object max = from.getMaximum();
+                final V min = from.getMinimum();
+                final V max = from.getMaximum();
                 if (min != null && max != null) {
-                    return EpicsCssValueTypeSupport.toIMinMaxDoubleValue(from.getData(), min, max);
+                    return SystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
+                    //return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
                 }
-                return EpicsCssValueTypeSupport.toIValue(from.getData());
+                return EpicsSystemVariableSupport.toIValue(from.getSystemVariable());
             } catch (final TypeSupportException e) {
                 return null;
             }
         }
     }
+    @SuppressWarnings("rawtypes")
     private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
 
 
-    static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
-
-    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+    /**
+     * Constructor.
+     */
+    private MySQLArchiveServiceImpl() {
+        ArchiveTypeConversionSupport.install();
+        EpicsSystemVariableSupport.install();
+    }
 
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public
-    <V, T extends ITimedCssValueType<V> & IHasAlarm>
+    public <V, T extends IAlarmSystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
             DAO_MGR.getSampleDao().createSamples(samples);
@@ -305,7 +305,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, ITimedCssAlarmValueType<Object>>> samples =
+            final Iterable<IArchiveMinMaxSample<Object, IAlarmSystemVariable<Object>>> samples =
                 DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
 
             final Iterable<IValue> iValues =

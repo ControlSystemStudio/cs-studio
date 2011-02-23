@@ -16,6 +16,7 @@ import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /** Provide web page with detail for one group.
  *  @author Kay Kasemir
@@ -45,7 +46,7 @@ class GroupResponse extends AbstractResponse
             resp.sendError(400, "Missing group name");
             return;
         }
-        final ArchiveGroup group = model.getGroup(group_name);
+        final ArchiveGroup group = _model.getGroup(group_name);
         if (group == null)
         {
             resp.sendError(400, "Unknown group " + group_name);
@@ -65,19 +66,9 @@ class GroupResponse extends AbstractResponse
             Messages.HTTP_State,
             group.isEnabled() ? Messages.HTTP_Enabled : Messages.HTTP_Disabled
         });
-//        final ArchiveChannel ena_channel = group.getEnablingChannel();
-//        if (ena_channel != null)
-//        {
-//            html.tableLine(new String[]
-//            {
-//                Messages.HTTP_EnablingChannel,
-//                HTMLWriter.makeLink("channel?name=" + ena_channel.getName(),
-//                         ena_channel.getName())
-//            });
-//        }
         html.closeTable();
 
-        html.h2(Messages.HTTP_Channels);
+        html.h2(Messages.HTTP_Channels + " (Last write time: " + _model.getLastWriteTime()  + ")");
 
         // HTML Table of all channels in the group
         html.openTable(1, new String[]
@@ -86,48 +77,40 @@ class GroupResponse extends AbstractResponse
             Messages.HTTP_Connected,
             Messages.HTTP_Mechanism,
             Messages.HTTP_CurrentValue,
-            Messages.HTTP_LastArchivedValue,
+            Messages.HTTP_TIMESTAMP,
             Messages.HTTP_ReceivedValues,
             Messages.HTTP_QueueLen,
             Messages.HTTP_QueueAvg,
-            Messages.HTTP_QueueMax,
-            Messages.HTTP_QueueCapacity,
-            Messages.HTTP_QueueOverruns,
+            Messages.HTTP_QueueMax
         });
-        final int channel_count = group.getChannelCount();
+        final int channelCount = group.getChannels().size();
         for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
 
-            final String connected = channel.isConnected()
-            ? Messages.HTTP_Connected : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
-            final SampleBuffer buffer = channel.getSampleBuffer();
+            final String connected = channel.isConnected() ? Messages.HTTP_Connected :
+                                                             HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
+            final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
-            final int overrun_count = stats.getOverruns();
-            String overruns = Integer.toString(overrun_count);
-            if (overrun_count > 0) {
-                overruns = HTMLWriter.makeRedText(overruns);
-            }
 
-            String current_value = channel.getCurrentValue();
-            if (current_value.length() > MAX_VALUE_DISPLAY) {
-                current_value = current_value.substring(0, MAX_VALUE_DISPLAY);
+            String curVal = channel.getCurrentValueAsString();
+            if (curVal.length() > MAX_VALUE_DISPLAY) {
+                curVal = curVal.substring(0, MAX_VALUE_DISPLAY);
             }
-            String last_value = channel.getLastArchivedValue();
-            if (last_value.length() > MAX_VALUE_DISPLAY) {
-                last_value = last_value.substring(0, MAX_VALUE_DISPLAY);
+            String lastVal = channel.getLastArchivedValue();
+            if (lastVal.length() > MAX_VALUE_DISPLAY) {
+                lastVal = lastVal.substring(0, MAX_VALUE_DISPLAY);
             }
+            final IHasTimeStamp curValTimestamp = channel.getMostRecentValue();
             html.tableLine(new String[]
             {
                 HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
                 connected,
                 channel.getMechanism(),
-                current_value,
-                last_value,
+                curVal,
+                curValTimestamp.getTimestamp().formatted(),
                 Long.toString(channel.getReceivedValues()),
                 Integer.toString(buffer.size()),
                 String.format("%.1f", stats.getAverageSize()),
                 Integer.toString(stats.getMaxSize()),
-                Integer.toString(buffer.getCapacity()),
-                overruns,
             });
         }
         html.closeTable();

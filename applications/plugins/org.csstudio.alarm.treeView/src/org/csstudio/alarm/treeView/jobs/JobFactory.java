@@ -24,6 +24,7 @@
 package org.csstudio.alarm.treeView.jobs;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -51,6 +52,17 @@ public final class JobFactory {
     private static final IAlarmConfigurationService CONFIG_SERVICE = AlarmTreePlugin.getDefault()
             .getAlarmConfigurationService();
     
+    /**
+     * Constructor.
+     */
+    private JobFactory() {
+        // Don't instantiate
+    }
+    
+    /**
+     * @param alarmTreeView
+     * @return the connection job
+     */
     @Nonnull
     public static ConnectionJob createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
         final ConnectionJob connectionJob = new ConnectionJob(alarmTreeView);
@@ -58,6 +70,14 @@ public final class JobFactory {
         return connectionJob;
     }
     
+    /**
+     * This job imports the initial configuration. After that the initial alarm state is retrieved, also in a job.
+     * Finally the view is refreshed. 
+     * 
+     * @param alarmTreeView
+     * @param rootNode
+     * @return the job which initially imports the configuration
+     */
     @Nonnull
     public static Job createImportInitialConfigJob(@Nonnull final AlarmTreeView alarmTreeView,
                                                    @Nonnull final IAlarmSubtreeNode rootNode) {
@@ -66,22 +86,30 @@ public final class JobFactory {
                                                                    rootNode,
                                                                    CONFIG_SERVICE);
         
-        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob(alarmTreeView,
+                                                                                              rootNode);
         importInitConfigJob.addJobChangeListener(new JobChangeAdapter() {
+            @SuppressWarnings("synthetic-access")
             @Override
-            public void done(IJobChangeEvent event) {
-                if (event.getResult() == Status.OK_STATUS) {
-                    retrieveInitialStateJob.setRootNodes(Collections.singletonList(rootNode));
-                    retrieveInitialStateJob.schedule();
-                }
+            public void done(@Nonnull final IJobChangeEvent event) {
+                scheduleFollowingJob(Collections.singletonList(rootNode),
+                                     retrieveInitialStateJob,
+                                     event,
+                                     alarmTreeView,
+                                     rootNode);
             }
         });
-        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                                     rootNode));
-        
         return importInitConfigJob;
     }
     
+    /**
+     * This job imports an xml file. After that the initial alarm state is retrieved, also in a job.
+     * Finally the view is refreshed. 
+     * 
+     * @param alarmTreeView
+     * @param rootNode
+     * @return the job which imports an xml file
+     */
     @Nonnull
     public static ImportXmlFileJob createImportXmlFileJob(@Nonnull final AlarmTreeView alarmTreeView,
                                                           @Nonnull final IAlarmSubtreeNode rootNode) {
@@ -89,33 +117,60 @@ public final class JobFactory {
                                                                        CONFIG_SERVICE,
                                                                        rootNode);
         
-        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob();
+        final RetrieveInitialStateJob retrieveInitialStateJob = createRetrieveInitialStateJob(alarmTreeView,
+                                                                                              rootNode);
         importXmlFileJob.addJobChangeListener(new JobChangeAdapter() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void done(IJobChangeEvent event) {
-                if (event.getResult() == Status.OK_STATUS) {
-                    retrieveInitialStateJob.setRootNodes(importXmlFileJob.getXmlRootNodes());
-                    retrieveInitialStateJob.schedule();
-                }
+                scheduleFollowingJob(importXmlFileJob.getXmlRootNodes(),
+                                     retrieveInitialStateJob,
+                                     event,
+                                     alarmTreeView,
+                                     rootNode);
             }
         });
-        
-        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
-                                                                                     rootNode));
         
         return importXmlFileJob;
     }
     
-    @Nonnull
-    public static RetrieveInitialStateJob createRetrieveInitialStateJob() {
-        return new RetrieveInitialStateJob();
+    /**
+     * Schedule the following job. This is usually the job which retrieves the initial alarm state.
+     * In case of an error only the refresh adapter is run. This ensures that the pending adapter is removed.
+     * 
+     * @param rootNodes for these nodes the initial state will be retrieved
+     * @param retrieveInitialStateJob the job which retrieves the initial alarm state
+     * @param event the job change event
+     * @param alarmTreeView the view which eventually has to be refreshed
+     * @param rootNode the model for the view
+     */
+    private static void scheduleFollowingJob(@Nonnull final List<IAlarmSubtreeNode> rootNodes,
+                                             @Nonnull final RetrieveInitialStateJob retrieveInitialStateJob,
+                                             @Nonnull final IJobChangeEvent event,
+                                             @Nonnull final AlarmTreeView alarmTreeView,
+                                             @Nonnull final IAlarmSubtreeNode rootNode) {
+        if (event.getResult() == Status.OK_STATUS) {
+            retrieveInitialStateJob.setRootNodes(rootNodes);
+            retrieveInitialStateJob.schedule();
+        } else {
+            new RefreshAlarmTreeViewAdapter(alarmTreeView, rootNode).done(event);
+        }
     }
     
     /**
-     * Constructor.
+     * This job retrieves the initial alarm state for the pvs contained in the given node. After that, the view is refreshed.
+     * 
+     * @param alarmTreeView
+     * @param rootNode
+     * @return the job which retrieves the initial alarm state.
      */
-    private JobFactory() {
-        // Don't instantiate
+    @Nonnull
+    public static RetrieveInitialStateJob createRetrieveInitialStateJob(@Nonnull final AlarmTreeView alarmTreeView,
+                                                                        @Nonnull final IAlarmSubtreeNode rootNode) {
+        RetrieveInitialStateJob retrieveInitialStateJob = new RetrieveInitialStateJob();
+        retrieveInitialStateJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(alarmTreeView,
+                                                                                     rootNode));
+        return retrieveInitialStateJob;
     }
     
 }

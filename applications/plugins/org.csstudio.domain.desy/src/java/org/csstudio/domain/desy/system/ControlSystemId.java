@@ -42,4 +42,11 @@ public class ControlSystemId extends Id<ControlSystemId> {
     protected ControlSystemId(@Nonnull final String value) {
         super(value);
     }
+    /**
+     * Constructor.
+     * @param value
+     */
+    public ControlSystemId(final long value) {
+        super(value);
+    }
 }

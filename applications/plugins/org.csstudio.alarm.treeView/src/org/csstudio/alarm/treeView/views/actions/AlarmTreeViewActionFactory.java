@@ -177,6 +177,7 @@ public final class AlarmTreeViewActionFactory {
     @CheckForNull
     public static String getFileToSaveTo(@Nonnull final IWorkbenchPartSite site) {
         final FileDialog dialog = new FileDialog(site.getShell(), SWT.SAVE);
+        dialog.setFilterExtensions(new String[] {"*.xml"});
         dialog.setText("Save alarm tree configuration file (.xml)");
         dialog.setOverwrite(true);
         return dialog.open();

@@ -111,7 +111,6 @@ public class IocDBO extends AbstractNodeDBO {
             final FacilityDBO facility = (FacilityDBO) parentNode;
             final IocDBO copy = new IocDBO(facility);
             copy.setDescription(getDescription());
-            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             return copy;
         }
         return null;

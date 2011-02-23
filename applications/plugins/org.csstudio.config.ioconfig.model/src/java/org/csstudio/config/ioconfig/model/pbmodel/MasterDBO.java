@@ -24,7 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,10 +34,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
@@ -60,7 +58,7 @@ public class MasterDBO extends AbstractNodeDBO {
      * The highest accept station address.
      */
     @Transient
-    static final public int MAX_STATION_ADDRESS = 126;
+    public static final int MAX_STATION_ADDRESS = 126;
 
     // ********************
     // * Database Fields. *
@@ -141,6 +139,7 @@ public class MasterDBO extends AbstractNodeDBO {
      * {@link #Master(ProfibusSubnetDBO)}
      */
     public MasterDBO() {
+        // Constructor only for Hibernate
     }
 
     /**
@@ -351,6 +350,7 @@ public class MasterDBO extends AbstractNodeDBO {
     }
 
 
+    @Override
     @Transient
     public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
         return getFreeStationAddress().first();
@@ -366,7 +366,6 @@ public class MasterDBO extends AbstractNodeDBO {
             ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
-            copy.setDocuments(new HashSet<DocumentDBO>(getDocuments()));
             copy.setAutoclear(isAutoclear());
             copy.setDataControlTime(getDataControlTime());
             copy.setRedundant(getRedundant());

@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.severity;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
@@ -34,6 +36,7 @@ public interface IArchiveSeverity extends Identifiable<ArchiveSeverityId> {
     /**
      * @return
      */
+    @Nonnull
     String getName();
 
 }

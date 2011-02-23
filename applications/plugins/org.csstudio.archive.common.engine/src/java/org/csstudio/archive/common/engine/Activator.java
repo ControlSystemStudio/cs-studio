@@ -20,6 +20,7 @@ import org.osgi.framework.BundleContext;
 
 /** Plugin Activator
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
  */
 public class Activator extends Plugin {
     /**
@@ -30,6 +31,7 @@ public class Activator extends Plugin {
     /** The shared instance */
     private static Activator INSTANCE;
 
+    // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
     private ArchiveEngineConfigServiceTracker _archiveEngineConfigServiceTracker;
     private ArchiveWriterServiceTracker _archiveWriterServiceTracker;
 
@@ -79,7 +81,6 @@ public class Activator extends Plugin {
         super.stop(context);
     }
 
-    // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
 
     /**
      * Returns the archive engine config service from the service tracker.

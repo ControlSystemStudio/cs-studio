@@ -228,9 +228,9 @@ public class StringUtilTest
         
         String normal1 = "Wir koennen spueren, wie wir die Form verlieren.";
         Assert.assertEquals(normal1.getBytes().length, StringUtil.getSizeInBytes(normal1));
+        String normal2 = "1234567890!@#$%^&*()-_=+`~{}[]\\|'\";:,.<>/?";
+        Assert.assertEquals(normal2.getBytes().length, StringUtil.getSizeInBytes(normal2));
         
-        String normal = "1234567890!@#$%^&*()-_=+`~{}[]\\|'\";:,.<>/?";
-        Assert.assertEquals(normal.getBytes().length, StringUtil.getSizeInBytes(normal));
         String freak = "€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ";
         Assert.assertEquals(freak.getBytes().length, StringUtil.getSizeInBytes(freak));
     }

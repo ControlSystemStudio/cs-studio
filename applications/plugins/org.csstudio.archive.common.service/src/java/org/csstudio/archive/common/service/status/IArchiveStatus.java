@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.status;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
@@ -33,5 +35,6 @@ public interface IArchiveStatus extends Identifiable<ArchiveStatusId> {
     /**
      * @return
      */
+    @Nonnull
     String getName();
 }

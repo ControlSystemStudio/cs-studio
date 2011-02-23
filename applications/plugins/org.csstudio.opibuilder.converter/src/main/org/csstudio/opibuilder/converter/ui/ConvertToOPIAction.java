@@ -83,7 +83,7 @@ public class ConvertToOPIAction implements IObjectActionDelegate {
 //				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
 //						new FileEditorInput((IFile) convertedOPI), "org.csstudio.opibuilder.OPIEditor"); //$NON-NLS-1$, editorId)
 		} catch (Exception e) {
-			String message = "Exception during converting " + selectedFile + "\n" + e;
+			String message = "Exception during converting " + selectedFile + "\n" + e.getMessage();
 			CentralLogger.getInstance().error(this, message, e);
 			ConsoleService.getInstance().writeError(message);
 		}

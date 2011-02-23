@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.script;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.platform.logging.CentralLogger;
@@ -22,11 +25,13 @@ public class ScriptService {
 	
 	private Context scriptContext;
 	
+	private Map<ScriptData, IScriptStore> scriptMap;
+	
 	/** Private constructor to prevent instantiation
 	 *  @see #getInstance()
 	 */
 	private ScriptService() {
-		
+		scriptMap = new HashMap<ScriptData, IScriptStore>();
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			
 			public void run() {
@@ -56,7 +61,7 @@ public class ScriptService {
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				try {					
-					new RhinoScriptStore(scriptData, editpart, pvArray);
+					scriptMap.put(scriptData, new RhinoScriptStore(scriptData, editpart, pvArray));
 				}catch (Exception e) {
 					String name = scriptData instanceof RuleScriptData ? 
 							((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
@@ -79,6 +84,11 @@ public class ScriptService {
 		});
 		
 		instance =  null;
+	}
+	
+	public void unRegisterScript(ScriptData scriptData){
+		scriptMap.get(scriptData).unRegister();
+		scriptMap.remove(scriptData);
 	}
 	
 }

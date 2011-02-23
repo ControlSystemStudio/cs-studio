@@ -34,7 +34,7 @@ class RestartResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Restart");
 
         html.text("Engine will restart....");
-        model.requestRestart();
+        _model.requestRestart();
         
         html.close();
     }

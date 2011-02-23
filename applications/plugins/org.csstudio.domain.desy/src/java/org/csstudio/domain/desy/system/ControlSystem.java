@@ -30,14 +30,23 @@ import javax.annotation.Nonnull;
  * @since 09.02.2011
  */
 public class ControlSystem {
+    public static final ControlSystem EPICS_DEFAULT =
+        new ControlSystem("EpicsDefault",
+                          ControlSystemType.EPICS_V3);
+    public static final ControlSystem DOOCS_DEFAULT =
+        new ControlSystem("DoocsDefault",
+                          ControlSystemType.DOOCS);
+    public static final ControlSystem TANGO_DEFAULT =
+        new ControlSystem("TangoDefault",
+                          ControlSystemType.TANGO);
 
-    private final ControlSystemId _id;
+    private final String _id;
     private final ControlSystemType _type;
 
     /**
      * Constructor.
      */
-    public ControlSystem(@Nonnull final ControlSystemId id,
+    public ControlSystem(@Nonnull final String id,
                          @Nonnull final ControlSystemType type) {
 
         _id = id;
@@ -45,7 +54,7 @@ public class ControlSystem {
     }
 
     @Nonnull
-    public ControlSystemId getId() {
+    public String getId() {
         return _id;
     }
 

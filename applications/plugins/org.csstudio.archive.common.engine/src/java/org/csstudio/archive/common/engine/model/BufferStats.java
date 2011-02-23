@@ -7,60 +7,41 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.model;
 
-import org.csstudio.archive.common.stats.Average;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
+import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
 
 /** Buffer statistics
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
  */
-public class BufferStats
-{
-    private int max_size = 0;
-    
-    private Average average_size = new Average();
+@ThreadSafe
+public final class BufferStats {
+    @GuardedBy("this")
+    private int _maxSize = 0;
 
-    private int overruns = 0;
-    
-    /** @return Maximum queue size so far
-     *  @see #reset()
-     */
-    synchronized public final int getMaxSize()
-    {
-        return max_size;
+    @GuardedBy("this")
+    private final AverageWithExponentialDecayCache _avgSize = new AverageWithExponentialDecayCache(0.1);
+
+
+    public synchronized int getMaxSize() {
+        return _maxSize;
     }
 
-    /** @return (Exponential) moving average of queue size. */
-    synchronized public final double getAverageSize()
-    {
-        return average_size.get();
+    public synchronized double getAverageSize() {
+        return _avgSize.getValue();
     }
 
-    /** @return Number of buffer overruns. */
-    synchronized public final int getOverruns()
-    {
-        return overruns;
+    public synchronized void reset() {
+        _maxSize = 0;
+        _avgSize.clear();
     }
 
-    /** Reset the statistics. */
-    synchronized public void reset()
-    {
-        max_size = 0;
-        average_size.reset();
-        overruns = 0;
-    }
-    
-    /** Update the buffer stats.
-     *  @param size Current buffer size.
-     */
-    synchronized public void updateSizes(int size)
-    {
-        if (size > max_size)
-            max_size = size;
-        average_size.update(size);
-    }
-    
-    /** Add an overrun. */
-    synchronized public void addOverrun()
-    {
-        ++overruns;
+    public synchronized void updateSizes(final int size) {
+        if (size > _maxSize) {
+            _maxSize = size;
+        }
+        _avgSize.accumulate(Double.valueOf(size));
     }
 }
