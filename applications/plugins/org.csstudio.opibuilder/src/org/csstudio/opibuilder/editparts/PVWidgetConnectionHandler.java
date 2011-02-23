@@ -25,7 +25,6 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		if(controlPV != null && controlPV == pv){
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			
-			@Override
 			public void run() {
 				editPart.getFigure().setEnabled(false);
 			}
@@ -41,7 +40,6 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		final PV controlPV = editPart.getControlPV();
 		if(controlPV != null && controlPV == pv){
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
-			@Override
 			public void run() {
 				editPart.getFigure().setEnabled(
 						editPart.getWidgetModel().isEnabled() 
