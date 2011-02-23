@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.LifecycleReporterSupport;
+import org.epics.css.dal.spi.Plugs;
 
 import java.util.Properties;
 
@@ -62,6 +63,7 @@ public class DefaultApplicationContext extends LifecycleReporterSupport
 	{
 		if (configuration == null) {
 			configuration = new Properties(System.getProperties());
+			Plugs.configureSimulatorPlug(configuration);
 		}
 
 		return configuration;

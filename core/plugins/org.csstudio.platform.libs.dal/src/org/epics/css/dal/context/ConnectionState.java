@@ -49,6 +49,13 @@ public enum ConnectionState {
 	 */
 	READY, 
 	/**
+	 * A constant indicating that connection is in progress. During this state
+	 * most of the functionality of the <code>Connectable</code> is suspended.
+	 * Note, however, that the <code>Connectable</code> can be destroyed while
+	 * it is in this state.
+	 */
+	CONNECTING, 
+	/**
 	 * A constant indicating that the <code>Connectable</code> and the pluggable
 	 * system have successfully completed the connection, that is, that the
 	 * methods which delegate to remote object can be called withoug throwing an
@@ -56,6 +63,24 @@ public enum ConnectionState {
 	 * <code>connected</code> being invoked on all listeners.
 	 */
 	CONNECTED, 
+	/**
+	 * A constant indicating that the <code>Connectable</code> and the pluggable
+	 * system have successfully completed the connection plus has retrieved basic 
+	 * set of meta-data and has requested and is receiving live value updates 
+	 * from remote connection.  
+	 * The transition to this state will be accompanied by
+	 * <code>operational</code> being invoked on all listeners.
+	 */
+	OPERATIONAL,
+	/**
+	 * A constant indicating that Connectable has lost already established
+	 * connection to remote object. This may happend if remote object is not
+	 * available any more (eg. remote server is restarted or ethernet link is broken).
+	 * <code>Connectable</code> in this state can eather return to <code>CONNECTED</code>
+	 * if link has been restored or to <code>DISCONNECTING</code> if connection is
+	 * beeing cloded manually.
+	 */
+	CONNECTION_LOST,
 	/**
 	 * A constant indicating that the <code>Connectable</code> and the pluggable
 	 * system have unsuccessfully tried to perform the connection to the remote
@@ -88,22 +113,30 @@ public enum ConnectionState {
 	 * of the <code>Connectable</code> returning <code>false</code> on
 	 * <code>isConnected()</code> call.
 	 */
-	DESTROYED, 
+	DESTROYED;
+	
+	
 	/**
-	 * A constant indicating that connection is in progress. During this state
-	 * most of the functionality of the <code>Connectable</code> is suspended.
-	 * Note, however, that the <code>Connectable</code> can be destroyed while
-	 * it is in this state.
+	 * Return true if connection was successfully established. Actual connection 
+	 * state might be CONNECTED, CONNECTION_LOST or OPERATIONAL.
+	 * @return if connection process has been successfully completed.
 	 */
-	CONNECTING, 
-	/**
-	 * A constant indicating that Connectable has lost already established
-	 * connection to remote object. This may happend if remote object is not
-	 * available any more (eg. remote server is restarted or ethernet link is broken).
-	 * <code>Connectable</code> in this state can eather return to <code>CONNECTED</code>
-	 * if link has been restored or to <code>DISCONNECTING</code> if connection is
-	 * beeing cloded manually.
-	 */
-	CONNECTION_LOST;
+	public boolean isConnected() {
+		if (this == ConnectionState.CONNECTED
+			    || this == ConnectionState.CONNECTION_LOST
+			    || this == ConnectionState.OPERATIONAL) {
+				return true;
+			}
+		return false;
+	}
+
+	public boolean isConnectionAlive() {
+		if (this == ConnectionState.CONNECTED
+			    || this == ConnectionState.OPERATIONAL) {
+				return true;
+			}
+		return false;
+	}
+
 }
 /* __oOo__ */

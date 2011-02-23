@@ -117,6 +117,9 @@ public class PropertyCollectionMap<T extends DynamicValueProperty<?>>
 	 */
 	public boolean contains(Object property)
 	{
+		if (property==null) {
+			return false;
+		}
 		if (type.isAssignableFrom(property.getClass())) {
 			T[] t= get(((T)property).getName());
 			if (t!=null) { 

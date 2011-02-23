@@ -44,14 +44,14 @@ public interface ProxyListener<T> extends EventListener
 	 *
 	 * @param e event with new condition
 	 */
-	public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e);
+	public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T,?>> e);
 
 	/**
 	 * Called when connection state changes.
 	 *
 	 * @param e event with new connection state
 	 */
-	public void connectionStateChange(ProxyEvent<Proxy> e);
+	public void connectionStateChange(ProxyEvent<Proxy<?>> e);
 }
 
 /* __oOo__ */

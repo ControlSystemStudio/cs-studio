@@ -39,9 +39,9 @@ public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet>
 	 *
 	 * @param name Proxy name
 	 */
-	public PatternPropertyProxyImpl(String name)
+	public PatternPropertyProxyImpl(String name, SimulatorPlug plug)
 	{
-		super(name,BitSet.class);
+		super(name,plug,BitSet.class);
 
 		try {
 			valueProvider.set(new BitSet());

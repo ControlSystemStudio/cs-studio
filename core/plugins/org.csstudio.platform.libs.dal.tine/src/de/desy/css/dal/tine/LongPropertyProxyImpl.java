@@ -37,8 +37,8 @@ public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>{
 	 * Constructs a new LongPropertyProxy.
 	 * @param name
 	 */
-	public LongPropertyProxyImpl(String name) {
-		super(name);
+	public LongPropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
 //		value = new long[(Integer)getCharacteristic("sequenceLength")];
 		this.value = new int[1];
 	}

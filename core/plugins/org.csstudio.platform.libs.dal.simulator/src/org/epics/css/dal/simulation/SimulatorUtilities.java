@@ -75,7 +75,7 @@ public final class SimulatorUtilities
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Class<?extends PropertyProxy<?>> getPropertyProxyImplementationClass(
+	public static Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
 	    Class<?extends SimpleProperty<?>> propertyType, Class<?extends SimpleProperty<?>> implType)
 	{
 		
@@ -85,7 +85,7 @@ public final class SimulatorUtilities
 			n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
 			
 			try {
-				return (Class<?extends PropertyProxy<?>>)Class.forName(n);
+				return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
 			} catch (ClassNotFoundException e) {
 				// noop
 			}
@@ -97,7 +97,7 @@ public final class SimulatorUtilities
 			n= "org.epics.css.dal.simulation."+n+"ProxyImpl";
 			
 			try {
-				return (Class<?extends PropertyProxy<?>>)Class.forName(n);
+				return (Class<?extends PropertyProxy<?,?>>)Class.forName(n);
 			} catch (ClassNotFoundException e) {
 				// noop
 			}
@@ -106,15 +106,16 @@ public final class SimulatorUtilities
 		return DoublePropertyProxyImpl.class;
 	}
 
-	public static Class<?extends DeviceProxy> getDeviceProxyImplementationClass(
+	@SuppressWarnings("unchecked")
+	public static Class<?extends DeviceProxy<?>> getDeviceProxyImplementationClass(
 	    Class<?extends AbstractDevice> deviceType)
 	{
-		if (PowerSupply.class.isAssignableFrom(deviceType)) return PSDeviceProxy.class;
-		return DeviceProxyImpl.class;
+		if (PowerSupply.class.isAssignableFrom(deviceType)) return (Class<? extends DeviceProxy<?>>) PSDeviceProxy.class;
+		return (Class<? extends DeviceProxy<?>>) DeviceProxyImpl.class;
 	}
 
 	public static Object getCharacteristic(String characteristicName,
-	    PropertyProxy ppi)
+	    PropertyProxy<?,?> ppi)
 	{
 		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
 
@@ -181,7 +182,7 @@ public final class SimulatorUtilities
 		}
 	}
 
-	public static String[] getCharacteristicNames(PropertyProxy ppi)
+	public static String[] getCharacteristicNames(PropertyProxy<?,?> ppi)
 	{
 		DirContext ctx = SimulatorPlug.getInstance().getDefaultDirectory();
 

@@ -629,7 +629,7 @@ public final class Plugs
 		p.put(PLUG_PROPERTY_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
 			"org.epics.css.dal.simulation.PropertyFactoryImpl");
 		p.put(PLUG_DEVICE_FACTORY_CLASS + SIMULATOR_PLUG_TYPE,
-		    "/org.epics.css.dal.simulation.DeviceFactoryImpl");
+		    "org.epics.css.dal.simulation.DeviceFactoryImpl");
 	}
 	
 }

@@ -135,7 +135,7 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewDeviceProxy(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	protected <T extends DeviceProxy> T createNewDeviceProxy(String uniqueName, Class<T> type) {
+	protected <T extends DeviceProxy<?>> T createNewDeviceProxy(String uniqueName, Class<T> type) {
 		throw new UnsupportedOperationException("Devices not supported");
 	}
 
@@ -144,7 +144,7 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewDirectoryProxy(java.lang.String)
 	 */
 	@Override
-	protected DirectoryProxy createNewDirectoryProxy(String uniqueName) {
+	protected DirectoryProxy<?> createNewDirectoryProxy(String uniqueName) {
 		// directory is already added to cache in createNewPropertyProxy method
 		throw new RuntimeException("Error in factory implementation, PropertyProxy must be created first.");
 	}
@@ -154,12 +154,12 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewPropertyProxy(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	protected <T extends PropertyProxy<?>> T createNewPropertyProxy(String uniqueName, Class<T> type) throws ConnectionException {
+	protected <T extends PropertyProxy<?,?>> T createNewPropertyProxy(String uniqueName, Class<T> type) throws ConnectionException {
 		try {
-			PropertyProxy p = type.getConstructor(String.class).newInstance(uniqueName);
+			PropertyProxy<?,?> p = type.getConstructor(String.class).newInstance(uniqueName);
 			// adding to directory cache as well
 			if (p instanceof DirectoryProxy) {
-				putDirectoryProxyToCache((DirectoryProxy)p);
+				putDirectoryProxyToCache((DirectoryProxy<?>)p);
 			}
 			
 			return type.cast(p);
@@ -182,7 +182,7 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getDeviceProxyImplementationClass(java.lang.String)
 	 */
 	@Override
-	protected Class<? extends DeviceProxy> getDeviceProxyImplementationClass(String uniqueDeviceName) {
+	protected Class<? extends DeviceProxy<?>> getDeviceProxyImplementationClass(String uniqueDeviceName) {
 		throw new UnsupportedOperationException("Devices not supported");
 	}
 
@@ -200,7 +200,7 @@ public class TINEPlug extends AbstractPlug {
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getPropertyProxyImplementationClass(java.lang.String)
 	 */
 	@Override
-	protected Class<? extends PropertyProxy<?>> getPropertyProxyImplementationClass(String uniquePropertyName) {
+	protected Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String uniquePropertyName) {
 		return PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName);
 	}
 	
@@ -219,10 +219,10 @@ public class TINEPlug extends AbstractPlug {
 	}
 	
 	@Override
-	public Class<?extends PropertyProxy<?>> getPropertyProxyImplementationClass(
+	public Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
 		    Class<?extends SimpleProperty<?>> type, Class<?extends SimpleProperty<?>> implementationType, String uniquePropertyName) throws RemoteException
 	{
-		Class<? extends PropertyProxy<?>> impl = PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName, type); 
+		Class<? extends PropertyProxy<?,?>> impl = PropertyProxyUtilities.getPropertyProxyImplementationClass(uniquePropertyName, type); 
 			
 		if (impl == null) {
 			impl = super.getPropertyProxyImplementationClass(type,implementationType, uniquePropertyName);

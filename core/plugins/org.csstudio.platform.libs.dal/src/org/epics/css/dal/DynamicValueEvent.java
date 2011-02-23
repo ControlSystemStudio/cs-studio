@@ -160,6 +160,20 @@ public class DynamicValueEvent<T, P extends SimpleProperty<T>> extends SystemEve
 	public AnyData getData() {
 		return property.getData();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb= new StringBuilder(256);
+		sb.append(this.getClass().getName());
+		sb.append('{');
+		sb.append(property.getIdentifier().getUniqueName());
+		sb.append(", ");
+		sb.append(getValue());
+		sb.append(", ");
+		sb.append(getCondition());
+		sb.append('}');
+		return sb.toString();
+	}
 }
 
 /* __oOo__ */
