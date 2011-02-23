@@ -4,7 +4,8 @@ Bundle-Name: PvManager Probe
 Bundle-SymbolicName: org.csstudio.diag.pvmanager.probe; singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.diag.pvmanager.probe.Activator
-Bundle-Vendor: Brookhaven National Lab
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Simple diagnostic utility to connect to any channel
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="1.1.0",
