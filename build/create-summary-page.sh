@@ -61,7 +61,7 @@ echo "</table>"
 
 if [ -n "$BUILD_TAG" ]
 then
-  echo "<p>Built by Jenkins (" $BUILD_TAG ")</p>"
+  echo "<p>Built by Jenkins (" $BUILD_TAG " -  " $BUILD_ID  ")</p>"
 fi
 echo "<p>Built by parsing each plugin's MANIFEST.MF, using properties Bundle-Name, Bundle-Version, Bundle-Vendor, Bundle-Description</p>"
 
