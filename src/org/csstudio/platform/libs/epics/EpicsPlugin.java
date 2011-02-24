@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.libs.epics;
@@ -45,22 +45,22 @@ public class EpicsPlugin extends Plugin
     /** How should subscriptions be established? */
     public enum MonitorMask
     {
-        /** Listen to changes in value */
-        VALUE(1),
-        
-        /** Listen to changes in value beyond archive limit */
+        /** Listen to changes in value beyond 'MDEL' threshold or alarm state*/
+        VALUE(1 | 4),
+
+        /** Listen to changes in value beyond 'ADEL' archive limit */
         ARCHIVE(2),
-        
+
         /** Listen to changes in alarm state */
         ALARM(4);
-        
+
         final private int mask;
-        
+
         private MonitorMask(final int mask)
         {
             this.mask = mask;
         }
-        
+
         /** @return Mask bits used in underlying CA call */
         public int getMask()
         {
@@ -69,20 +69,20 @@ public class EpicsPlugin extends Plugin
     }
 
     private MonitorMask monitor_mask = MonitorMask.VALUE;
-	
+
 	/** The constructor. */
     public EpicsPlugin()
     {
         super();
         setPlugin(this);
 	}
-    
+
     /** Set static plugin via static function to avoid FindBugs warning
      *  about access to static var from non-static code
      */
     private static void setPlugin(final EpicsPlugin the_plugin)
     {
-    	EpicsPlugin.plugin = the_plugin; 
+    	EpicsPlugin.plugin = the_plugin;
     }
 
 	/** @return <code>true</code> if preferences suggest the use
@@ -108,7 +108,7 @@ public class EpicsPlugin extends Plugin
 		super.start(context);
 
 		installPreferences();
-		
+
 		if (!use_pure_java)
 		{
 			final String jni_target = JNITargetArch.getTargetArch();
@@ -164,7 +164,7 @@ public class EpicsPlugin extends Plugin
 		plugin = null;
 		super.stop(context);
 	}
-    
+
 	/** Update the CAJ settings with the data from the
 	 *  preference page.
 	 *  <p>
@@ -181,7 +181,7 @@ public class EpicsPlugin extends Plugin
 	            prefs.getBoolean(ID, PreferenceConstants.PURE_JAVA, true, null);
 	        monitor_mask = MonitorMask.valueOf(
                 prefs.getString(ID, PreferenceConstants.MONITOR, "VALUE", null));
-	        
+
 	        /*
 	         * selects common Executor in EPICSPlug (if true) for all PropertyProxyImpls or
 	         * (if false) individual Executors for every PropertyProxyImpl
@@ -192,36 +192,36 @@ public class EpicsPlugin extends Plugin
 	        // sets the maximum number of threads in the selected Executor
 	        setSystemProperty("EPICSPlug.property.max_threads", Integer.toString(20));
 	        setSystemProperty("EPICSPlug.default_pendIO_timeout", Integer.toString(1));
-	        
+
 	        // Set the 'CAJ' and 'JNI' copies of the settings
 	        setSystemProperty("com.cosylab.epics.caj.CAJContext.use_pure_java", Boolean.toString(use_pure_java));
 	        final String addr_list =
 	            prefs.getString(ID, PreferenceConstants.ADDR_LIST, null, null);
-			setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list", 
+			setSystemProperty("com.cosylab.epics.caj.CAJContext.addr_list",
 	                          addr_list);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list", 
+            setSystemProperty("gov.aps.jca.jni.JNIContext.addr_list",
                               addr_list);
 
 			final String auto_addr = Boolean.toString(
 			    prefs.getBoolean(ID, PreferenceConstants.AUTO_ADDR_LIST, true, null));
 	        setSystemProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
-                              auto_addr); 
+                              auto_addr);
             setSystemProperty("gov.aps.jca.jni.JNIContext.auto_addr_list",
-                              auto_addr); 
-	        
+                              auto_addr);
+
 	        final String timeout =
 	            prefs.getString(ID, PreferenceConstants.TIMEOUT, "30.0", null);
 			setSystemProperty("com.cosylab.epics.caj.CAJContext.connection_timeout",
 	                        timeout);
             setSystemProperty("gov.aps.jca.jni.JNIContext.connection_timeout",
                     timeout);
-			
+
 			final String beacon_period =
 			    prefs.getString(ID, PreferenceConstants.BEACON_PERIOD, "15.0", null);
-			setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period", 
-	                        beacon_period); 
-            setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period", 
-                    beacon_period); 
+			setSystemProperty("com.cosylab.epics.caj.CAJContext.beacon_period",
+	                        beacon_period);
+            setSystemProperty("gov.aps.jca.jni.JNIContext.beacon_period",
+                    beacon_period);
 
             final String repeater_port =
                 prefs.getString(ID, PreferenceConstants.REPEATER_PORT, "5065", null);
@@ -232,21 +232,21 @@ public class EpicsPlugin extends Plugin
 
             final String server_port =
                 prefs.getString(ID, PreferenceConstants.SERVER_PORT, "5064", null);
-			setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port", 
+			setSystemProperty("com.cosylab.epics.caj.CAJContext.server_port",
 	                        server_port);
-            setSystemProperty("gov.aps.jca.jni.JNIContext.server_port", 
+            setSystemProperty("gov.aps.jca.jni.JNIContext.server_port",
                     server_port);
-	        
+
 			final String max_array_bytes =
 			    prefs.getString(ID, PreferenceConstants.MAX_ARRAY_BYTES, "16384", null);
-			setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", 
+			setSystemProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes",
 	                        max_array_bytes);
-	        setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", 
+	        setSystemProperty("gov.aps.jca.jni.JNIContext.max_array_bytes",
 	                        max_array_bytes);
 
 	        // Select the QueuedEventDispatcher, because that avoids
 	        // deadlocks when calling JCA while receiving JCA callbacks
-	        //setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher", 
+	        //setSystemProperty("gov.aps.jca.jni.JNIContext.event_dispatcher",
             //                "gov.aps.jca.event.QueuedEventDispatcher");
 	        // Select the DirectEventDispatcher:
 	        // As long as the PV library that uses JCA avoids deadlocks,
@@ -259,9 +259,9 @@ public class EpicsPlugin extends Plugin
 	        CentralLogger.getInstance().getLogger(this)
 	            .error("Preferences Error", ex);
 	    }
-	    
+
 	}
-  
+
 	/** Sets property from preferences to System properties only if property
 	 *  value is not null or empty string.
 	 *  @param prop System property name
