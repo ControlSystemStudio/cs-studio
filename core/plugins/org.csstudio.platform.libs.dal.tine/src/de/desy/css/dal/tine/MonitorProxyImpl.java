@@ -63,6 +63,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	public MonitorProxyImpl(PropertyProxyImpl<T> source, ResponseListener<T> l) {
 		super(source, l);
 		this.proxy = source;
+		proxy.addMonitor(this);
 	}
 		
 	public void initialize(final Object data) throws RemoteException {
@@ -94,7 +95,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
         	}
         	
         } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),System.currentTimeMillis(),"Error initializing proxy");
+        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
 			this.proxy.setCondition(condition);
 			throw new RemoteException(this.proxy,"Cannot create monitor.",e);
         }
@@ -221,10 +222,12 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
         Timestamp timestamp = new Timestamp(this.tLink.getLastTimeStamp(),0);
         ResponseImpl<T> response = new ResponseImpl<T>(getSource(),this,data,"",true, e,null,timestamp,false);
 
+        this.proxy.updateValueReponse(response);
+        
         if (this.heartbeat) {
 			addResponse(response);
 			if (e == null && !this.normal) {
-				this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp.getMilliseconds(),"Value updated."));
+				this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
 				this.normal=true;
 			}
 		} else {
@@ -232,7 +235,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 			if (!(data instanceof Object[] && this.oldData instanceof Object[] && Arrays.equals((Object[])data, (Object[])this.oldData)) || (this.oldData==null || !data.equals(this.oldData))) {
 				addResponse(response);
 				if (e == null && !this.normal) {
-					this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp.getMilliseconds(),"Value updated."));
+					this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
 					this.normal=true;
 				}
 			}

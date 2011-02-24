@@ -183,7 +183,7 @@ public class PowerSupplyImpl extends AbstractDeviceImpl implements PowerSupply
 				attr.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET,
 				    conditionsWhenSet);
 				attr.put(PatternPropertyCharacteristics.C_BIT_MASK, bitMask);
-				ctx.bind(uri, new PatternPropertyProxyImpl(p.getUniqueName()),
+				ctx.bind(uri, new PatternPropertyProxyImpl(p.getUniqueName(),SimulatorPlug.getInstance()),
 				    attr);
 			} catch (NamingException e) {
 				Logger.getLogger(this.getClass()).error("Simulator error.", e);

@@ -38,9 +38,9 @@ public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>
 	 *
 	 * @param name Proxy name
 	 */
-	public DoublePropertyProxyImpl(String name)
+	public DoublePropertyProxyImpl(String name, SimulatorPlug plug)
 	{
-		super(name,Double.class);
+		super(name,plug,Double.class);
 
 		try {
 			valueProvider.set(0.0);

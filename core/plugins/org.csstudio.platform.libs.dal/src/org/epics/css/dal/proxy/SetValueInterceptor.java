@@ -78,7 +78,7 @@ public class SetValueInterceptor<T> implements ResponseListener<T>
 	 *
 	 * @throws DataExchangeException is thrown if the asynchronus setValue method times out
 	 */
-	public synchronized void executeAndWait(PropertyProxy<T> proxy, T value)
+	public synchronized void executeAndWait(PropertyProxy<T,?> proxy, T value)
 		throws DataExchangeException
 	{
 		proxy.setValueAsync(value, this);

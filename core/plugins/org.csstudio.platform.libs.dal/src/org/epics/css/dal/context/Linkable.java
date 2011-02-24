@@ -70,6 +70,19 @@ public interface Linkable extends Identifiable
 
 	/**
 	 * Returns <code>true</code> if this <code>Linkable</code> has been
+	 * successfully connected with remote object and has received meta-data and
+	 * is receiving live updates. This state can be only
+	 * changed by  Connectable responsible for this linkable. If remote
+	 * connection is temporary or permanently (in any case linkable or
+	 * connectable  this can not know),  than this linkable is regarded as
+	 * connected until connectable is disconnected.
+	 *
+	 * @return boolean linked flag
+	 */
+	boolean isOperational();
+
+	/**
+	 * Returns <code>true</code> if this <code>Linkable</code> has been
 	 * destroyed and connection with remote object lost.
 	 *
 	 * @return boolean destroyed flag

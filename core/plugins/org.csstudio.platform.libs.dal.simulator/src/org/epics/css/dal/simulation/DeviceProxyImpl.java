@@ -45,13 +45,12 @@ import java.util.Map;
  *
  * @author ikriznar
  */
-public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
-	DirectoryProxy
+public class DeviceProxyImpl extends AbstractProxyImpl<SimulatorPlug> implements DeviceProxy<SimulatorPlug>,
+	DirectoryProxy<SimulatorPlug>
 {
 	protected Map<String, Object> characteristics = new HashMap<String, Object>();
-	protected SimulatorPlug plug;
-	protected Map<String, DirectoryProxy> directoryProxies;
-	protected Map<String, PropertyProxy<?>> propertyProxies;
+	protected Map<String, DirectoryProxy<SimulatorPlug>> directoryProxies;
+	protected Map<String, PropertyProxy<?,SimulatorPlug>> propertyProxies;
 	protected Map<String, CommandProxy> commands = new HashMap<String, CommandProxy>();
 	protected Map<String, Class<? extends SimpleProperty<?>>> propertyTypes = new HashMap<String, Class<? extends SimpleProperty<?>>>();
 
@@ -60,10 +59,9 @@ public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
 	 *
 	 * @param name Proxy name
 	 */
-	public DeviceProxyImpl(String name)
+	public DeviceProxyImpl(String name, SimulatorPlug plug)
 	{
-		super(name);
-		this.plug = SimulatorPlug.getInstance();
+		super(name,plug);
 	}
 
 	/* (non-Javadoc)
@@ -81,16 +79,16 @@ public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
 		throws RemoteException
 	{
 		if (directoryProxies == null) {
-			directoryProxies = new HashMap<String, DirectoryProxy>(3);
+			directoryProxies = new HashMap<String, DirectoryProxy<SimulatorPlug>>(3);
 		}
 
-		DirectoryProxy p = directoryProxies.get(name);
+		DirectoryProxy<SimulatorPlug> p = directoryProxies.get(name);
 
 		if (p != null) {
 			return p;
 		}
 
-		p = plug.getDirectoryProxy(this.name + '/' + name);
+		p = (DirectoryProxy<SimulatorPlug>) plug.getDirectoryProxy(this.name + '/' + name);
 		directoryProxies.put(name, p);
 
 		return p;
@@ -99,22 +97,21 @@ public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.proxy.DeviceProxy#getPropertyProxy(java.lang.String)
 	 */
-	public PropertyProxy<?> getPropertyProxy(String name)
+	public PropertyProxy<?,SimulatorPlug> getPropertyProxy(String name)
 		throws RemoteException
 	{
 		if (propertyProxies == null) {
-			propertyProxies = new HashMap<String, PropertyProxy<?>>(3);
+			propertyProxies = new HashMap<String, PropertyProxy<?,SimulatorPlug>>(3);
 		}
 
-		PropertyProxy<?> p = propertyProxies.get(name);
+		PropertyProxy<?,SimulatorPlug> p = propertyProxies.get(name);
 
 		if (p != null) {
 			return p;
 		}
 
-		p = plug.getPropertyProxy(this.name + '/' + name,
-			    SimulatorPlug.getInstance()
-			    .getPropertyProxyImplementationClass(getPropertyType(name),null,name));
+		p = (PropertyProxy<?, SimulatorPlug>) plug.getPropertyProxy(this.name + '/' + name,
+			    plug.getPropertyProxyImplementationClass(getPropertyType(name),null,name));
 		//			    SimulatorUtilities.getPropertyProxyImplementationClass(
 		//			        getPropertyType(name)));
 		propertyProxies.put(name, p);
@@ -183,14 +180,17 @@ public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
 
 	public void destroy ()
 	{
+		if (connectionStateMachine.isConnected()) {
+			setConnectionState(ConnectionState.DISCONNECTING);
+		}
 		super.destroy();
-		PropertyProxy<?> propProxies[] =  propertyProxies.values().toArray(new PropertyProxy[propertyProxies.values().size()]);
+		PropertyProxy<?,SimulatorPlug> propProxies[] =  propertyProxies.values().toArray(new PropertyProxy[propertyProxies.values().size()]);
 		propertyProxies.clear();
 		DirectoryProxy dirProxies[] = directoryProxies.values().toArray(new DirectoryProxy[directoryProxies.values().size()]);
 		directoryProxies.clear();
 		propertyTypes.clear();
 		commands.clear();
-		for (PropertyProxy<?> propProxy:propProxies) {
+		for (PropertyProxy<?,SimulatorPlug> propProxy:propProxies) {
 			if (propProxy!=null)
 			{
 				propProxy.destroy();
@@ -204,6 +204,9 @@ public class DeviceProxyImpl extends AbstractProxyImpl implements DeviceProxy,
 				dirProxy.destroy();
 				plug.releaseProxy(dirProxy);
 			}
+		}
+		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
+			setConnectionState(ConnectionState.DISCONNECTED);
 		}
 		setConnectionState(ConnectionState.DESTROYED);
 	}

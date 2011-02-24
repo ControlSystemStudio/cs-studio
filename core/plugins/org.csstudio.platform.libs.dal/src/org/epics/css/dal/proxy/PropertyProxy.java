@@ -29,6 +29,7 @@ import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.ExpertMonitor;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
+import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseListener;
 
 
@@ -37,7 +38,7 @@ import org.epics.css.dal.ResponseListener;
  *
  * @author Blaz Hostnik
  */
-public interface PropertyProxy<T> extends Proxy
+public interface PropertyProxy<T, P extends AbstractPlug> extends Proxy<P>
 {
 	/**
 	 * Asynchronously gets remote property value.
@@ -93,6 +94,13 @@ public interface PropertyProxy<T> extends Proxy
 	 * @return remote condition
 	 */
 	public DynamicValueCondition getCondition();
+	
+	/**
+	 * Returns the latest response the proxy received with updated value.
+	 *
+	 * @return Object the response object that contains the value update
+	 */
+	public Response<T> getLatestValueResponse();
 }
 
 /* __oOo__ */

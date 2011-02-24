@@ -56,6 +56,7 @@ import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.group.GroupDataAccess;
 import org.epics.css.dal.group.PropertyGroupConstrain;
 import org.epics.css.dal.proxy.CommandProxy;
+import org.epics.css.dal.proxy.ConnectionStateMachine;
 import org.epics.css.dal.proxy.DeviceProxy;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
@@ -81,17 +82,13 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 		/* (non-Javadoc)
 		 * @see org.epics.css.dal.proxy.ProxyListener#connectionStateChange(org.epics.css.dal.proxy.Proxy, org.epics.css.dal.context.ConnectionState)
 		 */
-		public void connectionStateChange(ProxyEvent<Proxy> e)
+		public void connectionStateChange(ProxyEvent<Proxy<?>> e)
 		{
 			if (e.getProxy() != deviceProxy) {
 				return;
 			}
 
-			// fix if proxy did not fire connected to this listener
-			if (e.getConnectionState() == ConnectionState.CONNECTION_LOST
-			    && connectionState != ConnectionState.CONNECTED) {
-				setConnectionState(ConnectionState.CONNECTED);
-			}
+			setConnectionState(e.getConnectionState());
 
 			setConnectionState(e.getConnectionState());
 		}
@@ -99,7 +96,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 		/* (non-Javadoc)
 		 * @see org.epics.css.dal.proxy.ProxyListener#dynamicValueConditionChange(org.epics.css.dal.proxy.PropertyProxy, java.util.EnumSet)
 		 */
-		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<Object>> e)
+		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<Object,?>> e)
 		{
 			// not needed for device
 		}
@@ -136,7 +133,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	protected DeviceProxy deviceProxy;
 	protected DirectoryProxy directoryProxy;
 	protected String name;
-	protected ConnectionState connectionState = ConnectionState.INITIAL;
+	protected ConnectionStateMachine connectionStateMachine = new ConnectionStateMachine();
 	protected ProxyInterceptor proxyInterceptor = new ProxyInterceptor();
 	protected PropertyChangeListener propertyInterceptor = new PropertyInterceptor();
 	protected String[] propertyNames;
@@ -145,10 +142,10 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	protected Response lastResponse = null;
 	private int suspended = 0;
 	private boolean isdebug = false;
-	protected DeviceFamily deviceFamily;
+	protected DeviceFamily<?> deviceFamily;
 
 	/**
-	 * Do not access this field diretly.
+	 * Do not access this field directly.
 	 *
 	 * @see #getProperties()
 	 */
@@ -159,7 +156,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	/**
 	     *
 	     */
-	public AbstractDeviceImpl(String name, DeviceFamily deviceFamily)
+	public AbstractDeviceImpl(String name, DeviceFamily<?> deviceFamily)
 	{
 		super();
 		this.name = name;
@@ -184,11 +181,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 		}
 
 		if (devp == null && dirp == null) {
-			if (connectionState != ConnectionState.DISCONNECTING) {
-				setConnectionState(ConnectionState.DISCONNECTING);
-
-				//throw new IllegalStateException("Only device in DISCONNECTING can be diconnected, not in "+connectionState+".");
-			}
+			setConnectionState(ConnectionState.DISCONNECTING);
 
 			if (deviceProxy != null) {
 				deviceProxy.removeProxyListener(proxyInterceptor);
@@ -484,21 +477,23 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 */
 	public boolean isConnected()
 	{
-		return connectionState == ConnectionState.CONNECTED
-		|| connectionState == ConnectionState.CONNECTION_LOST;
+		return connectionStateMachine.isConnected();
 	}
 
 	public boolean isConnecting(){
-		return getConnectionState() == ConnectionState.CONNECTING; 
+		return connectionStateMachine.isConnecting(); 
 	}
 
+	public boolean isOperational() {
+		return connectionStateMachine.isOperational();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.context.Linkable#isDestroyed()
 	 */
 	public boolean isDestroyed()
 	{
-		return connectionState == ConnectionState.DESTROYED;
+		return connectionStateMachine.isDestroyed();
 	}
 
 	/* (non-Javadoc)
@@ -506,7 +501,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 */
 	public boolean isConnectionAlive()
 	{
-		return connectionState == ConnectionState.CONNECTED;
+		return connectionStateMachine.isConnectionAlive();
 	}
 
 	/* (non-Javadoc)
@@ -514,7 +509,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 */
 	public boolean isConnectionFailed()
 	{
-		return connectionState == ConnectionState.CONNECTION_FAILED;
+		return connectionStateMachine.isConnectionFailed();
 	}
 
 	/* (non-Javadoc)
@@ -652,21 +647,26 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	 */
 	protected void setConnectionState(ConnectionState s)
 	{
-		synchronized (this) {
-			if (connectionState == s) {
-				return;
-			}
-
-			connectionState = s;
+		boolean change= false;
+		
+		try {
+			change= connectionStateMachine.requestNextConnectionState(s);
+		} catch (IllegalStateException e) {
+			Logger.getLogger(this.getClass()).error("Internal error.", e);
+			throw e;
+		}
+		
+		if (!change) {
+			return;
 		}
 
 		ConnectionEvent<AbstractDevice> e = new ConnectionEvent<AbstractDevice>(this,
-			    connectionState);
+			    connectionStateMachine.getConnectionState());
 
 		LinkListener<AbstractDevice>[] listenersArry = linkListeners.toArray(new LinkListener[linkListeners
 			    .size()]);
 
-		switch (connectionState) {
+		switch (connectionStateMachine.getConnectionState()) {
 		case CONNECTED: {
 			for (LinkListener<AbstractDevice> l : listenersArry) {
 				l.connected(e);
@@ -748,9 +748,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	
 	public Proxy[] releaseProxy(boolean destroy) {
 		
-		if (destroy) {
-			setConnectionState(ConnectionState.DESTROYED);
-		}
+		setConnectionState(ConnectionState.DISCONNECTING);
 		
 		if (properties!=null) {
 			Collection<DynamicValueProperty<?>> props = properties.values();
@@ -760,10 +758,16 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 				Proxy[] p=((DataAccessImpl<?>) dynamicValueProperty).releaseProxy(destroy);
 			}
 		}
+		
 		Proxy[] temp = new Proxy[]{deviceProxy,directoryProxy};
+		
 		deviceProxy = null;
 		directoryProxy = null;
+		
+		setConnectionState(ConnectionState.DISCONNECTED);
+
 		if (destroy) {
+			setConnectionState(ConnectionState.DESTROYED);
 			linkListeners.clear();
 			propertyListeners.clear();
 			responseListeners.clear();
@@ -776,7 +780,7 @@ public class AbstractDeviceImpl extends LifecycleReporterSupport
 	}
 
 	public ConnectionState getConnectionState() {
-		return connectionState;
+		return connectionStateMachine.getConnectionState();
 	}
 	
 	/**

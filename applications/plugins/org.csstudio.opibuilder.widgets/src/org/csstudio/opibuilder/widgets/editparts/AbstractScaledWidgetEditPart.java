@@ -166,7 +166,6 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		//scale format
 		IWidgetPropertyChangeHandler numericFormatHandler = new IWidgetPropertyChangeHandler() {
 			
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
 				setScaleFormat(scaleFigure, (String)newValue);
@@ -178,7 +177,6 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		//value label format
 		IWidgetPropertyChangeHandler valueFormatHandler = new IWidgetPropertyChangeHandler() {
 			
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
 				setValueLabelFormat(scaleFigure, (String)newValue);

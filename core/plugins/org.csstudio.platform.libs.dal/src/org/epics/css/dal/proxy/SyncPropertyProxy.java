@@ -32,7 +32,7 @@ import org.epics.css.dal.DataExchangeException;
  *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
-public interface SyncPropertyProxy<T> extends PropertyProxy<T>
+public interface SyncPropertyProxy<T,P extends AbstractPlug> extends PropertyProxy<T,P>
 {
 	/**
 	 * Synchronous get of value.

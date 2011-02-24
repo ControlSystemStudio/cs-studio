@@ -184,6 +184,17 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	/**
 	 * {@inheritDoc}
 	 */
+	public void operational(final ConnectionEvent e) {
+		// ... forward the new connection state
+		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
+
+		// ... forward initial values
+		updateCharacteristicListeners();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void connectionFailed(ConnectionEvent e) {
 		doForwardConnectionStateChange(ConnectionState.translate(e.getState()));
 	}

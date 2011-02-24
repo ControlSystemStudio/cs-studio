@@ -59,7 +59,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		textInputFigure
 				.addManualValueChangeListener(new IManualStringValueChangeListener() {
 
-					@Override
 					public void manualValueChanged(String newValue) {
 						if(getExecutionMode() == ExecutionMode.RUN_MODE){
 							setPVValue(TextInputModel.PROP_PVNAME, newValue);
@@ -166,7 +165,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		
 		IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 			
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((TextInputFigure)figure).setDateTimeFormat((String)newValue);
 				return false;
@@ -176,7 +174,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		
 		IWidgetPropertyChangeHandler fileSourceHandler = new IWidgetPropertyChangeHandler() {
 			
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((TextInputFigure)figure).setFileSource(FileSource.values()[(Integer)newValue]);
 				return false;
@@ -186,7 +183,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		
 		IWidgetPropertyChangeHandler fileReturnPartHandler = new IWidgetPropertyChangeHandler() {
 			
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((TextInputFigure)figure).setFileReturnPart(FileReturnPart.values()[(Integer)newValue]);
 				return false;
@@ -198,7 +194,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE).
 			addPropertyChangeListener(new PropertyChangeListener() {
 			
-				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					SelectorType selectorType = SelectorType.values()[(Integer)evt.getNewValue()];
 					((TextInputFigure)figure).setSelectorType(selectorType);

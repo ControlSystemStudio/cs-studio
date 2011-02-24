@@ -84,7 +84,7 @@ public class EPICS_V3_PV
      *  EPICS_V3_PV also runs notifyAll() on <code>this</code>
      *  whenever the connected flag changes to <code>true</code>.
      */
-    private boolean connected = false;
+    private volatile boolean connected = false;
 
     /** Meta data obtained during connection cycle. */
     private IMetaData meta = null;
@@ -344,6 +344,7 @@ public class EPICS_V3_PV
                 return;
 			channel_ref_copy = channel_ref;
 	        channel_ref = null;
+	        connected = false;
     	}
         try
         {
