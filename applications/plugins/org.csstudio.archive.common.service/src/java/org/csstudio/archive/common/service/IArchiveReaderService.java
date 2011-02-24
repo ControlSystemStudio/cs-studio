@@ -21,12 +21,14 @@
  */
 package org.csstudio.archive.common.service;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -45,11 +47,11 @@ public interface IArchiveReaderService {
     /**
      * Returns the supported request types.
      * If there isn't any choice offered by the implementation, then empty set should be returned.
-     * 
+     *
      * This set is immutable such that it is not possible to add or remove an element or change it's
      * definition. But it is possible to retrieve a type's internal parameter(s) and set its/their
      * value(s).
-     * 
+     *
      * @return the set of supported request types.
      */
     @Nonnull
@@ -64,9 +66,10 @@ public interface IArchiveReaderService {
      * @throws ArchiveServiceException
      */
     @Nonnull
-    Iterable<IValue> readSamples(@Nonnull final String channelName,
-                                 @Nonnull final ITimestamp start,
-                                 @Nonnull final ITimestamp end) throws ArchiveServiceException;
+    <V, T extends IAlarmSystemVariable<V>>
+    Iterable<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
+                                               @Nonnull final TimeInstant start,
+                                               @Nonnull final TimeInstant end) throws ArchiveServiceException;
 
     /**
      * Retrieves the samples from the archive for the given channel and time interval
@@ -78,9 +81,24 @@ public interface IArchiveReaderService {
      * @throws ArchiveServiceException
      */
     @Nonnull
-    Iterable<IValue> readSamples(@Nonnull final String channelName,
-                                 @Nonnull final ITimestamp start,
-                                 @Nonnull final ITimestamp end,
-                                 @Nullable final IArchiveRequestType type) throws ArchiveServiceException;
+    <V, T extends IAlarmSystemVariable<V>>
+    Iterable<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
+                                               @Nonnull final TimeInstant start,
+                                               @Nonnull final TimeInstant end,
+                                               @Nullable final IArchiveRequestType type) throws ArchiveServiceException;
+
+    /**
+     * Returns the latest sample before the specified time instant for the specified channel or
+     * <code>null</code> if not present.
+     *
+     * @param channelName
+     * @param time
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @CheckForNull
+    <V, T extends IAlarmSystemVariable<V>>
+    IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
+                                              @Nonnull final TimeInstant time) throws ArchiveServiceException;
 
 }

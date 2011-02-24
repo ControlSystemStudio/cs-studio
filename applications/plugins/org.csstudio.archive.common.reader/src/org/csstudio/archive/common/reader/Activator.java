@@ -106,8 +106,8 @@ public class Activator implements BundleActivator {
      * @return the archive service or <code>null</code> if not available.
      * @throws OsgiServiceUnavailableException
      */
-    public IArchiveReaderService getArchiveReaderService() throws OsgiServiceUnavailableException
-    {
+	@Nonnull
+    public IArchiveReaderService getArchiveReaderService() throws OsgiServiceUnavailableException {
         final IArchiveReaderService service =
             (IArchiveReaderService) _tracker.getService();
         if (service == null) {

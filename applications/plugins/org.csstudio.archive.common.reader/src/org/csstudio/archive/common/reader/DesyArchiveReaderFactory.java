@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.reader;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.IArchiveReaderService;
@@ -29,6 +30,8 @@ import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
 import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
@@ -61,16 +64,19 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         }
 
         @Override
+        @Nonnull
         public String getServerName() {
             return "Which is not in ArchiveInfo already?";
         }
 
         @Override
+        @Nonnull
         public String getURL() {
             return "The URL should not be read-only at most by the ArchiveReader client!";
         }
 
         @Override
+        @Nonnull
         public String getDescription() {
             return "Description of what now?";
         }
@@ -81,52 +87,50 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         }
 
         @Override
+        @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
             return new ArchiveInfo[] {new ArchiveInfo("Desy Archive", "Optimized MySql", 5)};
         }
 
         @Override
-        public String[] getNamesByPattern(final int key, final String globPattern) throws Exception {
+        @Nonnull
+        public String[] getNamesByPattern(final int key, @Nonnull final String globPattern) throws Exception {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
-        public String[] getNamesByRegExp(final int key, final String regExp) throws Exception {
+        @Nonnull
+        public String[] getNamesByRegExp(final int key, @Nonnull final String regExp) throws Exception {
             // TODO Auto-generated method stub
             return null;
         }
 
         @Override
+        @Nonnull
         public ValueIterator getRawValues(final int key,
-                                          final String name,
-                                          final ITimestamp start,
-                                          final ITimestamp end) throws Exception {
+                                          @Nonnull final String name,
+                                          @Nonnull final ITimestamp start,
+                                          @Nonnull final ITimestamp end) throws Exception {
 
-
-
-            return new DesyArchiveValueIterator(name, start, end, getRawType());
+            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+            return new DesyArchiveValueIterator(name, s, e, getRawType());
         }
 
-        private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
-            final IArchiveReaderService s = Activator.getDefault().getArchiveReaderService();
-            final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
-            for (final IArchiveRequestType type : types) {
-                // this should have been decided type safe by the client app (typically the user)...
-                if (type.getTypeIdentifier().equals("RAW")) {
-                    return type;
-                }
-            }
-            return null;
-        }
 
         @Override
+        @Nonnull
         public ValueIterator getOptimizedValues(final int key,
-                                                final String name,
-                                                final ITimestamp start,
-                                                final ITimestamp end,
+                                                @Nonnull final String name,
+                                                @Nonnull final ITimestamp start,
+                                                @Nonnull final ITimestamp end,
                                                 final int count) throws Exception {
-            return new DesyArchiveValueIterator(name, start, end, null);
+            // Else: Fetch raw data and perform averaging
+            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
+            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
+
+            return new EquidistantTimeBinsIterator(new DesyArchiveValueIterator(name, s, e, null), count);
         }
 
         @Override
@@ -137,6 +141,24 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         public void close() {
             // TODO Auto-generated method stub
+        }
+
+        /**
+         * Helper method
+         * @return
+         * @throws OsgiServiceUnavailableException
+         */
+        @CheckForNull
+        private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
+            final IArchiveReaderService s = Activator.getDefault().getArchiveReaderService();
+            final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
+            for (final IArchiveRequestType type : types) {
+                // this should have been decided type safe by the client app (typically the user)...
+                if (type.getTypeIdentifier().equals("RAW")) {
+                    return type;
+                }
+            }
+            return null;
         }
     }
 

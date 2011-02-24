@@ -78,7 +78,6 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
 
     /**
      * Constructor.
-     * @param mgr
      */
     public ArchiverMgmtDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
         super(mgr);

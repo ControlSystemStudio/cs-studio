@@ -21,17 +21,14 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.engine;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.engine.ArchiveEngine;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
@@ -48,13 +45,16 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchiveEngineDao {
 
+    private static final String EXC_MSG = "Engine retrieval from archive failed.";
+
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveEngineDaoImpl.class);
 
+    private static final String TAB = "engine";
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectEngineByNameStmt =
-        "SELECT id, url FROM archive.engine WHERE name=?";
+        "SELECT id, url FROM " + getDaoMgr().getDatabaseName() + "." + TAB + " WHERE name=?";
 
 
     /**
@@ -84,20 +84,10 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
                 return new ArchiveEngine(new ArchiveEngineId(id),
                                             new URL(url));
             }
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
-        } catch (final MalformedURLException e) {
-            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG, e);
         } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectEngineByNameStmt + " failed.");
-                }
-            }
+            closeStatement(statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
         }
         return null;
     }

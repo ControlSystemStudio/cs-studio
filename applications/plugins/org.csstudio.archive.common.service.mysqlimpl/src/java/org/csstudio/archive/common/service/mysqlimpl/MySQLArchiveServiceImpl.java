@@ -45,24 +45,16 @@ import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveReq
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
-import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 
 
 /**
@@ -83,43 +75,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
-
-
-    /**
-     * Static converter function.
-     *
-     * @author bknerr
-     * @since 22.12.2010
-     */
-    private static final class ArchiveSampleToIValueFunction<V> implements
-            Function<IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>, IValue> {
-        /**
-         * Constructor.
-         */
-        public ArchiveSampleToIValueFunction() {
-            // Empty
-        }
-
-        @Override
-        @CheckForNull
-        public IValue apply(@Nonnull final IArchiveMinMaxSample<V, IAlarmSystemVariable<V>> from) {
-            try {
-                // TODO (bknerr) : support lookup for every single value... check performance
-                final V min = from.getMinimum();
-                final V max = from.getMaximum();
-                if (min != null && max != null) {
-                    return SystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
-                    //return EpicsSystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
-                }
-                return EpicsSystemVariableSupport.toIValue(from.getSystemVariable());
-            } catch (final TypeSupportException e) {
-                return null;
-            }
-        }
-    }
-    @SuppressWarnings("rawtypes")
-    private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
-        new ArchiveSampleToIValueFunction();
 
 
     /**
@@ -278,9 +233,10 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Iterable<IValue> readSamples(@Nonnull final String channelName,
-                                        @Nonnull final ITimestamp start,
-                                        @Nonnull final ITimestamp end) throws ArchiveServiceException {
+    public <V, T extends IAlarmSystemVariable<V>>
+    Iterable<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
+                                               @Nonnull final TimeInstant start,
+                                               @Nonnull final TimeInstant end) throws ArchiveServiceException {
         return readSamples(channelName, start, end, null);
     }
 
@@ -289,29 +245,24 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
      */
     @Override
     @Nonnull
-    public Iterable<IValue> readSamples(@Nonnull final String channelName,
-                                        @Nonnull final ITimestamp start,
-                                        @Nonnull final ITimestamp end,
-                                        @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
+    public <V, T extends IAlarmSystemVariable<V>>
+    Iterable<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
+                                               @Nonnull final TimeInstant start,
+                                               @Nonnull final TimeInstant end,
+                                               @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
 
         try {
             final DesyArchiveRequestType desyType = validateRequestType(type);
-
-            final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
-            final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
 
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
-            final Iterable<IArchiveMinMaxSample<Object, IAlarmSystemVariable<Object>>> samples =
-                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, s, e);
+            final Iterable<IArchiveSample<V, T>> samples =
+                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, start, end);
 
-            final Iterable<IValue> iValues =
-                Iterables.filter(Iterables.transform(samples, ARCH_SAMPLE_2_IVALUE_FUNC),
-                                 Predicates.<IValue>notNull());
-            return iValues;
+            return samples;
 
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Sample retrieval failed.", ade);
@@ -337,6 +288,24 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService,
         } catch(final ClassCastException cce) {
             throw new RequestTypeParameterException("Request type is not the correct type instance!" +
                                                     " Use one the type instances returned by the service interface or null", cce);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public <V, T extends IAlarmSystemVariable<V>>
+    IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
+                                              @Nonnull final TimeInstant time) throws ArchiveServiceException {
+
+        try {
+            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
+            return DAO_MGR.getSampleDao().retrieveLatestSampleBeforeTime(channel, time);
+        } catch (final ArchiveDaoException ade) {
+            throw new ArchiveServiceException("Sample retrieval failed.", ade);
         }
     }
 }

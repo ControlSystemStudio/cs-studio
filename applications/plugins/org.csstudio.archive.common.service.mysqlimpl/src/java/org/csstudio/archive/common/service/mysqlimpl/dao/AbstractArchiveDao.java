@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -81,6 +82,23 @@ public abstract class AbstractArchiveDao {
             } catch (final SQLException e) {
                 LOG.warn(logMsg);
             }
+        }
+    }
+
+    protected void handleExceptions(@Nonnull final String msg,
+                                    @Nonnull final Exception inE) throws ArchiveDaoException {
+        try {
+            throw inE;
+        } catch (final SQLException e) {
+            throw new ArchiveDaoException("SQL: " + msg, e);
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveDaoException("Connection: " + msg, e);
+        } catch (final ClassNotFoundException e) {
+            throw new ArchiveDaoException("Class not found: " + msg, e);
+        } catch (final MalformedURLException e) {
+            throw new ArchiveDaoException("Malformed URL: " + msg, e);
+        } catch (final Exception re) {
+            throw new ArchiveDaoException("Unknown: ", re);
         }
     }
 }
