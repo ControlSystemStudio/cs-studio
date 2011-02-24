@@ -28,6 +28,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Class that writes JMSLogMessages to the RDB
  *  @author Kay Kasemir
+ *  @author Lana Abadie - PostgreSQL additions
  *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
@@ -100,9 +101,13 @@ public class RDBWriter
         if (sql.select_next_message_id != null)
             next_message_id_statement =
                 connection.prepareStatement(sql.select_next_message_id);
-        insert_message_statement =
-            connection.prepareStatement(sql.insert_message_id_datum_type_name_severity,
-                    Statement.RETURN_GENERATED_KEYS);
+        else if (rdb_util.getDialect() == Dialect.PostgreSQL)
+			insert_message_statement =
+        				connection.prepareStatement(sql.insert_message_id_datum_type_name_severity);
+        else // MySQL, other RDB that supports RETURN_GENERATED_KEYS
+        	insert_message_statement =
+        			connection.prepareStatement(sql.insert_message_id_datum_type_name_severity,
+        					Statement.RETURN_GENERATED_KEYS);
         insert_property_statement =
             connection.prepareStatement(sql.insert_message_property_value);
     }
@@ -305,12 +310,15 @@ public class RDBWriter
         long message_id = -1;
         if (rdb_util.getDialect() == Dialect.Oracle)
         {
-            // Read next unique message ID from sequence
+           // Read next unique message ID from sequence
             final ResultSet result = next_message_id_statement.executeQuery();
             if (result.next())
                 message_id = result.getInt(1);
             else
+            {
+            	result.close();
                 throw new Exception("Cannot obtain next message ID");
+            }
             result.close();
             insert_message_statement.setLong(5, message_id);
         }
@@ -331,18 +339,36 @@ public class RDBWriter
         }
         insert_message_statement.setString(3, name);
         insert_message_statement.setString(4, severity);
-        final int rows = insert_message_statement.executeUpdate();
-        if (rows != 1)
-            throw new Exception("Inserted " + rows + " instead of 1 Message");
 
-        if (rdb_util.getDialect() != Dialect.Oracle)
+        // PostgreSQL, MySQL: Read auto-assigned unique message ID
+        if (rdb_util.getDialect() == Dialect.PostgreSQL)
         {
-            // Read auto-assigned unique message ID
+            final ResultSet result = insert_message_statement.executeQuery();
+    	    if (result.next())
+        	{
+        	      message_id = result.getInt(1);
+        	      result.close();
+        	}
+        	else
+        	{
+        		 result.close();
+                throw new Exception("Cannot obtain next message ID");
+        	}
+        }
+        else if (rdb_util.getDialect() == Dialect.MySQL)
+        {
+            final int rows = insert_message_statement.executeUpdate();
+            if (rows != 1)
+                throw new Exception("Inserted " + rows + " instead of 1 Message");
+
             final ResultSet result = insert_message_statement.getGeneratedKeys();
             if (result.next())
                 message_id = result.getInt(1);
             else
+            {
+                result.close();
                 throw new Exception("Cannot obtain next message ID");
+            }
             result.close();
         }
 
