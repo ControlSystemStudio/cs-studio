@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import org.csstudio.logging.LogFormatter;
 import org.csstudio.logging.Preferences;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -35,10 +34,7 @@ public class ConsoleViewHandler extends Handler
     final private MessageConsole console;
 
     /** Printable, color-coded stream of the <code>console</code> */
-    final private MessageConsoleStream stream;
-
-    /** Colors used to high-light some message levels */
-    private Color severe_color, warning_color, info_color;
+    final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
 
     /** Add console view to the (root) logger.
      *  <p>
@@ -83,15 +79,6 @@ public class ConsoleViewHandler extends Handler
      */
     private ConsoleViewHandler()
     {
-        // Initialize colors
-        final Display display = Display.getCurrent();
-        if (display != null)
-        {
-            severe_color = display.getSystemColor(SWT.COLOR_MAGENTA);
-            warning_color = display.getSystemColor(SWT.COLOR_RED);
-            info_color = display.getSystemColor(SWT.COLOR_BLUE);
-        }
-
         // Allocate a console for text messages.
         console = new MessageConsole(Messages.ConsoleView_Title, null);
         // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
@@ -110,12 +97,28 @@ public class ConsoleViewHandler extends Handler
         // According to MessageConsole javadoc,
         // "Text written to streams is buffered and processed in a Job",
         // so we assume it's decoupled by the MessageConsole buffer & Job
-        stream = console.newMessageStream();
+        severe_stream = console.newMessageStream();
+        warning_stream = console.newMessageStream();
+        info_stream = console.newMessageStream();
+        basic_stream = console.newMessageStream();
+
+        // Setting the color of a stream while it's in use is hard:
+        // Has to happen on SWT UI thread, and changes will randomly
+        // affect only the next message or the whole Console View.
+        // Using different streams for the color-coded message levels
+        // seem to work OK.
+        final Display display = Display.getCurrent();
+        if (display != null)
+        {
+            severe_stream.setColor(display.getSystemColor(SWT.COLOR_MAGENTA));
+            warning_stream.setColor(display.getSystemColor(SWT.COLOR_RED));
+            info_stream.setColor(display.getSystemColor(SWT.COLOR_BLUE));
+        }
     }
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void publish(LogRecord record)
+    public synchronized void publish(final LogRecord record)
     {
         if (! isLoggable(record))
             return;
@@ -133,11 +136,8 @@ public class ConsoleViewHandler extends Handler
 
         try
         {
-            stream.setColor(getColor(record.getLevel()));
-            stream.print(msg);
-            // Is it necessary to 'flush' to assert that the color
-            // and text output go together?
-            // Does not seem to be necessary
+            // Change of color must happen on GUI thread
+            getStream(record.getLevel()).print(msg);
         }
         catch (Exception ex)
         {
@@ -147,18 +147,18 @@ public class ConsoleViewHandler extends Handler
     }
 
     /** @param level Message {@link Level}
-     *  @return Suggested {@link Color} for that Level
+     *  @return Suggested stream for that Level
      */
-    private Color getColor(final Level level)
+    private MessageConsoleStream getStream(final Level level)
     {
         if (level.intValue() >= Level.SEVERE.intValue())
-            return severe_color;
+            return severe_stream;
         else if (level.intValue() >= Level.WARNING.intValue())
-            return warning_color;
+            return warning_stream;
         else if (level.intValue() >= Level.INFO.intValue())
-            return info_color;
+            return info_stream;
         else
-            return null;
+            return basic_stream;
     }
 
     /** {@inheritDoc} */
@@ -167,7 +167,10 @@ public class ConsoleViewHandler extends Handler
     {
         try
         {
-            stream.flush();
+            severe_stream.flush();
+            warning_stream.flush();
+            info_stream.flush();
+            basic_stream.flush();
         }
         catch (Exception ex)
         {
@@ -185,14 +188,20 @@ public class ConsoleViewHandler extends Handler
         consolePlugin.getConsoleManager().removeConsoles(
                 new IConsole[] { console });
 
-        // Close stream
+        // With Eclipse 3.6.1, when Eclipse is shutting down,
+        // closing the stream will cause org.eclipse.ui.internal.console.IOConsolePartitioner
+        // to start a shutdown Job, which fails because the JobManager
+        // is already down...
         try
         {
-            stream.close();
+             severe_stream.close();
+             warning_stream.close();
+             info_stream.close();
+             basic_stream.close();
         }
         catch (Exception ex)
-        {
-            reportError(null, ex, ErrorManager.CLOSE_FAILURE);
+        {   // Ignore errors because we're shutting down anyway
+            ex = null;
         }
     }
 }
