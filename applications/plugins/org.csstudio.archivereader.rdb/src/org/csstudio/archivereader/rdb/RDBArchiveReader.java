@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
@@ -20,7 +22,6 @@ import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** ArchiveReader for RDB data
@@ -41,19 +42,19 @@ public class RDBArchiveReader implements ArchiveReader
     final private int password;
     /** Timeout [secs] used for some operations that should be 'fast' */
     final private int timeout;
-    
+
     /** Name of stored procedure or "" */
     final private String stored_procedure;
-    
+
     final private RDBUtil rdb;
     final private SQL sql;
-    
+
     /** Map of status IDs to Status strings */
     final private HashMap<Integer, String> stati;
 
     /** Map of severity IDs to Severities */
     final private HashMap<Integer, ISeverity> severities;
-    
+
     /** List of statements to cancel in cancel() */
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
@@ -114,8 +115,8 @@ public class RDBArchiveReader implements ArchiveReader
             statement.close();
         }
     }
-    
-    /** @return Map of all severity ID/ISeverity mappings 
+
+    /** @return Map of all severity ID/ISeverity mappings
      *  @throws Exception on error
      */
     private HashMap<Integer, ISeverity> getSeverityValues() throws Exception
@@ -208,7 +209,7 @@ public class RDBArchiveReader implements ArchiveReader
             new ArchiveInfo("rdb", rdb.getDialect().toString(), 1)
         };
     }
-    
+
     /** {@inheritDoc} */
     public String[] getNamesByPattern(final int key, final String glob_pattern) throws Exception
     {
@@ -226,7 +227,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         return perform_search(reg_exp, sql.channel_sel_by_reg_exp);
     }
-    
+
     /** Perform channel search by name pattern
      *  @param pattern Pattern, either SQL or Reg. Ex.
      *  @param sql_query SQL query that can handle the pattern
@@ -286,7 +287,7 @@ public class RDBArchiveReader implements ArchiveReader
         final double seconds = (end.toDouble() - start.toDouble()) / count;
         return new AveragedValueIterator(raw_data, seconds);
     }
-    
+
     /** @param name Channel name
      *  @return Numeric channel ID
      *  @throws UnknownChannelException when channel not known
@@ -359,6 +360,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** Cancel an ongoing RDB query.
      *  Not supported by all queries.
      */
+    @Override
     public void cancel()
     {
         synchronized (cancellable_statements)
@@ -375,14 +377,15 @@ public class RDBArchiveReader implements ArchiveReader
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).
-                        info("Attempt to cancel statment", ex); //$NON-NLS-1$
+                    Logger.getLogger(Activator.ID).log(Level.WARNING,
+                        "Attempt to cancel statment", ex); //$NON-NLS-1$
                 }
             }
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void close()
     {
         cancel();
