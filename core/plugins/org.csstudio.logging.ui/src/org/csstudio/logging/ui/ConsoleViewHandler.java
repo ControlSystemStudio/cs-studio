@@ -123,6 +123,12 @@ public class ConsoleViewHandler extends Handler
         if (! isLoggable(record))
             return;
 
+        // Console might already be closed
+        final MessageConsoleStream stream = getStream(record.getLevel());
+        if (stream.isClosed())
+            return;
+
+        // Format message
         final String msg;
         try
         {
@@ -134,10 +140,10 @@ public class ConsoleViewHandler extends Handler
             return;
         }
 
+        // Print
         try
         {
-            // Change of color must happen on GUI thread
-            getStream(record.getLevel()).print(msg);
+            stream.print(msg);
         }
         catch (Exception ex)
         {
