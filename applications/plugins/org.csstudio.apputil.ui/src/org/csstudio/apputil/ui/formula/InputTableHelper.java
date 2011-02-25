@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.formula;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.apputil.ui.Activator;
 
 /** Helper for creating the formula's input table.
  *  @author Kay Kasemir
@@ -21,22 +24,22 @@ public class InputTableHelper
 
         /** Column Identifier. */
     	VARIABLE(Messages.VariableName, 80, 100);
-        
+
         private final String title;
         private final int min_size;
         private final int weight;
-        
+
         private Column(String title, int size, int weight)
         {
             this.title = title;
             this.min_size = size;
             this.weight = weight;
         }
-       
+
         /** @return Column title */
         public String getTitle()
         {   return title; }
-        
+
         /** @return Minimum column size. */
         public int getMinSize()
         {   return min_size;  }
@@ -56,7 +59,7 @@ public class InputTableHelper
     }
 
 	/** Get ID for a property.
-	 * 
+	 *
 	 * @param title One of the column titles.
 	 * @return Returns the requested Column.
 	 * @throws Exception on error.
@@ -71,7 +74,7 @@ public class InputTableHelper
 	}
 
 	/** Get e.g. the "NAME" from a ChartItem.
-	 * 
+	 *
 	 * @param qso
 	 * @param col_title One of the properties[] strings.
 	 * @return Returns the requested property.
@@ -110,9 +113,9 @@ public class InputTableHelper
                 return input.getVariableName();
             }
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-            CentralLogger.getInstance().error("InputTableHelper.getText:", e); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
 		}
 		return null;
 	}
