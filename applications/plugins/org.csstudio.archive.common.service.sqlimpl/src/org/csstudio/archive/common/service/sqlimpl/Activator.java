@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -36,7 +36,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Activator.
  * Registers two service impls: {@link IArchiveEngineConfigService} and
- * {@link IArchiveWriterService}.
+ * {@link IArchiveEngineService}.
  *
  * @author bknerr
  * @since 23.11.2010
@@ -94,7 +94,7 @@ public class Activator implements BundleActivator {
         propsWr.put("service.description", "Oracle archive writer service implementation");
         LOG.info("Register Oracle archive writer service");
 
-        context.registerService(IArchiveWriterService.class.getName(),
+        context.registerService(IArchiveEngineService.class.getName(),
                                 SqlArchiveServiceImpl.INSTANCE,
                                 propsWr);
 
