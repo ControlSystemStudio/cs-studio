@@ -42,15 +42,15 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 
     /** Numeric meta data used as default if nothing else is known */
     private static INumericMetaData default_numeric_meta = null;
-    
+
     final protected RDBArchiveReader reader;
     final protected int channel_id;
-    
+
     protected IMetaData meta = null;
-    
+
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
-    
+
     /** For performance reasons, we remember the fact that we
      *  found (or didn't find) array samples.
      *  <p>
@@ -83,7 +83,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // Else: Not a real error, return empty iterator
         }
     }
-    
+
     /** @return Meta data information for the channel or <code>null</code>
      *  @throws Exception on error
      */
@@ -107,7 +107,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         {
             statement.close();
         }
-        
+
         // Try enumerated meta data
         ArrayList<String> enums = null;
         statement = reader.getRDB().getConnection().prepareStatement(
@@ -140,7 +140,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (enums == null  ||  enums.size() <= 0)
             return null; // Nothing found
         // Convert to plain array, then IEnumeratedMetaData
-        return ValueFactory.createEnumeratedMetaData(enums.toArray(new String[enums.size()])); 
+        return ValueFactory.createEnumeratedMetaData(enums.toArray(new String[enums.size()]));
     }
 
 
@@ -163,15 +163,15 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     {
         // Get time stamp
         final Timestamp stamp = result.getTimestamp(1);
-        // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
+        // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
         if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
             stamp.setNanos(result.getInt(7));
         final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
-        
+
         // Get severity/status
         final String status = reader.getStatus(result.getInt(3));
         final ISeverity severity = filterSeverity(reader.getSeverity(result.getInt(2)), status);
-        
+
         // Determine the value type
         // Try double
         final double dbl0 = result.getDouble(5);
@@ -193,7 +193,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             return ValueFactory.createDoubleValue(time, severity, status,
                     getDefaultNumericMeta(), IValue.Quality.Original, data);
         }
-        
+
         // Try integer
         final int num = result.getInt(4);
         if (! result.wasNull())
@@ -212,7 +212,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                     getDefaultNumericMeta(), IValue.Quality.Original,
                     new long [] { num });
         }
-        
+
         // Default to string
         final String txt = result.getString(6);
         return ValueFactory.createStringValue(time, severity, status,
@@ -246,10 +246,15 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (no_value_severity  == null)
             no_value_severity = new ISeverity()
         {
+            @Override
             public boolean hasValue()  { return false; }
+            @Override
             public boolean isInvalid() { return true;  }
+            @Override
             public boolean isMajor()   { return false; }
+            @Override
             public boolean isMinor()   { return false; }
+            @Override
             public boolean isOK()      { return false; }
             @Override
             public String toString()   { return Severity.Level.INVALID.toString(); }
@@ -289,7 +294,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                 quality, new String[] { value.toString() });
     }
 
-    
+
     /** Given the time and first element of the  sample, see if there
      *  are more array elements.
      *  @param stamp Time stamp of the sample
@@ -305,7 +310,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // For performance reasons, only look for array data until we hit a scalar sample.
         if (data_is_scalar)
             return new double [] { dbl0 };
-        
+
         // See if there are more array elements
         if (sel_array_samples == null)
         {   // Lazy initialization
@@ -317,7 +322,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
         if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
             sel_array_samples.setInt(3, stamp.getNanos());
-        
+
         // Assemble array of unknown size in ArrayList ....
         final ArrayList<Double> vals = new ArrayList<Double>();
         reader.addForCancellation(sel_array_samples);
@@ -366,7 +371,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         }
         System.out.println();
     }
-    
+
     /** Close the select statement for array samples. */
     private void closeArraySampleSel()
     {
@@ -383,10 +388,11 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             sel_array_samples = null;
         }
     }
-    
+
     /** Release all database resources.
      *  OK to call more than once.
      */
+    @Override
     public void close()
     {
         closeArraySampleSel();

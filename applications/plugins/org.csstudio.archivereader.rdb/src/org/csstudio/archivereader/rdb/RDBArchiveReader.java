@@ -176,18 +176,21 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getServerName()
     {
         return "RDB";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getURL()
     {
         return url;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getDescription()
     {
         return "RDB Archive V" + getVersion() + " (" + rdb.getDialect() + ")\n" +
@@ -196,12 +199,14 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getVersion()
     {
         return 2;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ArchiveInfo[] getArchiveInfos()
     {
         return new ArchiveInfo[]
@@ -211,6 +216,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getNamesByPattern(final int key, final String glob_pattern) throws Exception
     {
         // Escape underscores because they are SQL patterns
@@ -223,6 +229,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getNamesByRegExp(final int key, final String reg_exp) throws Exception
     {
         return perform_search(reg_exp, sql.channel_sel_by_reg_exp);
@@ -264,6 +271,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public ValueIterator getRawValues(final int key, final String name,
             final ITimestamp start, final ITimestamp end) throws UnknownChannelException, Exception
     {
@@ -272,6 +280,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     /** {@inheritDoc} */
+    @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
             final ITimestamp start, final ITimestamp end, int count) throws UnknownChannelException, Exception
     {

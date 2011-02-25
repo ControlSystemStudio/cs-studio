@@ -31,7 +31,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
                 Activator.ID));
     }
-    
+
+    @Override
     public void init(IWorkbench workbench)
     {
         // NOP
