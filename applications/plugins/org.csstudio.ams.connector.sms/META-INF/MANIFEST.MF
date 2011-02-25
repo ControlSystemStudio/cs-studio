@@ -19,3 +19,4 @@ Bundle-ClassPath: libs/comm.jar,
  libs/jsmpp-2.1.0.jar,
  libs/smslib-3.4.6.jar,
  .
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

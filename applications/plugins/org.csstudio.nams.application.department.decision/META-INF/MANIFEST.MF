@@ -22,3 +22,4 @@ Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.application.department.decision;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.application.department.decision.office.decision;x-friends:="org.csstudio.nams.testUtils.testSuites"
 Import-Package: org.csstudio.nams.common.material.regelwerk
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
