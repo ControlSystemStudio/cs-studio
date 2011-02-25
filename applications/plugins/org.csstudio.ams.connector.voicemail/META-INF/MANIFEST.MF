@@ -18,3 +18,4 @@ Bundle-ClassPath: lib/capi.jar,
  lib/maryclient.jar,
  lib/signalproc.jar,
  .
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.core.runtime.compatibility.auth;bundle-version="3.2.
  org.remotercp.contacts;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

@@ -63,3 +63,4 @@ Bundle-ClassPath: .,
  lib-hibernate/xml-apis.jar,
  lib-hsql/hsqldb.jar,
  lib-hsql/servlet.jar
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

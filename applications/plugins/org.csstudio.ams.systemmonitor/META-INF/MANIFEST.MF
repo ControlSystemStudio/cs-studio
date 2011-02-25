@@ -14,3 +14,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/activation.jar,
  lib/mail.jar,
  .
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
