@@ -1,5 +1,6 @@
 package org.csstudio.sns.product;
 
+import org.csstudio.logging.ui.ConsoleViewHandler;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -17,7 +18,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
     {
         super(configurer);
     }
-    
+
     /** Set initial workbench window size and title */
     @Override
     public void preWindowOpen()
@@ -33,7 +34,18 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
         configurer.setTitle(Messages.Window_Title);
     }
 
+
+
 	@Override
+    public void postWindowCreate()
+    {
+        super.postWindowCreate();
+
+        // Add console view to the logger
+        ConsoleViewHandler.addToLogger();
+    }
+
+    @Override
     public ActionBarAdvisor createActionBarAdvisor(
                     IActionBarConfigurer configurer)
     {
