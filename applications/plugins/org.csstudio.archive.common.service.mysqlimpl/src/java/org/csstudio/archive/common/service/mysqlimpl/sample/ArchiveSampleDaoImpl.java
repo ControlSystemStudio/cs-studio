@@ -46,13 +46,15 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.sample.SampleAggregator;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -177,9 +179,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                               @Nonnull final TimeInstant timestamp,
                               @Nonnull final List<String> valuesPerMinute,
                               @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
-
-        final Double newValue = isDataConvertibleToDouble(data.getData().getValueData());
-        if (newValue == null || newValue.equals(Double.NaN)) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
+        } catch (final TypeSupportException e) {
+            return; // is not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
             return; // not convertible, no data reduction possible
         }
 
@@ -244,15 +250,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                               agg.getAvg(),
                                               agg.getMin(),
                                               agg.getMax());
-    }
-
-    @CheckForNull
-    private Double isDataConvertibleToDouble(@Nonnull final Object data) {
-        try {
-            return ArchiveTypeConversionSupport.toDouble(data);
-        } catch (final TypeSupportException e) {
-            return null; // is not convertible. Type support missing.
-        }
     }
 
     private boolean isReducedDataWriteDueAndHasChanged(@Nonnull final Double newVal,
@@ -352,10 +349,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @Nonnull
     public <V, T extends IAlarmSystemVariable<V>>
-    Iterable<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
-                                                   @Nonnull final IArchiveChannel channel,
-                                                   @Nonnull final TimeInstant s,
-                                                   @Nonnull final TimeInstant e) throws ArchiveDaoException {
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
+                                                     @Nonnull final IArchiveChannel channel,
+                                                     @Nonnull final TimeInstant s,
+                                                     @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
         final List<IArchiveSample<V, T>> iterable = Lists.newArrayList();
         PreparedStatement stmt = null;

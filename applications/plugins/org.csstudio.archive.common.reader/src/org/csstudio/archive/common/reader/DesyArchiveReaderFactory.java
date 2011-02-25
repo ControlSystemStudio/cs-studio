@@ -24,15 +24,17 @@ package org.csstudio.archive.common.reader;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 import com.google.common.collect.ImmutableSet;
@@ -48,6 +50,21 @@ import com.google.common.collect.ImmutableSet;
 //                Seems to be a CS 5.3 problem
 public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 // CHECKSTYLE:ON
+
+    static final ValueIterator EMPTY_ITER = new ValueIterator() {
+        @Override
+        public IValue next() throws Exception {
+            return null;
+        }
+        @Override
+        public boolean hasNext() {
+            return false;
+        }
+        @Override
+        public void close() {
+            // EMPTY
+        }
+    };
 
     /**
      * The DESY archive reader implementation.
@@ -66,19 +83,19 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getServerName() {
-            return "Which is not in ArchiveInfo already?";
+            return "The server name is already in the ArchiveInfo field!";
         }
 
         @Override
         @Nonnull
         public String getURL() {
-            return "The URL should not be read-only at most by the ArchiveReader client!";
+            return "The URL should not be modifiable!";
         }
 
         @Override
         @Nonnull
         public String getDescription() {
-            return "Description of what now?";
+            return "The dedicated DESY archive reader is more like a databrowser backend.";
         }
 
         @Override
@@ -89,7 +106,9 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
-            return new ArchiveInfo[] {new ArchiveInfo("Desy Archive", "Optimized MySql", 5)};
+            return new ArchiveInfo[] {new ArchiveInfo("Desy Archive",
+                                                      "Optimized MySql",
+                                                      5)};
         }
 
         @Override
@@ -115,7 +134,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator(name, s, e, getRawType());
+            return new  DesyArchiveValueIterator(name, s, e, getRawType());
         }
 
 
@@ -126,11 +145,18 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
                                                 @Nonnull final ITimestamp start,
                                                 @Nonnull final ITimestamp end,
                                                 final int count) throws Exception {
-            // Else: Fetch raw data and perform averaging
+
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
 
-            return new EquidistantTimeBinsIterator(new DesyArchiveValueIterator(name, s, e, null), count);
+            // Check for optimizability (base type convertible to Double)
+            final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+            final IArchiveChannel channel = service.getChannelByName(name);
+
+            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType())) {
+                return new EquidistantTimeBinsIterator(name, s, e, null, count);
+            }
+            return EMPTY_ITER;
         }
 
         @Override
@@ -150,7 +176,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
          */
         @CheckForNull
         private IArchiveRequestType getRawType() throws OsgiServiceUnavailableException {
-            final IArchiveReaderService s = Activator.getDefault().getArchiveReaderService();
+            final IArchiveReaderFacade s = Activator.getDefault().getArchiveReaderService();
             final ImmutableSet<IArchiveRequestType> types = s.getRequestTypes();
             for (final IArchiveRequestType type : types) {
                 // this should have been decided type safe by the client app (typically the user)...

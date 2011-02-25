@@ -27,9 +27,8 @@ import java.util.Hashtable;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveReaderService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
@@ -37,8 +36,10 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Activator.
- * Registers two service impls: {@link IArchiveEngineConfigService} and
- * {@link IArchiveWriterService}.
+ * Registers three service impls:<br/>
+ * <li>{@link IArchiveEngineConfigService}
+ * <li>{@link IArchiveEngineFacade}
+ * <li>{@link IArchiveReaderFacade}
  *
  * @author bknerr
  * @since 22.11.2010
@@ -83,29 +84,21 @@ public class Activator implements BundleActivator {
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
-        propsCfg.put("service.description", "MySQL archive engine config service implementation");
-        LOG.info("Register MySQL archive engine config service");
+        propsCfg.put("service.description", "MySQL archive engine service implementation");
+        LOG.info("Register MySQL archive engine service");
 
-        context.registerService(IArchiveEngineConfigService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
+        context.registerService(IArchiveEngineFacade.class.getName(),
+                                MySQLArchiveEngineServiceImpl.INSTANCE,
                                 propsCfg);
 
-        final Dictionary<String, Object> propsWr = new Hashtable<String, Object>();
-        propsWr.put("service.vendor", "DESY");
-        propsWr.put("service.description", "MySQL archive writer service implementation");
-        LOG.info("Register MySQL archive writer service");
-
-        context.registerService(IArchiveWriterService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
-                                propsWr);
 
         final Dictionary<String, Object> propsRd = new Hashtable<String, Object>();
         propsRd.put("service.vendor", "DESY");
         propsRd.put("service.description", "MySQL archive reader service implementation");
         LOG.info("Register MySQL archive reader service");
 
-        context.registerService(IArchiveReaderService.class.getName(),
-                                MySQLArchiveServiceImpl.INSTANCE,
+        context.registerService(IArchiveReaderFacade.class.getName(),
+                                MySQLArchiveReaderServiceImpl.INSTANCE,
                                 propsRd);
 	}
 

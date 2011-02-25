@@ -19,7 +19,7 @@ import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -27,7 +27,7 @@ import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
@@ -260,7 +260,7 @@ public final class EngineModel {
             }
             _name = engineName;
 
-            final IArchiveEngineConfigService configService = Activator.getDefault().getArchiveEngineConfigService();
+            final IArchiveEngineFacade configService = Activator.getDefault().getArchiveEngineService();
 
             _engine = configService.findEngine(_name);
             if (_engine == null) {
@@ -284,7 +284,7 @@ public final class EngineModel {
         }
     }
 
-    private void configureGroup(@Nonnull final IArchiveEngineConfigService configService,
+    private void configureGroup(@Nonnull final IArchiveEngineFacade configService,
                                 @Nonnull final IArchiveChannelGroup groupCfg) throws ArchiveServiceException,
                                                                                      TypeSupportException {
         final ArchiveGroup group = addGroup(groupCfg);

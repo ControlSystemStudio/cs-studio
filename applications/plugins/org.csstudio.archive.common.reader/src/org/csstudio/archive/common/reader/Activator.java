@@ -23,8 +23,9 @@ package org.csstudio.archive.common.reader;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.ArchiveEngineServiceTracker;
 import org.csstudio.archive.common.service.ArchiveReaderServiceTracker;
-import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -46,8 +47,9 @@ public class Activator implements BundleActivator {
     private static BundleContext CONTEXT;
 
 
-    // Anti pattern galore - but minimally invasive
-    private ArchiveReaderServiceTracker _tracker;
+    // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
+    private ArchiveEngineServiceTracker _archiveEngineConfigServiceTracker;
+    private ArchiveReaderServiceTracker _archiveReaderServiceTracker;
 
     /**
      * Don't instantiate.
@@ -70,35 +72,39 @@ public class Activator implements BundleActivator {
         return INSTANCE;
     }
 
-    /**
-     * Is nonnull if the framework doesn't freak it out.
-     * @return
-     */
 	@Nonnull
 	static BundleContext getContext() {
 		return CONTEXT;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-    public void start(@Nonnull final BundleContext bundleContext) throws Exception {
-		Activator.CONTEXT = bundleContext;
+    public void start(@Nonnull final BundleContext context) throws Exception {
+		Activator.CONTEXT = context;
 
-		_tracker = new ArchiveReaderServiceTracker(bundleContext);
-		_tracker.open();
+        _archiveEngineConfigServiceTracker = new ArchiveEngineServiceTracker(context);
+        _archiveEngineConfigServiceTracker.open();
+
+        _archiveReaderServiceTracker = new ArchiveReaderServiceTracker(context);
+        _archiveReaderServiceTracker.open();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
-		Activator.CONTEXT = null;
-		_tracker.close();
+	    Activator.CONTEXT = null;
+
+	    if (_archiveEngineConfigServiceTracker != null) {
+            _archiveEngineConfigServiceTracker.close();
+        }
+
+        if (_archiveReaderServiceTracker != null) {
+            _archiveReaderServiceTracker.close();
+        }
 	}
 
     /**
@@ -106,12 +112,13 @@ public class Activator implements BundleActivator {
      * @return the archive service or <code>null</code> if not available.
      * @throws OsgiServiceUnavailableException
      */
-	@Nonnull
-    public IArchiveReaderService getArchiveReaderService() throws OsgiServiceUnavailableException {
-        final IArchiveReaderService service =
-            (IArchiveReaderService) _tracker.getService();
+    @Nonnull
+    public IArchiveReaderFacade getArchiveReaderService() throws OsgiServiceUnavailableException
+    {
+        final IArchiveReaderFacade service =
+            (IArchiveReaderFacade) _archiveReaderServiceTracker.getService();
         if (service == null) {
-            throw new OsgiServiceUnavailableException("Archive reader service unavailable.");
+            throw new OsgiServiceUnavailableException("Archive writer service unavailable.");
         }
         return service;
     }

@@ -23,12 +23,17 @@ package org.csstudio.archive.common.service;
 
 import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-import org.csstudio.platform.data.IValue;
 
 /**
  * Archive engine writer methods.
@@ -40,15 +45,33 @@ import org.csstudio.platform.data.IValue;
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveWriterService {
+public interface IArchiveEngineFacade {
 
     /**
-     * Retrieves the channel id for a given channel name.
-     * @param name the name of the channel
-     * @return the id
+     * Retrieves the engine by id.
+     *
+     *  @param name name of engine to locate
+     *  @return SampleEngineInfo or <code>null</code> when not found
+     *  @throws ArchiveServiceException
+     */
+    @CheckForNull
+    IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
+     * @param engineId
+     * @return
+     *  @throws ArchiveServiceException
+     */
+    @Nonnull
+    Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException;
+
+    /**
+     * @param group_config
+     * @return the list of channels in this group
      * @throws ArchiveServiceException
      */
-    int getChannelId(@Nonnull final String name) throws ArchiveServiceException;
+    @Nonnull
+    Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -60,6 +83,8 @@ public interface IArchiveWriterService {
     <V, T extends IAlarmSystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException;
 
+    @Nonnull
+    IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Writes the monitoring information of an engine for a channel.
@@ -75,35 +100,4 @@ public interface IArchiveWriterService {
      * @throws ArchiveServiceException
      */
     void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
-
-    /**
-     * Transfers the sample information to the persistence layer.
-     * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
-     * information.
-     * @param channelId
-     * @param value
-     * @throws ArchiveServiceException
-     */
-    void submitSample(int channelId, @Nonnull IValue value) throws ArchiveServiceException;
-
-    /**
-     * TODO (kasemir) : committing or persisting?
-     * Commits AND directly writes the metadata information out of the given value for this channel to the persistence
-     * layer.
-     * Does NOT have to be followed by {@link IArchiveWriterService#flush()}.
-     *
-     * @param channelName the name of the channel
-     * @param sample the current sample
-     * @throws ArchiveServiceException if the writing of meta data failed
-     */
-    void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
-
-    /**
-     * Triggers the persistence layer to actually persist the committed information.
-     *
-     * @return true, if the committed information had been successfully persisted.
-     * @throws ArchiveServiceException
-     */
-    boolean flush() throws ArchiveServiceException;
-
 }

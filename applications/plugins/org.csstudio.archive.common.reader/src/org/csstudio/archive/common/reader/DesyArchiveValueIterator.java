@@ -21,29 +21,27 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
-import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
-import com.google.common.base.Function;
 
 /**
  * Raw value iterator for service infrastructure.
@@ -56,49 +54,15 @@ public class DesyArchiveValueIterator implements ValueIterator {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
 
-    /**
-     * Static converter function.
-     *
-     * @author bknerr
-     * @since 22.12.2010
-     */
-    public static final class ArchiveSampleToIValueFunction<V> implements
-            Function<IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>, IValue> {
-        /**
-         * Constructor.
-         */
-        public ArchiveSampleToIValueFunction() {
-            // Empty
-        }
-
-        @Override
-        @CheckForNull
-        public IValue apply(@Nonnull final IArchiveMinMaxSample<V, IAlarmSystemVariable<V>> from) {
-            try {
-                // TODO (bknerr) : support lookup for every single value... check performance
-                final V min = from.getMinimum();
-                final V max = from.getMaximum();
-                if (min != null && max != null) {
-                    return SystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
-                }
-                return SystemVariableSupport.toIValue(from.getSystemVariable());
-
-            } catch (final TypeSupportException e) {
-                return null;
-            }
-        }
-    }
     @SuppressWarnings("rawtypes")
     private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
-
-
 
     private final String _channelName;
     private final TimeInstant _start;
     private final TimeInstant _end;
 
-    private final Iterable<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _samples =
+    private Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _samples =
         Collections.emptyList();
 
     private Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iterator = _samples.iterator();
@@ -122,9 +86,9 @@ public class DesyArchiveValueIterator implements ValueIterator {
             throw new IllegalArgumentException("Start time mustn't be after end time");
         }
 
-        final IArchiveReaderService service = Activator.getDefault().getArchiveReaderService();
-        _samples = service.readSamples(channelName, start, end, type);
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
 
+        _samples = service.readSamples(channelName, start, end, type);
         _iterator = _samples.iterator();
     }
 
@@ -154,10 +118,15 @@ public class DesyArchiveValueIterator implements ValueIterator {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     public IValue next() throws Exception {
-        return _iterator.next();
+        final IValue value = ARCH_SAMPLE_2_IVALUE_FUNC.apply(_iterator.next());
+        if (value == null) {
+            throw new TypeSupportException("Sample could not be converted to " + IValue.class.getName() + " type.", null);
+        }
+        return value;
     }
 
     /**

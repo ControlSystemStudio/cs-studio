@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,25 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.types;
+package org.csstudio.domain.desy.typesupport;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
 /**
- * Type conversions for {@link Double}.
+ * String conversion support.
  *
  * @author bknerr
- * @since 10.12.2010
+ * @since Feb 25, 2011
  */
-public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Double> {
+public class StringBaseTypeConversionSupport extends BaseTypeConversionSupport<String> {
 
     /**
      * Constructor.
      */
-    DoubleArchiveTypeConversionSupport() {
-        super(Double.class);
+    protected StringBaseTypeConversionSupport() {
+        super(String.class);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean isConvertibleToDouble() {
+        return true;
     }
 
     /**
@@ -45,20 +52,11 @@ public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTyp
      */
     @Override
     @Nonnull
-    public Double convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    protected Double convertToDouble(@Nonnull final String value) throws TypeSupportException {
         try {
             return Double.parseDouble(value);
         } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
+            throw new TypeSupportException("String value " + value + " could not be converted to Double." , e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value;
     }
 }

@@ -40,7 +40,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
@@ -182,7 +182,7 @@ final class WriteWorker implements Runnable {
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples =
                 collectSamplesFromBuffers(_channels);
 
-        final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
+        final IArchiveEngineFacade writerService = Activator.getDefault().getArchiveEngineService();
         writerService.writeSamples(allSamples);
 
         return allSamples.size();

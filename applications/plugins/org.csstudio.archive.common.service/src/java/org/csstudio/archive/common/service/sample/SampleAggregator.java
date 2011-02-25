@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
+package org.csstudio.archive.common.service.sample;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -47,8 +47,6 @@ public class SampleAggregator {
     private Double _lastWrittenValue;
     private TimeInstant _lastSampleTimeStamp;
     private TimeInstant _resetTimeStamp;
-//    private EpicsAlarm _highestAlarm;
-//    private EpicsAlarm _lowestAlarm;
 
 
     /**
@@ -58,7 +56,6 @@ public class SampleAggregator {
      * @param timestamp
      */
     public SampleAggregator(@Nonnull final Double firstVal,
-//                            @Nullable final EpicsAlarm firstAlarm,
                             @Nonnull final TimeInstant timestamp) {
 
         _avg.accumulate(firstVal);
@@ -67,28 +64,22 @@ public class SampleAggregator {
         _maxVal = firstVal;
         _lastWrittenValue = null;
 
-//        _highestAlarm = firstAlarm;
-//        _lowestAlarm = firstAlarm;
         _lastSampleTimeStamp = timestamp;
         _resetTimeStamp = _lastSampleTimeStamp;
     }
 
-    void aggregateNewVal(@Nonnull final Double newVal,
-//                         @Nonnull final EpicsAlarm alarm,
+    public void aggregateNewVal(@Nonnull final Double newVal,
                          @Nonnull final TimeInstant timestamp) {
-        aggregateNewVal(newVal, /*alarm,*/ newVal, newVal, timestamp);
+        aggregateNewVal(newVal, newVal, newVal, timestamp);
     }
 
-    void aggregateNewVal(@Nonnull final Double newVal,
-//                         @Nonnull final EpicsAlarm alarm,
+    public void aggregateNewVal(@Nonnull final Double newVal,
                          @Nonnull final Double min,
                          @Nonnull final Double max,
                          @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(newVal);
         _minVal = Ordering.natural().nullsLast().min(newVal, min, max, _minVal);
         _maxVal = Ordering.natural().nullsFirst().max(newVal, min, max, _maxVal);
-//        _lowestAlarm = Ordering.natural().nullsLast().max(alarm, _lowestAlarm);
-//        _highestAlarm = Ordering.natural().nullsFirst().max(alarm, _highestAlarm);
         _lastSampleTimeStamp = timestamp;
     }
 
@@ -98,14 +89,12 @@ public class SampleAggregator {
      * Alarm state is initialised to the minimum known alarm accumulated until now
      * (not necessarily the minimum alarm possible).
      */
-    void reset() {
+    public void reset() {
         _resetTimeStamp = _lastSampleTimeStamp;
         _lastSampleTimeStamp = null;
         _lastWrittenValue = _avg.getValue();
         _minVal = null;
         _maxVal = null;
-//        _highestAlarm = null;
-//        _lowestAlarm = null;
 
         _avg.clear();
     }
@@ -121,10 +110,6 @@ public class SampleAggregator {
     public Double getMax() {
         return _maxVal;
     }
-//    @CheckForNull
-//    public EpicsAlarm getHighestAlarm() {
-//        return _highestAlarm;
-//    }
     @CheckForNull
     public Double getAverageBeforeReset() {
         return _lastWrittenValue;

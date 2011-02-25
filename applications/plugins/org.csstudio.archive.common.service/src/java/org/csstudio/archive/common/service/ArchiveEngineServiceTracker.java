@@ -32,11 +32,11 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author bknerr
  * @since 12.11.2010
  */
-public class ArchiveEngineConfigServiceTracker extends ServiceTracker {
+public class ArchiveEngineServiceTracker extends ServiceTracker {
     /**
      * Constructor.
      */
-    public ArchiveEngineConfigServiceTracker(@Nonnull final BundleContext context) {
-        super(context, IArchiveEngineConfigService.class.getName(), null);
+    public ArchiveEngineServiceTracker(@Nonnull final BundleContext context) {
+        super(context, IArchiveEngineFacade.class.getName(), null);
     }
 }

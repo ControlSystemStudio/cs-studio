@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.typesupport;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,23 +31,36 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
+import org.epics.pvmanager.TypeSupport;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
  *
  * @author bknerr
  * @since 17.12.2010
+ * @param <T> the support's type
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  *
  */
-public abstract class BaseTypeConversionSupport {
+public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
+
+    private static boolean INSTALLED = false;
+    public static void install() {
+        if (INSTALLED) {
+            return;
+        }
+        TypeSupport.addTypeSupport(new NumberBaseTypeConversionSupport());
+        TypeSupport.addTypeSupport(new StringBaseTypeConversionSupport());
+
+        INSTALLED = true;
+    }
     /**
      * Constructor.
      */
-    private BaseTypeConversionSupport() {
-        // Empty
+    protected BaseTypeConversionSupport(@Nonnull final Class<T> type) {
+        super(type, BaseTypeConversionSupport.class);
     }
 
     @Nonnull
@@ -116,6 +129,75 @@ public abstract class BaseTypeConversionSupport {
             return createTypeClassFromString(elementType, scalarPackages);
         }
         return null;
+    }
+
+    /**
+     * Checks whether the given String parameter describes a data type for which a to Double conversion
+     * has been registered.
+     * @param <T> the type of the described datatype
+     * @param dataType the describing string (a class name)
+     * @param scalarPackages the packages from which the class object shall be created
+     * @return true if this dataType is convertible to Double
+     * @throws TypeSupportException
+     */
+    public static <T> boolean isDataTypeConvertibleToDouble(@Nonnull final String dataType,
+                                                            @Nonnull final String... scalarPackages) throws TypeSupportException {
+        final Class<T> typeClass = createTypeClassFromString(dataType, scalarPackages);
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for data type " + dataType +
+                                           " could not be loaded from package java.lang!", null);
+        }
+        return isDataTypeConvertibleToDouble(typeClass);
+    }
+    /**
+     * Checks whether the given parameter is a type for which a to Double conversion
+     * has been registered.
+     * @param <T> the type of the described datatype
+     * @param type the class type
+     * @return true if this class type is convertible to Double
+     * @throws TypeSupportException
+     */
+    public static <T> boolean isDataTypeConvertibleToDouble(@Nonnull final Class<T> type) throws TypeSupportException {
+        final BaseTypeConversionSupport<T> support =
+            (BaseTypeConversionSupport<T>) findTypeSupportFor(BaseTypeConversionSupport.class, type);
+
+        return support.isConvertibleToDouble();
+
+    }
+    /**
+     * To be overridden for types that are convertible to {@link java.lnag.Double}
+     * @return true, if so, false otherwise
+     */
+    protected boolean isConvertibleToDouble() {
+        return false;
+    }
+
+    /**
+     * Tries to convert the given basic value type to Double.
+     *
+     * @param value the value to be converted
+     * @return the conversion result
+     * @throws TypeSupportException when conversion failed.
+     * @param <V> the basic type of the value(s)
+     */
+    @Nonnull
+    public static <T> Double toDouble(@Nonnull final T value) throws TypeSupportException {
+        @SuppressWarnings("unchecked")
+        final Class<T> typeClass = (Class<T>) value.getClass();
+        final BaseTypeConversionSupport<T> support =
+            (BaseTypeConversionSupport<T>) findTypeSupportFor(BaseTypeConversionSupport.class,
+                                                              typeClass);
+        return support.convertToDouble(value);
+    }
+
+    /**
+     * To be overridden for types that are convertible to {@link java.lnag.Double}
+     * @return the corresponding Double value
+     * @throws TypeSupportException
+     */
+    @Nonnull
+    protected Double convertToDouble(@Nonnull final T value) throws TypeSupportException {
+        throw new TypeSupportException("Type support does not offer to Double convertibility for this type " + value.getClass().getName(), null);
     }
 
 

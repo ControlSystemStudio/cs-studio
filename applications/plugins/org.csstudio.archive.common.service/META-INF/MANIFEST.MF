@@ -23,4 +23,5 @@ Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.samplemode,
  org.csstudio.archive.common.service.severity,
- org.csstudio.archive.common.service.status
+ org.csstudio.archive.common.service.status,
+ org.csstudio.archive.common.service.util

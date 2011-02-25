@@ -61,10 +61,10 @@ public interface IArchiveSampleDao {
      */
     @Nonnull
     <V, T extends IAlarmSystemVariable<V>>
-    Iterable<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
-                                                   @Nonnull IArchiveChannel channel,
-                                                   @Nonnull TimeInstant s,
-                                                   @Nonnull TimeInstant e) throws ArchiveDaoException;
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
+                                                     @Nonnull IArchiveChannel channel,
+                                                     @Nonnull TimeInstant s,
+                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
 
 
     @CheckForNull

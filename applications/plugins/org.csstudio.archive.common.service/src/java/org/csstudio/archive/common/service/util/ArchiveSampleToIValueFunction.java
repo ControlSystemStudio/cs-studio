@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,46 +19,51 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.types;
+package org.csstudio.archive.common.service.util;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.data.IValue;
+
+import com.google.common.base.Function;
 
 /**
- * Type conversions for {@link Double}.
+ * Static converter function.
  *
  * @author bknerr
- * @since 10.12.2010
+ * @since 22.12.2010
+ *
+ * @param <V> the basic data type of the system variable
  */
-public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Double> {
+public final class ArchiveSampleToIValueFunction<V> implements
+        Function<IArchiveSample<V, IAlarmSystemVariable<V>>, IValue> {
 
     /**
      * Constructor.
      */
-    DoubleArchiveTypeConversionSupport() {
-        super(Double.class);
+    public ArchiveSampleToIValueFunction() {
+        // Empty
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @Nonnull
-    public Double convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
+    @CheckForNull
+    public IValue apply(@Nonnull final IArchiveSample<V, IAlarmSystemVariable<V>> from) {
         try {
-            return Double.parseDouble(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
+            if (from.getClass().isAssignableFrom(IArchiveMinMaxSample.class)) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value;
+                final V min = ((IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>) from).getMinimum();
+                final V max = ((IArchiveMinMaxSample<V, IAlarmSystemVariable<V>>) from).getMaximum();
+                return SystemVariableSupport.toIMinMaxDoubleValue(from.getSystemVariable(), min, max);
+            }
+            return SystemVariableSupport.toIValue(from.getSystemVariable());
+        } catch (final TypeSupportException e) {
+            return null;
+        }
     }
 }

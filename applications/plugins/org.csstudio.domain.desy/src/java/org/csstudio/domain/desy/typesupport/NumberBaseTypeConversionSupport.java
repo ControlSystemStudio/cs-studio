@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,25 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.types;
+package org.csstudio.domain.desy.typesupport;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
 /**
- * Type conversions for {@link Double}.
+ * Basic type conversions for {@link java.lang.Number}.
  *
  * @author bknerr
- * @since 10.12.2010
+ * @since Feb 25, 2011
  */
-public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Double> {
+class NumberBaseTypeConversionSupport extends BaseTypeConversionSupport<Number> {
 
     /**
      * Constructor.
      */
-    DoubleArchiveTypeConversionSupport() {
-        super(Double.class);
+    public NumberBaseTypeConversionSupport() {
+        super(Number.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean isConvertibleToDouble() {
+        return true;
     }
 
     /**
@@ -45,20 +51,8 @@ public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTyp
      */
     @Override
     @Nonnull
-    public Double convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Double.parseDouble(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Parsing failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
-        return value;
+    protected Double convertToDouble(@Nonnull final Number value) {
+        return Double.valueOf(value.doubleValue());
     }
 }
+

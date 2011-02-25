@@ -17,4 +17,5 @@ Export-Package: org.csstudio.domain.desy.alarm,
  org.csstudio.domain.desy.common.id,
  org.csstudio.domain.desy.system,
  org.csstudio.domain.desy.time,
- org.csstudio.domain.desy.types
+ org.csstudio.domain.desy.types,
+ org.csstudio.domain.desy.typesupport
