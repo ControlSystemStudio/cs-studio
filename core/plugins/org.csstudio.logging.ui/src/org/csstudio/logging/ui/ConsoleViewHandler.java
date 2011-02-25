@@ -45,18 +45,15 @@ public class ConsoleViewHandler extends Handler
      *  <p>
      *  Calling it much later means log messages are lost.
      *  <p>
-     *  There is no good reason to add more than one ConsoleViewHandler.
-     *  Could implement this as a singleton work around accidental addition
-     *  of multiple ConsoleViewHandlers, but using IllegalStateException
-     *  to help expose such errors in the application logic.
-     *
-     *  @throws IllegalStateException when called more than once
+     *  Only the first call has an effect.
+     *  Subsequent calls as they can happen when opening multiple windows
+     *  of the same Eclipse instance will have no effect.
      */
     @SuppressWarnings("nls")
     public static synchronized void addToLogger()
     {
         if (have_console)
-            throw new IllegalStateException("ConsoleViewHandler has already been added to root logger");
+            return;
         final ConsoleViewHandler handler = new ConsoleViewHandler();
         try
         {
