@@ -101,7 +101,7 @@ public class PVFactory
             final String name = config.getAttribute("name");
             final String prefix = config.getAttribute("prefix");
             final IPVFactory factory = (IPVFactory) config.createExecutableExtension("class");
-            logger.log(Level.FINE, "PV prefix {0} provided by {1} in {2}",
+            logger.log(Level.CONFIG, "PV prefix {0} provided by {1} in {2}",
                 new Object[] { prefix, name, plugin });
             pv_factory.put(prefix, factory);
         }

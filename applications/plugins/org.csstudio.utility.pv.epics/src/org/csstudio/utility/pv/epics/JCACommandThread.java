@@ -83,8 +83,7 @@ class JCACommandThread extends Thread
         {
             Activator.getLogger().log(Level.WARNING, "JCACommandThread shutdown", ex);
         }
-        Activator.getLogger().info("JCACommandThread queue reached up to "
-                        + max_size_reached + " entries");
+        Activator.getLogger().log(Level.FINE, "JCACommandThread queue reached up to {0} entries", max_size_reached);
     }
 
     /** Add a command to the queue.

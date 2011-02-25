@@ -72,7 +72,7 @@ public class PVContext
         {
             if (jca == null)
             {
-                Activator.getLogger().fine("Initializing JCA "
+                Activator.getLogger().config("Initializing JCA "
                                 + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
                 final String type = use_pure_java ?
@@ -121,7 +121,7 @@ public class PVContext
         command_thread = null;
         if (cleanup == false)
         {
-            Activator.getLogger().finer("JCA not longer used, but kept open.");
+            Activator.getLogger().fine("JCA not longer used, but kept open.");
             return;
         }
         try
@@ -129,7 +129,7 @@ public class PVContext
             jca_context.destroy();
             jca_context = null;
             jca = null;
-            Activator.getLogger().finer("Finalized JCA");
+            Activator.getLogger().fine("Finalized JCA");
         }
         catch (Exception ex)
         {
@@ -150,7 +150,7 @@ public class PVContext
         RefCountedChannel channel_ref = channels.get(name);
         if (channel_ref == null)
         {
-            Activator.getLogger().fine("Creating CA channel " + name);
+            Activator.getLogger().log(Level.FINER, "Creating CA channel {0}", name);
             final Channel channel = jca_context.createChannel(name, conn_callback);
             if (channel == null)
                 throw new Exception("Cannot create channel '" + name + "'");
@@ -166,7 +166,7 @@ public class PVContext
             // TODO: Saw null pointer exception here.
             // Must have been getChannel() == null, but how is that possible?
             channel_ref.getChannel().addConnectionListener(conn_callback);
-            Activator.getLogger().fine("Re-using CA channel " + name);
+            Activator.getLogger().log(Level.FINER, "Re-using CA channel {0}", name);
         }
         return channel_ref;
     }

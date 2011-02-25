@@ -109,10 +109,12 @@ public class EPICS_V3_PV
                 state = State.GotMetaData;
                 final DBR dbr = event.getDBR();
                 meta = DBR_Helper.decodeMetaData(dbr);
-                Activator.getLogger().fine(name + " meta: " + meta);
-            } else {
-                System.out.println(name + " meta data get error: "
-                                        + event.getStatus().getMessage());
+                Activator.getLogger().log(Level.FINEST, "{0} meta: {1}", new Object[] { name, meta });
+            }
+            else
+            {
+                Activator.getLogger().log(Level.WARNING, "{0} meta data get error: {1}",
+                        new Object[] { name, event.getStatus().getMessage() });
             }
             // Subscribe, but outside of callback (JCA deadlocks)
             PVContext.scheduleCommand(new Runnable()
@@ -153,7 +155,6 @@ public class EPICS_V3_PV
             {
                 final DBR dbr = event.getDBR();
                 meta = DBR_Helper.decodeMetaData(dbr);
-                Activator.getLogger().fine(name + " meta: " + meta);
                 try
                 {
                     value = DBR_Helper.decodeValue(plain, meta, dbr);
@@ -163,7 +164,7 @@ public class EPICS_V3_PV
                     Activator.getLogger().log(Level.WARNING, "PV " + name, ex);
                     value = null;
                 }
-                Activator.getLogger().fine(name + " value: " + value);
+                Activator.getLogger().log(Level.FINEST, "{0} meta: {1}, value {2}", new Object[] { name, meta, value });
             }
             else
             {
@@ -197,7 +198,7 @@ public class EPICS_V3_PV
     {
         this.name = name;
         this.plain = plain;
-        Activator.getLogger().fine(name + " created as EPICS_V3_PV");
+        Activator.getLogger().finer(name + " created as EPICS_V3_PV");
     }
 
     /** Use finalize as last resort for cleanup, but give warnings. */
@@ -217,7 +218,7 @@ public class EPICS_V3_PV
                 Activator.getLogger().log(Level.WARNING, name + " finalize error", ex);
             }
         }
-        Activator.getLogger().fine(name + " finalized.");
+        Activator.getLogger().finer(name + " finalized.");
     }
 
     /** @return Returns the name. */
@@ -246,9 +247,8 @@ public class EPICS_V3_PV
         while (! connected)
         {   // Wait...
             final long remain = end_time - System.currentTimeMillis();
-            if (remain <= 0) {
+            if (remain <= 0)
                 throw new Exception("PV " + name + " connection timeout");
-            }
             synchronized (this)
             {
             	this.wait(remain);
@@ -259,7 +259,7 @@ public class EPICS_V3_PV
         // Issue the 'get'
         final DBRType type = DBR_Helper.getCtrlType(plain,
                                       channel_ref.getChannel().getFieldType());
-        Activator.getLogger().fine(name + " get-callback as " + type.getName());
+        Activator.getLogger().log(Level.FINEST, "{0} get-callback as {1}", new Object[] { name, type.getName() });
         channel_ref.getChannel().get(
                         type, channel_ref.getChannel().getElementCount(),
                         get_callback);
@@ -269,9 +269,8 @@ public class EPICS_V3_PV
             while (! get_callback.got_response)
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
-                if (remain <= 0) {
+                if (remain <= 0)
                     throw new Exception("PV " + name + " value timeout");
-                }
                 get_callback.wait(remain);
             }
         }
@@ -291,9 +290,8 @@ public class EPICS_V3_PV
     public void addListener(final PVListener listener)
     {
     	listeners.add(listener);
-    	 if(running && isConnected()){
+    	 if (running && isConnected())
     		listener.pvValueUpdate(this);
-    	}
     }
 
     /** {@inheritDoc} */
@@ -319,7 +317,7 @@ public class EPICS_V3_PV
         if (channel_ref.getChannel().getConnectionState()
             == ConnectionState.CONNECTED)
         {
-            Activator.getLogger().fine(name + " is immediately connected");
+            Activator.getLogger().log(Level.FINEST, "{0} is immediately connected", name);
             handleConnected(channel_ref.getChannel());
         }
     }
@@ -385,7 +383,7 @@ public class EPICS_V3_PV
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;
-                logger.log(Level.FINE, "{0} subscribed as {1} ({2})",
+                logger.log(Level.FINER, "{0} subscribed as {1} ({2})",
                         new Object[] { name, type.getName(), mask } );
                 state = State.Subscribing;
                 subscription = channel.addMonitor(type,
@@ -536,7 +534,7 @@ public class EPICS_V3_PV
         }
         else
         {
-            Activator.getLogger().fine(name + " disconnected");
+            Activator.getLogger().log(Level.FINEST, "{0} disconnected", name);
             state = State.Disconnected;
             connected = false;
             PVContext.scheduleCommand(new Runnable()
@@ -556,10 +554,9 @@ public class EPICS_V3_PV
      */
     private void handleConnected(final Channel channel)
     {
-        Activator.getLogger().fine(name + " connected (" + state.name() + ")");
-    	if (state == State.Connected) {
+        Activator.getLogger().log(Level.FINEST, "{0} connected ({1})", new Object[] { name, state.name() });
+    	if (state == State.Connected)
             return;
-        }
         state = State.Connected;
 
         // If we're "running", we need to get the meta data and
@@ -584,13 +581,12 @@ public class EPICS_V3_PV
                 state = State.GettingMetadata;
                 Activator.getLogger().fine("Getting meta info for type "
                                     + type.getName());
-                if (type.isDOUBLE()  ||  type.isFLOAT()) {
+                if (type.isDOUBLE()  ||  type.isFLOAT())
                     type = DBRType.CTRL_DOUBLE;
-                } else if (type.isENUM()) {
+                else if (type.isENUM())
                     type = DBRType.LABELS_ENUM;
-                } else {
+                else
                     type = DBRType.CTRL_SHORT;
-                }
                 channel.get(type, 1, meta_get_listener);
                 return;
             }
@@ -617,13 +613,13 @@ public class EPICS_V3_PV
         // Ignore values that arrive after stop()
         if (!running)
         {
-            log.fine(name + " monitor while not running (" + state.name() + ")");
+            log.finer(name + " monitor while not running (" + state.name() + ")");
             return;
         }
 
         if (subscription == null)
         {
-            log.fine(name + " monitor while not subscribed (" + state.name() + ")");
+            log.finer(name + " monitor while not subscribed (" + state.name() + ")");
             return;
         }
 

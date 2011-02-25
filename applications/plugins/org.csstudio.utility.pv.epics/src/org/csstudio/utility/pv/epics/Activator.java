@@ -38,9 +38,6 @@ public class Activator extends AbstractCssPlugin
         {
             PVContext.use_pure_java = EpicsPlugin.getDefault().usePureJava();
             PVContext.monitor_mask = EpicsPlugin.getDefault().getMonitorMask();
-            final String message = PVContext.use_pure_java ?
-                                "Using pure java CAJ" : "Using JCA with JNI";
-            getLogger().fine(message);
         }
         catch (Throwable e)
         {
@@ -61,7 +58,12 @@ public class Activator extends AbstractCssPlugin
 		return plugin;
 	}
 
-	/** @return Logger associated with the plugin */
+	/** Log levels:
+	 *  CONFIG - Config info,
+	 *  FINE   - JCA start/stop,
+	 *  FINER  - PV create/dispose,
+	 *  FINER  - Value traffic.
+	 *  @return Logger associated with the plugin */
 	public static Logger getLogger()
 	{
 	    return logger;
