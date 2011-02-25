@@ -1,9 +1,10 @@
 package org.csstudio.utility.pv.epics;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the EPICS PV.
@@ -11,15 +12,15 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractCssPlugin
 {
-	// The plug-in ID
+	/** Plug-in ID registered in MANIFEST.MF */
 	public static final String ID = "org.csstudio.utility.pv.epics"; //$NON-NLS-1$
 
-    /** Lazily initialized Log4j Logger */
-    private static Logger log = null;
+	/** Logger */
+	private static Logger logger = Logger.getLogger(ID);
 
     /** The singleton instance */
 	private static Activator plugin;
-	
+
 	/** Constructor */
 	public Activator()
     {	plugin = this;	}
@@ -39,11 +40,11 @@ public class Activator extends AbstractCssPlugin
             PVContext.monitor_mask = EpicsPlugin.getDefault().getMonitorMask();
             final String message = PVContext.use_pure_java ?
                                 "Using pure java CAJ" : "Using JCA with JNI";
-            getLogger().debug(message);
+            getLogger().fine(message);
         }
         catch (Throwable e)
         {
-            getLogger().error("Cannot load EPICS_V3_PV", e);
+            getLogger().log(Level.SEVERE, "Cannot load EPICS_V3_PV", e);
         }
     }
 
@@ -60,11 +61,9 @@ public class Activator extends AbstractCssPlugin
 		return plugin;
 	}
 
-	/** @return Log4j Logger */
-    public static Logger getLogger()
-    {
-        if (log == null) // Also works with plugin==null during unit tests
-            log = CentralLogger.getInstance().getLogger(plugin);
-        return log;
-    }
+	/** @return Logger associated with the plugin */
+	public static Logger getLogger()
+	{
+	    return logger;
+	}
 }

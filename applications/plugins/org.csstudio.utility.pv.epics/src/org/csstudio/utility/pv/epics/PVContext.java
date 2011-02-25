@@ -8,11 +8,12 @@ import gov.aps.jca.event.ContextExceptionListener;
 import gov.aps.jca.event.ContextMessageListener;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 
 /** Handle PV context, pool PVs by name.
- * 
+ *
  *  When using the pure java CA client implementation, it returns the
  *  same 'channel' when trying to access the same PV name multiple times.
  *  That's good, but I don't know how to determine if the channel for this
@@ -27,19 +28,19 @@ import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 public class PVContext
 {
     /** In principle, we like to close the context when it is no longer needed.
-     *  
+     *
      *  This is in fact required for CAJ to close all threads.
-     *  
+     *
      *  For JCA, however, there are problems:
      *  With R3.14.8.2 on Linux there were errors
      *  "pthread_create error Invalid argument".
      *  With R3.14.11 on OS X 10.5.8 the call to jca_context.destroy()
      *  caused an "Invalid memory access ..." crash.
-     *  
+     *
      *  -> We keep the context open.
      */
     final private static boolean cleanup = false;
-    
+
     /** Set to <code>true</code> if the pure Java CA context should be used.
      *  <p>
      *  Changes only have an effect before the very first channel is created.
@@ -57,11 +58,11 @@ public class PVContext
 
     /** The JCA context reference count. */
     static private long jca_refs = 0;
-    
+
     /** map of channels. */
     static private HashMap<String, RefCountedChannel> channels =
                                 new HashMap<String, RefCountedChannel>();
-    
+
     static private JCACommandThread command_thread = null;
 
     /** Initialize the JA library, start the command thread. */
@@ -71,13 +72,13 @@ public class PVContext
         {
             if (jca == null)
             {
-                Activator.getLogger().debug("Initializing JCA "
+                Activator.getLogger().fine("Initializing JCA "
                                 + (use_pure_java ? "(pure Java)" : "(JNI)"));
                 jca = JCALibrary.getInstance();
                 final String type = use_pure_java ?
                     JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
                 jca_context = jca.createContext(type);
-                
+
                 // Per default, JNIContext adds a logger to System.err,
                 // but we want this one:
                 final ContextErrorHandler log_handler = new ContextErrorHandler();
@@ -93,7 +94,7 @@ public class PVContext
                 for (ContextExceptionListener exl : ex_lsnrs)
                     if (exl != log_handler)
                         jca_context.removeContextExceptionListener(exl);
-                
+
                 // Same with message listeners
                 final ContextMessageListener[] msg_lsnrs =
                     jca_context.getContextMessageListeners();
@@ -120,7 +121,7 @@ public class PVContext
         command_thread = null;
         if (cleanup == false)
         {
-            Activator.getLogger().debug("JCA not longer used, but kept open.");
+            Activator.getLogger().finer("JCA not longer used, but kept open.");
             return;
         }
         try
@@ -128,11 +129,11 @@ public class PVContext
             jca_context.destroy();
             jca_context = null;
             jca = null;
-            Activator.getLogger().debug("Finalized JCA");
+            Activator.getLogger().finer("Finalized JCA");
         }
         catch (Exception ex)
         {
-            Activator.getLogger().warn("exitJCA", ex);
+            Activator.getLogger().log(Level.WARNING, "exitJCA", ex);
         }
     }
 
@@ -149,7 +150,7 @@ public class PVContext
         RefCountedChannel channel_ref = channels.get(name);
         if (channel_ref == null)
         {
-            Activator.getLogger().debug("Creating CA channel " + name);
+            Activator.getLogger().fine("Creating CA channel " + name);
             final Channel channel = jca_context.createChannel(name, conn_callback);
             if (channel == null)
                 throw new Exception("Cannot create channel '" + name + "'");
@@ -165,11 +166,11 @@ public class PVContext
             // TODO: Saw null pointer exception here.
             // Must have been getChannel() == null, but how is that possible?
             channel_ref.getChannel().addConnectionListener(conn_callback);
-            Activator.getLogger().debug("Re-using CA channel " + name);
+            Activator.getLogger().fine("Re-using CA channel " + name);
         }
         return channel_ref;
     }
-    
+
     /** Release a channel.
      *  @param channel_ref Channel to release.
      *  @see #getChannel(String)
@@ -184,19 +185,19 @@ public class PVContext
         }
         catch (Exception ex)
         {
-            Activator.getLogger().warn("Remove connection listener", ex);
+            Activator.getLogger().log(Level.WARNING, "Remove connection listener", ex);
         }
         if (channel_ref.decRefs() <= 0)
         {
-            Activator.getLogger().debug("Deleting CA channel " + name);
+            Activator.getLogger().finer("Deleting CA channel " + name);
             channels.remove(name);
             channel_ref.dispose();
         }
         else
-            Activator.getLogger().debug("CA channel " + name + " still ref'ed");
+            Activator.getLogger().finer("CA channel " + name + " still ref'ed");
         exitJCA();
     }
-    
+
     /** Add a command to the JCACommandThread.
      *  <p>
      *  @param command Command to schedule.
@@ -208,7 +209,7 @@ public class PVContext
     	// command.run();
         command_thread.addCommand(command);
     }
-    
+
     /** Helper for unit test.
      *  @return <code>true</code> if all has been release.
      */

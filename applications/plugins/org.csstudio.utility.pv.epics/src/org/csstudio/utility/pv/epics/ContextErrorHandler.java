@@ -1,5 +1,8 @@
 package org.csstudio.utility.pv.epics;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import gov.aps.jca.event.ContextExceptionEvent;
 import gov.aps.jca.event.ContextExceptionListener;
 import gov.aps.jca.event.ContextMessageEvent;
@@ -13,23 +16,28 @@ import gov.aps.jca.event.ContextVirtualCircuitExceptionEvent;
 public class ContextErrorHandler implements ContextExceptionListener,
                                         ContextMessageListener
 {
+    final Logger logger = Logger.getLogger(getClass().getName());
+
     /** @see ContextExceptionListener */
+    @Override
     public void contextException(final ContextExceptionEvent ev)
     {
-        Activator.getLogger().error("Exception from " + ev.getSource()
-                + " " + ev.getMessage());
+        logger.log(Level.WARNING, "Channel Access Exception from {0}: {1}",
+                new Object[] { ev.getSource(), ev.getMessage() });
     }
 
     /** @see ContextExceptionListener */
+    @Override
     public void contextVirtualCircuitException(ContextVirtualCircuitExceptionEvent ev)
     {
       // nop
     }
 
     /** @see ContextMessageListener */
+    @Override
     public void contextMessage(final ContextMessageEvent ev)
     {
-        Activator.getLogger().info("Message from " + ev.getSource()
-                + ": " + ev.getMessage());
+        logger.log(Level.INFO, "Channel Access Message from {0}: {1}",
+                new Object[] { ev.getSource(), ev.getMessage() });
     }
 }
