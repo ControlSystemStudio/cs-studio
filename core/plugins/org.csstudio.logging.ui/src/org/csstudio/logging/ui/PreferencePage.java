@@ -56,14 +56,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
 
-        int size = LogFormatDetail.values().length;
-        final String detail[][] = new String[size][2];
-        for (int i=0; i<size; ++i)
-        {
-            detail[i][0] = LogFormatDetail.values()[i].toString();
-            detail[i][1] = LogFormatDetail.values()[i].name();
-        }
-        addField(new ComboFieldEditor(Preferences.DETAIL, Messages.MessageDetail, detail, parent));
+        addField(new LabelFieldEditor(Messages.GlobalSettings, false, parent));
 
         final String levels[][] = new String[][]
         {
@@ -77,13 +70,24 @@ public class PreferencePage extends FieldEditorPreferencePage
             { Level.FINEST.getLocalizedName(), Level.FINEST.getName() },
             { Level.ALL.getLocalizedName(), Level.ALL.getName() },
         };
-        addField(new ComboFieldEditor(Preferences.CONSOLE_LEVEL, Messages.ConsoleLevel, levels, parent));
+        addField(new ComboFieldEditor(Preferences.CONSOLE_LEVEL, Messages.GlobalLevel, levels, parent));
 
+        int size = LogFormatDetail.values().length;
+        final String detail[][] = new String[size][2];
+        for (int i=0; i<size; ++i)
+        {
+            detail[i][0] = LogFormatDetail.values()[i].toString();
+            detail[i][1] = LogFormatDetail.values()[i].name();
+        }
+        addField(new ComboFieldEditor(Preferences.DETAIL, Messages.MessageDetail, detail, parent));
+
+        addField(new LabelFieldEditor(Messages.FileLogSettings, true, parent));
         addField(new ComboFieldEditor(Preferences.FILE_LEVEL, Messages.FileLevel, levels, parent));
         addField(new StringFieldEditor(Preferences.FILE_PATTERN, Messages.FilePathPattern, parent));
         addField(new IntegerFieldEditor(Preferences.FILE_BYTES, Messages.FileSize, parent));
         addField(new IntegerFieldEditor(Preferences.FILE_COUNT, Messages.FileCount, parent));
 
+        addField(new LabelFieldEditor(Messages.JMSLogSettings, true, parent));
         addField(new ComboFieldEditor(Preferences.JMS_LEVEL, Messages.JMSLevel, levels, parent));
         addField(new StringFieldEditor(Preferences.JMS_URL, Messages.JMSURL, parent));
         addField(new StringFieldEditor(Preferences.JMS_TOPIC, Messages.JMSTopic, parent));
