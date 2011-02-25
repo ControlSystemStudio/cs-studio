@@ -23,9 +23,19 @@ import java.util.logging.Logger;
 public class LogConfigurator
 {
     /** Root of the logger hierarchy */
-    final private Logger root = Logger.getLogger("");
+    final private static Logger root = Logger.getLogger("");
 
-    /** Initialize logger from Eclipse preferences
+    private static FileHandler file_handler = null;
+
+    private static JMSLogHandler jms_handler = null;
+
+    /** Allow only static access */
+    private LogConfigurator()
+    {
+        // NOP
+    }
+
+    /** (Re-)Initialize logger from Eclipse preferences
      *  @throws Exception on error: Invalid preference values, errors during logger setup
      */
     public static void configureFromPreferences() throws Exception
@@ -34,7 +44,7 @@ public class LogConfigurator
         final LogFormatDetail detail = Preferences.getDetail();
         Level level = Preferences.getConsoleLevel();
         final Formatter formatter = new LogFormatter(detail);
-        final LogConfigurator config = new LogConfigurator(level, formatter);
+        configureConsoleLogger(level, formatter);
 
         // Configure file logging
         level = Preferences.getFileLevel();
@@ -42,17 +52,13 @@ public class LogConfigurator
         final String file_pattern = Preferences.getFilePattern();
         final int max_bytes = Preferences.getFileBytes();
         final int max_files = Preferences.getFileCount();
-
-        if (!file_pattern.isEmpty()  &&  level.intValue() < Level.OFF.intValue())
-            config.addFileLogging(level, file_pattern, max_bytes, max_files, formatter);
+        configureFileLogging(level, file_pattern, max_bytes, max_files, formatter);
 
         // Configure JMS logging
         level = Preferences.getJMSLevel();
         final String jms_url = Preferences.getJMSURL();
         final String topic = Preferences.getJMSTopic();
-
-        if (!jms_url.isEmpty()  &&  level.intValue() < Level.OFF.intValue())
-            config.addJMSLogging(level, jms_url, topic, formatter);
+        configureJMSLogging(level, jms_url, topic, formatter);
     }
 
     /** Configure all currently active loggers.
@@ -62,7 +68,7 @@ public class LogConfigurator
      * @param level
      * @param formatter
      */
-    public LogConfigurator(final Level level, final Formatter formatter)
+    public static void configureConsoleLogger(final Level level, final Formatter formatter)
     {
         root.setLevel(level);
         for (Handler handler : root.getHandlers())
@@ -72,42 +78,59 @@ public class LogConfigurator
         }
     }
 
-    /** Add a file logger
+    /** Configure a file logger
      *  When logging to multiple files, the first one will use the given filename.
      *  When that file is full, it's renamed to filename.1, and a new filename.0 is
      *  written.
-     *  @param level Log level to use with file logging
+     *  @param level Log level to use with file logging. <code>Level.OFF</code> to disable file logging
      *  @param file_pattern Base name of the file, ".0", ".1", ".2" will be added for multiple files
      *  @param max_bytes When file exceeds this size, a new file will be created
      *  @param max_files Number of files to use
      *  @throws Exception on error: Cannot create new file, ...
      */
-    public void addFileLogging(final Level level, final String file_pattern,
+    public static void configureFileLogging(final Level level, final String file_pattern,
             final int max_bytes, final int max_files,
             final Formatter formatter) throws Exception
     {
-        final FileHandler handler = new FileHandler(file_pattern, max_bytes, max_files, true);
-        handler.setLevel(level);
-        handler.setFormatter(formatter);
-        root.addHandler(handler);
+        if (file_handler != null)
+        {
+            root.removeHandler(file_handler);
+            file_handler.close();
+            file_handler = null;
+        }
+        if (file_pattern.isEmpty()  ||  level.intValue() >= Level.OFF.intValue())
+            return;
+
+        file_handler = new FileHandler(file_pattern, max_bytes, max_files, true);
+        file_handler.setLevel(level);
+        file_handler.setFormatter(formatter);
+        root.addHandler(file_handler);
     }
 
-    /** Add a JMS logger
-     *
-     *  @param level Log level
+    /** Configure a JMS logger
+     *  @param level Log level. <code>Level.OFF</code> to disable JMS logging
      *  @param jms_url JMS server URL
      *  @param topic JMS topic
      *  @param formatter Formatter
      *  @throws Exception on error
      */
-    public void addJMSLogging(final Level level, final String jms_url,
+    public static void configureJMSLogging(final Level level, final String jms_url,
             final String topic,
             final Formatter formatter) throws Exception
     {
-        final JMSLogHandler handler = new JMSLogHandler(jms_url, topic);
-        handler.setLevel(level);
-        handler.setFormatter(formatter);
-        handler.start();
-        root.addHandler(handler);
+        if (jms_handler != null)
+        {
+            root.removeHandler(jms_handler);
+            jms_handler.close();
+            jms_handler = null;
+        }
+        if (jms_url.isEmpty()  ||  level.intValue() >= Level.OFF.intValue())
+            return;
+
+        jms_handler = new JMSLogHandler(jms_url, topic);
+        jms_handler.setLevel(level);
+        jms_handler.setFormatter(formatter);
+        jms_handler.start();
+        root.addHandler(jms_handler);
     }
 }

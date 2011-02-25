@@ -41,6 +41,9 @@ public class JMSLogHandler extends Handler
     /** Has there been a queuing error? */
     private boolean queuing_failed = false;
 
+    /** Log writer thread */
+    private JMSLogWriter log_writer = null;
+
     /** Initialize
      *  @param jms_url JMS server URL
      *  @param topic JMS topic
@@ -51,10 +54,15 @@ public class JMSLogHandler extends Handler
         this.topic = topic;
     }
 
-    /** Start background thread that handles the JMS communication */
+    /** Start background thread that handles the JMS communication.
+     *  @throws IllegalStateException when already started
+     */
     public void start()
     {
-        new JMSLogWriter(Messages.ApplicationID, jms_url, topic, records, getFormatter()).start();
+        if (log_writer != null)
+            throw new IllegalStateException();
+        log_writer = new JMSLogWriter(Messages.ApplicationID, jms_url, topic, records, getFormatter());
+        log_writer.start();
     }
 
     /** {@inheritDoc} */
@@ -98,6 +106,10 @@ public class JMSLogHandler extends Handler
     @Override
     public void close() throws SecurityException
     {
-        // NOP
+        if (log_writer != null)
+        {
+            log_writer.stop();
+            log_writer = null;
+        }
     }
 }

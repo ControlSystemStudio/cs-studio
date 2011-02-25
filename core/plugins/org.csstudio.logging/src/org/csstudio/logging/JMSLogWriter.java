@@ -133,15 +133,18 @@ public class JMSLogWriter implements ExceptionListener
                             System.out.println("JMSLogWriter error. " + ex.getMessage());
                         }
                     }
-                    // Ran into error....
+                    // Ran into error or were interrupted
                     disconnect();
-                    try
+                    // Wait and try again, or stop?
+                    if (run)
                     {
-                        // Wait a little, then try again
-                        sleep(CONNECT_DELAY_MS);
+                        try
+                        {
+                            sleep(CONNECT_DELAY_MS);
+                        }
+                        catch (InterruptedException ex)
+                        { /* NOP */ }
                     }
-                    catch (InterruptedException ex)
-                    { /* NOP */ }
                 }
             }
         };
@@ -154,13 +157,10 @@ public class JMSLogWriter implements ExceptionListener
     public void stop()
     {
         run = false;
-        try
-        {
-            thread.interrupt();
-            thread.join();
-        }
-        catch (InterruptedException ex)
-        { /* NOP */ }
+        thread.interrupt();
+        // Do not join the thread, i.e. do not wait for it to stop:
+        // JMS library could be hung in a connect for a "failover://" URL
+        // Just hope that the thread will end, ignore it from now on.
         thread = null;
     }
 
@@ -224,7 +224,7 @@ public class JMSLogWriter implements ExceptionListener
         try
         {
             LogRecord record;
-            while ((record = records.take()) != null)
+            while (run  &&  (record = records.take()) != null)
             {
                 // Format text portion of the message
                 String message = formatter.formatMessage(record);

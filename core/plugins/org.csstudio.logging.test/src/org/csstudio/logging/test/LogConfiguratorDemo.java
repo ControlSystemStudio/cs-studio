@@ -39,14 +39,13 @@ public class LogConfiguratorDemo
         final LogFormatter format_high = new LogFormatter(LogFormatDetail.HIGH);
         final LogFormatter format_low = new LogFormatter(LogFormatDetail.LOW);
 
-        final LogConfigurator configurator = new LogConfigurator(Level.ALL, format_high);
+        LogConfigurator.configureConsoleLogger(Level.ALL, format_high);
 
-        configurator.addFileLogging(Level.INFO, dirname + File.separator + BASENAME,
+        LogConfigurator.configureFileLogging(Level.INFO, dirname + File.separator + BASENAME,
                 4*1024, 3,
                 format_low);
 
-        configurator.addJMSLogging(Level.ALL,
-                DemoSetup.url, DemoSetup.topic,
+        LogConfigurator.configureJMSLogging(Level.ALL, DemoSetup.url, DemoSetup.topic,
                 format_high);
 
         final Logger log = Logger.getLogger(this.getClass().getName());

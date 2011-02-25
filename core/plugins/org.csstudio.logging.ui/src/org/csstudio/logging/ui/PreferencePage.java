@@ -9,6 +9,7 @@ package org.csstudio.logging.ui;
 
 import java.util.logging.Level;
 
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.logging.LogFormatDetail;
 import org.csstudio.logging.Preferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -17,7 +18,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -66,6 +67,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         final String levels[][] = new String[][]
         {
+            { Level.OFF.getLocalizedName(), Level.OFF.getName() },
             { Level.SEVERE.getLocalizedName(), Level.SEVERE.getName() },
             { Level.WARNING.getLocalizedName(), Level.WARNING.getName() },
             { Level.INFO.getLocalizedName(), Level.INFO.getName() },
@@ -87,10 +89,35 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new StringFieldEditor(Preferences.JMS_TOPIC, Messages.JMSTopic, parent));
     }
 
+    /** {@inheritDoc} */
     @Override
-    public void propertyChange(PropertyChangeEvent event)
+    public boolean performOk()
     {
-        setMessage(Messages.RestartRequired, INFORMATION);
-        super.propertyChange(event);
+        return super.performOk()  &&  performLogConfigUpdate();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void performApply()
+    {
+        super.performApply();
+        performLogConfigUpdate();
+    }
+
+    /** Attempt to apply configuration changes
+     *  @return <code>true</code> if successful
+     */
+    private boolean performLogConfigUpdate()
+    {
+        try
+        {
+            LogConfigurator.configureFromPreferences();
+        }
+        catch (Throwable ex)
+        {
+            setErrorMessage(NLS.bind(Messages.LogConfigError, ex.getMessage()));
+            return false;
+        }
+        return true;
     }
 }

@@ -25,9 +25,9 @@ public class Messages extends NLS
     public static String JMSLevel;
     public static String JMSTopic;
     public static String JMSURL;
+    public static String LogConfigError;
     public static String MessageDetail;
     public static String PrefPageTitle;
-    public static String RestartRequired;
 
     static
     {
