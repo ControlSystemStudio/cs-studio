@@ -54,11 +54,12 @@ public class PropertyFamilyImpl
 	extends PropertyCollectionMap<DynamicValueProperty<?>> implements PropertyFamily
 {
 	PropertyFactory pf;
-	static final Class<? extends DynamicValueProperty> c = DynamicValueProperty.class;
+	static final Class<?> c = DynamicValueProperty.class;
 	
 	/**
 	 * Constructs a new PropertyFamilyImpl that belongs to the given {@link PropertyFactory}.
 	 */
+	@SuppressWarnings("unchecked")
 	public PropertyFamilyImpl(PropertyFactory pf)
 	{
 		super((Class<DynamicValueProperty<?>>) c);
@@ -78,9 +79,9 @@ public class PropertyFamilyImpl
 		AbstractPlug plug = (AbstractPlug)pf.getPlug();
 
 		for (DynamicValueProperty<?> p : props) {
-			PropertyProxy<?> proxy = ((DataAccessImpl<?>)p).getProxy();
+			PropertyProxy<?,?> proxy = ((DataAccessImpl<?>)p).getProxy();
 			if (!(proxy instanceof DirectoryProxy)) {
-				DirectoryProxy dp = ((SimplePropertyImpl<?>)p).getDirectoryProxy();
+				DirectoryProxy<?> dp = ((SimplePropertyImpl<?>)p).getDirectoryProxy();
 				if (dp != null) {
 					plug.releaseProxy(dp);
 					dp.destroy();
@@ -98,10 +99,10 @@ public class PropertyFamilyImpl
 	 */
 	public void destroy(DynamicValueProperty<?> prop)
 	{
-		if (!contains(prop)) return;
+		if (prop==null || !contains(prop)) return;
 		this.remove((DynamicValueProperty<?>) prop); 
 		AbstractPlug plug = (AbstractPlug)pf.getPlug();
-		Proxy[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
+		Proxy<?>[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
 		if (proxy!=null && proxy[0]!=null) {
 			plug.releaseProxy(proxy[0]);
 		}
@@ -190,7 +191,7 @@ public class PropertyFamilyImpl
 	 * @see org.epics.css.dal.context.PropertyContext#getProperty(java.lang.String)
 	 * @see PropertyCollectionMap#getFirst(String);
 	 */
-	public DynamicValueProperty getProperty(String name) {
+	public DynamicValueProperty<?> getProperty(String name) {
 		return getFirst(name);
 	}
 	

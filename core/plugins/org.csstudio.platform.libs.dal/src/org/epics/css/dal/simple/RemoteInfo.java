@@ -122,7 +122,7 @@ public final class RemoteInfo
 		if ((connectionType !=null) && (connectionType.length()>DAL_TYPE_PREFIX.length()) && connectionType.toUpperCase().startsWith(DAL_TYPE_PREFIX)) {
 			return connectionType.substring(DAL_TYPE_PREFIX.length());
 		}
-		return null;
+		return connectionType;
 	}
 
 	/**

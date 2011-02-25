@@ -32,7 +32,7 @@ import org.epics.css.dal.context.Identifiable;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
-public interface Proxy extends Identifiable
+public interface Proxy<P extends AbstractPlug> extends Identifiable
 {
 	/**
 	 * Returns the unique name. This name is used to initiate
@@ -67,6 +67,21 @@ public interface Proxy extends Identifiable
 	 * @return state of connection to remote object
 	 */
 	public ConnectionState getConnectionState();
+	
+	/**
+	 * Returns plug instance which governs this proxy object.
+	 * Plug implementation decided how plug reference is provided to the 
+	 * proxy implementation. Preferred way is trough constructor.
+	 * @return
+	 */
+	public P getPlug();
+	
+	/**
+	 * Returns short description of connection to remote host.
+	 * For example: CHANNEL_A@PROTOCOL/HOST:PORT  
+	 * @return
+	 */
+	public String getConnectionInfo();
 }
 
 /* __oOo__ */

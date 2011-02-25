@@ -4,6 +4,7 @@ Bundle-Name: Waterfall Viewer
 Bundle-SymbolicName: org.csstudio.display.waterfall; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.display.waterfall.Activator
+Bundle-Description: View that creates a waterfall plot of a given waveform channel
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="[1.1.1,2.0.0)",
@@ -11,4 +12,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.apputil.ui;bundle-version="[1.1.5,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - Brookhaven National Lab
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

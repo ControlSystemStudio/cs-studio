@@ -61,6 +61,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	{
 		super(proxy, l);
 		this.proxy = proxy;
+		proxy.addMonitor(this);
 		resetTimer();
 	}
 

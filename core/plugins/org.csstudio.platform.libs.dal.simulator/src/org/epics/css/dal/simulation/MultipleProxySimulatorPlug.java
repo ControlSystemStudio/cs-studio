@@ -1,9 +1,6 @@
 package org.epics.css.dal.simulation;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
@@ -12,8 +9,6 @@ import java.util.TimerTask;
 import org.apache.log4j.Logger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
@@ -25,6 +20,7 @@ import org.epics.css.dal.impl.AbstractDeviceImpl;
 import org.epics.css.dal.impl.DoublePropertyImpl;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
+import org.epics.css.dal.proxy.AbstractPropertyProxyImpl;
 import org.epics.css.dal.proxy.AbstractProxyImpl;
 import org.epics.css.dal.proxy.CommandProxy;
 import org.epics.css.dal.proxy.DeviceProxy;
@@ -57,6 +53,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 		public MonitorProxyI(SinglePropertyProxyImpl<T> source, ResponseListener<T> l) {
 			super(source, l);
 			this.proxy = source;
+			proxy.addMonitor(this);
 			resetTimer();
 		}
 
@@ -177,6 +174,8 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 			}
 
 			destroyed = true;
+			
+			proxy.removeMonitor(this);
 		}
 
 		/* (non-Javadoc)
@@ -196,29 +195,55 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 	
 	public static class DoublePropertyProxyImpl extends SinglePropertyProxyImpl<Double> {
 
-		public DoublePropertyProxyImpl(String name) {
-			super(name);
+		public DoublePropertyProxyImpl(String name, MultipleProxySimulatorPlug plug) {
+			super(name,plug);
 			// TODO Auto-generated constructor stub
 		}
 		
 	}
 	
-	public static class SinglePropertyProxyImpl<E> extends AbstractProxyImpl implements 
-		PropertyProxy<E>,SyncPropertyProxy<E> {
+	public static class SinglePropertyProxyImpl<E> extends AbstractPropertyProxyImpl<E, MultipleProxySimulatorPlug, MonitorProxyI<E>> implements 
+		PropertyProxy<E,MultipleProxySimulatorPlug>,SyncPropertyProxy<E,MultipleProxySimulatorPlug> {
 
 		protected ValueProvider<E> valueProvider = new MemoryValueProvider<E>();
-		protected DynamicValueCondition condition = new DynamicValueCondition(EnumSet
-			    .of(DynamicValueState.NORMAL), System.currentTimeMillis(), null);
-		protected List<MonitorProxyI> monitors = new ArrayList<MonitorProxyI>(1);
 		protected boolean isSettable = true;
 		
-		public SinglePropertyProxyImpl(String name) {
-			super(name);
+		public SinglePropertyProxyImpl(String name, MultipleProxySimulatorPlug plug) {
+			super(name,plug);
+			setConnectionState(ConnectionState.READY);
 			delayedConnect(1000);
 		}
 		
+		public void refresh() {
+			// TODO Auto-generated method stub
+		}
+		public Request<? extends Object> getCharacteristics(
+				String[] characteristics,
+				ResponseListener<? extends Object> callback)
+				throws DataExchangeException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		protected Object processCharacteristicAfterCache(Object value,
+				String characteristicName) {
+			return value;
+		}
+		
+		public String[] getCharacteristicNames() throws DataExchangeException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		protected Object processCharacteristicBeforeCache(Object value,
+				String characteristicName) {
+			return value;
+		}
 		public void delayedConnect(long timeout)
 		{
+			setConnectionState(ConnectionState.CONNECTING);
 			if (timeout > 0) {
 				Timer t = new Timer();
 				t.schedule(new TimerTask() {
@@ -235,13 +260,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
 		public MonitorProxy createMonitor(ResponseListener<E> callback, Map<String,Object> p) throws RemoteException {
 			MonitorProxyI<E> m = new MonitorProxyI<E>(this, callback);
-			monitors.add(m);
-
 			return m;
-		}
-
-		public DynamicValueCondition getCondition() {
-			return condition;
 		}
 
 		public Request<E> getValueAsync(ResponseListener<E> callback) throws DataExchangeException {
@@ -251,7 +270,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
 			RequestImpl<E> r = new RequestImpl<E>(this, callback);
 			r.addResponse(new ResponseImpl<E>(this, r, valueProvider.get(), "value",
-			        true, null, condition, null, true));
+			        true, null, getCondition(), null, true));
 
 			return r;
 		}
@@ -267,9 +286,9 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
 			setValueSync(value);
 
-			RequestImpl<E> r = new RequestImpl(this, callback);
+			RequestImpl<E> r = new RequestImpl<E>(this, callback);
 			r.addResponse(new ResponseImpl<E>(this, r, value, "", true, null,
-			        condition, null, true));
+			        getCondition(), null, true));
 
 			return r;
 		}
@@ -289,8 +308,7 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 
 			valueProvider.set(value);
 
-			MonitorProxyImpl[] m = monitors.toArray(new MonitorProxyImpl[monitors
-				    .size()]);
+			MonitorProxyImpl<?>[] m = getMonitors().toArray(new MonitorProxyImpl[getMonitors().size()]);
 
 			for (int i = 0; i < m.length; i++) {
 				m[i].fireValueChange();
@@ -298,24 +316,26 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 		}
 	}
 	
-	public static class SingleDeviceProxyImpl extends AbstractProxyImpl implements 
-			DeviceProxy {
+	public static class SingleDeviceProxyImpl extends AbstractProxyImpl<MultipleProxySimulatorPlug> implements 
+			DeviceProxy<MultipleProxySimulatorPlug> {
 
 		protected MultipleProxySimulatorPlug plug;
-		protected Map<String, DirectoryProxy> directoryProxies;
-		protected Map<String, PropertyProxy<?>> propertyProxies;
+		protected Map<String, DirectoryProxy<MultipleProxySimulatorPlug>> directoryProxies;
+		protected Map<String, PropertyProxy<?,MultipleProxySimulatorPlug>> propertyProxies;
 		protected Map<String, CommandProxy> commands = new HashMap<String, CommandProxy>();
 		protected Map<String, Class<?extends SimpleProperty<?>>> propertyTypes = new HashMap<String, Class<? extends SimpleProperty<?>>>();
 		
-		public SingleDeviceProxyImpl(String name) {
-			super(name);
+		public SingleDeviceProxyImpl(String name, MultipleProxySimulatorPlug plug) {
+			super(name,plug);
 			this.plug = MultipleProxySimulatorPlug.getInstance();
+			setConnectionState(ConnectionState.READY);
 			delayedConnect(2000);
 			
 		}
 				
 		public void delayedConnect(long timeout)
 		{
+			setConnectionState(ConnectionState.CONNECTING);
 			if (timeout > 0) {
 				Timer t = new Timer();
 				t.schedule(new TimerTask() {
@@ -334,35 +354,37 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 			return commands.get(name);
 		}
 
-		public DirectoryProxy getDirectoryProxy(String name) throws RemoteException {
+		@SuppressWarnings("unchecked")
+		public DirectoryProxy<MultipleProxySimulatorPlug> getDirectoryProxy(String name) throws RemoteException {
 			if (directoryProxies == null) {
-				directoryProxies = new HashMap<String, DirectoryProxy>(3);
+				directoryProxies = new HashMap<String, DirectoryProxy<MultipleProxySimulatorPlug>>(3);
 			}
 
-			DirectoryProxy p = directoryProxies.get(name);
+			DirectoryProxy<MultipleProxySimulatorPlug> p = directoryProxies.get(name);
 
 			if (p != null) {
 				return p;
 			}
 
-			p = plug.getDirectoryProxy(this.name + '/' + name);
+			p = (DirectoryProxy<MultipleProxySimulatorPlug>) plug.getDirectoryProxy(this.name + '/' + name);
 			directoryProxies.put(name, p);
 
 			return p;
 		}
 
-		public PropertyProxy<?> getPropertyProxy(String name) throws RemoteException {
+		@SuppressWarnings("unchecked")
+		public PropertyProxy<?,MultipleProxySimulatorPlug> getPropertyProxy(String name) throws RemoteException {
 			if (propertyProxies == null) {
-				propertyProxies = new HashMap<String, PropertyProxy<?>>(3);
+				propertyProxies = new HashMap<String, PropertyProxy<?,MultipleProxySimulatorPlug>>(3);
 			}
 
-			PropertyProxy<?> p = propertyProxies.get(name);
+			PropertyProxy<?,MultipleProxySimulatorPlug> p = propertyProxies.get(name);
 
 			if (p != null) {
 				return p;
 			}
 
-			p = plug.getPropertyProxy(this.name + '/' + name,
+			p = (PropertyProxy<?, MultipleProxySimulatorPlug>) plug.getPropertyProxy(this.name + '/' + name,
 				   plug.getPropertyProxyImplementationClass(getPropertyType(name),null,name));
 			//			    SimulatorUtilities.getPropertyProxyImplementationClass(
 			//			        getPropertyType(name)));
@@ -409,10 +431,10 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 	}
 	
 	@Override
-	protected DirectoryProxy createNewDirectoryProxy(String uniqueName) {
+	protected DirectoryProxy<MultipleProxySimulatorPlug> createNewDirectoryProxy(String uniqueName) {
 		try {
-			PropertyProxyImpl<?> proxy = new PropertyProxyImpl<Object>(uniqueName,Object.class);
-			return proxy;
+			PropertyProxyImpl<?> proxy = new PropertyProxyImpl<Object>(uniqueName,this,Object.class);
+			return (DirectoryProxy)proxy;
 			
 		} catch (Exception e) {
 			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
@@ -421,12 +443,12 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 	}
 	
 	@Override
-	protected <TT extends PropertyProxy<?>> TT createNewPropertyProxy(String uniqueName, Class<TT> type) throws ConnectionException {
+	protected <TT extends PropertyProxy<?,?>> TT createNewPropertyProxy(String uniqueName, Class<TT> type) throws ConnectionException {
 		try {
 			if (type == DoublePropertyProxyImpl.class) {
-				return type.cast(new DoublePropertyProxyImpl(uniqueName));
+				return type.cast(new DoublePropertyProxyImpl(uniqueName,this));
 			}
-			SinglePropertyProxyImpl p = new SinglePropertyProxyImpl(uniqueName);
+			SinglePropertyProxyImpl p = new SinglePropertyProxyImpl(uniqueName,this);
 			return type.cast(p);
 		} catch (Exception e) {
 			throw new ConnectionException(this,
@@ -436,9 +458,9 @@ public class MultipleProxySimulatorPlug extends SimulatorPlug {
 	}
 	
 	@Override
-	protected <T extends DeviceProxy> T createNewDeviceProxy(String uniqueName, Class<T> type) throws ConnectionException {
+	protected <T extends DeviceProxy<?>> T createNewDeviceProxy(String uniqueName, Class<T> type) throws ConnectionException {
 		try {
-			SingleDeviceProxyImpl p = new SingleDeviceProxyImpl(uniqueName);
+			SingleDeviceProxyImpl p = new SingleDeviceProxyImpl(uniqueName,this);
 			return type.cast(p);
 		} catch (Exception e) {
 			throw new ConnectionException(this,

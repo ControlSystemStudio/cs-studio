@@ -80,7 +80,7 @@ public class TINERequestImpl<T> extends RequestImpl<T> implements TCallback {
         
         addResponse(response);
         if (e == null) {
-        	this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp.getMilliseconds(),"Value updated."));
+        	this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),null,"Value updated."));
         }
 		this.tLink.close();
 	}	

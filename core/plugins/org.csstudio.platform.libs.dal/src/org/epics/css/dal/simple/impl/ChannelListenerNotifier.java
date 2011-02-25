@@ -28,6 +28,10 @@ public class ChannelListenerNotifier {
 			fireChannelStateUpdate();
 		}
 
+		public void operational(ConnectionEvent<DynamicValueProperty<?>> e) {
+			fireChannelStateUpdate();
+		}
+
 		public void connectionFailed(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
 		}

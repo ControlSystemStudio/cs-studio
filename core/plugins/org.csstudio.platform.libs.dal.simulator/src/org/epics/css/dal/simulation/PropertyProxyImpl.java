@@ -25,14 +25,15 @@
  */
 package org.epics.css.dal.simulation;
 
-import org.apache.log4j.Logger;
+import java.beans.PropertyChangeEvent;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
-import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
@@ -42,23 +43,13 @@ import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
-import org.epics.css.dal.proxy.AbstractProxyImpl;
+import org.epics.css.dal.proxy.AbstractPropertyProxyImpl;
 import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.MonitorProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
-import org.epics.css.dal.proxy.ProxyEvent;
-import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
 import org.epics.css.dal.simulation.data.DataGeneratorInfo;
 import org.epics.css.dal.spi.LinkPolicy;
-
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -67,15 +58,15 @@ import java.util.TimerTask;
  * @author ikriznar
  *
  */
-public class PropertyProxyImpl<T> extends AbstractProxyImpl
-	implements PropertyProxy<T>, SyncPropertyProxy<T>, DirectoryProxy
+public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorPlug,MonitorProxyImpl<T>>
+	implements PropertyProxy<T,SimulatorPlug>, SyncPropertyProxy<T,SimulatorPlug>, DirectoryProxy<SimulatorPlug>
 {
 	
 	public static void main(String[] args) throws Exception, InstantiationException {
 		PropertyFactoryImpl factory = new PropertyFactoryImpl();
 		factory.initialize(new DefaultApplicationContext("test"), LinkPolicy.SYNC_LINK_POLICY);
 		DoubleProperty dp = factory.getProperty("sim://abc COUNTDOWN:100:0:10000:200",DoubleProperty.class,null);
-		dp.addDynamicValueListener(new DynamicValueAdapter(){
+		dp.addDynamicValueListener(new DynamicValueAdapter<Double,DoubleProperty>(){
 			@Override
 			public void valueChanged(DynamicValueEvent event) {
 				System.out.println(event.getValue());
@@ -91,18 +82,15 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	}
 	
 	protected ValueProvider<T> valueProvider = new MemoryValueProvider<T>();
-	protected DynamicValueCondition condition = new DynamicValueCondition(EnumSet
-		    .of(DynamicValueState.NORMAL), System.currentTimeMillis(), null);
-	protected List<MonitorProxyImpl> monitors = new ArrayList<MonitorProxyImpl>(1);
 	protected boolean isSettable = true;
 	private long refreshRate = 1000;
 	/**
 	 * Creates new instance.
 	 * @param name
 	 */
-	public PropertyProxyImpl(String name, Class<T> type)
+	public PropertyProxyImpl(String name, SimulatorPlug plug, Class<T> type)
 	{
-		this(name, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
+		this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY),type);
 	}
 	
 	/**
@@ -110,9 +98,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	 * @param name
 	 * @param connectDelay
 	 */
-	public PropertyProxyImpl(String name, long connectDelay, Class<T> type)
+	public PropertyProxyImpl(String name, SimulatorPlug plug, long connectDelay, Class<T> type)
 	{
-		super(name);
+		super(name,plug);
+		setConnectionState(ConnectionState.READY);
 		delayedConnect(connectDelay);
 		DataGeneratorInfo info = DataGeneratorInfo.getInfo(name);
 		refreshRate = info.getRefreshRate(name);
@@ -121,13 +110,16 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 
 	public void delayedConnect(long timeout)
 	{
+		setConnectionState(ConnectionState.CONNECTING);
 		if (timeout > 0) {
 			Timer t = new Timer();
 			t.schedule(new TimerTask() {
 					@Override
 					public void run()
 					{
-						setConnectionState(ConnectionState.CONNECTED);
+						if (getConnectionState()==ConnectionState.CONNECTING) {
+							setConnectionState(ConnectionState.CONNECTED);
+						}
 					}
 				}, timeout);
 		} else {
@@ -147,7 +139,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 
 		RequestImpl<T> r = new RequestImpl<T>(this, callback);
 		r.addResponse(new ResponseImpl<T>(this, r, valueProvider.get(), "value",
-		        true, null, condition, null, true));
+		        true, null, getCondition(), null, true));
 
 		return r;
 	}
@@ -164,9 +156,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 
 		setValueSync(value);
 
-		RequestImpl<T> r = new RequestImpl(this, callback);
+		RequestImpl<T> r = new RequestImpl<T>(this, callback);
 		r.addResponse(new ResponseImpl<T>(this, r, value, "", true, null,
-		        condition, null, true));
+		        getCondition(), null, true));
 
 		return r;
 	}
@@ -192,8 +184,6 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	{
 		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this, callback);
 		m.setTimerTrigger(refreshRate);
-		monitors.add(m);
-
 		return m;
 	}
 
@@ -201,79 +191,16 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	{
 		super.destroy();
 
-		MonitorProxyImpl[] m = monitors.toArray(new MonitorProxyImpl[monitors
-			    .size()]);
-
-		for (int i = 0; i < m.length; i++) {
-			m[i].destroy();
+		if (connectionStateMachine.isConnected()) {
+			setConnectionState(ConnectionState.DISCONNECTING);
+		}
+		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
+			setConnectionState(ConnectionState.DISCONNECTED);
 		}
 		setConnectionState(ConnectionState.DESTROYED);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getCondition()
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return condition;
-	}
-
-	/**
-	 * Intended for only within plug.
-	 * @param s new condition state.
-	 */
-	public void setCondition(DynamicValueCondition s)
-	{
-		if (condition.areStatesEqual(s)) {
-			return;
-		}
-
-		condition = s;
-		fireCondition();
-	}
-
 	
-	/**
-	 * Fires new characteristics changed event
-	 */
-	
-	protected void fireCharacteristicsChanged(PropertyChangeEvent ev)
-	{
-		if (proxyListeners == null) 
-			return;
-		
-		ProxyListener[] l = (ProxyListener[])proxyListeners.toArray();
-
-		for (int i = 0; i < l.length; i++) {
-			try {
-				l[i].characteristicsChange(ev);
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-			}
-		}
-		
-	}
-	/**
-	 * Fires new condition event.
-	 */
-	protected void fireCondition()
-	{
-		if (proxyListeners == null) 
-			return;
-		
-		ProxyListener<T>[] l = (ProxyListener<T>[])proxyListeners.toArray();
-		ProxyEvent<PropertyProxy<T>> ev = new ProxyEvent<PropertyProxy<T>>(this,
-			    condition, connectionState, null);
-
-		for (int i = 0; i < l.length; i++) {
-			try {
-				l[i].dynamicValueConditionChange(ev);
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-			}
-		}
-	}
-
 	/**
 	 * @see DirectoryProxy#getCharacteristicNames()
 	 */
@@ -282,52 +209,18 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 		return SimulatorUtilities.getCharacteristicNames(this);
 	}
 
-	/**
-	 * @see DirectoryProxy#getCommandNames()
-	 */
-	public String[] getCommandNames() throws DataExchangeException
-	{
-		// property does not support commands
-		throw new UnsupportedOperationException();
+	@Override
+	protected Object processCharacteristicBeforeCache(Object value,
+			String characteristicName) {
+		return SimulatorUtilities.getCharacteristic(characteristicName, this);
 	}
-
-	/**
-	 * @see DirectoryProxy#getCommandParameterTypes(String)
-	 */
-	public Class[] getCommandParameterTypes(String commandName)
-		throws DataExchangeException
-	{
-		// property does not support commands
-		throw new UnsupportedOperationException();
+	
+	@Override
+	protected Object processCharacteristicAfterCache(Object value,
+			String characteristicName) {
+		return value;
 	}
-
-	/**
-	 * @see DirectoryProxy#getCharacteristics(String[], ResponseListener)
-	 */
-	public Request<? extends Object> getCharacteristics(String[] characteristics,
-	    ResponseListener<? extends Object> callback) throws DataExchangeException
-	{
-		RequestImpl<Object> r = new RequestImpl<Object>(this, (ResponseListener<Object>) callback);
-
-		for (int i = 0; i < characteristics.length; i++) {
-			Object value = PropertyUtilities.verifyCharacteristic(this, characteristics[i], getCharacteristic(characteristics[i]));
-			r.addResponse(new ResponseImpl<Object>(this, r, value, characteristics[i],
-			        value != null, null, condition, null, true));
-		}
-
-		return r;
-	}
-
-	/**
-	 * @throws
-	 * @see DirectoryProxy#getCharacteristic(String)
-	 */
-	public Object getCharacteristic(String characteristicName)
-		throws DataExchangeException
-	{
-		return PropertyUtilities.verifyCharacteristic(this, characteristicName, SimulatorUtilities.getCharacteristic(characteristicName, this));
-	}
-
+	
 	public T getValueSync() throws DataExchangeException
 	{
 		if (getConnectionState() != ConnectionState.CONNECTED) {
@@ -345,28 +238,12 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 
 		valueProvider.set(value);
 
-		MonitorProxyImpl[] m = monitors.toArray(new MonitorProxyImpl[monitors
-			    .size()]);
+		@SuppressWarnings("unchecked")
+		MonitorProxyImpl<T>[] m = getMonitors().toArray(new MonitorProxyImpl[getMonitors().size()]);
 
 		for (int i = 0; i < m.length; i++) {
 			m[i].fireValueChange();
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyNames()
-	 */
-	public String[] getPropertyNames()
-	{
-		throw new UnsupportedOperationException("This is not device proxy.");
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#getPropertyType(java.lang.String)
-	 */
-	public Class<?extends SimpleProperty<T>> getPropertyType(String propertyName)
-	{
-		throw new UnsupportedOperationException("This is not device proxy.");
 	}
 
 	/**
@@ -396,35 +273,6 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 		// Override in order to clean up cached values.
 	}
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
-	 */
-	@Override
-	protected void setConnectionState(ConnectionState s)
-	{
-		super.setConnectionState(s);
-
-		EnumSet<DynamicValueState> set = null;
-
-		if (s == ConnectionState.CONNECTED) {
-			set = EnumSet.of(DynamicValueState.NORMAL);
-		} else if (s == ConnectionState.DISCONNECTED) {
-			set = EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE);
-		} else if (s == ConnectionState.DESTROYED) {
-			set = EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE);
-		} else if (s == ConnectionState.CONNECTION_FAILED) {
-			set = EnumSet.of(DynamicValueState.ERROR);
-		} else if (s == ConnectionState.CONNECTION_LOST) {
-			set = EnumSet.of(DynamicValueState.ERROR);
-		} else {
-			set = EnumSet.of(DynamicValueState.NORMAL);
-		}
-
-		setCondition(new DynamicValueCondition(set, 0,
-		        "Connection state changed"));
-	}
-
 	/**
 	 * Simulate changes of connection state
 	 * @param state Connection State
@@ -437,6 +285,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl
 	public void simulateCharacteristicChange(String characteristicName, Object value) {
 		Object old= SimulatorUtilities.putCharacteristic(characteristicName, getUniqueName(), value);
 		fireCharacteristicsChanged(new PropertyChangeEvent(this,characteristicName,old,value));
+	}
+	
+	@Override
+	protected String getRemoteHostInfo() {
+		return "local";
 	}
 }
 

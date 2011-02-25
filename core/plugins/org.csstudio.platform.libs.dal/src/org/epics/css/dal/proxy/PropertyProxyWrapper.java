@@ -28,6 +28,7 @@ import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
+import org.epics.css.dal.Response;
 import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.Identifier;
@@ -42,16 +43,20 @@ import org.epics.css.dal.context.Identifier;
   *
  * @param <T> exact data type
  */
-public class PropertyProxyWrapper<T> implements SyncPropertyProxy<T>
+public class PropertyProxyWrapper<T,P extends AbstractPlug> implements SyncPropertyProxy<T,P>
 {
-	private PropertyProxy<T> proxy;
+	private PropertyProxy<T,P> proxy;
 
+	public P getPlug() {
+		return proxy.getPlug();
+	}
+	
 	/**
 	 * Creates a new PropertyProxyWrapper object.
 	 *
 	 * @param proxy Proxy to wrap
 	 */
-	public PropertyProxyWrapper(PropertyProxy<T> proxy)
+	public PropertyProxyWrapper(PropertyProxy<T,P> proxy)
 	{
 		this.proxy = proxy;
 	}
@@ -168,6 +173,14 @@ public class PropertyProxyWrapper<T> implements SyncPropertyProxy<T>
 	public boolean isDebug()
 	{
 		return proxy.isDebug();
+	}
+	
+	public Response<T> getLatestValueResponse() {
+		return proxy.getLatestValueResponse();
+	}
+	
+	public String getConnectionInfo() {
+		return proxy.getConnectionInfo();
 	}
 }
 

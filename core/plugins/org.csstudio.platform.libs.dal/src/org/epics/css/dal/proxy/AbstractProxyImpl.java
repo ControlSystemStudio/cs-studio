@@ -22,12 +22,12 @@
 
 package org.epics.css.dal.proxy;
 
-import com.cosylab.util.ListenerList;
-
 import org.apache.log4j.Logger;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.IdentifierUtilities;
+
+import com.cosylab.util.ListenerList;
 
 
 /**
@@ -35,14 +35,16 @@ import org.epics.css.dal.context.IdentifierUtilities;
  *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
-public abstract class AbstractProxyImpl implements Proxy
+public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy<P>
 {
 	protected boolean debug = false;
 	protected String name;
 	protected ListenerList proxyListeners;
-	protected ConnectionState connectionState = ConnectionState.INITIAL;
+	protected ConnectionStateMachine connectionStateMachine = new ConnectionStateMachine();
 	protected Identifier identifier;
-
+	protected P plug;
+	private String connectionInfo;
+	
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.context.Identifiable#getIdentifier()
 	 */
@@ -66,10 +68,15 @@ public abstract class AbstractProxyImpl implements Proxy
 	/**
 	     * Default construcor.
 	     */
-	public AbstractProxyImpl(String name)
+	public AbstractProxyImpl(String name, P plug)
 	{
 		super();
 		this.name = name;
+		this.plug = plug;
+	}
+	
+	public P getPlug() {
+		return plug;
 	}
 
 	/* (non-Javadoc)
@@ -98,8 +105,8 @@ public abstract class AbstractProxyImpl implements Proxy
 
 		proxyListeners.add(l);
 
-		ProxyEvent<Proxy> e = new ProxyEvent<Proxy>(this, null,
-			    connectionState, null);
+		ProxyEvent<Proxy<?>> e = new ProxyEvent<Proxy<?>>(this, null,
+			    connectionStateMachine.getConnectionState(), null);
 
 		try {
 			l.connectionStateChange(e);
@@ -123,7 +130,7 @@ public abstract class AbstractProxyImpl implements Proxy
 	 */
 	public ConnectionState getConnectionState()
 	{
-		return connectionState;
+		return connectionStateMachine.getConnectionState();
 	}
 
 	/**
@@ -131,24 +138,40 @@ public abstract class AbstractProxyImpl implements Proxy
 	 *
 	 * @param s new connection state.
 	 */
-	protected void setConnectionState(ConnectionState s)
+	public void setConnectionState(ConnectionState s)
 	{
-		connectionState = s;
-		fireConnectionState();
+		if (connectionStateMachine.requestNextConnectionState(s)) {
+			if (connectionStateMachine.getConnectionState()==ConnectionState.CONNECTED) {
+				connectionInfo=null;
+				getConnectionInfo();
+			}
+			handleConnectionState(s);
+			fireConnectionState(s);
+		}
+	}
+
+	/**
+	 * This method is called after connection state was changed but change was not jet 
+	 * fired to listeners. 
+	 * Plug implementation may want to override this method to provide internal 
+	 * synchronization of proxy with new state.
+	 * @param s the new connection state
+	 */
+	protected void handleConnectionState(ConnectionState s) {
 	}
 
 	/**
 	 * Fires new connection event.
 	 */
-	protected void fireConnectionState()
+	protected void fireConnectionState(ConnectionState c)
 	{
 		if (proxyListeners == null) {
 			return;
 		}
 
 		ProxyListener<?>[] l = (ProxyListener<?>[])proxyListeners.toArray();
-		ProxyEvent<Proxy> e = new ProxyEvent<Proxy>(this, null,
-			    connectionState, null);
+		ProxyEvent<Proxy<?>> e = new ProxyEvent<Proxy<?>>(this, null,
+			    c, null);
 
 		for (int i = 0; i < l.length; i++) {
 			try {
@@ -157,6 +180,46 @@ public abstract class AbstractProxyImpl implements Proxy
 				Logger.getLogger(this.getClass()).error("Exception in event handler, continuing.", ex);
 			}
 		}
+	}
+	
+	public String getConnectionInfo() {
+		if (connectionInfo == null) {
+			if (connectionStateMachine.isConnected()) {
+				StringBuilder sb= new StringBuilder(128);
+				sb.append(name);
+				sb.append('@');
+				if (plug!=null) {
+					sb.append(plug.getPlugType());
+				} else {
+					sb.append("UKNOWN_PLUG");
+				}
+				sb.append('/');
+				sb.append(getRemoteHostInfo());
+				connectionInfo= sb.toString();
+			} else {
+				StringBuilder sb= new StringBuilder(128);
+				sb.append(name);
+				sb.append('@');
+				if (plug!=null) {
+					sb.append(plug.getPlugType());
+				} else {
+					sb.append("UKNOWN_PLUG");
+				}
+				sb.append('/');
+				sb.append("(NOT_CONNECTED)");
+				connectionInfo= sb.toString();
+			}
+		}
+		return connectionInfo;
+	}
+	
+	/**
+	 * Plug implementation should override this to provide remote host information.
+	 * Something like: HOST_NAME:PORT or HOST_IP:PORT.
+	 * @return remote host information
+	 */
+	protected String getRemoteHostInfo() {
+		return "UKNOWN_HOST";
 	}
 }
 

@@ -57,8 +57,14 @@ do
   echo "  <td>" $MANIFEST "</td>"
   echo "  </tr>"
 done
-
 echo "</table>"
+
+if [ -n "$BUILD_TAG" ]
+then
+  echo "<p>Rebuilt at every commit by Jenkins (" $BUILD_TAG " -  " $BUILD_ID  ")</p>"
+fi
+echo "<p>The information is taken by parsing each plugin's MANIFEST.MF, using properties Bundle-Name, Bundle-Version, Bundle-Vendor, Bundle-Description</p>"
+
 echo "</body>"
 echo "</html>"
 

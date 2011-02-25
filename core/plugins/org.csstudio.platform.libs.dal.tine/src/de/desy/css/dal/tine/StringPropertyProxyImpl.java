@@ -25,6 +25,9 @@
  */
 package de.desy.css.dal.tine;
 
+import org.apache.log4j.Logger;
+import org.epics.css.dal.DataExchangeException;
+
 import de.desy.tine.dataUtils.TDataType;
 import de.desy.tine.definitions.TFormat;
 import de.desy.tine.types.NAME16;
@@ -47,9 +50,13 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String> {
 	 * Constructs a new StringPropertyProxy.
 	 * @param name
 	 */
-	public StringPropertyProxyImpl(String name) {
-		super(name);
-		this.length = (Integer)getCharacteristic("sequenceLength");
+	public StringPropertyProxyImpl(String name, TINEPlug plug) {
+		super(name, plug);
+		try {
+			this.length = (Integer)getCharacteristic("sequenceLength");
+		} catch (DataExchangeException e) {
+			Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+		}
 		switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
 			case TFormat.CF_TEXT: {
 				this.value = new char[this.length]; 
