@@ -19,27 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Dao for archive control system.
  *
- * @author bknerr
- * @since 17.02.2011
+ * @author baschtl
+ * @since Feb 26, 2011
  */
-public interface IArchiveControlSystemDao {
-    /**
-     * @param id
-     * @return
-     * @throws ArchiveStatusDaoException
-     */
-    @CheckForNull
-    IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+public class ArchiveChannelStatus {
+
+    private final ArchiveChannelId _channelId;
+    private final Boolean _connected;
+    private final String _info;
+    private final TimeInstant _time;
+
+    public ArchiveChannelStatus(@Nonnull final ArchiveChannelId channelId,
+                                @Nonnull final boolean connected,
+                                @Nonnull final String info,
+                                @Nonnull final TimeInstant time) {
+        _channelId = channelId;
+        _connected = Boolean.valueOf(connected);
+        _info = info;
+        _time = time;
+    }
+
+    @Nonnull
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
+    }
+
+    @Nonnull
+    public String getInfo() {
+        return _info;
+    }
+
+    @Nonnull
+    public TimeInstant getTime() {
+        return _time;
+    }
+
+    @Nonnull
+    public Boolean isConnected() {
+        return _connected;
+    }
 }
+

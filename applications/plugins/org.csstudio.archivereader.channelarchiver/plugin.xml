@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.csstudio.archivereader.ArchiveReaderXXX">
+         point="org.csstudio.archivereader.ArchiveReader">
       <ArchiveReader
             class="org.csstudio.archivereader.channelarchiver.ChannelArchiverArchiveReaderFactory"
             name="org.csstudio.archivereader.channelarchiver.archivereader"

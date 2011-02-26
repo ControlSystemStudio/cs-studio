@@ -19,27 +19,41 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
+import com.google.common.base.Joiner;
+
 /**
- * Dao for archive control system.
  *
- * @author bknerr
- * @since 17.02.2011
+ * @author baschtl
+ * @since Feb 26, 2011
  */
-public interface IArchiveControlSystemDao {
-    /**
-     * @param id
-     * @return
-     * @throws ArchiveStatusDaoException
-     */
-    @CheckForNull
-    IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
+
+    private static final String RETRIEVAL_FAILED = "Creation of channel status entry failed.";
+
+    public static final String TAB = "channel_status";
+
+    private static final String _insertEntryStmtPrefix =
+        "INSERT INTO " + getDaoMgr().getDatabaseName() + "." + TAB +
+                     " channel_id, connected, info, timestamp " +
+                     "VALUES ";
+
+    public ArchiveChannelStatusDaoImpl() {
+        super();
+    }
+
+    @Override
+    public void createChannelStatus(final ArchiveChannelStatus entry) throws ArchiveDaoException {
+        final String stmtStr = Joiner.on(",").join(_insertEntryStmtPrefix,
+                                                   entry.getChannelId().intValue(),
+                                                   entry.isConnected().toString(),
+                                                   "'" + entry.getInfo() + "'",
+                                                   "'" + entry.getTime().formatted() + "'");
+        getEngineMgr().submitStatementToBatch(stmtStr);
+    }
+
 }

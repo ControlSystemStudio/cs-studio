@@ -29,18 +29,22 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 
 
@@ -84,13 +88,28 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
         return true;
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+//        try {
+//            DAO_MGR.getArchiverMgmtDao().createMgmtEntries(monitorStates);
+//        } catch (final ArchiveDaoException e) {
+//            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+//        }
+//    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
+    public void writeChannelConnectionInfo(@Nonnull final ArchiveChannelId id,
+                                           @Nonnull final boolean connected,
+                                           @Nonnull final String info,
+                                           @Nonnull final TimeInstant timestamp) throws ArchiveServiceException {
         try {
-            DAO_MGR.getArchiverMgmtDao().createMgmtEntries(monitorStates);
+            DAO_MGR.getChannelStatusDao().createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
         }
@@ -100,9 +119,13 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException {
+    public void writeMonitorModeInformation(@Nonnull final ArchiveChannelId id,
+                                            @Nonnull final ArchiverMonitorStatus status,
+                                            @Nonnull final ArchiveEngineId engineId,
+                                            @Nonnull final TimeInstant time,
+                                            @Nonnull final String info) throws ArchiveServiceException {
         try {
-            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(entry);
+            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(new ArchiverMgmtEntry(id, status, engineId, time, info));
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }

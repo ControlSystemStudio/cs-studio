@@ -26,7 +26,8 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
+import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -34,6 +35,7 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Archive engine writer methods.
@@ -89,15 +91,33 @@ public interface IArchiveEngineFacade {
     /**
      * Writes the monitoring information of an engine for a channel.
      *
-     * @param entry
      * @throws ArchiveServiceException
      */
-    void writeMonitorModeInformation(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveServiceException;
+    void writeMonitorModeInformation(@Nonnull final ArchiveChannelId id,
+                                     @Nonnull final ArchiverMonitorStatus st,
+                                     @Nonnull final ArchiveEngineId engineId,
+                                     @Nonnull final TimeInstant time,
+                                     @Nonnull final String info) throws ArchiveServiceException;
 
     /**
      * Writes the monitoring information of an engine for a channel.
      * @param monitorStates collection of states
      * @throws ArchiveServiceException
      */
-    void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
+    //void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
+
+    /**
+     * Writes the channel connection information.
+     *
+     * @param id the id of the channel
+     * @param connected whether it is connected or not
+     * @param info specific information, mostly dedicated to the control system
+     * @param timestamp the timestamp of the event, whether it originates
+     *        from the control system or the engine is up to the invoker.
+     */
+    void writeChannelConnectionInfo(@Nonnull final ArchiveChannelId id,
+                                    final boolean connected,
+                                    @Nonnull final String info,
+                                    @Nonnull final TimeInstant timestamp) throws ArchiveServiceException;
+
 }

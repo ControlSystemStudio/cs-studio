@@ -43,6 +43,8 @@ import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoIm
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatusDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
@@ -80,6 +82,7 @@ public enum ArchiveDaoManager {
     private IArchiverMgmtDao _archiverMgmtDao;
     private IArchiveSampleDao _archiveSampleDao;
     private IArchiveControlSystemDao _archiveControlSystemDao;
+    private IArchiveChannelStatusDao _archiveChannelStatusDao;
 
     /**
      * The datasource that specifies the connections.
@@ -101,8 +104,6 @@ public enum ArchiveDaoManager {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
-
-
 
 
     /**
@@ -139,7 +140,7 @@ public enum ArchiveDaoManager {
         ds.setUser(_prefUser);
         ds.setPassword(_prefPassword);
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(64*1024); // up tp 64 TODO (bknerr): same pref as in the engine mgr
+        ds.setMaxAllowedPacket(64*1024); // up tp 64MB TODO (bknerr): same pref as in the engine mgr
 
         return ds;
     }
@@ -300,6 +301,15 @@ public enum ArchiveDaoManager {
             _archiveControlSystemDao = new ArchiveControlSystemDaoImpl();
         }
         return _archiveControlSystemDao;
+    }
+
+
+    @Nonnull
+    public IArchiveChannelStatusDao getChannelStatusDao() {
+        if (_archiveChannelStatusDao == null) {
+            _archiveChannelStatusDao = new ArchiveChannelStatusDaoImpl();
+        }
+        return _archiveChannelStatusDao;
     }
 }
 

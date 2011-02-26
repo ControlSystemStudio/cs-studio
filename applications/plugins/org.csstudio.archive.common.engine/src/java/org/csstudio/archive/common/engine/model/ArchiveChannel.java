@@ -17,8 +17,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntryId;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
@@ -77,7 +75,7 @@ public abstract class ArchiveChannel<V,
      *  the 'running' state.
      */
     @GuardedBy("this")
-    volatile boolean _isRunning = false;
+    volatile boolean _isStarted = false;
 
     /** Most recent value of the PV.
      *  <p>
@@ -86,7 +84,7 @@ public abstract class ArchiveChannel<V,
      *  <p>
      */
     @GuardedBy("this")
-    protected T _mostRecentSysVar;
+    private T _mostRecentSysVar;
 
     /**
      * The most recent value send to the archive.
@@ -97,6 +95,7 @@ public abstract class ArchiveChannel<V,
     /** Counter for received values (monitor updates) */
     private long _receivedSampleCount = 0;
 
+    private volatile boolean _connected = false;
 
 
     /** Construct an archive channel
@@ -122,14 +121,18 @@ public abstract class ArchiveChannel<V,
             @Override
             public void pvValueUpdate(@Nonnull final PV pv) {
                 try {
-                    if (_isRunning) { // PV already suppresses updates after 'stop', but check anyway
-                        final IValue value = pv.getValue();
-                        final EpicsSystemVariable<V> sv = (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value);
-                        final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv, sv.getAlarm());
-                        handleNewSample(sample);
+                    if (!_connected) {
+                        handleConnectInfo(_id, pv.isConnected(), pv.getStateInfo());
+                        _connected = true;
                     }
+
+                    final IValue value = pv.getValue();
+                    final EpicsSystemVariable<V> sv = (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value);
+                    final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv, sv.getAlarm());
+                    handleNewSample(sample);
+
                 } catch (final TypeSupportException e) {
-                    PV_LOG.error("Handling of newly received IValue failed. Could not be converted to CssValue", e);
+                    PV_LOG.error("Handling of newly received IValue failed. Could not be converted to ISystemVariable", e);
                     return;
                 } catch (final Throwable t) {
                     PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage());
@@ -137,17 +140,28 @@ public abstract class ArchiveChannel<V,
             }
             @Override
             public void pvDisconnected(@CheckForNull final PV pv) {
-                if (_isRunning && pv != null) {
-                    handleDisconnectionInformation(pv);
+                if (_connected && pv != null) {
+                    try {
+                        handleConnectInfo(_id, pv.isConnected(), pv.getStateInfo());
+                    } catch (final EngineModelException e) {
+                        PV_LOG.error("Writing of disconnection for channel " + _name + " info failed.", e);
+                    }
+                    _connected = false;
                 }
             }
         });
     }
 
-    protected void handleDisconnectionInformation(@Nonnull final PV pv) {
-
-        final String someMoreInfo = pv.getStateInfo();
-
+    protected void handleConnectInfo(@Nonnull final ArchiveChannelId id, final boolean connected, @Nonnull final String info)
+        throws EngineModelException {
+        try {
+            final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
+            service.writeChannelConnectionInfo(id, connected, info, TimeInstantBuilder.buildFromNow());
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+        }
     }
 
     /** @return Name of channel */
@@ -180,29 +194,28 @@ public abstract class ArchiveChannel<V,
     public void start(@Nonnull final ArchiveEngineId engineId,
                       @Nonnull final String info) throws EngineModelException {
         try {
-        if (_isRunning) {
-            return;
-        }
-        synchronized (this) {
-            _isRunning = true;
-            _pv.start();
-        }
+            if (_isStarted) {
+                return;
+            }
+            synchronized (this) {
+                _pv.start();
+                _isStarted = true;
+            }
 
             // persist the start of monitoring
             final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
-            service.writeMonitorModeInformation(new ArchiverMgmtEntry(_id,
-                                                                      ArchiverMonitorStatus.ON,
-                                                                      engineId,
-                                                                      TimeInstantBuilder.buildFromNow(),
-                                                                      info));
+            service.writeMonitorModeInformation(_id,
+                                                ArchiverMonitorStatus.ON,
+                                                engineId,
+                                                TimeInstantBuilder.buildFromNow(),
+                                                info);
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
         } catch (final ArchiveServiceException e) {
             throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
         } catch (final Exception e) {
-            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel startup", e);
+            throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel/PV startup", e);
         }
-
     }
 
     /**
@@ -211,23 +224,22 @@ public abstract class ArchiveChannel<V,
      */
     public void stop(@Nonnull final ArchiveEngineId engineId,
                      @Nonnull final String info) throws EngineModelException {
-    	if (!_isRunning) {
+    	if (!_isStarted) {
             return;
         }
     	synchronized (this) {
-    	    _isRunning = false;
+    	    _isStarted = false;
     	}
         _pv.stop();
 
         try {
             // persist the start of monitoring
             final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
-            service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
-                                                                      _id,
-                                                                      ArchiverMonitorStatus.OFF,
-                                                                      engineId,
-                                                                      TimeInstantBuilder.buildFromNow(),
-                                                                      info));
+            service.writeMonitorModeInformation(_id,
+                                                ArchiverMonitorStatus.OFF,
+                                                engineId,
+                                                TimeInstantBuilder.buildFromNow(),
+                                                info);
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
         } catch (final ArchiveServiceException e) {

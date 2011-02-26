@@ -19,27 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
+package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
- * Dao for archive control system.
+ * Dao for archive channel status.
  *
  * @author bknerr
  * @since 17.02.2011
  */
-public interface IArchiveControlSystemDao {
-    /**
-     * @param id
-     * @return
-     * @throws ArchiveStatusDaoException
-     */
-    @CheckForNull
-    IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+public interface IArchiveChannelStatusDao {
+
+    void createChannelStatus(@Nonnull final ArchiveChannelStatus entry) throws ArchiveDaoException;
+
 }
