@@ -23,12 +23,10 @@ import org.eclipse.draw2d.IFigure;
 public class ConnectionHandler {
 
 	private final class PVConnectionListener implements PVListener {
-		@Override
 		public void pvValueUpdate(PV pv) {
 			widgetConnectionRecovered(pv);
 		}
 
-		@Override
 		public void pvDisconnected(PV pv) {
 			markWidgetAsDisconnected(pv);
 		}

@@ -33,8 +33,8 @@ import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.epics.pvmanager.TypeSupport;
@@ -116,7 +116,6 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsSystemVariableSupport<T> support =
             (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
-        // TODO (bknerr) : This is definitely an epics alarm, choose an appropriate abstraction
         return support.convertToIMinMaxDoubleValue(sysVar, min, max);
     }
 

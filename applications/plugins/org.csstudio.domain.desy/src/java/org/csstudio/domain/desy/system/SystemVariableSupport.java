@@ -27,7 +27,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.epics.pvmanager.TypeSupport;
 

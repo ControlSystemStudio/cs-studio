@@ -5,10 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -26,7 +28,7 @@ import org.mozilla.javascript.ScriptableObject;
  * @author Xihui Chen
  *
  */
-public class RhinoScriptStore {
+public class RhinoScriptStore implements IScriptStore{
 	
 	private Context scriptContext;
 	
@@ -45,6 +47,8 @@ public class RhinoScriptStore {
 	private Map<PV, PVListener> pvListenerMap;
 	
 	private boolean errorInScript;
+	
+	volatile boolean unRegistered = false;
 
 	
 	/**
@@ -93,63 +97,67 @@ public class RhinoScriptStore {
 		pvListenerMap = new HashMap<PV, PVListener>();		
 		pvTriggeredMap = new HashMap<PV, Boolean>();
 		
+		PVListener suppressPVListener = new PVListener() {
+
+			public synchronized void pvValueUpdate(PV pv) {
+				if (triggerSuppressed && checkPVsConnected(scriptData, pvArray)) {
+					executeScript();
+					triggerSuppressed = false;
+				}
+			}
+
+			public void pvDisconnected(PV pv) {
+
+			}
+		};
+
+		PVListener triggerPVListener = new PVListener() {
+			public synchronized void pvValueUpdate(PV pv) {
+
+				// skip the first trigger if it is needed.
+				if (scriptData.isSkipPVsFirstConnection()
+						&& !pvTriggeredMap.get(pv)) {
+					pvTriggeredMap.put(pv, true);
+					return;
+				}
+
+				// execute script only if all input pvs are connected
+				if (pvArray.length > 1) {
+					if (!checkPVsConnected(scriptData, pvArray)) {
+						triggerSuppressed = true;
+						return;
+
+					}
+				}
+
+				executeScript();
+			}
+
+			public void pvDisconnected(PV pv) {
+			}
+		};
 		//register pv listener
 		int i=0;
 		for(PV pv : pvArray){
 			if(pv == null)
 				continue;	
 			if(!scriptData.getPVList().get(i++).trigger){
-				//execute the script if it was suppressed.
-				pv.addListener(new PVListener() {
-					
-					@Override
-					public synchronized void pvValueUpdate(PV pv) {
-						if(triggerSuppressed && checkPVsConnected(scriptData, pvArray)){
-							executeScript();
-							triggerSuppressed = false;
-						}
-					}
-					
-					@Override
-					public void pvDisconnected(PV pv) {
-						
-					}
-				});
+				//execute the script if it was suppressed.				
+				pv.addListener(suppressPVListener);
+				pvListenerMap.put(pv, suppressPVListener);
 				continue;
 			};
 			pvTriggeredMap.put(pv, false);
-			PVListener triggerPVListener = new PVListener() {			
-				public synchronized void pvValueUpdate(PV pv) {
-					
-					//skip the first trigger if it is needed.
-					if(scriptData.isSkipPVsFirstConnection() && !pvTriggeredMap.get(pv)){
-						pvTriggeredMap.put(pv, true);
-						return;
-					}
-					
-					//execute script only if all input pvs are connected
-					if(pvArray.length > 1){
-						if(!checkPVsConnected(scriptData, pvArray)){
-								triggerSuppressed = true;
-								return;
-							
-						}					
-					}
-										
-					executeScript();
-				}
-				
-				public void pvDisconnected(PV pv) {	}
-			};
-			pvListenerMap.put(pv, triggerPVListener);
 			pv.addListener(triggerPVListener);
+			pvListenerMap.put(pv, triggerPVListener);
+			
 		}
 	}
 	
 	private void executeScript() {
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			public void run() {
-				if (!errorInScript) {
+				if (!errorInScript && !unRegistered) {
 					try {
 						script.exec(scriptContext, scriptScope);
 					} catch (Exception e) {
@@ -158,6 +166,7 @@ public class RhinoScriptStore {
 								.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
 										errorSource, e.getMessage());
 						ConsoleService.getInstance().writeError(message);
+						CentralLogger.getInstance().error(this, e);
 					}
 				}
 			}
@@ -174,8 +183,12 @@ public class RhinoScriptStore {
 		return true;
 		
 	}
-	
-	
-	
+
+	public void unRegister() {
+		unRegistered = true;
+		for(Entry<PV, PVListener> entry :  pvListenerMap.entrySet()){
+			entry.getKey().removeListener(entry.getValue());
+		}		
+	}
 	
 }

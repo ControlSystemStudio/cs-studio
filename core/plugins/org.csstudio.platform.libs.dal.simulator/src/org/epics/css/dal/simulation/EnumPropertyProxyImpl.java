@@ -31,9 +31,9 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long>
 	 *
 	 * @param name Proxy name
 	 */
-	public EnumPropertyProxyImpl(String name)
+	public EnumPropertyProxyImpl(String name, SimulatorPlug plug)
 	{
-		super(name,Long.class);
+		super(name,plug,Long.class);
 
 		try {
 			valueProvider.set(0L);

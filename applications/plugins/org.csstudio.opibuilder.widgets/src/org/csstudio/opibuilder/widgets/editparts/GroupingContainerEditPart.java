@@ -115,7 +115,6 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 				AbstractWidgetModel.PROP_WIDTH).addPropertyChangeListener(
 						new PropertyChangeListener() {
 			
-						@Override
 						public void propertyChange(PropertyChangeEvent evt) {
 							resizeChildren((Integer)(evt.getNewValue()),
 									(Integer)(evt.getOldValue()), true);
@@ -127,7 +126,6 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 				AbstractWidgetModel.PROP_HEIGHT).addPropertyChangeListener(
 						new PropertyChangeListener() {
 			
-						@Override
 						public void propertyChange(PropertyChangeEvent evt) {
 							resizeChildren((Integer)(evt.getNewValue()),
 									(Integer)(evt.getOldValue()), false);

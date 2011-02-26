@@ -16,3 +16,4 @@ Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.util,
  org.gjt.mm.mysql
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

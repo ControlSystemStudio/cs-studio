@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import org.csstudio.archive.common.service.sample.SampleAggregator;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;

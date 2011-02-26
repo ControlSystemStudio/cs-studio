@@ -75,7 +75,7 @@ public final class RunnableScript implements IScript {
 
 		try {
 			Context scriptContext = Context.enter();
-			scriptContext.setApplicationClassLoader(Functions.class.getClassLoader());
+			scriptContext.setApplicationClassLoader(RunnableScript.class.getClassLoader());
 			
 			_scriptScope = new ImporterTopLevel(scriptContext);
 

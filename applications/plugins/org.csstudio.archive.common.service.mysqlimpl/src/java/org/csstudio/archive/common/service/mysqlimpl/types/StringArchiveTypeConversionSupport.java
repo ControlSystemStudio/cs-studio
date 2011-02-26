@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -63,20 +63,6 @@ public class StringArchiveTypeConversionSupport extends ArchiveTypeConversionSup
     @Nonnull
     public String convertFromArchiveString(@Nonnull final String value) {
         return value;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final String value) throws TypeSupportException {
-        try {
-            return Double.parseDouble(value);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("String value " + value + " could not be converted to Double." , e);
-        }
     }
 
     /**

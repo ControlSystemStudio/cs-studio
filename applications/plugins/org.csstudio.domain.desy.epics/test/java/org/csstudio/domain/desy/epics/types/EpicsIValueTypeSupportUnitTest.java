@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.types.ICssValueType;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;

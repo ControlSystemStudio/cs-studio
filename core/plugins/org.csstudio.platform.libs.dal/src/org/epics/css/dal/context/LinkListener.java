@@ -47,11 +47,18 @@ public interface LinkListener<C extends Linkable> extends EventListener
 	public void suspended(ConnectionEvent<C> e);
 
 	/**
-	 * Linkable was sucsesfully connected to remote object.
+	 * Linkable was successfully connected to remote object.
 	 *
 	 * @param e dispatched event object
 	 */
 	public void connected(ConnectionEvent<C> e);
+
+	/**
+	 * Linkable was successfully connected to remote object and got all initial data.
+	 *
+	 * @param e dispatched event object
+	 */
+	public void operational(ConnectionEvent<C> e);
 
 	/**
 	 * Linkable was disconnected from remote object.

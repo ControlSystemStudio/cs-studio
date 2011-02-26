@@ -29,6 +29,7 @@ import org.epics.css.dal.proxy.DirectoryProxy;
 import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.simulation.CommandProxyImpl;
 import org.epics.css.dal.simulation.DeviceProxyImpl;
+import org.epics.css.dal.simulation.SimulatorPlug;
 import org.epics.css.dal.simulation.SimulatorUtilities;
 
 import java.util.HashMap;
@@ -46,10 +47,10 @@ import java.util.TimerTask;
  *
  * @since VERSION
  */
-public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy,
-	DirectoryProxy
+public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy<SimulatorPlug>,
+	DirectoryProxy<SimulatorPlug>
 {
-	private Map<String, Class<?extends PropertyProxy<?>>> propertyProxyTypes;
+	private Map<String, Class<?extends PropertyProxy<?,SimulatorPlug>>> propertyProxyTypes;
 	private long delay = 0;
 	
 	/**
@@ -57,9 +58,9 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy,
 	 *
 	 * @param name Proxy name
 	 */
-	public PSDeviceProxy(String name)
+	public PSDeviceProxy(String name, SimulatorPlug plug)
 	{
-		this(name, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
+		this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
 	}
 	
 	/**
@@ -68,9 +69,9 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy,
 	 * @param name Proxy name
 	 * @param connectionDelay
 	 */
-	public PSDeviceProxy(String name, long connectionDelay)
+	public PSDeviceProxy(String name, SimulatorPlug plug, long connectionDelay)
 	{
-		super(name);
+		super(name,plug);
 		this.delay = connectionDelay;
 	}
 
@@ -83,20 +84,20 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy,
 
 	public void initalizeProperties(String[] propertyNames,
 	    Class<?extends SimpleProperty<?>>[] propTypes,
-	    Class<?extends PropertyProxy<?>>[] propProxyTypes)
+	    Class<?extends PropertyProxy<?,SimulatorPlug>>[] propProxyTypes)
 	{
 		if (propertyProxies == null) {
-			propertyProxies = new HashMap<String, PropertyProxy<?>>(propertyNames.length
+			propertyProxies = new HashMap<String, PropertyProxy<?,SimulatorPlug>>(propertyNames.length
 				    + 1);
 		}
 
 		if (propertyProxyTypes == null) {
-			propertyProxyTypes = new HashMap<String, Class<? extends PropertyProxy<?>>>(propertyNames.length
+			propertyProxyTypes = new HashMap<String, Class<? extends PropertyProxy<?,SimulatorPlug>>>(propertyNames.length
 				    + 1);
 		}
 
 		if (directoryProxies == null) {
-			directoryProxies = new HashMap<String, DirectoryProxy>(propertyNames.length
+			directoryProxies = new HashMap<String, DirectoryProxy<SimulatorPlug>>(propertyNames.length
 				    + 1);
 		}
 
@@ -122,9 +123,9 @@ public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy,
 	
 	public void delayedConnect(long timeout)
 	{
+		setConnectionState(ConnectionState.CONNECTING);
 		if (timeout > 0) {
 			Timer t = new Timer();
-			setConnectionState(ConnectionState.CONNECTING);
 			t.schedule(new TimerTask() {
 					@Override
 					public void run()

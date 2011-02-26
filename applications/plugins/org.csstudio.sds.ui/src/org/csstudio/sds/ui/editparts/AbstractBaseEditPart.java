@@ -306,7 +306,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 
-		parent.setLayoutConstraint(this, refreshableFigure, bounds);
+		if (parent != null) {
+		    parent.setLayoutConstraint(this, refreshableFigure, bounds);
+        }
 	}
 
 	/**

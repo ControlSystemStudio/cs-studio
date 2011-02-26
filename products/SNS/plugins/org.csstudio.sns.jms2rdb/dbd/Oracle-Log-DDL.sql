@@ -15,7 +15,7 @@ DROP TABLE message
 CREATE TABLE message
 (
  id                             NUMBER NOT NULL,
- datum                          TIMESTAMP (6),
+ datum                          TIMESTAMP (6) NOT NULL,
  type                           VARCHAR2(10) NOT NULL,
  name                           VARCHAR2(80),
  severity                       VARCHAR2(20),

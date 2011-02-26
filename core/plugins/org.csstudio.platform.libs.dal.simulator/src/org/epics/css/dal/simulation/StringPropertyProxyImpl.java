@@ -37,9 +37,9 @@ public class StringPropertyProxyImpl extends PropertyProxyImpl<String>
 	 *
 	 * @param name Proxy name
 	 */
-	public StringPropertyProxyImpl(String name)
+	public StringPropertyProxyImpl(String name, SimulatorPlug plug)
 	{
-		super(name, String.class);
+		super(name, plug, String.class);
 
 		try {
 			valueProvider.set("");

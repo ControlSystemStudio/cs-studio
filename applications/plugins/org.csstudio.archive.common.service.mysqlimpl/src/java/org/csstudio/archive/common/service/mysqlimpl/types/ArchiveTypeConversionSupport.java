@@ -27,8 +27,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.pvmanager.TypeSupport;
 
@@ -140,6 +140,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         if (INSTALLED) {
             return;
         }
+        BaseTypeConversionSupport.install();
         TypeSupport.addTypeSupport(new DoubleArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(new FloatArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(new IntegerArchiveTypeConversionSupport());
@@ -209,25 +210,6 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         return support.convertFromArchiveStringToMultiScalar(values);
     }
 
-    /**
-     * TODO (bknerr) : once the type safety is given from the engine front end, we won't need this one
-     *
-     * Tries to convert the given css value type to CssDouble.
-     * @param value the value to be converted
-     * @return the conversion result
-     * @throws TypeSupportException when conversion failed.
-     * @param <V> the basic type of the value(s)
-     * @param <T> the css value type
-     */
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public static <T> Double toDouble(@Nonnull final T value) throws TypeSupportException {
-        final Class<T> typeClass = (Class<T>) value.getClass();
-        final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
-                                                                   typeClass);
-        return support.convertToDouble(value);
-    }
 
     @Nonnull
     public static <T> T fromDouble(@Nonnull final String dataType, @Nonnull final Double value) throws TypeSupportException {
@@ -254,8 +236,9 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      */
     @Nonnull
     public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
-        final Class<?> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
-                                                             SCALAR_TYPE_PACKAGES);
+        final Class<?> typeClass =
+            BaseTypeConversionSupport.createTypeClassFromString(dataType,
+                                                                SCALAR_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
                                            " could not be loaded from packages " +
@@ -273,7 +256,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     public static <T> Boolean isDataTypeOptimizable(@Nonnull final Class<T> dataType) throws TypeSupportException {
         final ArchiveTypeConversionSupport<?> support =
             (ArchiveTypeConversionSupport<?>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
-                                                                   dataType);
+                                                                 dataType);
         return support.isOptimizableByAveraging();
     }
 
@@ -335,8 +318,8 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @Nonnull
     protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException;
-    @Nonnull
-    protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
+//    @Nonnull
+//    protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
     @Nonnull
     protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
     /**

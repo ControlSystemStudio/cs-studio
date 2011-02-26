@@ -16,7 +16,7 @@ import javax.annotation.concurrent.GuardedBy;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntryId;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
@@ -28,7 +28,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
@@ -189,7 +189,7 @@ public abstract class ArchiveChannel<V,
         }
 
             // persist the start of monitoring
-            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
             service.writeMonitorModeInformation(new ArchiverMgmtEntry(_id,
                                                                       ArchiverMonitorStatus.ON,
                                                                       engineId,
@@ -221,7 +221,7 @@ public abstract class ArchiveChannel<V,
 
         try {
             // persist the start of monitoring
-            final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+            final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
             service.writeMonitorModeInformation(new ArchiverMgmtEntry(ArchiverMgmtEntryId.NONE,
                                                                       _id,
                                                                       ArchiverMonitorStatus.OFF,

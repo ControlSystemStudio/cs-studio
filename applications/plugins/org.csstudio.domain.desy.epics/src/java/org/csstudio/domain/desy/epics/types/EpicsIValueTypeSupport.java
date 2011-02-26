@@ -29,7 +29,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;

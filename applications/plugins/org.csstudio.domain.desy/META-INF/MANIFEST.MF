@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Desy domain types
 Bundle-SymbolicName: org.csstudio.domain.desy
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-BuddyPolicy: registered
 Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
@@ -17,4 +17,5 @@ Export-Package: org.csstudio.domain.desy.alarm,
  org.csstudio.domain.desy.common.id,
  org.csstudio.domain.desy.system,
  org.csstudio.domain.desy.time,
- org.csstudio.domain.desy.types
+ org.csstudio.domain.desy.types,
+ org.csstudio.domain.desy.typesupport
