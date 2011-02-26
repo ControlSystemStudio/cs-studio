@@ -45,15 +45,11 @@ public abstract class AbstractArchiveDao {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
 
-    private final ArchiveDaoManager _mgr;
-
 
     /**
      * Constructor.
      */
-    public AbstractArchiveDao(@Nonnull final ArchiveDaoManager mgr) {
-        _mgr = mgr;
-    }
+    public AbstractArchiveDao() { }
 
     /**
      * Returns the current connection for the dao implementation and its subclasses.
@@ -62,12 +58,16 @@ public abstract class AbstractArchiveDao {
      */
     @Nonnull
     protected Connection getConnection() throws ArchiveConnectionException {
-        return _mgr.getConnection();
+        return ArchiveDaoManager.INSTANCE.getConnection();
     }
 
     @Nonnull
-    protected IArchiveDaoManager getDaoMgr() {
-        return _mgr;
+    protected ArchiveDaoManager getDaoMgr() {
+        return ArchiveDaoManager.INSTANCE;
+    }
+    @Nonnull
+    protected PersistEngineDataManager getEngineMgr() {
+        return PersistEngineDataManager.INSTANCE;
     }
 
     /**

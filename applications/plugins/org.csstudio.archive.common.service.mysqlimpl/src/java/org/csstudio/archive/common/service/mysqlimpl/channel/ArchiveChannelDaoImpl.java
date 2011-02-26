@@ -43,7 +43,6 @@ import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -85,10 +84,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     /**
      * Constructor.
-     * @param the dao manager
      */
-    public ArchiveChannelDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveChannelDaoImpl() {
+        super();
     }
 
     @Nonnull

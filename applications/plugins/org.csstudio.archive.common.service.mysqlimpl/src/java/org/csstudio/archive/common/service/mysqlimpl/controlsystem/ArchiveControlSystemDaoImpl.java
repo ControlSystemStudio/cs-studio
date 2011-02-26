@@ -33,7 +33,6 @@ import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 import com.google.common.collect.Maps;
@@ -60,8 +59,8 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     /**
      * Constructor.
      */
-    public ArchiveControlSystemDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveControlSystemDaoImpl() {
+        super();
     }
 
     /**

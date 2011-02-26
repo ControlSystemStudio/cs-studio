@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -79,8 +78,8 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
     /**
      * Constructor.
      */
-    public ArchiverMgmtDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiverMgmtDaoImpl() {
+        super();
     }
 
     @Nonnull
@@ -97,7 +96,7 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
         final String sqlValue = M2S_FUNC.apply(entry);
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + sqlValue;
 
-        getDaoMgr().submitStatementToBatch(stmtStr);
+        getEngineMgr().submitStatementToBatch(stmtStr);
         return null;
     }
 
@@ -110,7 +109,7 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
         final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + values;
 
-        getDaoMgr().submitStatementToBatch(stmtStr);
+        getEngineMgr().submitStatementToBatch(stmtStr);
 
         return true;
     }

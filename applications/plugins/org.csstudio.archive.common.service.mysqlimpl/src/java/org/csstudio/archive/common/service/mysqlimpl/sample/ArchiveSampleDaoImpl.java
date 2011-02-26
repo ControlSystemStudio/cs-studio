@@ -40,7 +40,6 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
@@ -116,8 +115,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * Constructor.
      */
-    public ArchiveSampleDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveSampleDaoImpl() {
+        super();
         final Map<ArchiveChannelId, SampleAggregator> minutesMap = Maps.newHashMap();
         _reducedDataMapForMinutes.set(minutesMap);
         final Map<ArchiveChannelId, SampleAggregator> hoursMap = Maps.newHashMap();
@@ -133,7 +132,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             final List<String> stmts = composeStatements(samples);
             if (stmts != null && !stmts.isEmpty()) {
-                getDaoMgr().submitStatementsToBatch(stmts);
+                getEngineMgr().submitStatementsToBatch(stmts);
             }
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveDaoException(RETRIEVAL_FAILED, e);

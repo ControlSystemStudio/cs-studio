@@ -35,7 +35,6 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 
 import com.google.common.collect.Lists;
 
@@ -56,10 +55,9 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
 
     /**
      * Constructor.
-     * @param the dao manager
      */
-    public ArchiveChannelGroupDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveChannelGroupDaoImpl() {
+        super();
     }
 
     /**

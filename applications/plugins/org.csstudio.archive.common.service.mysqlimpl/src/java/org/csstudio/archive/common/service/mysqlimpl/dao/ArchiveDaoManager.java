@@ -22,34 +22,21 @@
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.EMAIL_ADDRESS;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
@@ -62,18 +49,9 @@ import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
-import org.csstudio.archive.common.service.mysqlimpl.samplemode.ArchiveSampleModeDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
-import org.csstudio.archive.common.service.mysqlimpl.severity.ArchiveSeverityDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.severity.IArchiveSeverityDao;
-import org.csstudio.archive.service.common.mysqlimpl.status.ArchiveStatusDaoImpl;
-import org.csstudio.archive.service.common.mysqlimpl.status.IArchiveStatusDao;
-import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -84,48 +62,14 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveDaoManager implements IArchiveDaoManager {
+public enum ArchiveDaoManager {
 
     INSTANCE;
-
-    private static final int MIN_PERIOD_MS = 3000;
-    private static final int MAX_PERIOD_MS = 60000;
-    private static final int DEFAULT_PERIOD_MS = 5000;
-    private static final int KBYTE_SIZE = 1024;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
     static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
-
-
-    // TODO (bknerr) : number of threads?
-    // get no of cpus and expected no of archive engines, and available archive connections
-    private final int _cpus = Runtime.getRuntime().availableProcessors();
-    private final ScheduledThreadPoolExecutor _executor =
-//        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
-    (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
-    /**
-     * Sorted set for submitted periodic workers - decreasing by period
-     */
-    private final SortedSet<PersistDataWorker> _submittedWorkers =
-        Sets.newTreeSet(new Comparator<PersistDataWorker>() {
-                            /**
-                             * {@inheritDoc}
-                             */
-                            @Override
-                            public int compare(@Nonnull final PersistDataWorker arg0,
-                                               @Nonnull final PersistDataWorker arg1) {
-                                return Long.valueOf(arg0.getPeriodInMS()).compareTo(Long.valueOf(arg1.getPeriodInMS()));
-                            }
-                        });
-    AtomicInteger _workerId = new AtomicInteger(0);
-
-    /**
-     * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL
-     * statements.
-     */
-    private final SqlStatementBatch _sqlStatementBatch;
 
     /**
      * DAOs.
@@ -135,9 +79,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private IArchiveEngineDao _archiveEngineDao;
     private IArchiverMgmtDao _archiverMgmtDao;
     private IArchiveSampleDao _archiveSampleDao;
-    private IArchiveSampleModeDao _archiveSampleModeDao;
-    private IArchiveSeverityDao _archiveSeverityDao;
-    private IArchiveStatusDao _archiveStatusDao;
     private IArchiveControlSystemDao _archiveControlSystemDao;
 
     /**
@@ -160,11 +101,8 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
-    private Integer _prefPeriodInMS;
-    private Integer _prefMaxAllowedPacketInBytes;
 
-    private String _prefMailHost;
-    private String _prefEmailReceiver;
+
 
 
     /**
@@ -174,12 +112,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
 
         loadAndCheckPreferences();
         _dataSource = createDataSource();
-
-        _sqlStatementBatch = SqlStatementBatch.INSTANCE;
-
-        addGracefullyShutdownHook();
-
-        submitNewPersistDataWorker();
     }
 
 
@@ -191,27 +123,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         _prefUser = USER.getValue();
         _prefPassword = PASSWORD.getValue();
 
-        _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
-        if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
-            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
-                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
-            _prefPeriodInMS = DEFAULT_PERIOD_MS;
-        }
-
-        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
-
-        // TODO (bknerr) : test code for minimum size
-        if (maxAllowedPacketInKB < 1 || maxAllowedPacketInKB > 64 * KBYTE_SIZE) {
-            LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
-                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
-            _prefMaxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
-        } else {
-            _prefMaxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
-        }
-
-        _prefMailHost = SMTP_HOST.getValue();
-        _prefEmailReceiver = EMAIL_ADDRESS.getValue();
     }
 
     @Nonnull
@@ -228,137 +139,9 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         ds.setUser(_prefUser);
         ds.setPassword(_prefPassword);
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(_prefMaxAllowedPacketInBytes);
+        ds.setMaxAllowedPacket(64*1024); // up tp 64 TODO (bknerr): same pref as in the engine mgr
 
         return ds;
-    }
-
-    private void addGracefullyShutdownHook() {
-        /**
-         * Add shutdown hook.
-         */
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            /**
-             * {@inheritDoc}
-             */
-            @SuppressWarnings("synthetic-access")
-            @Override
-            public void run() {
-                if (!_executor.isTerminating()) {
-                    _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
-                                                            _sqlStatementBatch,
-                                                            Integer.valueOf(0)));
-                    _executor.shutdown();
-                    try {
-                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
-                            LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                            final List<String> statements = Lists.newLinkedList();
-                            _sqlStatementBatch.getQueue().drainTo(statements);
-                            rescueData(statements);
-                        }
-                    } catch (final InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }
-        });
-    }
-
-    private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
-                                                                  _sqlStatementBatch,
-                                                                  _prefPeriodInMS);
-        _executor.scheduleAtFixedRate(newWorker,
-                                      0L,
-                                      newWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
-        _submittedWorkers.add(newWorker);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void submitStatementsToBatch(@Nonnull final List<String> stmts) {
-        for (final String stmt : stmts) {
-            submitStatementToBatch(stmt);
-        }
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void submitStatementToBatch(@Nonnull final String stmt) {
-        synchronized (this) {
-            if (anotherWorkerRequired()) {
-                submitNewPersistDataWorker();
-            }
-            _sqlStatementBatch.submitStatement(stmt);
-        }
-    }
-
-    /**
-     * Checks whether we need another worker.
-     * First check is whether the blocking queue of statements exceeds the max allowed packet size.
-     * If so, is there still space in the thread pool for another periodic task.
-     * If not so, is there the possibility to replace a rarely scheduled task with a task with higher
-     * frequency.
-     * If not so, FIXME (bknerr) : start a data rescue worker to save the stuff to disc and inform the staff per email
-     * @return
-     */
-    private boolean anotherWorkerRequired() {
-        // Is it necessary?
-        if (_sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes) {
-            // Yes, is still space in the pool for another worker?
-            final int poolSize = _executor.getPoolSize();
-            final int corePoolSize = _executor.getCorePoolSize();
-            if (poolSize < corePoolSize) {
-                return true; // Yes
-            } else {
-                // No, but perhaps we could enhance the frequency of the scheduled tasks?
-                final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
-                final PersistDataWorker oldestWorker = it.next();
-                final long period = oldestWorker.getPeriodInMS();
-                if (Long.valueOf(period).intValue() <= MIN_PERIOD_MS) {
-                    // No
-                    // FIXME (bknerr) : handle pool and thread frequency exhaustion
-                    // notify staff, rescue data to disc with dedicated worker
-                    return false;
-                }
-                // Yes, lower the frequency and remove the oldest periodic worker, return true
-                _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
-                LOG.info("Remove Worker: " + oldestWorker.getName());
-//                _executor.remove(oldestWorker);
-//                it.remove();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * FIXME (bknerr) : data rescue on failover fail not yet implemented!
-     * @param statements
-     */
-    void rescueData(@Nonnull final List<String> statements) {
-        LOG.info("Rescue statements " + statements.size());
-
-        EMailSender mailer;
-        try {
-            mailer = new EMailSender(_prefMailHost,
-                                     "DontReply@MySQLArchiver",
-                                     _prefEmailReceiver,
-                                     "[MySQL archiver notification]: Failed failover");
-            mailer.addText("Statements rescued:\n");
-            for (final String stmt : statements) {
-                mailer.addText(stmt + "\n");
-            }
-            mailer.close();
-        } catch (final IOException e) {
-            // TODO (bknerr) : handle exceptions on notifications
-            e.printStackTrace();
-        }
-
     }
 
 
@@ -456,7 +239,6 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
      * @return the connection
      * @throws ArchiveConnectionException
      */
-    @Override
     @Nonnull
     public Connection getConnection() throws ArchiveConnectionException {
         final Connection connection = _archiveConnection.get();
@@ -467,120 +249,57 @@ public enum ArchiveDaoManager implements IArchiveDaoManager {
         return connection;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @CheckForNull
     public String getDatabaseName() {
         return _prefDatabaseName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
     public IArchiveChannelDao getChannelDao() {
         if (_archiveChannelDao == null) {
-            _archiveChannelDao = new ArchiveChannelDaoImpl(this);
+            _archiveChannelDao = new ArchiveChannelDaoImpl();
         }
         return _archiveChannelDao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
     public IArchiverMgmtDao getArchiverMgmtDao() {
         if (_archiverMgmtDao == null) {
-            _archiverMgmtDao  = new ArchiverMgmtDaoImpl(this);
+            _archiverMgmtDao  = new ArchiverMgmtDaoImpl();
         }
         return _archiverMgmtDao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
     public IArchiveChannelGroupDao getChannelGroupDao() {
         if (_archiveChannelGroupDao == null) {
-            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl(this);
+            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl();
         }
         return _archiveChannelGroupDao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public IArchiveSampleModeDao getSampleModeDao() {
-        if (_archiveSampleModeDao == null) {
-            _archiveSampleModeDao = new ArchiveSampleModeDaoImpl(this);
-        }
-        return _archiveSampleModeDao;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
     public IArchiveSampleDao getSampleDao() {
         if (_archiveSampleDao == null) {
-            _archiveSampleDao = new ArchiveSampleDaoImpl(this);
+            _archiveSampleDao = new ArchiveSampleDaoImpl();
         }
         return _archiveSampleDao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
     public IArchiveEngineDao getEngineDao() {
         if (_archiveEngineDao == null) {
-            _archiveEngineDao = new ArchiveEngineDaoImpl(this);
+            _archiveEngineDao = new ArchiveEngineDaoImpl();
         }
         return _archiveEngineDao;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public IArchiveSeverityDao getSeverityDao() {
-        if (_archiveSeverityDao == null) {
-            _archiveSeverityDao = new ArchiveSeverityDaoImpl(this);
-        }
-        return _archiveSeverityDao;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public IArchiveStatusDao getStatusDao() {
-        if (_archiveStatusDao == null) {
-            _archiveStatusDao = new ArchiveStatusDaoImpl(this);
-        }
-        return _archiveStatusDao;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
     public IArchiveControlSystemDao getControlSystemDao() {
         if (_archiveControlSystemDao == null) {
-            _archiveControlSystemDao = new ArchiveControlSystemDaoImpl(this);
+            _archiveControlSystemDao = new ArchiveControlSystemDaoImpl();
         }
         return _archiveControlSystemDao;
     }
 }
+
