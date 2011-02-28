@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.gui;
 
+import org.csstudio.alarm.beast.msghist.Messages;
 import org.csstudio.alarm.beast.msghist.model.Message;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -32,7 +33,7 @@ public class PropertyLabelProvider extends CellLabelProvider
 	public String getToolTipText(final Object element)
     {
         final Message message = (Message) element;
-        return NLS.bind("{0}: {1}",	property, message.getProperty(property));
+        return NLS.bind(Messages.PropertyValue_TTFmt,	property, message.getProperty(property));
 	}
 
     /** Fill table cell

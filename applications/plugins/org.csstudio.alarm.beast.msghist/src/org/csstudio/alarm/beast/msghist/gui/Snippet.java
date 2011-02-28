@@ -19,10 +19,10 @@ import org.eclipse.swt.widgets.*;
 /* THIS EXAMPLE WORKS ON WINDOWS AND OS X,
  * BUT LINUX/GTK DOESN'T SEEM TO SHOW ANY INDICATOR.
  * Show a sort indicator in the column header
- * 
+ *
  * For a list of all SWT example snippets see
  * http://www.eclipse.org/swt/snippets/
- * 
+ *
  * @since 3.2
  */
 
@@ -51,6 +51,7 @@ public static void main(String[] args) {
     column2.setText("Value");
     column2.setWidth(200);
     table.addListener(SWT.SetData, new Listener() {
+        @Override
         public void handleEvent(Event e) {
             TableItem item = (TableItem) e.item;
             int index = table.indexOf(item);
@@ -61,7 +62,8 @@ public static void main(String[] args) {
     });
     // Add sort indicator and sort data when column selected
     Listener sortListener = new Listener() {
-        @SuppressWarnings("unchecked")
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
 		public void handleEvent(Event e) {
             // determine new sort column and direction
             TableColumn sortColumn = table.getSortColumn();
@@ -77,6 +79,7 @@ public static void main(String[] args) {
             final int index = currentColumn == column1 ? 0 : 1;
             final int direction = dir;
             Arrays.sort(data, new Comparator() {
+                @Override
                 public int compare(Object arg0, Object arg1) {
                     int[] a = (int[]) arg0;
                     int[] b = (int[]) arg1;

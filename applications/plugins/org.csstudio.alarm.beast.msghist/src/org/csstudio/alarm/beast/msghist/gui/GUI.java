@@ -315,10 +315,12 @@ public class GUI implements ModelListener
     /** Update GUI when model changed
      *  @see ModelListener
      */
+    @Override
     public void modelChanged(final Model model)
     {   // Can be called from background thread...
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 if (start.isDisposed())
