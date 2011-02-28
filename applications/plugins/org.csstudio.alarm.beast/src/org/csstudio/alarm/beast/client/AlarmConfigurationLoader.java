@@ -53,6 +53,7 @@ public class AlarmConfigurationLoader
         this.config = config;
         final DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        // TODO explicit call to load
         load(builder.parse(stream));
     }
 

@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
@@ -75,12 +77,9 @@ public class AlarmConfiguration
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
         config_reader = new AlarmConfigurationReader(rdb, sql);
+
         // Re-enable auto-connect
         rdb.setAutoReconnect(true);
-
-        // For now assert auto-commit
-        // TODO Commit as needed, disable auto-commit.
-        rdb.getConnection().setAutoCommit(true);
     }
 
     /** List all configuration 'root' element names
@@ -291,6 +290,11 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
         finally
         {
             statement.close();
@@ -309,6 +313,7 @@ public class AlarmConfiguration
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
+            // TODO Use sequence or auto-inc ID to allow concurrent modifications?
             final ResultSet result = statement.executeQuery(sql.sel_last_item_id);
             if (! result.next())
                 throw new Exception("Cannot get next component ID"); //$NON-NLS-1$
@@ -361,11 +366,11 @@ public class AlarmConfiguration
             insertAsPV.executeUpdate();
 
             rdb.getConnection().commit();
-
-        }catch (SQLException e) {
+        }
+        catch (SQLException ex)
+        {
 			rdb.getConnection().rollback();
-			System.out.println("add PV into RDB failed!");
-			throw e;
+			throw ex;
 		}
         finally
         {
@@ -409,6 +414,11 @@ public class AlarmConfiguration
     		// Update item's config time after RDB commit succeeded
             item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
     	}
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
     	finally
     	{
     		statement.close();
@@ -450,6 +460,11 @@ public class AlarmConfiguration
             statement.setInt(8, pv.getID());
             statement.executeUpdate();
             rdb.getConnection().commit();
+        }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
         }
         finally
         {
@@ -557,10 +572,10 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
 			rdb.getConnection().rollback();
-			throw e;
+			throw ex;
         }
         finally
         {
@@ -594,10 +609,10 @@ public class AlarmConfiguration
 
             rdb.getConnection().commit();
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
 			rdb.getConnection().rollback();
-			throw e;
+			throw ex;
         }
         finally
         {
@@ -665,10 +680,10 @@ public class AlarmConfiguration
             }
             rdb.getConnection().commit();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             rdb.getConnection().rollback();
-            throw e;
+            throw ex;
         }
         finally
         {
@@ -707,6 +722,7 @@ public class AlarmConfiguration
     }
 
     /** Close prepared statements that are lazily created when reading config */
+    @SuppressWarnings("nls")
     private void closeStatements()
     {
         try
@@ -722,10 +738,10 @@ public class AlarmConfiguration
                 sel_pv_by_id_statement = null;
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
             // Could also ignore: We're closing anyway
-            e.printStackTrace();
+            Activator.getLogger().log(Level.INFO, "JDBC close failed", ex);
         }
         config_reader.closeStatements();
     }
