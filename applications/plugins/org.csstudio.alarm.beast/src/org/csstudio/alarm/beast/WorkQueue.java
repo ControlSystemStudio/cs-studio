@@ -10,8 +10,7 @@ package org.csstudio.alarm.beast;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executor;
-
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
 
 /** Queue that receives {@link Runnable}s and executes them.
  *  <p>
@@ -66,8 +65,7 @@ public class WorkQueue implements Executor
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
-                ex.printStackTrace();
+                Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
             synchronized (tasks)
             {
@@ -113,8 +111,7 @@ public class WorkQueue implements Executor
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
-                ex.printStackTrace();
+                Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
             synchronized (tasks)
             {
