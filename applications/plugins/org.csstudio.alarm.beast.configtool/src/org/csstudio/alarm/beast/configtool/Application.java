@@ -238,14 +238,14 @@ public class Application implements IApplication
             case MODIFY:
                 {
                     System.out.println("Modifying configuration '" + root + "' from " + filename);
-                    new AlarmConfigurationLoader(config, filename);
+                    new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;
             case IMPORT:
                 {
                     System.out.println("Importing configuration '" + root + "' from " + filename);
                     config.removeAllItems();
-                    new AlarmConfigurationLoader(config, filename);
+                    new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;
             default:

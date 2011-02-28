@@ -33,27 +33,21 @@ public class AlarmConfigurationLoader
 
     /** Initialize
      *  @param config AlarmConfiguration to update with loaded information
-     *  @param filename Name of XML configuration file
-     *  @throws Exception on error
      */
-    public AlarmConfigurationLoader(final AlarmConfiguration config,
-                                    final String filename) throws Exception
-    {
-        this(config, new FileInputStream(filename));
-    }
-
-    /** Initialize
-     *  @param config AlarmConfiguration to update with loaded information
-     *  @param stream InputStream of XML configuration file
-     *  @throws Exception on error
-     */
-    public AlarmConfigurationLoader(final AlarmConfiguration config,
-                                    final InputStream stream) throws Exception
+    public AlarmConfigurationLoader(final AlarmConfiguration config)
     {
         this.config = config;
+    }
+
+    /** Load information from XML document
+     *  @param filename XML config file name
+     *  @throws Exception on error
+     */
+    public void load(final String filename) throws Exception
+    {
+        final InputStream stream = new FileInputStream(filename);
         final DocumentBuilder builder =
             DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        // TODO explicit call to load
         load(builder.parse(stream));
     }
 

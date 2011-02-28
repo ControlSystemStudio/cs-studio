@@ -49,7 +49,9 @@ public class AlarmConfiguration
 
     final private AlarmConfigurationReader config_reader;
 
-    /** Root of the alarm tree.  */
+    /** Root of the alarm tree.
+     *  SYNC on this for access
+     */
     private AlarmTreeRoot config_tree = null;
 
     /** Hash of all PVs in config_tree that maps PV name to PV */
@@ -111,14 +113,19 @@ public class AlarmConfiguration
     public void readConfiguration(final String root_name, final boolean create) throws Exception
     {
         rdb.setAutoReconnect(false);
+        final AlarmTreeRoot new_config;
         try
         {
-            config_tree = readAlarmTree(root_name, create);
+            new_config = readAlarmTree(root_name, create);
             closeStatements();
         }
         finally
         {
             rdb.setAutoReconnect(true);
+        }
+        synchronized (this)
+        {
+            config_tree = new_config;
         }
     }
 
@@ -503,7 +510,11 @@ public class AlarmConfiguration
     public void move(final AlarmTreeItem item, final String new_path) throws Exception
     {
         // Locate new parent ID
-        final AlarmTreeItem parent = config_tree.getItemByPath(new_path);
+        final AlarmTreeItem parent;
+        synchronized (this)
+        {
+            parent = config_tree.getItemByPath(new_path);
+        }
         if (parent == null)
             throw new Exception(NLS.bind("Unknown alarm configuration path {0}",
                                          new_path));
