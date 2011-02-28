@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -74,10 +76,10 @@ public class AlarmConfigurationReader
                 sel_commands_statement = null;
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
             // Could also ignore: We're closing anyway
-            e.printStackTrace();
+            Activator.getLogger().log(Level.INFO, "JDBC close failed", ex);
         }
     }
 

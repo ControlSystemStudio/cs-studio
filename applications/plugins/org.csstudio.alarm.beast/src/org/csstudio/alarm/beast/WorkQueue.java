@@ -24,6 +24,7 @@ import java.util.logging.Level;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WorkQueue implements Executor
 {
     /** Task queue */
@@ -123,7 +124,6 @@ public class WorkQueue implements Executor
     /** Assert that the work queue is executed by the same original thread
      *  @throws Error if called from thread other than the initial work queue thread
      */
-    @SuppressWarnings("nls")
     public synchronized void assertOnThread()
     {
         if (thread == null)
