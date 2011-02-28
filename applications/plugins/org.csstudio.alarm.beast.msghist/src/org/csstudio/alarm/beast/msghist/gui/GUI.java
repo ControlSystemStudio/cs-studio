@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.gui;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeColumnAction;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.alarm.beast.msghist.PropertyColumnPreference;
 import org.csstudio.alarm.beast.msghist.model.Message;
@@ -17,11 +14,11 @@ import org.csstudio.alarm.beast.msghist.model.Model;
 import org.csstudio.alarm.beast.msghist.model.ModelListener;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
-
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -58,8 +55,6 @@ public class GUI implements ModelListener
     private TableViewer table_viewer;
     private Text start, end;
     private Button times, filter;
-
-    private Action auto_size_action;
 
     /** Construct GUI
      *  @param site Workbench site or <code>null</code>.
@@ -183,18 +178,19 @@ public class GUI implements ModelListener
         filter.setLayoutData(new GridData());
 
         // New row: Table of messages
-        table_viewer = new TableViewer(parent,
+        // TableColumnLayout requires the TableViewer to be in its own Composite
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+
+        // Auto-size table columns
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        table_viewer = new TableViewer(table_parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.MULTI);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
 
         table_viewer.setContentProvider(new MessageContentProvider());
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
@@ -206,8 +202,12 @@ public class GUI implements ModelListener
         for (int i=0; i<col_pref.length; ++i)
         {
             properties[i] = col_pref[i].getName();
-            final TableViewerColumn view_col = AutoSizeColumn.make(table_viewer,
-                col_pref[i].getName(), col_pref[i].getSize(), col_pref[i].getWeight());
+            final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+            final TableColumn table_col = view_col.getColumn();
+            table_col.setText(col_pref[i].getName());
+            table_col.setMoveable(true);
+            table_layout.setColumnData(table_col,
+                    new ColumnWeightData(col_pref[i].getWeight(), col_pref[i].getSize()));
             // Seq, ID columns are special
             if (properties[i].equalsIgnoreCase(Message.SEQ))
             {
@@ -241,7 +241,6 @@ public class GUI implements ModelListener
                         new PropertyColumnSortingSelector(table_viewer, col, properties[i]));
             }
         }
-        auto_size_action = new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
 
         table_viewer.setInput(model);
     }
@@ -303,7 +302,6 @@ public class GUI implements ModelListener
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, "Show Detail"));
         manager.add(new ExportAction(table.getShell(), model));
-        manager.add(auto_size_action);
 
         table.setMenu(manager.createContextMenu(table));
 
