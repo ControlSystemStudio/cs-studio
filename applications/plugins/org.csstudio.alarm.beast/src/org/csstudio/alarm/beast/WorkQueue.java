@@ -24,6 +24,7 @@ import java.util.logging.Level;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WorkQueue implements Executor
 {
     /** Task queue */
