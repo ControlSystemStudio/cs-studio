@@ -142,10 +142,15 @@ public class ConsoleViewHandler extends Handler
         {
             stream.print(msg);
         }
+        catch (IllegalStateException ex)
+        {   // During shutdown, Eclipse will close the stream
+            // but stream.isClosed() doesn't always seem to reveal that fact.
+            // Ignore the resulting IllegalStateException
+            ex = null;
+        }
         catch (Exception ex)
         {
             reportError(null, ex, ErrorManager.WRITE_FAILURE);
-            return;
         }
     }
 
