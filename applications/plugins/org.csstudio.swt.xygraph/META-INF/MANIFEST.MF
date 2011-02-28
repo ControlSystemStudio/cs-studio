@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XYGraph Plug-in
-Bundle-Description: Plotting library
+Bundle-Description: Plotting library for draw2d and SWT applications
 Bundle-SymbolicName: org.csstudio.swt.xygraph
 Bundle-Version: 1.1.3.qualifier
 Bundle-Activator: org.csstudio.swt.xygraph.Activator
-Bundle-Vendor: Xihui Chen, <5hz@ornl.gov> - SNS
+Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.draw2d;bundle-version="3.4.0",

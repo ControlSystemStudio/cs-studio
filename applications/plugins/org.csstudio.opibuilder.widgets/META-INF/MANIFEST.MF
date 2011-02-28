@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Widgets Plug-in
+Bundle-Name: BOY Widgets Plug-in
+Bundle-Description: Widgets for BOY
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.Activator
