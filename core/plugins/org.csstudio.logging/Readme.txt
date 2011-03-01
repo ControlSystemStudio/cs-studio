@@ -35,9 +35,9 @@ changes into this:
    // Can use a formatter for lazy message generation
    logger.log(Level.DEBUG, "Value is {0}", value);
 
-
 java.util.logging can be configured in many ways, for example via *.ini files in the JRE.
 This plugin offers a LogConfigurator that can be called from the product's startup code:
 LogConfigurator.configureFromPreferences() reads Eclipse preferences to configure logging
 for the console, files and JMS. For definition and defaults see preferences.ini.
+In addition, the LogConfigurator adds the PluginLogListener to the Eclipse Platform.
 

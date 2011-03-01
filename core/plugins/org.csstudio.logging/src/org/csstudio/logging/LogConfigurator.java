@@ -13,10 +13,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Configurator for java.util.logging
- *
- *  TODO CssLogListener
- *
+import org.eclipse.core.runtime.Platform;
+
+/** Configurator for java.util.logging based on Eclipse preferences
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -28,6 +27,8 @@ public class LogConfigurator
     private static FileHandler file_handler = null;
 
     private static JMSLogHandler jms_handler = null;
+
+    private static PluginLogListener ilog_listener = null;
 
     /** Allow only static access */
     private LogConfigurator()
@@ -59,6 +60,13 @@ public class LogConfigurator
         final String jms_url = Preferences.getJMSURL();
         final String topic = Preferences.getJMSTopic();
         configureJMSLogging(level, jms_url, topic, formatter);
+
+        // Forward Eclipse ILog messages to Logger
+        if (ilog_listener == null)
+        {   // .. but only once
+            ilog_listener = new PluginLogListener();
+            Platform.addLogListener(ilog_listener);
+        }
     }
 
     /** Configure all currently active loggers.
