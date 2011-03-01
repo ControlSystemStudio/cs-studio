@@ -144,8 +144,9 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 					try {
 						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, parseString(text));
 					} catch (Exception e) {
-						String msg = NLS.bind("Failed to write value to PV {0}: illegal input : {1} \n",
-								getPV(AbstractPVWidgetModel.PROP_PVNAME).getName(), text) + e.toString();
+						String msg = NLS.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
+								new String[]{getPV(AbstractPVWidgetModel.PROP_PVNAME).getName(), 
+								getWidgetModel().getName(), text}) + e.toString();
 						ConsoleService.getInstance().writeError(msg);
 					}					
 					return false;
@@ -274,12 +275,18 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			case STRING:
 				if(((IDoubleValue)pvValue).getValues().length > 1){
 					return parseCharArray(text);
-				}
-			case DECIAML:
-			case DEFAULT:
-			case EXP:			
-			default:
+				}else
+					return text;				
+			case DECIAML:			
+			case EXP:		
 				return parseDouble(text, true);
+			case DEFAULT:
+			default:
+				try {
+					return parseDouble(text, true);
+				} catch (ParseException e) {
+					return text;
+				}				
 			}
 		}
 		
@@ -291,12 +298,18 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			case STRING:
 				if(((ILongValue)pvValue).getValues().length > 1){
 					return parseCharArray(text);
-				}
-			case DECIAML:
-			case DEFAULT:
-			case EXP:			
-			default:
+				}else
+					return text;
+			case DECIAML:			
+			case EXP:		
 				return parseDouble(text, true);
+			case DEFAULT:
+			default:
+				try {
+					return parseDouble(text, true);
+				} catch (ParseException e) {
+					return text;
+				}
 			}
 		}
 		
@@ -307,11 +320,16 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 				return parseHEX(text, true);
 			case STRING:
 				return text;
-			case DEFAULT:				
 			case DECIAML:			
-			case EXP:			
-			default:
+			case EXP:		
 				return parseDouble(text, true);
+			case DEFAULT:
+			default:
+				try {
+					return parseDouble(text, true);
+				} catch (ParseException e) {
+					return text;
+				}
 			}
 		}
 		
@@ -329,7 +347,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		return iString;
 	}
 	
-	private Object parseDouble(final String text, final boolean coerce) throws ParseException {
+	private double parseDouble(final String text, final boolean coerce) throws ParseException {
 		DecimalFormat format = new DecimalFormat();
 
 		double value = format.parse(text).doubleValue();
@@ -345,7 +363,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 
 	}
 	
-	private Object parseHEX(final String text, final boolean coerce) {
+	private int parseHEX(final String text, final boolean coerce) {
 		String valueText = text.trim();
 		if (text.startsWith(TextIndicatorEditPart.HEX_PREFIX)) {
 			valueText = text.substring(2);
