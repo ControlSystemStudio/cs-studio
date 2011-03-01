@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
@@ -27,11 +28,13 @@ import org.eclipse.ui.console.MessageConsoleStream;
  */
 public class ConsoleViewHandler extends Handler
 {
-    /** Flag to check for multiple instances */
+    /** Flag to prevent multiple instances */
     private static boolean have_console = false;
 
-    /** Connection to Console View */
-    final private MessageConsole console;
+    /** Connection to Console View.
+     *  Set to <code>null</code> when console support shuts down
+     */
+    private MessageConsole console;
 
     /** Printable, color-coded stream of the <code>console</code> */
     final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
@@ -111,6 +114,38 @@ public class ConsoleViewHandler extends Handler
             warning_stream.setColor(display.getSystemColor(SWT.COLOR_RED));
             info_stream.setColor(display.getSystemColor(SWT.COLOR_BLUE));
         }
+
+        // Suppress log messages when the Eclipse console system shuts down.
+        // Unclear how to best do that. Console plugin will 'remove' all consoles on shutdown,
+        // so listen for that. But it actually closes the console streams just before that,
+        // so a 'publish' call could arrive exactly between the console system shutting down
+        // and the 'consolesRemoved' event that notifies us about that fact, resulting
+        // in an exception inside 'publish' when it tries to write to the dead console stream.
+        consolePlugin.getConsoleManager().addConsoleListener(new IConsoleListener()
+        {
+            @Override
+            public void consolesAdded(final IConsole[] consoles)
+            {
+                // NOP
+            }
+
+            @Override
+            public void consolesRemoved(final IConsole[] consoles)
+            {
+                // Check if it's this console
+                synchronized (ConsoleViewHandler.this)
+                {
+                    for (IConsole console : consoles)
+                    {
+                        if (console == ConsoleViewHandler.this.console)
+                        {   // Mark as closed/detached
+                            ConsoleViewHandler.this.console = null;
+                            return;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -118,11 +153,6 @@ public class ConsoleViewHandler extends Handler
     public synchronized void publish(final LogRecord record)
     {
         if (! isLoggable(record))
-            return;
-
-        // Console might already be closed
-        final MessageConsoleStream stream = getStream(record.getLevel());
-        if (stream.isClosed())
             return;
 
         // Format message
@@ -140,13 +170,15 @@ public class ConsoleViewHandler extends Handler
         // Print
         try
         {
+            // Console might already be closed/detached
+            if (console == null)
+                return;
+            final MessageConsoleStream stream = getStream(record.getLevel());
+            if (stream.isClosed())
+                return;
+            // Suring shutdown, error is possible because 'document' of console view
+            // was already closed. Unclear how to check for that.
             stream.print(msg);
-        }
-        catch (IllegalStateException ex)
-        {   // During shutdown, Eclipse will close the stream
-            // but stream.isClosed() doesn't always seem to reveal that fact.
-            // Ignore the resulting IllegalStateException
-            ex = null;
         }
         catch (Exception ex)
         {
@@ -186,30 +218,26 @@ public class ConsoleViewHandler extends Handler
         }
     }
 
-    /** {@inheritDoc} */
+    /** Usually called by JRE when Logger shuts down, i.e.
+     *  way after the Eclipse shudown has already closed
+     *  the console view
+     */
     @Override
     public void close() throws SecurityException
     {
+        // Mark as detached from console
+        final MessageConsole console_copy;
+        synchronized (this)
+        {
+            if (console == null)
+                return;
+            console_copy = console;
+            console = null;
+        }
         // Remove from 'Console' view
-        console.clearConsole();
+        console_copy.clearConsole();
         final ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
         consolePlugin.getConsoleManager().removeConsoles(
-                new IConsole[] { console });
-
-        // With Eclipse 3.6.1, when Eclipse is shutting down,
-        // closing the stream will cause org.eclipse.ui.internal.console.IOConsolePartitioner
-        // to start a shutdown Job, which fails because the JobManager
-        // is already down...
-        try
-        {
-             severe_stream.close();
-             warning_stream.close();
-             info_stream.close();
-             basic_stream.close();
-        }
-        catch (Exception ex)
-        {   // Ignore errors because we're shutting down anyway
-            ex = null;
-        }
+                new IConsole[] { console_copy });
     }
 }
