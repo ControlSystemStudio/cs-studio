@@ -56,6 +56,8 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     public static final DateTimeFormatter STD_TIME_FMT =
         DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter STD_TIME_FMT_WITH_MILLIS =
+        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     public static final PeriodFormatter STD_DURATION_FMT =
         new PeriodFormatterBuilder().appendHours()
                                     .appendSuffix(":")
