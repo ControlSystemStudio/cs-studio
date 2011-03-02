@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.AbstractArchiveChannel;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
@@ -39,7 +39,7 @@ class ChannelResponse extends AbstractResponse
             resp.sendError(400, "Missing channel name");
             return;
         }
-        final ArchiveChannel<?, ?> channel = _model.getChannel(channel_name);
+        final AbstractArchiveChannel<?, ?> channel = _model.getChannel(channel_name);
         if (channel == null) {
             resp.sendError(400, "Unknown channel " + channel_name);
             return;

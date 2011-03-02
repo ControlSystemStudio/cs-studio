@@ -40,7 +40,7 @@ public class WriteExecutor {
     /** Minimum write period [seconds] */
     private static final long MIN_WRITE_PERIOD_MS = 5000;
 
-    private final ConcurrentMap<String, ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channelMap =
+    private final ConcurrentMap<String, AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channelMap =
         Maps.newConcurrentMap();
     private ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
     private WriteWorker _writeWorker;
@@ -87,7 +87,7 @@ public class WriteExecutor {
     }
 
     /** Add a channel's buffer that this thread reads */
-    public void addChannel(@Nonnull final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel) {
+    public void addChannel(@Nonnull final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 

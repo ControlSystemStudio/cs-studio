@@ -55,7 +55,7 @@ public final class EngineModel {
     /**
      * All channels
      */
-    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, AbstractArchiveChannel<?, ?>> _channelMap;
 
     /** Groups of archived channels
      *  <p>
@@ -150,13 +150,13 @@ public final class EngineModel {
 
     /** @return Channel by that name or <code>null</code> if not found */
     @CheckForNull
-    public ArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
+    public AbstractArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
     @Nonnull
-    public Collection<ArchiveChannel<?, ?>> getChannels() {
+    public Collection<AbstractArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
 
@@ -218,7 +218,7 @@ public final class EngineModel {
     public void resetStats() {
         _writeExecutor.reset();
         synchronized (this) {
-            for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
                 channel.reset();
             }
         }
@@ -294,7 +294,7 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
+            final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
 
             _writeExecutor.addChannel(channel);
@@ -337,7 +337,7 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void dumpDebugInfo() {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
             //buf.append(Joiner.on(",").join(channel.getGroups()));

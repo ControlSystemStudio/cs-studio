@@ -39,7 +39,7 @@ import org.csstudio.utility.pv.PVListener;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public abstract class ArchiveChannel<V,
+public abstract class AbstractArchiveChannel<V,
                                      T extends IAlarmSystemVariable<V>> {
     static final Logger PV_LOG = CentralLogger.getInstance().getLogger(PVListener.class);
 
@@ -49,7 +49,7 @@ public abstract class ArchiveChannel<V,
      */
     private final String _name;
 
-    private final ArchiveChannelId _id;
+    final ArchiveChannelId _id;
 
     /** Control system PV */
     private final PV _pv;
@@ -95,7 +95,7 @@ public abstract class ArchiveChannel<V,
     /** Counter for received values (monitor updates) */
     private long _receivedSampleCount = 0;
 
-    private volatile boolean _connected = false;
+    volatile boolean _connected = false;
 
 
     /** Construct an archive channel
@@ -105,7 +105,7 @@ public abstract class ArchiveChannel<V,
      *  @param last_archived_value Last value from storage, or <code>null</code>.
      * @throws EngineModelException
      */
-    public ArchiveChannel(@Nonnull final String name,
+    public AbstractArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id) throws EngineModelException {
         _name = name;
         _id = id;
@@ -152,8 +152,9 @@ public abstract class ArchiveChannel<V,
         });
     }
 
-    protected void handleConnectInfo(@Nonnull final ArchiveChannelId id, final boolean connected, @Nonnull final String info)
-        throws EngineModelException {
+    protected void handleConnectInfo(@Nonnull final ArchiveChannelId id,
+                                     final boolean connected,
+                                     @Nonnull final String info) throws EngineModelException {
         try {
             final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
             service.writeChannelConnectionInfo(id, connected, info, TimeInstantBuilder.buildFromNow());
@@ -249,13 +250,11 @@ public abstract class ArchiveChannel<V,
 
     /** @return Most recent value of the channel's PV */
     @Nonnull
-    public String getCurrentValueAsString() {
-        synchronized (this) {
-            if (_mostRecentSysVar == null) {
-                return "null"; //$NON-NLS-1$
-            }
-            return _mostRecentSysVar.getData().getValueData().toString();
+    public synchronized String getCurrentValueAsString() {
+        if (_mostRecentSysVar == null) {
+            return "null"; //$NON-NLS-1$
         }
+        return _mostRecentSysVar.getData().getValueData().toString();
     }
 
     @Nonnull
@@ -264,7 +263,7 @@ public abstract class ArchiveChannel<V,
     }
 
     /** @return Count of received values */
-    public final synchronized long getReceivedValues() {
+    public synchronized long getReceivedValues() {
         return _receivedSampleCount;
     }
 
