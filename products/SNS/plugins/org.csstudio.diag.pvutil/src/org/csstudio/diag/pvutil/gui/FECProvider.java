@@ -34,10 +34,12 @@ public class FECProvider implements ILazyContentProvider
     @Override
     public void dispose()
     {
+        // NOP
     }
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
+        // NOP
     }
 }

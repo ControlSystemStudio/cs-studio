@@ -70,9 +70,6 @@ public class SNSPVUtilData implements PVUtilDataAPI
         			"        order by dvc_id";
         }
 
-        System.out.println("Filter is: " + filter);
-        System.out.println(deviceSelect);
-
         final PreparedStatement select =
             connection.prepareStatement
             (deviceSelect,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
