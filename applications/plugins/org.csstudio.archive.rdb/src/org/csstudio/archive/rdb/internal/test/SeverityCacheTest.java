@@ -34,10 +34,10 @@ public class SeverityCacheTest
 	@BeforeClass
 	public static void connect() throws Exception
 	{
-		rdb = RDBUtil.connect(TestSetup.URL);
+		rdb = RDBUtil.connect(TestSetup.URL, false);
 		sql = new SQL(rdb.getDialect(), false);
 	}
-	
+
 	@AfterClass
 	public static void disconnect()
 	{
@@ -53,7 +53,7 @@ public class SeverityCacheTest
 		System.out.println(severity);
 		assertEquals("OK", severity.toString());
 		assertTrue(severity.isOK());
-		
+
 		// Locate via ID, expecting the same instance
 		Severity another = severities.find(severity.getId());
 		assertSame(severity, another);
@@ -64,7 +64,7 @@ public class SeverityCacheTest
 		assertEquals("INVALID", severity.toString());
 		assertFalse(severity.isOK());
 		assertTrue(severity.isInvalid());
-		
+
 		// Locate via ID
 		another = severities.find(severity.getId());
 		assertSame(severity, another);
@@ -78,7 +78,7 @@ public class SeverityCacheTest
         Severity severity = severities.findOrCreate(name);
 		System.out.println(severity);
 		assertEquals(name, severity.toString());
-		
+
 		// Locate again, expecting the same instance
 		Severity another = severities.find(name);
 		assertSame(severity, another);
@@ -89,7 +89,7 @@ public class SeverityCacheTest
                 "DELETE FROM severity WHERE severity_id=" + another.getId());
         statement.close();
         assertEquals(1, rows);
-        
+
         rdb.getConnection().commit();
 	}
 }

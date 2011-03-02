@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
@@ -33,7 +34,6 @@ import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.csstudio.platform.utility.rdb.TimeWarp;
@@ -134,7 +134,7 @@ public class RDBArchive
             final String password) throws Exception
     {
         this.use_staging = url.startsWith("jdbc:oracle_stage:");
-        if (use_staging) 
+        if (use_staging)
             this.url = "jdbc:oracle:" + url.substring(18);
         else
             this.url = url;
@@ -191,8 +191,7 @@ public class RDBArchive
     private void connect() throws Exception
     {
         // Create new connection
-        CentralLogger.getInstance().getLogger(this).
-            debug("Connecting to '" + url + "' " +
+        Activator.getLogger().fine("Connecting to '" + url + "' " +
                   (use_staging ? "(stage)" : "(main)"));
         rdb = RDBUtil.connect(url, user, password, false);
         sql = new SQL(rdb.getDialect(), use_staging);
@@ -252,8 +251,8 @@ public class RDBArchive
                 }
                 catch (final Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).
-                        info("Attempt to cancel statment", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.INFO,
+                            "Attempt to cancel statment", ex); //$NON-NLS-1$
                 }
             }
         }
@@ -293,7 +292,7 @@ public class RDBArchive
     @SuppressWarnings("nls")
     public void close()
     {
-        CentralLogger.getInstance().getLogger(this).debug("Disconnecting from '" + url + "'");
+        Activator.getLogger().fine("Disconnecting from '" + url + "'");
         if (sample_modes != null)
             sample_modes = null;
         if (retentions != null)
@@ -326,7 +325,7 @@ public class RDBArchive
             }
             catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_double_sample = null;
         }
@@ -338,7 +337,7 @@ public class RDBArchive
             }
             catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_double_array_sample = null;
         }
@@ -350,7 +349,7 @@ public class RDBArchive
             }
             catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_long_sample = null;
         }
@@ -362,7 +361,7 @@ public class RDBArchive
             }
             catch (final Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             insert_txt_sample = null;
         }
@@ -523,7 +522,7 @@ public class RDBArchive
     }
 
     /** Write the meta data of the sample, and update the channel's info. */
-    public void writeMetaData(final ChannelConfig channel, final IValue sample) 
+    public void writeMetaData(final ChannelConfig channel, final IValue sample)
 	    throws Exception
     {
         if (sample instanceof IEnumeratedValue)
