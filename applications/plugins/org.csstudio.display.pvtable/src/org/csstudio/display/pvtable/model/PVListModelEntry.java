@@ -2,8 +2,7 @@ package org.csstudio.display.pvtable.model;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.Plugin;
@@ -15,9 +14,9 @@ import org.eclipse.core.runtime.PlatformObject;
 
 /**
  * Implementation of the PVListEntry as used by the PVListModel.
- * 
+ *
  * @see PVListModel
- * 
+ *
  * @author Kay Kasemir, Kunal Shroff
  */
 public class PVListModelEntry extends PlatformObject implements PVListEntry {
@@ -55,12 +54,15 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
 
     /** @return PV for the given name */
     @SuppressWarnings("nls")
-    private PV createPV(final String name) {
-        try {
+    private PV createPV(final String name)
+    {
+        try
+        {
             return PVFactory.createPV(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Plugin.getLogger().error("Cannot create PV '" + name + "'", ex);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.SEVERE, "Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
@@ -148,7 +150,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
 
     /**
      * Restore values from snapshot.
-     * 
+     *
      * @return Returns <code>false</code> if the entry is not selected.
      */
     public boolean restore() throws Exception {

@@ -33,10 +33,10 @@ public class StatusCacheTest
 	@BeforeClass
 	public static void connect() throws Exception
 	{
-		rdb = RDBUtil.connect(TestSetup.URL);
+		rdb = RDBUtil.connect(TestSetup.URL, false);
 		sql = new SQL(rdb.getDialect(), false);
 	}
-	
+
 	@AfterClass
 	public static void disconnect()
 	{
@@ -51,7 +51,7 @@ public class StatusCacheTest
 		Status status = stati.find(1);
 		System.out.println(status);
 		assertEquals(1, status.getId());
-		
+
 		// Locate via ID, expecting the same instance
 		Status another = stati.find(status.getId());
 		assertSame(status, another);
@@ -65,18 +65,18 @@ public class StatusCacheTest
         Status status = stati.findOrCreate(name);
 		System.out.println(status);
 		assertEquals(name, status.getName());
-		
+
 		// Locate again, expecting the same instance
 		Status another = stati.find(status.getId());
 		assertSame(status, another);
-		
+
 		// Fix database for another test run
 		Statement statement = rdb.getConnection().createStatement();
 		int rows = statement.executeUpdate(
 		        "DELETE FROM status WHERE status_id=" + another.getId());
 		statement.close();
 		assertEquals(1, rows);
-		
+
 		rdb.getConnection().commit();
 	}
 }

@@ -19,12 +19,14 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public class PVLabelProvider extends BaseLabelProvider implements ITableLabelProvider, ITableColorProvider
 {
+    @Override
     public Image getColumnImage(Object element, int columnIndex)
     {
         // No image
         return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex)
     {
         PV device = (PV) element;
@@ -39,6 +41,7 @@ public class PVLabelProvider extends BaseLabelProvider implements ITableLabelPro
         }
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex)
     {
         PV device = (PV) element;
@@ -47,6 +50,7 @@ public class PVLabelProvider extends BaseLabelProvider implements ITableLabelPro
         return null;
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex)
     {
          return null;

@@ -5,39 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.diag.epics.pvtree;
+package org.csstudio.diag.pvutil;
 
 import java.util.logging.Logger;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-
-/** Plugin class for EPICS PV Tree.
+/** Plugin info, not quite an Activator
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractUIPlugin
+@SuppressWarnings("nls")
+public class Activator
 {
-    /** The plug-in ID defined in MANIFEST.MF */
-    final public static String ID = "org.csstudio.diag.epics.pvtree"; //$NON-NLS-1$
+    /** Plugin ID registered in MANIFEST.MF */
+    final public static String ID = "org.csstudio.diag.pvutil";
 
     final private static Logger logger = Logger.getLogger(ID);
 
-    /** The shared instance */
-    private static Plugin plugin;
-
-    /** The constructor. */
-    public Plugin()
-    {
-        plugin = this;
-    }
-
-    /** @return Returns the shared instance. */
-    public static Plugin getDefault()
-    {
-        return plugin;
-    }
-
     /** @return Logger for plugin ID */
-    public static Logger getLogger()
+    final public static Logger getLogger()
     {
         return logger;
     }

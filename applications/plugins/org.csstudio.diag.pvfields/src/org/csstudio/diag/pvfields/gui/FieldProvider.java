@@ -25,6 +25,8 @@ public class FieldProvider implements ILazyContentProvider
         this.model = control;
     }
 
+    @SuppressWarnings("nls")
+    @Override
     public void updateElement(int row)
     {
     	try
@@ -46,11 +48,13 @@ public class FieldProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void dispose()
     {
         // NOP
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
         // NOP

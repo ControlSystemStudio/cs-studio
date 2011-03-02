@@ -1,6 +1,7 @@
 package org.csstudio.diag.postanalyser;
 
 import java.io.PrintWriter;
+import java.util.logging.Level;
 
 import org.csstudio.diag.postanalyser.math.Filter;
 import org.csstudio.diag.postanalyser.model.Algorithm;
@@ -521,16 +522,14 @@ public class GUI implements ModelListener, AlgorithmJobListener
     @Override
     public void algorithmFailed(final Algorithm algorithm, final Throwable ex)
     {
+        Activator.getLogger().log(Level.SEVERE, "algorithm failed", ex); //$NON-NLS-1$
+
         // Handle response from background thread in GUI thread
         Display.getDefault().asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
-                // TODO show error in message. getMessage still gives less
-                // than stack trace
-                ex.printStackTrace();
-                Activator.getLogger().error(ex);
                 final String err = ex.getMessage();
                 if (err != null)
                     message.setText(err);
@@ -614,7 +613,7 @@ public class GUI implements ModelListener, AlgorithmJobListener
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error("Cannot write to " + filename, ex);
+            Activator.getLogger().log(Level.SEVERE, "Cannot write to " + filename, ex);
         }
     }
 }

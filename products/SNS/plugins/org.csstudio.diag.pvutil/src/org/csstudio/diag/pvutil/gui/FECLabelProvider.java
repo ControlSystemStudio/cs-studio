@@ -19,12 +19,14 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public class FECLabelProvider extends BaseLabelProvider implements ITableLabelProvider, ITableColorProvider
 {
+    @Override
     public Image getColumnImage(Object element, int columnIndex)
     {
         // No image
         return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex)
     {
         FEC device = (FEC) element;
@@ -37,6 +39,7 @@ public class FECLabelProvider extends BaseLabelProvider implements ITableLabelPr
         }
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex)
     {
         FEC device = (FEC) element;
@@ -45,6 +48,7 @@ public class FECLabelProvider extends BaseLabelProvider implements ITableLabelPr
         return null;
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex)
     {
          return null;

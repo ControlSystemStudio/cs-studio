@@ -18,6 +18,7 @@ public class TestMain
 {
     //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
     //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod";
+    @SuppressWarnings("nls")
     @Test
 	public void test() throws Exception
     {
@@ -25,13 +26,13 @@ public class TestMain
         Display display = Display.getCurrent();
         Shell shell = new Shell(display);
         shell.setText("PV Utility");
-        
-        PVUtilModel control = new PVUtilModel (); 
+
+        PVUtilModel control = new PVUtilModel ();
         new GUI(shell, control);
 
         shell.pack();
         shell.open();
-        
+
         while (!shell.isDisposed())
         {
             if (!display.readAndDispatch())

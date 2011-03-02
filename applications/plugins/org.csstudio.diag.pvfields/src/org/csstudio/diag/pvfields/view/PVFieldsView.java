@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.pvfields.view;
 
+import java.util.logging.Level;
+
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.diag.pvfields.Activator;
 import org.csstudio.diag.pvfields.gui.GUI;
@@ -14,7 +16,6 @@ import org.csstudio.diag.pvfields.model.PVFieldsModel;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -33,7 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-public class PVFieldsView  extends ViewPart 
+public class PVFieldsView  extends ViewPart
 {
     final public static String ID = PVFieldsView.class.getName();
     //private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
@@ -43,7 +44,7 @@ public class PVFieldsView  extends ViewPart
     final public static String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     private static final String FIELD_TAG = "field"; //$NON-NLS-1$
     final public static String FIELD_LIST_TAG = "field_list"; //$NON-NLS-1$
-    
+
     private PVFieldsModel model = null;
     private GUI gui;
     private IMemento memento;
@@ -51,7 +52,7 @@ public class PVFieldsView  extends ViewPart
     private ComboHistoryHelper pv_name_helper;
 	private ComboViewer field_value;
     private ComboHistoryHelper field_value_helper;
-    
+
     public PVFieldsView()
     {
     	try
@@ -60,10 +61,10 @@ public class PVFieldsView  extends ViewPart
     	}
     	catch (Exception ex)
         {
-        	CentralLogger.getInstance().getLogger(this).error(ex);
+            Activator.getLogger().log(Level.SEVERE, "PV Field Model Exception ", ex); //$NON-NLS-1$
         }
-    	
     }
+
     /** ViewPart interface, keep the memento. */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException
@@ -71,8 +72,8 @@ public class PVFieldsView  extends ViewPart
         super.init(site, memento);
         this.memento = memento;
     }
-    
-   
+
+
     /** ViewPart interface, persist state */
     @Override
     public void saveState(IMemento memento)
@@ -93,35 +94,35 @@ public class PVFieldsView  extends ViewPart
         gui = new GUI(parent, model);
         cbo_name = gui.getPVViewer();
         field_value = gui.getFieldViewer();
-        
+
         // Allow Eclipse to listen to PV selection changes
         final TableViewer fields_viewer = gui.getFieldsTable();
         getSite().setSelectionProvider(fields_viewer);
- 
+
         pv_name_helper = new ComboHistoryHelper(
                 Activator.getDefault().getDialogSettings(),
                 PV_LIST_TAG, cbo_name.getCombo(),10,true)
 		{
 		    @Override
 		    public void newSelection(String pv_name)
-		    { 
-		        setPVName(pv_name);   
+		    {
+		        setPVName(pv_name);
 		        pv_name_helper.addEntry(pv_name);
 		    }
 		};
-		
+
 		field_value_helper = new ComboHistoryHelper(
                 Activator.getDefault().getDialogSettings(),
                 FIELD_LIST_TAG, field_value.getCombo(),10,true)
 		{
 		    @Override
 		    public void newSelection(String field_value)
-		    { 
+		    {
 		        field_value_helper.addEntry(field_value);
 		    }
 		};
-		
-		
+
+
 		if (memento != null)
         {
             String pv_name = memento.getString(PV_TAG);
@@ -132,10 +133,11 @@ public class PVFieldsView  extends ViewPart
                 setPVName(pv_name);
         }
 
-		
+
         // Stop the press when we're no more
         cbo_name.getCombo().addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 pv_name_helper.saveSettings();
@@ -147,8 +149,8 @@ public class PVFieldsView  extends ViewPart
 
         pv_name_helper.loadSettings();
         field_value_helper.loadSettings();
-        
-        
+
+
         // Enable 'Drop' on to combo box (entry box)
         new ProcessVariableDropTarget(cbo_name.getCombo())
         {
@@ -161,7 +163,7 @@ public class PVFieldsView  extends ViewPart
         };
 
         final Table fields_table = gui.getFieldsTable().getTable();
-        
+
         // Enable 'Drop' on to table.
         new ProcessVariableDropTarget(fields_table)
         {
@@ -181,7 +183,7 @@ public class PVFieldsView  extends ViewPart
         fields_viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, fields_viewer);
     }
-    
+
         /** Create or re-display a probe view with the given PV name.
          *  <p>
          *  Invoked by the PVpopupAction.
@@ -202,12 +204,12 @@ public class PVFieldsView  extends ViewPart
             }
             catch (Exception e)
             {
-            	CentralLogger.getInstance().getLogger(new PVFieldsView()).error("Exception", e);
+                Activator.getLogger().log(Level.SEVERE, "PVFieldsView activation error", e); //$NON-NLS-1$
             }
             return false;
         }
 
-       
+
         // ViewPart interface
         @Override
         public void setFocus()
@@ -221,7 +223,7 @@ public class PVFieldsView  extends ViewPart
         	String field = gui.getFieldValue().trim();
             field_value_helper.addEntry(field);
             if (field.length() <= 0)
-            	field = null; 
+            	field = null;
         	gui.setPVName(pv_name,field);
             pv_name_helper.addEntry(pv_name);
         }
