@@ -22,20 +22,22 @@ public class FEC extends PlatformObject implements IFrontEndControllerName
     {
         this.fec_nm = fec_nm;
     }
-    
+
     @Override
     public String toString()
     {
         return "Name: " + fec_nm; //$NON-NLS-1$
     }
 
+    @Override
     public String getName()
     {
     	return fec_nm;
     }
 
     // IFrontEndControllerName
-	public String getTypeId() {
+	@Override
+    public String getTypeId() {
 		return IFrontEndControllerName.TYPE_ID;
 	}
 }

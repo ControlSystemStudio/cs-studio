@@ -16,24 +16,27 @@ import org.eclipse.swt.widgets.Combo;
 public class FECProvider implements ILazyContentProvider
 {
     final private Combo fec_combo;
-    
+
     public FECProvider(Combo fec_combo, PVUtilDataAPI util_model)
     {
         this.fec_combo = fec_combo;
-        
+
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateElement(int index)
     {
         fec_combo.getText();
-     
+
     }
 
+    @Override
     public void dispose()
     {
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
     }

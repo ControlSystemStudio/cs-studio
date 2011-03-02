@@ -11,7 +11,7 @@ import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** One PV in the model: PV name and additional info text
- *  
+ *
  *  Also functions as a CSS IProcessVariable
  *  @see PVUtilDataAPI
  *  @author Dave Purcell
@@ -25,8 +25,9 @@ public class PV extends PlatformObject implements IProcessVariable
         this.pv = pv;
         this.infoString = infoString;
     }
-    
+
     /** @see IProcessVariable */
+    @Override
     public String getName()
     {
         return pv;
@@ -38,6 +39,7 @@ public class PV extends PlatformObject implements IProcessVariable
     }
 
     /** @see IProcessVariable */
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
