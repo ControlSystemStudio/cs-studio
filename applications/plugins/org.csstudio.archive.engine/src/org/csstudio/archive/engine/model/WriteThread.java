@@ -8,14 +8,15 @@
 package org.csstudio.archive.engine.model;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.util.stats.Average;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
@@ -98,8 +99,8 @@ public class WriteThread implements Runnable
     {
         if (write_period < MIN_WRITE_PERIOD)
         {
-            CentralLogger.getInstance().getLogger(this).warn("Adjusting write period from "
-                    + write_period + " to " + MIN_WRITE_PERIOD);
+            Activator.getLogger().log(Level.INFO, "Adjusting write period from {0} to {1}",
+                new Object[] { write_period, MIN_WRITE_PERIOD });
             write_period = MIN_WRITE_PERIOD;
         }
         millisec_delay = (int)(1000.0 * write_period);
@@ -160,7 +161,7 @@ public class WriteThread implements Runnable
     @SuppressWarnings("nls")
     public void run()
     {
-        CentralLogger.getInstance().getLogger(this).info("WriteThread starts");
+        Activator.getLogger().info("WriteThread starts");
         final BenchmarkTimer timer = new BenchmarkTimer();
         boolean write_error = false;
         do_run = true;
@@ -190,7 +191,7 @@ public class WriteThread implements Runnable
             }
             catch (Exception ex)
             {   // Error in write() or the preceding reconnect()...
-                CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", ex);
+                Activator.getLogger().log(Level.WARNING, "Error, will try to reconnect", ex);
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
@@ -208,12 +209,12 @@ public class WriteThread implements Runnable
                     }
                     catch (InterruptedException ex)
                     {
-                        CentralLogger.getInstance().getLogger(this).error("Interrupted wait", ex);
+                        Activator.getLogger().log(Level.WARNING, "Interrupted wait", ex);
                     }
                 }
             }
         }
-        CentralLogger.getInstance().getLogger(this).info("WriteThread exists");
+        Activator.getLogger().info("WriteThread exists");
     }
 
     /** Stop the write thread, performing a final write. */
