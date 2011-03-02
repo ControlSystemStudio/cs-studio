@@ -9,7 +9,6 @@ package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** Alarm handling logic.
  *  <p>
@@ -131,7 +130,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     public static void setMaintenanceMode(final boolean maintenance_mode)
     {
         AlarmLogic.maintenance_mode = maintenance_mode;
-        CentralLogger.getInstance().getLogger(AlarmLogic.class).info("Maintenance Mode: " + maintenance_mode);
+        Activator.getLogger().config("Maintenance Mode: " + maintenance_mode);
     }
 
     /** In maintenance mode, 'INVALID' alarms are suppressed by

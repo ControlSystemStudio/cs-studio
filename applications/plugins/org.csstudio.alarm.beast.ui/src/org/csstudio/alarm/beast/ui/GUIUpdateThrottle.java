@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
 
 /** GUI Update throttle
  *  <p>
@@ -32,13 +32,13 @@ abstract public class GUIUpdateThrottle extends Thread
 
     /** Delay in millisecs for the suppression of a burst of events */
     final private long suppression_millis;
-    
+
     /** Counter for trigger events that arrived */
     private int triggers = 0;
 
     /** Flag that tells thread to run or exit */
     private volatile boolean run = true;
-    
+
     /** Initialize
      *  @param initial_millis Delay [ms] for the initial update after trigger
      *  @param suppression_millis Delay [ms] for the suppression of a burst of events
@@ -65,6 +65,7 @@ abstract public class GUIUpdateThrottle extends Thread
     }
 
     /** Thread Runnable that handles received triggers */
+    @SuppressWarnings("nls")
     @Override
     public void run()
     {
@@ -95,8 +96,7 @@ abstract public class GUIUpdateThrottle extends Thread
         }
         catch (InterruptedException ex)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("GUIUpdateThrottle " + ex.getMessage()); //$NON-NLS-1$
+            Activator.getLogger().log(Level.SEVERE, "GUI Update failed", ex);
         }
     }
 

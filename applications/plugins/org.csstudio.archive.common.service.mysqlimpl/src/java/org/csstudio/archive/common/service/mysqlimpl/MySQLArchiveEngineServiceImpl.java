@@ -111,7 +111,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
         try {
             DAO_MGR.getChannelStatusDao().createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
         } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
+            throw new ArchiveServiceException("Creation of channel status entry failed.", e);
         }
     }
 

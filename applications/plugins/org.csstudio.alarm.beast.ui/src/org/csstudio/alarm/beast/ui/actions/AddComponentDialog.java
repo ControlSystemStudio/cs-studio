@@ -12,7 +12,6 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -218,7 +217,6 @@ public class AddComponentDialog extends TitleAreaDialog
         }
         catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
             setErrorMessage(NLS.bind(Messages.AddComponentDialog_CannotAddError,
                         new String[]
                         { name, parent_item.getName(), ex.getMessage() }));

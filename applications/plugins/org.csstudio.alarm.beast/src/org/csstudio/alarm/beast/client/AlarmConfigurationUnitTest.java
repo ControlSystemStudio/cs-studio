@@ -8,7 +8,6 @@
 package org.csstudio.alarm.beast.client;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
@@ -171,7 +170,7 @@ public class AlarmConfigurationUnitTest
         config.getAlarmTree().dump(System.out);
         config.removeAllItems();
 
-        new AlarmConfigurationLoader(config, new FileInputStream(filename));
+        new AlarmConfigurationLoader(config).load(filename.getAbsolutePath());
         System.out.println("******* Configuration read back from file: ******");
         config.getAlarmTree().dump(System.out);
     }

@@ -46,3 +46,4 @@ Export-Package:
  org.junit.runners;uses:="junit.framework,org.junit.internal.runners"
 Bundle-ClassPath: .,
  lib/junit.jar
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

@@ -21,23 +21,25 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.common.base.Joiner;
 
 /**
  *
- * @author baschtl
+ * @author bknerr
  * @since Feb 26, 2011
  */
 public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
 
-    private static final String RETRIEVAL_FAILED = "Creation of channel status entry failed.";
 
     public static final String TAB = "channel_status";
 
-    private static final String _insertEntryStmtPrefix =
+    private static final String INSERT_ENTRY_STMT_PREFIX =
         "INSERT INTO " + getDaoMgr().getDatabaseName() + "." + TAB +
                      " channel_id, connected, info, timestamp " +
                      "VALUES ";
@@ -47,13 +49,12 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     }
 
     @Override
-    public void createChannelStatus(final ArchiveChannelStatus entry) throws ArchiveDaoException {
-        final String stmtStr = Joiner.on(",").join(_insertEntryStmtPrefix,
-                                                   entry.getChannelId().intValue(),
-                                                   entry.isConnected().toString(),
+    public void createChannelStatus(@Nonnull final ArchiveChannelStatus entry) throws ArchiveDaoException {
+        final String stmtStr = Joiner.on(",").join(entry.getChannelId().intValue(),
+                                                   (entry.isConnected() ? "'TRUE'" : "'FALSE'"),
                                                    "'" + entry.getInfo() + "'",
-                                                   "'" + entry.getTime().formatted() + "'");
-        getEngineMgr().submitStatementToBatch(stmtStr);
+                                                   "'" + entry.getTime().formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS) + "'");
+        getEngineMgr().submitStatementToBatch(INSERT_ENTRY_STMT_PREFIX + "("  + stmtStr + ")");
     }
 
 }

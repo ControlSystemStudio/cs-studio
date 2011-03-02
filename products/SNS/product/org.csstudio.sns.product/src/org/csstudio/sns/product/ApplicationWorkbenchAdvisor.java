@@ -13,7 +13,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
 	private OpenDocumentEventProcessor openDocProcessor;
-	
+
     public ApplicationWorkbenchAdvisor(
 			OpenDocumentEventProcessor openDocProcessor) {
     	this.openDocProcessor = openDocProcessor;
@@ -39,7 +39,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     {
         return CSS_Perspective.ID;
     }
-    
+
     @Override
     public void eventLoopIdle(Display display) {
     	if(openDocProcessor != null)

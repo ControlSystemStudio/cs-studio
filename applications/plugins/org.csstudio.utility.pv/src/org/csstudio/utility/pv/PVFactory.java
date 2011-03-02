@@ -11,9 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -23,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
  *  via an extension to the pvfactory extension point
  *  and creates the PV through it, using the PV name prefix
  *  to select an implementation.
- *  
+ *
  *  <pre>
     // Create PV
     final PV pv = PVFactory.createPV(pv_name);
@@ -43,17 +44,17 @@ import org.eclipse.core.runtime.Platform;
                 IDoubleValue dbl = (IDoubleValue) value;
                 System.out.println(dbl.getValue());
             }
-            // ... or use ValueUtil    
+            // ... or use ValueUtil
         }
     });
     // Start the PV
     pv.start();
-    
+
     ...
-    
+
     pv.stop();
     </pre>
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -85,7 +86,7 @@ public class PVFactory
     {
         // Get default type from preferences
         default_type = Preferences.getDefaultType();
-    
+
         // Get extension point info from registry
         pv_factory = new HashMap<String, IPVFactory>();
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
@@ -93,14 +94,15 @@ public class PVFactory
         // Need at least one implementation
         if (configs.length < 1)
             throw new Exception("No extensions to " + PVFACTORY_EXT_ID + " found");
+        final Logger logger = Logger.getLogger(PVFactory.class.getName());
         for (IConfigurationElement config : configs)
         {
             final String plugin = config.getContributor().getName();
             final String name = config.getAttribute("name");
             final String prefix = config.getAttribute("prefix");
             final IPVFactory factory = (IPVFactory) config.createExecutableExtension("class");
-            CentralLogger.getInstance().getLogger(PVFactory.class).debug(plugin + " provides '" + name +
-                                     "', prefix '" + prefix + "'");
+            logger.log(Level.CONFIG, "PV prefix {0} provided by {1} in {2}",
+                new Object[] { prefix, name, plugin });
             pv_factory.put(prefix, factory);
         }
     }
@@ -113,14 +115,14 @@ public class PVFactory
         final ArrayList<String> prefixes = new ArrayList<String>();
         final Iterator<String> iterator = pv_factory.keySet().iterator();
         while (iterator.hasNext())
-            prefixes.add(iterator.next());  
+            prefixes.add(iterator.next());
         return (String[]) prefixes.toArray(new String[prefixes.size()]);
     }
 
     /** Create a PV for the given channel name, using the PV factory
      *  selected via the prefix of the channel name, or the default
      *  PV factory if no prefix is included in the channel name.
-     *  
+     *
      *  @param name Channel name, format "prefix://name" or just "name"
      *  @return PV
      *  @exception Exception on error
@@ -139,7 +141,7 @@ public class PVFactory
             if (l > 2 && name.charAt(0) == '"'  &&  name.charAt(l-1) == '"')
                 name = "const://x(" + name + ")";
         }
-        
+
         // Identify type of PV
         // PV name = "type:...."
         final String type, base;

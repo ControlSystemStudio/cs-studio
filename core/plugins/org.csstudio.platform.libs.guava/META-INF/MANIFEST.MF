@@ -2,7 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Guava
 Bundle-SymbolicName: org.csstudio.platform.libs.guava
-Bundle-Version: 0.6.0.qualifier
+Bundle-Version: 0.8.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Export-Package: com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,
@@ -11,5 +13,3 @@ Export-Package: com.google.common.annotations,
  com.google.common.net,
  com.google.common.primitives,
  com.google.common.util.concurrent
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

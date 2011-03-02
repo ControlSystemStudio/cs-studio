@@ -46,49 +46,6 @@ public class ImmutableHashMap<K, V> implements IImmutableMap<K, V> {
 
     private static final long serialVersionUID = 6946995508361991289L;
 
-    private final Map<K, V> _delegate;
-
-    public ImmutableHashMap() {
-        _delegate = Maps.newHashMap();
-
-    }
-
-
-    public ImmutableHashMap(final int initialCapacity) {
-        _delegate = new MapMaker().initialCapacity(initialCapacity).makeMap();
-    }
-
-
-    public ImmutableHashMap(@Nonnull final Map<? extends K, ? extends V> m) {
-        _delegate = Maps.newHashMap(m);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public ImmutableHashMap(@Nonnull final IImmutableMap<? extends K, ? extends V> m) {
-        super((Map<? extends K, ? extends V>) m);
-    }
-
-    @Override
-    @Nonnull
-    public IImmutableMap<K, V> with(@Nonnull final K key, @Nullable final V value) {
-        final ImmutableHashMap<K, V> res = new ImmutableHashMap<K, V>((Map<K, V>) this);
-        res.put(key, value);
-        return res;
-    }
-
-    @Override
-    @Nonnull
-    public Set<K> keySet() {
-        return Sets.newHashSet(super.keySet());
-    }
-
-    @Override
-    @Nonnull
-    public Collection<V> values() {
-        return Lists.newArrayList(super.values());
-    }
-
     /**
      * Internal helper class implementing the native java.util.Map.Entry.
      * @author bknerr
@@ -121,15 +78,109 @@ public class ImmutableHashMap<K, V> implements IImmutableMap<K, V> {
         }
     }
 
+    private final Map<K, V> _delegate;
+
+    public ImmutableHashMap() {
+        _delegate = Maps.newHashMap();
+
+    }
+
+    public ImmutableHashMap(final int initialCapacity) {
+        _delegate = new MapMaker().initialCapacity(initialCapacity).makeMap();
+    }
+
+    public ImmutableHashMap(@Nonnull final Map<? extends K, ? extends V> m) {
+        _delegate = Maps.newHashMap(m);
+    }
+
+    public ImmutableHashMap(@Nonnull final IImmutableMap<? extends K, ? extends V> m) {
+        this();
+        for (final java.util.Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+            _delegate.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private ImmutableHashMap(@Nonnull final Map<K, V> m, @Nonnull final Entry<K, V>... entries) {
+        this(m);
+        for (final Entry<K, V> entry : entries) {
+            _delegate.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+
+    @Override
+    @Nonnull
+    public Set<K> keySet() {
+        return Sets.newHashSet(_delegate.keySet());
+    }
+
+    @Override
+    @Nonnull
+    public Collection<V> values() {
+        return Lists.newArrayList(_delegate.values());
+    }
+
 
     @Override
     @Nonnull
     public Set<Map.Entry<K, V>> entrySet() {
 
         final Set<Map.Entry<K, V>> copy = Sets.newHashSetWithExpectedSize(size());
-        for (final java.util.Map.Entry<K, V> entry : super.entrySet()) {
+        for (final java.util.Map.Entry<K, V> entry : _delegate.entrySet()) {
             copy.add(new Entry<K, V>(entry.getKey(), entry.getValue()));
         }
         return copy;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return _delegate.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEmpty() {
+        return _delegate.isEmpty();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsKey(@Nonnull final K key) {
+        return _delegate.containsKey(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsValue(@Nonnull final V value) {
+        return _delegate.containsValue(value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public V get(@Nonnull final K key) {
+        return _delegate.get(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nonnull
+    public IImmutableMap<K, V> with(@Nonnull final K key, @Nonnull final V value) {
+        return new ImmutableHashMap<K, V>(_delegate, new Entry<K, V>(key, value));
+
     }
 }

@@ -19,3 +19,4 @@ Bundle-ClassPath: lib/poi-2.5.1-final-20040804.jar,
  lib/poi-scratchpad-2.5.1-final-20040804.jar,
  .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: DESY <css-developer@desy.de>, Jan Hatje

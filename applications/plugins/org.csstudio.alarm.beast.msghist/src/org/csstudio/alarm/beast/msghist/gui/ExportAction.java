@@ -23,6 +23,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** Action for exporting current messages from model to file
  *  @author Kay Kasemir
@@ -38,7 +39,7 @@ public class ExportAction extends Action
         super(Messages.Export);
         this.shell = shell;
         this.model = model;
-        setImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.ID,
+        setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID,
                                                        "icons/export.png"));
     }
 
@@ -52,7 +53,7 @@ public class ExportAction extends Action
         final String filename = dlg.open();
         if (filename == null)
             return;
-        
+
         // Open file
         final PrintStream out;
         try
@@ -73,7 +74,7 @@ public class ExportAction extends Action
             out.println("# Start: " + model.getStartSpec());
             out.println("# End: " + model.getEndSpec());
             out.println("#");
-            
+
             final MessagePropertyFilter filters[] = model.getFilters();
             if (filters != null  &&  filters.length > 0)
             {
@@ -85,7 +86,7 @@ public class ExportAction extends Action
                 }
             }
             out.print("\n");
-            
+
             final Message messages[] = model.getMessages();
             final String properties[] = getAllProperties(messages);
             out.print("# ID");

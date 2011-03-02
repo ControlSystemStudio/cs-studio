@@ -18,7 +18,7 @@ import org.csstudio.domain.desy.system.IAlarmSystemVariable;
  *  @param <T> the css alarm value type with time info
  */
 public class MonitoredArchiveChannel<V,
-                                     T extends IAlarmSystemVariable<V>> extends ArchiveChannel<V, T> {
+                                     T extends IAlarmSystemVariable<V>> extends AbstractArchiveChannel<V, T> {
 
 
     public MonitoredArchiveChannel(@Nonnull final String name,

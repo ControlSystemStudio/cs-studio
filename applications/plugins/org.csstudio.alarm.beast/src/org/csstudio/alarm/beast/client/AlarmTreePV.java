@@ -260,7 +260,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
                 {
                     getDescription(),
                     getName(),
-                    getTimestamp(),
+                    getTimestampText(),
                     getDuration(),
                     getSeverity().getDisplayName(),
                     getMessage(),

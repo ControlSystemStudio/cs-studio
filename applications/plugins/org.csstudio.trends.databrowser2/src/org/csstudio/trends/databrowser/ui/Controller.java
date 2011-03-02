@@ -10,13 +10,14 @@ package org.csstudio.trends.databrowser.ui;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJob;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJobListener;
@@ -475,9 +476,7 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 catch (Throwable ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).
-                        error("Error in timer task", ex); //$NON-NLS-1$
-                    ex.printStackTrace();
+                    Activator.getLogger().log(Level.WARNING, "Error in Plot refresh timer", ex); //$NON-NLS-1$
                 }
             }
         };

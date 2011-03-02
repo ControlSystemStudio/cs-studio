@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.AbstractArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.model.MonitoredArchiveChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -82,7 +82,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          */
         @Override
         @Nonnull
-        protected ArchiveChannel<V, IAlarmSystemVariable<V>>
+        protected AbstractArchiveChannel<V, IAlarmSystemVariable<V>>
             createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
             MonitoredArchiveChannel<V, IAlarmSystemVariable<V>> channel;
@@ -98,7 +98,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          */
         @Override
         @Nonnull
-        protected ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
+        protected AbstractArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
             createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
             MonitoredArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>> channel;
@@ -140,7 +140,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static <V>
-    ArchiveChannel<V, IAlarmSystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+    AbstractArchiveChannel<V, IAlarmSystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
         Class<V> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
@@ -162,16 +162,16 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             return support.createArchiveChannel(cfg);
         } else { // TODO (bknerr) : can it be supported throughout the service impl?
          // take care, V is here Collection<V>, the correct cast has to be performed by the invoker
-            return (ArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
+            return (AbstractArchiveChannel) support.createMultiScalarArchiveChannel(cfg);
         }
 
     }
 
     @Nonnull
-    protected abstract ArchiveChannel<V, IAlarmSystemVariable<V>>
+    protected abstract AbstractArchiveChannel<V, IAlarmSystemVariable<V>>
     createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 
     @Nonnull
-    protected abstract ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
+    protected abstract AbstractArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
     createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 }

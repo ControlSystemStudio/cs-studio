@@ -33,3 +33,4 @@ Export-Package: org.csstudio.nams.configurator;x-friends:="org.csstudio.nams.tes
  org.csstudio.nams.configurator.service.synchronize;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.configurator.views;x-friends:="org.csstudio.nams.testUtils.testSuites"
 Bundle-Localization: plugin
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
