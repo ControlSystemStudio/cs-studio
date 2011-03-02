@@ -10,11 +10,11 @@ package org.csstudio.diag.pvfields.gui;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.diag.pvfields.model.PVFieldsListener;
 import org.csstudio.diag.pvfields.model.PVFieldsModel;
 import org.csstudio.diag.pvfields.model.PVInfo;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 // TODO Externalize strings
@@ -45,7 +46,6 @@ public class GUI implements PVFieldsListener
     /** GUI Elements */
     private TableViewer fields_table;
     private ComboViewer cbo_name;
-    private Composite fileStuff;
     private Text rec_type_value;
     private ComboViewer field_value;
     private Text file_value;
@@ -70,9 +70,8 @@ public class GUI implements PVFieldsListener
         this.model = model;
         this.parent = parent;
 
-        final GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 4;
-        parent.setLayout(gridLayout);
+        final GridLayout layout = new GridLayout(5, false);
+        parent.setLayout(layout);
 
         // New row
         Label label = new Label(parent, SWT.READ_ONLY);
@@ -81,10 +80,7 @@ public class GUI implements PVFieldsListener
 
         cbo_name = new ComboViewer(parent, SWT.SINGLE | SWT.BORDER);
         cbo_name.getCombo().setToolTipText("Enter PV Name To Look Up or Enter Text to be included in multiple Process Variables.  Use '%' as wildcard..");
-        GridData gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        cbo_name.getCombo().setLayoutData(gd);
+        cbo_name.getCombo().setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         label = new Label(parent, SWT.RIGHT);
         label.setText("Field:");
@@ -94,55 +90,24 @@ public class GUI implements PVFieldsListener
         field_value.getCombo().setToolTipText(
         		"Enter Field Value or Comma Delimited List of Field Values "+
         		"ie. 'ASG,%N,VAL,HIGH,LOW' or 'VAL, %S%' or leave blank.");
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        field_value.getCombo().setLayoutData(gd);
+        field_value.getCombo().setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
 
         // New row
         pvLabel = new Text (parent, SWT.READ_ONLY);
-        pvLabel.setText("");
-        pvLabel.setLayoutData(new GridData());
-        gd = new GridData();
-        gd.horizontalSpan = 2;
-        gd.horizontalIndent=5;
-        gd.horizontalAlignment = GridData.FILL;
-        gd.grabExcessHorizontalSpace = true;
-        pvLabel.setLayoutData(gd);
+        pvLabel.setText("<pv>");
+        pvLabel.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
 
-
-
-        fileStuff = new Composite (parent, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns=3;
-        fileStuff.setLayout(layout);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.horizontalSpan = 2;
-        gd.grabExcessHorizontalSpace=true;
-        fileStuff.setLayoutData(gd);
-
-
-        label = new Label(fileStuff, SWT.NONE);
+        label = new Label(parent, SWT.NONE);
         label.setText("File Name:");
-        gd = new GridData();
-        label.setLayoutData(gd);
+        label.setLayoutData(new GridData());
 
-        fileName = new Text(fileStuff, SWT.BORDER);
-        gd = new GridData(GridData.FILL_HORIZONTAL);
-        gd.grabExcessHorizontalSpace=true;
-        fileName.setLayoutData(gd);
+        fileName = new Text(parent, SWT.BORDER);
+        fileName.setLayoutData(new GridData());
 
         //Button
-        toFileButton = new Button(fileStuff, SWT.PUSH);
+        toFileButton = new Button(parent, SWT.PUSH);
         toFileButton.setText("Export to File");
-        gd = new GridData();
-        //gd.horizontalSpan = 2;
-        toFileButton.setLayoutData(gd);
-
-
-
-
-
+        toFileButton.setLayoutData(new GridData());
 
         // New row
         label = new Label(parent, 0);
@@ -150,20 +115,14 @@ public class GUI implements PVFieldsListener
         label.setLayoutData(new GridData());
 
         rec_type_value = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        rec_type_value.setLayoutData(gd);
+        rec_type_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         label = new Label(parent, SWT.RIGHT);
         label.setText("IOC Name:");
         label.setLayoutData(new GridData());
 
         ioc_value = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        ioc_value.setLayoutData(gd);
+        ioc_value.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
 
         // New row
         label = new Label(parent, 0);
@@ -171,42 +130,45 @@ public class GUI implements PVFieldsListener
         label.setLayoutData(new GridData());
 
         boot_date_value = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        boot_date_value.setLayoutData(gd);
+        boot_date_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         label = new Label(parent, 0);
         label.setText("Boot File:");
         label.setLayoutData(new GridData());
 
         file_value = new Text(parent, SWT.BORDER | SWT.READ_ONLY);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        file_value.setLayoutData(gd);
+        file_value.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
 
         // Rest: Fields Table
-        final Table fields_table_widget = new Table(parent, SWT.VIRTUAL
-                | SWT.MULTI | SWT.FULL_SELECTION);
-        this.fields_table_widget = fields_table_widget;
+        // TableColumnLayout requires its own table parent
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
 
-        gd = new GridData();
-        gd.horizontalSpan = gridLayout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        fields_table_widget.setLayoutData(gd);
+        fields_table_widget = new Table(table_parent, SWT.VIRTUAL | SWT.MULTI | SWT.FULL_SELECTION);
         fields_table_widget.setHeaderVisible(true);
         fields_table_widget.setLinesVisible(true);
 
-        AutoSizeColumn.make(fields_table_widget, "Field", 50, 100);
-        AutoSizeColumn.make(fields_table_widget, "DBD Type", 100, 50);
-        AutoSizeColumn.make(fields_table_widget, "Value in File", 150, 50);
-        AutoSizeColumn.make(fields_table_widget, "Live Value", 150, 50);
-        // Configure table to auto-size the columns
-        new AutoSizeControlListener(fields_table_widget);
+        TableColumn col = new TableColumn(fields_table_widget, SWT.LEFT);
+        col.setText("Field");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 50));
+
+        col = new TableColumn(fields_table_widget, SWT.LEFT);
+        col.setText("DBD Type");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 50));
+
+        col = new TableColumn(fields_table_widget, SWT.LEFT);
+        col.setText("Value in File");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(50, 150));
+
+        col = new TableColumn(fields_table_widget, SWT.LEFT);
+        col.setText("Live Value");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(50, 150));
 
         // TableViewer interface the plain device_table_widget
         // to our "model":
@@ -315,12 +277,9 @@ public class GUI implements PVFieldsListener
         		}
         		catch (IOException e) {
         			 e.printStackTrace();
-
         		}
         	}
         });
-
-
     }
 
     /**
@@ -450,6 +409,4 @@ public class GUI implements PVFieldsListener
             	fields_table_widget.getColumn(1).setText("Field");
             	}
     }
-
-
 }
