@@ -4,6 +4,7 @@ Bundle-Name: Postanalyser
 Bundle-SymbolicName: org.csstudio.diag.postanalyser;singleton:=true
 Bundle-Version: 1.0.7.qualifier
 Bundle-Activator: org.csstudio.diag.postanalyser.Activator
+Bundle-Description: Fitting and correlation for Data Browser
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

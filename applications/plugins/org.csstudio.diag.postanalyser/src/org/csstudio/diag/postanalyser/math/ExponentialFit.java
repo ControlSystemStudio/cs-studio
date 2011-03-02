@@ -13,7 +13,7 @@ public class ExponentialFit extends Fit
     private double x0;
     private double amp;
     private double time;
-    
+
     /** Implement exponential.
      *  <p>
      *  <code>A * exp((x-x0)/T)</code>
@@ -21,16 +21,18 @@ public class ExponentialFit extends Fit
      *  <li>Parameter 0 = Amplitude <code>A</code>
      *  <li>Parameter 1 = Decay/rise time constant <code>T</code>
      *  </ul>
-     */ 
+     */
     class Exponential implements CostFunction
     {
         /** {@inheritDoc} */
+        @Override
         public int getParameterCount()
         {
             return 2;
         }
 
         /** {@inheritDoc} */
+        @Override
         public double evaluate(final double values[], final double params[])
         {
             final double x = values[0] - x0;
@@ -40,21 +42,22 @@ public class ExponentialFit extends Fit
         }
 
         /** {@inheritDoc} */
+        @Override
         public double derive(final double values[], final double params[], int ith)
         {
             final double x = values[0] - x0;
             final double amp = params[0];
             final double time = params[1];
-            
+
             // dy/A ( ... )
             if (ith == 0)
                 return Math.exp(x/time);
-            
+
             // dy/T ( ... )
             return -amp * x / (time*time) * Math.exp(x/time);
         }
     }
-    
+
     /** Perform fit of data to exponential <code>A * exp(x/T)</code>
      *  with Amplitude <code>A</code>
      *  and time constant <code>T</code>.
@@ -72,7 +75,7 @@ public class ExponentialFit extends Fit
         // Attempt the faster line fit
         if (lineFit(x, y, N))
             return;
-        
+
         Activator.getLogger().info("ExponentialFit uses LevenbergMarquardt"); //$NON-NLS-1$
         // Failed, probably because of noise that generated y <= 0.0
         // Perform the trial-and-error fit
@@ -81,7 +84,7 @@ public class ExponentialFit extends Fit
         lm.setPoints(x, 0);
         lm.setCostFunction(func);
         lm.setValues(y);
-        
+
         // LevenbergMarquardt needs some reasonable estimates,
         // which we get from the maximum of the function
         final MinMaxFinder max = new MinMaxFinder(x, y);
@@ -101,7 +104,7 @@ public class ExponentialFit extends Fit
         time = lm.getParameter(1);
     }
 
-    /** Try to use line fit to <code>log(y)</code> 
+    /** Try to use line fit to <code>log(y)</code>
      *  @return <code>true</code> if parameters were set OK,
      *          <code>false</code> on error
      */
@@ -112,7 +115,7 @@ public class ExponentialFit extends Fit
         final double shift_x[] = new double[N];
         final double log_y[] = new double[N];
         for (int i=0; i<N; ++i)
-        {   
+        {
             shift_x[i] = x[i] - x0;
             if (y[i] <= 0.0)
                 return false;
