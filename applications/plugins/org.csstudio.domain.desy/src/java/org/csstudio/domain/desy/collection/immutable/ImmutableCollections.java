@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -85,14 +84,14 @@ public final class ImmutableCollections {
         result.put(key, value);
         return result;
     }
-    @Nonnull
-    public static <K, V> IImmutableMap<K, IImmutableList<V>> listMap(@Nonnull final Map<K, List<V>> map) {
-        final ImmutableHashMap<K, IImmutableList<V>> result = new ImmutableHashMap<K, IImmutableList<V>>();
-        for (final Map.Entry<K, List<V>> entry : map.entrySet()) {
-            result.put(entry.getKey(), new ImmutableArrayList<V>(entry.getValue()));
-        }
-        return result;
-    }
+//    @Nonnull
+//    public static <K, V> IImmutableMap<K, IImmutableList<V>> listMap(@Nonnull final Map<K, List<V>> map) {
+//        final Map<K, List<V>> intermediate = Maps.newHashMap(map);
+//        for (final Entry<K, List<V>> entry : map.entrySet()) {
+//            intermediate.put(entry.getKey(), new ImmutableArrayList<V>(entry.getValue()));
+//        }
+//        return new ImmutableHashMap<K, IImmutableList<V>>(intermediate);
+//    }
 
     @CheckForNull
     public static <V> V firstValue(@Nonnull final IImmutableMap<?, V> map) {
