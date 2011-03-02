@@ -29,7 +29,7 @@ import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
- * Dao for archive control system.:
+ * Dao for archive control system.
  *
  * @author bknerr
  * @since 17.02.2011

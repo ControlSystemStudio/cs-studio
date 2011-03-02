@@ -29,7 +29,7 @@
 		<link>
 			<name>widgets</name>
 			<type>2</type>
-			<location>D:/home/cosy/C::/Entwicklung/eclipse_workspaces/runtime-sds2/SDS Demo Display/Testcases/widgets</location>
+			<location>/home/cosy/C::/Entwicklung/eclipse_workspaces/runtime-sds2/SDS Demo Display/Testcases/widgets</location>
 		</link>
 	</linkedResources>
 </projectDescription>

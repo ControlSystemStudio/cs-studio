@@ -51,6 +51,8 @@ public class PersistDataWorker implements Runnable {
     private static final Logger LOG =
             CentralLogger.getInstance().getLogger(PersistDataWorker.class);
 
+    private final PersistEngineDataManager _mgr = PersistEngineDataManager.INSTANCE;
+
     private final String _name;
     private final long _period;
 
@@ -89,18 +91,18 @@ public class PersistDataWorker implements Runnable {
                 sqlStmt.addBatch(queuedStmt);
                 size += StringUtil.getSizeInBytes(queuedStmt);
             }
-            LOG.info("Batched stmt size:\t" + size);
+            LOG.info("Execute batched stmt - size:\t" + size);
             sqlStmt.executeBatch();
 
         } catch (final ArchiveConnectionException se) {
-            ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Drain unpersisted statements to file system.");
-            ArchiveDaoManager.INSTANCE.rescueData(_batchedStatements);
+            LOG.error("Batched update failed. Drain unpersisted statements to file system.");
+            _mgr.rescueData(_batchedStatements);
         } catch (final BatchUpdateException be) {
-            ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Drain unpersisted statements to file system.");
+            LOG.error("Batched update failed. Drain unpersisted statements to file system.");
             processFailedBatch(_batchedStatements, be);
         } catch (final SQLException se) {
-            ArchiveDaoManager.WORKER_LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.");
-            ArchiveDaoManager.INSTANCE.rescueData(_batchedStatements);
+            LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.");
+            _mgr.rescueData(_batchedStatements);
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
@@ -125,17 +127,17 @@ public class PersistDataWorker implements Runnable {
         // Empty
     }
 
-    private static void processFailedBatch(@Nonnull final List<String> batchedStatements,
+    private void processFailedBatch(@Nonnull final List<String> batchedStatements,
                                            @Nonnull final BatchUpdateException be) {
         // NOT all statements have been successfully executed! (Depends on RDBM)
         final int[] updateCounts = be.getUpdateCounts();
         if (updateCounts.length == batchedStatements.size()) {
             // All statements have been tried executed, look for the failed ones
             final List<String> failedStmts = findFailedStatements(updateCounts, batchedStatements);
-            ArchiveDaoManager.INSTANCE.rescueData(failedStmts);
+            _mgr.rescueData(failedStmts);
         } else {
             // Not all statements have been tried to be executed - safe only the failed ones
-            ArchiveDaoManager.INSTANCE.rescueData(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
+            _mgr.rescueData(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
         }
     }
 

@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -44,15 +45,11 @@ public abstract class AbstractArchiveDao {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
 
-    private final ArchiveDaoManager _mgr;
-
 
     /**
      * Constructor.
      */
-    public AbstractArchiveDao(@Nonnull final ArchiveDaoManager mgr) {
-        _mgr = mgr;
-    }
+    public AbstractArchiveDao() { }
 
     /**
      * Returns the current connection for the dao implementation and its subclasses.
@@ -60,13 +57,17 @@ public abstract class AbstractArchiveDao {
      * @throws ArchiveConnectionException
      */
     @Nonnull
-    protected Connection getConnection() throws ArchiveConnectionException {
-        return _mgr.getConnection();
+    protected static Connection getConnection() throws ArchiveConnectionException {
+        return ArchiveDaoManager.INSTANCE.getConnection();
     }
 
     @Nonnull
-    protected IArchiveDaoManager getDaoMgr() {
-        return _mgr;
+    protected static ArchiveDaoManager getDaoMgr() {
+        return ArchiveDaoManager.INSTANCE;
+    }
+    @Nonnull
+    protected static PersistEngineDataManager getEngineMgr() {
+        return PersistEngineDataManager.INSTANCE;
     }
 
     /**
@@ -81,6 +82,23 @@ public abstract class AbstractArchiveDao {
             } catch (final SQLException e) {
                 LOG.warn(logMsg);
             }
+        }
+    }
+
+    protected void handleExceptions(@Nonnull final String msg,
+                                    @Nonnull final Exception inE) throws ArchiveDaoException {
+        try {
+            throw inE;
+        } catch (final SQLException e) {
+            throw new ArchiveDaoException("SQL: " + msg, e);
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveDaoException("Connection: " + msg, e);
+        } catch (final ClassNotFoundException e) {
+            throw new ArchiveDaoException("Class not found: " + msg, e);
+        } catch (final MalformedURLException e) {
+            throw new ArchiveDaoException("Malformed URL: " + msg, e);
+        } catch (final Exception re) {
+            throw new ArchiveDaoException("Unknown: ", re);
         }
     }
 }

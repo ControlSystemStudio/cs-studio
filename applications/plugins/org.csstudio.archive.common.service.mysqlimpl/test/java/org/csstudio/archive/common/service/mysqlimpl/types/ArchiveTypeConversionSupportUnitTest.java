@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -9,10 +9,8 @@ package org.csstudio.archive.common.engine;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveEngineConfigServiceTracker;
-import org.csstudio.archive.common.service.ArchiveWriterServiceTracker;
-import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.ArchiveEngineServiceTracker;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -32,8 +30,7 @@ public class Activator extends Plugin {
     private static Activator INSTANCE;
 
     // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
-    private ArchiveEngineConfigServiceTracker _archiveEngineConfigServiceTracker;
-    private ArchiveWriterServiceTracker _archiveWriterServiceTracker;
+    private ArchiveEngineServiceTracker _archiveEngineServiceTracker;
 
     /**
      * Don't instantiate.
@@ -57,11 +54,9 @@ public class Activator extends Plugin {
     public void start(@Nonnull final BundleContext context) throws Exception {
         super.start(context);
 
-        _archiveEngineConfigServiceTracker = new ArchiveEngineConfigServiceTracker(context);
-        _archiveEngineConfigServiceTracker.open();
+        _archiveEngineServiceTracker = new ArchiveEngineServiceTracker(context);
+        _archiveEngineServiceTracker.open();
 
-        _archiveWriterServiceTracker = new ArchiveWriterServiceTracker(context);
-        _archiveWriterServiceTracker.open();
     }
 
     /**
@@ -70,12 +65,8 @@ public class Activator extends Plugin {
     @Override
     public void stop(@Nonnull final BundleContext context) throws Exception {
 
-        if (_archiveEngineConfigServiceTracker != null) {
-            _archiveEngineConfigServiceTracker.close();
-        }
-
-        if (_archiveWriterServiceTracker != null) {
-            _archiveWriterServiceTracker.close();
+        if (_archiveEngineServiceTracker != null) {
+            _archiveEngineServiceTracker.close();
         }
 
         super.stop(context);
@@ -88,29 +79,14 @@ public class Activator extends Plugin {
      * @throws OsgiServiceUnavailableException
      */
     @Nonnull
-    public IArchiveEngineConfigService getArchiveEngineConfigService() throws OsgiServiceUnavailableException
+    public IArchiveEngineFacade getArchiveEngineService() throws OsgiServiceUnavailableException
     {
-        final IArchiveEngineConfigService service =
-            (IArchiveEngineConfigService) _archiveEngineConfigServiceTracker.getService();
+        final IArchiveEngineFacade service =
+            (IArchiveEngineFacade) _archiveEngineServiceTracker.getService();
         if (service == null) {
             throw new OsgiServiceUnavailableException("Archive engine config service unavailable.");
         }
         return service;
     }
 
-    /**
-     * Returns the archive writer service from the service tracker.
-     * @return the archive service or <code>null</code> if not available.
-     * @throws OsgiServiceUnavailableException
-     */
-    @Nonnull
-    public IArchiveWriterService getArchiveWriterService() throws OsgiServiceUnavailableException
-    {
-        final IArchiveWriterService service =
-            (IArchiveWriterService) _archiveWriterServiceTracker.getService();
-        if (service == null) {
-            throw new OsgiServiceUnavailableException("Archive writer service unavailable.");
-        }
-        return service;
-    }
 }

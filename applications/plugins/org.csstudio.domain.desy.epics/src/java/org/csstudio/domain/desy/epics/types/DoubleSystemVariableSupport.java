@@ -9,9 +9,9 @@ import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.types.CssValueType;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
@@ -81,11 +81,11 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
      * {@inheritDoc}
      */
     @Override
-    protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(final String name,
-                                                                            final Class<?> typeClass,
-                                                                            final Collection<Double> values,
-                                                                            final ControlSystem system,
-                                                                            final TimeInstant timestamp) throws TypeSupportException {
+    protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(@Nonnull final String name,
+                                                                                    @Nonnull final Class<?> typeClass,
+                                                                                    @Nonnull final Collection<Double> values,
+                                                                                    @Nonnull final ControlSystem system,
+                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         // TODO Auto-generated method stub
         return null;
     }

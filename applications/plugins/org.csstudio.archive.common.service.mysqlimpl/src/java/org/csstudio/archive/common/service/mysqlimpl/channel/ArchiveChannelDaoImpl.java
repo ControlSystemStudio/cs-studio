@@ -33,7 +33,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -44,7 +43,6 @@ import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -86,25 +84,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     /**
      * Constructor.
-     * @param the dao manager
      */
-    public ArchiveChannelDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
-    }
-
-
-    private void handleExceptions(@Nonnull final Exception inE) throws ArchiveDaoException {
-        try {
-            throw inE;
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException(EXC_MSG, e);
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException(EXC_MSG, e);
-        } catch (final ClassNotFoundException e) {
-            throw new ArchiveDaoException(EXC_MSG + " Type class unknown.", e);
-        } catch (final Exception re) {
-            throw new RuntimeException(re);
-        }
+    public ArchiveChannelDaoImpl() {
+        super();
     }
 
     @Nonnull
@@ -167,7 +149,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 channel = getChannelFromResult(result);
             }
         } catch (final Exception e) {
-            handleExceptions(e);
+            handleExceptions("", e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelByNameStmt + " failed.");
         }
@@ -195,9 +177,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             if (result.next()) {
                 channel = getChannelFromResult(result);
             }
-
         } catch (final Exception e) {
-            handleExceptions(e);
+            handleExceptions(EXC_MSG, e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelByIdStmt + " failed.");
         }
@@ -236,7 +217,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
             return tempCache.values();
         } catch (final Exception e) {
-            handleExceptions(e);
+            handleExceptions(EXC_MSG, e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
         }

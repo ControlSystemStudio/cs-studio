@@ -28,7 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -80,14 +80,6 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     }
     private final ArchiveString2EpicsEnumFunction _archiveString2EpicsEnumFunc = new ArchiveString2EpicsEnumFunction();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final EpicsEnumTriple value) throws TypeSupportException {
-        throw new TypeSupportException("Enum shall not be converted to Double.", null);
-    }
     /**
      * {@inheritDoc}
      */
