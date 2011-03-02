@@ -35,12 +35,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
-
+// TODO Externalize strings
+@SuppressWarnings("nls")
 public class GUI implements PVFieldsListener
 {
     final private PVFieldsModel model;
     final private Composite parent;
-    
+
     /** GUI Elements */
     private TableViewer fields_table;
     private ComboViewer cbo_name;
@@ -63,15 +64,12 @@ public class GUI implements PVFieldsListener
 
     // These filter extensions are used to filter which files are displayed.
     private static final String[] FILTER_EXTS = { "*.csv", "*.*"};
-    
-
-
 
     public GUI(final Composite parent, final PVFieldsModel model)
     {
         this.model = model;
         this.parent = parent;
-    	
+
         final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 4;
         parent.setLayout(gridLayout);
@@ -87,7 +85,7 @@ public class GUI implements PVFieldsListener
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         cbo_name.getCombo().setLayoutData(gd);
-        
+
         label = new Label(parent, SWT.RIGHT);
         label.setText("Field:");
         label.setLayoutData(new GridData());
@@ -112,8 +110,8 @@ public class GUI implements PVFieldsListener
         gd.grabExcessHorizontalSpace = true;
         pvLabel.setLayoutData(gd);
 
-        
-        
+
+
         fileStuff = new Composite (parent, SWT.NULL);
         GridLayout layout = new GridLayout();
         layout.numColumns=3;
@@ -122,8 +120,8 @@ public class GUI implements PVFieldsListener
         gd.horizontalSpan = 2;
         gd.grabExcessHorizontalSpace=true;
         fileStuff.setLayoutData(gd);
-        
-        
+
+
         label = new Label(fileStuff, SWT.NONE);
         label.setText("File Name:");
         gd = new GridData();
@@ -133,7 +131,7 @@ public class GUI implements PVFieldsListener
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.grabExcessHorizontalSpace=true;
         fileName.setLayoutData(gd);
-        
+
         //Button
         toFileButton = new Button(fileStuff, SWT.PUSH);
         toFileButton.setText("Export to File");
@@ -141,10 +139,10 @@ public class GUI implements PVFieldsListener
         //gd.horizontalSpan = 2;
         toFileButton.setLayoutData(gd);
 
-        
 
 
-        
+
+
 
         // New row
         label = new Label(parent, 0);
@@ -217,7 +215,7 @@ public class GUI implements PVFieldsListener
         fields_table.setContentProvider(new FieldProvider(fields_table, model));
         // Turns request for column 0, 1, 2, ... into Device's name, parent, ...
         fields_table.setLabelProvider(new FieldLabelProvider());
-        
+
         hookListeners();
     }
 
@@ -229,37 +227,41 @@ public class GUI implements PVFieldsListener
          * the Control and used to query for associated process variables fields
          * that are like the value entered.
          */
-    	
+
         field_value.getCombo().addSelectionListener(new SelectionListener()
         {
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(SelectionEvent e) {
             	String pv = cbo_name.getCombo().getText().trim();
                 String field = field_value.getCombo().getText().trim();
                 if (field.length() <= 0)
-                	field = null; 
+                	field = null;
                 model.setPV(pv,field);
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(SelectionEvent e) {
 				widgetDefaultSelected(e);
 			}
         });
 
         // Subscribe to changes
         model.addListener(this);
-        
+
         // Stop model when GUI is disposed
         fields_table.getTable().addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
             	model.removeListener(GUI.this);
             	model.disconnectCurrentFields();
             }
         });
-        
+
         //Update values in upper section with appropriate values
         fields_table_widget.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
             	PVInfo pv = model.getPVInfoRow(fields_table_widget.getSelectionIndex());
             	pvLabel.setText(pv.getPVName());
@@ -269,19 +271,19 @@ public class GUI implements PVFieldsListener
                 file_value.setText(pv.getFileName());
                 }
           });
-    
-        toFileButton.addSelectionListener(new SelectionAdapter() 
+
+        toFileButton.addSelectionListener(new SelectionAdapter()
         {
         	@Override
         	public void widgetSelected(SelectionEvent event) {
-        		
+
         		try{
         			FileDialog dlg = new FileDialog(parent.getShell(), SWT.SAVE);
         			dlg.setFilterNames(FILTER_NAMES);
         	        dlg.setFilterExtensions(FILTER_EXTS);
     	        	String fileEntry = fileName.getText();
         	        if (fileEntry != "") {
-        	        	if (fileEntry == "")System.out.println( "It's ull"); 
+        	        	if (fileEntry == "")System.out.println( "It's ull");
         	        	String path = fileEntry.substring(0, fileEntry.lastIndexOf("\\")+1);
         	        	String fileN = fileEntry.substring(fileEntry.lastIndexOf("\\")+1);
         	        	if (path != null) dlg.setFilterPath(path);
@@ -290,11 +292,11 @@ public class GUI implements PVFieldsListener
         	        String fn = dlg.open();
         	        if (fn != null) {
         	          fileName.setText(fn);
-	        	       
+
         	          FileWriter writer = new FileWriter(fn);
 	                  PVInfo[] pvs = model.getPVInfoAll();
-	        			 
-	       		      for (int i = 0; i<pvs.length; i++){        			
+
+	       		      for (int i = 0; i<pvs.length; i++){
 		        		writer.append( pvs[i].getPVName() + "\t" );
 		        		writer.append( pvs[i].getType() + "\t"  );
 		        		writer.append( pvs[i].getFEC() + "\t"  );
@@ -315,10 +317,10 @@ public class GUI implements PVFieldsListener
         			 e.printStackTrace();
 
         		}
-        	}	
+        	}
         });
 
-    
+
     }
 
     /**
@@ -374,20 +376,22 @@ public class GUI implements PVFieldsListener
     	model.setPV(pv_name,field_name);
     	setTableColHead();
         cbo_name.getCombo().setText(pv_name);
-        if (field_name==null) field_value.getCombo().setText(""); 
+        if (field_name==null) field_value.getCombo().setText("");
     	else field_value.getCombo().setText(field_name);
     }
 
 
-    
+
     // @see PVFieldsListener
+    @Override
     public void fieldChanged(final PVInfo field)
     {
         // This could be called from a non-GUI thread, for example the model's
         // database reader or from the PV subscription thread
         Display.getDefault().asyncExec(new Runnable()
         {
-        	public void run()
+        	@Override
+            public void run()
             {
                 final PVInfo pv = model.getPVInfoRow(0);
         		if (fields_table.getControl().isDisposed())
@@ -397,7 +401,7 @@ public class GUI implements PVFieldsListener
             	if (field == null)
                 {
                     // Update whole model
-               	
+
 
     	            pvLabel.setText(pv.getPVName());
                 	rec_type_value.setText(pv.getType());
@@ -422,7 +426,6 @@ public class GUI implements PVFieldsListener
     /**
      * Clear the last text from the Fields table.
      */
-    @SuppressWarnings("nls")
     public void clearLastPV()
     {
     	pvLabel.setText("");
