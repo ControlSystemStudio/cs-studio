@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
+import java.util.logging.Logger;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** Plugin class for EPICS PV Tree.
@@ -15,7 +17,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Plugin extends AbstractUIPlugin
 {
     /** The plug-in ID defined in MANIFEST.MF */
-    public static final String ID = "org.csstudio.diag.epics.pvtree"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.diag.epics.pvtree"; //$NON-NLS-1$
+
+    final private static Logger logger = Logger.getLogger(ID);
 
     /** The shared instance */
     private static Plugin plugin;
@@ -25,10 +29,16 @@ public class Plugin extends AbstractUIPlugin
     {
         plugin = this;
     }
-    
+
     /** @return Returns the shared instance. */
     public static Plugin getDefault()
     {
         return plugin;
+    }
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
     }
 }

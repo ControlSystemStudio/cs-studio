@@ -64,6 +64,7 @@ fi
 cp -R ../products/$PRODUCT $BUILD
 cat $BUILD/plugins.list | xargs -I {} cp -R ../core/plugins/{} $BUILD/plugins
 cat $BUILD/plugins.list | xargs -I {} cp -R ../applications/plugins/{} $BUILD/plugins
+cat $BUILD/features.list | xargs -I {} cp -R ../core/features/{} $BUILD/features
 cat $BUILD/features.list | xargs -I {} cp -R ../applications/features/{} $BUILD/features
 mkdir $BUILD/BuildDirectory
 cd $BUILD

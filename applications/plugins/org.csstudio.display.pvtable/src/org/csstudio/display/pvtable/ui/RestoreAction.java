@@ -2,7 +2,6 @@ package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
@@ -13,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
 public class RestoreAction extends PVListModelAction
 {
     final private Shell shell;
-    
+
     public RestoreAction(final Shell shell, final PVListModel pv_list)
     {
         super(pv_list);
@@ -35,7 +34,6 @@ public class RestoreAction extends PVListModelAction
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
             MessageDialog.openError(shell, "Restore Error",
                     NLS.bind("Error restoring values:\n{0}", ex.getMessage()));
         }

@@ -1,6 +1,7 @@
 package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import org.csstudio.platform.ui.swt.AutoSizeColumn;
 import org.csstudio.platform.ui.swt.AutoSizeControlListener;
@@ -30,19 +31,19 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.actions.ActionFactory;
 
 /** Creates an Eclipse TableViewer hooked to a PVListModel.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class PVTableViewerHelper
 {
     public final static String empty_row = Messages.EmptyRowMarker;
-    
+
     private TableViewer table_viewer;
     private PVListModel pv_list;
     private PVListModelListener listener;
 
     private TableViewerUpdate table_viewer_update;
-    
+
     private Action config_action, add_action, delete_action;
     private Action start_stop_action, snapshot_action, restore_action;
     private Action cut_action, copy_action, paste_action;
@@ -59,10 +60,10 @@ public class PVTableViewerHelper
         // Only possible optimization: If all the properties sent to
         // update() are isLabelProperty(..)== false, in which case
         // nothing gets redrawn at all.
-        
+
         //private String properties[];
         //private PVListEntry entry;
-        
+
         public TableViewerUpdate()
         {
             //properties = new String[3];
@@ -92,7 +93,7 @@ public class PVTableViewerHelper
             table_viewer.refresh();
         }
     }
-    
+
     /** Creates a TableViewer with context menu etc.
      *  for the PVListModel
      *  @param parent
@@ -114,7 +115,7 @@ public class PVTableViewerHelper
                         PVTableHelper.weights[i]);
         // Configure table to auto-size the columns
         new AutoSizeControlListener(table);
-    
+
         table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.
         table_viewer.setUseHashlookup(true);
@@ -122,10 +123,10 @@ public class PVTableViewerHelper
         table_viewer.setContentProvider(
                 new PVTableLazyContentProvider(table_viewer, pv_list));
         setTableViewerItemCount();
-        
+
         // Allow editing.
         new PVTableCellModifier(table_viewer, pv_list);
-        
+
         // Create Actions
         config_action = new ConfigAction(pv_list);
         add_action = new AddAction(this);
@@ -149,7 +150,7 @@ public class PVTableViewerHelper
                 getPVListModel().addPV(name.getName());
             }
         };
-        
+
         // React to model changes
         listener = new PVListModelListener()
         {
@@ -196,7 +197,7 @@ public class PVTableViewerHelper
         bars.setGlobalActionHandler(ActionFactory.PASTE.getId(), paste_action);
         bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), delete_action);
     }
-    
+
     /** @return The clipboard.
      *  See plugin book p. 290 and dispose()
      */
@@ -219,11 +220,11 @@ public class PVTableViewerHelper
             clipboard = null;
         }
     }
-    
+
     /** @return Returns the TableViewer. */
     public TableViewer getTableViewer()
     {   return table_viewer;  }
-    
+
     /** @return Returns the PVListModel. */
     public PVListModel getPVListModel()
     {   return pv_list;  }
@@ -267,7 +268,7 @@ public class PVTableViewerHelper
             entries[i++] = entry;
             if (i > num)
             {
-                Plugin.getLogger().error("Selection grew beyond " + num); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "Selection grew beyond {0}", num); //$NON-NLS-1$
                 return null;
             }
         }

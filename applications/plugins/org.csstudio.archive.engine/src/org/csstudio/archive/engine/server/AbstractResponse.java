@@ -8,14 +8,15 @@
 package org.csstudio.archive.engine.server;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.model.EngineModel;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** Helper for creating web pages with consistent look (header, footer, ...)
  *  @author Kay Kasemir
@@ -27,7 +28,7 @@ abstract class AbstractResponse extends HttpServlet
     private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
     final protected EngineModel model;
-    
+
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
@@ -35,7 +36,7 @@ abstract class AbstractResponse extends HttpServlet
     {
         this.model = model;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void doGet(final HttpServletRequest req,
@@ -50,14 +51,14 @@ abstract class AbstractResponse extends HttpServlet
         {
             if (resp.isCommitted())
             {
-                CentralLogger.getInstance().getLogger(this).warn("HTTP Server exception", ex);
+                Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
                 return;
             }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());
         }
     }
-    
-    /** Derived class must implement this to provide page content. 
+
+    /** Derived class must implement this to provide page content.
      *  <p>
      *  Call <code>startHTML</code> once, then other print methods.
      *  @param req The request

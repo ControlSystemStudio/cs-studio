@@ -4,8 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -16,7 +17,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -46,7 +46,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     private final String plugin_id;
     private final String editor_ID;
     private final String title, default_filename, extension, default_content;
-    
+
     private NewFileWizardPage page;
 
     private IStructuredSelection selection;
@@ -75,7 +75,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     {
         this.selection = selection;
     }
-    
+
     /** Adding the page to the wizard. */
     @Override
     public void addPages()
@@ -195,8 +195,7 @@ public class NewFileWizard extends Wizard implements INewWizard
                 }
                 catch (Exception e)
                 {
-                    CentralLogger.getInstance().error(this,
-                                    Messages.CannotOpenEditor, e);
+                    Plugin.getLogger().log(Level.SEVERE, Messages.CannotOpenEditor, e);
                 }
             }
         });

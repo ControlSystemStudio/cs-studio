@@ -35,20 +35,20 @@ public class AveragingSampleIteratorUnitTest
     {
         /** Total sequence length in seconds */
         final public static int LENGTH = 100;
-        
+
         /** Period of one sine in seconds */
         final public static double PERIOD = 10;
-        
+
         final private static String DISCONNECTED = "Disconnected";
 
         final private ArrayList<IValue> samples = new ArrayList<IValue>();
 
         /** Index of 'current' sample for <code>next()</code> */
         private int index = 0;
-        
+
         public SinewaveSamples(final boolean with_disconnects)
         {
-            final INumericMetaData meta = 
+            final INumericMetaData meta =
                 ValueFactory.createNumericMetaData(0.0, 10.0, 2.0, 8.0,
                                                    1.0, 10.0, 2, "a.u.");
             for (int i=0; i<LENGTH; ++i)
@@ -73,20 +73,22 @@ public class AveragingSampleIteratorUnitTest
                             new String[] { DISCONNECTED }));
             }
         }
-        
+
         /** {@inheritDoc} */
+        @Override
         public boolean hasNext()
         {
             return index < samples.size();
         }
 
         /** {@inheritDoc} */
+        @Override
         public IValue next() throws Exception
         {
             return samples.get(index++);
         }
     }
-    
+
     /** SampleIterator that provides text and ennum. */
     static class NonNumericSamples implements SampleIterator
     {
@@ -94,15 +96,15 @@ public class AveragingSampleIteratorUnitTest
 
         /** Index of 'current' sample for <code>next()</code> */
         private int index = 0;
-        
+
         public NonNumericSamples()
         {
-            final IEnumeratedMetaData meta = 
+            final IEnumeratedMetaData meta =
                 ValueFactory.createEnumeratedMetaData(new String []
             {
                         "One", "Two", "Three"
             });
-            
+
             samples.add(ValueFactory.createStringValue(
                     TimestampFactory.createTimestamp(0, 0),
                     ValueFactory.createOKSeverity(),
@@ -128,14 +130,16 @@ public class AveragingSampleIteratorUnitTest
                     IValue.Quality.Original,
                     new int[] { 2 }));
         }
-        
+
         /** {@inheritDoc} */
+        @Override
         public boolean hasNext()
         {
             return index < samples.size();
         }
 
         /** {@inheritDoc} */
+        @Override
         public IValue next() throws Exception
         {
             return samples.get(index++);
@@ -198,7 +202,7 @@ public class AveragingSampleIteratorUnitTest
         System.out.println("Samples: " + count);
         assertEquals(SinewaveSamples.LENGTH / SinewaveSamples.PERIOD * 2, count, 0.1);
     }
-    
+
     /** Average over 1 second, i.e. there's only one sample per period.
      *  Gives the original data.
      */
@@ -219,7 +223,7 @@ public class AveragingSampleIteratorUnitTest
         System.out.println("Samples: " + count);
         assertEquals(SinewaveSamples.LENGTH, count);
     }
-    
+
     /** ... with some 'disconnected' samples */
     @Test
     public void testFullCycleAveragingWithDisconnects() throws Exception

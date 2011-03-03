@@ -8,8 +8,9 @@
 package org.csstudio.archive.engine.scanner;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.engine.Activator;
 import org.csstudio.util.stats.Average;
 
 /** Helper for scanning something.
@@ -207,7 +208,7 @@ public class Scanner implements Scheduleable
         }
         catch (InterruptedException ex)
         {
-            CentralLogger.getInstance().getLogger(this).error("Scanner interrupted", ex); //$NON-NLS-1$
+            Activator.getLogger().log(Level.WARNING, "Scanner interrupted", ex); //$NON-NLS-1$
         }
     }
 }

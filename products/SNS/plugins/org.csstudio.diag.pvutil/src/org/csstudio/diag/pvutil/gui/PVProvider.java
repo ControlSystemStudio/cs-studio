@@ -25,6 +25,7 @@ public class PVProvider implements ILazyContentProvider
         this.control = control;
     }
 
+    @Override
     public void updateElement(int row)
     {
         try
@@ -40,11 +41,15 @@ public class PVProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void dispose()
     {
+        // NOP
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
+        // NOP
     }
 }
