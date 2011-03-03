@@ -26,6 +26,7 @@ public class RackDVCListProvider implements ILazyContentProvider
 
     }
 
+    @Override
     public void updateElement(int index)
     {
         try
@@ -41,11 +42,15 @@ public class RackDVCListProvider implements ILazyContentProvider
         }
     }
 
+    @Override
     public void dispose()
     {
+        // NOP
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
     {
+        // NOP
     }
 }

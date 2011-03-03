@@ -37,10 +37,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings("nls")
-public class GUI implements RackModelListener 
+public class GUI implements RackModelListener
 
 {
-    
+
     private RackModel rackControl;
     private Display display = Display.getDefault();
 
@@ -49,7 +49,7 @@ public class GUI implements RackModelListener
     private Button slotPosButton;
     private int form_weights[] = new int[] { 20,80 };
     int[] depth_points = { 0,0 };
-    
+
     /** GUI Elements */
     private Text dvcOrPVEntry, rackIdFilterEntry;
     public List rackList, dvcIdList;
@@ -85,7 +85,7 @@ public class GUI implements RackModelListener
         Composite RacksListContents = new Composite(form, SWT.NULL);
         Composite ListContents = new Composite(RacksListContents, SWT.NULL);
         Composite DeviceContents = new Composite(RacksListContents, SWT.NULL);
-        
+
         GridLayout layout = new GridLayout();
         RacksListContents.setLayout(layout);
         GridData gd = new GridData();
@@ -122,12 +122,12 @@ public class GUI implements RackModelListener
         DeviceContents.setLayout(layout);
         gd = new GridData(GridData.FILL_VERTICAL);
         DeviceContents.setLayoutData(gd);
-        
+
         l = new Label(DeviceContents, 0);
         l.setText("Device or Process Variable:");
         gd = new GridData();
         l.setLayoutData(gd);
-        
+
         dvcOrPVEntry  = new Text(DeviceContents, SWT.BORDER);
         dvcOrPVEntry.setToolTipText("Enter device ID or PV");
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -166,13 +166,13 @@ public class GUI implements RackModelListener
         rack_list_table.setContentProvider(new RackDVCListProvider(rack_list_table, rackControl));
         // Turns request for column 0, 1, 2, ... into Device's name, parent, ...
         rack_list_table.setLabelProvider(new RackDVCListLabelProvider());
-        
+
     }
-    
- 
+
+
     /** Create the Right sash: Rack Device Table and Rack Profile */
     private void createBottomSash(final SashForm form)
-    { 
+    {
         //with rack height varying the height of the canvas has to adjust.
         //15 pts for each U high and an extra 125.
     	final int canvasHeight = rackHeight*15+125;
@@ -180,42 +180,39 @@ public class GUI implements RackModelListener
 
     	final Composite scroll = ScrolledContainerHelper.create(form,canvasWidth,canvasHeight);
     	scroll.setLayout(new FillLayout());
-    	
+
     	Composite profileContainer = new Composite(scroll, SWT.NULL);
-        
+
     	Button slotPosButton = new Button (profileContainer, SWT.PUSH);
     	this.slotPosButton = slotPosButton;
     	slotPosButton.setBounds (320, 30, 100, 32);
     	slotPosButton.setText ("See Rack Back");
 
-     	
+
         final Canvas paintCanvas = new Canvas(profileContainer, SWT.NONE);
         this.paintCanvas = paintCanvas;
         profileContainer.getBounds();
         paintCanvas.setBounds(0,0,canvasWidth,canvasHeight);
-       
+
         // Create a paint handler for the canvas
-       
+
         paintCanvas.addPaintListener(new PaintListener() {
-          public void paintControl(PaintEvent e) {
+          @Override
+        public void paintControl(PaintEvent e) {
         	  	int loops = rackHeight;
 			    int newU = rackHeight;
 				int hU, dvc, dvcC;
-        	
+
         	e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
         	e.gc.drawText(rackControl.getRackDvcId(),215-(rackControl.getRackDvcId().length()*3),30);
         	if ( rackControl.getSlotPosInd() == "B")
         		e.gc.drawText("Back",205,45);
         	else
         		e.gc.drawText("Front",205,45);
-        	
+
 
 	        	e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE));
   				e.gc.setLineWidth(2);
-      	
-        	
-          	for (int i = 0; i < rackControl.getRackDvcListCount(); i++) {
-          	}
 
 				try {
 					if ((rackControl.getRackDvcListCount() == 0) ) {
@@ -250,7 +247,7 @@ public class GUI implements RackModelListener
 									newU = newU - hU;
 									}
 								else if (dvc <= (dvcC -1) ) {
-									//figure how many blanks 
+									//figure how many blanks
 									e.gc.setBackground(empty_color);
 									hU = (newU - rackControl.getRackListDVC(dvc).getEND() );
 									e.gc.fillRectangle(90, 100+(i*15), 300, hU*15);
@@ -301,12 +298,12 @@ public class GUI implements RackModelListener
 						e.gc.drawText("Problem", 240, (rackHeight*15/2)+115);
 	  					e1.printStackTrace();
 	  			    }
-				}	
+				}
 
 
 				//Draws the Left side Rectangles and puts the "#U" text inside.
 				loops = rackHeight;
-				
+
   				for (int i = 1; i <= rackHeight; i++) {
   					e.gc.setBackground(white_color);
   					e.gc.setForeground(display.getSystemColor(SWT.COLOR_BLUE));
@@ -316,7 +313,7 @@ public class GUI implements RackModelListener
   			    	e.gc.drawString(loops+"U",68 , 101+(i*15));
   			    	loops--;
   			    }
-          
+
   				e.gc.setLineCap(SWT.CAP_ROUND);
 				depth_points = new int[] {
 						91, 115,
@@ -331,17 +328,17 @@ public class GUI implements RackModelListener
 
           }
         });
- 
+
     }
-    
-    
-    
+
+
+
     void hookListeners()
     {
- 
         rackIdFilterEntry.addTraverseListener(new TraverseListener()
         {
-        	public void keyTraversed(TraverseEvent e)
+        	@Override
+            public void keyTraversed(TraverseEvent e)
             {
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
@@ -352,7 +349,6 @@ public class GUI implements RackModelListener
             }
         });
 
- 	
     	/**
          * Listens for a selection of an Rack from the rackList.
          * The value is then passed to the control and used to query for associated
@@ -360,6 +356,7 @@ public class GUI implements RackModelListener
          */
     	rackList.addSelectionListener(new SelectionAdapter()
         {
+            @Override
             public void widgetSelected(SelectionEvent event)
             {
                 final String[] rack = rackList.getSelection();
@@ -367,10 +364,11 @@ public class GUI implements RackModelListener
              }
         });
 
-        
+
         dvcOrPVEntry.addTraverseListener(new TraverseListener()
         {
-        	public void keyTraversed(TraverseEvent e)
+        	@Override
+            public void keyTraversed(TraverseEvent e)
             {
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
@@ -403,17 +401,12 @@ public class GUI implements RackModelListener
             }
         });
 
-        
-        
         //Initialize these in the ioc_model.
         //TODO need to this not SNS specific
         rackControl.setRackFilter("");
- 
+
         // Subscribe to changes
         rackControl.addListener(this);
-
-
-
     }
 
     /**
@@ -431,7 +424,7 @@ public class GUI implements RackModelListener
         return dvcOrPVEntry;
     }
 
-    
+
      /**
      * Resets the Filters used by the ioc_model so that they are affectively looking for everything.
      * Nothing is filtered.
@@ -444,8 +437,8 @@ public class GUI implements RackModelListener
 
     }
 
-    
-    
+
+
     public void setFocus()
     {
     	rackIdFilterEntry.setFocus();
@@ -454,12 +447,14 @@ public class GUI implements RackModelListener
     /** Clears the FEC list and then re-populates it based on the new criteria
      *  @see PVUtilListener
      */
+    @Override
     public void rackUtilChanged(final ChangeEvent what)
     {
         // This could be called from a non-GUI thread, for example the model's
         // database reader.
         display.asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
             	switch (what)
@@ -485,18 +480,18 @@ public class GUI implements RackModelListener
         });
     }
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
