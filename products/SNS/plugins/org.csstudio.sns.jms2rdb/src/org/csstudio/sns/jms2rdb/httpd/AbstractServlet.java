@@ -8,13 +8,14 @@
 package org.csstudio.sns.jms2rdb.httpd;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sns.jms2rdb.Activator;
 
 /** Base class for servlets.
  *  @author Kay Kasemir
@@ -42,8 +43,7 @@ abstract public class AbstractServlet extends HttpServlet
         {
             if (resp.isCommitted())
             {
-                CentralLogger.getInstance().getLogger(this).warn(
-                        "HTTP Server exception", ex);
+                Activator.getLogger().log(Level.WARNING, "HTTP Server exception", ex);
                 return;
             }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());

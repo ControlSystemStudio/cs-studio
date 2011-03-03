@@ -9,11 +9,9 @@ package org.csstudio.sns.jms2rdb.httpd;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sns.jms2rdb.Activator;
 import org.csstudio.sns.jms2rdb.LogClientThread;
 import org.osgi.framework.Constants;
@@ -76,7 +74,6 @@ public class MainServlet extends AbstractServlet
 		}
 		catch (JMSException e)
 		{
-			CentralLogger.getInstance().getLogger(this).warn(e);
 	        html.tableLine(new String []
 	        {
         		"Error", e.getMessage()

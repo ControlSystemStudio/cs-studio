@@ -8,11 +8,11 @@
 package org.csstudio.sns.jms2rdb;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Filter to suppress for example messages of type ALARM with TEXT=IDLE.
@@ -24,7 +24,7 @@ public class Filter
     final private String type;
     final private String property;
     final private Pattern pattern;
-    
+
     /** Parse filters
      *  @param filter_spec
      *         String "&lt;Type&gt;;&lt;Property&gt;=&lt;Pattern&gt;, &lt;Type&gt;;&lt;Property&gt;=&lt;Pattern&gt;"
@@ -56,7 +56,7 @@ public class Filter
         // Convert to plain array
         return filters.toArray(new Filter[filters.size()]);
     }
-    
+
     /** Initialize
      *  @param type Message type (ALARM, LOG, TALK, ...)
      *  @param property Additional property to check (TEXT)
@@ -87,7 +87,7 @@ public class Filter
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
+            Activator.getLogger().log(Level.WARNING, "Filter exception", ex);
         }
         return false;
     }

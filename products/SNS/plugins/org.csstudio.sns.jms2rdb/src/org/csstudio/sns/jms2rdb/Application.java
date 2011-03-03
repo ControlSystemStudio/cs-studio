@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.sns.jms2rdb;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.httpd.MainServlet;
 import org.csstudio.sns.jms2rdb.httpd.StopServlet;
@@ -48,9 +49,6 @@ public class Application implements IApplication
     /** RDB Schema */
     private String rdb_schema = "";
 
-    /** Log4j Logger */
-    private Logger logger;
-
     /** Thread that handles the JMS messages */
     private LogClientThread log_client_thread;
 
@@ -87,10 +85,10 @@ public class Application implements IApplication
         rdb_schema =
             service.getString(Activator.ID, "rdb_schema", rdb_schema, null);
 
-        // Log4j and logging setup
-        logger = CentralLogger.getInstance().getLogger(this);
+        LogConfigurator.configureFromPreferences();
+
         final String version = (String) context.getBrandingBundle().getHeaders().get(Constants.BUNDLE_VERSION);
-        logger.info("Started JMS Log Tool " + version);
+        Activator.getLogger().log(Level.CONFIG, "Started JMS Log Tool {0}", version);
 
         // Start log handler and web interface
         log_client_thread =
@@ -116,7 +114,8 @@ public class Application implements IApplication
         httpd.registerResources("/", "/webroot", context);
         httpd.registerServlet("/main", new MainServlet(log_client_thread), null, context);
         httpd.registerServlet("/stop", new StopServlet(this), null, context);
-        logger.info("Web server at http://localhost:" + httpd_port + "/main");
+
+        Activator.getLogger().log(Level.CONFIG, "Web server at http://localhost:{0}/main", httpd_port);
     }
 
     /** Stop the web server */
@@ -129,7 +128,7 @@ public class Application implements IApplication
     @Override
     public void stop()
     {
-        logger.info("Stop requested");
+        Activator.getLogger().info("Stop requested");
         log_client_thread.cancel();
     }
 }

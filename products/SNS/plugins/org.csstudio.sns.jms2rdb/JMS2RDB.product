@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JMS-to-RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" version="2.0.0." useFeatures="false" includeLaunchers="true">
+<product name="JMS-to-RDB" id="org.csstudio.sns.jms2rdb.product" application="org.csstudio.sns.jms2rdb.application" version="2.0.1" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -26,6 +26,7 @@
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.csstudio.apputil"/>
+      <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
