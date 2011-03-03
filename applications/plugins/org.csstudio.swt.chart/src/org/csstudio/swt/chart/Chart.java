@@ -1,6 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.swt.chart.axes.ITicks;
 import org.csstudio.swt.chart.axes.Log10;
@@ -37,7 +45,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tracker;
 
 /** Basic chart widget.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class Chart extends Canvas
@@ -53,16 +61,16 @@ public class Chart extends Canvas
      *  could still use some improvement...
      */
     public static final boolean debug = false;
-    
+
     /** Instead of manually setting Y Axis labels,
      *  the axes use their trace's names for a label,
      *  including the trace color.
      */
     public static final int USE_TRACE_NAMES = 1<<30;
 
-    /** Select a 'time' axis for the x axis. */ 
+    /** Select a 'time' axis for the x axis. */
     public static final int TIME_CHART = 1<<31;
-    
+
     /** Mask for style bits used by the chart.
      *  <p>
      *  Note: InteractiveChart defines more style bits!
@@ -71,13 +79,13 @@ public class Chart extends Canvas
 
     /** Used to actually paint the traces */
     final private TracePainter painter = new TracePainter();
-        
+
     /** The traces to plot. */
     final private ArrayList<Trace> traces = new ArrayList<Trace>();
-    
+
     /** Do we need to (re-)evaluate the overall layout of things? */
     private boolean dirty_layout = true;
-    
+
     /** Overall size of this XYPlot */
     private Rectangle region;
 
@@ -95,10 +103,10 @@ public class Chart extends Canvas
 
     /** Background color. */
     private Color background;
-    
+
     /** Grid line color. */
     private Color grid_color;
-    
+
     /** Foreground color. */
     private Color foreground;
 
@@ -110,13 +118,13 @@ public class Chart extends Canvas
 
     /** X coord for last mouse_down. */
     private int mouse_down_x;
-    
+
     /** Y coord for last mouse_down. */
     private int mouse_down_y;
-    
+
     /** Was mouse dragged while mouse_down? */
     private boolean mouse_dragged = false;
-    
+
     /** List of all ChartListeners */
     final private ArrayList<ChartListener> listeners =
         new ArrayList<ChartListener>();
@@ -132,10 +140,11 @@ public class Chart extends Canvas
         background = new Color(parent.getDisplay(), 255, 255, 255);
         grid_color = new Color(parent.getDisplay(), 150, 150, 150);
         foreground = new Color(parent.getDisplay(), 0, 0, 0);
-        
+
         // Create axes
         xaxis_listener = new XAxisListener()
         {
+            @Override
             public void changedXAxis(final XAxis xaxis)
             {
                 if (debug)
@@ -158,6 +167,7 @@ public class Chart extends Canvas
         yaxis_listener = new YAxisListener()
         {
             /** Schedule redraw of axis itself. */
+            @Override
             @SuppressWarnings("nls")
             public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             {
@@ -177,23 +187,24 @@ public class Chart extends Canvas
                 for (YAxisListener l : listeners)
                     l.changedYAxis(what, yaxis);
             }
-    
+
         };
         if ((style & TIME_CHART) == TIME_CHART)
             xaxis = new TimeAxis(Messages.Chart_Time, xaxis_listener);
         else
             xaxis = new XAxis(Messages.Chart_x, xaxis_listener);
-        
+
         if ((style & USE_TRACE_NAMES) == 0)
             yaxis_factory = new YAxisFactory();
         else
             yaxis_factory = new TraceNameYAxisFactory();
         YAxis yaxis = yaxis_factory.createYAxis(Messages.Chart_y, yaxis_listener);
         yaxes.add(yaxis);
-        
+
         // Cleanup
         addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 for (Trace si : traces)
@@ -203,7 +214,7 @@ public class Chart extends Canvas
                 background.dispose();
             }
         });
-        
+
         // Adapt layout to resizes
         addControlListener(new ControlAdapter()
         {
@@ -211,10 +222,11 @@ public class Chart extends Canvas
             public void controlResized(ControlEvent e)
             {   dirty_layout = true;  }
         });
-       
+
         // Allow this widget to draw itself
         addPaintListener(new PaintListener()
         {
+            @Override
             @SuppressWarnings("nls")
             public void paintControl(PaintEvent e)
             {   // All sorts of issues with the data model of
@@ -224,15 +236,15 @@ public class Chart extends Canvas
                 // and print debug info.
                 try
                 {
-                    Chart.this.paintControl(e);  
+                    Chart.this.paintControl(e);
                 }
                 catch (Throwable error)
                 {
-                    Activator.getLogger().error("Chart paint error", error);
+                    Activator.getLogger().log(Level.SEVERE, "Chart paint error", error);
                 }
             }
         });
-        
+
         // Mouse-down: Mark a point, maybe start rubberband-zoom
         addMouseListener(new MouseAdapter()
         {
@@ -263,7 +275,7 @@ public class Chart extends Canvas
 
             @Override
             public void mouseUp(final MouseEvent event)
-            { 
+            {
                 if (! isLeftButton(event))
                     return;
                 mouse_down = false;
@@ -272,9 +284,9 @@ public class Chart extends Canvas
                 // Otherwise, it was a click. Handle it:
                 if (mouse_dragged == false)
                     handleMouseClick(mouse_down_x, mouse_down_y);
-            }    
+            }
         });
-        
+
         if (Preferences.getShowValueToolTips())
         {
             // Update ToolTip on mouse hover.
@@ -283,7 +295,8 @@ public class Chart extends Canvas
             // in a 'tool tip trail' of garbage on the screen.
             addListener(SWT.MouseHover, new Listener()
             {
-    			public void handleEvent(final Event event)
+    			@Override
+                public void handleEvent(final Event event)
     			{
                     updateTooltip(event.x, event.y);
     			}
@@ -295,7 +308,8 @@ public class Chart extends Canvas
         {
             // Minimum rubberband size that we allow
             private static final int MINIMUM = 10;
-            
+
+            @Override
             public void mouseMove(final MouseEvent e)
             {
                 if (! mouse_down)
@@ -331,7 +345,7 @@ public class Chart extends Canvas
             }
         });
     }
-    
+
     /** Add a listener. */
     public void addListener(final ChartListener listener)
     {
@@ -343,7 +357,7 @@ public class Chart extends Canvas
     {
         listeners.remove(listener);
     }
-    
+
     /** Set background color of plot.
      *  Note that there's already a setBackground(Color)
      *  of the underlying control, but we don't want to
@@ -356,13 +370,13 @@ public class Chart extends Canvas
     	background.dispose();
     	background = new Color(getDisplay(), color);
     }
- 
+
     /** @return Background color */
     public RGB getPlotBackground()
     {
     	return background.getRGB();
     }
-   
+
     /** Set foreground color of plot.
      *  @param color New foreground color.
      */
@@ -371,7 +385,7 @@ public class Chart extends Canvas
     	foreground.dispose();
     	foreground = new Color(getDisplay(), color);
     }
- 
+
     /** @return Foreground color */
     public RGB getPlotForeground()
     {
@@ -386,13 +400,13 @@ public class Chart extends Canvas
     	grid_color.dispose();
     	grid_color = new Color(getDisplay(), color);
     }
- 
+
     /** @return Grid color */
     public RGB getPlotGrid()
     {
     	return grid_color.getRGB();
     }
-    
+
     /** Modify the type of X Axis.
      *  <p>
      *  This restores the axis range and label to some default settings.
@@ -405,13 +419,13 @@ public class Chart extends Canvas
             xaxis = new XAxis(Messages.Chart_x, xaxis_listener);
         redraw();
     }
-    
+
     /** @return Returns the x axis. */
     public XAxis getXAxis()
     {
         return xaxis;
     }
-    
+
     /** @return Returns the number of y axes. */
     public int getNumYAxes()
     {
@@ -424,7 +438,7 @@ public class Chart extends Canvas
     {
         return yaxes.get(i);
     }
-    
+
     /** @return Returns index of the given Y-Axis or -1 if not found. */
     public int getYAxisIndex(final YAxis yaxis)
     {
@@ -436,7 +450,7 @@ public class Chart extends Canvas
     {
         return addYAxis(Messages.Chart_y);
     }
-    
+
     /** Add a new y axis with given label. */
     public YAxis addYAxis(final String label)
     {
@@ -446,7 +460,7 @@ public class Chart extends Canvas
         redraw();
         return yaxis;
     }
-    
+
     /** Remove the y axis of given index. */
     public void removeYAxis(final int i)
     {
@@ -457,7 +471,7 @@ public class Chart extends Canvas
         dirty_layout = true;
         redraw();
     }
-    
+
     /** @returns Returns the selected y axis or <code>null</code>. */
     YAxis getSelectedYAxis()
     {
@@ -475,7 +489,7 @@ public class Chart extends Canvas
             return selected;
         return yaxes.get(0);
     }
-    
+
     /** Get the Y-Axis at given screen coordinates.
      *  <p>
      *  This can be of use in Drag-and-Drop support, where the
@@ -498,13 +512,13 @@ public class Chart extends Canvas
         }
         return null;
     }
-    
+
     /** @return Returns the number of traces. */
     public int getNumTraces()
     {
         return traces.size();
     }
-    
+
     /** @return Returns the given trace.
      *  @see #getNumTraces()
      */
@@ -512,13 +526,13 @@ public class Chart extends Canvas
     {
         return traces.get(index);
     }
-    
+
     /** Add a new trace to the chart.
      *  <p>
      *  The chart will initially redraw itself with the new trace.
      *  The chart will not, however, automatically redraw
      *  when the trace or the samples of the trace change!
-     *  
+     *
      *  @param trace The trace to add
      *  @param autozoom When <code>true</code>, the chart will initially
      *                  auto-zoom the axis used by the trace.
@@ -537,10 +551,10 @@ public class Chart extends Canvas
         traces.add(trace);
         setRedraw(true);
         return trace;
-    } 
-    
+    }
+
     /** Remove a trace.
-     * 
+     *
      *  @param trace The trace to remove.
      */
     public void removeTrace(final int index)
@@ -548,7 +562,7 @@ public class Chart extends Canvas
         final Trace trace = traces.remove(index);
         trace.dispose();
     }
-    
+
     /** Toggle a redraw of the traces.
      *  <p>
      *  User code needs to invoke this routine after modifying
@@ -563,7 +577,7 @@ public class Chart extends Canvas
                    plot_region.width-1, plot_region.height-1,
                    false);
     }
-    
+
     /** Auto-Zoom the selected or all Y axes. */
     public void autozoom()
     {
@@ -579,12 +593,12 @@ public class Chart extends Canvas
             setRedraw(true);
         }
     }
-    
+
     /** Zoom the selected or all Y axes to their default.
      *  <p>
      *  Each Trace determines its own default range.
      *  If a trace has no default display range, auto-zoom.
-     */ 
+     */
     public void setDefaultZoom()
     {
         final YAxis yaxis = getSelectedYAxis();
@@ -599,7 +613,7 @@ public class Chart extends Canvas
             setRedraw(true);
         }
     }
-    
+
     /** Adjust the selected or all Y axes such that they are staggered.
      *  <p>
      *  What this means: If there are N Y axes, each will use 1/Nth of
@@ -648,7 +662,7 @@ public class Chart extends Canvas
         }
         setRedraw(true);
     }
-    
+
     /** Provide size suggestion. Is ignored anyway. */
     @Override
     public Point computeSize(int wHint, int hHint, boolean changed)
@@ -688,10 +702,10 @@ public class Chart extends Canvas
         for (YAxis yaxis : yaxes)
         {
             final int wid = yaxis.getPixelWidth(gc);
-            plot_region.x += wid; 
-            plot_region.width -= wid; 
+            plot_region.x += wid;
+            plot_region.width -= wid;
         }
-        
+
         // Axes are set to overlap at the lower-left origin
         // of the plot_region.
         // X axis is below the plot_region:
@@ -739,7 +753,7 @@ public class Chart extends Canvas
         }
         return snapshot;
     }
-    
+
     /** Save a snapshot of the current plot to file.
      *  @param filename Full path to file name, including "png".
      *  @throws Exception on error
@@ -761,7 +775,7 @@ public class Chart extends Canvas
             snapshot.dispose();
         }
     }
-    
+
     /** Paint almost everything, using the paint event's region
      *  to optimize a little bit.
      *  <p>
@@ -769,7 +783,7 @@ public class Chart extends Canvas
      *  This is also called from <code>createSnapshot</code>
      *  with a faked event that only contains the GC and the region,
      *  so beware that many event fields will be garbage!
-     *  
+     *
      *  @see org.eclipse.swt.events.PaintListener
      */
     private void paintControl(PaintEvent event)
@@ -785,14 +799,14 @@ public class Chart extends Canvas
         --r.height;
         gc.setForeground(foreground);
         gc.setBackground(background);
-        gc.fillRectangle(r);        
+        gc.fillRectangle(r);
         gc.drawRectangle(r);
 
         // Paint axes
         // (which will decide to ignore the call based on the paint region)
         // X Axis
         xaxis.paint(event);
-        
+
         // Y Axis (which will auto-zoom at this point in case that's enabled)
         for (YAxis yaxis : yaxes)
         {
@@ -800,7 +814,7 @@ public class Chart extends Canvas
                 yaxis.autozoom(xaxis);
             yaxis.paint(grid_color, event);
         }
-        
+
         // The width-1 is a hack to _not_ redraw the plot
         // when only the Y axes needed a redraw.
         if (plot_region.intersects(event.x, event.y, event.width-1, event.height))
@@ -818,7 +832,7 @@ public class Chart extends Canvas
             // Restore what the TracePainter might have changed
             gc.setLineWidth(0);
             gc.setForeground(foreground);
-            
+
             // On Linux, painting a transparent area enables 'Cairo',
             // and then multi-line drawText no longer handles line breaks.
             // So turn advanced features off before painting markers.
@@ -827,7 +841,7 @@ public class Chart extends Canvas
             // To avoid that, only turn it 'off' when it was actually turned 'on'!
             if (used_advanced_graphics)
                 gc.setAdvanced(false);
-            
+
             for (YAxis yaxis : yaxes)
                 yaxis.paintMarkers(gc, xaxis);
             // Done
@@ -874,10 +888,10 @@ public class Chart extends Canvas
             int y = yaxis.getScreenCoord(val);
             gc.drawLine(x0, y, x1, y);
         }
-        
+
         gc.setForeground(foreground);
     }
-    
+
     /** Update tool-tip to something more or less useful for
      *  the given mouse coordinates.
      */
@@ -898,7 +912,7 @@ public class Chart extends Canvas
             final String tip = xaxis.getTicks().format(xc, 2)
                         + ", " //$NON-NLS-1$
                         + current.getTicks().format(yc, 2);
-            setToolTipText(tip); 
+            setToolTipText(tip);
             return;
         }
         // else: Is mouse over a Y axis?
@@ -955,14 +969,14 @@ public class Chart extends Canvas
         for (ChartListener listener : listeners)
             listener.aboutToZoomOrPan(description);
     }
-    
+
     /** Send pointSelected event to listeners */
     private void firePointSelected(final int x, final int y)
     {
         for (ChartListener listener : listeners)
             listener.pointSelected(x, y);
     }
-    
+
     /** Handle a rubber-band-zoom for the given region. */
     private void rubberZoom(final Rectangle zoom)
     {

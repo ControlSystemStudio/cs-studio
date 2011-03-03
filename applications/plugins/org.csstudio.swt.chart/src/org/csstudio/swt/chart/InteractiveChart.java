@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart;
 
 import java.util.ArrayList;
@@ -27,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  *  <p>
  *  To use, one would probably mostly deal with the embedded chart
  *  via getChart().
- *  
+ *
  *  @author Kay Kasemir
  */
 public class InteractiveChart extends Composite
@@ -43,7 +50,7 @@ public class InteractiveChart extends Composite
     private static final double SHIFT_FACTOR = 9.0;
     /** Amount to zoom in/out */
     private static final double ZOOM_FACTOR = 1.5;
-    
+
     private Chart chart;
     private Composite button_bar;
     /** In principle, the button_bar.isVisible() method tells us
@@ -53,7 +60,7 @@ public class InteractiveChart extends Composite
      *  so we keep track ourself.
      */
     private boolean button_bar_visible = true;
-    
+
     private static ImageRegistry button_images = null;
     private static final String UP = "up"; //$NON-NLS-1$
     private static final String DOWN = "down"; //$NON-NLS-1$
@@ -66,13 +73,13 @@ public class InteractiveChart extends Composite
     private static final String X_IN = "x_in"; //$NON-NLS-1$
     private static final String X_OUT = "x_out"; //$NON-NLS-1$
     private static final String DEFAULT_ZOOM = "defaultscale"; //$NON-NLS-1$
-    
+
     /** Was ZOOM_X_FROM_END set? */
     private boolean zoom_from_end;
-    
+
     private ArrayList<InteractiveChartListener> listeners =
         new ArrayList<InteractiveChartListener>();
-       
+
     /** Widget constructor.
      *  @param parent Parent widget.
      *  @param style SWT style.
@@ -82,27 +89,31 @@ public class InteractiveChart extends Composite
         super(parent, style & Chart.STYLE_MASK);
         zoom_from_end = (style & ZOOM_X_FROM_END) != 0;
         initButtonImages();
-        
+
         makeGUI(style);
-        
+
         chart.addListener(new ChartListener()
         {
+            @Override
             public void aboutToZoomOrPan(String description)
             { /* NOP */ }
 
+            @Override
             public void changedXAxis(XAxis xaxis)
             { /* NOP */ }
-            
+
+            @Override
             public void changedYAxis(YAxisListener.Aspect what, YAxis yaxis)
             { /* NOP */ }
 
+            @Override
             public void pointSelected(final int x, final int y)
             {
                 addMarker(x, y);
             }
         });
     }
-    
+
     /** Add a listener */
     public void addListener(InteractiveChartListener listener)
     {
@@ -211,7 +222,7 @@ public class InteractiveChart extends Composite
                 chart.setDefaultZoom();
             }
         });
-        
+
         // Unclear: This right now pans the _graph_
         // left/right. Should it move the _curves_?
         addButton(LEFT, Messages.Chart_MoveLeft, new SelectionAdapter()
@@ -257,7 +268,7 @@ public class InteractiveChart extends Composite
             }
         });
     }
-    
+
     private void makeGUI(int style)
     {
         // Top:  Button Bar
@@ -265,7 +276,7 @@ public class InteractiveChart extends Composite
         FormLayout layout = new FormLayout();
         setLayout(layout);
         FormData fd;
-        
+
         button_bar = new Composite(this, 0);
         fd = new FormData();
         fd.top = new FormAttachment(0, 0);
@@ -274,7 +285,7 @@ public class InteractiveChart extends Composite
         button_bar.setLayoutData(fd);
 
         addButtons();
-        
+
         // X/Y Axes
         chart = new Chart(this, style);
         fd = new FormData();
@@ -295,7 +306,7 @@ public class InteractiveChart extends Composite
     {
         return button_bar;
     }
-    
+
     /** @return <code>true</code> if the button bar is enabled to be visible */
     public boolean isButtonBarVisible()
     {
@@ -336,15 +347,15 @@ public class InteractiveChart extends Composite
         // Ask shell to re-evaluate the changed layout
         chart.getShell().layout(true, true);
     }
-    
+
     /** @return Returns the axes. */
     public Chart getChart()
     {
         return chart;
     }
-    
+
     /** Add a button to the button bar.
-     * 
+     *
      *  @param image_key Image file name in icons subdir.
      *  @param tooltip Tooltip text.
      *  @param sel Selection Listener to invoke on button press.
@@ -382,15 +393,15 @@ public class InteractiveChart extends Composite
                 move(yaxis, fraction, yaxis.isLogarithmic());
             }
     }
-    
+
     /** Move the X axis left/right. */
     private void moveLeftRight(double fraction)
     {
         move(chart.getXAxis(), fraction, false);
     }
-    
+
     /** Move axis up or down
-     * 
+     *
      * @param axis Axis to move
      * @param fraction "4" will move values 1/4 of current range up.
      */
@@ -430,9 +441,9 @@ public class InteractiveChart extends Composite
                 zoomInOut(yaxis, factor, yaxis.isLogarithmic());
             }
     }
-    
+
     /** Zoom in or out
-     * 
+     *
      *  @param axis Axis to zoom
      *  @param factor zoom factor.
      *  @param use_log Zoom linearly or in logarithmic value space?
@@ -452,7 +463,7 @@ public class InteractiveChart extends Composite
             high = Log10.log10(high);
         }
         double center = (high + low)/2.0;
-        double zoomed = (high - low) / factor / 2.0;  
+        double zoomed = (high - low) / factor / 2.0;
         low = center - zoomed;
         high = center + zoomed;
         if (use_log)
@@ -467,7 +478,7 @@ public class InteractiveChart extends Composite
     }
 
     /** Zoom in or out
-     * 
+     *
      *  @param axis Axis to zoom
      *  @param factor zoom factor.
      */
@@ -478,10 +489,10 @@ public class InteractiveChart extends Composite
             System.out.println("Zoom '" + axis.getLabel() + "' by " + factor + " from end");
         double low = axis.getLowValue();
         double high = axis.getHighValue();
-        double range = high - low;        
+        double range = high - low;
         axis.setValueRange(high - range/factor, high);
     }
-    
+
     /** Add a marker for the current screen coord.
      *  @param sx,sy X/Y coords in screen coords
      */
@@ -523,7 +534,7 @@ public class InteractiveChart extends Composite
         }
         if (best_sample == null)
             return;
-        
+
         // Add marker for the selected sample
         final ChartSample sample = best_sample.getSample();
         final double x = sample.getX(),  y = sample.getY();
@@ -544,4 +555,4 @@ public class InteractiveChart extends Composite
         }
         best_axis.addMarker(new Marker(x, y, b.toString()));
     }
-} 
+}
