@@ -2,7 +2,8 @@
 <feature
       id="org.csstudio.common.product.feature"
       label="Common Test Product Feature"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="CSS Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]

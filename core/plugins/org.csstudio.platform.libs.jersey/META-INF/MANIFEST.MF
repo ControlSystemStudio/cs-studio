@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jersey
 Bundle-SymbolicName: org.csstudio.platform.libs.jersey
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.5.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jersey.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
@@ -45,3 +45,4 @@ Export-Package: com.sun.jersey.api.client,
  javax.ws.rs.core,
  javax.ws.rs.ext,
  org.csstudio.platform.libs.jersey
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
