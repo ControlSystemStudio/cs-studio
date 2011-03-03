@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.diag.rack.view;
 
+import java.util.logging.Level;
+
+import org.csstudio.diag.rack.Activator;
 import org.csstudio.diag.rack.view.RackView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -20,17 +22,20 @@ import org.eclipse.ui.PlatformUI;
 /** Action connected to workbench menu action set for opening a new editor.
  *  @author Dave Purcell stolen from Kay Kasemir
  */
-
 public class NewRackAction implements IWorkbenchWindowActionDelegate
 {
+    // TODO Replace w/ plugin.xml
+    @Override
     public void init(IWorkbenchWindow window)
     { /* NOP */
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection)
     { /* NOP */
     }
 
+    @Override
     public void run(IAction action)
     {
         try
@@ -42,10 +47,11 @@ public class NewRackAction implements IWorkbenchWindowActionDelegate
         }
         catch (Exception ex)
         {
-        	CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+            Activator.getLogger().log(Level.SEVERE, "Rack View activation error", ex);
         }
     }
 
+    @Override
     public void dispose()
     { /* NOP */
     }
