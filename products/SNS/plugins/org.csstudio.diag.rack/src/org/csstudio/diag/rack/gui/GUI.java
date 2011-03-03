@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.diag.rack.gui;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
 import org.csstudio.diag.rack.model.RackModel;
 import org.csstudio.diag.rack.model.RackModelListener;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 @SuppressWarnings("nls")
@@ -142,22 +143,31 @@ public class GUI implements RackModelListener
         l.setLayoutData(gd);
 
         // Rest: PV Table
-        Table device_table_widget = new Table(DeviceContents, SWT.VIRTUAL | SWT.MULTI);
+        // TableColumnLayout needs this to be under its own parent
+        final Composite table_parent = new Composite(DeviceContents, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
 
-        gd = new GridData(GridData.FILL_VERTICAL);
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.heightHint= 100;
-        device_table_widget.setLayoutData(gd);
+        Table device_table_widget = new Table(table_parent, SWT.VIRTUAL | SWT.MULTI);
         device_table_widget.setHeaderVisible(true);
         device_table_widget.setLinesVisible(true);
 
-        AutoSizeColumn.make(device_table_widget, "Device ID", 180, 100);
-        AutoSizeColumn.make(device_table_widget, "Begin", 40, 10);
-        AutoSizeColumn.make(device_table_widget, "End", 40, 10);
-        // Configure table to auto-size the columns
-        new AutoSizeControlListener(device_table_widget);
+
+        TableColumn col = new TableColumn(device_table_widget, SWT.LEFT);
+        col.setText("Device ID");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 180));
+
+        col = new TableColumn(device_table_widget, SWT.LEFT);
+        col.setText("Begin");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(10, 40));
+
+        col = new TableColumn(device_table_widget, SWT.LEFT);
+        col.setText("End");
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(10, 40));
 
         // TableViewer interface the plain device_table_widget
         // to our "model":
@@ -166,9 +176,7 @@ public class GUI implements RackModelListener
         rack_list_table.setContentProvider(new RackDVCListProvider(rack_list_table, rackControl));
         // Turns request for column 0, 1, 2, ... into Device's name, parent, ...
         rack_list_table.setLabelProvider(new RackDVCListLabelProvider());
-
     }
-
 
     /** Create the Right sash: Rack Device Table and Rack Profile */
     private void createBottomSash(final SashForm form)
