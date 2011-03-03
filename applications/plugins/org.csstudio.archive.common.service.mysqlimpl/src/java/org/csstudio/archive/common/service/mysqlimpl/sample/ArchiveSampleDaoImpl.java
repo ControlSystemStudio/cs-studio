@@ -199,9 +199,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return;
         }
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
-
         final SampleAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
-
 
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours.get(),
                                                                    channelId,
@@ -227,13 +225,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
-//                                                  @CheckForNull final EpicsAlarm highestAlarm,
                                                   @Nonnull final Double min,
                                                   @Nonnull final Double max,
                                                   @Nonnull final TimeInstant timestamp,
                                                   @Nonnull final Duration interval) throws ArchiveDaoException {
         // CHECKSTYLE ON: ParameterNumber
-
         SampleAggregator agg =  map.get(channelId);
         if (agg == null) {
             agg = new SampleAggregator(newValue, /*highestAlarm,*/ timestamp);
