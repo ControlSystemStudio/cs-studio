@@ -249,7 +249,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             }
             final String label = link[0];
             final String url = link[1];
-            Activator.getLogger().log(Level.CONFIG, "Web link {0} = {1} ({2})",
+            Activator.getLogger().log(Level.FINE, "Web link {0} = {1} ({2})",
                     new Object[] { pref, label, url });
 
             web_actions.add(new OpenWebBrowserAction(window, label, url));
