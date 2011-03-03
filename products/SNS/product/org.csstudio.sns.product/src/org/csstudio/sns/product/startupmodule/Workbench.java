@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product.startupmodule;
 
 import java.util.Map;
@@ -46,7 +53,8 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#afterWorkbenchCreation(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object afterWorkbenchCreation(Display display,IApplicationContext context, Map<String, Object> parameters) {
+	@Override
+    public Object afterWorkbenchCreation(Display display,IApplicationContext context, Map<String, Object> parameters) {
 		return null;
 	}
 
@@ -54,7 +62,8 @@ public class Workbench implements WorkbenchExtPoint {
 	 * (non-Javadoc)
 	 * @see org.csstudio.startup.extensions.RunWorkbenchExtPoint#beforeWorkbenchCreation(org.eclipse.swt.widgets.Display, org.eclipse.equinox.app.IApplicationContext, java.util.Map)
 	 */
-	public Object beforeWorkbenchCreation(Display display, IApplicationContext context, Map<String, Object> parameters) {
+	@Override
+    public Object beforeWorkbenchCreation(Display display, IApplicationContext context, Map<String, Object> parameters) {
 		Object share_link = parameters.get(StartupParameters.SHARE_LINK_PARAM);
 		Object o = parameters.get(ProjectExtPoint.PROJECTS);
 		if (share_link != null && o != null) {
@@ -85,29 +94,6 @@ public class Workbench implements WorkbenchExtPoint {
 	        // Continue without customized log configuration
 	    }
 	    final Logger logger = Logger.getLogger(getClass().getName());
-
-	    final Thread log_demo = new Thread("LogDemo")
-	    {
-            @Override
-            public void run()
-            {
-                long ticks = 0;
-                while (true)
-                {
-                    try
-                    {
-                        sleep(5000);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    logger.log(Level.INFO, "Running for {0} ticks", ++ticks);
-                }
-            }
-	    };
-	    log_demo.setDaemon(true);
-	    log_demo.start();
 
         Object o = parameters.get(LoginExtPoint.USERNAME);
 		String username = o != null ? (String)o : null;

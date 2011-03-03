@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product.startupmodule;
 
 import java.net.URL;
@@ -19,59 +26,59 @@ import org.eclipse.swt.widgets.Display;
  * {@link LoginExtPoint#PASSWORD}.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
- *
  */
-public class StartupParameters implements StartupParametersExtPoint {
-
+public class StartupParameters implements StartupParametersExtPoint
+{
 	 /** Command-line switch for help */
     private static final String HELP = "-help"; //$NON-NLS-1$
-    
+
     /** Command-line switch to show login dialog */
     private static final String LOGIN_PROMPT = "-login"; //$NON-NLS-1$
-    
+
     /** Command-line switch to force workspace dialog */
     private static final String WORKSPACE_PROMPT = "-workspace_prompt"; //$NON-NLS-1$
 
     /** Command-line switch to provide link behind <code>SHARE_NAME</code> */
     private static final String SHARE_LINK = "-share_link"; //$NON-NLS-1$
-    
+
     /** Command-line switch to provide the default user in login dialog */
     private static final String USER = "-u"; //$NON-NLS-1$
-   
+
     /** Command-line switch to provide the password of default user in login dialog */
     private static final String PASSWORD = "-p"; //$NON-NLS-1$
 
     /** Parameter tag which defines if login dialog should be displayed
-     *  The value is stored in the returned map. */ 
+     *  The value is stored in the returned map. */
     public static final String LOGIN_PROMPT_PARAM = "css.showLogin"; //$NON-NLS-1$
-    
-    /** Parameter tag which defines if prompt for workspace is forced. 
-     * The value is stored in the returned map. */ 
+
+    /** Parameter tag which defines if prompt for workspace is forced.
+     * The value is stored in the returned map. */
     public static final String FORCE_WORKSPACE_PROMPT_PARAM = "css.forceWorkspacePrompt"; //$NON-NLS-1$
-   
+
     /** Parameter tag defines the shared link. The value is stored in the returned map. */
     public static final String SHARE_LINK_PARAM = "css.shareLink"; //$NON-NLS-1$
-    
+
 	/** {@inheritDoc} */
-	public Map<String, Object> readStartupParameters(Display display,
-			IApplicationContext context) throws Exception {
-		
+	@Override
+    public Map<String, Object> readStartupParameters(Display display,
+			IApplicationContext context) throws Exception
+	{
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		 // Check command-line arguments
 		final String args[] =
             (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
-        
+
         boolean force_workspace_prompt = false;
         boolean login = false;
         URL default_workspace = null;
         String share_link = null;
         String username = null;
         String password = null;
-        
+
         for (int i=0; i<args.length; ++i)
         {
             final String arg = args[i];
-         
+
             if (arg.equalsIgnoreCase(HELP) ||
                 arg.equalsIgnoreCase("-?")) //$NON-NLS-1$
             {
@@ -152,8 +159,8 @@ public class StartupParameters implements StartupParametersExtPoint {
                     }
                 }
                 if (password == null)
-                {      
-                    password = PasswordInput.readPassword("Enter password: ");  //$NON-NLS-1$          
+                {
+                    password = PasswordInput.readPassword("Enter password: ");  //$NON-NLS-1$
                 }
             }
         }
@@ -164,12 +171,11 @@ public class StartupParameters implements StartupParametersExtPoint {
         parameters.put(FORCE_WORKSPACE_PROMPT_PARAM, force_workspace_prompt);
         parameters.put(WorkspaceExtPoint.WORKSPACE, default_workspace);
         parameters.put(SHARE_LINK_PARAM, share_link);
-        
+
         return parameters;
-        
 	}
-	
-    /** 
+
+    /**
      * Prints the help to system output.
      */
     @SuppressWarnings("nls")
