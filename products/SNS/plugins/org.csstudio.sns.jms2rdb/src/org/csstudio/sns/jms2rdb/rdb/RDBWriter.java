@@ -13,18 +13,18 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jms.MapMessage;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.csstudio.sns.jms2rdb.Activator;
 
 /** Class that writes JMSLogMessages to the RDB
  *  @author Kay Kasemir
@@ -40,9 +40,6 @@ public class RDBWriter
 
     /** Enable Oracle statistics? */
 	private static final boolean enable_trace = false;
-
-	/** Log4J logger */
-    final private Logger logger;
 
     /** RDB Utility */
     final private RDBUtil rdb_util;
@@ -74,7 +71,6 @@ public class RDBWriter
      */
     public RDBWriter(final String url, final String schema) throws Exception
     {
-        logger = CentralLogger.getInstance().getLogger(this);
         try
         {
             rdb_util = RDBUtil.connect(url, false);
@@ -175,9 +171,9 @@ public class RDBWriter
         {
             statement.close();
         }
-        CentralLogger.getInstance().getLogger(this).warn(
-    		"Inserted unkown Message Property " + property_name + " as ID "
-    		+ next_id);
+        Activator.getLogger().log(Level.WARNING,
+    		"Inserted unkown Message Property {0} as ID {1}",
+    		new Object[] { property_name, next_id } );
         // Add to cache
     	properties.put(property_name, Integer.valueOf(next_id));
 		return next_id;
@@ -325,16 +321,17 @@ public class RDBWriter
         // else: Depend on AUTO_INCREMENT resp. SERIAL for new ID, then read it after insert
 
         // Insert the main message
-        final Calendar now = Calendar.getInstance();
-        insert_message_statement.setTimestamp(1, new Timestamp(now.getTimeInMillis()));
+        final Date now = new Date();
+        insert_message_statement.setTimestamp(1, new Timestamp(now.getTime()));
         insert_message_statement.setString(2, type);
         // Overcome RDB limitations
         if (name == null)
             name = "";
         else if (name.length() > MAX_NAME_LENGTH)
         {
-            CentralLogger.getInstance().getLogger(this).warn(
-                "Limiting NAME = '" + name + "' to " + MAX_NAME_LENGTH);
+            Activator.getLogger().log(Level.WARNING,
+                "Limiting NAME = {0} to {1} characters",
+                new Object[] { name, MAX_NAME_LENGTH });
             name = name.substring(0, MAX_NAME_LENGTH);
         }
         insert_message_statement.setString(3, name);
@@ -372,13 +369,14 @@ public class RDBWriter
             result.close();
         }
 
-        if (logger.isDebugEnabled())
+        final Logger logger = Activator.getLogger();
+        if (logger.isLoggable(Level.FINE))
         {
-            logger.debug("Message " + message_id + ":");
-            logger.debug("  TYPE          : " + type);
-            logger.debug("  DATUM         : " + TimestampFactory.fromCalendar(now).toString());
-            logger.debug("  NAME          : " + name);
-            logger.debug("  SEVERITY      : " + severity);
+            logger.fine("Message " + message_id + ":");
+            logger.fine("  TYPE          : " + type);
+            logger.fine("  DATUM         : " + now);
+            logger.fine("  NAME          : " + name);
+            logger.fine("  SEVERITY      : " + severity);
         }
         return message_id;
     }
@@ -403,15 +401,15 @@ public class RDBWriter
         // Overcome RDB limitations
         if (value.length() > MAX_VALUE_LENGTH)
         {
-            CentralLogger.getInstance().getLogger(this).warn(
-                "Limiting " + property + " = '" + value + "' to " + MAX_VALUE_LENGTH);
+            Activator.getLogger().log(Level.WARNING,
+                    "Limiting {0} = {1} to {2} characters",
+                    new Object[] { property, value, MAX_NAME_LENGTH });
             value = value.substring(0, MAX_VALUE_LENGTH);
         }
         insert_property_statement.setString(3, value);
         insert_property_statement.addBatch();
 
-        if (logger.isDebugEnabled())
-            logger.debug(String.format("  %-14s: %s", property, value));
+        Activator.getLogger().fine(String.format("  %-14s: %s", property, value));
         return true;
     }
 }
