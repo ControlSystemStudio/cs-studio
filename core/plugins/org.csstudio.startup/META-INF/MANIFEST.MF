@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Application Startup
 Bundle-SymbolicName: org.csstudio.startup;singleton:=true
-Bundle-Version: 1.1.4.qualifier
+Bundle-Version: 1.1.5.qualifier
+Bundle-Description: Common CSS Application code
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.6.0",
@@ -12,3 +13,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: DESY/SNS/Cosylab
 Export-Package: org.csstudio.startup.application,
  org.csstudio.startup.module
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
