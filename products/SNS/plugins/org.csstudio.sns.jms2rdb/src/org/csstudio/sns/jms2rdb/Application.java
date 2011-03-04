@@ -115,7 +115,9 @@ public class Application implements IApplication
         httpd.registerServlet("/main", new MainServlet(log_client_thread), null, context);
         httpd.registerServlet("/stop", new StopServlet(this), null, context);
 
-        Activator.getLogger().log(Level.CONFIG, "Web server at http://localhost:{0}/main", httpd_port);
+        // Format port as string because otherwise it'll show up as "4,913" in US locale
+        // when using the log formatter for an integer
+        Activator.getLogger().log(Level.CONFIG, "Web server at http://localhost:" + httpd_port + "/main");
     }
 
     /** Stop the web server */
