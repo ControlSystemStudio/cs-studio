@@ -21,11 +21,9 @@
  */
 package org.csstudio.archive.common.service.channelgroup;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 
 /**
  * Immutable data transfer object for archive channel group object.
@@ -36,26 +34,22 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 public class ArchiveChannelGroup implements IArchiveChannelGroup {
 
     private final ArchiveChannelGroupId _id;
-
     private final String _name;
-
-    private final ArchiveChannelId _enablingChannelId;
-
-
+    private final ArchiveEngineId _engineId;
+    private final String _description;
 
     /**
      * Constructor.
-     * @param id
-     * @param name
-     * @param enablingChannelId
      */
     public ArchiveChannelGroup(@Nonnull final ArchiveChannelGroupId id,
-                                  @Nonnull final String name,
-                                  @Nullable final ArchiveChannelId enablingChannelId) {
+                               @Nonnull final String name,
+                               @Nonnull final ArchiveEngineId engineId,
+                               @Nonnull final String desc) {
         super();
         _id = id;
         _name = name;
-        _enablingChannelId = enablingChannelId;
+        _engineId = engineId;
+        _description = desc;
     }
 
     /**
@@ -80,9 +74,18 @@ public class ArchiveChannelGroup implements IArchiveChannelGroup {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public ArchiveChannelId getEnablingChannelId() {
-        return _enablingChannelId;
+    @Nonnull
+    public ArchiveEngineId getEngineId() {
+        return _engineId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getDescription() {
+        return _description;
     }
 
 }
