@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder;
 
 import java.util.logging.Logger;
@@ -33,7 +40,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 */
 	public static final String EXTPOINT_FEEDBACK_FACTORY = PLUGIN_ID + ".graphicalFeedbackFactory"; //$NON-NLS-1$
 
-
+	/** File extension used for OPI files */
 	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
 
 	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
