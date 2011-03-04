@@ -19,34 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.system;
+package org.csstudio.domain.desy.epics.alarm;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.common.id.Id;
-
 /**
- * The identifier for a distinct control system.
+ * Epics specific alarm limits.
  *
  * @author bknerr
- * @since 09.02.2011
+ * @since Mar 3, 2011
+ * <T> the basic value type for which the limits apply
  */
-public class ControlSystemId extends Id<ControlSystemId> {
-
-    private static final long serialVersionUID = 4284891439602761307L;
-
-    /**
-     * Constructor.
-     * @param value
-     */
-    protected ControlSystemId(@Nonnull final String value) {
-        super(value);
-    }
-    /**
-     * Constructor.
-     * @param value
-     */
-    public ControlSystemId(final long value) {
-        super(value);
-    }
+public interface IAlarmLimits<T extends Comparable<? super T>> {
+    @Nonnull
+    T getWarnHigh();
+    @Nonnull
+    T getWarnLow();
+    @Nonnull
+    T getAlarmHigh();
+    @Nonnull
+    T getAlarmLow();
 }

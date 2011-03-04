@@ -25,7 +25,6 @@ import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServiceP
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +38,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
-import org.csstudio.email.EMailSender;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
@@ -233,21 +231,21 @@ public enum PersistEngineDataManager {
     void rescueData(@Nonnull final List<String> statements) {
         LOG.info("Rescue statements " + statements.size());
 
-        EMailSender mailer;
-        try {
-            mailer = new EMailSender(_prefMailHost,
-                                     "DontReply@MySQLArchiver",
-                                     _prefEmailReceiver,
-                                     "[MySQL archiver notification]: Failed failover");
-            mailer.addText("Statements rescued:\n");
-            for (final String stmt : statements) {
-                mailer.addText(stmt + "\n");
-            }
-            mailer.close();
-        } catch (final IOException e) {
-            // TODO (bknerr) : handle exceptions on notifications
-            e.printStackTrace();
-        }
+//        EMailSender mailer;
+//        try {
+//            mailer = new EMailSender(_prefMailHost,
+//                                     "DontReply@MySQLArchiver",
+//                                     _prefEmailReceiver,
+//                                     "[MySQL archiver notification]: Failed failover");
+//            mailer.addText("Statements rescued:\n");
+//            for (final String stmt : statements) {
+//                mailer.addText(stmt + "\n");
+//            }
+//            mailer.close();
+//        } catch (final IOException e) {
+//            // TODO (bknerr) : handle exceptions on notifications
+//            e.printStackTrace();
+//        }
 
     }
 
