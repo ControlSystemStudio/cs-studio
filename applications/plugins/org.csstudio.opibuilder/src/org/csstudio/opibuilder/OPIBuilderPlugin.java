@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder;
 
+import java.util.logging.Logger;
+
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
@@ -11,7 +13,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
- * 
+ *
  * @author Xihui Chen
  *
  */
@@ -19,27 +21,29 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.opibuilder"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the widget extension point.
 	 */
 	public static final String EXTPOINT_WIDGET = PLUGIN_ID + ".widget"; //$NON-NLS-1$
-	
-	
+
+
 	/**
 	 * The ID of the widget extension point.
 	 */
 	public static final String EXTPOINT_FEEDBACK_FACTORY = PLUGIN_ID + ".graphicalFeedbackFactory"; //$NON-NLS-1$
-	
-	
-	public static final String OPI_FILE_EXTENSION = "opi";
+
+
+	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
+
+	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
-	
+
 	private IPropertyChangeListener preferenceLisener;
-	
-	
+
+
 	/**
 	 * The constructor
 	 */
@@ -62,7 +66,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		ScriptService.getInstance();
-		
+
 		//ConsoleService.getInstance().writeInfo("Welcome to Best OPI, Yet (BOY)!");
 		preferenceLisener = new IPropertyChangeListener(){
 			public void propertyChange(PropertyChangeEvent event) {
@@ -77,9 +81,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 							PreferencesHelper.isAdvancedGraphicsDisabled() ? "true": "false"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
-			
+
 		};
-		
+
 		getPluginPreferences().addPropertyChangeListener(preferenceLisener);
 	}
 
@@ -90,5 +94,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 		getPluginPreferences().removePropertyChangeListener(preferenceLisener);
 	}
 
-
+	/** @return Logger for plugin ID */
+	public static Logger getLogger()
+	{
+	    return logger;
+	}
 }

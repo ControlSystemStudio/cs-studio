@@ -7,9 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.DataFormatException;
@@ -72,14 +73,14 @@ public final class MediaService {
 	}
 
 	private void loadPredefinedFonts(){
-		FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0]; 
+		FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0];
 //		String osName = getOSName();
 //		if(osName.equals("linux_gtk")) //$NON-NLS-1$
 //			defaultFont = new FontData("Sans", 10, SWT.NORMAL); //$NON-NLS-1$
 //		else if(osName.equals("macosx")) //$NON-NLS-1$
 //			defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
-		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont)); 
+		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
 	}
 
 	/**
@@ -98,7 +99,7 @@ public final class MediaService {
 		colorFilePath = PreferencesHelper.getColorFilePath();
 		if(colorFilePath == null || colorFilePath.isEmpty()){
 			String message = "No color definition file was found.";
-			CentralLogger.getInstance().warn(this, message);
+            OPIBuilderPlugin.getLogger().warning(message);
 			ConsoleService.getInstance().writeWarning(message);
 			return;
 		}
@@ -124,7 +125,7 @@ public final class MediaService {
 						colorMap.put(name, new OPIColor(name, color, true));
 					}catch (DataFormatException e) {
 						String message = "Format error in color definition file.";
-						CentralLogger.getInstance().error(this,message, e);
+						OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 						ConsoleService.getInstance().writeError(message);
 					}
 				}
@@ -133,7 +134,7 @@ public final class MediaService {
 			reader.close();
 		} catch (Exception e) {
 			String message = "Failed to read color definition file.";
-			CentralLogger.getInstance().error(this,message, e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 			ConsoleService.getInstance().writeError(message);
 		}
 	}
@@ -145,7 +146,7 @@ public final class MediaService {
 		fontFilePath = PreferencesHelper.getFontFilePath();
 		if(fontFilePath == null){
 			String message = "No font definition file was found.";
-			CentralLogger.getInstance().warn(this, message);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
 			ConsoleService.getInstance().writeWarning(message);
 			return;
 		}
@@ -163,7 +164,7 @@ public final class MediaService {
 				if(line.trim().startsWith("#") || line.trim().startsWith("//")) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 				int i;
-				if((i = line.indexOf('=')) != -1){ 
+				if((i = line.indexOf('=')) != -1){
 					String name = line.substring(0, i).trim();
 					String trimmedName = name;
 					if(name.contains("(")) //$NON-NLS-1$
@@ -177,7 +178,7 @@ public final class MediaService {
 						rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
 					}catch (DataFormatException e) {
 						String message = "Format error in font definition file.";
-						CentralLogger.getInstance().error(this,message, e);
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 						ConsoleService.getInstance().writeError(message);						}
 				}
 			}
@@ -185,7 +186,7 @@ public final class MediaService {
 			reader.close();
 		} catch (Exception e) {
 			String message = "Failed to read font definition file.";
-			CentralLogger.getInstance().error(this,message, e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 			ConsoleService.getInstance().writeError(message);
 		}
 
