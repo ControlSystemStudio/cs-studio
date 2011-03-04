@@ -73,6 +73,17 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
                                                                            typeClass);
         return support.convertToSystemVariable(name, value);
     }
+//    @SuppressWarnings("unchecked")
+//    @CheckForNull
+//    public static <T extends IValue>
+//    EpicsSystemVariable<?> toMetaData(@Nonnull final T value) throws TypeSupportException {
+//
+//        final Class<T> typeClass = (Class<T>) value.getClass();
+//        final AbstractIValueConversionTypeSupport<T> support =
+//            (AbstractIValueConversionTypeSupport<T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
+//                                                                        typeClass);
+//        return support.convertToSystemVariable(name, value);
+//    }
 
     /**
      * Converts the parameters into a type safe enum class for EPICS alarms.

@@ -37,10 +37,13 @@ import org.csstudio.utility.pv.PVListener;
 /** Base for archived channels.
  *
  *  @author Kay Kasemir
+ *  @author Bastian Knerr
+ *  @param <V> the basic value type
+ *  @param <T> the system variable for the basic value type
  */
 @SuppressWarnings("nls")
 public abstract class AbstractArchiveChannel<V,
-                                     T extends IAlarmSystemVariable<V>> {
+                                             T extends IAlarmSystemVariable<V>> {
     static final Logger PV_LOG = CentralLogger.getInstance().getLogger(PVListener.class);
 
     /** Channel name.
@@ -114,7 +117,7 @@ public abstract class AbstractArchiveChannel<V,
         try {
             _pv = PVFactory.createPV(name);
         } catch (final Exception e) {
-            throw new EngineModelException("Connection to pv failed for channel " + name, null);
+            throw new EngineModelException("Connection to pv failed for channel " + name, e);
         }
         _pv.addListener(new PVListener() {
             @SuppressWarnings("unchecked")

@@ -28,7 +28,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -49,9 +48,9 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     private static final String EXC_MSG = "Channel group retrieval from archive failed.";
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     private final String _selectChannelGroupByEngineIdStmt =
-        "SELECT id, name, enabling_channel_id FROM " + getDaoMgr().getDatabaseName() + " .channel_group" +
-                                            " WHERE engine_id=? ORDER BY name";
-
+        "SELECT id, name, engine_id, description FROM " +
+        getDaoMgr().getDatabaseName() + " .channel_group" +
+        " WHERE engine_id=? ORDER BY name";
 
     /**
      * Constructor.
@@ -77,13 +76,11 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
 
             while (result.next()) {
                 // id, name, enabling_channel_id
-                final ArchiveChannelGroupId id = new ArchiveChannelGroupId(result.getInt(1));
-                final String name = result.getString(2);
-                final ArchiveChannelId chanId = new ArchiveChannelId(result.getInt(3));
-
-                groups.add(new ArchiveChannelGroup(id,
-                                                      name,
-                                                      chanId));
+                final ArchiveChannelGroupId id = new ArchiveChannelGroupId(result.getInt("id"));
+                final String name = result.getString("name");
+                final ArchiveEngineId engineId = new ArchiveEngineId(result.getInt("engine_id"));
+                final String desc = result.getString("description");
+                groups.add(new ArchiveChannelGroup(id, name, engineId, desc));
             }
 
         } catch (final Exception e) {

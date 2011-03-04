@@ -274,7 +274,8 @@ public final class EngineModel {
                 return;
             }
 
-            final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(_engine.getId());
+            final Collection<IArchiveChannelGroup> groups =
+                configService.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
                 configureGroup(configService, groupCfg);
