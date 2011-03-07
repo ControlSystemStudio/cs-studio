@@ -24,6 +24,9 @@ public class ConfigurationHelper {
 		// Do not instantiate
 	}
 	
+    // Note: "org.csstudio.utility.pv" and "default_type"
+	//       are common setting between pv, pv.ui, pvmanager and pvmanager.ui
+	//       They need to be kept synchronized.
 	/** Preference ID of the default PV type */
     final public static String DEFAULT_TYPE_KEY = "default_type";
     final public static String DEFAULT_TYPE_QUALIFIER = "org.csstudio.utility.pv";
