@@ -35,6 +35,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         // This way, preference changes in the GUI end up in a file under
         // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
         // i.e. they are specific to the workspace instance.
+        // Note: "org.csstudio.utility.pv" is a common setting between pv, pv.ui, pvmanager and pvmanager.ui
+    	//       They need to be kept synchronized.
         final IPreferenceStore store =
             new ScopedPreferenceStore(new InstanceScope(),
             		"org.csstudio.utility.pv");
@@ -68,6 +70,9 @@ public class PreferencePage extends FieldEditorPreferencePage
                 values[i][0] = prefixes[i] + "://";
                 values[i][1] = prefixes[i];
             }
+            
+            // Note: "default_type" is a common setting between pv, pv.ui, pvmanager and pvmanager.ui
+        	//       They need to be kept synchronized.
             addField(new ComboFieldEditor("default_type",
                     Messages.PreferencePage_DefaultPV, values, parent));
         }
