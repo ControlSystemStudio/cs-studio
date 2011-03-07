@@ -357,7 +357,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             stmt = dispatchRequestTypeToStatement(reqType);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1000));
+            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
 
             final ResultSet result = stmt.executeQuery();
 

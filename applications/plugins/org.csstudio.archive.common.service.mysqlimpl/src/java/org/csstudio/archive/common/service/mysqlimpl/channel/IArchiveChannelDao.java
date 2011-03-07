@@ -30,6 +30,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.desy.types.Limits;
 
 /**
  * Dao for archive channel configurations.
@@ -62,8 +63,14 @@ public interface IArchiveChannelDao {
     @CheckForNull
     IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
+
     <V extends Comparable<? super V>>
     void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
                              @Nonnull final V displayLow,
                              @Nonnull final V displayHigh) throws ArchiveDaoException;
+
+    @CheckForNull
+    <V extends Comparable<? super V>>
+    Limits<V> retrieveDisplayRanges(@Nonnull final String channelName) throws ArchiveDaoException;
+
 }

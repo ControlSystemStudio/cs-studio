@@ -32,6 +32,7 @@ import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -104,8 +105,23 @@ public interface IArchiveReaderFacade {
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException;
 
+    /**
+     * Returns the channel information contained in the archive.
+     * @param name
+     * @return
+     * @throws ArchiveServiceException
+     */
     @Nonnull
     IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
+     * Retrieves the display range information stored in the archive channel configuration.
+     * @param channelName
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @CheckForNull
+    Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException;
 
 
 }

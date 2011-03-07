@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleAggregator;
@@ -40,9 +41,11 @@ import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IMinMaxDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -77,11 +80,12 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
 
     private final ReadableDuration _windowLength;
 
-    private IArchiveSample<Object, IAlarmSystemVariable<Object>> _lastSample;
+    private IArchiveSample<Object, IAlarmSystemVariable<Object>> _lastSampleBeforeInterval;
     private IArchiveSample<Object, IAlarmSystemVariable<Object>> _nextSample;
 
     private SampleAggregator _agg;
     private boolean _noSamples = false;
+    private final INumericMetaData _meta;
 
 
 
@@ -108,21 +112,26 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
         }
 
         // init the last sample to the one before the interval (if existing)
-        _lastSample = getLastSampleBeforeInterval(_channelName, _start);
+        _lastSampleBeforeInterval = getLastSampleBeforeInterval(_channelName, _start);
         // get the samples in the specified interval
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
         _samples = service.readSamples(channelName, start, end, type); // type == null means AUTO/DEFAULT
+
+        _meta = getDisplayRangesForChannel(channelName);
+
         _iter = _samples.iterator();
         // calc the windowlength of the bins
         _windowLength = new Duration((_end.getMillis() - _start.getMillis()) / _bins);
 
-        if (_lastSample != null) {
-            _agg = new SampleAggregator(BaseTypeConversionSupport.toDouble(_lastSample.getValue()),
+        if (_lastSampleBeforeInterval != null) {
+            _agg = new SampleAggregator(BaseTypeConversionSupport.toDouble(_lastSampleBeforeInterval.getValue()),
                                         _start);
-        } else if (!_samples.isEmpty()) {
-            _lastSample = _iter.next();
-            _nextSample = _lastSample;
-            _currentBin = findBinForFirstSample(_nextSample.getSystemVariable().getTimestamp(), _start, _windowLength);
+        } else if (!_samples.isEmpty()) { // no last samples present
+            _lastSampleBeforeInterval = _iter.next();   // set to the first sample find in the range
+            _nextSample = _lastSampleBeforeInterval;
+            _currentBin = findBinOfFirstSample(_nextSample.getSystemVariable().getTimestamp(),
+                                               _start,
+                                               _windowLength);
             _agg = new SampleAggregator(BaseTypeConversionSupport.toDouble(_nextSample.getValue()),
                                         _start.plusMillis(_currentBin* _windowLength.getMillis()));
         } else {
@@ -130,13 +139,29 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
         }
     }
 
+    @CheckForNull
+    private INumericMetaData getDisplayRangesForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+        final IArchiveChannel ch = service.getChannelByName(channelName);
+        if (ch == null) {
+            throw new ArchiveServiceException("Channel retrieval failed for channel '" + channelName + "'!", null);
+        }
+        final Limits<?> l = service.readDisplayLimits(channelName);
+        if (l != null) {
+            return ValueFactory.createNumericMetaData(((Number) l.getLow()).doubleValue(),
+                                                      ((Number) l.getHigh()).doubleValue(), 0.0, 0.0, 0.0, 0.0, 0, "none");
+        }
+        return null;
+    }
 
-    private int findBinForFirstSample(@Nonnull final TimeInstant time,
-                                      @Nonnull final TimeInstant start,
-                                      @Nonnull final ReadableDuration windowLength) {
-        TimeInstant myStart = TimeInstantBuilder.buildFromMillis(start.getMillis());
+
+    private int findBinOfFirstSample(@Nonnull final TimeInstant time,
+                                     @Nonnull final TimeInstant start,
+                                     @Nonnull final ReadableDuration windowLength) {
         int i = 1;
-        while (myStart.plusMillis(windowLength.getMillis()).isBefore(time)) {
+        TimeInstant myStart =
+            TimeInstantBuilder.buildFromMillis(start.getMillis()).plusMillis(windowLength.getMillis());
+        while (myStart.isBefore(time)) {
             myStart = myStart.plusMillis(windowLength.getMillis());
             i++;
         }
@@ -158,7 +183,7 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
      */
     @Override
     public boolean hasNext() {
-        if (_currentBin <= _bins && _noSamples) {
+        if (_currentBin <= _bins && _iter.hasNext()) { // TODO (bknerr) : check whether only the last condition is sufficient
             return true;
         }
         return false;
@@ -168,32 +193,52 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public IValue next() throws TypeSupportException {
-
         if (_noSamples) {
             throw new NoSuchElementException();
         }
 
         final TimeInstant windowEnd = _start.plusMillis(_currentBin*_windowLength.getMillis());
 
-        while (_nextSample.getSystemVariable().getTimestamp().isBefore(windowEnd)) {
-            final Double newVal = BaseTypeConversionSupport.toDouble(_nextSample.getValue());
+        // is there a yet unaggregated sample from the last next() invocation or the constructor?
+        if (_nextSample != null) {
+            // Yes
+            // Is it in this time window (when present from the constructor, yes, when from the next invoc, then dunno?
+            if (_nextSample.getSystemVariable().getTimestamp().isBefore(windowEnd)) { // YES,
+                _agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(_nextSample.getValue()),
+                                     _nextSample.getSystemVariable().getTimestamp());
 
-            _agg.aggregateNewVal(newVal, _nextSample.getSystemVariable().getTimestamp());
+                // start iterating over next samples until window end
+                while (_iter.hasNext()) {
+                    _nextSample = _iter.next(); // might belong here or not
 
-            _nextSample = _iter.next();
+                    if (_nextSample.getSystemVariable().getTimestamp().isBefore(windowEnd)) {
+                        _agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(_nextSample.getValue()),
+                                             _nextSample.getSystemVariable().getTimestamp());
+                        _nextSample = null; // set to null, when already aggregated
+                    } else {
+                        // nextSample NOT set to null, as not yet aggregated
+                        break;
+                    }
+                }
+            }
         }
-
         final IMinMaxDoubleValue iVal =
             ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(windowEnd),
-                                                 null, null, null, null,
+                                                 null, null, _meta, IValue.Quality.Interpolated,
                                                  new double[]{_agg.getAvg().doubleValue() },
                                                  _agg.getMin().doubleValue(),
                                                  _agg.getMax().doubleValue());
-
         _agg.reset();
         _currentBin++;
 
+        if (_nextSample != null) {
+            // this sample has been retrieved from the iterator, but was outside the current window
+            // aggregate it here
+            _agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(_nextSample.getValue()),
+                                 _nextSample.getSystemVariable().getTimestamp());
+        }
         return iVal;
     }
 

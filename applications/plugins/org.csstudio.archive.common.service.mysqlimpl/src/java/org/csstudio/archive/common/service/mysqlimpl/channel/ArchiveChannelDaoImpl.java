@@ -33,7 +33,6 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -47,6 +46,7 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Predicate;
@@ -73,6 +73,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
+                    TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
                 "FROM " + getDaoMgr().getDatabaseName() + "." + TAB + ", " + getDaoMgr().getDatabaseName() + "." + CS_TAB;
     private final String _selectChannelSuffix = "AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
@@ -83,7 +84,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _selectChannelByIdStmt =   _selectChannelPrefix + " WHERE " + TAB + ".id=? " + _selectChannelSuffix;
     private final String _selectChannelsByGroupId = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
                                                     " ORDER BY " + TAB + ".name";
-
     /**
      * Constructor.
      */
@@ -94,7 +94,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     @Nonnull
     private IArchiveChannel getChannelFromResult(@Nonnull final ResultSet result) throws SQLException,
                                                                                          ClassNotFoundException,
-                                                                                         ArchiveDaoException {
+                                                                                         ArchiveDaoException,
+                                                                                         TypeSupportException {
         // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
         final String name = result.getString(TAB + ".name");
@@ -103,6 +104,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
         final TimeInstant time = lastSampleTime == null ? null :
                                                     TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
+        final String dispHi = result.getString(TAB + ".display_high");
+        final String dispLo = result.getString(TAB + ".display_low");
 
         final ArchiveControlSystemId csId = new ArchiveControlSystemId(result.getLong(CS_TAB + ".id"));
         final String csName = result.getString(CS_TAB + ".name");
@@ -111,14 +114,16 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final IArchiveControlSystem cs = new ArchiveControlSystem(csId,
                                                                   csName,
                                                                   Enum.valueOf(ControlSystemType.class, csType));
-
         final IArchiveChannel channel =
-            new ArchiveChannel(id,
-                               name,
-                               datatype,
-                               new ArchiveChannelGroupId(groupId),
-                               time,
-                               cs);
+                ArchiveTypeConversionSupport.createArchiveChannel(id,
+                                                                  name,
+                                                                  datatype,
+                                                                  new ArchiveChannelGroupId(groupId),
+                                                                  time,
+                                                                  cs,
+                                                                  dispLo,
+                                                                  dispHi);
+
 
         _channelCacheByName.put(name, channel);
         _channelCacheById.put(id, channel);
@@ -253,6 +258,22 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             handleExceptions(EXC_MSG + " Display ranges could not be written.", e);
         }
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    @CheckForNull
+    public <V extends Comparable<? super V>>
+    Limits<V> retrieveDisplayRanges(@Nonnull final String channelName) throws ArchiveDaoException {
+
+        final IArchiveChannel channel = retrieveChannelByName(channelName);
+        if (channel != null) {
+            return (Limits<V>) channel.getDisplayLimits();
+        }
+        return null;
     }
 
 

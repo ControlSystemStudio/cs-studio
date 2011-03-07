@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 /**
  * Immutable data transfer object for DAOs.
@@ -43,11 +44,7 @@ public class ArchiveChannel implements IArchiveChannel {
 
     private final ArchiveChannelGroupId _groupId;
 
-//    private final ArchiveSampleModeId _sampleModeId;
-
     private final String _dataType;
-
-//    private final double _samplePeriod;
 
     private final TimeInstant _latestTimestamp;
 
@@ -59,27 +56,18 @@ public class ArchiveChannel implements IArchiveChannel {
      * @param name
      * @param type
      * @param grpId
-//     * @param sampleModeId
-//     * @param smplPer
      * @param ltstTimestamp
-     *
-     * CHECKSTYLE OFF: ParameterNumber
      */
     public ArchiveChannel(@Nonnull final ArchiveChannelId id,
                           @Nonnull final String name,
                           @Nonnull final String type,
                           @Nonnull final ArchiveChannelGroupId grpId,
-//                          @Nonnull final ArchiveSampleModeId sampleModeId,
-//                          final double smplPer,
                           @Nullable final TimeInstant ltstTimestamp,
                           @Nonnull final IArchiveControlSystem system) {
-        // CHECKSTYLE  ON : ParameterNumber
         _id = id;
         _name = name;
         _groupId = grpId;
         _dataType = type;
-//        _sampleModeId = sampleModeId;
-//        _samplePeriod = smplPer;
         _latestTimestamp = ltstTimestamp;
         _system = system;
     }
@@ -108,14 +96,7 @@ public class ArchiveChannel implements IArchiveChannel {
     public ArchiveChannelGroupId getGroupId() {
         return _groupId;
     }
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @Nonnull
-//    public ArchiveSampleModeId getSampleModeId() {
-//        return _sampleModeId;
-//    }
+
     /**
      * {@inheritDoc}
      */
@@ -123,13 +104,6 @@ public class ArchiveChannel implements IArchiveChannel {
     public String getDataType() {
         return _dataType;
     }
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public double getSamplePeriod() {
-//        return _samplePeriod;
-//    }
 
     /**
      * {@inheritDoc}
@@ -147,5 +121,14 @@ public class ArchiveChannel implements IArchiveChannel {
     @Nonnull
     public IArchiveControlSystem getControlSystem() {
         return _system;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public Limits<?> getDisplayLimits() {
+        return null;
     }
 }

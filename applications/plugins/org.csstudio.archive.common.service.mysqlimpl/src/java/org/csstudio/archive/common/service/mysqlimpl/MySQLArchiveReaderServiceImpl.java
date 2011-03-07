@@ -41,6 +41,7 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -141,7 +142,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
             final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
             return DAO_MGR.getSampleDao().retrieveLatestSampleBeforeTime(channel, time);
         } catch (final ArchiveDaoException ade) {
-            throw new ArchiveServiceException("Sample retrieval failed.", ade);
+            throw new ArchiveServiceException("Latest sample retrieval failed for channel " + channelName, ade);
         }
     }
 
@@ -153,5 +154,18 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     @CheckForNull
     public IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException {
         return MySQLArchiveEngineServiceImpl.INSTANCE.getChannelByName(name);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException {
+        try {
+            return DAO_MGR.getChannelDao().retrieveDisplayRanges(channelName);
+        } catch (final ArchiveDaoException ade) {
+            throw new ArchiveServiceException("Channel retrieval failed.", ade);
+        }
     }
 }
