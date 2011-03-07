@@ -1,20 +1,24 @@
 package org.csstudio.utility.pvmanager;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Plugin;
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.DataSource;
+import org.epics.pvmanager.PVManager;
 import org.osgi.framework.BundleContext;
-import org.epics.pvmanager.*;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends Plugin {
+	
+	private static final Logger log = Logger.getLogger(Activator.class.getName());
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.pvmanager";
-
-	private static final String defaultDataSource = "epics";
+	public static final String ID = "org.csstudio.utility.pvmanager";
 
 	/*
 	* (non-Javadoc)
@@ -23,25 +27,30 @@ public class Activator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		try {
-			IConfigurationElement[] config = Platform.getExtensionRegistry()
-			.getConfigurationElementsFor("org.csstudio.utility.pvmanager.datasource");
-			
+			// Create the composite data source
 			CompositeDataSource composite = new CompositeDataSource();
-			for (IConfigurationElement iConfigurationElement : config) {
-				final Object o = iConfigurationElement
-						.createExecutableExtension("datasource");
-				final String prefix = iConfigurationElement.getAttribute("prefix");
-				if (o instanceof DataSource) {					
-					DataSource ds = (DataSource) o;
-					// Add each valid DataSource to the PVManager
-					composite.putDataSource(prefix, ds);
-					if(prefix.equals(defaultDataSource))
-						composite.setDefaultDataSource(prefix);
-				}
+			
+			// Retrieve configured data sources and add them to the
+			// composite
+			Map<String, DataSource> dataSources = ConfigurationHelper.configuredDataSources();
+			for (Map.Entry<String, DataSource> entry : dataSources.entrySet()) {
+				log.log(Level.CONFIG, "Adding data source {0}", entry.getKey());
+				composite.putDataSource(entry.getKey(), entry.getValue());
 			}
+			
+			// Sets the default data source
+			String defaultDataSourceName = ConfigurationHelper.defaultDataSourceName();
+			System.out.println("Default: " + defaultDataSourceName);
+			DataSource defaultDataSource = dataSources.get(defaultDataSourceName);
+			if (defaultDataSource != null) {
+				log.log(Level.CONFIG, "Setting default data source to {0}", defaultDataSourceName);
+				composite.setDefaultDataSource(defaultDataSourceName);
+			}
+			
+			// set as default data source
 			PVManager.setDefaultDataSource(composite);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.log(Level.SEVERE, "Couldn't configure PVManager", e);
 		}
 	}
 
