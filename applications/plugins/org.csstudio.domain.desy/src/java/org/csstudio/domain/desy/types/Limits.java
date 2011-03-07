@@ -41,7 +41,7 @@ public final class Limits<V extends Comparable<? super V>> {
      * Factory method.
      *
      * @param low the low limit
-     * @param high
+     * @param high the high limit
      * @return the new instance
      * @param <W>
      * @throws IllegalArgumentException on low being larger comparedTo high
@@ -60,6 +60,11 @@ public final class Limits<V extends Comparable<? super V>> {
                    @Nonnull final V high) {
         _low = low;
         _high = high;
+
+        if (!low.getClass().isAssignableFrom(Comparable.class)) {
+            throw new IllegalArgumentException("Type is not assignable from " + Comparable.class.getName());
+
+        }
         if (_low.compareTo(_high) == 1) {
             throw new IllegalArgumentException("Low limit is larger than high limit.");
         }

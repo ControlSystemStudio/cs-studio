@@ -89,7 +89,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                                     EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
                                                     alarm.getStatus().toString(),
                                                     null,
-                                                    null,
+                                                    IValue.Quality.Original,
                                                     new double[]{ valueData.doubleValue() },
                                                     min.doubleValue(),
                                                     max.doubleValue());
