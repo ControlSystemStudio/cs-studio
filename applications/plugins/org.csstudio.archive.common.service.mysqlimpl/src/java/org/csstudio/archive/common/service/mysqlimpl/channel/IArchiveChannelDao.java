@@ -62,4 +62,8 @@ public interface IArchiveChannelDao {
     @CheckForNull
     IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
+    <V extends Comparable<? super V>>
+    void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
+                             @Nonnull final V displayLow,
+                             @Nonnull final V displayHigh) throws ArchiveDaoException;
 }

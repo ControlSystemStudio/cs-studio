@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
@@ -22,8 +23,9 @@ public class MonitoredArchiveChannel<V,
 
 
     public MonitoredArchiveChannel(@Nonnull final String name,
-                                   @Nonnull final ArchiveChannelId channelId) throws EngineModelException {
-        super(name, channelId);
+                                   @Nonnull final ArchiveChannelId channelId,
+                                   @Nullable final Class<V> typeClazz) throws EngineModelException {
+        super(name, channelId, typeClazz);
     }
 
 

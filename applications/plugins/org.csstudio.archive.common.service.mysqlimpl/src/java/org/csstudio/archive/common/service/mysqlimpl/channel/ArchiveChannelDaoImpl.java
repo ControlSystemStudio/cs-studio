@@ -43,9 +43,11 @@ import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -59,7 +61,7 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
-    private static final String EXC_MSG = "Channel configuration retrieval from archive failed.";
+    private static final String EXC_MSG = "Channel table access failed.";
     /**
      * Archive channel configuration cache.
      */
@@ -93,13 +95,11 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private IArchiveChannel getChannelFromResult(@Nonnull final ResultSet result) throws SQLException,
                                                                                          ClassNotFoundException,
                                                                                          ArchiveDaoException {
-        // id, name, datatype, group_id, sample_mode_id, sample_period, last_sample_time
+        // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
         final String name = result.getString(TAB + ".name");
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
-        //final int sampleMode = result.getInt("sample_mode_id");
-        //final double samplePeriod = result.getDouble("sample_period");
         final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
         final TimeInstant time = lastSampleTime == null ? null :
                                                     TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
@@ -117,8 +117,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                name,
                                datatype,
                                new ArchiveChannelGroupId(groupId),
-//                               new ArchiveSampleModeId(sampleMode),
-//                               samplePeriod,
                                time,
                                cs);
 
@@ -234,6 +232,27 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 }
             });
         return filteredList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <V extends Comparable<? super V>> void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
+                                                                      @Nonnull final V displayLow,
+                                                                      @Nonnull final V displayHigh) throws ArchiveDaoException {
+        String updateDisplayRangesStmt;
+        try {
+            updateDisplayRangesStmt = "UPDATE " + getDaoMgr().getDatabaseName() + "." + TAB +
+            " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
+            ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
+            " WHERE " + getDaoMgr().getDatabaseName() + "." + TAB + ".id=" + id.asString();
+
+            getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
+        } catch (final TypeSupportException e) {
+            handleExceptions(EXC_MSG + " Display ranges could not be written.", e);
+        }
+
     }
 
 

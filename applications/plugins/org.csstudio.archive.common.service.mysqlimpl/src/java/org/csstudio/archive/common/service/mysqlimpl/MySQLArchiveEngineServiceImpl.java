@@ -88,18 +88,6 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
         return true;
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException {
-//        try {
-//            DAO_MGR.getArchiverMgmtDao().createMgmtEntries(monitorStates);
-//        } catch (final ArchiveDaoException e) {
-//            throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
-//        }
-//    }
-
     /**
      * {@inheritDoc}
      */
@@ -186,5 +174,23 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                               " could not be retrieved.", e);
         }
         return channel;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <V extends Comparable<? super V>>
+    void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
+                                      @Nonnull final V displayLow,
+                                      @Nonnull final V displayHigh) throws ArchiveServiceException {
+        try {
+            DAO_MGR.getChannelDao().updateDisplayRanges(id, displayLow, displayHigh);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel info for " + id +
+                                              " could not be updated.", e);
+        }
+
     }
 }

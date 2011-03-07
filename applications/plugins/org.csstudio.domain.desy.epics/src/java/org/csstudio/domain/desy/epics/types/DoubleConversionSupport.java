@@ -19,58 +19,40 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.alarm;
+package org.csstudio.domain.desy.epics.types;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
-/**
- * TODO (bknerr) :
- *
- * @author bknerr
- * @since Mar 4, 2011
- */
-public class EpicsMetaData {
+import org.csstudio.domain.desy.epics.alarm.EpicsGraphicsData;
+import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
+import org.csstudio.domain.desy.types.Limits;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
 
-    private final EpicsGraphicsData<? extends Comparable<?>> _grData;
-    private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
-    private final Short _precision;
-    private final EpicsAlarm _alarm;
+final class DoubleConversionSupport extends EpicsIMetaDataTypeSupport<Double> {
 
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nullable final EpicsAlarm alarm,
-                         @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
-                         @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
-                         @Nullable final Short precision) {
-        _alarm = alarm;
-        _grData = gr;
-        _ctrlLimits = ctrl;
-        if (_grData != null && _ctrlLimits != null &&
-            !gr.getAlarmHigh().getClass().equals(_ctrlLimits.getCtrlHigh().getClass())) {
-                throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and graphics don't have the same class type.");
-        }
-        _precision = precision;
+    public DoubleConversionSupport() {
+        super(Double.class);
     }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @CheckForNull
-    public EpicsGraphicsData<?> getGrData() {
-        return _grData;
+    protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
+        final INumericMetaData numData = checkAndConvert(data, Double.class);
+        final EpicsGraphicsData<Double> gr =
+            new EpicsGraphicsData<Double>(Limits.<Double>create(numData.getAlarmLow(),
+                                                                numData.getAlarmHigh()),
+                                        Limits.<Double>create(numData.getWarnLow(),
+                                                              numData.getWarnHigh()),
+                                        Limits.<Double>create(numData.getDisplayLow(),
+                                                              numData.getDisplayHigh()));
+        return new EpicsMetaData(null, gr, null, null);
     }
-
-    @CheckForNull
-    public IControlLimits<?> getCtrlLimits() {
-        return _ctrlLimits;
-    }
-
-    @CheckForNull
-    public Short getPrecision() {
-        return _precision;
-    }
-    @CheckForNull
-    public EpicsAlarm getAlarm() {
-        return _alarm;
-    }
-
 }
