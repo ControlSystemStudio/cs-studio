@@ -40,7 +40,6 @@ public class Activator extends Plugin {
 			
 			// Sets the default data source
 			String defaultDataSourceName = ConfigurationHelper.defaultDataSourceName();
-			System.out.println("Default: " + defaultDataSourceName);
 			DataSource defaultDataSource = dataSources.get(defaultDataSourceName);
 			if (defaultDataSource != null) {
 				log.log(Level.CONFIG, "Setting default data source to {0}", defaultDataSourceName);
