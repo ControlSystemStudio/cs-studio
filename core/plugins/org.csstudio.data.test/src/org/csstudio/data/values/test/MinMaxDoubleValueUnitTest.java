@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.data.test;
+package org.csstudio.data.values.test;
 
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.INumericMetaData;
