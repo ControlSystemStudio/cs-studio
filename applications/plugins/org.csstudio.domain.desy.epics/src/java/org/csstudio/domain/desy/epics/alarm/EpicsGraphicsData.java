@@ -27,30 +27,40 @@ import org.csstudio.domain.desy.types.IDisplayLimits;
 import org.csstudio.domain.desy.types.Limits;
 
 /**
- * TODO (bknerr) :
+ * jca abstraction <br/>
+ * DBR <- DBR_* <- DBR_STS_* <- DBR_Time_* <- DBR_GR_* <- DBR_Ctrl_*
+ *
+ *        value    status       time          alarmHi/Lo   ctrlHi
+ *                 severity                   warnHi/Lo    ctrlLo
+ *                                            dispHi/Lo
+
+ *                                         <- DBR_Float|Double_Precision
+ *                                            precision
+ *
+ *     <- DBR_Enum <- DBR_STS_E <- DBR_LABELS_E <- DBR_CTRL_E
+ *                                              <- DBR_TIME_LABELS_E
+ *                              <- DBR_TIME_E
  *
  * @author bknerr
  * @since Mar 3, 2011
  */
-public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayLimits<V>,
-                                                                       IAlarmLimits<V> {
+public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisplayLimits<V>,
+                                                                           IAlarmLimits<V> {
 
-    Limits<V> _alarmLimits;
-    Limits<V> _warnLimits;
-    Limits<V> _displayLimits;
-    Short _precision;
+    private final Limits<V> _alarmLimits;
+    private final Limits<V> _warnLimits;
+    private final Limits<V> _displayLimits;
+
 
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nonnull final Limits<V> aLimits,
-                         @Nonnull final Limits<V> wLimits,
-                         @Nonnull final Limits<V> dLimits,
-                         @Nonnull final Short prec) {
+    public EpicsGraphicsData(@Nonnull final Limits<V> aLimits,
+                             @Nonnull final Limits<V> wLimits,
+                             @Nonnull final Limits<V> dLimits) {
         _alarmLimits = aLimits;
         _warnLimits = wLimits;
         _displayLimits = dLimits;
-        _precision = prec;
     }
 
     /**
@@ -61,6 +71,7 @@ public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayL
     public V getWarnHigh() {
         return _warnLimits.getHigh();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -69,6 +80,7 @@ public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayL
     public V getWarnLow() {
         return _warnLimits.getLow();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -77,6 +89,7 @@ public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayL
     public V getAlarmHigh() {
         return _alarmLimits.getHigh();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -85,6 +98,7 @@ public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayL
     public V getAlarmLow() {
         return _alarmLimits.getLow();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -93,6 +107,7 @@ public class EpicsMetaData<V extends Comparable<? super V>> implements IDisplayL
     public V getDisplayHigh() {
         return _displayLimits.getHigh();
     }
+
     /**
      * {@inheritDoc}
      */

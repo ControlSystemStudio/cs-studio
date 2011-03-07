@@ -73,17 +73,6 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
                                                                            typeClass);
         return support.convertToSystemVariable(name, value);
     }
-//    @SuppressWarnings("unchecked")
-//    @CheckForNull
-//    public static <T extends IValue>
-//    EpicsSystemVariable<?> toMetaData(@Nonnull final T value) throws TypeSupportException {
-//
-//        final Class<T> typeClass = (Class<T>) value.getClass();
-//        final AbstractIValueConversionTypeSupport<T> support =
-//            (AbstractIValueConversionTypeSupport<T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
-//                                                                        typeClass);
-//        return support.convertToSystemVariable(name, value);
-//    }
 
     /**
      * Converts the parameters into a type safe enum class for EPICS alarms.
@@ -97,42 +86,36 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
      * @param status the status
      * @return the epics alarm composite (as of 3.14.12.rc1 in dbStatic/alarm.h)
      */
-    @CheckForNull
+    @Nonnull
     public static EpicsAlarm toEpicsAlarm(@CheckForNull final ISeverity sev,
                                           @Nullable final String status) {
         final EpicsAlarmSeverity severity = toEpicsSeverity(sev);
         return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
     }
 
-    @CheckForNull
+    @Nonnull
     public static EpicsAlarmSeverity toEpicsSeverity(@CheckForNull final ISeverity sev) {
-        // once before...
         if (sev == null) {
-            return null;
+            return EpicsAlarmSeverity.UNKNOWN;
         }
-        EpicsAlarmSeverity severity = null;
         // Unfortunately ISeverity is not an enum (if it were, I would have used it) so dispatch
         // btw from the interface the mutual exclusion of these states is not ensured
         if (sev.isOK()) {
-            severity = EpicsAlarmSeverity.NO_ALARM;
+            return EpicsAlarmSeverity.NO_ALARM;
         } else if (sev.isMinor()) {
-            severity = EpicsAlarmSeverity.MINOR;
+            return EpicsAlarmSeverity.MINOR;
         } else if (sev.isMajor()) {
-            severity = EpicsAlarmSeverity.MAJOR;
+            return EpicsAlarmSeverity.MAJOR;
         } else if (sev.isInvalid()) {
-            severity = EpicsAlarmSeverity.INVALID;
+            return EpicsAlarmSeverity.INVALID;
         }
-        // and once after... in case anything was false! This interface is lovely
-        if (severity == null) {
-            return null;
-        }
-        return severity;
+        return EpicsAlarmSeverity.UNKNOWN;
     }
 
     @CheckForNull
     public static ISeverity toSeverity(@Nonnull final EpicsAlarmSeverity sev) {
         switch (sev) {
-            case UNKNOWN : // unknown->no alarm is apparently wrong, but once you use ISeverity, well, you're wrong.
+            case UNKNOWN : // unknown fall through to no alarm is apparently wrong, but once you use ISeverity, well, you're wrong.
             case NO_ALARM : return ValueFactory.createOKSeverity();
             case MINOR :    return ValueFactory.createMinorSeverity();
             case MAJOR :    return ValueFactory.createMajorSeverity();

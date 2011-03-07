@@ -280,6 +280,7 @@ public enum ArchiveDaoManager {
     }
 
 
+    @Nonnull
     public IArchiveSampleDao getSampleDao() {
         if (_archiveSampleDao == null) {
             _archiveSampleDao = new ArchiveSampleDaoImpl();
@@ -287,6 +288,7 @@ public enum ArchiveDaoManager {
         return _archiveSampleDao;
     }
 
+    @Nonnull
     public IArchiveEngineDao getEngineDao() {
         if (_archiveEngineDao == null) {
             _archiveEngineDao = new ArchiveEngineDaoImpl();

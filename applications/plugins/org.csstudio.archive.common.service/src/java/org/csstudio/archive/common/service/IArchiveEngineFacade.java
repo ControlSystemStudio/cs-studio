@@ -120,4 +120,15 @@ public interface IArchiveEngineFacade {
                                     @Nonnull final String info,
                                     @Nonnull final TimeInstant timestamp) throws ArchiveServiceException;
 
+    /**
+     * Writes the channel display range info
+     * @param id
+     * @param displayLow
+     * @param displayHigh
+     */
+    <V extends Comparable<? super V>>
+    void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
+                                      @Nonnull final V displayLow,
+                                      @Nonnull final V displayHigh) throws ArchiveServiceException;
+
 }

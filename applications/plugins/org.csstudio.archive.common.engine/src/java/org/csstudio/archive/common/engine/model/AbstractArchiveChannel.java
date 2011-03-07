@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.apache.log4j.Logger;
@@ -22,12 +23,16 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
@@ -51,6 +56,8 @@ public abstract class AbstractArchiveChannel<V,
      *  not the PV name that might include decorations.
      */
     private final String _name;
+
+    private final Class<V> _typeClass;
 
     final ArchiveChannelId _id;
 
@@ -109,8 +116,10 @@ public abstract class AbstractArchiveChannel<V,
      * @throws EngineModelException
      */
     public AbstractArchiveChannel(@Nonnull final String name,
-                          @Nonnull final ArchiveChannelId id) throws EngineModelException {
+                                  @Nonnull final ArchiveChannelId id,
+                                  @Nullable final Class<V> clazz) throws EngineModelException {
         _name = name;
+        _typeClass = clazz;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
 
@@ -126,9 +135,15 @@ public abstract class AbstractArchiveChannel<V,
                 try {
                     if (!_connected) {
                         handleConnectInfo(_id, pv.isConnected(), pv.getStateInfo());
+                        //final IMetaData metaData = pv.getValue().getMetaData();
+                        final IMetaData metaData = ValueFactory.createNumericMetaData(15.0, 20.0, 1.0, 1.0, 1.0, 1.0, 1, "foo");
+                        if (metaData != null) {
+                            final EpicsMetaData data = EpicsIMetaDataTypeSupport.toMetaData(metaData,
+                                                                                           _typeClass);
+                            handleOnConnectMetadata(_id, data);
+                        }
                         _connected = true;
                     }
-
                     final IValue value = pv.getValue();
                     final EpicsSystemVariable<V> sv = (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value);
                     final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(_id, (T) sv, sv.getAlarm());
@@ -138,7 +153,7 @@ public abstract class AbstractArchiveChannel<V,
                     PV_LOG.error("Handling of newly received IValue failed. Could not be converted to ISystemVariable", e);
                     return;
                 } catch (final Throwable t) {
-                    PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage());
+                    PV_LOG.error("Unexpected exception in PVListener: " + t.getMessage(), t);
                 }
             }
             @Override
@@ -155,6 +170,22 @@ public abstract class AbstractArchiveChannel<V,
         });
     }
 
+    @SuppressWarnings("unchecked")
+    protected <W extends Comparable<? super W>>
+    void handleOnConnectMetadata(@Nonnull final ArchiveChannelId id,
+                                 @Nonnull final EpicsMetaData data) throws EngineModelException {
+        try {
+            final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
+            service.writeChannelDisplayRangeInfo(id,
+                                                 (W) data.getGrData().getDisplayLow(),
+                                                 (W) data.getGrData().getDisplayHigh());
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable on updating display range info.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on updating display range info.", e);
+        }
+    }
+
     protected void handleConnectInfo(@Nonnull final ArchiveChannelId id,
                                      final boolean connected,
                                      @Nonnull final String info) throws EngineModelException {
@@ -162,9 +193,9 @@ public abstract class AbstractArchiveChannel<V,
             final IArchiveEngineFacade service = Activator.getDefault().getArchiveEngineService();
             service.writeChannelConnectionInfo(id, connected, info, TimeInstantBuilder.buildFromNow());
         } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Service unavailable on stopping archive engine channel.", e);
+            throw new EngineModelException("Service unavailable to handle channel connection info.", e);
         } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Internal service error on stopping archive engine channel.", e);
+            throw new EngineModelException("Internal service error on handling channel connection info.", e);
         }
     }
 

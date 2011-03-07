@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.platform.model.IProcessVariable;
@@ -608,6 +609,10 @@ public class EPICS_V3_PV
     @Override
     public void monitorChanged(final MonitorEvent ev)
     {
+        //INumericMetaData metaData = (INumericMetaData) DBR_Helper.decodeMetaData(ev.getDBR());
+        
+        Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
+        
         final Logger log = Activator.getLogger();
         // This runs in a CA thread.
         // Ignore values that arrive after stop()
