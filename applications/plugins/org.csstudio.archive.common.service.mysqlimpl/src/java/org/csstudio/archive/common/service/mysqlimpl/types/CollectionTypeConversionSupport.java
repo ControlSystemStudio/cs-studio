@@ -25,11 +25,6 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
@@ -103,23 +98,5 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     protected Collection convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
         throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
                                        "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    // CHECKSTYLE OFF : ParameterNumber
-    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final String name,
-                                            @Nonnull final String datatype,
-                                            @Nonnull final ArchiveChannelGroupId grpId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final IArchiveControlSystem cs,
-                                            @Nonnull final Collection low,
-                                            @Nonnull final Collection high) throws TypeSupportException {
-        // CHECKSTYLE ON : ParameterNumber
-        throw new TypeSupportException("Archive channel with display ranges for Collection types not supported", null);
     }
 }
