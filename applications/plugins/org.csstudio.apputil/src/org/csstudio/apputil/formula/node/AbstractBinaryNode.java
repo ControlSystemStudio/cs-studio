@@ -16,14 +16,15 @@ abstract class AbstractBinaryNode implements Node
 {
     protected final Node left;
     protected final Node right;
-    
+
     public AbstractBinaryNode(final Node left, final Node right)
     {
         this.left = left;
         this.right = right;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     final public boolean hasSubnode(final Node node)
     {
         return left == node          || right == node ||
@@ -31,6 +32,7 @@ abstract class AbstractBinaryNode implements Node
     }
 
     /** {@inheritDoc} */
+    @Override
     final public boolean hasSubnode(final String name)
     {
         return left.hasSubnode(name) || right.hasSubnode(name);

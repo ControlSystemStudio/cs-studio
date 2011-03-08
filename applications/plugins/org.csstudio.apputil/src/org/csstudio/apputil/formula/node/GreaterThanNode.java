@@ -18,14 +18,15 @@ public class GreaterThanNode extends AbstractBinaryNode
     {
         super(left, right);
     }
-    
+
+    @Override
     public double eval()
     {
         final double a = left.eval();
         final double b = right.eval();
         return (a > b) ? 1.0 : 0.0;
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()
