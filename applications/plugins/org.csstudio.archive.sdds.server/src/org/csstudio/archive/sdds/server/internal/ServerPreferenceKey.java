@@ -28,9 +28,10 @@ package org.csstudio.archive.sdds.server.internal;
  * @author Markus Moeller
  *
  */
-public class ServerPreferenceKey
-{
-    public static final String P_XMPP_SERVER = "xmppServer";
+public class ServerPreferenceKey {
+    
+	public static final String P_USE_JMX = "useJmx";
+	public static final String P_XMPP_SERVER = "xmppServer";
     public static final String P_XMPP_USER = "xmppUser";
     public static final String P_XMPP_PASSWORD = "xmppPassword";
     public static final String P_SERVER_PORT = "serverPort";

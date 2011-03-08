@@ -86,6 +86,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
         
         Integer exitType = null;
         int serverPort;
+        boolean useJmx = false;
         
         logger.info("Starting " + Activator.PLUGIN_ID);
 
@@ -93,11 +94,24 @@ public class Application implements IApplication, RemotelyStoppable, Application
         serverPort = pref.getInt(Activator.PLUGIN_ID, ServerPreferenceKey.P_SERVER_PORT, 4056, null);
         logger.info("The server uses port " + serverPort);
         
+        useJmx = pref.getBoolean(Activator.PLUGIN_ID, ServerPreferenceKey.P_USE_JMX,
+        		false, null);
+        
+        if (useJmx) {
+        	logger.info("The server uses JMX for remote access.");
+        } else {
+        	logger.info("The server uses XMPP for remote access.");
+        }
+        
         try {
             server = new Server(serverPort);
             server.start();
-            // connectToXMPPServer();
-            connectMBeanServer();
+            
+            if (useJmx == false) {
+            	connectToXMPPServer();
+            } else {
+            	connectMBeanServer();
+            }
         } catch(ServerException se) {
             logger.error("Cannot create an instance of the Server class. " + se.getMessage());
             logger.error("Stopping application!");
@@ -194,28 +208,13 @@ public class Application implements IApplication, RemotelyStoppable, Application
 
     /**
      * 
-     * @param restart
+     * @param setRestart
      */
     @Override
-	public void setShutdown(boolean restart) {
+	public void stopApplication(boolean setRestart) {
         
         this.running = false;
-        this.restart = restart;
-        
-        synchronized(lock) {
-            lock.notify();
-        }
-    }
-
-    /**
-     * 
-     * @param restart
-     */
-    @Override
-	public void setShutdown() {
-        
-        this.running = false;
-        this.restart = false;
+        this.restart = setRestart;
         
         synchronized(lock) {
             lock.notify();

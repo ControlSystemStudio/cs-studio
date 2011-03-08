@@ -42,18 +42,16 @@ public class Stop implements IManagementCommand
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
-        // The result of this method call.
+    @Override
+	public CommandResult execute(CommandParameters parameters) {
+        
+    	// The result of this method call.
         CommandResult result = null;
         
-        if(stopMe != null)
-        {
-            stopMe.setShutdown(false);
+        if(stopMe != null) {
+            stopMe.stopApplication(false);
             result = CommandResult.createMessageResult(Activator.PLUGIN_ID + " is stopping now.");
-        }
-        else
-        {
+        } else {
             result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
         }
         
@@ -67,8 +65,7 @@ public class Stop implements IManagementCommand
      * @param o
      * 
      */
-    public static void injectStaticObject(RemotelyStoppable o)
-    {
+    public static void injectStaticObject(RemotelyStoppable o) {
         stopMe = o;
     }
 }

@@ -50,7 +50,7 @@ public class Restart implements IManagementCommand
         
         if(restartMe != null)
         {
-            restartMe.setShutdown(true);
+            restartMe.stopApplication(true);
             result = CommandResult.createMessageResult(Activator.PLUGIN_ID + " is restarting now.");
         }
         else

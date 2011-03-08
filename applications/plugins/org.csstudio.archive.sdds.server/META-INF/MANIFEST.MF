@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDDS-Server
-Bundle-SymbolicName: org.csstudio.archive.sdds.server
-Bundle-Version: 0.9.6.qualifier
+Bundle-SymbolicName: org.csstudio.archive.sdds.server;singleton:=true
+Bundle-Version: 0.9.7.qualifier
 Bundle-Activator: org.csstudio.archive.sdds.server.Activator
 Bundle-Vendor: Markus Moeller, DESY Hamburg
 Require-Bundle: org.eclipse.core.runtime,

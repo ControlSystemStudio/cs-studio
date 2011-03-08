@@ -33,27 +33,31 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * @author Markus Moeller
  *
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer
-{
-    /* (non-Javadoc)
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+    
+	/* (non-Javadoc)
      * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
      */
     @Override
-    public void initializeDefaultPreferences()
-    {
-        IEclipsePreferences node = new DefaultScope().getNode(Activator.PLUGIN_ID);
+    public void initializeDefaultPreferences() {
+        
+    	IEclipsePreferences node = new DefaultScope().getNode(Activator.PLUGIN_ID);
 
+        // Use JMX instead of XMPP to stop the server
+        node.put(ServerPreferenceKey.P_USE_JMX, "false");
+        
+        // XMPP server
         node.put(ServerPreferenceKey.P_XMPP_SERVER, "xmpp.where.ever");
         
-        // Byte order within SDDS files
+        // XMPP user
         node.put(ServerPreferenceKey.P_XMPP_USER, "anonymous");
         
-        // Use previous record not older than x seconds
+        // XMPP password
         node.put(ServerPreferenceKey.P_XMPP_PASSWORD, "anonymous");
 
         // AAPI default port
         // look at http://www-kryo.desy.de/documents/EPICS/DESY/General/Archiver/AAPI/ArchiveProtocol2.5.htm
-        node.put(ServerPreferenceKey.P_SERVER_PORT, "4059");
+        node.put(ServerPreferenceKey.P_SERVER_PORT, "4056");
         
         // Byte order within SDDS files
         node.put(ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, "false");

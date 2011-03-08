@@ -35,5 +35,5 @@ public interface RemotelyStoppable
      * 
      * @param restart
      */
-    public void setShutdown(boolean restart);
+    public void stopApplication(boolean setRestart);
 }
