@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.data.values;
@@ -37,10 +37,10 @@ import java.util.Calendar;
  *  <code>2007/01/15 14:45:56.123</code>,
  *  which sorts well and is disambiguated from regional preferences like
  *  AM/PM formats, or day/month/year vs. month/day/year.
- *  
+ *
  *  @see java.util.Calendar
  *  @see TimestampFactory
- *  
+ *
  *  @author Sven Wende
  *  @author Kay Kasemir
  */
@@ -52,7 +52,7 @@ public interface ITimestamp extends Comparable<ITimestamp>
      *  even if the original control system data source might use a different
      *  epoch (example: EPICS uses 1990), because the 1970 epoch is most
      *  compatible with existing programming environments.
-     * 
+     *
      *  @return Seconds since 1970.
      */
     public long seconds();
@@ -78,6 +78,11 @@ public interface ITimestamp extends Comparable<ITimestamp>
      */
     public Calendar toCalendar();
 
+    /** Convert to SQL Timestamp.
+     *  @return SQL Timestamp
+     */
+    public java.sql.Timestamp toSQLTimestamp();
+
     /** Format specifier.
      *  @see ITimestamp#format()
      */
@@ -85,16 +90,16 @@ public interface ITimestamp extends Comparable<ITimestamp>
     {
         /** Format to "YYYY/MM/DD". */
         Date,
-        
+
         /** Format to "YYYY/MM/DD HH:MM". */
         DateTime,
-        
+
         /** Format to "YYYY/MM/DD HH:MM:SS". */
         DateTimeSeconds,
-        
+
         /** Format to "YYYY/MM/DD HH:MM:SS.000000000". */
         Full;
-        
+
         /** Obtain {@link Format} for given ordinal.
          *  @param ordinal Should be one of the Format.XX.ordinal() codes.
          *  @return Format for the given ordinal.
@@ -110,7 +115,7 @@ public interface ITimestamp extends Comparable<ITimestamp>
             return Full;
         }
     }
-    
+
     /** Format time according to the FMT_... flag.
      *  @param how
      *            One of the FMT_... flags.

@@ -93,4 +93,16 @@ public final class TimestampFactory
         final long nano = millisecs * Timestamp.nanos_per_milli;
         return new Timestamp(secs, nano);
     }
+
+    /** Convert SQL Timestamp into CSS Timestamp.
+     *  @param time SQL Timestamp
+     *  @return CSS ITimestamp
+     */
+    public static ITimestamp fromSQLTimestamp(final java.sql.Timestamp sql_time)
+    {
+        final long millisecs = sql_time.getTime();
+        final long seconds = millisecs/1000;
+        final long nanoseconds = sql_time.getNanos();
+        return createTimestamp(seconds, nanoseconds);
+    }
 }

@@ -113,6 +113,19 @@ public final class Timestamp implements ITimestamp
 
     /** {@inheritDoc} */
     @Override
+    public java.sql.Timestamp toSQLTimestamp()
+    {
+        // Only millisecond resolution
+        java.sql.Timestamp stamp = new java.sql.Timestamp(seconds * 1000  +
+                             nanoseconds / 1000000);
+        // Set nanoseconds (again), but this call uses the full
+        // nanosecond resolution
+        stamp.setNanos((int) nanoseconds);
+        return stamp;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public String format(final Format format)
     {
