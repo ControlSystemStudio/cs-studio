@@ -36,7 +36,7 @@
          id="SDDSServerProduct"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.csstudio.archive.sdds.server.SDDS-ServerApplication"
+            application="org.csstudio.archive.sdds.server.SddsServerApplication"
             name="SDDS-Server">
          <property
                name="appName"
