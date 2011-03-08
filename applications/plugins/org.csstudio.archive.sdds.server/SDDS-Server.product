@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.7" useFeatures="false" includeLaunchers="true">
+<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.8" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xms256m -Xmx512m -Djava.awt.headless=true</vmArgs>
+      <vmArgs>-Xms256m -Xmx512m -Djava.awt.headless=true -Dcom.sun.management.jmxremote.port=2222 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 

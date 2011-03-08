@@ -97,12 +97,6 @@ public class Application implements IApplication, RemotelyStoppable, Application
         useJmx = pref.getBoolean(Activator.PLUGIN_ID, ServerPreferenceKey.P_USE_JMX,
         		false, null);
         
-        if (useJmx) {
-        	logger.info("The server uses JMX for remote access.");
-        } else {
-        	logger.info("The server uses XMPP for remote access.");
-        }
-        
         try {
             server = new Server(serverPort);
             server.start();
@@ -169,6 +163,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
         String xmppPassword = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
                                              "sdds-server", null);
 
+        logger.info("The server uses XMPP for remote access.");
         logger.info("Try to connect as " + xmppUser + " to server " + xmppServer);
         
         Restart.injectStaticObject(this);
@@ -189,6 +184,10 @@ public class Application implements IApplication, RemotelyStoppable, Application
         
         MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
         ObjectName myname = null;
+        
+        String jmxPort = System.getProperty("com.sun.management.jmxremote.port");
+        
+        logger.info("The server uses JMX for remote access. Port: " + jmxPort);
         
         try {
             myname = new ObjectName("org.csstudio.archive.sdds.server.SddsServer:name=SddsServer");

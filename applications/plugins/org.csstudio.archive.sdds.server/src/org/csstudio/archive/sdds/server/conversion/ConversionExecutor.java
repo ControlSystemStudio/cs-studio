@@ -30,7 +30,7 @@ import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandlerException;
 import org.csstudio.archive.sdds.server.conversion.handler.MethodNotImplementedException;
 import org.csstudio.archive.sdds.server.conversion.handler.MinMaxAverageHandler;
-import org.csstudio.archive.sdds.server.conversion.handler.NewAverageHandler;
+import org.csstudio.archive.sdds.server.conversion.handler.AverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.NoFilterHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.TailRawHandler;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -62,16 +62,16 @@ public class ConversionExecutor {
                                      10000, null);
         
         conversionHandler = new AlgorithmHandler[] {
-                new NewAverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
                 new TailRawHandler(maxSamples),
-                new NewAverageHandler(maxSamples),
-                new NewAverageHandler(maxSamples),
-                new NewAverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
                 new NoFilterHandler(maxSamples),
                 new MinMaxAverageHandler(maxSamples),
-                new NewAverageHandler(maxSamples),
-                new NewAverageHandler(maxSamples),
-                new NewAverageHandler(maxSamples)
+                new AverageHandler(maxSamples),
+                new AverageHandler(maxSamples),
+                new AverageHandler(maxSamples)
                 
                 /*
                 new AverageHandler(),

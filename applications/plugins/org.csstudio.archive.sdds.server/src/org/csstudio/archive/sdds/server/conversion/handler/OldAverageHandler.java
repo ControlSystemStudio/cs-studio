@@ -38,13 +38,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * TODO (mmoeller) : 
- * 
- * @author mmoeller
- * @version 
- * @since 23.06.2010
+ * @author Markus Moeller
+ *
  */
-public class MinMaxAverageHandler extends AlgorithmHandler {
+public class OldAverageHandler extends AlgorithmHandler {
     
     /** The logger for this class */
     private Logger logger;
@@ -52,48 +49,40 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
     /** Max. allowed difference of the last allowed record (in seconds)*/ 
     private long validRecordBeforeTime;
     
-    public MinMaxAverageHandler(int maxSamples) {
+    public OldAverageHandler(int maxSamples) {
         super(maxSamples);
         logger = CentralLogger.getInstance().getLogger(this);
         
         IPreferencesService pref = Platform.getPreferencesService();
-        validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID,
-                                             ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
+        validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID, ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
         
-        logger.debug("MinMaxAverageHandler created. Max. samples per request: " + maxSamples);
+        logger.debug("AverageHandler created. Max. samples per request: " + maxSamples);
     }
-
+    
     /* (non-Javadoc)
-     * @see org.csstudio.archive.jaapi.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.jaapi.server.command.header.DataRequestHeader, org.csstudio.archive.jaapi.server.data.EpicsRecordData[])
+     * @see org.csstudio.archive.jaapi.server.conversion.handler.AlgorithmHandler#handle(java.lang.String, org.csstudio.archive.jaapi.server.conversion.RecordParameter, org.csstudio.archive.jaapi.server.conversion.RecordData)
      */
     @Override
     public EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
-
+        
         Vector<EpicsRecordData> tempData = new Vector<EpicsRecordData>();
         EpicsRecordData[] result = null;
         EpicsRecordData newData = null;
         EpicsRecordData curData = null;
-        float average = Float.NaN;
-        float tempMin = 0.0f;
-        float tempMax = 0.0f;
-        float curValue;
         float sum;
-        float count;
+        float average = Float.NaN;
+        float count = 0.0f;
         long deltaTime;
         long intervalStart;
         long intervalEnd;
         int index;
         int dataLength;
 
-        logger.debug("MinMaxAverageHandler is processing data.");
+        logger.debug("AverageHandler is processing data.");
         
         intervalStart = header.getFromSec();
         intervalEnd = header.getToSec();
-        
-        if(header.getMaxNumOfSamples() == 0) {
-            throw new AlgorithmHandlerException(0, "Requested number of samples is 0.");
-        }
         
         deltaTime = (intervalEnd - intervalStart) / header.getMaxNumOfSamples();
         if(deltaTime == 0) {
@@ -104,15 +93,17 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
         }
         
         dataLength = data.length - 1;
+        
         index = 0;
-        if(dataLength > -1) {
-            
+        if(dataLength >= 0) {
+
             // Get the timestamp of the last received data
             intervalEnd = data[dataLength].getTime() + deltaTime;
 
-            if(data[index].getTime() < intervalStart) {
+            if(data[index].getTime() < intervalStart)
+            {
                 if((intervalStart - data[index].getTime()) > validRecordBeforeTime) {
-                    index = (index > data.length) ? 0 : index++;
+                    index++;
                 }
             }
         
@@ -120,13 +111,13 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
             
             for(long curTime = intervalStart;curTime < intervalEnd;curTime += deltaTime) {            
                 
-                nextTime = curTime + deltaTime;
+                nextTime = curTime + deltaTime; 
                 
-                if(dataLength >= -1) {
+                if(dataLength >= 0) {
                     
-                  count = 0.0f;
-                  sum = 0.0f;
-    
+                    sum = 0.0f;
+                    count = 0.0f;
+                    
                     do {
                         if(index < data.length) {
                             curData = data[index];
@@ -140,42 +131,26 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
                             if((curData.getSeverity() < ArchiveSeverity.INVALID.getSeverityValue())
                                     || (curData.getSeverity() == ArchiveSeverity.REPEAT.getSeverityValue())
                                     || (curData.getSeverity() == ArchiveSeverity.EST_REPEAT.getSeverityValue())) {
-    
-                                if((curData.getTime() >= curTime) && (curData.getTime() < nextTime)) {
                                 
-                                    curValue = (Float)data[index].getValue();
-                                    sum += curValue;
+                                if((curData.getTime() >= curTime) && (curData.getTime() < nextTime)) {
                                     
-                                    if(count < 1.0) {
-                                        tempMin = curValue;
-                                        tempMax = curValue;
-                                    } else {
-                                        tempMin = (curValue < tempMin) ? curValue : tempMin;
-                                        tempMax = (curValue > tempMax) ? curValue : tempMax;
-                                    }
-                                    
+                                    sum += (Float) data[index].getValue();
                                     if(index < data.length) {
                                         index++;
-                                        count += 1.0f;
-                                    } else {
-                                        break;
+                                        count++;
                                     }
                                 } else {
-                                    if(curData.getTime() < nextTime) {
-                                        if(index < data.length) {
-                                            index++;
-                                            count += 1.0f;
-                                        } else {
-                                            break;
-                                        }
+                                    index++;
+                                    continue;
+                                }
+                            } else {
+                                if(curData.getTime() < nextTime) {
+                                    if(index < data.length) {
+                                        index++;
+                                        //count += 1.0f;
                                     } else {
                                         break;
                                     }
-                                }
-                            } else {
-                                if(index < data.length) {
-                                    index++;
-                                    //count += 1.0f;
                                 } else {
                                     break;
                                 }
@@ -190,34 +165,19 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
                     }
                 } else {
                     average = this.ERROR_VALUE;
-                    tempMin = this.ERROR_VALUE;
-                    tempMax = this.ERROR_VALUE;
                 }
                 
-                newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMin)), SDDSType.SDDS_DOUBLE);
-                tempData.add(newData);
-                logger.debug(newData.toString());
-                newData = null;
-                  
-                newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMax)), SDDSType.SDDS_DOUBLE);
-                tempData.add(newData);
-                logger.debug(newData.toString());
-                newData = null;
-                
-                newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(average)), SDDSType.SDDS_DOUBLE);
-                tempData.add(newData);
-                logger.debug(newData.toString());
-                newData = null;
+                if(count > 0.0f) {
+                    newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(average)), SDDSType.SDDS_DOUBLE);
+                    tempData.add(newData);
+                    logger.debug(newData.toString());
+                    newData = null;
+                }
             }
         }
-   
+        
         if(tempData.isEmpty() == false) {
-            
             result = new EpicsRecordData[tempData.size()];
-            
-            // Not really necessary because the length of data will be read from the data array.
-            header.setMaxNumOfSamples(tempData.size());
-            
             result = tempData.toArray(result);
         } else {
             result = new EpicsRecordData[0];
