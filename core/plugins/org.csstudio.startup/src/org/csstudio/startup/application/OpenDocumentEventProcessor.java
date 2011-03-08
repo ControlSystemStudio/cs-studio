@@ -1,17 +1,24 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.startup.application;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.DisplayUtil;
+import org.csstudio.startup.Plugin;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -27,24 +34,21 @@ import org.eclipse.ui.ide.IDE;
 
 /**
  * Helper class used to open file from command line.
- * 
+ *
  * @author Xihui Chen
  *
  */
 public class OpenDocumentEventProcessor implements Listener {
+    final private List<String> filesToOpen= new ArrayList<String>();
 
-	private List<String> filesToOpen;
-	
-	public final static String OPEN_DOC_PROCESSOR = "css.openDocProcessor"; //$NON-NLS-1$ 
+	public final static String OPEN_DOC_PROCESSOR = "css.openDocProcessor"; //$NON-NLS-1$
 
 	/**
 	 * Constructor.
 	 * @param display display used as a source of event
 	 */
 	public OpenDocumentEventProcessor(Display display) {
-		filesToOpen = new ArrayList<String>();		
 		display.addListener(SWT.OpenDocument, this);
-		
 	}
 
 	/* (non-Javadoc)
@@ -58,21 +62,21 @@ public class OpenDocumentEventProcessor implements Listener {
 		// line will need to be in a "synchronized" block:
 		filesToOpen.add(path);
 	}
-	
+
 	/**
 	 * Process delayed events.
-	 * @param display display associated with the workbench 
+	 * @param display display associated with the workbench
 	 */
 	public void catchUp(Display display) {
 		if (filesToOpen.isEmpty())
 			return;
-		
+
 		// If we start supporting events that can arrive on a non-UI thread, the following
 		// lines will need to be in a "synchronized" block:
 		String[] filePaths = new String[filesToOpen.size()];
 		filesToOpen.toArray(filePaths);
 		filesToOpen.clear();
-		
+
 		for(int i = 0; i < filePaths.length; i++) {
 			openFile(display, filePaths[i]);
 		}
@@ -84,9 +88,9 @@ public class OpenDocumentEventProcessor implements Listener {
 				IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 				if (window == null)
 					return;
-				
-				int ds = path.lastIndexOf('.'); //$NON-NLS-1$
-				int de = path.substring(ds+1).indexOf(' '); //$NON-NLS-1$
+
+				int ds = path.lastIndexOf('.');
+				int de = path.substring(ds+1).indexOf(' ');
 				String pathPart = path;
 				String ext;
 				String data = null;
@@ -97,14 +101,14 @@ public class OpenDocumentEventProcessor implements Listener {
 					de += ds+1;
 					pathPart = path.substring(0,de);
 					ext = path.substring(ds+1, de).trim();
-					data = path.substring(de + 1);					
+					data = path.substring(de + 1);
 				}
 				//open file with DisplayUtil if it is a supported Display file
-				if(DisplayUtil.getInstance().isExtensionSupported(ext)){					
+				if(DisplayUtil.getInstance().isExtensionSupported(ext)){
 					try {
 						DisplayUtil.getInstance().openDisplay(pathPart
 								, data);
-						Shell shell = window.getShell();						
+						Shell shell = window.getShell();
 						if (shell != null) {
 							if (shell.getMinimized())
 								shell.setMinimized(false);
@@ -115,11 +119,11 @@ public class OpenDocumentEventProcessor implements Listener {
 						String msg = NLS.bind("The file ''{0}'' could not be opened as a display. \n " +
 								"It will be opened by default editor",	path);
 						MessageDialog.openError(window.getShell(), "Open Display", msg);
-						CentralLogger.getInstance().error(this, e);
+						Logger.getLogger(Plugin.ID).log(Level.WARNING, msg, e);
 					}
 				}
-				
-				
+
+
 				IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(path));
 				IFileInfo fetchInfo = fileStore.fetchInfo();
 				if (!fetchInfo.isDirectory() && fetchInfo.exists()) {
@@ -131,10 +135,10 @@ public class OpenDocumentEventProcessor implements Listener {
 								msg, SWT.SHEET);
 					}
 					try {
-						
-						
+
+
 						IDE.openInternalEditorOnFileStore(page, fileStore);
-						Shell shell = window.getShell();						
+						Shell shell = window.getShell();
 						if (shell != null) {
 							if (shell.getMinimized())
 								shell.setMinimized(false);
@@ -144,7 +148,7 @@ public class OpenDocumentEventProcessor implements Listener {
 						String msg = NLS.bind("The file ''{0}'' could not be opened. See log for details.",
 										fileStore.getName());
 						CoreException eLog = new PartInitException(e.getMessage());
-						CentralLogger.getInstance().error(this, eLog);
+						Logger.getLogger(Plugin.ID).log(Level.WARNING, "Cannot open " + fileStore.getName(), eLog);
 						MessageDialog.open(MessageDialog.ERROR, window.getShell(),
 								"Open File",
 								msg, SWT.SHEET);
@@ -158,5 +162,4 @@ public class OpenDocumentEventProcessor implements Listener {
 			}
 		});
 	}
-
 }
