@@ -61,11 +61,11 @@ public final class Limits<V extends Comparable<? super V>> {
         _low = low;
         _high = high;
 
-        if (!low.getClass().isAssignableFrom(Comparable.class)) {
+        if (!Comparable.class.isAssignableFrom(_low.getClass())) {
             throw new IllegalArgumentException("Type is not assignable from " + Comparable.class.getName());
 
         }
-        if (_low.compareTo(_high) == 1) {
+        if (_low.compareTo(_high) > 1) {
             throw new IllegalArgumentException("Low limit is larger than high limit.");
         }
     }

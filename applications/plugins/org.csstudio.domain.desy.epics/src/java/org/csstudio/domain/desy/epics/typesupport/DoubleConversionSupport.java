@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -31,17 +31,13 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 
-final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
+final class DoubleConversionSupport extends EpicsIMetaDataTypeSupport<Double> {
 
-    @Nonnull
-    private Byte toByte(final double d) {
-        return Byte.valueOf(Double.valueOf(d).byteValue());
-    }
     /**
      * Constructor.
      */
-    public ByteConversionSupport() {
-        super(Byte.class);
+    public DoubleConversionSupport() {
+        super(Double.class);
     }
     /**
      * {@inheritDoc}
@@ -49,14 +45,14 @@ final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
     @Override
     @CheckForNull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvert(data, Byte.class);
-        final EpicsGraphicsData<Byte> gr =
-            new EpicsGraphicsData<Byte>(Limits.<Byte>create(toByte(numData.getAlarmLow()),
-                                                            toByte(numData.getAlarmHigh())),
-                                        Limits.<Byte>create(toByte(numData.getWarnLow()),
-                                                            toByte(numData.getWarnHigh())),
-                                        Limits.<Byte>create(toByte(numData.getDisplayLow()),
-                                                            toByte(numData.getDisplayHigh())));
+        final INumericMetaData numData = checkAndConvertToNumeric(data, Double.class);
+        final EpicsGraphicsData<Double> gr =
+            new EpicsGraphicsData<Double>(Limits.<Double>create(numData.getAlarmLow(),
+                                                                numData.getAlarmHigh()),
+                                        Limits.<Double>create(numData.getWarnLow(),
+                                                              numData.getWarnHigh()),
+                                        Limits.<Double>create(numData.getDisplayLow(),
+                                                              numData.getDisplayHigh()));
         return new EpicsMetaData(null, gr, null, null);
     }
 }

@@ -37,6 +37,7 @@ import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleAggregator;
 import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
+import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -226,7 +227,7 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
         }
         final IMinMaxDoubleValue iVal =
             ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(windowEnd),
-                                                 null, null, _meta, IValue.Quality.Interpolated,
+                                                 new Severity("OK"), null, _meta, IValue.Quality.Interpolated,
                                                  new double[]{_agg.getAvg().doubleValue() },
                                                  _agg.getMin().doubleValue(),
                                                  _agg.getMax().doubleValue());

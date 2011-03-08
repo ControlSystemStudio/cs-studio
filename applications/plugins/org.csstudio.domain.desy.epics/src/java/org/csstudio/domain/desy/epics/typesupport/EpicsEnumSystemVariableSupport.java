@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
@@ -39,17 +40,17 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.primitives.Ints;
 
-final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<EpicsEnumTriple> {
+final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<EpicsEnum> {
     /**
      * Constructor.
      */
     public EpicsEnumSystemVariableSupport() {
-        super(EpicsEnumTriple.class);
+        super(EpicsEnum.class);
     }
 
     @Override
     @Nonnull
-    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<EpicsEnumTriple> sysVar) {
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<EpicsEnum> sysVar) {
         return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
                                                   EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
                                                   sysVar.getAlarm().getStatus().toString(),
@@ -60,14 +61,14 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
 
     @Override
     @Nonnull
-    protected IValue convertCollectionToIValue(@Nonnull final Collection<EpicsEnumTriple> data,
+    protected IValue convertCollectionToIValue(@Nonnull final Collection<EpicsEnum> data,
                                                @Nonnull final EpicsAlarm alarm,
                                                @Nonnull final TimeInstant timestamp) {
         final Collection<Integer> ints =
             Collections2.transform(data,
-                                   new Function<EpicsEnumTriple, Integer> () {
+                                   new Function<EpicsEnum, Integer> () {
                 @Override
-                public Integer apply(@Nonnull final EpicsEnumTriple from) {
+                public Integer apply(@Nonnull final EpicsEnum from) {
                     return from.getIndex();
                 }
             });
@@ -84,20 +85,20 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
      */
     @Override
     @Nonnull
-    protected EpicsSystemVariable<EpicsEnumTriple> createEpicsVariable(@Nonnull final String name,
-                                                            @Nonnull final EpicsEnumTriple value,
+    protected EpicsSystemVariable<EpicsEnum> createEpicsVariable(@Nonnull final String name,
+                                                            @Nonnull final EpicsEnum value,
                                                             @Nonnull final ControlSystem system,
                                                             @Nonnull final TimeInstant timestamp) {
-        return new  EpicsSystemVariable<EpicsEnumTriple>(name, new CssValueType<EpicsEnumTriple>(value), system, timestamp, EpicsAlarm.UNKNOWN);
+        return new  EpicsSystemVariable<EpicsEnum>(name, new CssValueType<EpicsEnum>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected EpicsSystemVariable<Collection<EpicsEnumTriple>> createCollectionEpicsVariable(final String name,
+    protected EpicsSystemVariable<Collection<EpicsEnum>> createCollectionEpicsVariable(final String name,
                                                                                              final Class<?> typeClass,
-                                                                                             final Collection<EpicsEnumTriple> values,
+                                                                                             final Collection<EpicsEnum> values,
                                                                                              final ControlSystem system,
                                                                                              final TimeInstant timestamp) throws TypeSupportException {
         // TODO Auto-generated method stub

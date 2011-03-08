@@ -21,11 +21,17 @@
  */
 package org.csstudio.domain.desy.epics.alarm;
 
+import java.util.Set;
+
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
- * TODO (bknerr) :
+ * TODO (bknerr) : Consider a hierarchical data structure for meta data
+ * instead of this data bag.
  *
  * @author bknerr
  * @since Mar 4, 2011
@@ -36,6 +42,20 @@ public class EpicsMetaData {
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
     private final Short _precision;
     private final EpicsAlarm _alarm;
+    private final ImmutableSet<String> _states;
+
+
+    /**
+     * Constructor.
+     */
+    public EpicsMetaData(@Nonnull final Set<String> states) {
+        _states = ImmutableSet.<String>builder().addAll(states).build();
+
+        _alarm = null;
+        _grData = null;
+        _ctrlLimits = null;
+        _precision = null;
+    }
 
     /**
      * Constructor.
@@ -52,6 +72,8 @@ public class EpicsMetaData {
                 throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and graphics don't have the same class type.");
         }
         _precision = precision;
+
+        _states = null;
     }
 
     @CheckForNull
@@ -73,4 +95,8 @@ public class EpicsMetaData {
         return _alarm;
     }
 
+    @CheckForNull
+    public ImmutableSet<String> getStates() {
+        return _states;
+    }
 }

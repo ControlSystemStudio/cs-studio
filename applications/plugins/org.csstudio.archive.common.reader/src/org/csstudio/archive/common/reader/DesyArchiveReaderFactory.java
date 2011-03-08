@@ -89,7 +89,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getURL() {
-            return "The URL should not be modifiable!";
+            return "The URL should not be modifiable and rather not be exported at all!";
         }
 
         @Override
@@ -134,7 +134,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new  DesyArchiveValueIterator(name, s, e, getRawType());
+            return new DesyArchiveValueIterator(name, s, e, getRawType());
         }
 
 
@@ -153,7 +153,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
             final IArchiveChannel channel = service.getChannelByName(name);
 
-            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType())) {
+            if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(), "java.lang", "org.csstudio.domain.desy.epics.types")) {
                 return new EquidistantTimeBinsIterator(name, s, e, null, count);
             }
             return EMPTY_ITER;

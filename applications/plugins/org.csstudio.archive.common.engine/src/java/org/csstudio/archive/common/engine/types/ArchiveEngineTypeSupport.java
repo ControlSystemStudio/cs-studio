@@ -29,9 +29,9 @@ import org.csstudio.archive.common.engine.model.AbstractArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.model.MonitoredArchiveChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
-import org.csstudio.domain.desy.epics.types.EpicsIMetaDataTypeSupport;
-import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -138,7 +138,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Double>(Double.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<Float>(Float.class));
         TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<String>(String.class));
-        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnumTriple>(EpicsEnumTriple.class));
+        TypeSupport.addTypeSupport(new ConcreteArchiveEngineTypeSupport<EpicsEnum>(EpicsEnum.class));
 
         INSTALLED = true;
     }

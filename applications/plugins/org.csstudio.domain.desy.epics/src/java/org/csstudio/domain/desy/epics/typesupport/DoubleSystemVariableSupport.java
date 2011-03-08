@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
@@ -36,21 +36,23 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.primitives.Doubles;
 
-final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float> {
+/**
+ * @author bknerr
+ * @since 22.12.2010
+ */
+final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Double> {
     /**
      * Constructor.
      */
-    public FloatSystemVariableSupport() {
-        super(Float.class);
+    public DoubleSystemVariableSupport() {
+        super(Double.class);
     }
 
     @Override
     @Nonnull
-    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Float> sysVar) {
+    protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Double> sysVar) {
         return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(sysVar.getTimestamp()),
                                               EpicsIValueTypeSupport.toSeverity(sysVar.getAlarm().getSeverity()),
                                               sysVar.getAlarm().getStatus().toString(),
@@ -61,32 +63,24 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
 
     @Override
     @Nonnull
-    protected IValue convertCollectionToIValue(@Nonnull final Collection<Float> data,
+    protected IValue convertCollectionToIValue(@Nonnull final Collection<Double> data,
                                                @Nonnull final EpicsAlarm alarm,
                                                @Nonnull final TimeInstant timestamp) {
-        final Collection<Double> doubles =
-            Collections2.transform(data,
-                                   new Function<Float, Double> () {
-                                       @Override
-                                       public Double apply(@Nonnull final Float from) {
-                                           return Double.valueOf(from);
-                                       }
-                                   });
         return ValueFactory.createDoubleValue(BaseTypeConversionSupport.toTimestamp(timestamp),
                                               EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
                                               alarm.getStatus().toString(),
                                               null,
                                               null,
-                                              Doubles.toArray(doubles));
+                                              Doubles.toArray(data));
     }
 
     @Override
     @Nonnull
-    protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<Float> sysVar,
-                                                 @Nonnull final Float min,
-                                                 @Nonnull final Float max) throws TypeSupportException {
+    protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<Double> sysVar,
+                                                 @Nonnull final Double min,
+                                                 @Nonnull final Double max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
-                                                 (EpicsAlarm) sysVar.getAlarm(),
+                                                 (EpicsAlarm)sysVar.getAlarm(),
                                                  sysVar.getData().getValueData(),
                                                  min,
                                                  max);
@@ -97,22 +91,22 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
      */
     @Override
     @Nonnull
-    protected EpicsSystemVariable<Float> createEpicsVariable(@Nonnull final String name,
-                                                              @Nonnull final Float value,
+    protected EpicsSystemVariable<Double> createEpicsVariable(@Nonnull final String name,
+                                                              @Nonnull final Double value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Float>(name, new CssValueType<Float>(value), system, timestamp, EpicsAlarm.UNKNOWN);
+        return new  EpicsSystemVariable<Double>(name, new CssValueType<Double>(value), system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected EpicsSystemVariable<Collection<Float>> createCollectionEpicsVariable(final String name,
-                                                                                   final Class<?> typeClass,
-                                                                                   final Collection<Float> values,
-                                                                                   final ControlSystem system,
-                                                                                   final TimeInstant timestamp) throws TypeSupportException {
+    protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(@Nonnull final String name,
+                                                                                    @Nonnull final Class<?> typeClass,
+                                                                                    @Nonnull final Collection<Double> values,
+                                                                                    @Nonnull final ControlSystem system,
+                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         // TODO Auto-generated method stub
         return null;
     }

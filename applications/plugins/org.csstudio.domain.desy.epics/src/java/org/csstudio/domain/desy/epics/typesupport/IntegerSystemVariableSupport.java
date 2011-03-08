@@ -1,4 +1,4 @@
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
