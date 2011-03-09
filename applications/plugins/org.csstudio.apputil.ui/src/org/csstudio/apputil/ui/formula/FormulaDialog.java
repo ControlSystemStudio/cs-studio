@@ -11,12 +11,12 @@ import java.util.ArrayList;
 
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 /** Dialog for editing a formula item.
@@ -227,23 +228,26 @@ public class FormulaDialog extends Dialog
         layout.numColumns = 1;
         box.setLayout(layout);
 
-        final Table table = new Table(box,
+        // TableColumnLayout requires table to be in its own composite.
+        final Composite table_parent = new Composite(box, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        final Table table = new Table(table_parent,
                             SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         table.setToolTipText(Messages.Formula_InputsTT);
-        GridData gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
         final InputTableHelper.Column[] columns = InputTableHelper.Column.values();
         for (InputTableHelper.Column col : columns)
-                AutoSizeColumn.make(table, col.getTitle(), col.getMinSize(),
-                                    col.getWeight());
-        // Configure table to auto-size the columns
-        new AutoSizeControlListener(table);
+        {
+            final TableColumn c = new TableColumn(table, 0);
+            c.setText(col.getTitle());
+            c.setMoveable(true);
+            c.setResizable(true);
+            table_layout.setColumnData(c, new ColumnWeightData(col.getWeight(), col.getMinSize()));
+        }
 
         input_table = new TableViewer(table);
         input_table.setLabelProvider(new InputTableLabelProvider());
@@ -267,10 +271,7 @@ public class FormulaDialog extends Dialog
         final Button add = new Button(box, SWT.PUSH);
         add.setText(Messages.Formula_AddVar);
         add.setToolTipText(Messages.Formula_AddVar_TT);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        gd.verticalAlignment = SWT.TOP;
-        add.setLayoutData(gd);
+        add.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
         // Enable only when PV is selected
         add.setEnabled(false);
