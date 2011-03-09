@@ -7,21 +7,22 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb.internal.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import org.csstudio.archive.rdb.AveragingSampleIterator;
 import org.csstudio.archive.rdb.SampleIterator;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
+import org.csstudio.data.values.ValueUtil;
 import org.junit.Test;
 
 /** Test of the AveragingSampleIterator.

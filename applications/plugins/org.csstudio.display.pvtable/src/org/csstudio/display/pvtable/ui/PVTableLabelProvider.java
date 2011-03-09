@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
@@ -13,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-/** The JFace label provider for the  <class>PVListModel</class> data. 
+/** The JFace label provider for the  <class>PVListModel</class> data.
  *  @author Kay Kasemir
  */
 public class PVTableLabelProvider extends LabelProvider implements
@@ -22,7 +29,7 @@ public class PVTableLabelProvider extends LabelProvider implements
     final private PVListModel pv_list;
     final private Color red;
     final private CheckBoxImages images;
-    
+
     public PVTableLabelProvider(final Control control,
                                 final PVListModel pv_list)
     {
@@ -31,7 +38,7 @@ public class PVTableLabelProvider extends LabelProvider implements
         red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
         images = CheckBoxImages.getInstance(control);
     }
-    
+
 	@Override
     public String getText(Object obj)
 	{
@@ -45,7 +52,8 @@ public class PVTableLabelProvider extends LabelProvider implements
 	}
 
     /** Get text for all but the 'select' column. */
-	public String getColumnText(Object obj, int index)
+	@Override
+    public String getColumnText(Object obj, int index)
 	{
         if (obj == PVTableViewerHelper.empty_row)
             return index == PVTableHelper.NAME ?
@@ -54,7 +62,8 @@ public class PVTableLabelProvider extends LabelProvider implements
 	}
 
     /** Get column image (only for the 'select' column) */
-	public Image getColumnImage(final Object obj, final int index)
+	@Override
+    public Image getColumnImage(final Object obj, final int index)
 	{
         if (index == PVTableHelper.SELECT  &&
             obj != PVTableViewerHelper.empty_row)
@@ -66,12 +75,14 @@ public class PVTableLabelProvider extends LabelProvider implements
 	}
 
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
+    @Override
     public Color getBackground(Object obj, int index)
     {
         return null;
     }
 
     /** @see org.eclipse.jface.viewers.ITableColorProvider */
+    @Override
     public Color getForeground(Object obj, int index)
     {
         if (shouldStandout(obj, index))
@@ -88,13 +99,13 @@ public class PVTableLabelProvider extends LabelProvider implements
         PVListEntry entry = (PVListEntry) obj;
         double tolerance = pv_list.getTolerance();
         PV pv;
-        
+
         switch (index)
         {
         case PVTableHelper.NAME:
             // Set PV name to red while disconnected
             if (! entry.getPV().isConnected())
-                return true; 
+                return true;
             return false;
         case PVTableHelper.READBACK:
             // Set readback PV name to red while disconnected

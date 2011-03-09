@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Export engine configuration as XML (to stdout)
  *  @author Kay Kasemir
@@ -30,7 +30,7 @@ public class XMLExport
             final String engine_name) throws Exception
     {
         RDBArchive archive = RDBArchive.connect(rdb_url, user, password);
-        
+
         final SampleEngineConfig engine = archive.findEngine(engine_name);
         if (engine == null)
             throw new Exception("Unknown engine '" + engine_name + "'");

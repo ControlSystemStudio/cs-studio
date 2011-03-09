@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.dbr.DBR;
@@ -21,14 +28,14 @@ import gov.aps.jca.dbr.DBR_TIME_String;
 import gov.aps.jca.dbr.Status;
 import gov.aps.jca.dbr.TimeStamp;
 
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Helper for dealing with DBR.. types.
  *  <p>

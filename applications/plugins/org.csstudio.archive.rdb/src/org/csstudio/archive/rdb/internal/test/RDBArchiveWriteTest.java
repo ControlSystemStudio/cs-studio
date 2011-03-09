@@ -11,13 +11,13 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.TestSetup.TestType;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,17 +33,17 @@ public class RDBArchiveWriteTest
 
     /** Archive to use */
     private static RDBArchive archive;
-    
+
     final private static ISeverity severity = ValueFactory.createMinorSeverity();
     final private static String status = "Test";
-    
+
     final private INumericMetaData numeric_meta =
         ValueFactory.createNumericMetaData(-10.0, 10.0, -8.0, 8.0, -9.0, 9.0, 1, "Tests");
-    
+
     final private IEnumeratedMetaData enum_meta =
         ValueFactory.createEnumeratedMetaData(new String []
             { "One State", "Two State", "Red State", "Blue State"});
-    
+
     /** @return a dummy value for given time stamp */
     private IValue createValue(final TestType type,
             final ITimestamp time, final long count)
@@ -79,7 +79,7 @@ public class RDBArchiveWriteTest
                   { "Value " + count });
         }
     }
-    
+
     private IValue createDisconnected(final ITimestamp time)
     {
         return ValueFactory.createStringValue(time,
@@ -99,7 +99,7 @@ public class RDBArchiveWriteTest
     {
         archive.close();
     }
-    
+
     /** Helper for writing PV of given type for some seconds */
     private void write(final TestType type, final long runtime) throws Exception
     {
@@ -147,7 +147,7 @@ public class RDBArchiveWriteTest
         System.out.println(count + " values in " + runtime + " seconds");
         System.out.println(" ==> " + count / runtime + " vals/sec");
     }
-    
+
     @Test
     public void writeTypes() throws Exception
     {

@@ -15,19 +15,21 @@ import org.csstudio.apputil.formula.Node;
 abstract class AbstractUnaryNode implements Node
 {
     protected final Node n;
-    
+
     public AbstractUnaryNode(final Node n)
     {
         this.n = n;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     final public boolean hasSubnode(final Node node)
     {
         return n == node  ||  n.hasSubnode(node);
     }
 
     /** {@inheritDoc} */
+    @Override
     final public boolean hasSubnode(final String name)
     {
         return n.hasSubnode(name);

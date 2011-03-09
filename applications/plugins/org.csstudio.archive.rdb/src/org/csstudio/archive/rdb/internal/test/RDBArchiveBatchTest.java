@@ -9,12 +9,12 @@ package org.csstudio.archive.rdb.internal.test;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,13 +35,13 @@ public class RDBArchiveBatchTest
 
     /** Archive to use */
     private static RDBArchive archive;
-    
+
     final private ISeverity severity = ValueFactory.createMinorSeverity();
     final static private String status = "Test";
-    
+
     final private INumericMetaData numeric_meta =
         ValueFactory.createNumericMetaData(-10.0, 10.0, -8.0, 8.0, -9.0, 9.0, 1, "Tests");
-    
+
     /** @return a dummy value for given time stamp */
     private IValue createValue(final ITimestamp time, final long count)
     {
@@ -61,7 +61,7 @@ public class RDBArchiveBatchTest
     {
         archive.close();
     }
-    
+
     /** Helper for writing PV of given type for some seconds */
     @Test
     public void testBatching() throws Exception

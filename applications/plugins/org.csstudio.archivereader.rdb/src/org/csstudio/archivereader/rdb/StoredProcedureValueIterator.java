@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 import oracle.jdbc.OracleTypes;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.
@@ -74,8 +74,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         {
             statement.registerOutParameter(1, OracleTypes.CURSOR);
             statement.setInt(2, channel_id);
-            statement.setTimestamp(3, TimeWarp.getSQLTimestamp(start));
-            statement.setTimestamp(4, TimeWarp.getSQLTimestamp(end));
+            statement.setTimestamp(3, start.toSQLTimestamp());
+            statement.setTimestamp(4, end.toSQLTimestamp());
             statement.setInt(5, count);
             statement.setFetchDirection(ResultSet.FETCH_FORWARD);
             statement.setFetchSize(1000);
@@ -130,7 +130,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         while (result.next())
         {
             // Time stamp
-            final ITimestamp time = TimeWarp.getCSSTimestamp(result.getTimestamp(2));
+            final ITimestamp time = TimestampFactory.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
             ISeverity severity = reader.getSeverity(result.getInt(3));

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.Display;
 class PVTreeLabelProvider extends LabelProvider implements IColorProvider
 {
     @Override
-    public String getText(Object obj)
+    public String getText(final Object obj)
     {
         return obj.toString();
     }
 
     @Override
-    public Image getImage(Object obj)
+    public Image getImage(final Object obj)
     {
         // Indicate if this is a 'record' of known type...
         //if (obj instanceof PVTreeItem && ((PVTreeItem)obj).getType() != null)
@@ -38,18 +38,18 @@ class PVTreeLabelProvider extends LabelProvider implements IColorProvider
     }
 
     @Override
-    public Color getBackground(Object element)
+    public Color getBackground(final Object element)
     {
         return null;
     }
 
     @Override
-    public Color getForeground(Object element)
+    public Color getForeground(final Object element)
     {
         if (! (element instanceof PVTreeItem))
             return null;
 
-        ISeverity severity = ((PVTreeItem)element).getSeverity();
+        final ISeverity severity = ((PVTreeItem)element).getSeverity();
         if (severity == null)
             return null;
         if (severity.isInvalid())

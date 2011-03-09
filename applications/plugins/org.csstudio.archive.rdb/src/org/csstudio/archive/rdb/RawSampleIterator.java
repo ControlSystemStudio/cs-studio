@@ -16,14 +16,14 @@ import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.internal.EnumMetaDataHelper;
 import org.csstudio.archive.rdb.internal.NumericMetaDataHelper;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Iterator over raw archive samples.
@@ -152,7 +152,7 @@ public class RawSampleIterator implements SampleIterator
 		// of lazily initializing a single, shared one.
 
 		// Get initial sample
-        final Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
+        final Timestamp start_stamp = start.toSQLTimestamp();
         final String initial_sql = archive.getSQL().sample_sel_initial_by_id_time;
         PreparedStatement sel_initial_sample =
             connection.prepareStatement(initial_sql);
@@ -182,7 +182,7 @@ public class RawSampleIterator implements SampleIterator
         {
     		sel_samples.setInt(1, channel.getId());
     		sel_samples.setTimestamp(2, start_stamp);
-    		sel_samples.setTimestamp(3, TimeWarp.getSQLTimestamp(end));
+    		sel_samples.setTimestamp(3, end.toSQLTimestamp());
     		result_set = sel_samples.executeQuery();
     		// If there's no initial sample, get the first one from the bulk result
     		if (value == null  &&  result_set.next())
@@ -303,7 +303,7 @@ public class RawSampleIterator implements SampleIterator
 	    // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
 	    if (archive.getRDB().getDialect() == Dialect.MySQL || archive.getRDB().getDialect() == Dialect.PostgreSQL)
 	        stamp.setNanos(res.getInt(7));
-		final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
+		final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
 		ISeverity severity = archive.getSeverity(res.getInt(2));
 		final String status = archive.getStatusString(res.getInt(3));
 

@@ -23,7 +23,7 @@ import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Communicates alarm system updates between server and clients.

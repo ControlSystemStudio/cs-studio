@@ -2,10 +2,10 @@ package org.csstudio.diag.postanalyser;
 
 import java.util.logging.Level;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;

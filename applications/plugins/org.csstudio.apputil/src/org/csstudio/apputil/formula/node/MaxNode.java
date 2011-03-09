@@ -15,12 +15,13 @@ import org.csstudio.apputil.formula.Node;
 public class MaxNode implements Node
 {
     private final Node args[];
-    
+
     public MaxNode(final Node args[])
     {
         this.args = args;
     }
-    
+
+    @Override
     public double eval()
     {
         double result = 0.0;
@@ -32,8 +33,9 @@ public class MaxNode implements Node
         }
         return result;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(Node node)
     {
         for (Node arg : args)
@@ -43,6 +45,7 @@ public class MaxNode implements Node
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasSubnode(final String name)
     {
         for (Node arg : args)
@@ -50,7 +53,7 @@ public class MaxNode implements Node
                 return true;
         return false;
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

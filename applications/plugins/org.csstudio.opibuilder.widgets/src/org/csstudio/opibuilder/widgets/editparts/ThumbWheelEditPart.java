@@ -24,6 +24,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -31,8 +33,6 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.ThumbWheelModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
@@ -41,9 +41,9 @@ import org.eclipse.swt.graphics.FontData;
 
 /**
  * Controller for the ThumbWheel.
- * 
+ *
  * @author Alen Vrecko, Jose Ortega, Xihui Chen
- * 
+ *
  */
 public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
@@ -84,7 +84,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 					//write value to pv if pv name is not empty
 					if(getWidgetModel().getPVName().trim().length() > 0){
 						double doubleValue = logic.getValue();
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);						
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);
 					}
 				}
 			}
@@ -108,7 +108,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 					//write value to pv if pv name is not empty
 					if(getWidgetModel().getPVName().trim().length() > 0){
 						double doubleValue = logic.getValue();
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);						
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);
 					}
 				}
 			}
@@ -120,7 +120,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 					//write value to pv if pv name is not empty
 					if(getWidgetModel().getPVName().trim().length() > 0){
 						double doubleValue = logic.getValue();
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);						
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, doubleValue);
 					}
 				}
 			}
@@ -151,7 +151,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		} else {
 			figure.showMinus(false);
 		}
-		
+
 		// update minus sign
 		if (model.getDecimalPartDigits() > 0) {
 			figure.showDot(true);
@@ -176,12 +176,12 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 					double doubleValue = ValueUtil.getDouble((IValue)newValue);
 					logic.setValue(doubleValue);
 					updateWheelValues();
-				}	
+				}
 				return true;
 			}
 		};
 		setPropertyChangeHandler(ThumbWheelModel.PROP_PVVALUE, pvhandler);
-		
+
 		// decimal wheels
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -289,19 +289,19 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				handler);
 
 	}
-	
+
 	/**
 	 * Represents the "brain" behind the ThumbWheel. It represents the wheel and
 	 * its values. Integer wheels are indexed from right to left. Decimal wheels
 	 * are indexed left to right from the decimal point.
-	 * 
+	 *
 	 * <p>
 	 * Note the inherent precision of value double is 15 decimal places
 	 * therefore you cannot have more than 15 wheels.
 	 * <p>
-	 * 
+	 *
 	 * @author Alen Vrecko
-	 * 
+	 *
 	 */
 	private static class ThumbWheelLogic {
 
@@ -329,7 +329,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		 * Increments the integer digit on a specific index. E.g. on 567.12
 		 * calling increment for - 0 will set the value to 568.12, with index -
 		 * 2 will result in 667.12. Will not set beyond max value.
-		 * 
+		 *
 		 * @param index
 		 * @param val
 		 */
@@ -341,7 +341,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		 * Increments the decimal digit on a specific index. E.g. on 567.12
 		 * calling increment for - 0 will set the value to 567.22, with index -
 		 * 1 will result in 567.11. Will not go bellow max value.
-		 * 
+		 *
 		 * @param index
 		 * @param val
 		 */
@@ -414,7 +414,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		 * Decrements the integer digit on a specific index. E.g. on 567.12
 		 * calling increment for - 0 will set the value to 468.12, with index -
 		 * 2 will result in 467.12. Will not go below min value.
-		 * 
+		 *
 		 * @param index
 		 * @param val
 		 */
@@ -426,7 +426,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		 * Decrements the decimal digit on a specific index. E.g. on 567.12
 		 * calling increment for - 0 will set the value to 568.02, with index -
 		 * 1 will result in 567.11. Will not go bellow min value.
-		 * 
+		 *
 		 * @param index
 		 * @param val
 		 */
@@ -480,7 +480,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		 * Returns a digit in the specified index. E.g. for 324.23 getting index
 		 * 0,1,2 would return 4,2,3. If the number is beyond max in will return
 		 * proper digit of max. Same goes for min.
-		 * 
+		 *
 		 * @param index
 		 * @return
 		 */
@@ -511,7 +511,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		/**
 		 * Returns a digit in the specified index. E.g. for 324.23 getting index
 		 * 0,1 would return 2,3.
-		 * 
+		 *
 		 * @param index
 		 * @return
 		 */
@@ -537,7 +537,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
 		/**
 		 * Returns true if the value is bigger than the wheels can represent.
-		 * 
+		 *
 		 * @return
 		 */
 		public boolean beyondDisplayLimit() {

@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import java.util.Date;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** JUnit test of the {@link DelayedAlarmUpdate}

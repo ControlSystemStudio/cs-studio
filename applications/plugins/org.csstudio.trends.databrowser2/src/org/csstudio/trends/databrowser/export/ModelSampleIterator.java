@@ -8,8 +8,8 @@
 package org.csstudio.trends.databrowser.export;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.PlotSamples;
 

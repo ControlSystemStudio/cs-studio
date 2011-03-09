@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import org.csstudio.archive.rdb.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.ValueFactory;
 
 /** Enumeration Strings for a channel.
  *  <p>

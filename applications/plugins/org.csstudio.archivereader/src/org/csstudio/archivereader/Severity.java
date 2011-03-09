@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 /** Severity with name and ISeverity interface.
  *  <p>

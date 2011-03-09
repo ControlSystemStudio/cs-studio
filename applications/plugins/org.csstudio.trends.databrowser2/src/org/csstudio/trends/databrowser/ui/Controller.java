@@ -13,8 +13,8 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;

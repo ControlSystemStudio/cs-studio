@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 2.0.9.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser.Activator
 Bundle-Localization: plugin
@@ -16,7 +16,7 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil;bundle-version="1.1.0",
  org.csstudio.apputil.ui;bundle-version="1.1.7",
  org.csstudio.platform.ui;bundle-version="1.1.1",
- org.csstudio.utility.pv;bundle-version="1.0.9",
+ org.csstudio.utility.pv;bundle-version="1.2.0",
  org.csstudio.swt.xygraph;bundle-version="1.0.2",
  org.csstudio.archivereader;bundle-version="2.0.1",
  org.csstudio.logbook;bundle-version="1.0.2",

@@ -3,6 +3,8 @@ package org.csstudio.diag.postanalyser;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.diag.postanalyser.math.Filter;
 import org.csstudio.diag.postanalyser.model.Algorithm;
 import org.csstudio.diag.postanalyser.model.AlgorithmOutput;
@@ -10,8 +12,6 @@ import org.csstudio.diag.postanalyser.model.CorrelationAlgorithm;
 import org.csstudio.diag.postanalyser.model.FFTAlgorithm;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.csstudio.diag.postanalyser.model.ModelListener;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartSample;
 import org.csstudio.swt.chart.ChartSampleSequence;

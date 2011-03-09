@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
 
@@ -9,7 +16,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /** Remove selected entries in table from the model.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class DeleteAction extends Action
@@ -30,7 +37,8 @@ public class DeleteAction extends Action
 		helper.getTableViewer().addSelectionChangedListener(
 				new ISelectionChangedListener()
 				{
-					public void selectionChanged(SelectionChangedEvent event)
+					@Override
+                    public void selectionChanged(SelectionChangedEvent event)
 					{
 						boolean anything = !event.getSelection().isEmpty();
 						setEnabled(anything);

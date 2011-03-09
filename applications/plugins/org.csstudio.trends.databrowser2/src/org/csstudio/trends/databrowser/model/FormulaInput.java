@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** One input to the formula: Model item that provides data, Variable name
  *  for use in the formula
@@ -17,7 +17,7 @@ public class FormulaInput
 {
     /** The model item used as input. */
     final private ModelItem item;
-    
+
     /** The variable name for this input. */
     final private String variable_name;
 
@@ -33,7 +33,7 @@ public class FormulaInput
         this.item = item;
         this.variable_name = variable_name;
     }
-    
+
     /** @return ModelItem that this input reads */
     public ModelItem getItem()
     {
@@ -91,7 +91,7 @@ public class FormulaInput
     {
         return item.getSamples().hasNewSamples();
     }
-    
+
     /** @return Debug text */
     @SuppressWarnings("nls")
     @Override

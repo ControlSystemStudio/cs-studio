@@ -14,7 +14,7 @@ import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveRepository;
 import org.csstudio.archivereader.MergingValueIterator;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.Model;
@@ -41,7 +41,7 @@ abstract public class ExportJob extends Job
     final protected ExportErrorHandler error_handler;
     /** Active readers, used to cancel and close them */
     final private CopyOnWriteArrayList<ArchiveReader> archive_readers = new CopyOnWriteArrayList<ArchiveReader>();
-    
+
     /** Thread that polls a progress monitor and cancels active archive readers
      *  if the user requests the export job to end via the progress monitor
      */
@@ -49,13 +49,13 @@ abstract public class ExportJob extends Job
     {
         final private IProgressMonitor monitor;
         volatile boolean exit = false;
-    
+
         public CancellationPoll(final IProgressMonitor monitor)
         {
             super("DataExportCancellation");
             this.monitor = monitor;
-        }        
-        
+        }
+
         @Override
         public void run()
         {
@@ -77,7 +77,7 @@ abstract public class ExportJob extends Job
             }
         }
     }
-    
+
     /** @param comment Comment prefix ('#' for most ASCII, '%' for Matlab, ...)
      *  @param model Model with data
      *  @param start Start time
@@ -87,7 +87,7 @@ abstract public class ExportJob extends Job
      *  @param filename Name of file to create
      *  @param error_handler Callback for errors
      */
-    public ExportJob(final String comment, final Model model, 
+    public ExportJob(final String comment, final Model model,
         final ITimestamp start, final ITimestamp end, final Source source,
         final int optimize_count,
         final String filename,
@@ -103,7 +103,7 @@ abstract public class ExportJob extends Job
         this.filename = filename;
         this.error_handler = error_handler;
     }
-    
+
     /** Job's main routine
      *  {@inheritDoc}
      */
@@ -115,7 +115,7 @@ abstract public class ExportJob extends Job
         {
             final PrintStream out = new PrintStream(filename);
             printExportInfo(out);
-            // Start thread that checks monitor to cancels readers when 
+            // Start thread that checks monitor to cancels readers when
             // user tries to abort the export job
             final CancellationPoll cancel_poll = new CancellationPoll(monitor);
             cancel_poll.start();
@@ -154,7 +154,7 @@ abstract public class ExportJob extends Job
      */
     abstract protected void performExport(final IProgressMonitor monitor,
                                final PrintStream out) throws Exception;
-    
+
     /** Print info about item
      *  @param out PrintStream for output
      *  @param item ModelItem
@@ -187,7 +187,7 @@ abstract public class ExportJob extends Job
     {
         if (source == Source.PLOT || !(item instanceof PVItem))
             return new ModelSampleIterator(item, start, end);
-        
+
         // Start ValueIterator for each sub-archive
         final ArchiveDataSource archives[] = ((PVItem)item).getArchiveDataSources();
         final ValueIterator iters[] = new ValueIterator[archives.length];

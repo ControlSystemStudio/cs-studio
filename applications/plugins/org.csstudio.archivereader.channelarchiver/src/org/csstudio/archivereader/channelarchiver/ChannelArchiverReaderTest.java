@@ -12,10 +12,10 @@ import java.text.SimpleDateFormat;
 
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** JUnit test of the ChannelArchiverReader
@@ -24,7 +24,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ChannelArchiverReaderTest
 {
-
     // FIXME (kasemir) : remove syso, use assertions, parameterize URL and Channel
     final private static String URL =
         "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";

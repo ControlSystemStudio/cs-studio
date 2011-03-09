@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Iterates several <code>ValueIterator</code> instances, merging
  *  the samples from them in time.

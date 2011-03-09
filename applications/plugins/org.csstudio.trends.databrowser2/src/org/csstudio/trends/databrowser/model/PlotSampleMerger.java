@@ -7,13 +7,13 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /** Helper for merging archived samples.
  *  <p>
  *  New data is to some extend 'merged' with existing data:
  *  Where the time ranges overlap, the data replaces the old data.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class PlotSampleMerger
@@ -45,7 +45,7 @@ public class PlotSampleMerger
         //        System.out.print("New Samples  " + add_start.toString());
         //        System.out.print(" to " + add_end.toString());
         //        System.out.println(" (" + add.length + ")");
-        
+
         // Assume old samples are this:        +=============+
         // All new samples are before: +--...+
         if (add_end.isLessThan(old_start))

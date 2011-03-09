@@ -10,7 +10,7 @@ package org.csstudio.trends.databrowser.ui;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.PlotSampleArray;

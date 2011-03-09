@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui.globaltable;
 
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarm;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;

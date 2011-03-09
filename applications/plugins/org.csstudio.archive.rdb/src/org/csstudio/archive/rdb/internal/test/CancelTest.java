@@ -11,13 +11,13 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.SampleIterator;
 import org.csstudio.archive.rdb.TestSetup;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** JUnit Plug-in test (headless)
- * 
+ *
  *  Must run as plug-in because is uses RDB SCHEMA from preferences.
- *  
+ *
  *  Try to 'cancel' a long running query.
  *  @author kasemirk@ornl.gov
  */
@@ -48,7 +48,7 @@ public class CancelTest
                 }
             }
         };
-        
+
         try
         {
             final ChannelConfig[] channels = archive.findChannels("DTL_LLRF:IOC1:Load");

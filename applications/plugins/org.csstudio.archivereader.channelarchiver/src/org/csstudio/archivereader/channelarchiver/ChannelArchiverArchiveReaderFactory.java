@@ -18,6 +18,7 @@ public class ChannelArchiverArchiveReaderFactory implements
         ArchiveReaderFactory
 {
     /** {@inheritDoc}*/
+    @Override
     public ArchiveReader getArchiveReader(final String url) throws Exception
     {
         return new ChannelArchiverReader(url);

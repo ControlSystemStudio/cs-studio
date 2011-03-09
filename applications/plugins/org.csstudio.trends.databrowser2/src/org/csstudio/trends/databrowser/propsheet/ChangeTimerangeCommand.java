@@ -9,8 +9,8 @@ package org.csstudio.trends.databrowser.propsheet;
 
 import java.util.Calendar;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
