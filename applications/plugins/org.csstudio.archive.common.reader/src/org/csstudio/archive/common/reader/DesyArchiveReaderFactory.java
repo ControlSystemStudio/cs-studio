@@ -154,7 +154,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveChannel channel = service.getChannelByName(name);
 
             if (BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(), "java.lang", "org.csstudio.domain.desy.epics.types")) {
-                return new EquidistantTimeBinsIterator(name, s, e, null, count);
+                return new EquidistantTimeBinsIterator<Object>(name, s, e, null, count);
             }
             return EMPTY_ITER;
         }

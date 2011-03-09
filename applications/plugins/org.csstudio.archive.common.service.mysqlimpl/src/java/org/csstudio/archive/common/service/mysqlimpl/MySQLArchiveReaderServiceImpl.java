@@ -40,6 +40,7 @@ import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterExce
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
 
@@ -102,7 +103,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @Nonnull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
                                                  @Nonnull final TimeInstant start,
                                                  @Nonnull final TimeInstant end,
@@ -134,7 +135,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @CheckForNull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException {
 

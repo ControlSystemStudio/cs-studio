@@ -344,7 +344,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @Nonnull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                      @Nonnull final IArchiveChannel channel,
                                                      @Nonnull final TimeInstant s,
@@ -399,7 +399,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @SuppressWarnings("unchecked")
     @Nonnull
-    private <V, T extends IAlarmSystemVariable<V>>
+    private <V, T extends ISystemVariable<V>>
     IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                            @Nonnull final IArchiveChannel channel,
                                                            @Nonnull final ResultSet result) throws SQLException,
@@ -472,7 +472,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
         PreparedStatement stmt = null;

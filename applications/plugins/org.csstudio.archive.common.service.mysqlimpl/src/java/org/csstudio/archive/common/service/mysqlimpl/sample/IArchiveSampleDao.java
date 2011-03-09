@@ -32,6 +32,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -60,7 +61,7 @@ public interface IArchiveSampleDao {
      * @return
      */
     @Nonnull
-    <V, T extends IAlarmSystemVariable<V>>
+    <V, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
                                                      @Nonnull IArchiveChannel channel,
                                                      @Nonnull TimeInstant s,
@@ -68,7 +69,7 @@ public interface IArchiveSampleDao {
 
 
     @CheckForNull
-    <V, T extends IAlarmSystemVariable<V>>
+    <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
                                                         @Nonnull TimeInstant time) throws ArchiveDaoException;
 }
