@@ -1,10 +1,10 @@
 package org.csstudio.diag.pvmanager.probe.views;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import static org.csstudio.utility.pvmanager.ui.SWTUtil.*;
+import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
 
-import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.diag.pvmanager.probe.Activator;
 import org.csstudio.diag.pvmanager.probe.Messages;
@@ -54,6 +54,8 @@ import org.epics.pvmanager.util.TimeStampFormat;
  */
 
 public class PVManagerProbe extends ViewPart {
+	
+	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -446,7 +448,7 @@ public class PVManagerProbe extends ViewPart {
 	 * @return
 	 */
 	public void setPVName(String pvName) {
-		Activator.getLogger().debug("setPVName(" + pvName + ")");
+		log.log(Level.FINE, "setPVName ({0})", pvName);
 		
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
