@@ -41,6 +41,15 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menus.popup.iprocessvariable">
+         <command
+               commandId="org.csstudio.display.waterfall.OpenView"
+               icon="icons/water.png"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>
