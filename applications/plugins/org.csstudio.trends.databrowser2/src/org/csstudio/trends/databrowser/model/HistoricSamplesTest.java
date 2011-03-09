@@ -11,8 +11,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.junit.Test;
 

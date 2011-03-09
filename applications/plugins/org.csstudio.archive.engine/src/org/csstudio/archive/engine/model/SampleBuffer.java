@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** Buffer for the samples of one channel.
  *  <p>

@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.CheckBoxFigure;
 import org.eclipse.draw2d.IFigure;
@@ -32,19 +32,19 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 		figure.setBit(getWidgetModel().getBit());
 		figure.setText(getWidgetModel().getLabel());
 		figure.addManualValueChangeListener(new IManualValueChangeListener() {
-			
+
 			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);				
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
 			}
 		});
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		figure.setRunMode(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE));
-		
+
 		return figure;
 	}
-	
+
 	@Override
 	public CheckBoxModel getWidgetModel() {
 		return  (CheckBoxModel)getModel();
@@ -66,7 +66,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
-		
+
 		// bit
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -78,7 +78,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_BIT, handler);
-		
+
 		//label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -86,7 +86,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
 				figure.setText((String) newValue);
-				Display.getCurrent().timerExec(10, new Runnable() {					
+				Display.getCurrent().timerExec(10, new Runnable() {
 					public void run() {
 						if(getWidgetModel().isAutoSize())
 							performAutoSize(refreshableFigure);
@@ -96,10 +96,10 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, handler);
-		
+
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {				
+					IFigure figure) {
 				if((Boolean)newValue){
 					performAutoSize(figure);
 					figure.revalidate();
@@ -108,11 +108,11 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
-		
+
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				Display.getCurrent().timerExec(10, new Runnable() {					
+				Display.getCurrent().timerExec(10, new Runnable() {
 					public void run() {
 						if(getWidgetModel().isAutoSize()){
 							performAutoSize(figure);
@@ -120,15 +120,15 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 						}
 					}
 				});
-				
+
 				return true;
 			}
 		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);		
+		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
 	}
-	
+
 	/**
 	 * @param figure
 	 */
@@ -136,7 +136,7 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 		getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
 	}
 
-	
+
 	@Override
 	public void setValue(Object value) {
 		if(value instanceof Double)
@@ -149,5 +149,5 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 	public Boolean getValue() {
 		return ((CheckBoxFigure)getFigure()).getBoolValue();
 	}
-	
+
 }

@@ -20,8 +20,8 @@ import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** ArchiveReader for RDB data

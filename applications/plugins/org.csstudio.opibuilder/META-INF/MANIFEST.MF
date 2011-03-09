@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY base plugin
 Bundle-Description: Base plugin of BOY
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -12,8 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform;bundle-version="1.1.0";visibility:=reexport,
  org.csstudio.platform.ui;bundle-version="1.1.1";visibility:=reexport,
  org.eclipse.gef;visibility:=reexport,
- org.csstudio.utility.pv;bundle-version="1.0.8";visibility:=reexport,
- org.csstudio.utility.pv.epics;bundle-version="1.0.8",
+ org.csstudio.utility.pv;bundle-version="1.2.0";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.4.0",
  org.eclipse.ui.views;bundle-version="3.3.0",
  org.junit,

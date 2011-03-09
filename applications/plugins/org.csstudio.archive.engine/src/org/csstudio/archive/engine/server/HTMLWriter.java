@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
@@ -26,10 +26,10 @@ public class HTMLWriter
 
     /** Writer */
     final private PrintWriter html;
-    
+
     /** Helper for marking every other table line */
     private boolean odd_table_line = true;
-    
+
     /** @return HTML Writer with start of HTML page.
      *  @param resp Response for which to create the writer
      *  @param title HTML title
@@ -48,20 +48,20 @@ public class HTMLWriter
         text("<body background='" + BACKGROUND + "'>");
         text("<blockquote>");
         h1(title);
- 
+
     }
-    
+
     /** Add end of HTML page. */
     public void close()
     {
         text("<p>");
         text("<hr width='50%' align='left'>");
-        
+
         text("<a href=\"/main\">-Main-</a> ");
         text("<a href=\"/groups\">-Groups-</a> ");
         text("<a href=\"/disconnected\">-Disconnected-</a> ");
         text("<a href=\"/version.html\">-Version-</a> ");
-        
+
         text("<address>");
         text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));
         text("   <i>(Use web browser's Reload to refresh this page)</i>");
@@ -95,7 +95,7 @@ public class HTMLWriter
      *  The intial column header might span more than one column.
      *  In fact, it might be the only columns header.
      *  Otherwise, the remaining column headers each span one column.
-     *  
+     *
      *  @param initial_colspan Number of columns for the first header.
      *  @param header Headers for all the columns
      *  @see #tableLine(String[])
@@ -152,8 +152,8 @@ public class HTMLWriter
     {
         text("</tbody>");
         text("</table>");
-    }    
-    
+    }
+
     /** Create HTML for a link
      *  @param url Linked URL
      *  @param text Text to display
@@ -163,7 +163,7 @@ public class HTMLWriter
     {
         return "<a href=\"" + url + "\">" + text + "</a>";
     }
-    
+
     /** @return HTML for red text */
     public static String makeRedText(final String text)
     {

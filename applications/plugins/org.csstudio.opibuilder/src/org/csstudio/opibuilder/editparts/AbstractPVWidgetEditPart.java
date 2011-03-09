@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -23,8 +25,6 @@ import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPITimer;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.UIBundlingThread;

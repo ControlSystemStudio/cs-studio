@@ -11,9 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Value Iterator that reads from the SAMPLE table.
@@ -66,8 +65,8 @@ public class RawSampleIterator extends AbstractRDBValueIterator
      */
     private void determineInitialSample(final ITimestamp start, final ITimestamp end) throws Exception
     {
-        Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
-        final Timestamp end_stamp = TimeWarp.getSQLTimestamp(end);
+        Timestamp start_stamp = start.toSQLTimestamp();
+        final Timestamp end_stamp = end.toSQLTimestamp();
 
         // Get time of initial sample
         final PreparedStatement statement =

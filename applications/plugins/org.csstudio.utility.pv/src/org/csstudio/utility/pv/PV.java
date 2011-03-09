@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.pv;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 
 /** A control system PV.

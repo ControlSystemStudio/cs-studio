@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
 
@@ -17,9 +24,9 @@ import org.eclipse.swt.widgets.Table;
 public class PVTableCellModifier implements ICellModifier
 {
     private final PVListModel pv_list;
-    
+
     /** Create a CellModifier for the PV Table and attach it to the TableViewer
-     *  @param table_viewer The TableViewer to which to attach. 
+     *  @param table_viewer The TableViewer to which to attach.
      *  @param pv_list The model on which this cell editor operates.
      */
     public PVTableCellModifier(TableViewer table_viewer, PVListModel pv_list)
@@ -31,7 +38,7 @@ public class PVTableCellModifier implements ICellModifier
         // I was expecting to see a checkbox-type display item
         // and editor when using the CheckboxCellEditor.
         // Doesn't happen. One needs a label provoder that returns
-        // for example a checked resp. un-checked image for the 
+        // for example a checked resp. un-checked image for the
         // two states of the item.
         // The CheckboxCellEditor simply expects data of type Boolean,
         // and turns mouse clicks into modify() calls with a new Boolean.
@@ -43,14 +50,15 @@ public class PVTableCellModifier implements ICellModifier
             else
                 editors[i] = new TextCellEditor(table);
         }
-        
+
         // They use 'properties', not column numbers, to identify a column.
         table_viewer.setColumnProperties(PVTableHelper.properties);
-        table_viewer.setCellEditors(editors);       
+        table_viewer.setCellEditors(editors);
         table_viewer.setCellModifier(this);
     }
 
     /** @return Returns true for cells that may be edited */
+    @Override
     public boolean canModify(Object element, String property)
     {
         try
@@ -68,6 +76,7 @@ public class PVTableCellModifier implements ICellModifier
     }
 
     /** @returns Returns the string for the given property. */
+    @Override
     public Object getValue(Object element, String property)
     {
         try
@@ -79,19 +88,20 @@ public class PVTableCellModifier implements ICellModifier
         catch (Exception e)
         {
             e.printStackTrace();
-        }        
+        }
         return null;
     }
 
     /** Set property of element to new value. */
+    @Override
     public void modify(Object element, String property, Object value)
     {
         // Did some validator reject the value?
         if (value == null)
             return;
-        
+
         // Javadoc from ICellModifier:
-        // Note that it is possible for an SWT Item to be passed instead of 
+        // Note that it is possible for an SWT Item to be passed instead of
         // the model element. To handle this case in a safe way, ...
         if (element instanceof Item)
             element = ((Item) element).getData();

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.export;
 
-import org.csstudio.platform.data.IValue.Format;
+import org.csstudio.data.values.IValue.Format;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.PVItem;

@@ -7,14 +7,12 @@
  ******************************************************************************/
 package org.csstudio.sns.jms2rdb.perftest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.util.Calendar;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
@@ -58,10 +56,6 @@ public class RDBPerfUnitTest
             System.out.println("Skipping test, need " + MSG_LOG_URL);
             return;
         }
-
-        // Log4j
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
 
         final RDBWriter rdb_writer = new RDBWriter(url, schema);
 

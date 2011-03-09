@@ -15,19 +15,19 @@ import java.util.ArrayList;
 
 import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Base for ValueIterators that read from the RDB
@@ -166,7 +166,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
         if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
             stamp.setNanos(result.getInt(7));
-        final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
+        final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
 
         // Get severity/status
         final String status = reader.getStatus(result.getInt(3));
@@ -365,7 +365,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             if (i > 1)
                 System.out.print(", ");
             if (meta.getColumnName(i).equals("SMPL_TIME"))
-                System.out.print(meta.getColumnName(i) + ": " + TimeWarp.getCSSTimestamp(result.getTimestamp(i)));
+                System.out.print(meta.getColumnName(i) + ": " + TimestampFactory.fromSQLTimestamp(result.getTimestamp(i)));
             else
                 System.out.print(meta.getColumnName(i) + ": " + result.getString(i));
         }

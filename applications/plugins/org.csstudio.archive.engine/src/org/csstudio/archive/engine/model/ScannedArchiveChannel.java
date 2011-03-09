@@ -12,11 +12,11 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
 
 /** An ArchiveChannel that stores value in a periodic scan.
  *  @author Kay Kasemir

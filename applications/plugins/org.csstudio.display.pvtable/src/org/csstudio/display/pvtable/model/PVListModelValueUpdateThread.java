@@ -1,7 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
 /** Thread that periodically triggers the PVListModel's value notifications.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class PVListModelValueUpdateThread implements Runnable
@@ -39,7 +46,7 @@ public class PVListModelValueUpdateThread implements Runnable
         // the table update
         // ==> deadlock!
     }
-    
+
     /** @return Returns the periodic check delay in millisecs. */
     public int getDelay()
     {
@@ -47,7 +54,6 @@ public class PVListModelValueUpdateThread implements Runnable
     }
 
     /** @param delay The new periodic check delay in millisecs. */
-    @SuppressWarnings("nls")
     public void setDelay(int delay)
     {
         if (delay > 1)
@@ -55,6 +61,7 @@ public class PVListModelValueUpdateThread implements Runnable
     }
 
     /**  @see java.lang.Runnable#run() */
+    @Override
     public void run()
     {
         while (go)

@@ -13,11 +13,11 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.StringID;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Channel: Name, access to time range etc.
  *  @see RDBArchive
@@ -101,7 +101,7 @@ public class ChannelConfig extends StringID
     {
        this.sample_mode = sample_mode;
        this.sample_value = sample_value;
-       this.sample_period = Math.max(period_secs, RDBArchivePreferences.getMinSamplePeriod());        
+       this.sample_period = Math.max(period_secs, RDBArchivePreferences.getMinSamplePeriod());
        final PreparedStatement statement =
             archive.getRDB().getConnection().prepareStatement(
                         archive.getSQL().channel_set_sampling);
@@ -166,7 +166,7 @@ public class ChannelConfig extends StringID
             // Channel without any samples?
             if (end == null)
                 return null;
-            return TimeWarp.getCSSTimestamp(end);
+            return TimestampFactory.fromSQLTimestamp(end);
         }
         finally
         {

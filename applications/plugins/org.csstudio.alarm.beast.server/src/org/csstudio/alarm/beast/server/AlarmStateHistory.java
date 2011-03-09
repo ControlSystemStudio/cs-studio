@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /** Ring buffer of AlarmState entries with time stamp that
  *  can check for N errors within some time
@@ -18,7 +18,7 @@ public class AlarmStateHistory
 {
     /** History of the last "count" alarms with time stamp */
     final private RingBuffer<AlarmState> history;
-    
+
     /** Initialize
      *  @param count Number of recent alarms to track in history
      */
@@ -26,7 +26,7 @@ public class AlarmStateHistory
     {
         history = new RingBuffer<AlarmState>(count);
     }
-    
+
     /** Release memory */
     public void dispose()
     {

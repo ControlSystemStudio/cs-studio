@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
 import java.util.Iterator;
@@ -75,6 +82,7 @@ public class PVTableViewerHelper
         //public void setPVListEntry(PVListEntry entry)
         //{  this.entry = entry; }
 
+        @Override
         public void run()
         {   // Update table, unless this is a 'late' event
             // and we are already stopped.
@@ -108,6 +116,7 @@ public class PVTableViewerHelper
                 | SWT.VIRTUAL);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
+        // TODO Use TableColumnLayout
         for (int i = 0; i < PVTableHelper.properties.length; i++)
                 AutoSizeColumn.make(table,
                         PVTableHelper.properties[i],
@@ -154,21 +163,26 @@ public class PVTableViewerHelper
         // React to model changes
         listener = new PVListModelListener()
         {
+            @Override
             public void runstateChanged(boolean isRunning)
             { /* NOP */ }
 
+            @Override
             public void entriesChanged()
             {
                 setTableViewerItemCount();
                 table_viewer.refresh();
             }
 
+            @Override
             public void entryAdded(PVListEntry entry)
             {   entriesChanged(); }
 
+            @Override
             public void entryRemoved(PVListEntry entry)
             {   entriesChanged(); }
 
+            @Override
             public void valuesUpdated()
             {   // Update the whole table.
                 // Note that this event arrives from a non-GUI thread!
@@ -252,7 +266,7 @@ public class PVTableViewerHelper
     }
 
     /** @return Returns the PVs which are currently selected in the table. */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public PVListEntry[] getSelectedEntries()
     {
         final IStructuredSelection selection =

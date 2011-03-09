@@ -15,10 +15,10 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Timer;
 
-import org.csstudio.platform.data.IMinMaxDoubleValue;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;

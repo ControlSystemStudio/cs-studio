@@ -23,6 +23,8 @@ import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 /** Application's 'Main' class.
+ *
+ *  TODO Remove dependency on JMSLogMessage in platform
  *  @author Kay Kasemir
  *  reviewed by Katia Danilova 08/20/08
  */

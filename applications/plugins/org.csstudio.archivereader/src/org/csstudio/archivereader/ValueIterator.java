@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archivereader;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** In principle this is like
  *  <code>Iterator&lt;Value&gt;</code>, but allows next() to
@@ -32,7 +32,7 @@ public interface ValueIterator
      *  @exception on Error in archive access
      */
     public IValue next() throws Exception;
-    
+
     /** Must be called to release resources */
     public void close();
 }

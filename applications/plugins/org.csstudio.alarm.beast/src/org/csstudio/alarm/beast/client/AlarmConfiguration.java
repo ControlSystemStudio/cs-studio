@@ -21,8 +21,8 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.SQL;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.eclipse.osgi.util.NLS;
 
 /** <p>Alarm Configuration as stored in RDB. It is identified
@@ -237,7 +237,7 @@ public class AlarmConfiguration
                 item = pv;
             }
             if (config_time != null)
-                item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
+                item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
             config_reader.readGuidanceDisplaysCommands(item);
         }
         result.close();
@@ -419,7 +419,7 @@ public class AlarmConfiguration
     		statement.executeUpdate();
     		rdb.getConnection().commit();
     		// Update item's config time after RDB commit succeeded
-            item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
+            item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
     	}
         catch (SQLException ex)
         {

@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.sampleview;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IMinMaxDoubleValue;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser.model.Model;

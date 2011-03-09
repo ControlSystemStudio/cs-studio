@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -22,14 +29,14 @@ public class ConstantPV extends PlatformObject implements PV
 
     /** Constant value */
     private IValue value;
-    
+
     /** PVListeners of this PV */
     private final CopyOnWriteArrayList<PVListener> listeners =
         new CopyOnWriteArrayList<PVListener>();
 
     private boolean running = false;
 
-    
+
     /** Initialize PV with constant value
      *  @param name Something like "const://name(initial_value)"
      */
@@ -40,9 +47,9 @@ public class ConstantPV extends PlatformObject implements PV
         if (name.startsWith(ConstantPVFactory.PREFIX + PVFactory.SEPARATOR ))
             this.name = name;
         else
-            this.name = ConstantPVFactory.PREFIX + 
+            this.name = ConstantPVFactory.PREFIX +
                         PVFactory.SEPARATOR + name;
-        
+
         // Parse value, locate the "..(value)"
         final int value_start = name.indexOf('(');
         if (value_start < 0)
@@ -56,18 +63,21 @@ public class ConstantPV extends PlatformObject implements PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName()
     {
         return name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addListener(final PVListener listener)
     {
         listeners.add(listener);
@@ -77,6 +87,7 @@ public class ConstantPV extends PlatformObject implements PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeListener(final PVListener listener)
     {
         listeners.remove(listener);
@@ -85,6 +96,7 @@ public class ConstantPV extends PlatformObject implements PV
     /** Starting the PV means each listener receives one
      *  value update, then no more.
      */
+    @Override
     public void start() throws Exception
     {
         running = true;
@@ -93,48 +105,56 @@ public class ConstantPV extends PlatformObject implements PV
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         running = false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getStateInfo()
     {
         return "constant"; //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConnected()
     {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isRunning()
     {
         return running;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue getValue()
     {
         return value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue getValue(final double timeoutSeconds) throws Exception
     {
         return value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isWriteAllowed()
     {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setValue(final Object newValue) throws Exception
     {
         throw new Exception(getName() + " is read-only"); //$NON-NLS-1$

@@ -9,8 +9,9 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+
 
 /** Holder for 'historic' samples.
  *  <p>
@@ -25,22 +26,22 @@ import org.csstudio.platform.data.IValue;
  *  the live data ring buffer rolls around, the 'border' time adjustments
  *  might then uncover historic samples that were previously
  *  hidden below the 'live' time range.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class HistoricSamples extends PlotSamples
 {
     /** "All" historic samples */
     private PlotSample samples[] = new PlotSample[0];
-    
+
     /** If non-null, samples beyond this time are hidden from access */
     private ITimestamp border_time = null;
-    
+
     /** Subset of samples.length that's below border_time
      *  @see #computeVisibleSize()
      */
     private int visible_size = 0;
-    
+
     /** Define a new 'border' time beyond which no samples
      *  are returned from the history
      *  @param border_time New time or <code>null</code> to access all samples
@@ -72,7 +73,7 @@ public class HistoricSamples extends PlotSamples
             visible_size = (last_index < 0)   ?   0   :   last_index + 1;
         }
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
@@ -96,7 +97,7 @@ public class HistoricSamples extends PlotSamples
      */
     synchronized public void mergeArchivedData(final String source, final ArrayList<IValue> result)
     {
-        // Anything new at all? 
+        // Anything new at all?
         if (result.size() <= 0)
             return;
         // Turn IValues into PlotSamples
