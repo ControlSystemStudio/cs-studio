@@ -28,6 +28,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Markus Moeller
  *
@@ -74,9 +76,9 @@ public class DataRequestHeader implements IRequestHeader
      * 
      */
     @Override
-    public String toString()
-    {
-        StringBuffer result = new StringBuffer();
+    public String toString() {
+        
+    	StringBuffer result = new StringBuffer();
         
         result.append("DataRequestHeader{");
         result.append("fromSec=" + fromSec + ",fromUSec=" + fromUSec + ",toSec=" + toSec + ",toUSec=" + toUSec);
@@ -84,11 +86,9 @@ public class DataRequestHeader implements IRequestHeader
         result.append(",conversionParameter=" + conversionParameter + ",pvNameSize=" + pvNameSize);
         result.append(",pvName{");
         
-        for(int i = 0;i < pvNameSize;i++)
-        {
+        for(int i = 0;i < pvNameSize;i++) {
             result.append(pvName[i]);
-            if(i < (pvNameSize - 1))
-            {
+            if(i < (pvNameSize - 1)) {
                 result.append(",");
             }
         }
@@ -138,13 +138,13 @@ public class DataRequestHeader implements IRequestHeader
      * @see org.csstudio.archive.jaapi.server.command.header.IRequestHeader#setHeaderFromByteArray()
      */
     @Override
-    public void setHeaderFromByteArray(byte[] data)
-    {
-        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
+    public void setHeaderFromByteArray(byte[] data) {
+        
+    	DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
 
-        try
-        {
-            fromSec = dis.readInt();
+        try {
+            
+        	fromSec = dis.readInt();
             fromUSec = dis.readInt();
             toSec = dis.readInt();
             toUSec = dis.readInt();
@@ -154,15 +154,12 @@ public class DataRequestHeader implements IRequestHeader
             pvNameSize = dis.readInt();
             pvName = new String[pvNameSize];
             
-            for(int i = 0;i < pvNameSize;i++)
-            {
+            for(int i = 0;i < pvNameSize;i++) {
                 pvName[i] = readNextString(dis);
-                System.out.println(i + " = " + pvName[i]);
             }
-        }
-        catch(IOException ioe)
-        {
-            System.out.println("[*** IOException ***]: UUUURGS: " + ioe.getMessage());
+            
+        } catch(IOException ioe) {
+            Logger.getLogger(this.getClass()).error("[*** IOException ***]: UUUURGS: " + ioe.getMessage());
         }
     }
 

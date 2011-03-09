@@ -101,9 +101,9 @@ public class DataRequest extends ServerCommand {
             // Number of PV's
             dos.writeInt(header.getPvNameSize());
             
-            for(String name : header.getPvName())
-            {
-                data = dataCollector.readData(name, header);
+            for(String name : header.getPvName()) {
+                
+            	data = dataCollector.readData(name, header);
                 logger.debug("Number of samples: " + data.getNumberOfData());
 
                 // TODO: Nicht vorhandene Daten abfangen und saubere Fehlermeldung zurueck liefern

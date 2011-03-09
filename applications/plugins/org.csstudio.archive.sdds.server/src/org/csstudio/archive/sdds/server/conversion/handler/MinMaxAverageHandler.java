@@ -78,9 +78,9 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
 	throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         if (data == null) {
-            return null;
+            return new EpicsRecordData[0];
         } else if (data.length == 0){
-            return null;
+            return new EpicsRecordData[0];
         }
 
         // Get the number of requested samples

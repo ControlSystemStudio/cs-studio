@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.8" useFeatures="false" includeLaunchers="true">
+<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.7" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

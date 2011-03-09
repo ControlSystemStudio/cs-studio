@@ -76,9 +76,9 @@ public class AverageHandler extends AlgorithmHandler {
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
         
         if (data == null) {
-            return null;
+            return new EpicsRecordData[0];
         } else if (data.length == 0){
-            return null;
+            return new EpicsRecordData[0];
         }
         
         // Get the number of requested samples
@@ -124,11 +124,12 @@ public class AverageHandler extends AlgorithmHandler {
         List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
         
         long nextIntervalStep = 0;
+        long sampleTimestamp = 0;
         float sum = 0.0f;
         float count = 0.0f;
         
         long curTime = intervalStart;
-        boolean noSample;
+        boolean foundSample;
         
         // Iterate through the complete time interval
         do {
@@ -139,39 +140,45 @@ public class AverageHandler extends AlgorithmHandler {
             EpicsRecordData curData = null;
             sum = 0.0f;
             count = 0.0f;
-            noSample = true;
+            foundSample = false;
             
             // Iterate over data samples in the time subinterval
             do {
                 
                 curData = data[index];
-                if (curData.getTime() < nextIntervalStep) {
+                sampleTimestamp = curData.getTime();
+                if ((sampleTimestamp >= curTime) && (sampleTimestamp < nextIntervalStep)) {
 
                     if(curData.isValueValid()) {
                         sum += (Float) curData.getValue();
                         count += 1.0f;
-                        noSample = false;
+                        foundSample = true;
                     }
                     
                     // Increment the index only if we are not at the end of the array
                     if(index < (data.length - 1)) {
                         index++;
+                    } else {
+                    	// Leave the loop if we reached the end of the sample array
+                    	break;
                     }
                 }
                 
-            } while (curData.getTime() < nextIntervalStep);
+            } while (sampleTimestamp < nextIntervalStep);
             
             // We have a sum of sample values from the subinterval
             // Otherwise keep the current average value
-            if (noSample == false) {
+            if (foundSample) {
             	// Calculate the average value
             	avg = sum / count;
             }
             
-			EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)), SDDSType.SDDS_DOUBLE);
-			resultData.add(newData);
-			logger.debug(newData.toString());
-			newData = null;
+            if (Float.isNaN(avg) == false) {
+				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)), SDDSType.SDDS_DOUBLE);
+				resultData.add(newData);
+				logger.debug(newData.toString());
+				newData = null;
+            }
             
             curTime += deltaTime;
             

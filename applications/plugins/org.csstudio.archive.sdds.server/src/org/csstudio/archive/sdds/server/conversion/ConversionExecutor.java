@@ -62,7 +62,8 @@ public class ConversionExecutor {
                                      10000, null);
         
         conversionHandler = new AlgorithmHandler[] {
-                new AverageHandler(maxSamples),
+                
+        		new AverageHandler(maxSamples),
                 new TailRawHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
