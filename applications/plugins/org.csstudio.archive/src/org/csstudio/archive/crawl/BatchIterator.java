@@ -2,8 +2,8 @@ package org.csstudio.archive.crawl;
 
 import org.csstudio.archive.ArchiveServer;
 import org.csstudio.archive.ArchiveValues;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Crawler that fetches 'batches' of samples until reaching an end time.
  *  <p>
@@ -24,13 +24,13 @@ public class BatchIterator
     final public ITimestamp end;
     final public String request_type;
     final public Object request_parms[];
- 
+
     /** Current batch of samples. */
     private IValue[] samples;
 
     /** Construct batch iterator for a channel.
      *  <p>
-     * 
+     *
      *  @param server       The Archive Server to use.
      *  @param key          Archive key.
      *  @param channel_name Name of channel.
@@ -58,7 +58,7 @@ public class BatchIterator
     }
 
     /** Fetch another batch of samples
-     * 
+     *
      *  @param fetch_start Start time for this batch
      *         (greater or equal to overall start time)
      *  @throws Exception on error
@@ -112,7 +112,7 @@ public class BatchIterator
         fetch(last_sample.getTime());
         if (samples == null)
             return null;
-        
+
         // In most cases, this fetch should return the last_sample again:
         //   some_timestamp value A
         //   last_timestamp value B <-- last_sample of previous batch
@@ -141,7 +141,7 @@ public class BatchIterator
         // i.e. from last_timestamp on, we could get any of the values B to E,
         // since they're all stamped at-or-before last_timestamp.
         // Which one exactly depends on optimization inside the data server.
-        
+
         // From the end of the new samples, go backward:
         int skip = samples.length;
         for (int i=skip-1;  i>=0;  --i)
@@ -151,7 +151,7 @@ public class BatchIterator
                 skip = i + 1;
                 break;
             }
-        }        
+        }
         // Nothing to skip? Return as is.
         if (skip <= 0)
             return samples;

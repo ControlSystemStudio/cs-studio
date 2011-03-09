@@ -1,7 +1,7 @@
 package org.csstudio.archive.crawl;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.
