@@ -10,8 +10,6 @@ package org.csstudio.display.pvtable.ui;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
@@ -23,8 +21,11 @@ import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -111,21 +113,27 @@ public class PVTableViewerHelper
     {
         this.pv_list = pv_list;
         this.table_viewer_update = new TableViewerUpdate();
-        Table table = new Table(parent,
+
+        // Note: TableColumnLayout requires table to be the only child of its parent
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        parent.setLayout(table_layout);
+
+        table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
+        final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        // TODO Use TableColumnLayout
         for (int i = 0; i < PVTableHelper.properties.length; i++)
-                AutoSizeColumn.make(table,
-                        PVTableHelper.properties[i],
-                        PVTableHelper.sizes[i],
-                        PVTableHelper.weights[i]);
-        // Configure table to auto-size the columns
-        new AutoSizeControlListener(table);
+        {
+            final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+            final TableColumn col = view_col.getColumn();
+            col.setText(PVTableHelper.properties[i]);
+            col.setMoveable(true);
+            table_layout.setColumnData(col,
+                new ColumnWeightData(PVTableHelper.weights[i],  PVTableHelper.sizes[i]));
+        }
 
-        table_viewer = new TableViewer(table);
         // Enable hashmap for resolving 'PVListEntry' to associated SWT widget.
         table_viewer.setUseHashlookup(true);
         table_viewer.setLabelProvider(new PVTableLabelProvider(table, pv_list));

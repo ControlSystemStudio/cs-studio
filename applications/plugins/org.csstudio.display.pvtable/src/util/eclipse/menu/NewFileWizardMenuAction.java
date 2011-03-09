@@ -24,27 +24,26 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  *  <p>
  *  Can be hooked into navigator or workspace explorer context menu
  *  via object contrib to IContainer, or into the file/new menu.
- *  
+ *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class NewFileWizardMenuAction extends Action
     implements IObjectActionDelegate, // for context menu
                IWorkbenchWindowActionDelegate // for main menu
 {
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     final private Class new_file_wizard;
-    
+
     /** The currently active workbench window */
     private IWorkbenchWindow window = null;
 
     /** Selection for the container */
     private IStructuredSelection selection = null;
-    
+
     /** Constructor.
      *  @param new_file_wizard Class that implements NewFileWizard
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public NewFileWizardMenuAction(Class new_file_wizard)
     {
         this.new_file_wizard = new_file_wizard;
@@ -53,20 +52,23 @@ public class NewFileWizardMenuAction extends Action
     /** Keep track of active window in case this is a IWorkbenchWindowActionDelegate.
      *  @see IWorkbenchWindowActionDelegate
      */
+    @Override
     public void init(IWorkbenchWindow window)
     {
         this.window = window;
     }
-    
+
     /** Keep track of active window in case this is a IObjectActionDelegate.
      *  @see IObjectActionDelegate
      */
+    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart)
     {
         this.window = targetPart.getSite().getWorkbenchWindow();
     }
 
     /** @see IWorkbenchWindowActionDelegate */
+    @Override
     public void dispose()
     {
         window = null;
@@ -76,6 +78,7 @@ public class NewFileWizardMenuAction extends Action
     /** Keep track of active selection.
      *  @see IObjectActionDelegate
      */
+    @Override
     public void selectionChanged(IAction action, ISelection selection)
     {
         if (selection instanceof IStructuredSelection)
@@ -93,6 +96,7 @@ public class NewFileWizardMenuAction extends Action
    }
 
     /** Display the new chart editor wizard */
+    @Override
     public void run(IAction action)
     {
         NewFileWizard wizard;

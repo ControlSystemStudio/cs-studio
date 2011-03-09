@@ -78,6 +78,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     /** Remember selection from workbench to see if we can initialize from it.
      *  @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         this.selection = selection;
@@ -102,6 +103,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         final String fileName = page.getFileName();
         IRunnableWithProgress op = new IRunnableWithProgress()
         {
+            @Override
             public void run(IProgressMonitor monitor)
                     throws InvocationTargetException
             {
@@ -172,6 +174,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         monitor.setTaskName(Messages.OpeningFile___);
         getShell().getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
