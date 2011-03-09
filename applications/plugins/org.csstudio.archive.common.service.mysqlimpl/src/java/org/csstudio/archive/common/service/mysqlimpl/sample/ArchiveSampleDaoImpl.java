@@ -56,6 +56,7 @@ import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
+import org.joda.time.Hours;
 import org.joda.time.Minutes;
 
 import com.google.common.base.Joiner;
@@ -207,7 +208,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                                    minuteAgg.getMin(),
                                                                    minuteAgg.getMax(),
                                                                    timestamp,
-                                                                   Minutes.THREE.toStandardDuration());
+                                                                   Hours.ONE.toStandardDuration());
         minuteAgg.reset();
         if (hourValueStr == null) {
             return;
@@ -271,8 +272,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private List<String> joinStringsToStatementBatch(@Nonnull final List<String> values,
-                                                  @Nonnull final List<String> valuesPerMinute,
-                                                  @Nonnull final List<String> valuesPerHour)
+                                                     @Nonnull final List<String> valuesPerMinute,
+                                                     @Nonnull final List<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
         final List<String> statements = Lists.newLinkedList();
         if (!values.isEmpty()) {
@@ -343,7 +344,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @Nonnull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable final DesyArchiveRequestType type,
                                                      @Nonnull final IArchiveChannel channel,
                                                      @Nonnull final TimeInstant s,
@@ -357,7 +358,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             stmt = dispatchRequestTypeToStatement(reqType);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1000));
+            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
 
             final ResultSet result = stmt.executeQuery();
 
@@ -398,14 +399,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @SuppressWarnings("unchecked")
     @Nonnull
-    private <V, T extends IAlarmSystemVariable<V>>
+    private <V, T extends ISystemVariable<V>>
     IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
                                                            @Nonnull final IArchiveChannel channel,
                                                            @Nonnull final ResultSet result) throws SQLException,
                                                                                                    ArchiveDaoException,
                                                                                                    TypeSupportException {
         final String dataType = channel.getDataType();
-        final Timestamp timestamp = result.getTimestamp(1);
+        final Timestamp timestamp = result.getTimestamp("sample_time");
 
         long nanosecs = 0L;
         V value = null;
@@ -414,7 +415,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
         switch (type) {
             case RAW : {
-                // (..., nanosecs, status_id, value)
+                // (..., nanosecs, value)
                 nanosecs = result.getLong("nanosecs");
                 value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString("value"));
                 break;
@@ -471,7 +472,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
         PreparedStatement stmt = null;
@@ -480,8 +481,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             stmt.setInt(1, channel.getId().intValue());
             stmt.setTimestamp(2, new Timestamp(time.getMillis()));
             final ResultSet result = stmt.executeQuery();
-
-            return createSampleFromQueryResult(DesyArchiveRequestType.RAW, channel, result);
+            if (result.next()) {
+                return createSampleFromQueryResult(DesyArchiveRequestType.RAW, channel, result);
+            }
         } catch(final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {

@@ -27,6 +27,12 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.archive.common.service.channel.ArchiveChannel;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
@@ -273,6 +279,57 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         return multiScalarSupport(datatype, value);
     }
 
+    // CHECKSTYLE OFF : ParameterNumber
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> IArchiveChannel createArchiveChannel(@Nonnull final ArchiveChannelId id,
+                                                           @Nonnull final String name,
+                                                           @Nonnull final String datatype,
+                                                           @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
+                                                           @Nonnull final TimeInstant time,
+                                                           @Nonnull final IArchiveControlSystem cs,
+                                                           @CheckForNull final String low,
+                                                           @CheckForNull final String high) throws TypeSupportException {
+        // CHECKSTYLE ON : ParameterNumber
+        if (low == null || high == null) {
+            return new ArchiveChannel(id,
+                                      name,
+                                      datatype,
+                                      archiveChannelGroupId,
+                                      time,
+                                      cs);
+        }
+        final Class<Object> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype, SCALAR_TYPE_PACKAGES);
+        final ArchiveTypeConversionSupport<T> support =
+            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+                                                                 typeClass);
+        return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs,
+                                     (T) fromArchiveString(datatype, low),
+                                     (T) fromArchiveString(datatype, high));
+    }
+
+    /**
+     * Has to be overriden for all types that support display ranges in the channel abstraction
+     */
+    @Nonnull
+    // CHECKSTYLE OFF : ParameterNumber
+    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
+                                            @Nonnull final String name,
+                                            @Nonnull final String datatype,
+                                            @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
+                                            @Nonnull final TimeInstant time,
+                                            @Nonnull final IArchiveControlSystem cs,
+                                            @SuppressWarnings("unused") @Nonnull final T low,
+                                            @SuppressWarnings("unused") @Nonnull final T high) throws TypeSupportException {
+        // CHECKSTYLE ON : ParameterNumber
+        return new ArchiveChannel(id,
+                                  name,
+                                  datatype,
+                                  archiveChannelGroupId,
+                                  time,
+                                  cs);
+    }
+
 
     @SuppressWarnings("unchecked")
     @Nonnull
@@ -318,8 +375,6 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @Nonnull
     protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException;
-//    @Nonnull
-//    protected abstract Double convertToDouble(@Nonnull final T value) throws TypeSupportException;
     @Nonnull
     protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
     /**

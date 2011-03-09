@@ -32,17 +32,21 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleAggregator;
 import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
+import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IMinMaxDoubleValue;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -55,8 +59,9 @@ import org.joda.time.ReadableDuration;
  *
  * @author bknerr
  * @since Feb 24, 2011
+ * @param <V> the base type of this channel
  */
-public class EquidistantTimeBinsIterator implements ValueIterator {
+public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
     private static final Logger LOG =
             CentralLogger.getInstance().getLogger(EquidistantTimeBinsIterator.class);
@@ -67,19 +72,19 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
 
 
     private final String _channelName;
-    private final Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _samples;
+    private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
+
     private final TimeInstant _start;
-    private final TimeInstant _curBinTime;
     private final TimeInstant _end;
-    private final int _bins;
-    private int _currentBin = 1;
-    private final Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iter;
-
     private final ReadableDuration _windowLength;
+    private final TimeInstant _nextWindowEnd;
 
-    private IArchiveSample<Object, IAlarmSystemVariable<Object>> _lastSample;
-    private IArchiveSample<Object, IAlarmSystemVariable<Object>> _nextSample;
+    private final int _bins;
+    private int _currentBin;
 
+    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _iter;
+    private IArchiveSample<V, ISystemVariable<V>> _nextSample;
+    private final INumericMetaData _meta;
     private SampleAggregator _agg;
     private boolean _noSamples = false;
 
@@ -100,44 +105,67 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
                                                                   TypeSupportException {
         _channelName = channelName;
         _start = start;
-        _curBinTime = _start;
         _end = end;
         _bins = timeBins;
         if (start.isAfter(end) || _bins <= 0) {
-            throw new IllegalArgumentException("Start time is after end time or number of time bins has to be positive.");
+            throw new IllegalArgumentException("Start time is after end time or number of time bins less equal zero.");
         }
 
         // init the last sample to the one before the interval (if existing)
-        _lastSample = getLastSampleBeforeInterval(_channelName, _start);
+        _nextSample = getLastSampleBeforeInterval(_channelName, _start);
+
         // get the samples in the specified interval
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
         _samples = service.readSamples(channelName, start, end, type); // type == null means AUTO/DEFAULT
         _iter = _samples.iterator();
-        // calc the windowlength of the bins
+
+
         _windowLength = new Duration((_end.getMillis() - _start.getMillis()) / _bins);
 
-        if (_lastSample != null) {
-            _agg = new SampleAggregator(BaseTypeConversionSupport.toDouble(_lastSample.getValue()),
-                                        _start);
-        } else if (!_samples.isEmpty()) {
-            _lastSample = _iter.next();
-            _nextSample = _lastSample;
-            _currentBin = findBinForFirstSample(_nextSample.getSystemVariable().getTimestamp(), _start, _windowLength);
-            _agg = new SampleAggregator(BaseTypeConversionSupport.toDouble(_nextSample.getValue()),
-                                        _start.plusMillis(_currentBin* _windowLength.getMillis()));
+        if (_nextSample == null) { // no samples present before the given start time
+            if (_samples.isEmpty()) {
+                _currentBin = _bins + 1;
+                _noSamples = true;
+                _meta = null;
+            } else {
+                _nextSample = _iter.next();
+                // in which bin is it - fast forward to that one
+                _currentBin = findBinOfNextSample(_nextSample.getSystemVariable().getTimestamp(),
+                                                  _start,
+                                                  _windowLength);
+                _meta = getDisplayRangesForChannel(channelName);
+            }
         } else {
-            _noSamples = true;
+            _currentBin = 1;
+            _meta = getDisplayRangesForChannel(channelName);
         }
+        _nextWindowEnd = _start.plusMillis(_currentBin * _windowLength.getMillis());
+    }
+
+    @CheckForNull
+    private INumericMetaData getDisplayRangesForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+        final IArchiveChannel ch = service.getChannelByName(channelName);
+        if (ch == null) {
+            throw new ArchiveServiceException("Channel retrieval failed for channel '" + channelName + "'!", null);
+        }
+        final Limits<?> l = service.readDisplayLimits(channelName);
+        if (l != null) {
+            return ValueFactory.createNumericMetaData(((Number) l.getLow()).doubleValue(),
+                                                      ((Number) l.getHigh()).doubleValue(), 0.0, 0.0, 0.0, 0.0, 0, "none");
+        }
+        return null;
     }
 
 
-    private int findBinForFirstSample(@Nonnull final TimeInstant time,
-                                      @Nonnull final TimeInstant start,
-                                      @Nonnull final ReadableDuration windowLength) {
-        TimeInstant myStart = TimeInstantBuilder.buildFromMillis(start.getMillis());
+    private int findBinOfNextSample(@Nonnull final TimeInstant sampleTime,
+                                    @Nonnull final TimeInstant start,
+                                    @Nonnull final ReadableDuration windowLength) {
         int i = 1;
-        while (myStart.plusMillis(windowLength.getMillis()).isBefore(time)) {
-            myStart = myStart.plusMillis(windowLength.getMillis());
+        TimeInstant nextWindowEnd =
+            TimeInstantBuilder.buildFromMillis(start.getMillis()).plusMillis(windowLength.getMillis());
+        while (nextWindowEnd.isBefore(sampleTime)) {
+            nextWindowEnd = nextWindowEnd.plusMillis(windowLength.getMillis());
             i++;
         }
         return i;
@@ -145,7 +173,7 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
 
 
     @CheckForNull
-    private IArchiveSample<Object, IAlarmSystemVariable<Object>>
+    private IArchiveSample<V, ISystemVariable<V>>
         getLastSampleBeforeInterval(@Nonnull final String channelName,
                                     @Nonnull final TimeInstant start) throws ArchiveServiceException,
                                                                              OsgiServiceUnavailableException {
@@ -158,7 +186,7 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
      */
     @Override
     public boolean hasNext() {
-        if (_currentBin <= _bins && _noSamples) {
+        if (!_noSamples && _currentBin <= _bins) {
             return true;
         }
         return false;
@@ -168,33 +196,69 @@ public class EquidistantTimeBinsIterator implements ValueIterator {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public IValue next() throws TypeSupportException {
-
-        if (_noSamples) {
+        if (_noSamples && _currentBin < _bins) {
             throw new NoSuchElementException();
         }
 
         final TimeInstant windowEnd = _start.plusMillis(_currentBin*_windowLength.getMillis());
-
-        while (_nextSample.getSystemVariable().getTimestamp().isBefore(windowEnd)) {
-            final Double newVal = BaseTypeConversionSupport.toDouble(_nextSample.getValue());
-
-            _agg.aggregateNewVal(newVal, _nextSample.getSystemVariable().getTimestamp());
-
-            _nextSample = _iter.next();
+        if (_nextSample != null) { // There are more samples to be aggregated
+            // Is the _nextSample in this window?
+            final int offset = findBinOfNextSample(_nextSample.getSystemVariable().getTimestamp(),
+                                             windowEnd,
+                                             _windowLength);
+            if (offset <= 1) { // YES, start aggregating this window anew
+                _nextSample =
+                    aggregateValuesInNextWindow(_nextSample, windowEnd, _iter, _agg);
+            }
+            _currentBin++;
         }
 
         final IMinMaxDoubleValue iVal =
             ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(windowEnd),
-                                                 null, null, null, null,
+                                                 new Severity("OK"), null, _meta, IValue.Quality.Interpolated,
                                                  new double[]{_agg.getAvg().doubleValue() },
                                                  _agg.getMin().doubleValue(),
                                                  _agg.getMax().doubleValue());
-
-        _agg.reset();
-        _currentBin++;
-
         return iVal;
+    }
+
+    /**
+     *
+     * @param <V>
+     * @param initSample
+     * @param windowEnd
+     * @param windowLength
+     * @param iter
+     * @return
+     * @throws TypeSupportException
+     */
+    @CheckForNull
+    private <V> IArchiveSample<V, ISystemVariable<V>>
+    aggregateValuesInNextWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
+                                @Nonnull final TimeInstant windowEnd,
+                                @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
+                                @Nonnull final SampleAggregator agg) throws TypeSupportException {
+
+        IArchiveSample<V, ISystemVariable<V>> nextSample = initSample; // has to be present, either as last sample from the window before
+                                                                       // or if not existing being the first within this window
+        agg.reset();
+        agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
+                            nextSample.getSystemVariable().getTimestamp());
+
+        while (iter.hasNext()) {
+            nextSample =  iter.next(); // not yet clear whether this one belongs into this window
+
+            final TimeInstant curSampleTime = nextSample.getSystemVariable().getTimestamp();
+            if (curSampleTime.isBefore(windowEnd)) { // YES -> aggregate
+                agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
+                                    curSampleTime);
+            } else { // NO -> stop here aggregating and return the nextSample
+                return nextSample;
+            }
+        }
+        return null; // No next sample outside this window detected.
     }
 
     /**

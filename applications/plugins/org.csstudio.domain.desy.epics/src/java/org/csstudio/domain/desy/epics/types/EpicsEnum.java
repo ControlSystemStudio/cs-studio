@@ -50,12 +50,12 @@ import com.google.common.base.Joiner;
  * @author bknerr
  * @since 15.12.2010
  */
-public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
+public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
-    public static final EpicsEnumTriple createInstance(@Nonnull final Integer index,
-                                                       @Nonnull final String state,
-                                                       @Nullable final Integer raw) {
-        return new EpicsEnumTriple(index, state, raw);
+    public static final EpicsEnum createInstance(@Nonnull final Integer index,
+                                                 @Nonnull final String state,
+                                                 @Nullable final Integer raw) {
+        return new EpicsEnum(index, state, raw);
     }
 
     /**
@@ -64,9 +64,9 @@ public class EpicsEnumTriple extends AbstractTriple<Integer, String, Integer> {
      * @param second
      * @param third
      */
-    protected EpicsEnumTriple(@Nonnull final Integer first,
-                              @Nonnull final String second,
-                              @Nullable final Integer third) {
+    protected EpicsEnum(@Nonnull final Integer first,
+                        @Nonnull final String second,
+                        @Nullable final Integer third) {
         super(first, second, third);
     }
     @Nonnull

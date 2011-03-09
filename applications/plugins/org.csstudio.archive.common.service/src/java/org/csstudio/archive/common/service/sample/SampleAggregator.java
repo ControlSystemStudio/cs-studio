@@ -69,7 +69,7 @@ public class SampleAggregator {
     }
 
     public void aggregateNewVal(@Nonnull final Double newVal,
-                         @Nonnull final TimeInstant timestamp) {
+                                @Nonnull final TimeInstant timestamp) {
         aggregateNewVal(newVal, newVal, newVal, timestamp);
     }
 

@@ -19,13 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.epics.pvmanager.TypeSupport;
@@ -84,11 +85,18 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends TypeSupport<T> {
 
 
 
-    protected INumericMetaData checkAndConvert(final IMetaData meta, final Class<?> typeClass) throws TypeSupportException {
+    protected INumericMetaData checkAndConvertToNumeric(final IMetaData meta, final Class<?> typeClass) throws TypeSupportException {
         if (!(meta instanceof INumericMetaData)) {
             throw new TypeSupportException("Metadata is not of numeric type. Conversion failed for type " +
                                            typeClass.getName(), null);
         }
         return (INumericMetaData) meta;
+    }
+    protected IEnumeratedMetaData checkAndConvertToEnumerated(final IMetaData meta, final Class<?> typeClass) throws TypeSupportException {
+        if (!(meta instanceof IEnumeratedMetaData)) {
+            throw new TypeSupportException("Metadata is not of enumerated type. Conversion failed for type " +
+                                           typeClass.getName(), null);
+        }
+        return (IEnumeratedMetaData) meta;
     }
 }

@@ -121,4 +121,5 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
         }
         return Lists.newArrayList(typedValues);
     }
+
 }

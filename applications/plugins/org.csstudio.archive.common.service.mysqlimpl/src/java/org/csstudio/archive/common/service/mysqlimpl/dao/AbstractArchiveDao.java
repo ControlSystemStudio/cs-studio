@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 
 
@@ -49,7 +50,9 @@ public abstract class AbstractArchiveDao {
     /**
      * Constructor.
      */
-    public AbstractArchiveDao() { }
+    public AbstractArchiveDao() {
+        // EMPTY
+    }
 
     /**
      * Returns the current connection for the dao implementation and its subclasses.
@@ -95,6 +98,8 @@ public abstract class AbstractArchiveDao {
             throw new ArchiveDaoException("Connection: " + msg, e);
         } catch (final ClassNotFoundException e) {
             throw new ArchiveDaoException("Class not found: " + msg, e);
+        } catch (final TypeSupportException e) {
+            throw new ArchiveDaoException("Type support failure: " + msg, e);
         } catch (final MalformedURLException e) {
             throw new ArchiveDaoException("Malformed URL: " + msg, e);
         } catch (final Exception re) {

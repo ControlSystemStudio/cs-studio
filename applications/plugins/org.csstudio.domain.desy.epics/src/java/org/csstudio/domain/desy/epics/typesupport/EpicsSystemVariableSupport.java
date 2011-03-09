@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
@@ -89,7 +89,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                                     EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
                                                     alarm.getStatus().toString(),
                                                     null,
-                                                    null,
+                                                    IValue.Quality.Original,
                                                     new double[]{ valueData.doubleValue() },
                                                     min.doubleValue(),
                                                     max.doubleValue());

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -31,17 +31,17 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 
-final class LongConversionSupport extends EpicsIMetaDataTypeSupport<Long> {
+final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
 
     @Nonnull
-    private Long toLong(final double d) {
-        return Long.valueOf(Double.valueOf(d).longValue());
+    private Float toFloat(final double d) {
+        return Float.valueOf(Double.valueOf(d).floatValue());
     }
     /**
      * Constructor.
      */
-    public LongConversionSupport() {
-        super(Long.class);
+    public FloatConversionSupport() {
+        super(Float.class);
     }
     /**
      * {@inheritDoc}
@@ -49,14 +49,14 @@ final class LongConversionSupport extends EpicsIMetaDataTypeSupport<Long> {
     @Override
     @CheckForNull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvert(data, Long.class);
-        final EpicsGraphicsData<Long> gr =
-            new EpicsGraphicsData<Long>(Limits.<Long>create(toLong(numData.getAlarmLow()),
-                                                            toLong(numData.getAlarmHigh())),
-                                        Limits.<Long>create(toLong(numData.getWarnLow()),
-                                                            toLong(numData.getWarnHigh())),
-                                        Limits.<Long>create(toLong(numData.getDisplayLow()),
-                                                            toLong(numData.getDisplayHigh())));
+        final INumericMetaData numData = checkAndConvertToNumeric(data, Float.class);
+        final EpicsGraphicsData<Float> gr =
+            new EpicsGraphicsData<Float>(Limits.<Float>create(toFloat(numData.getAlarmLow()),
+                                                            toFloat(numData.getAlarmHigh())),
+                                        Limits.<Float>create(toFloat(numData.getWarnLow()),
+                                                            toFloat(numData.getWarnHigh())),
+                                        Limits.<Float>create(toFloat(numData.getDisplayLow()),
+                                                            toFloat(numData.getDisplayHigh())));
         return new EpicsMetaData(null, gr, null, null);
     }
 }

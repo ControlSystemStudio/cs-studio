@@ -19,12 +19,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
@@ -58,7 +59,7 @@ final class IEnumeratedValueConversionTypeSupport extends
      */
     @Override
     @Nonnull
-    protected EpicsSystemVariable<EpicsEnumTriple> convertToSystemVariable(@Nonnull final String name,
+    protected EpicsSystemVariable<EpicsEnum> convertToSystemVariable(@Nonnull final String name,
                                                                            @Nonnull final IEnumeratedValue value) throws TypeSupportException {
         // This is a nice example for what happens when physicists 'design' programs.
         // (...and I already got rid of an unsafe cast)
@@ -83,13 +84,13 @@ final class IEnumeratedValueConversionTypeSupport extends
         // Now I know that IEnumeratedValue has been concisely filled, yeah.
         // (And I already got rid of some boilerplate...)
         // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
-        final EpicsEnumTriple eVal = EpicsEnumTriple.createInstance(index, state, null);
+        final EpicsEnum eVal = EpicsEnum.createInstance(index, state, null);
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
 
-        return new EpicsSystemVariable<EpicsEnumTriple>(name,
-                                                        new CssValueType<EpicsEnumTriple>(eVal),
+        return new EpicsSystemVariable<EpicsEnum>(name,
+                                                        new CssValueType<EpicsEnum>(eVal),
                                                         ControlSystem.EPICS_DEFAULT,
                                                         timestamp,
                                                         alarm);

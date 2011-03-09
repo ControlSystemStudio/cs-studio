@@ -21,12 +21,14 @@
  */
 package org.csstudio.archive.common.service.channel;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.common.id.Identifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 /**
  * Read only interface of an channel configuration in the archive.
@@ -42,14 +44,8 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     @Nonnull
     ArchiveChannelGroupId getGroupId();
 
-//    @Nonnull
-//    ArchiveSampleModeId getSampleModeId();
-//
-//    double getSamplePeriod();
-
     @Nonnull
     TimeInstant getLatestTimestamp();
-
 
     @Nonnull
     String getDataType();
@@ -57,4 +53,6 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     @Nonnull
     IArchiveControlSystem getControlSystem();
 
+    @CheckForNull
+    Limits<?> getDisplayLimits();
 }

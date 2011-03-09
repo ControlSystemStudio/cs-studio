@@ -19,8 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
-
+package org.csstudio.domain.desy.epics.typesupport;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -32,26 +31,24 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.ILongValue;
+import org.csstudio.platform.data.IStringValue;
 
 import com.google.common.collect.Lists;
-import com.google.common.primitives.Longs;
 
 /**
- * ILongValue conversion support.
+ * IStringIValue conversion support
  *
  * @author bknerr
  * @since 15.12.2010
  */
-final class ILongValueConversionTypeSupport extends
-        AbstractIValueConversionTypeSupport<ILongValue> {
+final class IStringValueConversionTypeSupport extends
+        AbstractIValueConversionTypeSupport<IStringValue> {
     /**
      * Constructor.
      */
-    public ILongValueConversionTypeSupport() {
-        super(ILongValue.class);
+    public IStringValueConversionTypeSupport() {
+        super(IStringValue.class);
     }
-
 
     /**
      * {@inheritDoc}
@@ -59,24 +56,25 @@ final class ILongValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final ILongValue value) throws TypeSupportException {
-        final long[] values = value.getValues();
+                                                             @Nonnull final IStringValue value) throws TypeSupportException {
+
+        final String[] values = value.getValues();
         if (values == null || values.length == 0) {
-            throw new TypeSupportException("ILongValue doesn't have any values. Conversion failed.", null);
+            throw new TypeSupportException("IStringValue doesn't have any values. Conversion failed.", null);
         }
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),
                                                                      value.getStatus().toUpperCase());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
         if (values.length == 1) {
-            return new EpicsSystemVariable<Long>(name,
-                                                   new CssValueType<Long>(values[0]),
+            return new EpicsSystemVariable<String>(name,
+                                                   new CssValueType<String>(values[0]),
                                                    ControlSystem.EPICS_DEFAULT,
                                                    timestamp,
                                                    alarm);
         }
-        return new EpicsSystemVariable<List<Long>>(name,
-                                                    new CssValueType<List<Long>>(Lists.newArrayList(Longs.asList(values))),
+        return new EpicsSystemVariable<List<String>>(name,
+                                                    new CssValueType<List<String>>(Lists.newArrayList(values)),
                                                     ControlSystem.EPICS_DEFAULT,
                                                     timestamp,
                                                     alarm);

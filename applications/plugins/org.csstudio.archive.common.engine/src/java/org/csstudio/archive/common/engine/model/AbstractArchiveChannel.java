@@ -25,14 +25,13 @@ import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
-import org.csstudio.domain.desy.epics.types.EpicsIMetaDataTypeSupport;
-import org.csstudio.domain.desy.epics.types.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
@@ -135,8 +134,7 @@ public abstract class AbstractArchiveChannel<V,
                 try {
                     if (!_connected) {
                         handleConnectInfo(_id, pv.isConnected(), pv.getStateInfo());
-                        //final IMetaData metaData = pv.getValue().getMetaData();
-                        final IMetaData metaData = ValueFactory.createNumericMetaData(15.0, 20.0, 1.0, 1.0, 1.0, 1.0, 1, "foo");
+                        final IMetaData metaData = pv.getValue().getMetaData();
                         if (metaData != null) {
                             final EpicsMetaData data = EpicsIMetaDataTypeSupport.toMetaData(metaData,
                                                                                            _typeClass);

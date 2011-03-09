@@ -27,6 +27,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
@@ -173,11 +174,11 @@ public class EpicsSystemVariableSupportUnitTest {
 
     @Test
     public void testEpicsEnumTripleCollection() throws TypeSupportException {
-        final IAlarmSystemVariable<Collection<EpicsEnumTriple>> cssVal =
-            new EpicsSystemVariable<Collection<EpicsEnumTriple>>("NONE",
-                                                                 new CssValueType<Collection<EpicsEnumTriple>>(
-                                                                         Lists.newArrayList(EpicsEnumTriple.createInstance(Integer.valueOf(1), "ON", null),
-                                                                                            EpicsEnumTriple.createInstance(Integer.valueOf(0), "OFF", null))),
+        final IAlarmSystemVariable<Collection<EpicsEnum>> cssVal =
+            new EpicsSystemVariable<Collection<EpicsEnum>>("NONE",
+                                                                 new CssValueType<Collection<EpicsEnum>>(
+                                                                         Lists.newArrayList(EpicsEnum.createInstance(Integer.valueOf(1), "ON", null),
+                                                                                            EpicsEnum.createInstance(Integer.valueOf(0), "OFF", null))),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.buildFromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));

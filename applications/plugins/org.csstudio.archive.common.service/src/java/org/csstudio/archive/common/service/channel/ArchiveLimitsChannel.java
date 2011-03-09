@@ -19,44 +19,50 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.types;
+package org.csstudio.archive.common.service.channel;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.epics.alarm.EpicsGraphicsData;
-import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
 
-final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
+/**
+ * Archive channel with display ranges.
+ *
+ * @author bknerr
+ * @since Mar 7, 2011
+ * @param <V> the basic value type (comparable)
+ */
+public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends ArchiveChannel {
 
-    @Nonnull
-    private Byte toByte(final double d) {
-        return Byte.valueOf(Double.valueOf(d).byteValue());
-    }
+    private final Limits<V> _limits;
+
     /**
      * Constructor.
+     * CHECKSTYLE OFF: ParameterNumber
      */
-    public ByteConversionSupport() {
-        super(Byte.class);
+    public ArchiveLimitsChannel(@Nonnull final ArchiveChannelId id,
+                                @Nonnull final String name,
+                                @Nonnull final String type,
+                                @Nonnull final ArchiveChannelGroupId grpId,
+                                @Nullable final TimeInstant ltstTimestamp,
+                                @Nonnull final IArchiveControlSystem system,
+                                @Nullable final V lo,
+                                @Nullable final V hi) {
+        // CHECKSTYLE  ON : ParameterNumber
+        super(id, name, type, grpId, ltstTimestamp, system);
+        _limits = Limits.create(lo, hi);
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final INumericMetaData numData = checkAndConvert(data, Byte.class);
-        final EpicsGraphicsData<Byte> gr =
-            new EpicsGraphicsData<Byte>(Limits.<Byte>create(toByte(numData.getAlarmLow()),
-                                                            toByte(numData.getAlarmHigh())),
-                                        Limits.<Byte>create(toByte(numData.getWarnLow()),
-                                                            toByte(numData.getWarnHigh())),
-                                        Limits.<Byte>create(toByte(numData.getDisplayLow()),
-                                                            toByte(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+    @Nonnull
+    public Limits<V> getDisplayLimits() {
+        return _limits;
     }
 }
