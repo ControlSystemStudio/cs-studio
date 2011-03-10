@@ -28,31 +28,29 @@ package org.csstudio.archive.sdds.server.command;
  * @author Markus Moeller
  *
  */
-public class CommandNotImplementedException extends Exception
-{
-    /** Generated serial version id */
+public class CommandNotImplementedException extends Exception {
+    
+	/** Generated serial version id */
     private static final long serialVersionUID = 2561479410758729903L;
 
     /**
      * 
      */
-    public CommandNotImplementedException()
-    {
+    public CommandNotImplementedException() {
+    	super();
     }
 
     /**
      * @param message
      */
-    public CommandNotImplementedException(String message)
-    {
+    public CommandNotImplementedException(String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public CommandNotImplementedException(Throwable cause)
-    {
+    public CommandNotImplementedException(Throwable cause) {
         super(cause);
     }
 
@@ -60,8 +58,7 @@ public class CommandNotImplementedException extends Exception
      * @param message
      * @param cause
      */
-    public CommandNotImplementedException(String message, Throwable cause)
-    {
+    public CommandNotImplementedException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -36,7 +36,8 @@ public class InvalidCommand extends ServerCommand
     /* (non-Javadoc)
      * @see org.csstudio.archive.jaapi.server.command.ServerCommand#execute(byte[], long, byte[], org.csstudio.archive.jaapi.server.util.LongValue)
      */
-    public void execute(RawData buffer, RawData receivedValue, IntegerValue resultLength) throws ServerCommandException, CommandNotImplementedException
+    @Override
+	public void execute(RawData buffer, RawData receivedValue, IntegerValue resultLength) throws ServerCommandException, CommandNotImplementedException
     {
         throw new ServerCommandException("Invalid command");
     }

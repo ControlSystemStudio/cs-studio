@@ -112,16 +112,16 @@ public class Server extends Thread
      * @throws IOException 
      * 
      */
-    private void initSocketConnection(int port, int timeout) throws IOException
-    {
+    private void initSocketConnection(int port, int timeOut) throws IOException {
         serverSocket = new ServerSocket(port);
-        serverSocket.setSoTimeout(timeout);
+        serverSocket.setSoTimeout(timeOut);
     }
     
     /**
      * 
      */
-    public void run()
+    @Override
+	public void run()
     {
         Socket socket = null;
         ClientRequest request = null;

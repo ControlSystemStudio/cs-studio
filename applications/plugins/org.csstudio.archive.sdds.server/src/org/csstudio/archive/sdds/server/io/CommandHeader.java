@@ -110,7 +110,8 @@ public class CommandHeader
     /**
      * @see java.lang.Object#toString()
      */
-    public String toString()
+    @Override
+	public String toString()
     {
         String result = "CommandHeader{size=" + packetSize + ",command=" + commandTag + ",error=" + error + ",AAPI version=" + Integer.toHexString(aapiVersion) + "}";
         

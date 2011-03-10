@@ -130,7 +130,8 @@ public class SddsDataReader implements Runnable {
     /**
      * 
      */
-    public void run() {
+    @Override
+	public void run() {
         
         EpicsRecordData prevData = null;
         EpicsRecordData lastData = null;

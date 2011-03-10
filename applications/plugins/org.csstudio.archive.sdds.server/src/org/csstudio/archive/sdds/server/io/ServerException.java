@@ -28,31 +28,29 @@ package org.csstudio.archive.sdds.server.io;
  * @author Markus Moeller
  *
  */
-public class ServerException extends Exception
-{
-    /** Generated serial version id */
+public class ServerException extends Exception {
+    
+	/** Generated serial version id */
     private static final long serialVersionUID = 5464818454394146301L;
 
     /**
      * 
      */
-    public ServerException()
-    {
+    public ServerException() {
+    	super();
     }
 
     /**
      * @param message
      */
-    public ServerException(String message)
-    {
+    public ServerException(String message) {
         super(message);
     }
 
     /**
      * @param cause
      */
-    public ServerException(Throwable cause)
-    {
+    public ServerException(Throwable cause) {
         super(cause);
     }
 
@@ -60,8 +58,7 @@ public class ServerException extends Exception
      * @param message
      * @param cause
      */
-    public ServerException(String message, Throwable cause)
-    {
+    public ServerException(String message, Throwable cause) {
         super(message, cause);
     }
 }

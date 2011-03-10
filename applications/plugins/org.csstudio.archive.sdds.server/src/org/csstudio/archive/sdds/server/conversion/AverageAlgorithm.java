@@ -38,8 +38,8 @@ public class AverageAlgorithm implements ConversionAlgorithm
      * 
      * @throws ServerCommandException
      */
-    public AverageAlgorithm()
-    {
+    public AverageAlgorithm() {
+    	// Can be empty
     }
     
     /* (non-Javadoc)

@@ -91,7 +91,8 @@ public enum SDDSType {
     /**
      * 
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return typeName;
     }
 }
