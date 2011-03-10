@@ -30,3 +30,4 @@ Export-Package: org.csstudio.ams,
  org.csstudio.ams.gui,
  org.csstudio.ams.internal,
  org.csstudio.ams.internal.pages
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

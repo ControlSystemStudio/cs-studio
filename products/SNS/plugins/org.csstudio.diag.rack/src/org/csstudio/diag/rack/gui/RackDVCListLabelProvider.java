@@ -19,12 +19,14 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public class RackDVCListLabelProvider extends BaseLabelProvider implements ITableLabelProvider, ITableColorProvider
 {
+    @Override
     public Image getColumnImage(Object element, int columnIndex)
     {
         // No image
         return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex)
     {
         RackList device = (RackList) element;
@@ -45,6 +47,7 @@ public class RackDVCListLabelProvider extends BaseLabelProvider implements ITabl
         }
     }
 
+    @Override
     public Color getBackground(Object element, int columnIndex)
     {
         RackList device = (RackList) element;
@@ -53,6 +56,7 @@ public class RackDVCListLabelProvider extends BaseLabelProvider implements ITabl
         return null;
     }
 
+    @Override
     public Color getForeground(Object element, int columnIndex)
     {
          return null;

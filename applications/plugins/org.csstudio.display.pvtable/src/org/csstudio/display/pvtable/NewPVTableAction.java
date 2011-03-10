@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable;
 
 import org.csstudio.display.pvtable.ui.editor.PVTableEditor;
@@ -11,17 +18,21 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class NewPVTableAction implements IWorkbenchWindowActionDelegate
 {
-	public void init(IWorkbenchWindow window)
+	@Override
+    public void init(IWorkbenchWindow window)
 	{ /* NOP */ }
 
-	public void selectionChanged(IAction action, ISelection selection)
+	@Override
+    public void selectionChanged(IAction action, ISelection selection)
     { /* NOP */ }
 
-	public void run(IAction action)
+	@Override
+    public void run(IAction action)
 	{
 		PVTableEditor.createPVTableEditor();
 	}
 
-	public void dispose()
+	@Override
+    public void dispose()
     { /* NOP */ }
 }

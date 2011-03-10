@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
 import java.io.FileInputStream;
@@ -5,7 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.CompactModeAction;
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
@@ -19,7 +28,6 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -66,9 +74,9 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 @SuppressWarnings("restriction")
 public class OPIRunner extends EditorPart {
-	
+
 	private DisplayModel displayModel;
-	
+
 	private DisplayOpenManager displayOpenManager;
 
 	private PatchedScrollingGraphicalViewer viewer;
@@ -76,7 +84,7 @@ public class OPIRunner extends EditorPart {
 	private ActionRegistry actionRegistry;
 
 	public static final String ID = "org.csstudio.opibuilder.OPIRunner"; //$NON-NLS-1$
-	
+
 	public OPIRunner() {
 	}
 
@@ -87,7 +95,7 @@ public class OPIRunner extends EditorPart {
 	@Override
 	public void doSaveAs() {
 	}
-	
+
 
 	@Override
 	public void init(final IEditorSite site, IEditorInput input)
@@ -98,26 +106,26 @@ public class OPIRunner extends EditorPart {
 		try {
 			if(input instanceof IRunnerInput){
 				inputStream = ((IRunnerInput)input).getInputStream();
-				displayOpenManager = ((IRunnerInput)input).getDisplayOpenManager();					
+				displayOpenManager = ((IRunnerInput)input).getDisplayOpenManager();
 			}else
 				inputStream = getInputStream(input);
-			
+
 			displayModel = new DisplayModel();
-			
+
 			XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel);
 			displayModel.setOpiFilePath(getOPIFilePath());
 		}catch(Exception e) {
-			CentralLogger.getInstance().error(
-					this, "Failed to run file: " + input, e);
+		    OPIBuilderPlugin.getLogger().log(Level.WARNING,
+		            "Failed to run file: " + input, e); //$NON-NLS-1$
 			String message = input + " is not a correct OPI file!\n" + e;
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "File Open Error",
 					message);
 			ConsoleService.getInstance().writeError(message);
 			getSite().getPage().closeEditor(this, false);
 		}
-			
+
 		if(input instanceof IRunnerInput){
-			MacrosInput macrosInput = ((IRunnerInput)input).getMacrosInput();			
+			MacrosInput macrosInput = ((IRunnerInput)input).getMacrosInput();
 			if(macrosInput != null){
 				macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
 				displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
@@ -127,49 +135,49 @@ public class OPIRunner extends EditorPart {
 			viewer.setContents(displayModel);
 			setPartName(displayModel.getName());
 		}
-		
+
 		getActionRegistry().registerAction(new PrintDisplayAction(this));
 		getActionRegistry().registerAction(new FullScreenAction(this));
 		getActionRegistry().registerAction(new CompactModeAction(this));
 		if(SendToElogAction.isElogAvailable())
 			getActionRegistry().registerAction(new SendToElogAction(this));
 		getActionRegistry().registerAction(new SendEMailAction(this));
-		
-		
+
+
 		//hide close button
 		if(!displayModel.isShowCloseButton()){
 			Display.getCurrent().asyncExec(new Runnable() {
-				
+
 				public void run() {
-					PartPane currentEditorPartPane = ((PartSite) site).getPane(); 
-					PartStack stack = currentEditorPartPane.getStack(); 
-					Control control = stack.getControl(); 
-					if (control instanceof CTabFolder) { 
-						CTabFolder tabFolder = (CTabFolder) control; 
-						tabFolder.getSelection().setShowClose(false);			 
+					PartPane currentEditorPartPane = ((PartSite) site).getPane();
+					PartStack stack = currentEditorPartPane.getStack();
+					Control control = stack.getControl();
+					if (control instanceof CTabFolder) {
+						CTabFolder tabFolder = (CTabFolder) control;
+						tabFolder.getSelection().setShowClose(false);
 					}
 				}
 			});
-		}		
-	}	
-	
+		}
+	}
+
 	private IPath getOPIFilePath() {
 		IEditorInput editorInput = getEditorInput();
 		if (editorInput instanceof FileEditorInput) {
-			
-			return ((FileEditorInput) editorInput).getFile().getFullPath();						
-			
+
+			return ((FileEditorInput) editorInput).getFile().getFullPath();
+
 		} else if (editorInput instanceof FileStoreEditorInput) {
 			return URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());			
+					.getURI());
 		}else if (editorInput instanceof IRunnerInput)
 			return ((IRunnerInput)editorInput).getPath();
 		return null;
 	}
 	/**
 	 * Returns a stream which can be used to read this editors input data.
-	 * @param editorInput 
-	 * 
+	 * @param editorInput
+	 *
 	 * @return a stream which can be used to read this editors input data
 	 */
 	private InputStream getInputStream(IEditorInput editorInput) {
@@ -193,7 +201,7 @@ public class OPIRunner extends EditorPart {
 
 		return result;
 	}
-	
+
 
 	@Override
 	public boolean isDirty() {
@@ -208,15 +216,15 @@ public class OPIRunner extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		viewer = new PatchedScrollingGraphicalViewer();
-		
+
 		ScalableFreeformRootEditPart root = new PatchedScalableFreeformRootEditPart(){
-			
-			//In Run mode, clicking the Display or container should de-select all widgets. 
+
+			//In Run mode, clicking the Display or container should de-select all widgets.
 			@Override
 			public DragTracker getDragTracker(Request req) {
 				return new DragEditPartsTracker(this);
 			}
-			
+
 			@Override
 			public boolean isSelectable() {
 				return false;
@@ -225,34 +233,34 @@ public class OPIRunner extends EditorPart {
 		viewer.createControl(parent);
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
-		
+
 		//viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
 		//viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
-		
+
 		//this will make viewer as a selection provider
 		EditDomain editDomain = new DefaultEditDomain(this){
-			
+
 		@Override
 		public void loadDefaultTool() {
 			setActiveTool(new RuntimePatchedSelectionTool());
 		}
-			
+
 		};
 		editDomain.addViewer(viewer);
-		
+
 		//connect the CSS menu
-		ContextMenuProvider cmProvider = 
+		ContextMenuProvider cmProvider =
 			new OPIRunnerContextMenuProvider(viewer);
 		viewer.setContextMenu(cmProvider);
-		
+
 		getSite().registerContextMenu(cmProvider, viewer);
-		
+
 		viewer.setContents(displayModel);
-		
+
 		setPartName(displayModel.getName());
 		// configure zoom actions
 		final ZoomManager zm = root.getZoomManager();
-		
+
 		if (zm != null) {
 		List<String> zoomLevels = new ArrayList<String>(3);
 		zoomLevels.add(ZoomManager.FIT_ALL);
@@ -261,7 +269,7 @@ public class OPIRunner extends EditorPart {
 		zm.setZoomLevelContributions(zoomLevels);
 
 		zm.setZoomLevels(createZoomLevels());
-		
+
 		IAction zoomIn = new ZoomInAction(zm);
 		IAction zoomOut = new ZoomOutAction(zm);
 		getActionRegistry().registerAction(zoomIn);
@@ -272,13 +280,13 @@ public class OPIRunner extends EditorPart {
 		viewer.setProperty(
 				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
 				MouseWheelZoomHandler.SINGLETON);
-		
+
 		//auto zoom
 		if(displayModel.isAutoZoomToFitAll()){
 			viewer.getControl().addControlListener(new ControlAdapter() {
 				@Override
 				public void controlResized(ControlEvent e) {
-					Point size = ((FigureCanvas)e.getSource()).getSize();					
+					Point size = ((FigureCanvas)e.getSource()).getSize();
 					if(size.x * size.y > 0)
 						zm.setZoomAsText(ZoomManager.FIT_ALL);
 				}
@@ -288,7 +296,7 @@ public class OPIRunner extends EditorPart {
 
 	/**
 	 * Create a double array that contains the pre-defined zoom levels.
-	 * 
+	 *
 	 * @return A double array that contains the pre-defined zoom levels.
 	 */
 	private double[] createZoomLevels() {
@@ -319,7 +327,7 @@ public class OPIRunner extends EditorPart {
 
 		return result;
 	}
-	
+
 	/**
 	 * Lazily creates and returns the action registry.
 	 * @return the action registry
@@ -329,16 +337,16 @@ public class OPIRunner extends EditorPart {
 			actionRegistry = new ActionRegistry();
 		return actionRegistry;
 	}
-	
+
 	@Override
 	public void setFocus() {
-		
+
 	}
-	
+
 	public DisplayModel getDisplayModel() {
 		return displayModel;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(Class adapter) {

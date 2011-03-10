@@ -11,8 +11,8 @@ import java.io.PrintStream;
 
 import org.csstudio.archivereader.SpreadsheetIterator;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
@@ -25,7 +25,7 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("nls")
 public class SpreadsheetExportJob extends PlainExportJob
 {
-    public SpreadsheetExportJob(final  Model model, 
+    public SpreadsheetExportJob(final  Model model,
             final ITimestamp start, final ITimestamp end, final Source source,
             final int optimize_count, final ValueFormatter formatter,
             final String filename,
@@ -48,7 +48,7 @@ public class SpreadsheetExportJob extends PlainExportJob
         for (int i=0; i<model.getItemCount(); ++i)
             out.print(Messages.Export_Delimiter + model.getItem(i).getName() + " " + formatter.getHeader());
         out.println();
-        
+
         // Create speadsheet interpolation
         final ValueIterator iters[] = new ValueIterator[model.getItemCount()];
         for (int i=0; i<model.getItemCount(); ++i)

@@ -13,5 +13,6 @@ Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reex
  org.junit;bundle-version="4.8.1",
  org.csstudio.utility.pvmanager;bundle-version="0.4.0"
 Export-Package: org.csstudio.domain.desy.epics.alarm,
- org.csstudio.domain.desy.epics.types
-Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
+ org.csstudio.domain.desy.epics.types,
+ org.csstudio.domain.desy.epics.typesupport
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr

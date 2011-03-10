@@ -10,9 +10,10 @@ package org.csstudio.platform.utility.rdb.internal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.utility.rdb.Activator;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Connect to a PostgreSQL-based RDB
@@ -29,7 +30,7 @@ public class PostgreSQL_RDB extends RDBUtil
      *  @param password ... password
      *  @throws Exception on error
      */
-    public PostgreSQL_RDB(final String url, final String user, final String password, 
+    public PostgreSQL_RDB(final String url, final String user, final String password,
     		final boolean autoReconnect) throws Exception
     {
         super(url, user, password, Dialect.PostgreSQL, autoReconnect);
@@ -49,16 +50,16 @@ public class PostgreSQL_RDB extends RDBUtil
         else
             connection = DriverManager.getConnection(url);
         // Basic database info
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        if (logger.isDebugEnabled())
+        final Logger logger = Activator.getLogger();
+        if (logger.isLoggable(Level.FINER))
         {
             final DatabaseMetaData meta = connection.getMetaData();
-            logger.debug("PostgreSQL connection: " + meta.getDatabaseProductName()
+            logger.finer("PostgreSQL connection: " + meta.getDatabaseProductName()
                             + " " + meta.getDatabaseProductVersion());
         }
         return connection;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected String getConnectionTestQuery()

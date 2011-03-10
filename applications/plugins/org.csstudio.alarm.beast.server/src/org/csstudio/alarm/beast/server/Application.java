@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.WorkQueue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -40,11 +40,15 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
+        // Initialize logging
+        LogConfigurator.configureFromPreferences();
+
+        // Display config info
         final String version = (String)
             context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
         final String config_name = Preferences.getAlarmTreeRoot();
-		CentralLogger.getInstance().getLogger(this).info(app_info +
+        Activator.getLogger().info(app_info +
             " started for '" + config_name + "' configuration");
         System.out.println(app_info);
         System.out.println("Configuration Root: " + config_name);

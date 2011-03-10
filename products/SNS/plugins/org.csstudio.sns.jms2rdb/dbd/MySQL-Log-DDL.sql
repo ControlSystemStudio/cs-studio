@@ -79,6 +79,22 @@ CREATE TABLE IF NOT EXISTS message_content
   value VARCHAR(100)
 );
 
+
+# NOTE:
+# MyISAM ignores forgeign keys, and the software will work fine
+# without them, but for the sake of completeness there should
+# be these foreign keys:
+#
+# Message content must point to a valid message entry:
+# message_content.message_id -> message.id
+#
+# Property ID must point to a defined message property
+# message_content.msg_property_type_id -> msg_property_type.id
+#
+# For performance reasons, you also want indices on
+# message.ID, message.datum, maybe more
+
+
 # Example Message with some elements
 INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');
 INSERT INTO message_content VALUES(3, 1, 3, NOW());

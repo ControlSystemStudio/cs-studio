@@ -28,7 +28,7 @@ public class ChannelGroupHelper
     {
         this.archive = archive;
     }
-    
+
     /** Add a channel group description.
      *  <p>
      *  The group must not previously exist for this engine!
@@ -113,7 +113,8 @@ public class ChannelGroupHelper
             // files that were hard to compare
             Arrays.sort(grp_arr, new Comparator<ChannelGroupConfig>()
             {
-                public int compare(ChannelGroupConfig a, ChannelGroupConfig b)
+                @Override
+                public int compare(final ChannelGroupConfig a, final ChannelGroupConfig b)
                 {
                     return a.getName().compareTo(b.getName());
                 }

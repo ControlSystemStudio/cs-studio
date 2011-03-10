@@ -1,19 +1,26 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Local PV.
  *  <p>
  *  Provides updates based on changes of the underlying Value,
  *  which can be set by writing to this PV.
  *  Can hold numeric (double) or String value.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -44,7 +51,7 @@ public class LocalPV extends BasicPV<Value>
     {
 		final ISeverity OK = ValueFactory.createOKSeverity();
 	    final ITimestamp now = TimestampFactory.now();
-		IValue result = null;	
+		IValue result = null;
     	if(newValue instanceof Double[]){
     		double[] data = new double[((Double [])newValue).length];
     		int i=0;
@@ -59,7 +66,7 @@ public class LocalPV extends BasicPV<Value>
     		result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
     				meta, Quality.Original, new double[]{(Double)newValue});
     	}
-    	if(result != null){    		
+    	if(result != null){
     		value.setValue(result);
     		return;
     	}
@@ -67,6 +74,7 @@ public class LocalPV extends BasicPV<Value>
     }
 
     /** {@inheritDoc} */
+    @Override
     public synchronized void start() throws Exception
     {
         running = true;
@@ -80,6 +88,7 @@ public class LocalPV extends BasicPV<Value>
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         value.removeListener(this);

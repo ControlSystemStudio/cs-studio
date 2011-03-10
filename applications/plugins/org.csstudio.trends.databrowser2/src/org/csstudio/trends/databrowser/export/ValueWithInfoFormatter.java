@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.export;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.IValue.Format;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Format;
 import org.csstudio.trends.databrowser.Messages;
 
 /** Format an IValue to show the value as well as the severity/status

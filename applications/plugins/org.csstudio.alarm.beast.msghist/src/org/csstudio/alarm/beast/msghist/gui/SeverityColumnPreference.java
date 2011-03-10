@@ -33,10 +33,10 @@ public class SeverityColumnPreference implements DisposeListener
 	/** Default setting: ERROR is red, ... */
 	private static final String DEFAULT_SETTING =
 	    "INVALID,50,50,50|FATAL,255,0,10|ERROR,255,0,0|MAJOR,255,0,0|MINOR,255,255,0|WARN,255,255,0|INFO,130,130,255|NO_ALARM,0,255,0";
-	    
+
 	/** Mapping from a severity string to a color */
 	private final HashMap<String, Color> color_map = new HashMap<String, Color>();
-	
+
 	/** Constructor, reads severity color preferences.
 	 *  @param parent Used to dispose colors via DisposeListener
      *  @throws Exception on error
@@ -87,7 +87,8 @@ public class SeverityColumnPreference implements DisposeListener
     /** Dispose all colors.
      *  @see DisposeListener
      */
-	public void widgetDisposed(DisposeEvent e)
+	@Override
+    public void widgetDisposed(final DisposeEvent e)
 	{
 		final Iterator<Color> colors = color_map.values().iterator();
 		while (colors.hasNext())

@@ -4,11 +4,11 @@
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -65,7 +65,6 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             updateValue();
         }
         @Override
-        @SuppressWarnings("nls")
         public void pvValueUpdate(PV pv)
         {
             try
@@ -77,8 +76,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e);
+                Plugin.getLogger().log(Level.SEVERE, "PV Listener error" , e); //$NON-NLS-1$
             }
         }
     };
@@ -103,8 +101,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV Type Listener error" , e); //$NON-NLS-1$
             }
         }
     };
@@ -146,8 +143,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("pvValueUpdate", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV Link Listener error" , e); //$NON-NLS-1$
             }
         }
     };
@@ -179,9 +175,10 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         else
             record_name = pv_name;
 
-        CentralLogger.getInstance().getLogger(this).debug(
-                "New Tree item '" + pv_name //$NON-NLS-1$
-                + "', record name '" + record_name + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+        Plugin.getLogger().log(Level.FINE,
+                "New Tree item {0}, record name {1}", //$NON-NLS-1$
+                new Object[] { pv_name, record_name});
+
         // Avoid loops.
         // If the model already contains an entry with this name,
         // we simply display this new item, but we won't
@@ -210,15 +207,13 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("PV creation error", e); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "PV creation error" , e); //$NON-NLS-1$
         }
         // Get type from 'other', previously used PV or via CA
         if (other != null)
         {
             type = other.type;
-            CentralLogger.getInstance().getLogger(this)
-                .debug("Known item, not traversing inputs (again)"); //$NON-NLS-1$
+            Plugin.getLogger().fine("Known item, not traversing inputs (again)"); //$NON-NLS-1$
         }
         else
         {
@@ -230,8 +225,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             }
             catch (Exception e)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("PV creation error", e); //$NON-NLS-1$
+                Plugin.getLogger().log(Level.SEVERE, "PV.RTYP creation error" , e); //$NON-NLS-1$
             }
         }
     }
@@ -261,9 +255,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
-            CentralLogger.getInstance().getLogger(this)
-                .error("Cannot create PV '" + name + "'", ex);
+            Plugin.getLogger().log(Level.SEVERE, "Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
@@ -373,8 +365,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateType()
     {
-        CentralLogger.getInstance().getLogger(this)
-            .debug(pv_name + " received type '" + type + "'");
+        Plugin.getLogger().log(Level.FINE,
+                "{0} received type {1}", new Object[] { pv_name, type });
         Display.getDefault().asyncExec(new Runnable()
         {
             @Override
@@ -393,8 +385,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
 
                 if (links_to_read.size() <= 0)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .error("Unknown record type '" + type + "'");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} has unknown record type {1}", new Object[] { pv_name, type });
                     return;
                 }
                 getNextLink();
@@ -421,8 +413,7 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
         }
         catch (Exception e)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("PV creation error", e);
+            Plugin.getLogger().log(Level.SEVERE, "PV." + field + " creation error" , e); //$NON-NLS-1$
         }
     }
 
@@ -430,8 +421,9 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     @SuppressWarnings("nls")
     private void updateLink()
     {
-        CentralLogger.getInstance().getLogger(this)
-            .debug(link_pv.getName() + " received '" + link_value + "'");
+        Plugin.getLogger().log(Level.FINE,
+                "{0} received {1}", new Object[] { link_pv.getName(), link_value });
+
         Display.getDefault().asyncExec(new Runnable()
         {
             @Override
@@ -439,8 +431,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
             {
                 if (link_pv == null)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .debug(pv_name + " already disposed");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} already disposed", pv_name);
                     return;
                 }
                 disposeLinkPV();
@@ -449,8 +441,8 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
                 // list of links to read
                 if (links_to_read.size() <= 0)
                 {
-                    CentralLogger.getInstance().getLogger(this)
-                        .debug(link_pv.getName() + " update without active link?");
+                    Plugin.getLogger().log(Level.FINE,
+                            "{0} update without active link?",link_pv.getName());
                     return;
                 }
                 final String field = links_to_read.remove(0);

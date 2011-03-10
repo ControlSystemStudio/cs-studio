@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.export;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
 
@@ -23,15 +23,15 @@ public class MatlabQualityHelperTest
     public void testMatlabQualityHelper()
     {
         final MatlabQualityHelper quality_helper = new MatlabQualityHelper();
-        
+
         // Assume quality codes are assigned first-come, so the first one is 0
         assertEquals(0, quality_helper.getQualityCode(ValueFactory.createOKSeverity(), "OK"));
         // then 1
         assertEquals(1, quality_helper.getQualityCode(ValueFactory.createInvalidSeverity(), "READ"));
-        
+
         // Looking for the same severity/status again gives the same code
         assertEquals(1, quality_helper.getQualityCode(ValueFactory.createInvalidSeverity(), "READ"));
-        
+
         // New code
         assertEquals(2, quality_helper.getQualityCode(ValueFactory.createInvalidSeverity(), "WRITE"));
 

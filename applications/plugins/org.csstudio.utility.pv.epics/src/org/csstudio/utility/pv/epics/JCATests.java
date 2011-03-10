@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.Channel;
@@ -19,7 +26,7 @@ import java.util.Date;
  *  <p>
  *  Can be run from the command line within the plugin directory
  *  like this:
- *  
+ *
  *  OS X:
  *  DYLD_LIBRARY_PATH=../org.csstudio.platform.libs.epics/lib/macosx/x86 \
  *  java -classpath ../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar:bin \
@@ -29,7 +36,7 @@ import java.util.Date;
  *  LD_LIBRARY_PATH=../org.csstudio.platform.libs.epics/lib/linux/x86 \
  *  java -classpath ../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar:bin \
  *   org.csstudio.utility.pv.epics.JCATests
- * 
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,7 +44,7 @@ public class JCATests
 {
     private static final String PV_NAME = "RFQ_Vac:Pump3:Pressure";
     private static final String ADDR_LIST = "160.91.230.38";
-    
+
     // Small number of test runs allows to check for "12 blocks" in valgrind output
     // to locate blocks lost in every run of the loop.
     // Bit number allows longer test.
@@ -47,12 +54,12 @@ public class JCATests
     private static final boolean CLEANUP = false;
     private static JCALibrary jca = null;
     private static Context jca_context = null;
-    
+
     final private static DateFormat format =
         new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    
+
     private static int values = 0;
-    
+
     /** Monitor given PV for some time. */
     static private void run(final String pv_name) throws Exception
     {
@@ -61,13 +68,14 @@ public class JCATests
             jca = JCALibrary.getInstance();
         if (jca_context == null)
             jca_context= jca.createContext(JCALibrary.JNI_THREAD_SAFE);
-                
+
         // Connect
         final Channel channel = jca_context.createChannel(pv_name);
 
         // Subscribe
         MonitorListener monitor = new MonitorListener()
         {
+            @Override
             public void monitorChanged(MonitorEvent event)
             {
             	++values;
@@ -81,7 +89,7 @@ public class JCATests
         };
         // When _not_ adding (and later clearing) a monitor, all was fine
         // over time.
-        final Monitor subscription = channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);        
+        final Monitor subscription = channel.addMonitor(DBRType.TIME_DOUBLE, 1, 1, monitor);
         jca_context.flushIO();
 
         // Run
@@ -114,7 +122,7 @@ public class JCATests
         final double free = Runtime.getRuntime().freeMemory() / MB;
         final double total = Runtime.getRuntime().totalMemory() / MB;
         final double max = Runtime.getRuntime().maxMemory() / MB;
-        
+
         System.out.format("%s = Run %d = %d values = JVM Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
                 format.format(new Date()), run, values, max, free, 100.0*free/max, total, 100.0*total/max);
     }
@@ -123,7 +131,7 @@ public class JCATests
     {
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", ADDR_LIST);
         System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "true");
-     
+
         try
         {
 	        for (int i=0; i<TESTRUNS; ++i)

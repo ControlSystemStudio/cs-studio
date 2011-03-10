@@ -8,16 +8,17 @@
 package org.csstudio.alarm.beast.annunciator.model;
 
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.beast.annunciator.Activator;
 
 /** SpeechPriorityQueue class which implements a PriorityQueue but
  *  changes the add and poll routines.
  *  It uses the PriorityQueues size and clear routines.
- *  
+ *
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 1/29/09
  */
 public class SpeechPriorityQueue
@@ -32,7 +33,7 @@ public class SpeechPriorityQueue
      */
     final private PriorityQueue<AnnunciationMessage> queue =
         new PriorityQueue<AnnunciationMessage>();
-   
+
     /** Add item to the queue and notify everyone.
      *  @param severity Severity of the message
      *  @param message Message text
@@ -47,10 +48,10 @@ public class SpeechPriorityQueue
             queue.notifyAll();
         }
     }
-   
+
     /** @return queue size. */
     public int size()
-    { 
+    {
         synchronized (queue)
         {
             return queue.size();
@@ -59,28 +60,29 @@ public class SpeechPriorityQueue
 
     /** Clear the queue. */
     public void clear()
-    { 
+    {
         synchronized (queue)
         {
             queue.clear();
         }
     }
-   
+
     /** Poll the queue and return the next available MessageWithSeverity
      *  or block while none is available.
      *  <p>
      *  This uses the <code>Queue</code> sense of "poll" which
      *  checks for an available item and actually removes it from the queue.
-     *  
+     *
      *  @return Next available item, removed from the queue.
      */
+    @SuppressWarnings("nls")
     public AnnunciationMessage poll()
     {
         synchronized (queue)
         {
             while (true)
             {
-                AnnunciationMessage item = queue.poll();
+                final AnnunciationMessage item = queue.poll();
                 if (item != null)
                     return item;
                 // No item available? Wait, then check again
@@ -90,8 +92,8 @@ public class SpeechPriorityQueue
                 }
                 catch (InterruptedException e)
                 {
-                    // Log errors in CSS log
-                    CentralLogger.getInstance().getLogger(this).warn(e);
+                    // Log errors
+                    Activator.getLogger().log(Level.WARNING, "Message queue interrupted", e);
                 }
             }
         }

@@ -1,35 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /** The main plugin class to be used in the desktop.
- * 
+ *
  *  @author Kay Kasemir
  */
-public class Plugin extends AbstractCssUiPlugin
+@SuppressWarnings("nls")
+public class Plugin extends AbstractUIPlugin
 {
     /** The plug-in ID */
-    final public static String ID = "org.csstudio.display.pvtable"; //$NON-NLS-1$
+    final public static String ID = "org.csstudio.display.pvtable";
 
     /** File extension for config. files */
-    final public static String FileExtension = "css-pvtable"; //$NON-NLS-1$
-    
-    /** Lazily initialized Log4j Logger */
-    private static Logger log = null;
-    
+    final public static String FileExtension = "css-pvtable";
+
+    /** Logger */
+    final private static Logger logger = Logger.getLogger(ID);
+
     /** The shared instance */
     private static Plugin plugin;
-    
+
     /** The constructor. */
     public Plugin()
     {
         if (plugin != null)
-            throw new IllegalStateException("Plugin is singleton"); //$NON-NLS-1$
+            throw new IllegalStateException("Plugin is singleton");
         plugin = this;
     }
 
@@ -38,30 +45,19 @@ public class Plugin extends AbstractCssUiPlugin
     {
         return plugin;
     }
-    
-    /** @see AbstractCssUiPlugin */
-    @Override
-    public String getPluginId()
-    {   return ID;  }
-    
-    /** @see AbstractCssUiPlugin */
-    @Override
-    protected void doStart(BundleContext context) throws Exception
-    { /* NOP */ }
 
-    /** @see AbstractCssUiPlugin */
     @Override
-    protected void doStop(BundleContext context) throws Exception
+    public void start(BundleContext context) throws Exception
     {
-        plugin = null;
+        super.start(context);
+        plugin = this;
     }
 
-    /** @return Log4j Logger */
+
+    /** @return Logger for plugin ID */
     public static Logger getLogger()
     {
-        if (log == null) // Also works with plugin==null during unit tests
-            log = CentralLogger.getInstance().getLogger(plugin);
-        return log;
+        return logger;
     }
 
     /** @return Returns an image descriptor for the image file at the given plug-in

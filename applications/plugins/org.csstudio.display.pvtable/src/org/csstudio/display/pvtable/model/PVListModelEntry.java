@@ -1,9 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.Plugin;
@@ -15,9 +21,9 @@ import org.eclipse.core.runtime.PlatformObject;
 
 /**
  * Implementation of the PVListEntry as used by the PVListModel.
- * 
+ *
  * @see PVListModel
- * 
+ *
  * @author Kay Kasemir, Kunal Shroff
  */
 public class PVListModelEntry extends PlatformObject implements PVListEntry {
@@ -43,10 +49,12 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         new_values = 0;
 
         pv_listener = new PVListener() {
+            @Override
             public void pvValueUpdate(PV pv) {
                 addNewValue();
             }
 
+            @Override
             public void pvDisconnected(PV pv) {
                 addNewValue(); // handled the same way: mark for redraw
             }
@@ -55,30 +63,37 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
 
     /** @return PV for the given name */
     @SuppressWarnings("nls")
-    private PV createPV(final String name) {
-        try {
+    private PV createPV(final String name)
+    {
+        try
+        {
             return PVFactory.createPV(name);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Plugin.getLogger().error("Cannot create PV '" + name + "'", ex);
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.SEVERE, "Cannot create PV '" + name + "'", ex);
         }
         return null;
     }
 
     /** @see org.csstudio.platform.model.IProcessVariable */
+    @Override
     public String getName() {
         return pv.getName();
     }
 
     /** @see org.csstudio.platform.model.IProcessVariable */
+    @Override
     public final String getTypeId() {
         return IProcessVariable.TYPE_ID;
     }
 
+    @Override
     public boolean isDisposed() {
         return pv == null;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
@@ -87,18 +102,22 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         selected = new_state;
     }
 
+    @Override
     public PV getPV() {
         return pv;
     }
 
+    @Override
     public SavedValue getSavedValue() {
         return saved_value;
     }
 
+    @Override
     public PV getReadbackPV() {
         return readback_pv;
     }
 
+    @Override
     public SavedValue getSavedReadbackValue() {
         return saved_readback_value;
     }
@@ -148,7 +167,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
 
     /**
      * Restore values from snapshot.
-     * 
+     *
      * @return Returns <code>false</code> if the entry is not selected.
      */
     public boolean restore() throws Exception {
@@ -188,6 +207,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         return result;
     }
 
+    @SuppressWarnings("nls")
     public String toXML() {
         StringWriter buf = new StringWriter();
         PrintWriter pw = new PrintWriter(buf);

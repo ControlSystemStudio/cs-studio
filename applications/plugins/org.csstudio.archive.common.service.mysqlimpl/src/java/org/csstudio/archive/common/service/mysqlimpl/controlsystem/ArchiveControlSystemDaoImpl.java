@@ -23,19 +23,16 @@ package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 import com.google.common.collect.Maps;
@@ -54,7 +51,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
 
     private final String _selectCSByIdStmt = "SELECT name,type FROM " +
                                              getDaoMgr().getDatabaseName() +
-                                             ".control_system WHERE id=?";
+                                             "." + TAB + " WHERE id=?";
 
 
     private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById = Maps.newHashMap();
@@ -62,8 +59,8 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     /**
      * Constructor.
      */
-    public ArchiveControlSystemDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveControlSystemDaoImpl() {
+        super();
     }
 
     /**
@@ -90,10 +87,8 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
                 _cacheById.put(id, cs);
                 return cs;
             }
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
+        } catch (final Exception e) {
+            handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
         }

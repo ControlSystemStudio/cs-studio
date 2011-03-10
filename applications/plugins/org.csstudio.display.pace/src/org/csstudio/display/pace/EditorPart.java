@@ -1,6 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pace;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.display.pace.gui.GUI;
@@ -10,7 +18,6 @@ import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.LogbookFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -74,7 +81,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
+            Activator.getLogger().log(Level.SEVERE, "Cannot start model", ex); //$NON-NLS-1$
         }
         parent.addDisposeListener(new DisposeListener()
         {

@@ -1,11 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.util.wizard;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.display.pvtable.Plugin;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -16,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -46,7 +53,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     private final String plugin_id;
     private final String editor_ID;
     private final String title, default_filename, extension, default_content;
-    
+
     private NewFileWizardPage page;
 
     private IStructuredSelection selection;
@@ -71,11 +78,12 @@ public class NewFileWizard extends Wizard implements INewWizard
     /** Remember selection from workbench to see if we can initialize from it.
      *  @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         this.selection = selection;
     }
-    
+
     /** Adding the page to the wizard. */
     @Override
     public void addPages()
@@ -95,6 +103,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         final String fileName = page.getFileName();
         IRunnableWithProgress op = new IRunnableWithProgress()
         {
+            @Override
             public void run(IProgressMonitor monitor)
                     throws InvocationTargetException
             {
@@ -165,6 +174,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         monitor.setTaskName(Messages.OpeningFile___);
         getShell().getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -195,8 +205,7 @@ public class NewFileWizard extends Wizard implements INewWizard
                 }
                 catch (Exception e)
                 {
-                    CentralLogger.getInstance().error(this,
-                                    Messages.CannotOpenEditor, e);
+                    Plugin.getLogger().log(Level.SEVERE, Messages.CannotOpenEditor, e);
                 }
             }
         });

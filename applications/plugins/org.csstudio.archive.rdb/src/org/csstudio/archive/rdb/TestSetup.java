@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+
 import org.csstudio.platform.test.TestDataProvider;
 import org.csstudio.platform.test.TestProviderException;
 
@@ -18,14 +18,16 @@ import org.csstudio.platform.test.TestProviderException;
 @SuppressWarnings("nls")
 public class TestSetup
 {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(TestSetup.class);
-
     private static TestDataProvider PROV;
-    static {
-        try {
+    static
+    {
+        try
+        {
             PROV = TestDataProvider.getInstance(Activator.ID);
-        } catch (final TestProviderException e) {
-            LOG.error("Test configuration file could not be loaded.");
+        }
+        catch (final TestProviderException ex)
+        {
+            Activator.getLogger().log(Level.SEVERE, "Test configuration file could not be loaded.", ex);
         }
     }
 

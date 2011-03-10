@@ -1,15 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
 import java.io.InputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.display.pvtable.Plugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,27 +27,27 @@ import org.w3c.dom.Element;
  *  But instead of passing them on right away to PVListModelListeners,
  *  it marks entries as changed and only invokes listeners from a periodic
  *  thread. This is meant to throttle the rate of GUI updates.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class PVListModel
 {
     private static final String file_header = "<pvtable version=\"1.0\">\n"; //$NON-NLS-1$
     private static final String file_tail = "</pvtable>\n"; //$NON-NLS-1$
-	private static final double DEFAULT_TOLERANCE = 0.001;    
+	private static final double DEFAULT_TOLERANCE = 0.001;
 
     private String description = ""; //$NON-NLS-1$
     private double tolerance = DEFAULT_TOLERANCE;
-    private boolean isRunning = false;    
-    
+    private boolean isRunning = false;
+
     /** The list of entries that's the "data" of this model. */
     private CopyOnWriteArrayList<PVListModelEntry> entries =
-        new CopyOnWriteArrayList<PVListModelEntry>();    
-    
+        new CopyOnWriteArrayList<PVListModelEntry>();
+
     /** The listeners to the structure of this model. */
     private CopyOnWriteArrayList<PVListModelListener> model_listeners
          = new CopyOnWriteArrayList<PVListModelListener>();
-    
+
     /** Thread that periodically checks for pending value redraws. */
     private PVListModelValueUpdateThread update_thread;
 
@@ -63,7 +69,7 @@ public class PVListModel
     /** @return Returns the current description. */
     public String getDescription()
     {   return description; }
-    
+
     /** Set a new tolerance. */
     public void setTolerance(double tolerance)
     {
@@ -88,7 +94,7 @@ public class PVListModel
     /** @return Returns <code>true</code> if this model has been disposed. */
     public boolean isDisposed()
     {   return entries == null;  }
-    
+
     /** Add a listener
      * @param listener The new listener
      */
@@ -96,7 +102,7 @@ public class PVListModel
     {
         model_listeners.addIfAbsent(listener);
     }
-    
+
     /** Remove a listener
      * @param listener The listener to remove
      */
@@ -104,11 +110,11 @@ public class PVListModel
     {
         model_listeners.remove(listener);
     }
-    
+
     /** @return Returns number of entries (rows) in model. */
     public int getEntryCount()
     {   return entries.size();  }
-    
+
     /** @return Returns entry (row). */
 	public PVListEntry getEntry(int i)
 	{
@@ -128,7 +134,7 @@ public class PVListModel
         for (PVListEntry e : entries)
             if (e.getPV().getName().equals(pv_name))
                 return;
-        
+
         PVListModelEntry entry = silentlyAddPV(true,
                         pv_name, new SavedValue(),
                         null, new SavedValue());
@@ -136,9 +142,9 @@ public class PVListModel
             entry.start();
         fireEntryAdded(entry);
 	}
-    
+
     /** Add PV without checking for duplicates and without informing listeners. */
-    private PVListModelEntry silentlyAddPV(boolean selected, 
+    private PVListModelEntry silentlyAddPV(boolean selected,
                     String pv_name, SavedValue saved_value,
                     String readback_name, SavedValue readback_value)
     {
@@ -160,7 +166,7 @@ public class PVListModel
         }
         removeEntry(i);
     }
-    
+
     /** Remove an entry. */
     private void removeEntry(int i)
     {
@@ -190,7 +196,7 @@ public class PVListModel
         entry.setSelected(new_state);
         fireEntriesChanged();
     }
-    
+
     @SuppressWarnings("nls")
     public void modifyReadbackPV(PVListEntry entry_to_change, String new_readback_name)
     {
@@ -221,7 +227,7 @@ public class PVListModel
         if (was_running)
             stop();
         entries.clear();
-        
+
         Exception error = null;
         try
         {
@@ -258,9 +264,9 @@ public class PVListModel
             }
             catch (Exception e)
             {
-                Plugin.getLogger().error("Period update", e);
+                Plugin.getLogger().log(Level.SEVERE, "Period update", e);
             }
-            
+
             // Get the <pvlist> entry
             Element pvlist = DOMHelper.findFirstElementNode(root_node
                     .getFirstChild(), "pvlist");
@@ -298,14 +304,14 @@ public class PVListModel
         if (error != null)
             throw error;
     }
-    
+
     /* Eclipse likes to deal with files as resources.
      * When we write files directly via java.io.File,
      * the workbench gets out of sync (needs 'refresh').
-     * 
+     *
      * However, the eclipse IFile can only create files
      * via create(InputStream ..) or setContents(InputStream, ...).
-     * 
+     *
      * How do we get this model as an InputStream?
      * Look at PipedOutputStream -> PipedInputStream?
      * That requires another thread (true?).
@@ -348,14 +354,14 @@ public class PVListModel
         for (PVListModelListener listener : model_listeners)
             listener.runstateChanged(true);
     }
-    
+
     /** @return Returns <code>true</code> if running.
      *  @see #start()
      *  @see #stop()
      */
     public boolean isRunning()
     {   return isRunning; }
-    
+
     /** Unsubscribe from PVs, stop updates. */
     public void stop()
     {
@@ -375,14 +381,14 @@ public class PVListModel
             entry.takeSnapshot();
         fireEntriesChanged();
     }
-    
+
     /** Restore values from snapshot. */
     public void restore() throws Exception
     {
         for (PVListModelEntry entry : entries)
             entry.restore();
     }
-    
+
     /** Send the entryAdded event */
     private void fireEntryAdded(PVListEntry entry)
     {

@@ -1,21 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /**The utility class help to parse text.
  * @author Xihui Chen
  *
  */
 public class TextUtil {
-	
-	 /**Parse a string to get the IValue from it. 
+
+	 /**Parse a string to get the IValue from it.
      * For example, an input of "0.12" will return a {@link IDoubleValue} with single double value;
      * an input of "1,2,3,4" will return a {@link IDoubleValue} with an array of double value;
      * an input of "hello" will return a {@link IStringValue}.
@@ -23,8 +32,9 @@ public class TextUtil {
      * @param metaData the meta data for the returned value. null to use default meta data.
      * @return the IValue
      */
+    @SuppressWarnings("nls")
     public static IValue parseValueFromString(String value_text, IMetaData metaData){
-    	IValue result;    	
+    	IValue result;
     	INumericMetaData meta;
         // Is the value a number?
         final ISeverity OK = ValueFactory.createOKSeverity();
@@ -34,7 +44,7 @@ public class TextUtil {
             final double dbl = Double.parseDouble(value_text);
             if(metaData == null || !(metaData instanceof INumericMetaData))
             	meta = ValueFactory.createNumericMetaData(dbl-1, dbl+1, 0, 0, 0, 0, 1, "a.u.");
-            else 
+            else
             	meta = (INumericMetaData) metaData;
             result = ValueFactory.createDoubleValue(now,
                 OK, OK.toString(), meta, Quality.Original,
@@ -53,14 +63,14 @@ public class TextUtil {
 				}
 				if(metaData == null || !(metaData instanceof INumericMetaData))
 		            meta = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, 1, "a.u.");
-	            else 
+	            else
 	            	meta = (INumericMetaData) metaData;
 				 result = ValueFactory.createDoubleValue(now,
 				         OK, OK.toString(), meta, Quality.Original, doubleArray);
 			} catch (NumberFormatException e) {
 				// Cannot parse number, assume string data type
 	            result = ValueFactory.createStringValue(now, OK, OK.toString(), Quality.Original, new String[] { value_text });
-			}        	
+			}
         }
         return result;
     }

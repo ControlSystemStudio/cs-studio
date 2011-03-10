@@ -1,11 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.eclipse.ui.PartInitException;
@@ -35,10 +43,10 @@ public class ConsoleService {
 	 * The console output stream.
 	 */
 	private MessageConsoleStream errorStream, warningStream, infoStream;
-	
+
 	/**
 	 * Return the only one instance of this class.
-	 * 
+	 *
 	 * @return The only one instance of this class.
 	 */
 	public synchronized static ConsoleService getInstance() {
@@ -47,14 +55,14 @@ public class ConsoleService {
 		}
 		return instance;
 	}
-	
+
 	private ConsoleService() {
 		console = new MessageConsole("OPI Builder Console", null);
 
-		
+
 		// Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
 		console.setWaterMarks(80000, 100000);
-		
+
 		ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
 		consolePlugin.getConsoleManager().addConsoles(
 				new IConsole[] { console });
@@ -62,14 +70,14 @@ public class ConsoleService {
 	}
 
 
-	
+
 	private String getTimeString(){
 		Calendar cal = Calendar.getInstance();
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
 	    return sdf.format(cal.getTime());
 
 	}
-	
+
 	/**Write error information to the OPI console.
 	 * @param message the output string.
 	 */
@@ -81,10 +89,10 @@ public class ConsoleService {
 		default:
 			break;
 		}
-		
+
 		final String output = getTimeString() + " ERROR: " + message + ENTER;
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
-		
+
 			public void run() {
 				if(errorStream == null){
 					errorStream = console.newMessageStream();
@@ -94,10 +102,10 @@ public class ConsoleService {
 				writeToConsole(errorStream, output);
 			}
 		});
-		
-		
+
+
 	}
-	
+
 	/**Write warning information to the OPI console.
 	 * @param message the output string.
 	 */
@@ -111,7 +119,7 @@ public class ConsoleService {
 			break;
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
-		
+
 			public void run() {
 				if(warningStream == null){
 					warningStream = console.newMessageStream();
@@ -121,9 +129,9 @@ public class ConsoleService {
 				writeToConsole(warningStream, output);
 			}
 		});
-		
+
 	}
-	
+
 	/**Write information to the OPI console.
 	 * @param message the output string.
 	 */
@@ -147,9 +155,9 @@ public class ConsoleService {
 				writeToConsole(infoStream, output);
 			}
 		});
-		
+
 	}
-	
+
 	public void writeString(String s){
 		if(infoStream == null){
 			infoStream = console.newMessageStream();
@@ -158,9 +166,9 @@ public class ConsoleService {
 		}
 		writeToConsole(infoStream, s);
 	}
-	
 
-	
+
+
 	/**Write string to the console.
 	 * @param output
 	 */
@@ -168,26 +176,22 @@ public class ConsoleService {
 		try {
 			stream.write(output);
 		} catch (IOException e) {
-			CentralLogger.getInstance().error(this, "Write Console error",e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, "Write Console error",e); //$NON-NLS-1$
 		}
 	}
-	
+
 	private void popConsoleView(){
-		if(PlatformUI.getWorkbench() != null){			
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {					
+		if(PlatformUI.getWorkbench() != null){
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {
 				public void run() {
 					try {
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow().
 							getActivePage().showView("org.eclipse.ui.console.ConsoleView"); //$NON-NLS-1$
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this, e);
+			            OPIBuilderPlugin.getLogger().log(Level.WARNING, "ConsoleView activation error",e); //$NON-NLS-1$
 					}
 				}
 			});
-				
-			
 		}
-		
 	}
-	
 }

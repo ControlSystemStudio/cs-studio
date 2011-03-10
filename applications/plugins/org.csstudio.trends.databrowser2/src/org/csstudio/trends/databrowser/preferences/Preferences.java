@@ -8,8 +8,8 @@
 package org.csstudio.trends.databrowser.preferences;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.ArchiveRescale;
@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /** Helper for reading preference settings
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -25,13 +25,13 @@ public class Preferences
 {
     /** Regular expression for separator between list items */
     static final String ITEM_SEPARATOR_RE = "\\*";
-    
+
     /** Regular expression for separator between components within an item */
     static final String COMPONENT_SEPARATOR_RE = "\\|";
 
     /** Separator between list items */
     static final String ITEM_SEPARATOR = "*";
-    
+
     /** Separator between components within an item */
     static final String COMPONENT_SEPARATOR = "|";
 
@@ -48,7 +48,7 @@ public class Preferences
                                URLS = "urls",
                                ARCHIVES = "archives",
                                ARCHIVE_RESCALE = "archive_rescale";
-    
+
     public static double getTimeSpan()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -135,7 +135,7 @@ public class Preferences
         }
         return archives.toArray(new ArchiveDataSource[archives.size()]);
     }
-    
+
     /** @return Archive rescale setting */
     static public ArchiveRescale getArchiveRescale()
     {
@@ -150,8 +150,7 @@ public class Preferences
         }
         catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(Preferences.class)
-                .error(ex.getMessage());
+            Activator.getLogger().log(Level.WARNING, "Undefined rescale option", ex);
         }
         return ArchiveRescale.STAGGER;
     }

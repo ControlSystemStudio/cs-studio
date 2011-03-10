@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart.axes;
 
 import java.util.Calendar;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.swt.graphics.GC;
 
 /** Helper for creating tick marks.
@@ -17,9 +24,9 @@ public class TimeTicks extends Ticks
 {
     /** Seconds in a day. */
     private static final int DAY_SECS = 24*60*60;
-    
+
     /** Compute tick information.
-     * 
+     *
      *  @param low Low limit of the axis range.
      *  @param high High limit of the axis range.
      *  @param char_width Aproximate width of one character.
@@ -93,13 +100,13 @@ public class TimeTicks extends Ticks
         int label_width = gc.textExtent(label).x;
         int num_that_fits = screen_width/label_width*FILL_PERCENTAGE/100;
         double min_distance = range / num_that_fits;
-        
+
         // Round up to full seconds or minutes or ...
         distance = (1.0 + (int)(min_distance / round_seconds)) * round_seconds;
         // ... and move start some N*distance before 'last'
         start = last - ( (int)((last-low)/distance) ) * distance;
     }
-    
+
     /** @return Returns the number formated according to the tick precision. */
     @Override
     public String format(double num, int precision_change)

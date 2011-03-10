@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
@@ -23,8 +24,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Alarm Server
@@ -181,8 +181,8 @@ public class AlarmServer
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this)
-                    .error("Error starting PV " + pv.getName(), ex);
+                Activator.getLogger().log(Level.SEVERE,
+                    "Error starting PV " + pv.getName(), ex);
             }
         }
     }
@@ -348,7 +348,7 @@ public class AlarmServer
                 {
                     // Remember that there was an error
                     had_RDB_error = true;
-                    CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
+                    Activator.getLogger().log(Level.SEVERE, "Exception during alarm state update", ex);
                 }
             }
         });
@@ -384,7 +384,7 @@ public class AlarmServer
                 {
                     // Remember that there was an error
                     had_RDB_error = true;
-                    CentralLogger.getInstance().getLogger(this).error("Exception during global alarm update", ex);
+                    Activator.getLogger().log(Level.SEVERE, "Exception during global alarm update", ex);
                 }
             }
         });
@@ -412,7 +412,7 @@ public class AlarmServer
                 {
                     // Remember that there was an error
                     had_RDB_error = true;
-                    CentralLogger.getInstance().getLogger(this).error("Exception during enablement update", ex);
+                    Activator.getLogger().log(Level.SEVERE, "Exception during enablement update", ex);
                 }
             }
         });
@@ -439,9 +439,7 @@ public class AlarmServer
 
         // We should be on the work queue thread
         work_queue.assertOnThread();
-
-        CentralLogger.getInstance().getLogger(this).
-            warn("RDB connection recovered, re-loading configuration");
+        Activator.getLogger().info("RDB connection recovered, re-loading configuration");
         updateConfig(null);
 
         // If that worked out, reset error and inform clients

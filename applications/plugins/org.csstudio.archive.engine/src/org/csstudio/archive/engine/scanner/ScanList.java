@@ -8,8 +8,9 @@
 package org.csstudio.archive.engine.scanner;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.archive.engine.Activator;
 
 /** A Scan list scans a list of channels at a given rate.
  *  <p>
@@ -102,7 +103,7 @@ public class ScanList implements Scheduleable
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(toString() + " scan error", ex);
+                Activator.getLogger().log(Level.SEVERE, toString() + " scan error", ex);
             }
         }
         // Determine next due time relative to start,

@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.sns.product;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.internal.actions.LogoutAction;
 import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.eclipse.core.runtime.Platform;
@@ -29,6 +36,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.internal.ReopenEditorMenu;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /** Create workbench window actions, menu bar, coolbar.
@@ -200,7 +208,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         register(help);
 
         about = ActionFactory.ABOUT.create(window);
-        about.setImageDescriptor(Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
+        about.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
         register(about);
 
         createWeblinkActions(window);
@@ -224,7 +232,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         // SNS Actions
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String weblinks = prefs.getString(Activator.PLUGIN_ID, "weblinks", null, null);
-        CentralLogger.getInstance().getLogger(this).debug("Web links: " + weblinks);
         if (weblinks == null)
             return;
         final String[] link_prefs = weblinks.split("[ \t]+");
@@ -236,14 +243,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             final String[] link = descriptor.split("\\|");
             if (link.length != 2)
             {
-                CentralLogger.getInstance().getLogger(this).warn("Web link '" + pref
-                        + " doesn't follow the LABEL|URL pattern");
+                Activator.getLogger().log(Level.WARNING,
+                    "Web link doesn't follow the LABEL|URL pattern: {0}", pref);
                 continue;
             }
             final String label = link[0];
             final String url = link[1];
-            CentralLogger.getInstance().getLogger(this).debug("Web link " + pref
-                    + " = " + label + " (" + url + ")");
+            Activator.getLogger().log(Level.FINE, "Web link {0} = {1} ({2})",
+                    new Object[] { pref, label, url });
+
             web_actions.add(new OpenWebBrowserAction(window, label, url));
         }
     }

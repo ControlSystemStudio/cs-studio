@@ -10,7 +10,8 @@ package org.csstudio.archive.engine;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.Level;
+import java.util.logging.Level;
+
 import org.junit.Test;
 
 /** Test of the <code>ThrottledLogger</code>.
@@ -22,7 +23,7 @@ public class ThrottledLoggerUnitTest
     @Test
     public void testLogInfo() throws Exception
     {
-        final ThrottledLogger logger = new ThrottledLogger(Level.DEBUG, 2.0);
+        final ThrottledLogger logger = new ThrottledLogger(Level.FINE, 2.0);
         assertTrue(logger.log("OK"));
         assertTrue(logger.log("Another"));
         assertFalse(logger.log("SHOULD NOT SEE THIS!"));

@@ -9,6 +9,7 @@ package org.csstudio.sns.jms2rdb;
 
 import java.net.InetAddress;
 import java.util.Calendar;
+import java.util.logging.Level;
 
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
@@ -20,10 +21,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 
@@ -65,9 +63,6 @@ public class LogClientThread extends Thread
     /** Message filters */
     final private Filter filters[];
 
-    /** Log4j Logger */
-    final private Logger logger;
-
     /** Flag that tells thread to run or stop. */
     private volatile boolean run = true;
 
@@ -102,10 +97,9 @@ public class LogClientThread extends Thread
         this.rdb_url = rdb_url;
         this.rdb_schema = rdb_schema;
         this.filters = filters;
-        logger = CentralLogger.getInstance().getLogger(this);
 
         for (Filter filter : filters)
-            logger.info(filter);
+            Activator.getLogger().config(filter.toString());
     }
 
     /** @return Number of messages received */
@@ -138,7 +132,7 @@ public class LogClientThread extends Thread
             {
                 // First open RDB, then the JMS client that writes to RDB
                 rdb_writer = new RDBWriter(rdb_url, rdb_schema);
-                logger.info("Connected to RDB " + rdb_url);
+                Activator.getLogger().log(Level.INFO, "Connected to RDB {0}", rdb_url);
                 jms_connection = connectJMS();
 
                 addStartMessage();
@@ -159,7 +153,7 @@ public class LogClientThread extends Thread
                 {
                     last_error = ex.getMessage();
                 }
-                logger.error(ex);
+                Activator.getLogger().log(Level.WARNING, "Log thread error", ex);
             }
             finally
             {
@@ -172,7 +166,7 @@ public class LogClientThread extends Thread
                     }
                     catch (JMSException e)
                     {
-                        logger.error(e);
+                        Activator.getLogger().log(Level.WARNING, "JMS disconnect error", e);
                     }
                 }
                 // .. then the RDB used by the JMS client.
@@ -195,7 +189,8 @@ public class LogClientThread extends Thread
                 }
                 catch (InterruptedException ex)
                 {
-                    logger.warn(ex);
+                    // Ignore
+                    ex = null;
                 }
             }
         }
@@ -232,8 +227,10 @@ public class LogClientThread extends Thread
             final Topic topic = session.createTopic(topic_name);
             final MessageConsumer consumer = session.createConsumer(topic);
             consumer.setMessageListener(this);
-            logger.info("Accepting messages for '" + topic_name
-                    + "' at " + jms_url);
+
+            Activator.getLogger().log(Level.CONFIG,
+                    "Accepting messages for {0} at {1}",
+                    new Object[] { topic_name, jms_url });
         }
         return connection;
     }
@@ -253,7 +250,7 @@ public class LogClientThread extends Thread
     @Override
     public void onException(final JMSException ex)
     {
-        logger.error("JMS Exception", ex);
+        Activator.getLogger().log(Level.WARNING, "JMS Exception", ex);
     }
 
     /** @see JMS MessageListener */
@@ -276,7 +273,7 @@ public class LogClientThread extends Thread
                 rdb_writer.write(map);
             }
             else
-                logger.debug("Received " + message.getClass().getName());
+                Activator.getLogger().log(Level.WARNING, "Received unhandled message type {0}", message.getClass().getName());
         }
         catch (Exception ex)
         {
@@ -284,8 +281,7 @@ public class LogClientThread extends Thread
             {
                 last_error = ex.getMessage();
             }
-            logger.error("Message handling error", ex);
-            ex.printStackTrace();
+            Activator.getLogger().log(Level.WARNING, "Message handling error", ex);
             // Leave run == true, toggle a restart
             run = true;
             synchronized (this)

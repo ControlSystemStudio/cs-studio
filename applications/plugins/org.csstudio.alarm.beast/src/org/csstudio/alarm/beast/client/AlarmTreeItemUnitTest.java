@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** JUnit Test of AlarmTreeItem

@@ -8,16 +8,17 @@
 package org.csstudio.alarm.beast.msghist.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.msghist.Activator;
 import org.csstudio.alarm.beast.msghist.Preferences;
 import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** Model of CSS log messages.
  *  <p>
  *  Handles async. database requests, notifies listeners
  *  on change.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class Model
@@ -34,7 +35,7 @@ public class Model
     private MessagePropertyFilter filters[] = new MessagePropertyFilter[0];
     private int max_properties;
     private GetMessagesJob message_job;
-    
+
     /** Constructor
      *  @param url URL for RDB that holds log messages
      *  @param user RDB user name
@@ -51,7 +52,7 @@ public class Model
         this.schema = schema;
         this.max_properties = max_properties;
     }
-    
+
     /** Add Model Listener */
     public void addListener(final ModelListener listener)
     {
@@ -63,7 +64,7 @@ public class Model
     {
         listeners.remove(listener);
     }
-    
+
     /** @return Start time specification
      *  @see StartEndTimeParser
      */
@@ -116,17 +117,17 @@ public class Model
         this.filters = filters;
         launchQuery();
     }
-    
+
     /** Launch RDB query with current settings. */
     private void launchQuery() throws Exception
     {
         // Cancel a job that might already be running
         if (message_job != null)
             message_job.cancel();
-        
+
         // Start new job
         final StartEndTimeParser times =
-            new StartEndTimeParser(start_spec, end_spec);        
+            new StartEndTimeParser(start_spec, end_spec);
         message_job = new GetMessagesJob(
                 url, user, password, schema,
                 times.getStart(), times.getEnd(),
@@ -143,7 +144,7 @@ public class Model
         };
         message_job.schedule();
     }
-    
+
     /** @return All model messages */
     public Message[] getMessages()
     {
@@ -152,8 +153,9 @@ public class Model
         // before filtering, sorting etc.
         return messages;
     }
-    
+
     /** Send 'modelChanged' event to all listeners */
+    @SuppressWarnings("nls")
     protected void fireModelChanged()
     {
         for (ModelListener listener : listeners)
@@ -164,7 +166,7 @@ public class Model
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Activator.getLogger().log(Level.SEVERE, "Model update error", ex);
             }
         }
     }

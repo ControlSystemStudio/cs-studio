@@ -7,17 +7,18 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import org.apache.log4j.Level;
+import java.util.logging.Level;
+
 import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.archive.engine.ThrottledLogger;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** Buffer for the samples of one channel.
  *  <p>
  *  Assumes that one thread adds samples, while a different
  *  thread removes them.
  *  When the queue size is reached, older samples get dropped.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class SampleBuffer
@@ -27,20 +28,20 @@ public class SampleBuffer
      *  to decouple stuff).
      */
     final private String channel_name;
-    
+
     /** The actual samples in a thread-save queue. */
     final private RingBuffer<IValue> samples;
-    
+
     /** Statistics */
     final private BufferStats stats = new BufferStats();
 
     /** Number of overruns when new string of overruns started, or <code>null</code> */
     private Integer start_of_overruns;
-    
+
     /** Logger for overrun messages */
     final private static ThrottledLogger overrun_msg =
-        new ThrottledLogger(Level.WARN, "log_overrun"); //$NON-NLS-1$
-    
+        new ThrottledLogger(Level.WARNING, "log_overrun"); //$NON-NLS-1$
+
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
      */
@@ -52,13 +53,13 @@ public class SampleBuffer
         this.channel_name = channel_name;
         samples = new RingBuffer<IValue>(capacity);
     }
-    
+
     /** @return channel name of this buffer */
     String getChannelName()
     {
         return channel_name;
     }
-    
+
     /** @return Queue capacity, i.e. maximum queue size. */
     public int getCapacity()
     {
@@ -110,13 +111,13 @@ public class SampleBuffer
             samples.add(value);
         }
     }
-    
+
     /** @return latest sample in queue or <code>null</code> if empty */
     IValue remove()
     {
     	synchronized (samples)
         {
-            return samples.remove();	        
+            return samples.remove();
         }
     }
 

@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
  * Type conversions for {@link Collection}.
@@ -89,16 +89,6 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
     protected Collection convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
         throw new TypeSupportException("This method shall not be invoked for class type Collection.class." +
                                        " Use .class type of T for a Collection<T> as parameter." , null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected Double convertToDouble(@Nonnull final Collection values) throws TypeSupportException {
-        throw new TypeSupportException("This method is not defined (yet?) for Collection.class.\n" +
-                                       "Perhaps it will make sense for archiving the magnitudes of numerical vectors?" , null);
     }
     /**
      * {@inheritDoc}

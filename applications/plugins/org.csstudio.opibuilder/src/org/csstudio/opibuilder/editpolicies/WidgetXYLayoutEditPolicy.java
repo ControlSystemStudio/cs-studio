@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
@@ -40,7 +42,6 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.GuideModel;
 import org.csstudio.opibuilder.util.GuideUtil;
 import org.csstudio.opibuilder.util.WidgetsService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
@@ -68,10 +69,10 @@ import org.eclipse.gef.rulers.RulerProvider;
  */
 public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
-	
+
 	@Override
 	protected EditPolicy createChildEditPolicy(EditPart child) {
-		IGraphicalFeedbackFactory feedbackFactory = 
+		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(
 					((AbstractWidgetModel)child.getModel()).getTypeID());
 		if(feedbackFactory != null && child instanceof AbstractBaseEditPart){
@@ -80,7 +81,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}else
 			return super.createChildEditPolicy(child);
 	}
-	
+
 	@Override
 	protected Command createChangeConstraintCommand(
 			ChangeBoundsRequest request, EditPart child, Object constraint) {
@@ -89,18 +90,18 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		AbstractBaseEditPart part = (AbstractBaseEditPart) child;
 		AbstractWidgetModel widgetModel = part.getWidgetModel();
 
-		IGraphicalFeedbackFactory feedbackFactory = 
+		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
 		Command cmd = null;
 		if(feedbackFactory != null)
 			cmd = feedbackFactory.createChangeBoundsCommand(
-					widgetModel, request, (Rectangle)constraint);			
+					widgetModel, request, (Rectangle)constraint);
 		if(cmd == null)
 			cmd = new WidgetSetConstraintCommand(
 					widgetModel, request, (Rectangle)constraint);
-		
+
 		// for guide support
-			
+
 			if ((request.getResizeDirection() & PositionConstants.NORTH_SOUTH) != 0) {
 				Integer guidePos = (Integer) request.getExtendedData().get(
 						SnapToGuides.KEY_HORIZONTAL_GUIDE);
@@ -160,11 +161,11 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 				cmd = chainGuideDetachmentCommand(request, part, cmd, true);
 				cmd = chainGuideDetachmentCommand(request, part, cmd, false);
 			}
-		
+
 	return cmd;
-	
+
 	}
-	
+
 	@Override
 	protected Command createChangeConstraintCommand(EditPart child,
 			Object constraint) {
@@ -175,25 +176,25 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected Command createAddCommand(EditPart child, Object constraint) {
 		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
 			return super.createAddCommand(child, constraint);
-		
+
 		AbstractContainerModel container = (AbstractContainerModel)getHost().getModel();
 		AbstractWidgetModel widget = (AbstractWidgetModel)child.getModel();
 		CompoundCommand result = new CompoundCommand("Adding widgets to container");
-		
+
 		result.add(new AddWidgetCommand(container, widget, (Rectangle) constraint));
-		return result;		
+		return result;
 	}
-	
-	
+
+
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
 		String typeId = determineTypeIdFromRequest(request);
 
-		IGraphicalFeedbackFactory feedbackFactory = 
+		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
-		
-		WidgetCreateCommand widgetCreateCommand = new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(), 
-					(AbstractContainerModel)getHost().getModel(), 
+
+		WidgetCreateCommand widgetCreateCommand = new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(),
+					(AbstractContainerModel)getHost().getModel(),
 					(Rectangle)getConstraintFor(request), false);
 		if(feedbackFactory != null){
 			CompoundCommand compoundCommand = new CompoundCommand();
@@ -206,11 +207,11 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}else
 			return widgetCreateCommand;
 	}
-	
-	
+
+
 	/**
 	 * Override to provide custom feedback figure for the given create request.
-	 * 
+	 *
 	 * @param request
 	 *            the create request
 	 * @return custom feedback figure
@@ -219,7 +220,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected IFigure createSizeOnDropFeedback(final CreateRequest request) {
 		String typeId = determineTypeIdFromRequest(request);
 
-		IGraphicalFeedbackFactory feedbackFactory = 
+		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
 
 		if(feedbackFactory != null){
@@ -228,12 +229,12 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			if(feedbackFigure != null){
 				addFeedback(feedbackFigure);
 				return feedbackFigure;
-			}			
+			}
 		}
 		return super.createSizeOnDropFeedback(request);
-		
+
 	}
-	
+
 	@Override
 	protected void showSizeOnDropFeedback(CreateRequest request) {
 		String typeId = determineTypeIdFromRequest(request);
@@ -252,37 +253,35 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			super.showSizeOnDropFeedback(request);
 		}
 
-		
+
 	}
-	
+
 	/**
 	 * Creates a prototype object to determine the type identification of the
 	 * widget model, that is about to be created.
-	 * 
+	 *
 	 * @param request
 	 *            the create request
 	 * @return the type identification
 	 */
-	@SuppressWarnings("unchecked")
-	private String determineTypeIdFromRequest(final CreateRequest request) {
+	@SuppressWarnings("rawtypes")
+    private String determineTypeIdFromRequest(final CreateRequest request) {
 		Class newObject = (Class) request.getNewObjectType();
 		AbstractWidgetModel instance;
 		String typeId = ""; //$NON-NLS-1$
 		try {
 			instance = (AbstractWidgetModel) newObject.newInstance();
 			typeId = instance.getTypeID();
-		} catch (InstantiationException e) {
-			CentralLogger.getInstance().error(this, e);
-		} catch (IllegalAccessException e) {
-			CentralLogger.getInstance().error(this, e);
+		} catch (Exception e) {
+		    OPIBuilderPlugin.getLogger().log(Level.WARNING, "Unknown type", e); //$NON-NLS-1$
 		}
 
 		return typeId;
 	}
-	
+
 	/**
 	 * Adds a ChangeGuideCommand to the given Command.
-	 * 
+	 *
 	 * @param request
 	 *            The Request
 	 * @param part
@@ -316,10 +315,10 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 		return result;
 	}
-	
+
 	/**
 	 * Adds a ChangeGuideCommand to the given Command.
-	 * 
+	 *
 	 * @param request
 	 *            The request
 	 * @param part
@@ -347,10 +346,10 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 		return result;
 	}
-	
+
 	/**
 	 * Returns the guide at the given position and with the given orientation.
-	 * 
+	 *
 	 * @param pos
 	 *            The Position of the guide
 	 * @param horizontal
@@ -365,16 +364,16 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return (GuideModel) provider.getGuideAt(pos);
 	}
 
-	
-	
+
+
 	@Override
 	protected Command getCloneCommand(ChangeBoundsRequest request) {
 		CloneCommand clone = new CloneCommand((AbstractContainerModel)getHost().getModel());
-		
-		for (AbstractBaseEditPart part : sortSelectedWidgets(request.getEditParts())) {	
+
+		for (AbstractBaseEditPart part : sortSelectedWidgets(request.getEditParts())) {
 			clone.addPart((AbstractWidgetModel)part.getModel(), (Rectangle)getConstraintForClone(part, request));
 		}
-		
+
 		// Attach to horizontal guide, if one is given
 		Integer guidePos = (Integer)request.getExtendedData()
 				.get(SnapToGuides.KEY_HORIZONTAL_GUIDE);
@@ -383,7 +382,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 					.get(SnapToGuides.KEY_HORIZONTAL_ANCHOR)).intValue();
 			clone.setGuide(findGuideAt(guidePos.intValue(), true), hAlignment, true);
 		}
-		
+
 		// Attach to vertical guide, if one is given
 		guidePos = (Integer)request.getExtendedData()
 				.get(SnapToGuides.KEY_VERTICAL_GUIDE);
@@ -395,45 +394,45 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return clone;
 	}
 
-	
+
 	/**
 	 * Sort the selected widget as they were in their parents
-	 * 
+	 *
 	 * @return a list with all widget editpart that are currently selected
 	 */
 	@SuppressWarnings("unchecked")
-	private final List<AbstractBaseEditPart> sortSelectedWidgets(List selection) {	
+	private final List<AbstractBaseEditPart> sortSelectedWidgets(List selection) {
 		List<AbstractBaseEditPart> sameParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> differentParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>();
 		AbstractContainerModel parent = null;
 		for (Object o : selection) {
 			if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
-				AbstractWidgetModel widgetModel = 
+				AbstractWidgetModel widgetModel =
 					((AbstractBaseEditPart) o).getWidgetModel();
 				if(parent == null)
 					parent = widgetModel.getParent();
 				if(widgetModel.getParent() == parent)
 					sameParentWidgets.add((AbstractBaseEditPart) o);
-				else 
+				else
 					differentParentWidgets.add((AbstractBaseEditPart) o);
 			}
 		}
 		//sort widgets to its original order
 		if(sameParentWidgets.size() > 1){
 			AbstractBaseEditPart[] modelArray = sameParentWidgets.toArray(new AbstractBaseEditPart[0]);
-		
+
 			Arrays.sort(modelArray, new Comparator<AbstractBaseEditPart>(){
 
 				public int compare(AbstractBaseEditPart o1,
 						AbstractBaseEditPart o2) {
-					if(o1.getWidgetModel().getParent().getChildren().indexOf(o1.getWidgetModel()) > 
+					if(o1.getWidgetModel().getParent().getChildren().indexOf(o1.getWidgetModel()) >
 						o2.getWidgetModel().getParent().getChildren().indexOf(o2.getWidgetModel()))
 						return 1;
 					else
-						return -1;					
+						return -1;
 				}
-				
+
 			});
 			result.addAll(Arrays.asList(modelArray));
 			if(differentParentWidgets.size() > 0)
@@ -442,10 +441,10 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}
 		if(differentParentWidgets.size() > 0)
 			sameParentWidgets.addAll(differentParentWidgets);
-		
+
 		return sameParentWidgets;
 	}
-	
+
 	//The minumum size should come from widget figure.
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.XYLayoutEditPolicy#getMinimumSizeFor(org.eclipse.gef.GraphicalEditPart)
@@ -457,10 +456,10 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}
 		return super.getMinimumSizeFor(child);
 	}
-	
-	
-	
-	//This has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue. 
+
+
+
+	//This has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue.
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getResizeChildrenCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
 	 */
@@ -480,14 +479,14 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}
 		return resize.unwrap();
 	}
-	
-	//super.super.getConstraintFor() has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue. 
+
+	//super.super.getConstraintFor() has been overriden to fix a bug when handle bounds does not equal with bounds. For example, polyline figue.
 	/**
 	 * Generates a draw2d constraint object derived from the specified child
 	 * EditPart using the provided Request. The returned constraint will be
 	 * translated to the application's model later using
 	 * {@link #translateToModelConstraint(Object)}.
-	 * 
+	 *
 	 * @param request
 	 *            the ChangeBoundsRequest
 	 * @param child

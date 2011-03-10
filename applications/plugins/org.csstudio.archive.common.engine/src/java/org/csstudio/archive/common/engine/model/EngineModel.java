@@ -19,7 +19,7 @@ import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveEngineConfigService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
@@ -27,7 +27,7 @@ import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
@@ -55,7 +55,7 @@ public final class EngineModel {
     /**
      * All channels
      */
-    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, AbstractArchiveChannel<?, ?>> _channelMap;
 
     /** Groups of archived channels
      *  <p>
@@ -150,13 +150,13 @@ public final class EngineModel {
 
     /** @return Channel by that name or <code>null</code> if not found */
     @CheckForNull
-    public ArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
+    public AbstractArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
     @Nonnull
-    public Collection<ArchiveChannel<?, ?>> getChannels() {
+    public Collection<AbstractArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
 
@@ -218,7 +218,7 @@ public final class EngineModel {
     public void resetStats() {
         _writeExecutor.reset();
         synchronized (this) {
-            for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
                 channel.reset();
             }
         }
@@ -260,7 +260,7 @@ public final class EngineModel {
             }
             _name = engineName;
 
-            final IArchiveEngineConfigService configService = Activator.getDefault().getArchiveEngineConfigService();
+            final IArchiveEngineFacade configService = Activator.getDefault().getArchiveEngineService();
 
             _engine = configService.findEngine(_name);
             if (_engine == null) {
@@ -274,7 +274,8 @@ public final class EngineModel {
                 return;
             }
 
-            final Collection<IArchiveChannelGroup> groups = configService.getGroupsForEngine(_engine.getId());
+            final Collection<IArchiveChannelGroup> groups =
+                configService.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
                 configureGroup(configService, groupCfg);
@@ -284,7 +285,7 @@ public final class EngineModel {
         }
     }
 
-    private void configureGroup(@Nonnull final IArchiveEngineConfigService configService,
+    private void configureGroup(@Nonnull final IArchiveEngineFacade configService,
                                 @Nonnull final IArchiveChannelGroup groupCfg) throws ArchiveServiceException,
                                                                                      TypeSupportException {
         final ArchiveGroup group = addGroup(groupCfg);
@@ -294,7 +295,7 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
+            final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
 
             _writeExecutor.addChannel(channel);
@@ -337,7 +338,7 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void dumpDebugInfo() {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
             //buf.append(Joiner.on(",").join(channel.getGroups()));

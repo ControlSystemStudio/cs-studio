@@ -19,3 +19,4 @@ Bundle-ClassPath: libs/activation.jar,
  libs/mailapi.jar,
  libs/smtp.jar,
  .
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

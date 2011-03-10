@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
 import java.util.HashMap;
@@ -14,7 +21,7 @@ public class LocalPVFactory implements IPVFactory
 {
     /** PV type prefix */
     public static final String PREFIX = "loc";
-    
+
     /** All the 'local' PVs, mapped by name */
     private static Map<String, Value> values =
         new HashMap<String, Value>();
@@ -27,8 +34,9 @@ public class LocalPVFactory implements IPVFactory
 
     /** Create a 'local' PV.
      *  @param name Name of the PV, may also include initial value like "..(123)".
-     * @throws Exception 
+     * @throws Exception
      */
+    @Override
     public PV createPV(final String name) throws Exception
     {
     	String namePart;
@@ -42,10 +50,10 @@ public class LocalPVFactory implements IPVFactory
         	 final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
         	 if (value_end < 0)
         		 throw new Exception("Value in PV " + name +" not terminated by ')'");
-        	 value_text = name.substring(value_start+1, value_end);   
+        	 value_text = name.substring(value_start+1, value_end);
         }
-    	        	
-    	
+
+
         Value value = values.get(namePart);
         if (value == null)
         {

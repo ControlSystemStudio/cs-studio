@@ -10,9 +10,9 @@ package org.csstudio.alarm.beast.client;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.apputil.time.SecondsParser;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ITimestamp.Format;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.ITimestamp.Format;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.osgi.util.NLS;
 
@@ -76,7 +76,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
                 {
                     getDescription(),
                     getName(),
-                    getTimestamp(),
+                    getTimestampText(),
                     getDuration(),
                     getSeverity().getDisplayName(),
                     getMessage()
@@ -101,6 +101,8 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     /** @return Time stamp of last status/severity update as text */
     public synchronized String getTimestampText()
     {
+        if (timestamp == null)
+            return ""; //$NON-NLS-1$
         return timestamp.format(Format.DateTimeSeconds);
     }
 
@@ -138,6 +140,6 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     @Override
     public String toString()
     {
-        return super.toString() + ": '" + getDescription() + "' @ " + timestamp;
+        return super.toString() + ": '" + getDescription() + "' @ " + getTimestampText();
     }
 }

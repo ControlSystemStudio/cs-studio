@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.rdbtable.ui;
 
 import org.csstudio.display.rdbtable.Activator;
@@ -29,6 +36,7 @@ public class DeleteRowAction extends Action
         // Enable action whenever one or more not-already-deleted rows are selected
         table_viewer.addSelectionChangedListener(new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
                 final RDBTableRow rows[] = getSelectedRows(event.getSelection());
@@ -69,7 +77,7 @@ public class DeleteRowAction extends Action
     {
         if (selection.isEmpty())
             return null;
-        
+
         final Object obj[] = ((IStructuredSelection) selection).toArray();
         final RDBTableRow rows[] = new RDBTableRow[obj.length];
         System.arraycopy(obj, 0, rows, 0, rows.length);

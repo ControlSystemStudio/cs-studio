@@ -17,6 +17,7 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.msghist.messages"; //$NON-NLS-1$
 
+    public static String CellID_TTFmt;
     public static String Error;
     public static String Export;
     public static String ExportErrorFmt;
@@ -37,7 +38,12 @@ public class Messages extends NLS
     public static String Pref_URL;
     public static String Pref_User;
     public static String Property;
+    public static String PropertyValue_TTFmt;
+    public static String SeqProvider_TTFmt;
     public static String ShowDetail;
+    public static String TableColumnsEditor_Columns;
+    public static String TableColumnsEditor_Title;
+    public static String TableColumnsEditor_TT;
     public static String Value;
 
     static

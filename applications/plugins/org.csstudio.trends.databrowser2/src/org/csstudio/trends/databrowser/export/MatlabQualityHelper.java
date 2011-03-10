@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser.export;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 /** Helper for turning IValue's Severity/Status into a numeric code
  *  for the Matlab Time Series "Quality"
@@ -25,7 +25,7 @@ public class MatlabQualityHelper
     // severity/status combinations
     /** Severity/status combinations. Array index is numeric code */
     final ArrayList<String> codes = new ArrayList<String>();
-    
+
     /** Get numeric quality code for a severity/status combination
      *  @param severity
      *  @param status

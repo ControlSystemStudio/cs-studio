@@ -27,19 +27,19 @@ public class RetentionHelperTest
     @Test
     public void test() throws Exception
     {
-        final RDBUtil rdb = RDBUtil.connect(TestSetup.URL);
+        final RDBUtil rdb = RDBUtil.connect(TestSetup.URL, false);
         final SQL sql = new SQL(rdb.getDialect(), false);
-        
+
         final RetentionHelper retentions = new RetentionHelper(rdb, sql);
-        
+
         Retention retention = retentions.getRetention("Forever");
         System.out.println(retention);
         assertEquals(9999, retention.getId());
         System.out.println(retentions.getRetention("Long time"));
         System.out.println(retentions.getRetention("temporary"));
-        
+
         retentions.dispose();
-        
+
         rdb.close();
     }
 

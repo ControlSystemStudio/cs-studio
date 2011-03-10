@@ -13,13 +13,15 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Helper for reading alarm configuration from RDB
  *  @author Kay Kasemir
@@ -74,10 +76,10 @@ public class AlarmConfigurationReader
                 sel_commands_statement = null;
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
             // Could also ignore: We're closing anyway
-            e.printStackTrace();
+            Activator.getLogger().log(Level.INFO, "JDBC close failed", ex);
         }
     }
 
@@ -227,7 +229,7 @@ public class AlarmConfigurationReader
                 item = pv;
             }
             if (config_time != null)
-                item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
+                item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
         }
         finally
         {
@@ -347,7 +349,7 @@ public class AlarmConfigurationReader
         final Timestamp sql_time = result.getTimestamp(16);
         if (!result.wasNull())
         {
-            final ITimestamp timestamp = TimeWarp.getCSSTimestamp(sql_time);
+            final ITimestamp timestamp = TimestampFactory.fromSQLTimestamp(sql_time);
             pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
         }
     }

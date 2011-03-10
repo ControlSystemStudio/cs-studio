@@ -11,9 +11,6 @@ import static org.junit.Assert.*;
 
 import javax.jms.Connection;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.junit.Test;
@@ -55,10 +52,6 @@ public class JMSPerfUnitTest
             System.out.println("Skipping, no JMS URL");
             return;
         }
-
-        // Log4j
-        BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.WARN);
 
         // Create Receiver, then Sender
         final Connection connection = JMSConnectionFactory.connect(url);

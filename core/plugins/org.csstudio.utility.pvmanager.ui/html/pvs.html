@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<title>Process Variables</title>
+</head>
+
+<body>
+<h1>Process Variables</h1>
+Most CSS tools support several types of process variables (PVs).
+When simply using a PV name like
+<pre>
+   some_pv_name
+</pre>
+this will refer to a default PV type which can be configured
+in the PV preferences.
+<p>
+To select a specific PV type, use the PV name format
+<pre>
+   type://some_pv_name
+</pre>
+
+<h2>Preferences</h2>
+The default PV type can be selected via the menu
+CSS/Preferences/Applications/Configuration/Process Variables.
+
+<h2>Type-Specific PV Name Formats</h2>
+
+<h3>sys://</h3>
+System PVs can be used to display information internal to CSS or the local computer:
+
+<table border=1>
+<tr><th>Name</th><th>Detail</th></tr>
+<tr><td><pre>sys://time</pre></td><td>Local date and time</td></tr>
+<tr><td><pre>sys://free_mb</pre></td><td>Free Java VM memory in MB</td></tr>
+<tr><td><pre>sys://used_mb</pre></td><td>Used Java VM memory in MB</td></tr>
+<tr><td><pre>sys://max_mb</pre></td><td>Maximum available Java VM memory in MB</td></tr>
+<tr><td><pre>sys://user</pre></td><td>User Name</td></tr>
+<tr><td><pre>sys://host_name</pre></td><td>Host name</td></tr>
+<tr><td><pre>sys://qualified_host_name</pre></td><td>Full Host Name</td></tr>
+<tr><td><pre>sys://system.*</pre></td><td>Any system property, e.g. "sys://system.user.name"</td></tr>
+<tr><td><pre>sys://pv_count</pre></td><td>Number of "loc:", "sys:" and "sim:" values.</td></tr>
+</table>
+
+<h3>ca://</h3>
+EPICS Channel Access PVs can be any record name
+or record-name-with-field:
+<pre>
+  ca://some:record:name
+  ca://some_record_name
+  ca://some_record_name.SCAN
+</pre>
+The "ca://" prefix can be avoided by configuring it as the default.
+
+<h3>loc://</h3>
+'Local' PVs can be used to communicate between CSS tools within one
+CSS instance. For example, an instance of Probe and the Data Browser
+can both use a PV
+<pre>
+  loc://demo
+</pre>
+When adjusting the value in Probe, the Data Browser will reflect the
+changes.
+<p>
+Note that if no initial value specified, local PVs have a default initial value of 0. 
+Setting them to anything that
+parses as a number will create a numeric (double-typed) PV. Otherwise,
+they behave as String PVs.
+
+<p>
+You can also give an initial value to a local PV by following one of these formats:
+<pre>
+  loc://demo(1.23)
+</pre>
+will initialize it to a double value of 1.23.
+<pre>
+  loc://demo(1.23, 2.2, 3, 4.5, 6.7)
+</pre>
+will initialize it to a double array.
+<pre>
+  loc://demo(hello)
+</pre>
+will initialize it to a string value of "hello".
+
+<p>
+Note that if initial values differ between two declarations, the first one wins.
+</p>
+
+<h3>sim://</h3>
+Simulated PVs can have these formats:
+<pre>
+  sim://noise
+</pre>
+generates simulated noise from -5 to 5, updating once every second.
+
+<pre>
+  sim://noise(-10, 10, 0.2)
+</pre>
+generates simulated noise from -10 to 10, updating every 0.2 seconds.
+
+<pre>
+  sim://sine(0, 10, 20, 0.5)
+</pre>
+generates a simulated sine wave signal valued 0 to 10,
+split into 20 updates, updating every 0.5 seconds.
+A full period takes 20 updates, i.e. 5 seconds in this example.
+
+<pre>
+  sim://ramp(0, 10, 0.1, 0.5)
+</pre>
+generates a ramp (saw-tooth) valued 0 to 10, stepping 0.1 every 0.5 seconds.
+
+<pre>
+  sim://ramp(0, 100, -1, 2)
+</pre>
+generates a negative ramp, i.e. count-down, from 100 to 0, stepping 1 every 2 seconds.
+
+<h3>const://</h3>
+'Constant' PVs are mostly useful as input to PV-driven code like OPI scripts
+that need a constant value but at the same time require a PV.
+<pre>
+  const://pi(3.14)
+</pre>
+a constant double value of 3.14.
+<pre>
+  const://name(Fred)
+</pre>
+a constant string value of "Fred". 
+As a shortcut, just
+<pre>
+  3.14
+  "Fred"
+</pre>
+will have the same effect.
+<p>
+<pre>
+  const://arrayDemo(1.23, 2.2, 3, 4.5, 6.7)
+</pre>
+a constant double array.
+<p>
+Constant PVs are read-only, and only send one initial value update.
+
+</body>
+</html>

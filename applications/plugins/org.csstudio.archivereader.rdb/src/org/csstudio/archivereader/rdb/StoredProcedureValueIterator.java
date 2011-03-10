@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 import oracle.jdbc.OracleTypes;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.utility.rdb.TimeWarp;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.
@@ -29,10 +29,10 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
 public class StoredProcedureValueIterator extends AbstractRDBValueIterator
 {
     final String stored_procedure;
-    
+
     /** Values received from the stored procedure */
     private IValue values[] = null;
-    
+
     /** Iteration index into <code>values</code>, points to what
      *  <code>next()</code> will return or -1
      */
@@ -68,21 +68,21 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     {
         final CallableStatement statement = reader.getRDB().getConnection().prepareCall(
             "begin ? := " + stored_procedure + " .get_browser_data(?, ?, ?, ?); end;");
-        
+
         reader.addForCancellation(statement);
         try
         {
             statement.registerOutParameter(1, OracleTypes.CURSOR);
             statement.setInt(2, channel_id);
-            statement.setTimestamp(3, TimeWarp.getSQLTimestamp(start));
-            statement.setTimestamp(4, TimeWarp.getSQLTimestamp(end));
+            statement.setTimestamp(3, start.toSQLTimestamp());
+            statement.setTimestamp(4, end.toSQLTimestamp());
             statement.setInt(5, count);
             statement.setFetchDirection(ResultSet.FETCH_FORWARD);
             statement.setFetchSize(1000);
             statement.execute();
             final ResultSet result = (ResultSet) statement.getObject(1);
             result.setFetchSize(1000);
-            
+
             // Determine result type: min/max/average table or
             // fallback to SAMPLE table format?
             final ResultSetMetaData meta = result.getMetaData();
@@ -117,7 +117,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     private IValue[] decodeOptimizedTable(final ResultSet result) throws Exception
     {
         final ArrayList<IValue> tmp_values = new ArrayList<IValue>();
-        
+
         // Need numeric meta data or nothing
         final INumericMetaData meta = (this.meta instanceof INumericMetaData) ?
                 (INumericMetaData) this.meta : null;
@@ -130,7 +130,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         while (result.next())
         {
             // Time stamp
-            final ITimestamp time = TimeWarp.getCSSTimestamp(result.getTimestamp(2));
+            final ITimestamp time = TimestampFactory.fromSQLTimestamp(result.getTimestamp(2));
 
             // Get severity/status
             ISeverity severity = reader.getSeverity(result.getInt(3));
@@ -141,11 +141,11 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                 status = severity.toString();
             }
             else
-            {   
+            {
                 status = reader.getStatus(result.getInt(4));
                 severity = filterSeverity(severity, status);
             }
-            
+
             // WB==-1 indicates a String sample
             final IValue value;
             if (result.getInt(1) < 0)
@@ -189,12 +189,14 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return index >= 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IValue next() throws Exception
     {
         final IValue result = values[index];

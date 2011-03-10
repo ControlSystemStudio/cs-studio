@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import static org.junit.Assert.assertEquals;
@@ -7,27 +14,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.junit.Test;
 
 /** JUnit Demo or command-line test of PV connect/disconnect.
- *  
+ *
  *  Meant to be executed in JProfiler or while
  *  watching memory usage of process in OS.
- *  
+ *
  *  These tests require the soft-IOC database from lib/test.db.
- *  
+ *
  *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
- *  
+ *
  *  When run with use_pure_java = true, JProfiler shows periodic GC.
  *  JVM might grow memory up to the -Xmx limit but doesn't run out of mem.
  *  When monitoring overall memory use with "ps" on OS X and Linux in
  *  a long running test, the RSS sometimes grew for a day, but would
  *  then actually go back down again. Total VSIZE of the process did not
  *  show a long-term growth.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -49,10 +56,10 @@ public class EPICS_V3_Connection_Demo implements PVListener
 
     /** Values to receive within each run */
     private static final int VALUE_UPDATES = 1000;
-    
+
     /** Updates received from PV */
     final AtomicInteger updates = new AtomicInteger(0);
-    
+
     /** Perform setup that's usually done by the CSS plugin
      *  based on Eclipse preferences.
      */
@@ -63,10 +70,10 @@ public class EPICS_V3_Connection_Demo implements PVListener
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");
         //                 "gov.aps.jca.event.QueuedEventDispatcher");
-    
+
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", NETWORK);
         System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "false");
-    
+
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", NETWORK);
         System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "false");
 
@@ -85,15 +92,17 @@ public class EPICS_V3_Connection_Demo implements PVListener
     }
 
     // PVListener
+    @Override
     public void pvValueUpdate(final PV pv)
     {
         final IValue v = pv.getValue();
-        // System.out.println(pv.getName() + ": " + v);
+        System.out.println(pv.getName() + ": " + v);
         assertEquals(true, pv.isConnected());
         updates.incrementAndGet();
     }
 
     // PVListener
+    @Override
     public void pvDisconnected(final PV pv)
     {
         System.out.println(pv.getName() + " disconnected");
@@ -123,7 +132,7 @@ public class EPICS_V3_Connection_Demo implements PVListener
             pv.stop();
         }
     }
-    
+
     /** Log run and memory usage */
     private void log(final int i)
     {

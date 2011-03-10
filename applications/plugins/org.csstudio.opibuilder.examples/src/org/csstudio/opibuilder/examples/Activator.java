@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.examples;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -8,18 +15,11 @@ import org.osgi.framework.BundleContext;
  * @author Xihui Chen
  */
 public class Activator extends AbstractUIPlugin {
-
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.opibuilder.examples";
+	public static final String PLUGIN_ID = "org.csstudio.opibuilder.examples"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;
-	
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -49,5 +49,4 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
-
 }

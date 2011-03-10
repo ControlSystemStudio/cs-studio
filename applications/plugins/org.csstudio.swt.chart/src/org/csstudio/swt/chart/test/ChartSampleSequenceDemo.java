@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart.test;
 
 import java.util.ArrayList;
@@ -19,7 +26,7 @@ public class ChartSampleSequenceDemo implements ChartSampleSequence
         = new ArrayList<ChartSampleContainer>();
     final private double x0, period;
     private double x;
-    
+
     /** Initialize a sine-wave
      *  @param phase Initial phase [degrees]
      *  @param period Period [number of samples for full sine wave]
@@ -30,7 +37,7 @@ public class ChartSampleSequenceDemo implements ChartSampleSequence
         this.period = period;
         x = Math.toRadians(phase);
     }
-    
+
     /** Add a new sample */
     public void add()
     {
@@ -44,7 +51,7 @@ public class ChartSampleSequenceDemo implements ChartSampleSequence
             if (Math.random() > 0.5)
                 samples.add(new ChartSampleContainer(Type.Normal, x0+x, y, y, y, "Sample"));
             else
-            {            
+            {
                 final double noise = 0.2;
                 final double y_min = y - y*noise*Math.random();
                 final double y_max = y + y*noise*Math.random();
@@ -56,14 +63,17 @@ public class ChartSampleSequenceDemo implements ChartSampleSequence
     }
 
     /** {@inheritDoc} */
+    @Override
     public int size()
     {   return samples.size();    }
 
     /** {@inheritDoc} */
+    @Override
     public ChartSample get(int i)
     {   return samples.get(i);    }
-    
+
     /** {@inheritDoc} */
+    @Override
     public Range getDefaultRange()
     {   return null;  }
 }

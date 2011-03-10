@@ -17,10 +17,9 @@ import java.util.List;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Alarm RDB Handler
  *  @author Kay Kasemir
@@ -204,7 +203,7 @@ public class AlarmRDB
                     final Timestamp time = result.getTimestamp(16);
                     final ITimestamp timestamp = result.wasNull()
                         ? TimestampFactory.now()
-                        : TimeWarp.getCSSTimestamp(time);
+                        : TimestampFactory.fromSQLTimestamp(time);
 
                     // TODO Get global_delay from
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
@@ -336,7 +335,7 @@ public class AlarmRDB
         updateStateStatement.setInt(3, severity_id);
         updateStateStatement.setInt(4, message_id);
         updateStateStatement.setString(5, value);
-        updateStateStatement.setTimestamp(6, TimeWarp.getSQLTimestamp(timestamp));
+        updateStateStatement.setTimestamp(6, timestamp.toSQLTimestamp());
         updateStateStatement.setInt(7, pv.getID());
         updateStateStatement.execute();
         connection.commit();

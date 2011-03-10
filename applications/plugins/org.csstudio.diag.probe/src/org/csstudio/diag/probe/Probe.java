@@ -8,12 +8,13 @@
 package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;
@@ -84,6 +85,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class Probe extends ViewPart implements PVListener, ISelectionProvider
 {
+    final private static Logger logger = Logger.getLogger(Activator.ID);
+
     /** Multiple Probe views are allowed.
      *  Their ID has to be ID + ":<instance>"
      */
@@ -176,9 +179,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
                 }
                 meter.setValue(value.getDouble());
             }
-            CentralLogger.getInstance().getLogger(this).debug("Probe displays " //$NON-NLS-1$
-                                + lbl_time.getText()
-                                + " " + lbl_value.getText()); //$NON-NLS-1$
+            logger.log(Level.FINE, "Probe displays {0} {1}", //$NON-NLS-1$
+                    new Object[] { lbl_time.getText(),  lbl_value.getText() });
 
             final double period = value.getUpdatePeriod();
             if (period > 0) {
@@ -221,8 +223,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         }
         catch (final Exception e)
         {
-            CentralLogger.getInstance().getLogger(Probe.class).error("activateWithPV", e); //$NON-NLS-1$
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Cannot activate probe", e); //$NON-NLS-1$
         }
         return false;
     }
@@ -560,7 +561,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 			handlerService.executeCommand(cmd, null);
 		} catch (final ExecutionException e) {
 			// Execution of the command handler failed.
-			CentralLogger.getInstance().getLogger(this).error("Error executing save value command.", e); //$NON-NLS-1$
+		    logger.log(Level.SEVERE, "Error executing save value command.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocExecutionError);
@@ -568,7 +569,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 			// Thrown if the command or one of the parameters is undefined.
 			// This should never happen (the command id is defined in the
 			// platform). Log an error, disable the button, and return.
-			CentralLogger.getInstance().getLogger(this).error("Save value command is not defined.", e); //$NON-NLS-1$
+            logger.log(Level.SEVERE, "Save value command is not defined.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotDefinedError);
@@ -692,7 +693,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     @SuppressWarnings("nls")
     public boolean setPVName(final String pv_name)
     {
-        CentralLogger.getInstance().getLogger(this).debug("setPVName(" + pv_name + ")");
+        logger.log(Level.FINE, "setPVName {0}", pv_name); //$NON-NLS-1$
 
         // Reset GUI
         lbl_value.setText("");
@@ -728,7 +729,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         }
         catch (final Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
             return false;
         }
@@ -746,7 +746,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     @Override
     public void pvValueUpdate(final PV pv)
     {
-    	CentralLogger.getInstance().getLogger(this).debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+        logger.log(Level.FINE, "Probe pvValueUpdate: {0}", pv.getName()); //$NON-NLS-1$
 
         // We might receive events after the view is already disposed or we're already looking at a different PV ....
         if (pv != this.pv  ||  lbl_value.isDisposed())
@@ -760,7 +760,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         }
         catch (final Exception e)
         {
-            CentralLogger.getInstance().getLogger(this).error("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
         }
     }
@@ -772,8 +771,8 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     {
     	if (pv != null)
     	{
-        	CentralLogger.getInstance().getLogger(this).debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
-	        pv.removeListener(this);
+            logger.log(Level.FINE, "Probe: disposeChannel {0}", pv.getName()); //$NON-NLS-1$
+            pv.removeListener(this);
 	        pv.stop();
     	}
     	pv = new_pv;
@@ -859,7 +858,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         }
         catch (final Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
     }

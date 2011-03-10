@@ -19,11 +19,10 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -408,17 +407,17 @@ public class EngineModel
     final public void stop() throws Exception
     {
         state = State.STOPPING;
-        CentralLogger.getInstance().getLogger(this).info("Stopping scanner");
+        Activator.getLogger().info("Stopping scanner");
         // Stop scanning
         scan_thread.stop();
         // Assert that scanning has stopped before we add 'off' events
         scan_thread.join();
         // Disconnect from network
-        CentralLogger.getInstance().getLogger(this).info("Stopping archive groups");
+        Activator.getLogger().info("Stopping archive groups");
         for (ArchiveGroup group : groups)
             group.stop();
         // Flush all values out
-        CentralLogger.getInstance().getLogger(this).info("Stopping writer");
+        Activator.getLogger().info("Stopping writer");
         writer.shutdown();
         // Update state
         state = State.IDLE;

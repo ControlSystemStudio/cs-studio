@@ -8,6 +8,8 @@
 package org.csstudio.trends.databrowser.opiwidget;
 
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.macros.InfiniteLoopException;
 import org.csstudio.apputil.macros.MacroTable;
@@ -18,7 +20,6 @@ import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.model.Model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -86,7 +87,7 @@ public class DataBrowserWidgedModel extends AbstractWidgetModel
         }
         catch (InfiniteLoopException e)
         {
-            CentralLogger.getInstance().getLogger(this).warn("Recursive macros in Data Browser widget " + getName()); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Recursive macros in Data Browser widget {0}", getName()); //$NON-NLS-1$
         }
 
         return path;

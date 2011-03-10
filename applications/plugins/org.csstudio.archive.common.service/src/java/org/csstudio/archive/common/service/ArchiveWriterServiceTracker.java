@@ -37,6 +37,6 @@ public class ArchiveWriterServiceTracker extends ServiceTracker {
      * Constructor.
      */
     public ArchiveWriterServiceTracker(@Nonnull final BundleContext context) {
-        super(context, IArchiveWriterService.class.getName(), null);
+        super(context, IArchiveEngineFacade.class.getName(), null);
     }
 }

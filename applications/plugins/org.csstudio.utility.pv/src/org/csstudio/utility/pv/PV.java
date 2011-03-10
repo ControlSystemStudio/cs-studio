@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.pv;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IProcessVariable;
 
 /** A control system PV.
@@ -22,7 +22,7 @@ import org.csstudio.platform.model.IProcessVariable;
  *  the UI thread to prevent possible deadlocks.
  *  (The JNI CA client has deadlocked when both UI and non-UI
  *   threads called into it at the 'same' time).
- *  
+ *
  *  @author Kay Kasemir
  */
 public interface PV extends IProcessVariable
@@ -31,7 +31,7 @@ public interface PV extends IProcessVariable
      *  -- This is part of IProcessVariable
      *  public String getName();
      */
-    
+
     /** Synchronous 'get'.
      *  <p>
      *  Attempts to get a value within the given timeout.
@@ -43,13 +43,13 @@ public interface PV extends IProcessVariable
      *  it will also perform the connection attempt, and leave the channel
      *  connected after getting a value.
      *  To force a disconnect, call <code>stop</code>.
-     *  
+     *
      *  @param timeout_seconds Timeout in seconds.
      *  @return Value
      *  @throws Exception on error
      */
     public IValue getValue(double timeout_seconds) throws Exception;
-    
+
     /** Add a new listener.
      *  @see PVListener
      */
@@ -64,7 +64,7 @@ public interface PV extends IProcessVariable
      *  @see #stop()
      */
     public void start() throws Exception;
-    
+
     /** @return Returns <code>true</code> between <code>start()</code> and <code>stop()</code>. */
     public boolean isRunning();
 
@@ -73,19 +73,19 @@ public interface PV extends IProcessVariable
      *  but we might still be disconnected, at least temporarily.
      */
     public boolean isConnected();
-    
+
     /** @return <code>true</code> if we have write access to the PV */
     public boolean isWriteAllowed();
-    
+
     /** Internal state information on the PV.
      *  <p>
      *  Especially when <code>isConnected()</code> is <code>false</code>,
      *  this information might help to diagnose the problem:
      *  Did the PV never connect?
-     *  Was it once connected, but some error occured?
+     *  Was it once connected, but some error occurred?
      *  @return Some human readable state info */
     public String getStateInfo();
-    
+
     /** Stop the PV: disconnect, ...
      *  When the PV is no longer needed, one should 'stop' it
      *  to release resources.
@@ -97,7 +97,7 @@ public interface PV extends IProcessVariable
      *  This is the most recent value.
      *  Check isConnected() to see if this is valid,
      *  or use inside a PV listener's value update.
-     *  
+     *
      *  @see PVListener
      *  @see #isConnected()
      *  @return Returns the most recent value,

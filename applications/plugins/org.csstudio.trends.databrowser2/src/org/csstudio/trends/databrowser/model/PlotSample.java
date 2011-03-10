@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.IMinMaxDoubleValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.trends.databrowser.Messages;
 import org.eclipse.osgi.util.NLS;

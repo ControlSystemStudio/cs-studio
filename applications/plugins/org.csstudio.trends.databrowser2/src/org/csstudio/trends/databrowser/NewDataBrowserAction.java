@@ -18,17 +18,20 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
 {
+    @Override
     public void init(IWorkbenchWindow window)
     {
         // NOP
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection)
     {
         // NOP
     }
 
     /** {@inheritDoc} */
+    @Override
     public void run(IAction action)
     {
         DataBrowserEditor.createInstance();
@@ -42,6 +45,7 @@ public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
         }
     }
 
+    @Override
     public void dispose()
     {
         // NOP

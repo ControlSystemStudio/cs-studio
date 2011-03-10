@@ -1,18 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 
 /**The utility class to facilitate Javascript programming
- * for PV operation. 
+ * for PV operation.
  * @author Xihui Chen
  *
  */
 public class PVUtil{
-	
+
 	 /** Try to get a double number from the PV.
      *  <p>
      *  Some applications only deal with numeric data,
@@ -27,7 +34,7 @@ public class PVUtil{
 	public final static double getDouble(PV pv){
 		return ValueUtil.getDouble(pv.getValue());
 	}
-	
+
 	 /** Try to get a long integer number from the PV.
      *  <p>
      *  Some applications only deal with numeric data,
@@ -39,7 +46,7 @@ public class PVUtil{
 	public final static Long getLong(PV pv){
 		return (long) ValueUtil.getDouble(pv.getValue());
 	}
-	
+
 	  /** Try to get a double-typed array element from the Value.
      *  @param pv The PV.
      *  @param index The array index, 0 ... getSize()-1.
@@ -53,8 +60,8 @@ public class PVUtil{
 	public final static double getDouble(PV pv, int index){
 		return ValueUtil.getDouble(pv.getValue(), index);
 	}
-	
-	
+
+
 	 /** Try to get a double-typed array from the pv.
      *  @param pv the pv.
      *  @see #getSize(PV)
@@ -66,7 +73,7 @@ public class PVUtil{
 	public final static double[] getDoubleArray(PV pv){
 		return ValueUtil.getDoubleArray(pv.getValue());
 	}
-	
+
 	 /** Try to get an integer-typed array from the pv.
      *  @param pv the pv.
      *  @see #getSize(PV)
@@ -84,22 +91,22 @@ public class PVUtil{
 		}
 		return longArray;
 	}
-	
+
     /**Get the size of the pv's value
-     * @param pv the pv. 
+     * @param pv the pv.
      * @return Array length of the pv value. <code>1</code> for scalars. */
 	public final static double getSize(PV pv){
 		return ValueUtil.getSize(pv.getValue());
 	}
-	
-	
+
+
 	  /**
 	 * Converts the given pv's value into a string representation. For string values,
 	 * returns the value. For numeric (double and long) values, returns a
 	 * non-localized string representation. Double values use a point as the
 	 * decimal separator. For other types of values, the value's
 	 * {@link IValue#format()} method is called and its result returned.
-	 * 
+	 *
 	 * @param pv
 	 *            the pv.
 	 * @return a string representation of the value.
@@ -107,17 +114,17 @@ public class PVUtil{
 	public final static String getString(PV pv){
 		return ValueUtil.getString(pv.getValue());
 	}
-	
+
 	/**Get the full info from the pv in this format
 	 * <pre>timestamp value severity, status</pre>
 	 * @param pv
-	 * @return the full info string 
+	 * @return the full info string
 	 */
 	public final static String getFullString(PV pv){
 		return pv.getValue().toString();
 	}
-	
-	
+
+
 	/**Get the timestamp string of the pv
 	 * @param pv the pv
 	 * @return the timestamp in string.
@@ -125,7 +132,7 @@ public class PVUtil{
 	public final static String getTimeString(PV pv){
 		return pv.getValue().getTime().toString();
 	}
-	
+
 	 /** Get milliseconds since epoch, i.e. 1 January 1970 0:00 UTC.
      *  <p>
      *  Note that we always return milliseconds relative to this UTC epoch,
@@ -140,8 +147,8 @@ public class PVUtil{
 		double result = timestamp.seconds()*1000 + timestamp.nanoseconds()/1000000;
 		return result;
 	}
-	
-	
+
+
 	/**The severity of the pv.
 	 * @param pv
 	 * @return 0:OK; -1: Invalid; 1: Major; 2:Minor.
@@ -159,8 +166,8 @@ public class PVUtil{
 		}
 		return -1;
 	}
-	
-	
-	
-	
+
+
+
+
 }

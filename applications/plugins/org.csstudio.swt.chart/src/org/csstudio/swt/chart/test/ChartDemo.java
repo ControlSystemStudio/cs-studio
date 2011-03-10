@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.chart.test;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
@@ -56,6 +63,7 @@ public class ChartDemo
 
     final private Runnable sample_adder = new Runnable()
     {
+        @Override
         public void run()
         {
             if (chart.isDisposed()) {
@@ -114,23 +122,27 @@ public class ChartDemo
         // Listener Demo
         chart.addListener(new ChartListener()
         {
+            @Override
             public void aboutToZoomOrPan(final String description)
             {
                 System.out.println("ChartTest ChartListener: aboutToZoomOrPan "
                         + description);
             }
 
+            @Override
             public void changedXAxis(final XAxis xaxis)
             {
                 System.out.println("ChartTest ChartListener: XAxis changed");
             }
 
+            @Override
             public void changedYAxis(final YAxisListener.Aspect what, final YAxis yaxis)
             {
                 System.out.println("ChartTest ChartListener: " + yaxis
                                 + " has new " + what);
             }
 
+            @Override
             public void pointSelected(final int x, final int y)
             {
                 System.out.println("ChartTest ChartListener: Point " +
@@ -151,11 +163,10 @@ public class ChartDemo
                 {
                     // Does the chart automatically use the trace labels?
                     String label;
-                    if ((chart_flags & Chart.USE_TRACE_NAMES) == 0) {
+                    if ((chart_flags & Chart.USE_TRACE_NAMES) == 0)
                         label = yaxis.getLabel() + ", " + name.getName();
-                    } else {
+                    else
                         label = name.getName();
-                    }
                     addDemoTrace(label, yaxis);
                 }
             }

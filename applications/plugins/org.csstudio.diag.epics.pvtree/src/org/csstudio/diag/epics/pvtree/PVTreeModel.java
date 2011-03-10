@@ -5,8 +5,6 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -98,8 +96,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
     {
         if (root != null)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .debug("PVTreeModel disposed"); //$NON-NLS-1$
+            Plugin.getLogger().fine("PVTreeModel disposed"); //$NON-NLS-1$
             root.dispose();
             root = null;
         }

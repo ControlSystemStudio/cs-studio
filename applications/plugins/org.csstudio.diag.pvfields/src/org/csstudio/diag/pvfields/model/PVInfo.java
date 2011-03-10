@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.PlatformObject;
 /** Information about a PV.
  *  <p>
  *  Meant to be derived, and derived class must implement start(), stop(), getCurrentValue()
- *  
+ *
  *  @author Dave Purcell
  *  @author Kay Kasemir
  */
@@ -22,7 +22,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     final private String pv_name, pv_type, field_name, field_type, orig_value;
     final private String fec, date, file_name;
     private PVFieldsModel model = null;
-    
+
     /** Initialize
      *  @param pv_name PV Name
      *  @param pv_type PV Type
@@ -31,7 +31,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
      *  @param file_name
      */
     public PVInfo(final String pv_name, final String pv_type, final String fec,
-            final String date, final String file_name, final String field_name, 
+            final String date, final String file_name, final String field_name,
             final String field_type, final String orig_value
             )
     {
@@ -47,17 +47,18 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
 
     /** At least for EPICS, the value of a field can include the name of another
      *  PV. In other cases, it's just a numeric or string value.
-     *  
+     *
      *  So that we can use these values in eclipse as selection providers
      *  we may need to manipulate them.
-     *  Depending on the live value we may want the selection providers to return 
+     *  Depending on the live value we may want the selection providers to return
      *  a new PV name (a link) or just the PV or the PV.field as a PV itself.
      *  Depends on your needs.
      *  Obviously, it can also just return the name of the control system item.
-     *  
+     *
      *  @return Possibly a PV name that we extracted from the value
      *  @see IProcessVariable
 	*/
+    @Override
     public String getName()
     {
         return pv_name;
@@ -121,7 +122,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
             throw new Error("Model already set"); //$NON-NLS-1$
         this.model = model;
     }
-    
+
     /** @return Model or <code>null</code> if not set */
     PVFieldsModel getModel()
     {
@@ -141,6 +142,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     }
 
     // @see IProcessVariable
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
@@ -167,10 +169,10 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     /** @return Current value of the field     */
     public String getCurrentValue()
     {
-    	return "";
+    	return ""; //$NON-NLS-1$
     }
 
-    
+
     /** Called by derived implementation to notify model
      *  about a new 'live' (current) value
      */
@@ -180,16 +182,15 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
         if (model != null)
             model.fireFieldChanged(this);
     }
-    
+
     /**
      * @return String representation of field, used for example when printing
      *         fields in JUnit test or when viewing field in debugger
      */
+    @SuppressWarnings("nls")
     @Override
     public String toString()
     {
         return "PV " + pv_name + " field " + field_name + " = " + orig_value;
     }
-
-   
 }

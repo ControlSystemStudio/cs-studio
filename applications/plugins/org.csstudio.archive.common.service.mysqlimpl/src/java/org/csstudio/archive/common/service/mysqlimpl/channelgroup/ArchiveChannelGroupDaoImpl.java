@@ -23,21 +23,17 @@ package org.csstudio.archive.common.service.mysqlimpl.channelgroup;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 
 import com.google.common.collect.Lists;
 
@@ -49,18 +45,18 @@ import com.google.common.collect.Lists;
  */
 public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IArchiveChannelGroupDao {
 
+    private static final String EXC_MSG = "Channel group retrieval from archive failed.";
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
-    // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelGroupByEngineIdStmt =
-        "SELECT id, name, enabling_channel_id FROM archive.channel_group WHERE engine_id=? ORDER BY name";
-
+        "SELECT id, name, engine_id, description FROM " +
+        getDaoMgr().getDatabaseName() + " .channel_group" +
+        " WHERE engine_id=? ORDER BY name";
 
     /**
      * Constructor.
-     * @param the dao manager
      */
-    public ArchiveChannelGroupDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
-        super(mgr);
+    public ArchiveChannelGroupDaoImpl() {
+        super();
     }
 
     /**
@@ -70,6 +66,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     @Nonnull
     public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
+        final List<IArchiveChannelGroup> groups = Lists.newArrayList();
         PreparedStatement stmt = null;
         try {
             stmt =  getConnection().prepareStatement(_selectChannelGroupByEngineIdStmt);
@@ -77,27 +74,21 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
 
             final ResultSet result = stmt.executeQuery();
 
-            final List<IArchiveChannelGroup> groups = Lists.newArrayList();
             while (result.next()) {
                 // id, name, enabling_channel_id
-                final ArchiveChannelGroupId id = new ArchiveChannelGroupId(result.getInt(1));
-                final String name = result.getString(2);
-                final ArchiveChannelId chanId = new ArchiveChannelId(result.getInt(3));
-
-                groups.add(new ArchiveChannelGroup(id,
-                                                      name,
-                                                      chanId));
+                final ArchiveChannelGroupId id = new ArchiveChannelGroupId(result.getInt("id"));
+                final String name = result.getString("name");
+                final ArchiveEngineId engineId = new ArchiveEngineId(result.getInt("engine_id"));
+                final String desc = result.getString("description");
+                groups.add(new ArchiveChannelGroup(id, name, engineId, desc));
             }
 
-            return groups;
-
-        } catch (final ArchiveConnectionException e) {
-            throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
-        } catch (final SQLException e) {
-            throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG, e);
         } finally {
             closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
         }
+        return groups;
     }
 
 

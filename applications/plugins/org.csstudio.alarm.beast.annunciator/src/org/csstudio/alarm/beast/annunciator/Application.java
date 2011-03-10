@@ -8,6 +8,7 @@
 package org.csstudio.alarm.beast.annunciator;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import javax.jms.Connection;
 import javax.swing.JFrame;
@@ -15,7 +16,6 @@ import javax.swing.JFrame;
 import org.csstudio.alarm.beast.annunciator.model.AnnunciationMessage;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciatorListener;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -61,7 +61,8 @@ public class Application implements IApplication, JMSAnnunciatorListener
         final Bundle bundle = context.getBrandingBundle();
         final Object version = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
         // Put startup info with JMS topic & URL into log
-		CentralLogger.getInstance().getLogger(this).info
+
+        Logger.getLogger(Activator.PLUGIN_ID).info
 		    ("JMS2SPEECH " + version + ", topic " + Arrays.toString(topics) + " @ " + url);
 
         final Connection connection = JMSConnectionFactory.connect(url);

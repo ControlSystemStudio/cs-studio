@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -29,15 +30,18 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderService;
+import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
-import com.google.common.collect.Iterables;
 
 /**
  * Raw value iterator for service infrastructure.
@@ -50,31 +54,57 @@ public class DesyArchiveValueIterator implements ValueIterator {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
 
-    private Iterable<IValue> _values = Collections.emptyList();
-    private Iterator<IValue> _iterator = _values.iterator();
+    @SuppressWarnings("rawtypes")
+    private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
+        new ArchiveSampleToIValueFunction();
+
+    private final String _channelName;
+    private final TimeInstant _start;
+    private final TimeInstant _end;
+
+    private Collection<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _samples =
+        Collections.emptyList();
+
+    private Iterator<IArchiveSample<Object, IAlarmSystemVariable<Object>>> _iterator = _samples.iterator();
 
     /**
      * Constructor.
+     * @throws ArchiveServiceException
+     * @throws OsgiServiceUnavailableException
      */
     DesyArchiveValueIterator(@Nonnull final String channelName,
-                             @Nonnull final ITimestamp start,
-                             @Nonnull final ITimestamp end,
-                             @Nullable final IArchiveRequestType type) {
+                             @Nonnull final TimeInstant start,
+                             @Nonnull final TimeInstant end,
+                             @Nullable final IArchiveRequestType type) throws ArchiveServiceException, OsgiServiceUnavailableException {
 
-        IArchiveReaderService service;
-        try {
-            service = Activator.getDefault().getArchiveReaderService();
+        _channelName = channelName;
+        _start = start;
+        _end = end;
 
-            _values = service.readSamples(channelName, start, end, type);
 
-            LOG.error("Samples: " + Iterables.size(_values));
-
-        } catch (final ArchiveServiceException e) {
-            LOG.error("Failure on retrieving samples from service layer.", e);
-        } catch (final OsgiServiceUnavailableException e1) {
-            LOG.error("Archive service not present - forgot to (auto-)start?", e1);
+        if (_start.isAfter(_end)) {
+            throw new IllegalArgumentException("Start time mustn't be after end time");
         }
-        _iterator = _values.iterator();
+
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+
+        _samples = service.readSamples(channelName, start, end, type);
+        _iterator = _samples.iterator();
+    }
+
+    @Nonnull
+    public TimeInstant getStart() {
+        return _start;
+    }
+
+    @Nonnull
+    public TimeInstant getEnd() {
+        return _end;
+    }
+
+    @Nonnull
+    public String getChannelName() {
+        return _channelName;
     }
 
     /**
@@ -88,10 +118,15 @@ public class DesyArchiveValueIterator implements ValueIterator {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     @Nonnull
     public IValue next() throws Exception {
-        return _iterator.next();
+        final IValue value = ARCH_SAMPLE_2_IVALUE_FUNC.apply(_iterator.next());
+        if (value == null) {
+            throw new TypeSupportException("Sample could not be converted to " + IValue.class.getName() + " type.", null);
+        }
+        return value;
     }
 
     /**
@@ -101,5 +136,6 @@ public class DesyArchiveValueIterator implements ValueIterator {
     public void close() {
         // Useless here
     }
+
 
 }

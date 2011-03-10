@@ -23,12 +23,13 @@ package org.csstudio.domain.desy.epics.types;
 
 import java.util.List;
 
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.types.ICssValueType;
-import org.csstudio.domain.desy.types.TypeSupportException;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -118,7 +119,7 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                              new int[]{2});
 
             @SuppressWarnings("unchecked")
-            final EpicsSystemVariable<EpicsEnumTriple> cssV = (EpicsSystemVariable<EpicsEnumTriple>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
+            final EpicsSystemVariable<EpicsEnum> cssV = (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
             Assert.assertNotNull(cssV);
             Assert.assertEquals(Integer.valueOf(2), cssV.getData().getValueData().getIndex());
             Assert.assertEquals("part", cssV.getData().getValueData().getState());

@@ -40,7 +40,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
@@ -64,7 +64,7 @@ final class WriteWorker implements Runnable {
 
     private final WriteExecutor _writeExec;
     private final String _name;
-    private final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
+    private final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
     private final long _periodInMS;
 
     /** Average number of values per write run */
@@ -85,7 +85,7 @@ final class WriteWorker implements Runnable {
      */
     public WriteWorker(@Nonnull final WriteExecutor exec,
                        @Nonnull final String name,
-                       @Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
+                       @Nonnull final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
                        final long periodInMS) {
         _writeExec = exec;
         _name = name;
@@ -182,7 +182,7 @@ final class WriteWorker implements Runnable {
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples =
                 collectSamplesFromBuffers(_channels);
 
-        final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
+        final IArchiveEngineFacade writerService = Activator.getDefault().getArchiveEngineService();
         writerService.writeSamples(allSamples);
 
         return allSamples.size();
@@ -190,11 +190,11 @@ final class WriteWorker implements Runnable {
 
     @Nonnull
     private LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels) {
+    collectSamplesFromBuffers(@Nonnull final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels) {
 
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples = Lists.newLinkedList();
 
-        for (final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel : channels) {
+        for (final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel : channels) {
             final SampleBuffer<Object,
             IAlarmSystemVariable<Object>,
                                IArchiveSample<Object, IAlarmSystemVariable<Object>>> buffer = channel.getSampleBuffer();

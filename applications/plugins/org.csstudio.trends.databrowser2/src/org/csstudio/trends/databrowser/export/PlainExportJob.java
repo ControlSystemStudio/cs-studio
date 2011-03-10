@@ -10,8 +10,8 @@ package org.csstudio.trends.databrowser.export;
 import java.io.PrintStream;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
@@ -25,8 +25,8 @@ import org.eclipse.osgi.util.NLS;
 public class PlainExportJob extends ExportJob
 {
     final protected ValueFormatter formatter;
-    
-    public PlainExportJob(final Model model, 
+
+    public PlainExportJob(final Model model,
             final ITimestamp start, final ITimestamp end, final Source source,
             final int optimize_count, final ValueFormatter formatter,
             final String filename,
@@ -46,7 +46,7 @@ public class PlainExportJob extends ExportJob
         out.println(comment + "Data is in TAB-delimited columns, should import into e.g. Excel");
         out.println();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void performExport(final IProgressMonitor monitor,

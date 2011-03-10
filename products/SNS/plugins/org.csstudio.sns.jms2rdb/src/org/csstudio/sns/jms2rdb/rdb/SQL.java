@@ -12,6 +12,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** SQL Statements
  *  @author Kay Kasemir
+ *  @author Lana Abadie - PostgreSQL additions
  *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
@@ -52,12 +53,18 @@ public class SQL
             insert_message_id_datum_type_name_severity =
                 "INSERT INTO " + prefix + "message (datum, type, name, severity, id) VALUES (?,?,?,?,?)";
         }
-        else
-        {   // Other dialects use auto-increment ID column.
-            select_next_message_id = null;
-            insert_message_id_datum_type_name_severity =
-                "INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?)";
-        }
+        else if (rdb_util.getDialect() == Dialect.PostgreSQL)
+    	{	// PostgreSQL 'returns' the auto-generated ID
+    	    select_next_message_id = null;
+    	    insert_message_id_datum_type_name_severity =
+    	        "INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?) returning id";
+    	}
+    	else
+    	{   // Other dialects (MySQL) use auto-increment ID column.
+    		select_next_message_id = null;
+    		insert_message_id_datum_type_name_severity =
+    			"INSERT INTO " + prefix + "message (datum, type, name, severity) VALUES (?,?,?,?)";
+    	}
 
         insert_message_property_value =
             "INSERT INTO " + prefix + "message_content" +

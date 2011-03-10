@@ -11,15 +11,15 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
+import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.preferences.Preferences;
 import org.csstudio.utility.pv.PV;
@@ -39,9 +39,6 @@ import org.w3c.dom.Element;
  */
 public class PVItem extends ModelItem implements PVListener, IProcessVariableWithSamples
 {
-    /** Logger for debug messages. <code>null</code> when not debugging */
-    private static Logger logger = null;
-
     /** Historic and 'live' samples for this PV */
     final private PVSamples samples = new PVSamples();
 
@@ -75,9 +72,6 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
     public PVItem(final String name, final double period) throws Exception
     {
         super(name);
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        if (logger.isDebugEnabled()  &&  PVItem.logger == null)
-            PVItem.logger = logger;
         pv = PVFactory.createPV(name);
         this.period = period;
     }
@@ -301,8 +295,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
             @Override
             public void run()
             {
-                if (logger != null)
-                    logger.debug("PV " + getName() + " scans " + current_value);
+                Activator.getLogger().log(Level.FINE, "PV {0} scans {1}", new Object[] { getName(), current_value });
                 logCurrentValue();
             }
         };
@@ -371,8 +364,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         // In 'monitor' mode, add to live sample buffer
         if (period <= 0)
         {
-            if (logger != null)
-                logger.debug("PV " + getName() + " update " + value);
+            Activator.getLogger().log(Level.FINE, "PV {0} update {1}", new Object[] { getName(), value });
             samples.addLiveSample(value);
         }
     }

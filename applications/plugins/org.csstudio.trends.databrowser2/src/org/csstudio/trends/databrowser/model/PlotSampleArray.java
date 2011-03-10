@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** Plain array implementation of PlotSamples
  *  @author Kay Kasemir

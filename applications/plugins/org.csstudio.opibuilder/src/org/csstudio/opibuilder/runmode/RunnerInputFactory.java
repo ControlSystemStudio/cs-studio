@@ -1,16 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 /**
- * Factory for saving and restoring a <code>RunnerInput</code>. 
+ * Factory for saving and restoring a <code>RunnerInput</code>.
  * The stored representation of a <code>RunnerInput</code> remembers
  * the full path of the file (that is, <code>IFile.getFullPath</code>) and <code>
  * MacrosInput</code>.
@@ -25,9 +34,9 @@ import org.eclipse.ui.IMemento;
  */
 public class RunnerInputFactory implements IElementFactory {
 
-	private static final String ID_FACTORY = 
+	private static final String ID_FACTORY =
 		"org.csstudio.opibuilder.runmode.RunnerInputFactory"; //$NON-NLS-1$
-	
+
 	private static final String TAG_PATH = "path"; //$NON-NLS-1$
 	private static final String TAG_MACRO = "macro"; //$NON-NLS-1$
 
@@ -52,21 +61,21 @@ public class RunnerInputFactory implements IElementFactory {
 			try {
 				macrosInput = MacrosInput.recoverFromString(macroString);
 			} catch (Exception e) {
-				CentralLogger.getInstance().error(this, "Failed to recover macro", e);
-			}       
+                OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to recover macro", e); //$NON-NLS-1$
+			}
 		return new RunnerInput(path, null, macrosInput);
-		
+
 	}
-	
+
 	/**
      * Returns the element factory id for this class.
-     * 
+     *
      * @return the element factory id
      */
     public static String getFactoryId() {
         return ID_FACTORY;
     }
-    
+
     /**
      * Saves the state of the given RunnerInput into the given memento.
      *

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editor;
 
 import org.eclipse.ui.IFolderLayout;
@@ -9,6 +16,9 @@ import org.eclipse.ui.IPerspectiveFactory;
  */
 public class OPIEditorPerspective implements IPerspectiveFactory
 {
+    /** Perspective ID defined in plugin.xml */
+    final public static String ID = "org.csstudio.opibuilder.opieditor";  //$NON-NLS-1$
+
     private static final String ID_LEFT_BOTTOM = "bottomRight";  //$NON-NLS-1$
 	private static final String ID_BOTTOM_LEFT = "bottomLeft";//$NON-NLS-1$
 	private static final String ID_RIGHT = "right";//$NON-NLS-1$
@@ -24,11 +34,11 @@ public class OPIEditorPerspective implements IPerspectiveFactory
     /** Create suggested OPI Editor layout:
      *  <pre>Navigator | Editor | Properties</pre>
      */
-    @SuppressWarnings({ "nls", "deprecation" })
+    @SuppressWarnings("deprecation")
     public void createInitialLayout(IPageLayout layout)
     {
         final String editor = layout.getEditorArea();
-        
+
         final IFolderLayout left = layout.createFolder(ID_LEFT,
                 IPageLayout.LEFT, 0.2f, editor);
         final IFolderLayout right = layout.createFolder(ID_RIGHT,
@@ -42,15 +52,15 @@ public class OPIEditorPerspective implements IPerspectiveFactory
         left.addView(ID_NAVIGATOR);
         left.addPlaceholder(IPageLayout.ID_RES_NAV);
         leftBottom.addView(IPageLayout.ID_OUTLINE);
-        
+
         // Stuff for 'right'
         right.addView(IPageLayout.ID_PROP_SHEET);
-             
-        
+
+
         //Stuff for 'bottom'
-        bottom.addView(ID_CONSOLE_VIEW);               
+        bottom.addView(ID_CONSOLE_VIEW);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
-        
+
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(ID_NAVIGATOR);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);

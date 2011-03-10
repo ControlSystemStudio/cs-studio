@@ -13,13 +13,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.archive.rdb.TestSetup.TestType;
 import org.csstudio.archive.rdb.internal.TimestampUtil;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
 @SuppressWarnings("nls")
@@ -38,16 +38,16 @@ public class RDBArchiveTest
     public void testChannelLookup() throws Exception
     {
         final RDBArchive archive = RDBArchive.connect(TestSetup.URL);
-        
+
         final ChannelConfig channel = archive.getChannel(TestType.DOUBLE.getPvName());
         assertEquals(TestType.DOUBLE.getPvName(), channel.getName());
-        
+
         final ChannelConfig[] channels = archive.findChannels("DTL_LLRF");
         for (ChannelConfig ch : channels)
         {
             System.out.println(ch);
         }
-        
+
         archive.close();
     }
 
@@ -55,11 +55,11 @@ public class RDBArchiveTest
     public void testChannelTimes() throws Exception
     {
         final RDBArchive archive = RDBArchive.connect(TestSetup.URL);
-        
+
         final ChannelConfig channel = archive.getChannel(TestType.DOUBLE.getPvName());
         final ITimestamp last = channel.getLastTimestamp();
         System.out.println("Last:  " + last);
-        
+
         archive.close();
     }
 
@@ -67,12 +67,12 @@ public class RDBArchiveTest
     public void testWrite() throws Exception
     {
         final RDBArchive archive = RDBArchive.connect(TestSetup.URL);
-        
+
         final ChannelConfig channel = archive.getChannel(TestType.DOUBLE.getPvName());
-        
+
         final ISeverity severity = ValueFactory.createMinorSeverity();
         final String status = "Test";
-        
+
         final INumericMetaData numeric_meta =
             ValueFactory.createNumericMetaData(-10.0, 10.0, -8.0, 8.0,
                     -9.0, 9.0, 1, "Tests");
@@ -88,7 +88,7 @@ public class RDBArchiveTest
             channel.batchSample(sample);
         }
         archive.commitBatch();
-        
+
         archive.close();
     }
 
@@ -96,7 +96,7 @@ public class RDBArchiveTest
     public void testRawSamples() throws Exception
     {
         final RDBArchive archive = RDBArchive.connect(TestSetup.URL);
-        
+
         final ChannelConfig channel = archive.getChannel(TestType.DOUBLE.getPvName());
         // Get last 5 minutes
         final ITimestamp end = channel.getLastTimestamp();
@@ -112,7 +112,7 @@ public class RDBArchiveTest
                 break;
         }
         assertTrue(count > 0);
-        
+
         archive.close();
     }
 }

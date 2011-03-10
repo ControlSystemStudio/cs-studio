@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb.internal.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.csstudio.archive.rdb.internal.TimestampUtil;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Test;
 
 /** Tests for TimestampUtil

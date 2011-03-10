@@ -10,14 +10,15 @@ package org.csstudio.alarm.beast.ui.clientmodel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Information about an alarm update
@@ -58,8 +59,7 @@ public class AlarmUpdateInfo
         }
         catch (ParseException ex)
         {
-            CentralLogger.getInstance().getLogger(AlarmUpdateInfo.class)
-                .warn("Received invalid time " + timetext);
+            Activator.getLogger().log(Level.WARNING, "Received invalid time {0}", timetext);
             time = new Date();
         }
         final long millisecs = time.getTime();

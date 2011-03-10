@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.rdbtable.model;
 
 import static org.junit.Assert.*;
@@ -9,19 +16,21 @@ import org.junit.Test;
  *  <b>NOTE:
  *     Some tests modify RDB data, so only run on a test RDB!
  *  </b>
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class RDBTableModelTest implements RDBTableModelListener
 {
     /** @see RDBTableModelListener */
+    @Override
     public void rowChanged(final RDBTableRow row)
     {
         System.out.println("Row changed: " + row);
     }
-    
+
     /** @see RDBTableModelListener */
+    @Override
     public void newRow(final RDBTableRow row)
     {
         System.out.println("Added Row: " + row);
@@ -35,16 +44,16 @@ public class RDBTableModelTest implements RDBTableModelListener
         assertEquals(false, table.needPassword());
         table.read();
         table.addListener(this);
-        
+
         // Read configuration
         assertEquals("Example Configuration", table.getTitle());
         assertEquals(2, table.getColumnCount());
         assertEquals("Name", table.getHeader(1));
-        
+
         // Read initial data
         assertTrue(table.getRowCount() > 0);
         System.out.println(table.toString());
-        
+
         // Allow changes
         assertEquals(false, table.wasModified());
         table.addRow(new String [] { "9999", "Test" });
@@ -54,7 +63,7 @@ public class RDBTableModelTest implements RDBTableModelListener
 
         table.getRow(last_row).setColumn(1, "Changed");
         assertEquals("Changed", table.getRow(last_row).getColumn(1));
-        
+
         // Write changes out
         table.write();
         assertEquals(false, table.wasModified());

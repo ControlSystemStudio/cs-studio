@@ -24,12 +24,12 @@
  */
 package org.csstudio.platform.model;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /**
  * Interface to a control system process variable with samples.
  * @see IProcessVariable
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -42,15 +42,14 @@ public interface IProcessVariableWithSamples extends IProcessVariable {
     String TYPE_ID = "css:processVariableWithSamples"; //$NON-NLS-1$
 
     /**
-     * 
+     *
      * @return the Number of Samples
      */
     int size();
-    
+
     /**
-    * @param index of Sample 
+    * @param index of Sample
     * @return the Sample with index
     */
     IValue getSample(int index);
-
 }

@@ -1,7 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -19,7 +28,7 @@ import org.eclipse.ui.WorkbenchException;
  *
  */
 public class RunModeService {
-	
+
 	public enum TargetWindow{
 		NEW_WINDOW,
 		SAME_WINDOW,
@@ -27,29 +36,29 @@ public class RunModeService {
 	}
 
 	private IWorkbenchWindow runWorkbenchWindow;
-	
-	
+
+
 	private static RunModeService instance;
-	
+
 	public static RunModeService getInstance(){
 		if(instance == null)
 			instance = new RunModeService();
 		return instance;
 	}
-	
-	
+
+
 	public IWorkbenchWindow getRunWorkbenchWindow(){
 		return runWorkbenchWindow;
 	}
-	
-	
+
+
 	public void replaceActiveEditorContent(IRunnerInput input) throws PartInitException{
 		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-			getActivePage().getActiveEditor();		
+			getActivePage().getActiveEditor();
 		activeEditor.init(activeEditor.getEditorSite(),input);
-		
+
 	}
-	
+
 	/**Run an OPI file with necessary parameters. This function should be called when open an OPI
 	 * from another OPI.
 	 * @param path
@@ -57,11 +66,11 @@ public class RunModeService {
 	 * @param displayOpenManager
 	 * @param macrosInput
 	 */
-	public void runOPI(IPath path, TargetWindow targetWindow, DisplayOpenManager displayOpenManager, 
+	public void runOPI(IPath path, TargetWindow targetWindow, DisplayOpenManager displayOpenManager,
 			MacrosInput macrosInput){
 		runOPI(path, targetWindow, displayOpenManager, macrosInput, null);
 	}
-	
+
 	/**Run an OPI file in the target window.
 	 * @param path
 	 * @param targetWindow
@@ -69,19 +78,19 @@ public class RunModeService {
 	public void runOPI(IPath path, TargetWindow targetWindow, Rectangle windowSize){
 		runOPI(path, targetWindow, null, null, windowSize);
 	}
-	
+
 	/**Run an OPI file.
 	 * @param path the file to be ran. If displayModel is not null, this will be ignored.
 	 * @param displayModel the display model to be ran. null for file input only.
-	 * @param displayOpenManager the manager help to manage the opened displays. null if the OPI is not 
-	 * replacing the current active display. 
+	 * @param displayOpenManager the manager help to manage the opened displays. null if the OPI is not
+	 * replacing the current active display.
 	 */
 	public void runOPI(final IPath path, final TargetWindow target,
 			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Rectangle windowBounds){
 		final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			 public void run() {
-		
+
 				IWorkbenchWindow targetWindow = null;
 				switch (target) {
 				case NEW_WINDOW:
@@ -94,23 +103,24 @@ public class RunModeService {
 							public void pageClosed(IWorkbenchPage page) {
 								runWorkbenchWindow = null;
 							}
-		
+
 							public void pageActivated(IWorkbenchPage page) {
-								
+							    // NOP
 							}
-		
+
 							public void pageOpened(IWorkbenchPage page) {
-								
+                                // NOP
 							}
 						});
 					}else{
-						for(IEditorReference editor : 
+						for(IEditorReference editor :
 							runWorkbenchWindow.getActivePage().getEditorReferences()){
 							try {
 								if(editor.getEditorInput().equals(runnerInput))
 									editor.getPage().closeEditor(editor.getEditor(false), false);
 							} catch (PartInitException e) {
-								CentralLogger.getInstance().error(this,e);
+						         OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						                    "Cannot close editor", e); //$NON-NLS-1$
 							}
 						}
 					}
@@ -121,9 +131,9 @@ public class RunModeService {
 					targetWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 					break;
 				}
-				
-				
-				
+
+
+
 				if(targetWindow != null){
 					try {
 						targetWindow.getShell().forceActive();
@@ -132,10 +142,11 @@ public class RunModeService {
 								runnerInput, "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this, "Failed to run OPI " + path.lastSegment(), e);
+						OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						        "Failed to run OPI " + path.lastSegment(), e);
 					}
 				}
-				
+
 				}
 			});
 	}
@@ -146,21 +157,21 @@ public class RunModeService {
 	 */
 	private IWorkbenchWindow createNewWindow(Rectangle windowBounds) {
 		IWorkbenchWindow newWindow = null;
-		try {				
-			newWindow = 
+		try {
+			newWindow =
 				PlatformUI.getWorkbench().openWorkbenchWindow("org.csstudio.opibuilder.OPIRunner", null); //$NON-NLS-1$
 			if(windowBounds != null){
 				if(windowBounds.x >=0 && windowBounds.y > 1)
 					newWindow.getShell().setLocation(windowBounds.x, windowBounds.y);
 				newWindow.getShell().setSize(windowBounds.width+45, windowBounds.height + 165);
 			}
-		
+
 		} catch (WorkbenchException e) {
-			CentralLogger.getInstance().error(this, "Failed to open new window", e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to open new window", e);
 		}
 		return newWindow;
 	}
-	
-	
-	
+
+
+
 }
