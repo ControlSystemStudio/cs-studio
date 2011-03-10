@@ -64,6 +64,7 @@ public class SearchChannels extends Job {
 		String[] words = searchPattern.split("\\s");
 		if (words.length < 0) {
 			// ERROR
+			throw new IllegalArgumentException("no arguments specified");
 		}
 		for (int index = 0; index < words.length; index++) {
 			if (!words[index].contains("=")) {
