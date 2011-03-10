@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;

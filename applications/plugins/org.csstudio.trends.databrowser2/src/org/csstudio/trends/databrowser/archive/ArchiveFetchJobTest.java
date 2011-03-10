@@ -9,8 +9,8 @@ package org.csstudio.trends.databrowser.archive;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.PlotSamples;

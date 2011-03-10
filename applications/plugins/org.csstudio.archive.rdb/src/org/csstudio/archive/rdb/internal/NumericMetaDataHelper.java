@@ -13,8 +13,8 @@ import java.sql.ResultSet;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ValueFactory;
 
 /** Helper for handling the numeric meta data table.
  *  @author Kay Kasemir
@@ -25,7 +25,7 @@ public class NumericMetaDataHelper
     {
         // prevent instantiation
     }
-    
+
     /** Locate numeric meta data for a channel.
      *  @param archive Archive to search
      *  @param channel Channel for which to get the numeric meta data
@@ -54,7 +54,7 @@ public class NumericMetaDataHelper
         }
         return null;
     }
-    
+
     /** Set the numeric meta data for a channel.
      *  This either sets new meta data or modifies the existing entry.
      *  @param archive Archive connection
@@ -83,7 +83,7 @@ public class NumericMetaDataHelper
         insert(archive, channel, meta);
         archive.getRDB().getConnection().commit();
     }
-    
+
     /** Helper: Insert meta data into archive. */
     private static void insert(final RDBArchive archive,
             final ChannelConfig channel, final INumericMetaData meta) throws Exception
@@ -113,8 +113,8 @@ public class NumericMetaDataHelper
         {
             insert.close();
         }
-    }    
-    
+    }
+
     /** Helper: Delete meta data for channel. */
     private static void delete(final RDBArchive archive,
             final ChannelConfig channel) throws Exception

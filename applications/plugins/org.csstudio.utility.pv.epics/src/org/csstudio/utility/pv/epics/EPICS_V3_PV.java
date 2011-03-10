@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import gov.aps.jca.Channel;
-import gov.aps.jca.Monitor;
 import gov.aps.jca.Channel.ConnectionState;
+import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.event.ConnectionEvent;
@@ -16,9 +23,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
@@ -31,8 +37,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EPICS_V3_PV
-            extends PlatformObject
+public class EPICS_V3_PV extends PlatformObject
             implements PV, ConnectionListener, MonitorListener
 {
     /** Use plain mode?
@@ -610,9 +615,9 @@ public class EPICS_V3_PV
     public void monitorChanged(final MonitorEvent ev)
     {
         //INumericMetaData metaData = (INumericMetaData) DBR_Helper.decodeMetaData(ev.getDBR());
-        
+
         Activator.getLogger().log(Level.FINEST, "meta: {0}", new Object[] { ev.getDBR().getClass().getName() });
-        
+
         final Logger log = Activator.getLogger();
         // This runs in a CA thread.
         // Ignore values that arrive after stop()

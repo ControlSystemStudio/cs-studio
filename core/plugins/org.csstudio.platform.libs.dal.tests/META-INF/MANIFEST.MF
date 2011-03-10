@@ -8,7 +8,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.libs.dal.epics,
  org.csstudio.platform.libs.dal.simulator,
- org.csstudio.platform.libs.dal.tango,
  org.csstudio.platform.libs.dal.tine,
  org.junit;bundle-version="4.8.1"
 Bundle-ActivationPolicy: lazy

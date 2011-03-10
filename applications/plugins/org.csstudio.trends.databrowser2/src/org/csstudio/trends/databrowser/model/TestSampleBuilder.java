@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Unit-test helper for creating samples
  *  @author Kay Kasemir

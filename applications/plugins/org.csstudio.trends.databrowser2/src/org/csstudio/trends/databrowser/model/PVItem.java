@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithSamples;

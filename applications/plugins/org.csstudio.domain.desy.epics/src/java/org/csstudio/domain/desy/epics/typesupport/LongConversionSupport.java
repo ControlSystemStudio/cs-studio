@@ -24,12 +24,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.domain.desy.epics.alarm.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
 
 final class LongConversionSupport extends EpicsIMetaDataTypeSupport<Long> {
 

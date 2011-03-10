@@ -18,7 +18,8 @@ public class GreaterEqualNode extends AbstractBinaryNode
     {
         super(left, right);
     }
-    
+
+    @Override
     public double eval()
     {
         final double a = left.eval();

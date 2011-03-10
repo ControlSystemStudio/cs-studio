@@ -12,9 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;

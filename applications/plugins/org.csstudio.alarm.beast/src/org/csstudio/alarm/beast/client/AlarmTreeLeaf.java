@@ -10,9 +10,9 @@ package org.csstudio.alarm.beast.client;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.apputil.time.SecondsParser;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ITimestamp.Format;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.ITimestamp.Format;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.osgi.util.NLS;
 

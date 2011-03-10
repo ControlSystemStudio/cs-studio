@@ -14,11 +14,11 @@ import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.platform.data.IMinMaxDoubleValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.trends.databrowser.Messages;
 import org.w3c.dom.Element;
 
@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  *  The 'display_name' could be another human-readable name that's
  *  used in the plot.
  *  The 'formula' is the actual formula (expression, input variables).
- *  
+ *
  *  @author Kay Kasemir
  */
 public class FormulaItem extends ModelItem
@@ -43,12 +43,12 @@ public class FormulaItem extends ModelItem
      *  <code>variables</code> must therefore synchronize on <code>this</code>.
      */
     private Formula formula;
-    
+
     /** Input elements to the formula
      *  @see #formula for synchronization
      */
     private FormulaInput inputs[];
-    
+
     /** Variable nodes.
      *  Array elements correspond to entries in <code>inputs[]</code>
      *  @see #formula for synchronization
@@ -79,14 +79,14 @@ public class FormulaItem extends ModelItem
     {
         return formula.getFormula();
     }
-    
+
     /** @return inputs that are currently used in the formula */
     public FormulaInput[] getInputs()
     {
         return inputs;
     }
 
-    /** Check if formula uses given input 
+    /** Check if formula uses given input
      *  @param item ModelItem potentially used in formula
      *  @return <code>true</code> if used as input
      */
@@ -135,12 +135,12 @@ public class FormulaItem extends ModelItem
             // In computation loop, values is actually moved to the _next_
             // value
             final IValue values[] = new IValue[inputs.length];
-            
+
             // 'Current' numeric min/val/max of values
             final double min[] = new double[inputs.length];
             final double val[] = new double[inputs.length];
             final double max[] = new double[inputs.length];
-    
+
             // Determine first sample for each input
             boolean more_input = false;
             for (int i = 0; i < values.length; i++)
@@ -152,7 +152,7 @@ public class FormulaItem extends ModelItem
                 if (values[i] != null)
                     more_input = true;
             }
-    
+
             // Compute result for each 'line in the spreadsheet'
             ITimestamp time;
             while (more_input)
@@ -171,7 +171,7 @@ public class FormulaItem extends ModelItem
                     more_input = false;
                     break;
                 }
-    
+
                 // 'time' now defines the current spreadsheet line.
                 // Set min/max/val to sample from each input for that time.
                 // This might move values[i] resp. the inputs' iterators
@@ -213,14 +213,14 @@ public class FormulaItem extends ModelItem
                             have_min_max = false;
                     }
                 }
-    
+
                 // Set variables[] from val to get res_val
                 for (int i = 0; i < values.length; i++)
                     variables[i].setValue(val[i]);
                 // Evaluate formula for these inputs
                 final double res_val = formula.eval();
                 final IValue value;
-                
+
                 if (have_min_max)
                 {   // Set variables[] from min
                     for (int i = 0; i < values.length; i++)
@@ -243,12 +243,12 @@ public class FormulaItem extends ModelItem
                             new double[] { res_val });
                 }
                 result.add(value);
-            }   
+            }
         }
         // Convert numbers into PlotSamples
         samples.set(Messages.Formula, result);
     }
-    
+
     /** Re-evaluate the formula in case some of the input samples changed.
      *  @return <code>true</code> if it indeed re-evaluated,
      *          <code>false</code> if we assume there is no need to do anything.

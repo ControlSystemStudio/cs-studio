@@ -1,10 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.junit.Test;
 
@@ -13,8 +20,6 @@ import org.junit.Test;
  *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
  *
  *  @author Kay Kasemir
- *
- *  FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_SyncTest
@@ -36,7 +41,7 @@ public class EPICS_V3_PV_SyncTest
     {
         final PV fred = getPV("fred");
         final IValue value = fred.getValue(10.0); // 50,000.0 seconds seems a bit high
-        //System.out.println(value);
+        System.out.println(value);
         fred.stop();
     }
 
@@ -78,10 +83,10 @@ public class EPICS_V3_PV_SyncTest
         final PV longs = getPV("longs");
 
         final double timeout_secs = 5.0;
-        //System.out.println(fred.getValue(timeout_secs));
-        //System.out.println(janet.getValue(timeout_secs));
-        //System.out.println(longs.getValue(timeout_secs));
-        //System.out.println(fred.getValue(timeout_secs));
+        System.out.println(fred.getValue(timeout_secs));
+        System.out.println(janet.getValue(timeout_secs));
+        System.out.println(longs.getValue(timeout_secs));
+        System.out.println(fred.getValue(timeout_secs));
 
         longs.stop();
         fred.stop();

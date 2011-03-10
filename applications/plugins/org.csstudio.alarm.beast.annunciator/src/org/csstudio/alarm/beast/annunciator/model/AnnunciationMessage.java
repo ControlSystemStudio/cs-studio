@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.model;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Combination of message and Severity, used by SpeechPriorityQueue.
  *

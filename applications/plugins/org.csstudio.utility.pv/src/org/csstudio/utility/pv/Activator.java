@@ -7,10 +7,11 @@
  ******************************************************************************/
 package org.csstudio.utility.pv;
 
-/** Plugin-activator for the PV.
+/** (Not really a) Plugin-activator
  *  @author Kay Kasemir
  */
-public class Activator extends org.eclipse.core.runtime.Plugin
+public class Activator
 {
+    /** Plugin ID defined in MANIFEST.MF */
 	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
 }

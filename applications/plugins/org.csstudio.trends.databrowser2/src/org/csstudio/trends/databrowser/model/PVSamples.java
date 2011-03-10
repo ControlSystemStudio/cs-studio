@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser.model;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser.Messages;
 

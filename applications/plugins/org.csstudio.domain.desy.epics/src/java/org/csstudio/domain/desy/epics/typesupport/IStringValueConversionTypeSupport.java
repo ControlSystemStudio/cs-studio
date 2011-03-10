@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IStringValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -31,7 +32,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IStringValue;
 
 import com.google.common.collect.Lists;
 

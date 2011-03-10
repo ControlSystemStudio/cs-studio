@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.diag.probe;
 
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 
 /** Info about the most recent value.
  *  <p>
@@ -24,7 +24,7 @@ public class ValueInfo
 {
     /** The most recent value of the PV. */
     private String value_txt = ""; //$NON-NLS-1$
-    
+
     /** The most recent numeric meta data of the PV, or <code>null</code> */
     private INumericMetaData numeric_metadata = null;
 
@@ -33,10 +33,10 @@ public class ValueInfo
      *  Only valid if numeric_metatdata != null.
      */
     private double value_dbl;
-    
+
     /** The most recent time stamp of the PV. */
     private ITimestamp time = null;
-    
+
     /** Smoothed period in seconds between received values. */
     private SmoothedDouble value_period = new SmoothedDouble();
 
@@ -49,12 +49,12 @@ public class ValueInfo
     {
         return value_txt == null ? "" : value_txt; //$NON-NLS-1$
     }
-    
+
     synchronized public String getValueString()
     {
     	return value_str == null ? "" : value_str; //$NON-NLS-1$
     }
-    
+
     synchronized INumericMetaData getNumericMetaData()
     {
         return numeric_metadata;
@@ -69,7 +69,7 @@ public class ValueInfo
     {
         return time == null ? "" : time.toString(); //$NON-NLS-1$
     }
-    
+
     synchronized double getUpdatePeriod()
     {
         return value_period.get();
@@ -80,12 +80,12 @@ public class ValueInfo
         value_txt = ""; //$NON-NLS-1$
         time = null;
     }
-    
+
     synchronized public void update(IValue value)
     {
         value_txt = ValueUtil.formatValueAndSeverity(value);
         value_str = ValueUtil.getString(value);
-        
+
         final IMetaData meta = value.getMetaData();
         if (meta instanceof INumericMetaData)
         {
@@ -94,7 +94,7 @@ public class ValueInfo
         }
         else
             numeric_metadata = null;
-        
+
         final ITimestamp new_time = value.getTime();
         if (time != null)
         {

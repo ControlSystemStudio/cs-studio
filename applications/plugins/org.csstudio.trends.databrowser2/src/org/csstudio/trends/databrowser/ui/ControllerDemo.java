@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaItem;

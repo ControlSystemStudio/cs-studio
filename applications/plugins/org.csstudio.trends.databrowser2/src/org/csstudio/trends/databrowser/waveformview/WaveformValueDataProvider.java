@@ -9,8 +9,8 @@ package org.csstudio.trends.databrowser.waveformview;
 
 import java.util.ArrayList;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;

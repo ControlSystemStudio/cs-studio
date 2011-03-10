@@ -44,6 +44,7 @@
       <plugin id="org.csstudio.archivereader"/>
       <plugin id="org.csstudio.archivereader.channelarchiver"/>
       <plugin id="org.csstudio.common.product"/>
+      <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.channelfinderviewer"/>

@@ -17,8 +17,8 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.logging.LogConfigurator;
-import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 

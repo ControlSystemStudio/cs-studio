@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.util.wizard;
 
 import java.io.ByteArrayInputStream;
@@ -71,6 +78,7 @@ public class NewFileWizard extends Wizard implements INewWizard
     /** Remember selection from workbench to see if we can initialize from it.
      *  @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
      */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
         this.selection = selection;
@@ -95,6 +103,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         final String fileName = page.getFileName();
         IRunnableWithProgress op = new IRunnableWithProgress()
         {
+            @Override
             public void run(IProgressMonitor monitor)
                     throws InvocationTargetException
             {
@@ -165,6 +174,7 @@ public class NewFileWizard extends Wizard implements INewWizard
         monitor.setTaskName(Messages.OpeningFile___);
         getShell().getDisplay().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 try

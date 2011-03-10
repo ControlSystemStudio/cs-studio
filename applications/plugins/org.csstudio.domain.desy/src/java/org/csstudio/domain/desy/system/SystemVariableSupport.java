@@ -26,9 +26,9 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IValue;
 import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Maps;

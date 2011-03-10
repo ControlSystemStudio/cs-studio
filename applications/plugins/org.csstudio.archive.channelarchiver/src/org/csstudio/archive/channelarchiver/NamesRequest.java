@@ -9,8 +9,8 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.Messages;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
 /**
  * Handles the "archiver.names" request and its results.

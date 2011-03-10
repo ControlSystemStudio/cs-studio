@@ -24,11 +24,11 @@ package org.csstudio.domain.desy.epics.typesupport;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IMetaData;
 import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IMetaData;
 
 import com.google.common.collect.Sets;
 

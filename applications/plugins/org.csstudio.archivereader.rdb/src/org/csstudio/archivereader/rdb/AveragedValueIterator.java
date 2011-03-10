@@ -8,14 +8,14 @@
 package org.csstudio.archivereader.rdb;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
 
 /** Averaging sample iterator.
  *

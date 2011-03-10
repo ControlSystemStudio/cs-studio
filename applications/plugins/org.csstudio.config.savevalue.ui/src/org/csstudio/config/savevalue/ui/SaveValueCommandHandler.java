@@ -1,9 +1,9 @@
 package org.csstudio.config.savevalue.ui;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

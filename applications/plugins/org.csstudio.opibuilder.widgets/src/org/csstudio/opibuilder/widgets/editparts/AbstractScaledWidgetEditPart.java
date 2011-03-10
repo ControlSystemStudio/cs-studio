@@ -6,6 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -13,17 +15,15 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.eclipse.draw2d.IFigure;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractScaledWidgetModel}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditPart {
 
@@ -32,7 +32,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 	 * {@link AbstractScaledWidgetFigure} base class. This method is provided for the
 	 * convenience of subclasses, which can call this method in their
 	 * implementation of {@link AbstractBaseEditPart#doCreateFigure()}.
-	 * 
+	 *
 	 * @param figure
 	 *            the figure.
 	 * @param model
@@ -40,19 +40,19 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 	 */
 	protected void initializeCommonFigureProperties(
 			final AbstractScaledWidgetFigure figure, final AbstractScaledWidgetModel model) {
-		
+
 		figure.setRange(model.getMinimum(), model.getMaximum());
 		figure.setValue((model.getMinimum() + model.getMaximum())/2);
 		figure.setMajorTickMarkStepHint(model.getMajorTickStepHint());
 		figure.setLogScale(model.isLogScaleEnabled());
 		figure.setShowScale(model.isShowScale());
-		figure.setShowMinorTicks(model.isShowMinorTicks());	
+		figure.setShowMinorTicks(model.isShowMinorTicks());
 		figure.setTransparent(model.isTransparent());
 		figure.getScale().setFont(model.getScaleFont().getSWTFont());
 		setScaleFormat(figure, model.getScaleFormat());
 		setValueLabelFormat(figure, model.getValueLabelFormat());
-	}	
-	
+	}
+
 	/**
 	 * Registers property change handlers for the properties defined in
 	 * {@link AbstractScaledWidgetModel}. This method is provided for the convenience
@@ -73,7 +73,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
-		
+
 		//minimum
 		IWidgetPropertyChangeHandler minimumHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -85,7 +85,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MIN, minimumHandler);
-		
+
 		//maximum
 		IWidgetPropertyChangeHandler maximumHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -97,7 +97,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
-		
+
 		//major tick step hint
 		IWidgetPropertyChangeHandler majorTickHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -109,9 +109,9 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
-	
-		
-		
+
+
+
 		//logScale
 		IWidgetPropertyChangeHandler logScaleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -123,7 +123,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOG_SCALE, logScaleHandler);
-		
+
 		//showScale
 		IWidgetPropertyChangeHandler showScaleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -135,8 +135,8 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
-		
-	
+
+
 		//showMinorTicks
 		IWidgetPropertyChangeHandler showMinorTicksHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -148,7 +148,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
-		
+
 		//Transparent
 		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -160,8 +160,8 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);
-		
-		IWidgetPropertyChangeHandler scaleFontHandler = new IWidgetPropertyChangeHandler() {			
+
+		IWidgetPropertyChangeHandler scaleFontHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.getScale().setFont(((OPIFont)newValue).getSWTFont());
@@ -169,10 +169,10 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SCALE_FONT, scaleFontHandler);
-		
+
 		//scale format
 		IWidgetPropertyChangeHandler numericFormatHandler = new IWidgetPropertyChangeHandler() {
-			
+
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
 				setScaleFormat(scaleFigure, (String)newValue);
@@ -180,10 +180,10 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SCALE_FORMAT, numericFormatHandler);
-	
+
 		//value label format
 		IWidgetPropertyChangeHandler valueFormatHandler = new IWidgetPropertyChangeHandler() {
-			
+
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				AbstractScaledWidgetFigure scaleFigure = (AbstractScaledWidgetFigure) figure;
 				setValueLabelFormat(scaleFigure, (String)newValue);
@@ -191,7 +191,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_VALUE_LABEL_FORMAT, valueFormatHandler);
-	
+
 	}
 
 	private void setScaleFormat(AbstractScaledWidgetFigure scaleFigure, String numericFormat){
@@ -203,8 +203,8 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 				scale.setAutoFormat(false);
 				scale.setFormatPattern(numericFormat);
 			} catch (Exception e) {
-				ConsoleService.getInstance().writeError(numericFormat + 
-						" is illegal Numeric Format." + 
+				ConsoleService.getInstance().writeError(numericFormat +
+						" is illegal Numeric Format." +
 						" The scale will be auto formatted.");
 				scale.setAutoFormat(true);
 			}
@@ -212,28 +212,28 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		//update value label
 		scaleFigure.setValue(scaleFigure.getValue());
 	}
-	
-	private void setValueLabelFormat(AbstractScaledWidgetFigure scaleFigure, 
+
+	private void setValueLabelFormat(AbstractScaledWidgetFigure scaleFigure,
 			String valueLabelFormat){
 		try {
 			scaleFigure.setValueLabelFormat(valueLabelFormat);
 		} catch (Exception e) {
-			ConsoleService.getInstance().writeError(valueLabelFormat + 
-					" is illegal Numeric Format." + 
+			ConsoleService.getInstance().writeError(valueLabelFormat +
+					" is illegal Numeric Format." +
 					" The value label will be formatted in the same way as scale.");
 			scaleFigure.setValueLabelFormat(""); //$NON-NLS-1$
 		}
 	}
-	
+
 	@Override
 	public void setValue(Object value) {
 		if(value instanceof Double || value instanceof Integer)
 			((AbstractScaledWidgetFigure)getFigure()).setValue((Double)value);
 	}
-	
+
 	@Override
 	public Double getValue() {
 		return ((AbstractScaledWidgetFigure)getFigure()).getValue();
 	}
-	
+
 }

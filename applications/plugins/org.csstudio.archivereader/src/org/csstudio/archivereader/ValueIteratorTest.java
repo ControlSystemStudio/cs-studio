@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archivereader;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.junit.Test;
 
 /** JUnit test of the value iterators

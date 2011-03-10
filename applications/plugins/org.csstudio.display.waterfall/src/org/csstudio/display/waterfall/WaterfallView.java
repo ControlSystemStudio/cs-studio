@@ -33,6 +33,15 @@ public class WaterfallView extends ViewPart {
 	 */
 	public void setFocus() {
 	}
+	
+	public void setPVName(String name) {
+		System.out.println("Setting PVName to " + name);
+		combo.setText(name);
+		waterfallComposite.setPvName(name);
+	}
+	
+	private Combo combo;
+	private WaterfallWidget waterfallComposite;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -46,14 +55,14 @@ public class WaterfallView extends ViewPart {
 		lblPvName.setText("PV Name:");
 		
 		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
-		Combo combo = comboViewer.getCombo();
+		combo = comboViewer.getCombo();
 		FormData fd_combo = new FormData();
 		fd_combo.top = new FormAttachment(0, 10);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		final WaterfallWidget waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);

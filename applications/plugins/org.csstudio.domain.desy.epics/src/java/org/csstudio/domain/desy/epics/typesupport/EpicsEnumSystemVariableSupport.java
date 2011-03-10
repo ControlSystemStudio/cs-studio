@@ -25,6 +25,8 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
@@ -33,8 +35,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;

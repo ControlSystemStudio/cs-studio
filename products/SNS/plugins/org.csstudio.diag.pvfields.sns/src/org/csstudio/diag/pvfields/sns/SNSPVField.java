@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.diag.pvfields.sns;
 
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.diag.pvfields.model.PVInfo;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;

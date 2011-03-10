@@ -10,7 +10,7 @@ package org.csstudio.swt.chart.test;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;

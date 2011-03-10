@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Chart Plug-in
 Bundle-SymbolicName: org.csstudio.swt.chart
-Bundle-Version: 1.0.20.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Bundle-Description: SWT plotting library
@@ -10,7 +10,7 @@ Require-Bundle: org.junit4,
  org.eclipse.jface,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.platform,
+ org.csstudio.platform;bundle-version="1.2.0",
  org.csstudio.platform.ui,
  org.csstudio.logbook,
  org.csstudio.apputil.ui

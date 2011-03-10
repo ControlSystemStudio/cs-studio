@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pace.model;
 
 import java.text.DateFormat;
@@ -5,9 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.csstudio.apputil.macros.MacroUtil;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.display.pace.Messages;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;

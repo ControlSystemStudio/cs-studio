@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** A value that might change and have multiple listeners
  *  @author Kay Kasemir
@@ -42,7 +49,7 @@ public class Value
     {
         listeners.remove(listener);
     }
-    
+
     /** Inform all registered listeners about value update */
     protected void fireValueUpdate()
     {

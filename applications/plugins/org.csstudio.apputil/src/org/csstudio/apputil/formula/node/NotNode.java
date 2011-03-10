@@ -18,13 +18,14 @@ public class NotNode extends AbstractUnaryNode
     {
         super(n);
     }
-    
+
+    @Override
     public double eval()
     {
         final double a = n.eval();
         return (a != 0) ? 0.0 : 1.0;
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

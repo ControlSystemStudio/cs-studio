@@ -1,16 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the EPICS PV.
  *  @author Kay Kasemir
  */
-public class Activator extends AbstractCssPlugin
+public class Activator extends Plugin
 {
 	/** Plug-in ID registered in MANIFEST.MF */
 	public static final String ID = "org.csstudio.utility.pv.epics"; //$NON-NLS-1$
@@ -25,14 +32,10 @@ public class Activator extends AbstractCssPlugin
 	public Activator()
     {	plugin = this;	}
 
-    @Override
-    public String getPluginId()
-    {   return ID; }
-
     /** @see AbstractCssPlugin */
     @SuppressWarnings("nls")
     @Override
-    protected void doStart(BundleContext context) throws Exception
+    public void start(BundleContext context)
     {
         try
         {
@@ -43,13 +46,6 @@ public class Activator extends AbstractCssPlugin
         {
             getLogger().log(Level.SEVERE, "Cannot load EPICS_V3_PV", e);
         }
-    }
-
-    /** @see AbstractCssPlugin */
-    @Override
-    protected void doStop(BundleContext context) throws Exception
-    {
-        plugin = null;
     }
 
 	/** @return the shared instance */
