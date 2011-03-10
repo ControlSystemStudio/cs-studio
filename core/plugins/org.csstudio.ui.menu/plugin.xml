@@ -61,7 +61,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
-               id="org.csstudio.ui.menus.popup.iprocessvariable"
+               id="org.csstudio.ui.menu.popup.iprocessvariable"
                label="Process Variable">
             <visibleWhen>
                <with
