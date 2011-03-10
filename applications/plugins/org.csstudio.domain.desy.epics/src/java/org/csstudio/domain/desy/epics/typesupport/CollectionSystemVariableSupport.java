@@ -25,12 +25,12 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IValue;
 
 /**
  * @author bknerr
