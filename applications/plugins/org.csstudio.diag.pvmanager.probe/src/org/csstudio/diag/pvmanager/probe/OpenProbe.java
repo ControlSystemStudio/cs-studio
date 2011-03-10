@@ -24,24 +24,36 @@ public class OpenProbe extends AbstractHandler implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
+			// Retrieve the selection and the current page
 			ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event)
 					.getActivePage().getSelection();
-
-			// Open a new probe
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
-			PVManagerProbe probe = (PVManagerProbe) page.showView(
-					PVManagerProbe.ID, PVManagerProbe.createNewInstance(),
-					IWorkbenchPage.VIEW_ACTIVATE);
 
-			// If selection contains IProcessVairables, open the first one
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection strucSelection = (IStructuredSelection) selection;
-				if (!strucSelection.isEmpty()) {
+				
+				// If it's a single selection, open it in the single view instance
+				if (strucSelection.size() == 1) {
 					IProcessVariable variable = (IProcessVariable) strucSelection
 							.iterator().next();
+					PVManagerProbe probe = (PVManagerProbe) page.showView(
+							PVManagerProbe.SINGLE_VIEW_ID);
 					probe.setPVName(variable.getName());
+					
+				// If it's a multiple selection, open a new multiple view instance
+				// for each element
+				} else if (strucSelection.size() > 1) {
+					for (Object item : strucSelection.toList()) {
+						if (item instanceof IProcessVariable) {
+							PVManagerProbe probe = (PVManagerProbe) page
+									.showView(PVManagerProbe.MULTIPLE_VIEW_ID,
+											PVManagerProbe.createNewInstance(),
+											IWorkbenchPage.VIEW_ACTIVATE);
+							probe.setPVName(((IProcessVariable) item).getName());
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
