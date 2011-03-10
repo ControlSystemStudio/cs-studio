@@ -153,34 +153,28 @@ public class ArchiveLocation
      * 
      * @param path
      */
-    public void loadLocationList(String filePath) throws DataPathNotFoundException
-    {
-        Pattern pattern = null;
+    public void loadLocationList(String filePath) throws DataPathNotFoundException {
+        
         Matcher matcher = null;
-        Vector<String> path = null;
         BufferedReader br = null;
         String line = null;
         String name = null;
         String fullPath;
         File[] fileList = null;
-        File file = null;
-        int y;
         
-        path = new Vector<String>();
+        Vector<String> path = new Vector<String>();
         
-        try
-        {
-            br = new BufferedReader(new FileReader(filePath));
-            while(br.ready())
-            {
+        try {
+            
+        	br = new BufferedReader(new FileReader(filePath));
+            while(br.ready()) {
                 line = br.readLine();
                 line = line.trim();
-                if(line.length() > 0)
-                {
-                    if(line.startsWith("#") == false)
-                    {
-                        if((line.endsWith(FILE_SEPARATOR) == false) && (line.endsWith("/") == false))
-                        {
+                if(line.length() > 0) {
+                    
+                	if(line.startsWith("#") == false) {
+                        
+                		if((line.endsWith(FILE_SEPARATOR) == false) && (line.endsWith("/") == false)) {
                             line = line + FILE_SEPARATOR;
                         }
                         
@@ -188,52 +182,73 @@ public class ArchiveLocation
                     }
                 }
             }
-        }
-        catch(FileNotFoundException fnfe)
-        {
+        } catch(FileNotFoundException fnfe) {
             System.out.println("[*** FileNotFoundException ***]: " + fnfe.getMessage());
-        }
-        catch(IOException ioe)
-        {
+        } catch(IOException ioe) {
             System.out.println("[*** IOException ***]: " + ioe.getMessage());
-        }
-        finally
-        {
-            if(br!=null){try{br.close();}catch(Exception e){}br=null;}
+        } finally {
+            if(br != null) {
+            	try{br.close();}catch(Exception e){/* Can be ignored */}
+            	br = null;
+            }
         }
 
-        pattern = Pattern.compile("\\d{4}");
+        Pattern pattern = Pattern.compile("\\d{4}");
         
-        for(String f : path)
-        {
-            file = new File(f);
+        for(String f : path) {
+            
+        	File file = new File(f);
             fileList = file.listFiles();
-            if(fileList == null)
-            {
+            if(fileList == null) {
                 throw new DataPathNotFoundException("Path '" + f + "' cannot be found or is empty.");
             }
             
-            for(File fi : fileList)
-            {
-                name = fi.getName().trim();
+            for(File fi : fileList) {
+                
+            	name = fi.getName().trim();
                 matcher = pattern.matcher(name);
-                if(matcher.matches())
-                {
-                    try
-                    {
-                        // subDir.add(name);
-                        y = Integer.parseInt(name);
+                if(matcher.matches()) {
+                    
+                	try {
+                        
+                		// subDir.add(name);
+                        int y = Integer.parseInt(name);
                         fullPath = fi.getPath().trim();
-                        if(fullPath.endsWith(FILE_SEPARATOR) == false)
-                        {
+                        if(fullPath.endsWith(FILE_SEPARATOR) == false) {
                             fullPath += FILE_SEPARATOR;
                         }
                         
-                        dataPath.put(y, fullPath);
-                    }
-                    catch(NumberFormatException nfe) {}
+                        if (dataPath.containsKey(y) == false) {
+                        	dataPath.put(y, fullPath);
+                        } else {
+                        	if(containsMoreSubDirs(fullPath, dataPath.get(y))) {
+                        		dataPath.put(y, fullPath);
+                        	}
+                        }
+                        
+                    } catch(NumberFormatException nfe) {/* Can be ignored */}
                 }
             }
         }
+    }
+    
+    /**
+     * 
+     * @param newPath
+     * @param oldPath
+     * @return
+     */
+    private boolean containsMoreSubDirs(String newPath, String oldPath) {
+    	
+    	boolean result = false;
+    	
+    	File newFile = new File(newPath);
+    	File oldFile = new File(oldPath);
+    	
+    	if(newFile.list().length > oldFile.list().length) {
+    		result = true;
+    	}
+
+    	return result;
     }
 }
