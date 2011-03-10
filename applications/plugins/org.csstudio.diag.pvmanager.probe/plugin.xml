@@ -38,6 +38,11 @@
             id="org.csstudio.diag.pvmanager.probe.OpenProbe"
             name="Probe (PVManager)">
       </command>
+      <command
+            defaultHandler="org.csstudio.diag.pvmanager.probe.CreateNewProbe"
+            id="org.csstudio.diag.pvmanager.probe.createNewProbe"
+            name="New Probe...">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -61,6 +66,16 @@
          <command
                commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
                icon="icons/probe.png"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.diag.pvmanager.probe.SingleView">
+         <command
+               commandId="org.csstudio.diag.pvmanager.probe.createNewProbe"
+               icon="icons/probe.png"
+               label="New Probe..."
                style="push">
          </command>
       </menuContribution>
