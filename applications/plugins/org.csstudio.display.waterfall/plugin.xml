@@ -25,7 +25,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.display.waterfall.OpenView"
+            defaultHandler="org.csstudio.display.waterfall.OpenWaterfall"
             id="org.csstudio.display.waterfall.OpenView"
             name="Waterfall">
       </command>
