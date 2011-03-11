@@ -25,6 +25,8 @@
 package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.Activator;
@@ -92,6 +94,15 @@ public class AverageHandler extends AlgorithmHandler {
         long intervalStart = header.getFromSec();
         long intervalEnd = header.getToSec();
 
+        // Get the current time...
+        GregorianCalendar cal = new GregorianCalendar();
+        
+        // ...and substract 2 months
+        cal.add(Calendar.MONTH, -3);
+        if ((intervalEnd * 1000L) > cal.getTimeInMillis()) {
+        	intervalEnd = (cal.getTimeInMillis() / 1000L);
+        }
+        
         long deltaTime = (intervalEnd - intervalStart) / (long) resultLength;
         if(deltaTime == 0) {
             
@@ -161,6 +172,8 @@ public class AverageHandler extends AlgorithmHandler {
                     	// Leave the loop if we reached the end of the sample array
                     	break;
                     }
+                } else {
+                	break;
                 }
                 
             } while (sampleTimestamp < nextIntervalStep);
