@@ -51,7 +51,7 @@ public class TailRawHandler extends AlgorithmHandler {
     public TailRawHandler(int maxSamples) {
         super(maxSamples);
         logger = CentralLogger.getInstance().getLogger(this);
-        logger.debug("TailRawHandler created. Max. samples per request: " + maxSamples);
+        logger.info("TailRawHandler created. Max. samples per request: " + maxSamples);
     }
     
     /**

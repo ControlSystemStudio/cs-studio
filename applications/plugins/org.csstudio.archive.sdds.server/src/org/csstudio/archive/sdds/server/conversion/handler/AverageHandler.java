@@ -65,7 +65,7 @@ public class AverageHandler extends AlgorithmHandler {
         IPreferencesService pref = Platform.getPreferencesService();
         validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID, ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
         
-        logger.debug(this.getClass().getSimpleName() + " created. Max. samples per request: " + maxSamples);
+        logger.info(this.getClass().getSimpleName() + " created. Max. samples per request: " + maxSamples);
     }
     
     /* (non-Javadoc)

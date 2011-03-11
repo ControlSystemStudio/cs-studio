@@ -68,7 +68,7 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
         validRecordBeforeTime = pref.getLong(Activator.PLUGIN_ID,
                                              ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600, null);
         
-        logger.debug("MinMaxAverageHandler created. Max. samples per request: " + maxSamples);
+        logger.info("MinMaxAverageHandler created. Max. samples per request: " + maxSamples);
 	}
 
 	/**

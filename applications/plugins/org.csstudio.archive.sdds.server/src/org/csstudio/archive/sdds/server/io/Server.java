@@ -128,40 +128,34 @@ public class Server extends Thread
         
         logger.info("Server is running.");
         
-        while(running)
-        {
-            logger.info("Server is waiting for a request.");
+        while(running) {
             
-            try
-            {
-                socket = serverSocket.accept();
+        	logger.info("Server is waiting for a request.");
+            
+            try {
+                
+            	socket = serverSocket.accept();
                 logger.info("Anfrage empfangen...");
                 request = new ClientRequest(socket, commandExecutor);
                 threadExecutor.execute(request);
                 
                 // Socket will be closed in class ClientRequest
                 socket = null;
-            }
-            catch(IOException ioe)
-            {
+            
+            } catch (IOException ioe) {
                 logger.info("[*** IOException ***]: " + ioe.getMessage());
             }
         }
         
-        try
-        {
-            logger.info("Closing server socket.");
-            if(serverSocket.isClosed() == false)
-            {
+        try {
+            
+        	logger.info("Closing server socket.");
+            if(serverSocket.isClosed() == false) {
                 serverSocket.close();
-            }
-            else
-            {
+            } else {
                 logger.info("Server socket was closed already.");
             }
-        }
-        catch(IOException ioe)
-        {
+        } catch(IOException ioe) {
             logger.error("[*** IOException ***]: " + ioe.getMessage());
         }
         
@@ -172,8 +166,7 @@ public class Server extends Thread
      * 
      * @return
      */
-    public int getServerPort()
-    {
+    public int getServerPort() {
         return serverPort;
     }
     
@@ -181,8 +174,7 @@ public class Server extends Thread
      * 
      * @return
      */
-    public int getTimeOut()
-    {
+    public int getTimeOut() {
         return this.timeout;
     }
     
@@ -190,20 +182,18 @@ public class Server extends Thread
      * Mark to stop the server.
      * 
      */
-    public void stopServer()
-    {
-        running = false;
+    public void stopServer() {
         
-        synchronized(this)
-        {
-            this.notify();
-            try
-            {
+    	running = false;
+        
+        synchronized(this) {
+            
+        	this.notify();
+            
+        	try {
                 logger.info("Server is forced to be stopped. Closing server socket.");
                 serverSocket.close();
-            }
-            catch(IOException ioe)
-            {
+            } catch (IOException ioe) {
                 logger.warn("stopServer(): [*** IOException ***]: " + ioe.getMessage());
             }
         }

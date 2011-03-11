@@ -93,17 +93,14 @@ public class ClientRequest implements Runnable
                 CommandHeader header = readHeader(in);
                 requestData = readData(in);
                                
-                if(header != null)
-                {
-                    logger.debug(header.toString());
+                if(header != null) {
                     
-                    try
-                    {
+                	logger.info(header.toString());
+                    
+                    try {
                         commandExecutor.executeCommand(header.getCommandTag(), requestData,
                                                        resultData, resultLength);
-                    }
-                    catch(ServerCommandException sce)
-                    {
+                    } catch (ServerCommandException sce) {
                         logger.error("[*** ServerCommandException ***]: " + sce.getMessage());
                         header.setError(sce.getErrorNumber());
                         resultData.setData(sce.getMessage().getBytes());
@@ -121,20 +118,13 @@ public class ClientRequest implements Runnable
                     writeAnswer(socket.getOutputStream(), header, resultData, resultLength);
                 }
             }
-        }
-        catch(IOException ioe)
-        {
-            if(ioe instanceof EOFException)
-            {
+        } catch (IOException ioe) {
+            if(ioe instanceof EOFException) {
                 logger.info("End of data stream reached.");
-            }
-            else
-            {
+            } else {
                 logger.error(ioe.getMessage());
             }
-        }
-        finally
-        {
+        } finally {
             in = null;
             if(socket!=null) {
             	try{socket.close();}catch(Exception e){/* Can be ignored */}

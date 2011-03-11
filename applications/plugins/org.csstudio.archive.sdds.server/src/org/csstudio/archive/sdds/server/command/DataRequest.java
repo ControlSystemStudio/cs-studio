@@ -74,13 +74,13 @@ public class DataRequest extends ServerCommand {
         DataOutputStream dos = new DataOutputStream(baos);
         double f;
         
-        logger.debug(header.toString());
+        logger.info(header.toString());
         
         if(header.isTimeDiffValid() == false) {
             
             receivedValue.setData(createErrorAnswer(AapiServerError.FROM_MORE_THEN_TO.getErrorNumber()));
             receivedValue.setErrorValue(AapiServerError.FROM_MORE_THEN_TO.getErrorNumber());
-            logger.debug("ERROR: " + AapiServerError.FROM_MORE_THEN_TO.toString());
+            logger.error(AapiServerError.FROM_MORE_THEN_TO.toString());
             return;
         }
         
@@ -104,7 +104,7 @@ public class DataRequest extends ServerCommand {
             for(String name : header.getPvName()) {
                 
             	data = dataCollector.readData(name, header);
-                logger.debug("Number of samples: " + data.getNumberOfData());
+                logger.info("Number of samples: " + data.getNumberOfData());
 
                 // TODO: Nicht vorhandene Daten abfangen und saubere Fehlermeldung zurueck liefern
                 // Error

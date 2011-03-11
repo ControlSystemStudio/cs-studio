@@ -53,7 +53,7 @@ public class NoFilterHandler extends AlgorithmHandler {
     public NoFilterHandler(int maxSamples) {
         super(maxSamples);
         logger = CentralLogger.getInstance().getLogger(this);
-        logger.debug("NoFilterHandler created. Max. samples per request: " + maxSamples);
+        logger.info("NoFilterHandler created. Max. samples per request: " + maxSamples);
     }
     
     /**
