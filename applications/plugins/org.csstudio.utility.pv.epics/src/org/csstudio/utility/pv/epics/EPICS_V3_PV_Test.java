@@ -14,8 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;
@@ -383,9 +381,6 @@ public class EPICS_V3_PV_Test
     @Test
     public void testMultipleRuns() throws Exception
     {
-        // Disable INFO and DEBUG messages
-        final Logger logger = Logger.getRootLogger();
-        logger.setLevel(Level.ERROR);
     	for (int run=0; run < 10; ++run) {
             testManyConnections();
         }

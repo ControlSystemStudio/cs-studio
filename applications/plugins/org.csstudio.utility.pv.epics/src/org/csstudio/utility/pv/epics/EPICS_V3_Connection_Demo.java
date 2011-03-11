@@ -12,8 +12,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -65,7 +63,6 @@ public class EPICS_V3_Connection_Demo implements PVListener
      */
     private static void setup()
     {
-        Logger.getRootLogger().setLevel(Level.WARN);
         PVContext.use_pure_java = false;
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");

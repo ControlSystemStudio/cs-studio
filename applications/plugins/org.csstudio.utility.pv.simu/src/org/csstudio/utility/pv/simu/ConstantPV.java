@@ -10,11 +10,9 @@ package org.csstudio.utility.pv.simu;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.runtime.PlatformObject;
 
 /** PV with a constant value.
  *  Contructed with a fixed value,
@@ -22,7 +20,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *  Read-only, sends no further updates.
  *  @author Kay Kasemir, Xihui Chen
  */
-public class ConstantPV extends PlatformObject implements PV
+public class ConstantPV implements PV
 {
     /** Name of this PV including PREFIX */
     final private String name;
@@ -67,13 +65,6 @@ public class ConstantPV extends PlatformObject implements PV
     public String getName()
     {
         return name;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
     }
 
     /** {@inheritDoc} */

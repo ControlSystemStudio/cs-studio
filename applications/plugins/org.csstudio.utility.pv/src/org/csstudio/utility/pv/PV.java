@@ -8,7 +8,6 @@
 package org.csstudio.utility.pv;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IProcessVariable;
 
 /** A control system PV.
  *  <p>
@@ -25,12 +24,10 @@ import org.csstudio.platform.model.IProcessVariable;
  *
  *  @author Kay Kasemir
  */
-public interface PV extends IProcessVariable
+public interface PV
 {
-    /** @return Returns the name.
-     *  -- This is part of IProcessVariable
-     *  public String getName();
-     */
+    /** @return Returns the name. */
+    public String getName();
 
     /** Synchronous 'get'.
      *  <p>

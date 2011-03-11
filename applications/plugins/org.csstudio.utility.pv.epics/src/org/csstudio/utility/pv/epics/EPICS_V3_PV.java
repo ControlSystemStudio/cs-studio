@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
@@ -232,13 +231,6 @@ public class EPICS_V3_PV extends PlatformObject
     public String getName()
     {
         return EPICSPVFactory.PREFIX + "://" + name;
-    }
-
-    /** @return CSS type ID for IProcessVariable */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
     }
 
     /** {@inheritDoc} */

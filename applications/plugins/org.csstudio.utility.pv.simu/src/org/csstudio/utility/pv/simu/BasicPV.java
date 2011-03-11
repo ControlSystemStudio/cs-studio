@@ -10,11 +10,9 @@ package org.csstudio.utility.pv.simu;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.runtime.PlatformObject;
 
 /** Base class for Local and Simulated PV:
  *  Has value and listeners.
@@ -24,7 +22,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *
  *  @author Kay Kasemir
  */
-abstract public class BasicPV<T extends Value> extends PlatformObject implements PV, ValueListener
+abstract public class BasicPV<T extends Value> implements PV, ValueListener
 {
     /** PV type prefix */
     final String prefix;
@@ -53,13 +51,6 @@ abstract public class BasicPV<T extends Value> extends PlatformObject implements
     public String getName()
     {
         return prefix + PVFactory.SEPARATOR + value.getName();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
     }
 
     /** {@inheritDoc} */
