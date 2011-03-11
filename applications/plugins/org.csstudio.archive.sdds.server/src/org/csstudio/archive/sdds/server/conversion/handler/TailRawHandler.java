@@ -58,7 +58,7 @@ public class TailRawHandler extends AlgorithmHandler {
      * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
-    public EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
+    public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         long intervalStart = header.getFromSec();
@@ -98,8 +98,6 @@ public class TailRawHandler extends AlgorithmHandler {
         // The order has to be reversed
         Collections.reverse(newData);
         
-        EpicsRecordData[] result = newData.toArray(new EpicsRecordData[newData.size()]);
-        
-        return result;
+        return newData;
     }
 }

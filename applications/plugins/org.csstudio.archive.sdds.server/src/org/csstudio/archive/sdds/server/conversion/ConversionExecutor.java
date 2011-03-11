@@ -24,12 +24,14 @@
 
 package org.csstudio.archive.sdds.server.conversion;
 
+import java.util.ArrayList;
+
 import org.csstudio.archive.sdds.server.Activator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandlerException;
 import org.csstudio.archive.sdds.server.conversion.handler.MethodNotImplementedException;
-import org.csstudio.archive.sdds.server.conversion.handler.MinMaxAverageHandler;
+import org.csstudio.archive.sdds.server.conversion.handler.OldMinMaxAverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.NoFilterHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.TailRawHandler;
@@ -69,7 +71,7 @@ public class ConversionExecutor {
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new NoFilterHandler(maxSamples),
-                new MinMaxAverageHandler(maxSamples),
+                new OldMinMaxAverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples)
@@ -95,12 +97,12 @@ public class ConversionExecutor {
      * @param data
      * @return
      */
-    public EpicsRecordData[] convertData(String name, EpicsRecordData[] data, DataRequestHeader header) {
+    public Iterable<EpicsRecordData> convertData(String name, EpicsRecordData[] data, DataRequestHeader header) {
         
-        EpicsRecordData[] result = null;
+        ArrayList<EpicsRecordData> result = null;
         
         try {
-            result = conversionHandler[header.getConversionTag() - 1].handle(header, data);
+            result = (ArrayList<EpicsRecordData>) conversionHandler[header.getConversionTag() - 1].handle(header, data);
         } catch(DataException de) {
             de.printStackTrace();
         } catch(MethodNotImplementedException mnie) {

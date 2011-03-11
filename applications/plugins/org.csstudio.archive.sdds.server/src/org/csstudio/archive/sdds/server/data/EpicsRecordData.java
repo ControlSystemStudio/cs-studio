@@ -245,7 +245,8 @@ public class EpicsRecordData
     /**
      * 
      */
-    public String toString() {
+    @Override
+	public String toString() {
         
         StringBuffer t = new StringBuffer();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ");

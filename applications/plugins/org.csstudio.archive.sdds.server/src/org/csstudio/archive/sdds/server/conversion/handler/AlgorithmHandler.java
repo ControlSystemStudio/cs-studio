@@ -57,7 +57,7 @@ public abstract class AlgorithmHandler
      * @throws DataException
      * @throws MethodNotImplementedException
      */
-    public abstract EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
+    public abstract Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException;
 
     /**

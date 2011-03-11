@@ -65,30 +65,26 @@ public class TimeConverter
      * @param end
      * @return
      */
-    public static int[] getYears(long start, long end)
-    {
-        GregorianCalendar calStart = null;
-        GregorianCalendar calEnd = null;
-        int[] result = null;
-        long temp;
+    public static int[] getYears(long start, long end) {
         
-        if(start > end)
-        {
-            temp = end;
-            end = start;
-            start = temp;
+        long startTime = start;
+        long endTime = end;
+        
+        if(startTime > endTime) {
+            long temp = endTime;
+            endTime = startTime;
+            startTime = temp;
         }
         
-        calStart = new GregorianCalendar();
+        GregorianCalendar calStart = new GregorianCalendar();
         calStart.setTimeInMillis(start);
         
-        calEnd = new GregorianCalendar();
+        GregorianCalendar calEnd = new GregorianCalendar();
         calEnd.setTimeInMillis(end);
 
-        result = new int[(calEnd.get(Calendar.YEAR) - calStart.get(Calendar.YEAR)) + 1];
+        int[] result = new int[(calEnd.get(Calendar.YEAR) - calStart.get(Calendar.YEAR)) + 1];
         
-        for(int i = calStart.get(Calendar.YEAR);i <= calEnd.get(Calendar.YEAR);i++)
-        {
+        for(int i = calStart.get(Calendar.YEAR);i <= calEnd.get(Calendar.YEAR);i++) {
             result[i - calStart.get(Calendar.YEAR)] = i;
         }
         

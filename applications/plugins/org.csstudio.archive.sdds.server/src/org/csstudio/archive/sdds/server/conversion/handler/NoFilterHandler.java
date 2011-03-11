@@ -24,6 +24,9 @@
 
 package org.csstudio.archive.sdds.server.conversion.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -57,19 +60,19 @@ public class NoFilterHandler extends AlgorithmHandler {
      * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
-    public EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
+    public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
         long intervalStart = header.getFromSec();
         long intervalEnd = header.getToSec();
 
-        EpicsRecordData[] newData = new EpicsRecordData[data.length];
+        List<EpicsRecordData> newData = new ArrayList<EpicsRecordData>(data.length);
         
         for(int i = 0;i < data.length;i++) {
             if((data[i].getTime() >= intervalStart) && (data[i].getTime() <= intervalEnd)) {
-                newData[i] = new EpicsRecordData(data[i].getTime(), data[i].getNanoSeconds(),
+                newData.add(new EpicsRecordData(data[i].getTime(), data[i].getNanoSeconds(),
                                                  data[i].getStatus(), new Double((Float)data[i].getValue()),
-                                                 SDDSType.SDDS_DOUBLE);
+                                                 SDDSType.SDDS_DOUBLE));
             }
         }
         

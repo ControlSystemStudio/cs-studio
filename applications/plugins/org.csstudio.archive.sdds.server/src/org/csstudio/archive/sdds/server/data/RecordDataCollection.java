@@ -20,6 +20,9 @@
 
 package org.csstudio.archive.sdds.server.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
 
 /**
@@ -32,22 +35,22 @@ import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
 public class RecordDataCollection {
     
     /** Data of PV's */
-    private EpicsRecordData[] data;
+    private List<EpicsRecordData> data;
     
     /** The parameters of the data samples */
     private SampleCtrl sampleCtrl;
     
     /** Standard constructor */
     public RecordDataCollection() {
-        data = new EpicsRecordData[0];
+        data = new ArrayList<EpicsRecordData>(0);
         sampleCtrl = new SampleCtrl();
     }
 
-    public EpicsRecordData[] getData() {
+    public List<EpicsRecordData> getData() {
         return data;
     }
 
-    public void setData(EpicsRecordData[] data) {
+    public void setData(List<EpicsRecordData> data) {
         this.data = data;
     }
 
@@ -69,7 +72,7 @@ public class RecordDataCollection {
         int result = 0;
         
         if (data != null) {
-            result = data.length;
+            result = data.size();
         }
         
         return result;

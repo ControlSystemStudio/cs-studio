@@ -25,8 +25,10 @@
 package org.csstudio.archive.sdds.server.sdds;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
@@ -85,8 +87,6 @@ public class SddsFileReader {
         
         RecordDataCollection dataCollection = null;
         ThreadGroup threadGroup = null;
-        EpicsRecordData[] result = null;
-        Vector<EpicsRecordData> allResults = null;
         Thread[] readerThread = null;
         SddsDataReader[] reader = null;
         String[] filePaths = null;
@@ -125,17 +125,15 @@ public class SddsFileReader {
         logger.debug("Finished in " + et + " Millisekunden (" + (et / 1000) + " sec)");
         
         dataCollection = new RecordDataCollection();
-        allResults = new Vector<EpicsRecordData>();
+        Vector<EpicsRecordData> allResults = new Vector<EpicsRecordData>();
         for(int i = 0;i < filePaths.length;i++) {
             if(reader[i] != null) {
                 allResults.addAll(reader[i].getResult());
             }
         }
 
-        result = new EpicsRecordData[allResults.size()];       
-        if(allResults.size() > 0) {
-            result = allResults.toArray(result);
-        }
+        List<EpicsRecordData> result = new ArrayList<EpicsRecordData>(allResults.size());       
+        result.addAll(allResults);
         
         dataCollection.setData(result);
         if(reader[0] != null) {

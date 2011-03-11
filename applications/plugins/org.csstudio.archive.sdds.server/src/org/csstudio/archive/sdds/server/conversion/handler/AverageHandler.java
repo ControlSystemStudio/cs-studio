@@ -72,13 +72,13 @@ public class AverageHandler extends AlgorithmHandler {
      * @see org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.sdds.server.command.header.DataRequestHeader, org.csstudio.archive.sdds.server.data.EpicsRecordData[])
      */
     @Override
-    public EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
+    public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
         
         if (data == null) {
-            return new EpicsRecordData[0];
+            return new ArrayList<EpicsRecordData>(0);
         } else if (data.length == 0){
-            return new EpicsRecordData[0];
+            return new ArrayList<EpicsRecordData>(0);
         }
         
         // Get the number of requested samples
@@ -184,6 +184,6 @@ public class AverageHandler extends AlgorithmHandler {
             
         } while (curTime < intervalEnd);
         
-        return resultData.toArray(new EpicsRecordData[resultData.size()]);
+        return resultData;
     }
 }

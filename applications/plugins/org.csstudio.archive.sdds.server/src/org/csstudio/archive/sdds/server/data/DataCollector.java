@@ -24,6 +24,8 @@
 
 package org.csstudio.archive.sdds.server.data;
 
+import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
@@ -72,10 +74,14 @@ public class DataCollector {
     public RecordDataCollection readData(String recordName, DataRequestHeader header) {
         
         RecordDataCollection dataCollection = null;
-        EpicsRecordData[] data = null;
+        ArrayList<EpicsRecordData> data = null;
         
         dataCollection = sddsReader.readData(recordName, header.getFromSec(), header.getToSec());
-        data = conversionExecutor.convertData(recordName, dataCollection.getData(), header);
+        
+        EpicsRecordData[] readData = new EpicsRecordData[dataCollection.getNumberOfData()];
+        readData = dataCollection.getData().toArray(readData);
+        
+        data = (ArrayList<EpicsRecordData>) conversionExecutor.convertData(recordName, readData, header);
         dataCollection.setData(data);
         
         return dataCollection;

@@ -24,7 +24,8 @@
 
 package org.csstudio.archive.sdds.server.conversion.handler;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.Activator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
@@ -67,11 +68,10 @@ public class OldMinMaxAverageHandler extends AlgorithmHandler {
      * @see org.csstudio.archive.jaapi.server.conversion.handler.AlgorithmHandler#handle(org.csstudio.archive.jaapi.server.command.header.DataRequestHeader, org.csstudio.archive.jaapi.server.data.EpicsRecordData[])
      */
     @Override
-    public EpicsRecordData[] handle(DataRequestHeader header, EpicsRecordData[] data)
+    public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
-        Vector<EpicsRecordData> tempData = new Vector<EpicsRecordData>();
-        EpicsRecordData[] result = null;
+        List<EpicsRecordData> tempData = new ArrayList<EpicsRecordData>();
         EpicsRecordData newData = null;
         EpicsRecordData curData = null;
         float average = Float.NaN;
@@ -81,15 +81,19 @@ public class OldMinMaxAverageHandler extends AlgorithmHandler {
         float sum;
         float count;
         long deltaTime;
-        long intervalStart;
-        long intervalEnd;
         int index;
         int dataLength;
 
         logger.debug("MinMaxAverageHandler is processing data.");
         
-        intervalStart = header.getFromSec();
-        intervalEnd = header.getToSec();
+        if (data == null) {
+            return new ArrayList<EpicsRecordData>(0);
+        } else if (data.length == 0){
+            return new ArrayList<EpicsRecordData>(0);
+        }
+
+        long intervalStart = header.getFromSec();
+        long intervalEnd = header.getToSec();
         
         if(header.getMaxNumOfSamples() == 0) {
             throw new AlgorithmHandlerException(0, "Requested number of samples is 0.");
@@ -210,19 +214,7 @@ public class OldMinMaxAverageHandler extends AlgorithmHandler {
                 newData = null;
             }
         }
-   
-        if(tempData.isEmpty() == false) {
-            
-            result = new EpicsRecordData[tempData.size()];
-            
-            // Not really necessary because the length of data will be read from the data array.
-            header.setMaxNumOfSamples(tempData.size());
-            
-            result = tempData.toArray(result);
-        } else {
-            result = new EpicsRecordData[0];
-        }
-        
-        return result;
+           
+        return tempData;
     }
 }
