@@ -20,7 +20,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * 
  * @author carcassi
  */
-public class OpenView extends AbstractHandler implements IHandler {
+public class OpenWaterfall extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
