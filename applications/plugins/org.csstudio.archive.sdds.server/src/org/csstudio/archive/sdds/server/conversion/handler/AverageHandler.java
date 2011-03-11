@@ -100,7 +100,6 @@ public class AverageHandler extends AlgorithmHandler {
             header.setMaxNumOfSamples((int)(intervalEnd - intervalStart));
         }
 
-        
         // Get the first data sample with the valid time stamp within the request time interval
         int index = 0;
         float avg = Float.NaN;

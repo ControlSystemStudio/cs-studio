@@ -33,6 +33,7 @@ import org.csstudio.archive.sdds.server.Activator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
+import org.csstudio.archive.sdds.server.sdds.SDDSType;
 import org.csstudio.archive.sdds.server.util.DataException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
@@ -102,9 +103,117 @@ public class MinMaxAverageHandler extends AlgorithmHandler {
             header.setMaxNumOfSamples((int)(intervalEnd - intervalStart));
         }
 
+        // Get the first data sample with the valid time stamp within the request time interval
+        int index = 0;
+        float avg = Float.NaN;
+        float tempMin = 0.0f;
+        float tempMax = 0.0f;
+
+        for(EpicsRecordData o : data) {
+            
+            if(o.getTime() >= intervalStart) {
+                break;
+            } else {
+                if(o.isValueValid()) {
+                    avg = ((Float)o.getValue()).floatValue();
+                    tempMin = avg;
+                    tempMax = avg;
+                }
+            }
+            
+            index++;
+        }
+
+        // The variable index now contains the index of the first data sample
+        // in the requested time interval
+
         List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
 
-		return resultData;
-	}
+        long nextIntervalStep = 0;
+        long sampleTimestamp = 0;
+        float sum = 0.0f;
+        float count = 0.0f;
+        
+        long curTime = intervalStart;
+        boolean foundSample;
+        
+        // Iterate through the complete time interval
+        do {
 
+            // Beginn of the next subinterval
+            nextIntervalStep = curTime + deltaTime;
+
+            EpicsRecordData curData = null;
+            float curValue;
+            sum = 0.0f;
+            count = 0.0f;
+            foundSample = false;
+            
+            // Iterate over data samples in the time subinterval
+            do {
+                
+                curData = data[index];
+                sampleTimestamp = curData.getTime();
+                if ((sampleTimestamp >= curTime) && (sampleTimestamp < nextIntervalStep)) {
+
+                    if(curData.isValueValid()) {
+                        
+                    	curValue = (Float) curData.getValue();
+                    	sum += curValue;
+                        
+                        if(count < 1.0) {
+                            tempMin = (Float) curData.getValue();
+                            tempMax = (Float) curData.getValue();
+                        } else {
+                            tempMin = (curValue < tempMin) ? curValue : tempMin;
+                            tempMax = (curValue > tempMax) ? curValue : tempMax;
+                        }
+
+                        count += 1.0f;
+                        foundSample = true;
+                    }
+                    
+                    // Increment the index only if we are not at the end of the array
+                    if(index < (data.length - 1)) {
+                        index++;
+                    } else {
+                    	// Leave the loop if we reached the end of the sample array
+                    	break;
+                    }
+                }
+                
+            } while (sampleTimestamp < nextIntervalStep);
+            
+            // We have a sum of sample values from the subinterval
+            // Otherwise keep the current average value
+            if (foundSample) {
+            	// Calculate the average value
+            	avg = sum / count;
+            }
+            
+            if (Float.isNaN(avg) == false) {
+				
+				EpicsRecordData newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMin)), SDDSType.SDDS_DOUBLE);
+                resultData.add(newData);
+                logger.debug(newData.toString());
+                newData = null;
+                  
+                newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(tempMax)), SDDSType.SDDS_DOUBLE);
+                resultData.add(newData);
+                logger.debug(newData.toString());
+                newData = null;
+                
+                newData = new EpicsRecordData(curTime, 0L, 0L, new Double(String.valueOf(avg)), SDDSType.SDDS_DOUBLE);
+                resultData.add(newData);
+                logger.debug(newData.toString());
+                newData = null;
+
+            }
+            
+            curTime += deltaTime;
+            
+        } while (curTime < intervalEnd);
+        
+        return resultData;
+	}
 }

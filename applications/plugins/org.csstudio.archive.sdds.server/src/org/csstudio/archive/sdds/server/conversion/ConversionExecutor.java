@@ -25,13 +25,12 @@
 package org.csstudio.archive.sdds.server.conversion;
 
 import java.util.ArrayList;
-
 import org.csstudio.archive.sdds.server.Activator;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AlgorithmHandlerException;
 import org.csstudio.archive.sdds.server.conversion.handler.MethodNotImplementedException;
-import org.csstudio.archive.sdds.server.conversion.handler.OldMinMaxAverageHandler;
+import org.csstudio.archive.sdds.server.conversion.handler.MinMaxAverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.AverageHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.NoFilterHandler;
 import org.csstudio.archive.sdds.server.conversion.handler.TailRawHandler;
@@ -71,7 +70,7 @@ public class ConversionExecutor {
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new NoFilterHandler(maxSamples),
-                new OldMinMaxAverageHandler(maxSamples),
+                new MinMaxAverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples),
                 new AverageHandler(maxSamples)
