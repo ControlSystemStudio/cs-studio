@@ -35,10 +35,10 @@ import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
