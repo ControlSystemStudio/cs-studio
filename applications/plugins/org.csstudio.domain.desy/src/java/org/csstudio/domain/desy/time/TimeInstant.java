@@ -206,7 +206,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     /**
      * Formats the instant with the given joda time formatter.
-     * @param sampleTimeFmt the formatter (without nano precision)
+     * @param fmt the formatter (without nano precision)
      * @return the formatted time string
      */
     @Nonnull
@@ -293,8 +293,8 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     /**
      * Returns a new immutable time instant object.
-     * @param millis
-     * @return
+     * @param nanosPerSecond
+     * @return the newly constructed time instant
      * @throws IllegalArgumentException when millis
      */
     @Nonnull

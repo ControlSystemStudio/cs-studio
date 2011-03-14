@@ -33,11 +33,6 @@ import javax.annotation.CheckForNull;
  *
  * Sidenote for EPICS: Whether a control system considers an OK or UNKNOWN state as alarm or not,
  * is up to the implementation, hence <code>null</code> represents a possible return value.
- * @return the alarm object or <code>null</code>
-
- * TODO (bknerr) : Does the alarm rule set for a alarm system variable belong to the alarm or the 'alarm'
- * variable/value? the value probably...
- *
  * @author bknerr
  * @since 24.11.2010
  */

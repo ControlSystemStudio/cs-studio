@@ -52,6 +52,7 @@ import com.google.common.base.Joiner;
  */
 public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
+    @Nonnull
     public static final EpicsEnum createInstance(@Nonnull final Integer index,
                                                  @Nonnull final String state,
                                                  @Nullable final Integer raw) {
@@ -86,6 +87,7 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String toString() {
         final Integer raw = getRaw();
         String rawStr = "null";

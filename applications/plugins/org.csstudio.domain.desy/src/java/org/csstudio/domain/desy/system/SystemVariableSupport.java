@@ -66,7 +66,10 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
      * Dispatches the value creation to the suitable type support family by the control system
      * type.
      *
-     * @param valueData
+     * @param name the variable's name
+     * @param value the value of the variable
+     * @param system the control system (serves as discriminator to spawn the correct type family)
+     * @param time the timestamp
      * @return the system and value type specific variable.
      * @throws TypeSupportException
      */

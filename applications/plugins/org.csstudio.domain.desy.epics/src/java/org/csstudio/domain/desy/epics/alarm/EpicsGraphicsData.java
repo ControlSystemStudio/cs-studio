@@ -43,6 +43,7 @@ import org.csstudio.domain.desy.types.Limits;
  *
  * @author bknerr
  * @since Mar 3, 2011
+ * @param <V> graphics data originating from epics
  */
 public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisplayLimits<V>,
                                                                            IAlarmLimits<V> {

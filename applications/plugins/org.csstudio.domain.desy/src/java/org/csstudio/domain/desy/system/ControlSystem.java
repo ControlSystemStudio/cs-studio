@@ -113,7 +113,7 @@ public final class ControlSystem {
      *
      * @param id
      * @param type
-     * @return
+     * @return the cached instance of the control system (flyweight pattern)
      * @throws IllegalArgumentException if the if points to an existing control system with differing type
      */
     @Nonnull
@@ -121,6 +121,10 @@ public final class ControlSystem {
                                         @Nonnull final ControlSystemType type) {
         if(CS_CACHE.containsKey(id)) {
             final ControlSystem cs = CS_CACHE.get(id);
+            if (cs == null) {
+                throw new IllegalArgumentException("Control system with id " + id +
+                " doesn't exist.");
+            }
             if (!cs.getType().equals(type)) {
                 throw new IllegalArgumentException("Control system with id " + id +
                                                    " exists already with different type.");

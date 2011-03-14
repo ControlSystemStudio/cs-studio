@@ -37,7 +37,7 @@ public abstract class AbstractImmutableListIterator<T> extends AbstractImmutable
      * {@inheritDoc}
      *
      * Guaranteed to throw {@link UnsupportedOperationException} on invoking
-     * {@link java.util.Iterator#add}.
+     * {@link java.util.ListIterator#add(Object)}.
      */
     @Override
     public void add(@Nullable final T e) {
@@ -48,7 +48,7 @@ public abstract class AbstractImmutableListIterator<T> extends AbstractImmutable
      * {@inheritDoc}
      *
      * Guaranteed to throw {@link UnsupportedOperationException} on invoking
-     * {@link java.util.Iterator#set()}.
+     * {@link java.util.ListIterator#set(Object)}.
      */
     @Override
     public void set(@Nullable final T e) {

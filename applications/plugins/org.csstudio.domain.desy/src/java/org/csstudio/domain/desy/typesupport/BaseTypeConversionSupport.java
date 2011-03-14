@@ -74,7 +74,7 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
     }
 
     /**
-     * Tries to create a {@link Class<?>} object for the given dataType string, iteratively
+     * Tries to create a {@link Class} object for the given dataType string, iteratively
      * over the given array of package names.
      *
      * Note that the utilized <code>Class.forName(package + class)</code> does only work when a
@@ -110,9 +110,9 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
 
     /**
      * Tries to create a {@link Class} object for the element type for a generic {@link java.util.Collection},
-     * such as "Set&lt;Byte&gt;" as {@param datatype} shall return Class&lt;Byte&gt;.<br/>
-     * Recognized patterns for collection describing strings are Collection<*>, List<*>, Set<*>, and
-     * Vector<*>!
+     * such as {@code Set<Byte>} as {@code datatype} shall return {@code Class<Byte>}.<br/>
+     * Recognised patterns for collection describing strings are {@code Collection<*>}, {@code List<*>}, {@code Set<*>}, and
+     * {@code Vector<*>}!
      *
      * @param <T>
      * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.

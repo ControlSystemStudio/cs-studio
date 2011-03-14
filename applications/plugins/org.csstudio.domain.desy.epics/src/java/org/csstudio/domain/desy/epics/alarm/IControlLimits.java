@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
  *
  * @author bknerr
  * @since Mar 3, 2011
- * <T> the basic value type for which the limits apply
+ * @param <T> the basic value type for which the limits apply
  */
 public interface IControlLimits<T extends Comparable<? super T>> {
     @Nonnull
