@@ -23,7 +23,7 @@
 
 import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.NameInfo;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 
 import AAPI.AAPI;
 import AAPI.AnswerChannelInfo;
