@@ -60,7 +60,8 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.csstudio.diag.pvmanager.probe.views.PVManagerProbe";
+	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView";
+	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView";
 	private static int instance = 0;
 
 	// GUI
@@ -495,6 +496,12 @@ public class PVManagerProbe extends ViewPart {
             }
 		});
 		this.PVName = pvName;
+		
+		// If this is an instance of the multiple view, show the PV name
+		// as the title
+		if (MULTIPLE_VIEW_ID.equals(getSite().getId())) {
+			setPartName(pvName);
+		}
 	}
 	
 	/**
@@ -660,7 +667,7 @@ public class PVManagerProbe extends ViewPart {
 	            final IWorkbench workbench = PlatformUI.getWorkbench();
 	            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 	            final IWorkbenchPage page = window.getActivePage();
-	            final PVManagerProbe probe = (PVManagerProbe) page.showView(ID, createNewInstance(),
+	            final PVManagerProbe probe = (PVManagerProbe) page.showView(SINGLE_VIEW_ID, createNewInstance(),
 	                                                IWorkbenchPage.VIEW_ACTIVATE);
 	            probe.setPVName(pvName.getName());
 	            return true;

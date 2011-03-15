@@ -13,8 +13,16 @@
             category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
             icon="icons/probe.png"
-            id="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
-            name="PVManager Probe">
+            id="org.csstudio.diag.pvmanager.probe.MultipleView"
+            name="Probe (PVManager)">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
+            icon="icons/probe.png"
+            id="org.csstudio.diag.pvmanager.probe.SingleView"
+            name="Probe (PVManager)">
       </view>
    </extension>
    <extension
@@ -24,51 +32,16 @@
       </contexts>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.diag.pvmanager.probe"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.diag.pvmanager.probe.ShowPVManagerProbeAction"
-               id="org.csstudio.diag.pvmanager.probe.showaction"
-               label="PVMgr Probe"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="false"
-            id="org.csstudio.diag.pvmanager.probe.popupMenu"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker
-                  name="content">
-            </groupMarker>
-            <separator
-                  name="additions">
-            </separator>
-         </menu>
-         <action
-               class="org.csstudio.diag.pvmanager.probe.PVPopupAction"
-               id="org.csstudio.diag.pvmanager.probe.PVpopupAction"
-               label="PvManager Probe"
-               menubarPath="org.csstudio.popmenu/content">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.csstudio.diag.pvmanager.probe.OpenProbe"
             id="org.csstudio.diag.pvmanager.probe.OpenProbe"
             name="Probe (PVManager)">
+      </command>
+      <command
+            defaultHandler="org.csstudio.diag.pvmanager.probe.CreateNewProbe"
+            id="org.csstudio.diag.pvmanager.probe.createNewProbe"
+            name="New Probe...">
       </command>
    </extension>
    <extension
@@ -77,8 +50,32 @@
             allPopups="false"
             locationURI="menu:diag">
          <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/probe.png"
+               label="Probe (PVManager)"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.diag.pvmanager.probe.SingleView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.iprocessvariable">
+         <command
                commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
                icon="icons/probe.png"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.csstudio.diag.pvmanager.probe.SingleView">
+         <command
+               commandId="org.csstudio.diag.pvmanager.probe.createNewProbe"
+               icon="icons/probe-add.png"
+               label="New Probe..."
                style="push">
          </command>
       </menuContribution>

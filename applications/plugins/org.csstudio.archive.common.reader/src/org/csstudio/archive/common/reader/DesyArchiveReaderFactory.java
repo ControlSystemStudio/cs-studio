@@ -31,10 +31,10 @@ import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
 import org.csstudio.archivereader.ValueIterator;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 import com.google.common.collect.ImmutableSet;
