@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap.treeconfiguration;
+package org.csstudio.utility.ldap.service.util;
 
 import java.util.Arrays;
 import java.util.Collections;

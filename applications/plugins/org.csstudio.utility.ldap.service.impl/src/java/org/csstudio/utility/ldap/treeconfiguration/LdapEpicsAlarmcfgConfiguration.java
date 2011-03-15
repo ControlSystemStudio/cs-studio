@@ -21,7 +21,7 @@
  */
 package org.csstudio.utility.ldap.treeconfiguration;
 
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
+import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
 import java.util.EnumSet;
 import java.util.Map;

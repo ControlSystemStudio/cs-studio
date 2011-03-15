@@ -22,8 +22,8 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 
 import java.util.HashSet;
 import java.util.Hashtable;
