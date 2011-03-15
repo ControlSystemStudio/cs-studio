@@ -20,8 +20,8 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.archive.archiveRecord;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.ILongValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ILongValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 /** Handles the "archiveRecord" low-level staff 
