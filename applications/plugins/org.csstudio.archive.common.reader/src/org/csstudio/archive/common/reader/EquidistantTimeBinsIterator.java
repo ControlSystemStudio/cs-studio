@@ -74,19 +74,19 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     private final String _channelName;
     private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
 
-    private final TimeInstant _start;
-    private final TimeInstant _end;
+    private final TimeInstant _startTime;
+    private final TimeInstant _endTime;
     private final ReadableDuration _windowLength;
-    private final TimeInstant _nextWindowEnd;
+    //private final TimeInstant _nextWindowEnd;
 
-    private final int _bins;
-    private int _currentBin;
+    private final int _numOfWindows;
+    private int _currentWindow = 1;
 
-    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _iter;
-    private IArchiveSample<V, ISystemVariable<V>> _nextSample;
+    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
+    private IArchiveSample<V, ISystemVariable<V>> _firstSample;
     private final INumericMetaData _meta;
     private SampleAggregator _agg;
-    private boolean _noSamples = false;
+    private boolean _noMoreSamples = false;
 
 
 
@@ -104,43 +104,56 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                                                   ArchiveServiceException,
                                                                   TypeSupportException {
         _channelName = channelName;
-        _start = start;
-        _end = end;
-        _bins = timeBins;
-        if (start.isAfter(end) || _bins <= 0) {
+        _startTime = start;
+        _endTime = end;
+        _numOfWindows = timeBins;
+        if (start.isAfter(end) || _numOfWindows <= 0) {
             throw new IllegalArgumentException("Start time is after end time or number of time bins less equal zero.");
         }
 
-        // init the last sample to the one before the interval (if existing)
-        _nextSample = getLastSampleBeforeInterval(_channelName, _start);
+        _samples = retrieveSamplesInInterval(_channelName, _startTime, _endTime, type);
 
-        // get the samples in the specified interval
-        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        _samples = service.readSamples(channelName, start, end, type); // type == null means AUTO/DEFAULT
-        _iter = _samples.iterator();
+        _meta = getDisplayRangesForChannel(channelName);
 
+        _samplesIter = _samples.iterator();
 
-        _windowLength = new Duration((_end.getMillis() - _start.getMillis()) / _bins);
+        _windowLength = calculateWindowLength(_startTime, _endTime, _numOfWindows);
 
-        if (_nextSample == null) { // no samples present before the given start time
-            if (_samples.isEmpty()) {
-                _currentBin = _bins + 1;
-                _noSamples = true;
-                _meta = null;
+        final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeInterval = retrieveLastSampleBeforeInterval(_channelName, _startTime);
+
+        if (lastSampleBeforeInterval == null) {
+            if (_samplesIter.hasNext()) {
+                _firstSample = _samplesIter.next();
+                _currentWindow = findWindowOfFirstSample(_firstSample.getSystemVariable().getTimestamp(),
+                                                         _startTime,
+                                                         _windowLength);
+                _noMoreSamples = false;
             } else {
-                _nextSample = _iter.next();
-                // in which bin is it - fast forward to that one
-                _currentBin = findBinOfNextSample(_nextSample.getSystemVariable().getTimestamp(),
-                                                  _start,
-                                                  _windowLength);
-                _meta = getDisplayRangesForChannel(channelName);
+                _noMoreSamples = true;
             }
-        } else {
-            _currentBin = 1;
-            _meta = getDisplayRangesForChannel(channelName);
         }
-        _nextWindowEnd = _start.plusMillis(_currentBin * _windowLength.getMillis());
     }
+
+
+    @Nonnull
+    private Duration calculateWindowLength(@Nonnull final TimeInstant start,
+                                           @Nonnull final TimeInstant end,
+                                           final int bins) {
+        return new Duration((end.getMillis() - start.getMillis()) / bins);
+    }
+
+
+    @Nonnull
+    private Collection<IArchiveSample<V, ISystemVariable<V>>> retrieveSamplesInInterval(@Nonnull final String channelName,
+                                                                                        @Nonnull final TimeInstant start,
+                                                                                        @Nonnull final TimeInstant end,
+                                                                                        @Nonnull final IArchiveRequestType type) throws OsgiServiceUnavailableException,
+                                                                          ArchiveServiceException {
+        final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+        final Collection<IArchiveSample<V, ISystemVariable<V>>> samples = service.readSamples(channelName, start, end, type); // type == null means AUTO/DEFAULT
+        return samples;
+    }
+
 
     @CheckForNull
     private INumericMetaData getDisplayRangesForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
@@ -158,12 +171,12 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     }
 
 
-    private int findBinOfNextSample(@Nonnull final TimeInstant sampleTime,
-                                    @Nonnull final TimeInstant start,
-                                    @Nonnull final ReadableDuration windowLength) {
+    private int findWindowOfFirstSample(@Nonnull final TimeInstant sampleTime,
+                                        @Nonnull final TimeInstant startTime,
+                                        @Nonnull final ReadableDuration windowLength) {
         int i = 1;
         TimeInstant nextWindowEnd =
-            TimeInstantBuilder.buildFromMillis(start.getMillis()).plusMillis(windowLength.getMillis());
+            TimeInstantBuilder.buildFromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
         while (nextWindowEnd.isBefore(sampleTime)) {
             nextWindowEnd = nextWindowEnd.plusMillis(windowLength.getMillis());
             i++;
@@ -174,9 +187,9 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
     @CheckForNull
     private IArchiveSample<V, ISystemVariable<V>>
-        getLastSampleBeforeInterval(@Nonnull final String channelName,
-                                    @Nonnull final TimeInstant start) throws ArchiveServiceException,
-                                                                             OsgiServiceUnavailableException {
+        retrieveLastSampleBeforeInterval(@Nonnull final String channelName,
+                                         @Nonnull final TimeInstant start) throws ArchiveServiceException,
+                                                                                  OsgiServiceUnavailableException {
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
         return service.readLastSampleBefore(channelName, start);
     }
@@ -186,7 +199,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
      */
     @Override
     public boolean hasNext() {
-        if (!_noSamples && _currentBin <= _bins) {
+        if (!_noMoreSamples && _currentWindow <= _numOfWindows) {
             return true;
         }
         return false;
@@ -198,45 +211,44 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     @Override
     @Nonnull
     public IValue next() throws TypeSupportException {
-        if (_noSamples && _currentBin < _bins) {
+        if (_noMoreSamples || _currentWindow > _numOfWindows) {
             throw new NoSuchElementException();
         }
 
-        final TimeInstant windowEnd = _start.plusMillis(_currentBin*_windowLength.getMillis());
-        if (_nextSample != null) { // There are more samples to be aggregated
-            // Is the _nextSample in this window?
-            final int offset = findBinOfNextSample(_nextSample.getSystemVariable().getTimestamp(),
-                                             windowEnd,
-                                             _windowLength);
-            if (offset <= 1) { // YES, start aggregating this window anew
-                _nextSample =
-                    aggregateValuesInNextWindow(_nextSample, windowEnd, _iter, _agg);
-            }
-            _currentBin++;
+        final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(_startTime, _currentWindow, _windowLength);
+
+        if (isFirstSampleInThisWindow(_firstSample, curWindowEnd)) {
+            _firstSample =
+                aggregateValuesInWindow(_firstSample, curWindowEnd, _samplesIter, _agg);
         }
 
         final IMinMaxDoubleValue iVal =
-            ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(windowEnd),
+            ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
                                                  new Severity("OK"), null, _meta, IValue.Quality.Interpolated,
                                                  new double[]{_agg.getAvg().doubleValue() },
                                                  _agg.getMin().doubleValue(),
                                                  _agg.getMax().doubleValue());
+
+        _currentWindow++;
         return iVal;
     }
 
-    /**
-     *
-     * @param <V>
-     * @param initSample
-     * @param windowEnd
-     * @param windowLength
-     * @param iter
-     * @return
-     * @throws TypeSupportException
-     */
+    private boolean isFirstSampleInThisWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> firstSample,
+                                              @Nonnull final TimeInstant curWindowEnd) {
+        return curWindowEnd.isAfter(firstSample.getSystemVariable().getTimestamp());
+    }
+
+
+    @Nonnull
+    private TimeInstant calculateCurrentWindowEndTime(@Nonnull final TimeInstant startTime,
+                                                      final int currentWindow,
+                                                      @Nonnull final ReadableDuration windowLength) {
+        return startTime.plusMillis(currentWindow*windowLength.getMillis());
+    }
+
     @CheckForNull
-    private <V> IArchiveSample<V, ISystemVariable<V>>
-    aggregateValuesInNextWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
+    private IArchiveSample<V, ISystemVariable<V>>
+    aggregateValuesInWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
                                 @Nonnull final TimeInstant windowEnd,
                                 @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
                                 @Nonnull final SampleAggregator agg) throws TypeSupportException {
