@@ -32,9 +32,9 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.treeView.model.UrlValidator.Result;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**
