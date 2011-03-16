@@ -12,24 +12,31 @@ import org.osgi.framework.Bundle;
 
 /**
  * De-serializes java classes looking for the classloaders in the appropriate osgi bundle.
+ * Using the normal ObjectInputStream would resolve classes only according
+ * to this plugin classloader. This resolves the classes by looking for the
+ * class in any plugin whose name is a package parent of the given class.
  * 
  * @author Gabriele Carcassi
  */
 public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream {
 
+	/**
+	 * {@inheritDoc}
+	 */
     public ObjectInputStreamWithOsgiClassResolution(InputStream in)
        throws IOException {
         super(in);
     }
     
+    // classes already resolved
     private static Map<String, Class<?>> resolvedClasses = 
     	new ConcurrentHashMap<String, Class<?>>();
 
     private static Class<?> findClass(String className, String bundleName) {
     	try {
+    		// Find the matching bundle and try to load the class
         	for (Bundle bundle : Activator.getDefault().getContext().getBundles()) {
         		if (bundle.getSymbolicName().equals(bundleName)) {
-                	System.out.println("Bundle found " + bundle);
                 	return bundle.loadClass(className);
         		}
         	}

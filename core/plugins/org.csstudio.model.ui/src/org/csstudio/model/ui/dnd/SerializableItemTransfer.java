@@ -10,10 +10,8 @@ package org.csstudio.model.ui.dnd;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,21 +20,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.model.ui.Activator;
+import org.csstudio.model.ReflectUtil;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
-import com.sun.xml.internal.bind.v2.model.core.Adapter;
-
-/** Drag-and-Drop Transfer for Control System Items.
+/**
+ * Drag-and-Drop Transfer for any serializable object.
  *
- *  Uses Serialization to send and receive control system items.
- *
- *  @author Gabriele Carcassi
- *  @author Kay Kasemir
+ * @author Gabriele Carcassi
+ * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SerializableItemTransfer extends ByteArrayTransfer
@@ -69,7 +62,6 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     	return transfers;
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Collection<Transfer> getTransfers(Collection<String> classeNames) {
     	Collection<Transfer> transfers = new ArrayList<Transfer>();
     	for (String className : classeNames) {
@@ -122,16 +114,16 @@ public class SerializableItemTransfer extends ByteArrayTransfer
 		return className;
 	}
 
-    /** Serialize control system items
+    /** Serialize item
      *  {@inheritDoc}
      */
     @Override
     public void javaToNative (final Object object, final TransferData transferData)
     {
-    	// TODO Need to re-implement the check
-//        if (!clazz.isInstance(object)) {
-//        	throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
-//        }
+    	// Check that it's an object of the right type
+    	if (!ReflectUtil.isInstance(object, getClassName())) {
+    		throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
+        }
 
         try
         {
@@ -151,7 +143,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         }
     }
 
-    /** De-serialize control system items
+    /** De-serialize items
      *  {@inheritDoc}
      */
     @Override
@@ -168,8 +160,6 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         final Object obj;
         try
         {
-        	System.out.println("Bundle " + Activator.getDefault().getBundle());
-        	System.out.println("Context " + Activator.getDefault().getContext());
             final ByteArrayInputStream in = new ByteArrayInputStream(buffer);
             final ObjectInputStream readIn = new ObjectInputStreamWithOsgiClassResolution(in);
             obj = readIn.readObject();
@@ -178,7 +168,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "De-Serialization failed", ex);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "De-Serialization failed", ex);
         }
         return null;
     }

@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.model.ui.dnd;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,13 +20,15 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 
-/** Utility for allowing Drag-and-Drop "Drop" of Control System Items.
+/**
+ * General purpose utility to allowing Drag-and-Drop "Drop" of any
+ * adaptable or serializable object.
+ * <p>
+ * Filters the received items to match the desired type, based on the
+ * order or preference specified. Can also accept plain text.
  *
- *  Filters the received items to match the desired type for CSS.
- *  Can also accept plain text.
- *
- *  @author Gabriele Carcassi
- *  @author Kay Kasemir
+ * @author Gabriele Carcassi
+ * @author Kay Kasemir
  */
 abstract public class ControlSystemDropTarget
 {
@@ -48,7 +49,6 @@ abstract public class ControlSystemDropTarget
         	supportedTransfers.add(TextTransfer.getInstance());
         }
         target.setTransfer(supportedTransfers.toArray(new Transfer[supportedTransfers.size()]));
-        System.out.println("Transfers: " + Arrays.toString(target.getTransfer()));
 
         target.addDropListener(new DropTargetAdapter()
         {

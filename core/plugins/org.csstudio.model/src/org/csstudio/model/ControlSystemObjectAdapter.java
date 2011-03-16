@@ -4,8 +4,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Platform;
 
@@ -18,8 +16,6 @@ import static org.csstudio.model.ReflectUtil.*;
  */
 public class ControlSystemObjectAdapter
 {
-	
-	private static final Logger log = Logger.getLogger(ControlSystemObjectAdapter.class.getName());
     
     /**
      * Returns all class names that an object of that class can be
@@ -50,10 +46,7 @@ public class ControlSystemObjectAdapter
      * @return Object that matches the <code>targetClass</code> or <code>null</code>
      */
     public static Object convert(Object obj, String targetClass) {
-    	
-    	log.log(Level.WARNING, "Converting {0} to {1}", new Object[] {obj, targetClass});
-    	
-    	
+
     	// If object is of the right class, do not adapt
     	if (isInstance(obj, targetClass)) {
     		return obj;

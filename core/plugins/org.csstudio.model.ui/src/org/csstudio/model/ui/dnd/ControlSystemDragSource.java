@@ -28,12 +28,13 @@ import org.eclipse.swt.widgets.Control;
 
 import static org.csstudio.model.ReflectUtil.*;
 
-/** Utility for allowing Drag-and-Drop "Drag" of Control System Items.
+/**
+ * General purpose utility to allowing Drag-and-Drop "Drag" of any
+ * adaptable or serializable object.
  *
- *  Provides data as control system item as well as string for non-CSS targets.
  *
- *  @author Gabriele Carcassi
- *  @author Kay Kasemir
+ * @author Gabriele Carcassi
+ * @author Kay Kasemir
  */
 abstract public class ControlSystemDragSource {
     final private DragSource source;
@@ -41,7 +42,7 @@ abstract public class ControlSystemDragSource {
     private static final Logger log = Logger.getLogger(ControlSystemDragSource.class.getName());
 
     /** Initialize 'drag' source
-     *  @param control Control from which control system items may be dragged
+     *  @param control Control from which the selection may be dragged
      */
     public ControlSystemDragSource(final Control control)
     {
@@ -72,7 +73,6 @@ abstract public class ControlSystemDragSource {
             			if (transfer instanceof SerializableItemTransfer) {
             				SerializableItemTransfer objectTransfer = (SerializableItemTransfer) transfer;
             				event.data = ControlSystemObjectAdapter.convert(selection, objectTransfer.getClassName());
-            				log.log(Level.WARNING, "Converted " + selection + " to " + event.data);
             			} else if (transfer instanceof TextTransfer) {
             				// TextTransfer needs String
             				event.data = selection.toString();
@@ -175,7 +175,6 @@ abstract public class ControlSystemDragSource {
 		}
 		// Add array type support
 		supportedTransfers.addAll(supportedArrayTransfers(arrayClass));
-    	System.out.println("Selection " + selection + " supported " + supportedTransfers);
 		return supportedTransfers.toArray(new Transfer[supportedTransfers.size()]);
     }
 
