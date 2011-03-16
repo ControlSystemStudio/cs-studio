@@ -10,23 +10,23 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractBoolWidgetModel}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
@@ -35,7 +35,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	 * {@link AbstractBoolFigure} base class. This method is provided for the
 	 * convenience of subclasses, which can call this method in their
 	 * implementation of {@link AbstractBaseEditPart#doCreateFigure()}.
-	 * 
+	 *
 	 * @param figure
 	 *            the figure.
 	 * @param model
@@ -55,14 +55,14 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		figure.setOffColor(model.getOffColor());
 		figure.setFont(CustomMediaFactory.getInstance().getFont(
 				model.getFont().getFontData()));
-		
-	}	
-	
+
+	}
+
 	@Override
 	public AbstractBoolWidgetModel getWidgetModel() {
 		return (AbstractBoolWidgetModel)getModel();
 	}
-	
+
 	/**
 	 * Registers property change handlers for the properties defined in
 	 * {@link AbstractBoolWidgetModel}. This method is provided for the convenience
@@ -78,14 +78,14 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				if(newValue == null)
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				updateFromValue(newValue, figure);					
+				updateFromValue(newValue, figure);
 				return true;
 			}
 
-			
+
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
-		
+
 		// bit
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -95,29 +95,29 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 					return false;
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
 				figure.setBit((Integer) newValue);
-				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);					
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_BIT, handler);
-		
+
 		//data type
 	    final IWidgetPropertyChangeHandler	dataTypeHandler = new IWidgetPropertyChangeHandler() {
-			
+
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
 				if((Integer)newValue == 0)
 					figure.setBit(getWidgetModel().getBit());
 				else
-					figure.setBit(-1);		
-				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);		
+					figure.setBit(-1);
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);
 				updatePropSheet((Integer)newValue);
 				return true;
 			}
 		};
 		getWidgetModel().getProperty(AbstractBoolWidgetModel.PROP_DATA_TYPE).
 			addPropertyChangeListener(new PropertyChangeListener() {
-				
+
 				public void propertyChange(PropertyChangeEvent evt) {
 					dataTypeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
 				}
@@ -125,16 +125,16 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
 		//on state
 		handler = new IWidgetPropertyChangeHandler() {
-			
+
 			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
-				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;					
-				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);					
+				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
+				updateFromValue(getPVValue(AbstractPVWidgetModel.PROP_PVNAME), figure);
 				return true;
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_ON_STATE, handler);
-		
-		
+
+
 		// show bool label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -146,7 +146,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_SHOW_BOOL_LABEL, handler);
-		
+
 		// on label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -158,7 +158,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_ON_LABEL, handler);
-		
+
 		// off label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -170,7 +170,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_OFF_LABEL, handler);
-		
+
 		// on color
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -182,7 +182,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_ON_COLOR, handler);
-		
+
 		// off color
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -195,8 +195,8 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_OFF_COLOR, handler);
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#setValue(java.lang.Object)
 	 */
@@ -230,7 +230,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				figure.setValue(0);
 		}
 	}
-	
+
 	private void updatePropSheet(final int dataType) {
 		getWidgetModel().setPropertyVisible(
 				AbstractBoolWidgetModel.PROP_BIT, dataType == 0);
@@ -238,6 +238,6 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 				AbstractBoolWidgetModel.PROP_ON_STATE, dataType == 1);
 		getWidgetModel().setPropertyVisible(
 				AbstractBoolWidgetModel.PROP_OFF_STATE, dataType == 1);
-		
+
 	}
 }

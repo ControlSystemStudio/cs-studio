@@ -24,7 +24,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Alarm Server

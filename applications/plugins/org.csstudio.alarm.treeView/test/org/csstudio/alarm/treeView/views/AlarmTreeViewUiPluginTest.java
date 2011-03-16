@@ -60,7 +60,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.LdapTestTreeBuilder;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapUtils;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;

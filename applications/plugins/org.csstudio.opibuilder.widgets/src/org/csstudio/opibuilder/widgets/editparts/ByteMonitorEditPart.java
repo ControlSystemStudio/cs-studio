@@ -7,6 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -14,10 +18,6 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IValue;
 import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 

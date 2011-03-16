@@ -26,9 +26,9 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IValue;
 import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Maps;
@@ -66,7 +66,10 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
      * Dispatches the value creation to the suitable type support family by the control system
      * type.
      *
-     * @param valueData
+     * @param name the variable's name
+     * @param value the value of the variable
+     * @param system the control system (serves as discriminator to spawn the correct type family)
+     * @param time the timestamp
      * @return the system and value type specific variable.
      * @throws TypeSupportException
      */

@@ -18,9 +18,9 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Helper for reading currently active global alarms from RDB
  *  @author Kay Kasemir
@@ -75,7 +75,7 @@ public class GlobalAlarmReader
                 if (result.wasNull())
                     alarm_time = null;
                 else
-                    alarm_time = TimeWarp.getCSSTimestamp(sql_time);
+                    alarm_time = TimestampFactory.fromSQLTimestamp(sql_time);
 
                 // Get path to PV
                 final String path = getPath(path_statement, parent_id);

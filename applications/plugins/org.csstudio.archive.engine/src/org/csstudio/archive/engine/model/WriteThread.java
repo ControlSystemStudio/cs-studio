@@ -14,9 +14,9 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.util.stats.Average;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s

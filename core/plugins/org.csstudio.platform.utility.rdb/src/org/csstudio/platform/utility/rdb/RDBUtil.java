@@ -10,9 +10,8 @@ package org.csstudio.platform.utility.rdb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
 import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
@@ -35,11 +34,9 @@ import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
 @SuppressWarnings("nls")
 abstract public class RDBUtil
 {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(RDBUtil.class);
-
     /** Start of MySQL URL */
     private static final String JDBC_MYSQL = "jdbc:mysql://";
-    
+
     /** Start of PostgreSQL URL */
     private static final String JDBC_POSTGRESQL = "jdbc:postgresql://";
 
@@ -135,17 +132,15 @@ abstract public class RDBUtil
     public static RDBUtil connect(final String url,
             final String user, final String password, final boolean autoReconnect) throws Exception
     {
-        LOG.debug("RDBUtil connects to " + url);
-        if (url.startsWith(JDBC_MYSQL)) {
+        Activator.getLogger().log(Level.FINE, "RDBUtil connects to {0}", url);
+        if (url.startsWith(JDBC_MYSQL))
             return new MySQL_RDB(url, user, password, autoReconnect);
-        }
-        if (url.startsWith(JDBC_ORACLE)) {
+        else if (url.startsWith(JDBC_ORACLE))
             return new OracleRDB(url, user, password, autoReconnect);
-        }
-        if (url.startsWith(JDBC_POSTGRESQL)) {
+        else if (url.startsWith(JDBC_POSTGRESQL))
         	return new PostgreSQL_RDB(url, user, password, autoReconnect);
-        }
-        throw new Exception("Unsupported database dialect " + url);
+        else
+            throw new Exception("Unsupported database dialect " + url);
     }
 
     /** Constructor for derived classes.
@@ -193,9 +188,8 @@ abstract public class RDBUtil
      */
     public void setAutoReconnect(final boolean auto_reconnect) throws Exception
     {
-        if (test_query == null) {
+        if (test_query == null)
             throw new IllegalStateException("Auto-reconnect support not available");
-        }
         autoReconnect = auto_reconnect;
     }
 
@@ -219,13 +213,11 @@ abstract public class RDBUtil
 	{
 	    if (autoReconnect)
 	    {
-	        if ((connection != null) && isConnected()) {
+	        if ((connection != null) && isConnected())
                 return connection; // All OK
-            }
-	        LOG.info("Connection Lost! Reconnect to " + url);
-	        if (connection != null) {
+	        Activator.getLogger().log(Level.FINE, "Connection Lost! Reconnect to {0}", url);
+	        if (connection != null)
                 close();
-            }
             connection = do_connect(url, user, password);
             connection.setAutoCommit(false);
             test_query = connection.prepareStatement(getConnectionTestQuery());
@@ -236,12 +228,11 @@ abstract public class RDBUtil
 	/** Close the RDB connection. */
 	public void close()
 	{
-	    LOG.debug("RDBUtil closes " + url);
+        Activator.getLogger().log(Level.FINE, "RDBUtil closes {0}", url);
 		try
 		{
-		    if (autoReconnect) {
+		    if (autoReconnect)
                 test_query.close();
-            }
 			connection.close();
 		}
 		catch (final SQLException ex)

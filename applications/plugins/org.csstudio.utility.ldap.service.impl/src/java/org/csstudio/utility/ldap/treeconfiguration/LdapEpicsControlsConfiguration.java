@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 import com.google.common.collect.ImmutableSet;

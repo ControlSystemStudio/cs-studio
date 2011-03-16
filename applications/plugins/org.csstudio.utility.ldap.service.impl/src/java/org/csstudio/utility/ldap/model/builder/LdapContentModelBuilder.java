@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;

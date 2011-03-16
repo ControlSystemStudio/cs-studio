@@ -10,7 +10,7 @@ package org.csstudio.trends.databrowser.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.Before;
 import org.junit.Test;
 

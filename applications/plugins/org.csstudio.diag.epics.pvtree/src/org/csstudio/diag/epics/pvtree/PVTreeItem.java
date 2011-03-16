@@ -5,9 +5,10 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;

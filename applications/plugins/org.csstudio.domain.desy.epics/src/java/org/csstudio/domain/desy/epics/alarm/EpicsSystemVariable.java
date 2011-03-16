@@ -33,7 +33,6 @@ import org.csstudio.domain.desy.types.ICssValueType;
  *
  * @author bknerr
  * @since 17.11.2010
- * @param <V> the base value type
  * @param <T> the css variable type
  */
 public class EpicsSystemVariable<T>

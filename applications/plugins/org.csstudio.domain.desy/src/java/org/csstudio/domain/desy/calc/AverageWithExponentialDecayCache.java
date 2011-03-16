@@ -39,7 +39,7 @@ public class AverageWithExponentialDecayCache extends AbstractAccumulatorCache<D
 
     /**
      * Constructor.
-     * @param accumulated values decaying with this factor, with the newly arrived one is weighted with 1-decay
+     * @param decay accumulated values decaying with this factor, with the newly arrived one is weighted with 1-decay
      */
     public AverageWithExponentialDecayCache(@Nonnull final Double decay) {
         super(Double.class);

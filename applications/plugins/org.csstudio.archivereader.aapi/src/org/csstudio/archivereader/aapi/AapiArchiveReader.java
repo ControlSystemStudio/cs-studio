@@ -4,8 +4,7 @@ import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.data.values.ITimestamp;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiException;

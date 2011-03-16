@@ -21,14 +21,14 @@
  */
 package org.csstudio.utility.ldap.model;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.EnumMap;
 import java.util.Map;

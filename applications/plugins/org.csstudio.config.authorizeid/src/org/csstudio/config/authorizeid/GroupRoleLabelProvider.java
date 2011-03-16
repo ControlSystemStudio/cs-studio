@@ -1,7 +1,7 @@
 package org.csstudio.config.authorizeid;
 
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.Collections;

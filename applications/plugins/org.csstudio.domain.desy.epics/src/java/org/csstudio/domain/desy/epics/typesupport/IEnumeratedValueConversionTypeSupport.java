@@ -23,6 +23,8 @@ package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
@@ -31,8 +33,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.util.StringUtil;
 
 /**

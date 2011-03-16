@@ -65,7 +65,7 @@ public enum EpicsAlarmStatus {
      * Converts a string representation of a status to an EpicsAlarmStatus.
      * Note, that unlike the {@link EpicsAlarmStatus#valueOf(String)} method, this method will never
      * throw an {@link IllegalArgumentException}. If there is no severity value for
-     * the given string, this method will return {@link EpicsAlarmSeverity.UNKNOWN}.
+     * the given string, this method will return {@link EpicsAlarmSeverity#UNKNOWN}.
      *
      * @param statusStr the status represented as a string value.
      * @return the status.

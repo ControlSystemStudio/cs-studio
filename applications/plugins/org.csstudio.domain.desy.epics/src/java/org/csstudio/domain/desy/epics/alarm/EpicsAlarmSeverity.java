@@ -92,7 +92,7 @@ public enum EpicsAlarmSeverity {
      * Converts a string representation of a severity to an EpicsAlarmSeverity. Note that
      * unlike the {@link EpicsAlarmSeverity#valueOf(String)} method, this method will never throw
      * an {@link IllegalArgumentException}. If there is no severity value for
-     * the given string, this method will return {@link EpicsAlarmSeverity.UNKNOWN}.
+     * the given string, this method will return {@link EpicsAlarmSeverity#UNKNOWN}.
      *
      * @param alarmString the severity represented as a string value.
      * @return the severity represented by the given string.
@@ -133,7 +133,7 @@ public enum EpicsAlarmSeverity {
 
     /**
      * Converts an jca severity into a CSS epics alarm severity.
-     * @param status the incoming severity
+     * @param severity the incoming severity
      * @return the outgoing severity
      */
     @Nonnull

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
 import java.io.PrintWriter;
@@ -42,10 +49,12 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         new_values = 0;
 
         pv_listener = new PVListener() {
+            @Override
             public void pvValueUpdate(PV pv) {
                 addNewValue();
             }
 
+            @Override
             public void pvDisconnected(PV pv) {
                 addNewValue(); // handled the same way: mark for redraw
             }
@@ -68,19 +77,23 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
     }
 
     /** @see org.csstudio.platform.model.IProcessVariable */
+    @Override
     public String getName() {
         return pv.getName();
     }
 
     /** @see org.csstudio.platform.model.IProcessVariable */
+    @Override
     public final String getTypeId() {
         return IProcessVariable.TYPE_ID;
     }
 
+    @Override
     public boolean isDisposed() {
         return pv == null;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
@@ -89,18 +102,22 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         selected = new_state;
     }
 
+    @Override
     public PV getPV() {
         return pv;
     }
 
+    @Override
     public SavedValue getSavedValue() {
         return saved_value;
     }
 
+    @Override
     public PV getReadbackPV() {
         return readback_pv;
     }
 
+    @Override
     public SavedValue getSavedReadbackValue() {
         return saved_readback_value;
     }
@@ -190,6 +207,7 @@ public class PVListModelEntry extends PlatformObject implements PVListEntry {
         return result;
     }
 
+    @SuppressWarnings("nls")
     public String toXML() {
         StringWriter buf = new StringWriter();
         PrintWriter pw = new PrintWriter(buf);

@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir

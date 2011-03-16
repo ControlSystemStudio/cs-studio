@@ -12,9 +12,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.core.runtime.IProgressMonitor;

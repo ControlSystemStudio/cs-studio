@@ -50,13 +50,6 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  */
 public interface IAlarm /* extends Alarm */ {
 
-/*    *//**
-     * Any system may have its specific info that does not quite match the general Alarm stuff.
-     * @return
-     *//*
-    @Nonnull
-    IAlarm parseFrom(@Nonnull final String strRep) throws Exception; // TODO (bknerr) : dedicatd exception
-*/
     @Nonnull
     ControlSystemType getControlSystemType();
 }

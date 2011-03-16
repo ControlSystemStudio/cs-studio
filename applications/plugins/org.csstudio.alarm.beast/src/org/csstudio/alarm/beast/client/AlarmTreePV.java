@@ -13,7 +13,7 @@ import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.eclipse.osgi.util.NLS;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,

@@ -1,11 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.utility.pv.PV;
 
 /** A 'saved' snapshot value.
- *  
+ *
  *  Internally either a Double or a String.
  *  @author Kay Kasemir
  */
@@ -24,7 +31,7 @@ public class SavedValue
     /** Construct saved value with initial text. */
     public SavedValue(String s)
     {   saved = s; }
-    
+
     /** Create saved value from string. */
     public static SavedValue fromString(String text)
     {
@@ -41,7 +48,7 @@ public class SavedValue
         // Fall back to String.
         return new SavedValue(text);
     }
-    
+
     /** Save the current value of the PV into this SavedValue. */
     public void readFromPV(PV pv)
     {
@@ -57,7 +64,7 @@ public class SavedValue
         else
             saved = new Double(num);
     }
-    
+
     /** Restore this SavedValue to the given PV. */
     public void restoreToPV(PV pv) throws Exception
     {
@@ -65,7 +72,7 @@ public class SavedValue
             return;
         pv.setValue(saved);
     }
-    
+
     /** @return Current value, never <code>null</code>. */
     @Override
     public String toString()
@@ -74,7 +81,7 @@ public class SavedValue
             return ""; //$NON-NLS-1$
         return saved.toString();
     }
-    
+
     /** @return <code>true</code> if we have a current and saved value,
      *  and they differ beyond the given tolerance.
      */

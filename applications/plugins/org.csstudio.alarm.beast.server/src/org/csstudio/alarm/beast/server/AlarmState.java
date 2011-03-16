@@ -8,8 +8,8 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.eclipse.osgi.util.NLS;
 
 /** Alarm state combines an alarm severity with its message info,

@@ -24,7 +24,7 @@
  */
 package org.csstudio.platform.internal.model;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.AbstractControlSystemItem;
 import org.csstudio.platform.model.IProcessVariableWithSamples;
 

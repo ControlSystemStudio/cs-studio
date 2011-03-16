@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 
 /** Time stamp gymnastics
  *  @author Kay Kasemir

@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser.ui;
 
 import java.util.List;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableOrArchiveDataSourceDropTarget;
@@ -17,10 +17,10 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
+import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;

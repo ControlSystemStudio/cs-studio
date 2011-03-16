@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.epics;
 
 import static org.junit.Assert.assertEquals;
@@ -7,14 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.junit.Ignore;
@@ -35,8 +40,6 @@ import org.junit.Test;
  *  CAJ                            OK        10..140 sec     11.7 MB
  *  </pre>
  *  @author Kay Kasemir
- *
- *  FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test
@@ -70,16 +73,18 @@ public class EPICS_V3_PV_Test
             this.name = name;
         }
 
+        @Override
         public void pvValueUpdate(final PV pv)
         {
             updates.addAndGet(1);
             final IValue v = pv.getValue();
-            ////System.out.println(name + ": " + pv.getName() + ", " + v.getTime() + " " + v);
+            System.out.println(name + ": " + pv.getName() + ", " + v.getTime() + " " + v);
         }
 
+        @Override
         public void pvDisconnected(final PV pv)
         {
-            ////System.out.println(name + ": " + pv.getName() + " disconnected");
+            System.out.println(name + ": " + pv.getName() + " disconnected");
         }
     }
 
@@ -357,28 +362,25 @@ public class EPICS_V3_PV_Test
         }
         // Time and ...
         final long time = System.currentTimeMillis() - start;
-        ////System.out.println("Time to connect " + PV_Count + " channels: " + time/1000.0 +  " sec");
+        System.out.println("Time to connect " + PV_Count + " channels: " + time/1000.0 +  " sec");
         // Memory Info
         final double MB = 1024.0*1024.0;
         final Runtime runtime = Runtime.getRuntime();
         final double freeMB = runtime.freeMemory()/MB;
         final double totalMB = runtime.totalMemory()/MB;
-        ////System.out.format("Memory: %.2f of %.2f MB = %.0f %% free\n", freeMB, totalMB, freeMB/totalMB*100.0);
-        ////System.out.println("Stopping " + PV_Count + " PVs...");
+        System.out.format("Memory: %.2f of %.2f MB = %.0f %% free\n", freeMB, totalMB, freeMB/totalMB*100.0);
+        System.out.println("Stopping " + PV_Count + " PVs...");
         for (int i=0; i<PV_Count; ++i)
         {
             pvs[i].stop();
             pvs[i] = null;
         }
-        ////System.out.println("Done.");
+        System.out.println("Done.");
     }
 
     @Test
     public void testMultipleRuns() throws Exception
     {
-        // Disable INFO and DEBUG messages
-        final Logger logger = Logger.getRootLogger();
-        logger.setLevel(Level.ERROR);
     	for (int run=0; run < 10; ++run) {
             testManyConnections();
         }

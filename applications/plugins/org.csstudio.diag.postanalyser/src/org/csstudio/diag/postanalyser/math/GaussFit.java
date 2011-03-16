@@ -1,8 +1,8 @@
 package org.csstudio.diag.postanalyser.math;
 
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.diag.postanalyser.Messages;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.teneighty.lm.CostFunction;
 import org.teneighty.lm.LevenbergMarquardt;
 

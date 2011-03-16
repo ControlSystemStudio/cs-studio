@@ -7,19 +7,19 @@
  ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Helper that does various unspeakable things to values.
  *  @author Kay Kasemir
@@ -29,19 +29,19 @@ public class ValueButcher
     // These strings match the text representation of the
     // ChannelArchiver's informational severity codes
     // - if they existed in previous versions.
-    
+
     /** Status string for 'disabled' state */
     private static final String DISABLED = "Archive_Disabled"; //$NON-NLS-1$
 
     /** Status string for 'disconnected' state */
     private static final String DISCONNECTED = "Disconnected"; //$NON-NLS-1$
-    
+
     /** Status string for 'off' state */
     private static final String OFF = "Archive_Off"; //$NON-NLS-1$
 
     /** Status string for 'write error' state */
     private static final String WRITE_ERROR = "Write_Error"; //$NON-NLS-1$
-    
+
     /** @return Copy of given value with timestamp set to 'now',
      *          or <code>null</code> if value is not handled
      */
@@ -77,7 +77,7 @@ public class ValueButcher
                             ((IEnumeratedValue)value).getValues());
         return null;
     }
-    
+
     /** @return Info value to indicate disabled state */
     public static IValue createDisabled()
     {

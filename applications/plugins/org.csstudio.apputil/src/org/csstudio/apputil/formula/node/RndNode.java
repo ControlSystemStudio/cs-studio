@@ -18,13 +18,14 @@ public class RndNode extends AbstractUnaryNode
     {
         super(n);
     }
-    
+
+    @Override
     public double eval()
     {
         final double a = n.eval();
         return a*Math.random();
     }
-    
+
     @SuppressWarnings("nls")
     @Override
     public String toString()

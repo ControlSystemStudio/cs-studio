@@ -27,16 +27,15 @@ import org.csstudio.archive.rdb.internal.SQL;
 import org.csstudio.archive.rdb.internal.SampleModeHelper;
 import org.csstudio.archive.rdb.internal.SeverityCache;
 import org.csstudio.archive.rdb.internal.StatusCache;
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /**
  *  RDB Archive access
@@ -487,7 +486,7 @@ public class RDBArchive
     public void batchSample(final int channelId,
                             final IValue sample) throws Exception
     {
-        final Timestamp stamp = TimeWarp.getSQLTimestamp(sample.getTime());
+        final Timestamp stamp = sample.getTime().toSQLTimestamp();
         final Severity severity =
                     severities.findOrCreate(sample.getSeverity().toString());
         final Status status = stati.findOrCreate(sample.getStatus());
@@ -798,7 +797,7 @@ public class RDBArchive
         System.out.println("Individual insert of " + channel.getName() + " = " + sample.toString());
         try
         {
-            final Timestamp stamp = TimeWarp.getSQLTimestamp(sample.getTime());
+            final Timestamp stamp = sample.getTime().toSQLTimestamp();
             final Severity severity =
                         severities.findOrCreate(sample.getSeverity().toString());
             final Status status = stati.findOrCreate(sample.getStatus());

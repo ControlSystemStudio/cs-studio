@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiReductionMethod;

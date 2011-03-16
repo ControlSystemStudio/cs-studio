@@ -21,10 +21,10 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,9 +44,9 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;

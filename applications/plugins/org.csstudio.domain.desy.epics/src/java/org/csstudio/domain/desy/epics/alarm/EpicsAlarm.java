@@ -40,7 +40,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  *
  * Epics alarms are comparable by their severity field.<br>
  *
- * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting its alarm.
+ * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable} on setting its alarm.
  *
  * @author Bastian Knerr
  */
@@ -127,7 +127,7 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable 
     }
 
     @Nonnull
-    public static IAlarm parseFrom(@Nonnull final String strRep) throws IllegalArgumentException {
+    public static IAlarm parseFrom(@Nonnull final String strRep) {
 
         final String regEx = ALARM_PREFIX + "\\(" + getStaticOrigin().name() +
                                     ":([^\\s]+),([^\\s]+)\\)";

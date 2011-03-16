@@ -29,9 +29,9 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
@@ -63,9 +63,9 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;

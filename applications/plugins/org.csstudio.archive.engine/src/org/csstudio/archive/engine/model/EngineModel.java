@@ -19,10 +19,10 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

@@ -1,6 +1,6 @@
 package org.csstudio.archive.channelarchiver;
 
-import org.csstudio.platform.data.ISeverity;
+import org.csstudio.data.values.ISeverity;
 
 /** Implementation of the Severity interface for EPICS samples.
  *  @author Kay Kasemir
@@ -11,7 +11,7 @@ public class SeverityImpl implements ISeverity
 	final private String text;
 	final private boolean has_value;
 	final private boolean txt_stat;
-	
+
 	public SeverityImpl(final String text, final boolean has_value,
 	        final boolean txt_stat)
 	{
@@ -25,7 +25,7 @@ public class SeverityImpl implements ISeverity
 	{
 		return text;
 	}
-    
+
     public boolean isOK()
     {
         return text.length() == 0

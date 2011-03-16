@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.model;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.platform.internal.model.ArchiveDataSource;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistry;
 import org.csstudio.platform.internal.model.ProcessVariable;

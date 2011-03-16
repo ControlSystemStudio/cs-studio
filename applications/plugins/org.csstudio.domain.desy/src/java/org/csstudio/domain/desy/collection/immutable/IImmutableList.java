@@ -58,7 +58,7 @@ public interface IImmutableList<T> extends IImmutableCollection<T> {
      * A COPY of the specified sublist.
      * @param fromIndex
      * @param toIndex
-     * @return
+     * @return the sublist
      */
     @Nonnull
     List<T> subList(int fromIndex, int toIndex);
@@ -74,7 +74,7 @@ public interface IImmutableList<T> extends IImmutableCollection<T> {
 
     /**
      * Copied to a new mutable list.
-     * @return
+     * @return a list view
      */
     @Nonnull
     List<T> toList();

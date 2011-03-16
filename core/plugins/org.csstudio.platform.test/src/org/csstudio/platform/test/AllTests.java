@@ -1,10 +1,5 @@
 package org.csstudio.platform.test;
 
-import org.csstudio.platform.data.ValueTest;
-import org.csstudio.platform.internal.data.DoubleValueTest;
-import org.csstudio.platform.internal.data.MetaDataTest;
-import org.csstudio.platform.internal.data.MinMaxDoubleValueTest;
-import org.csstudio.platform.internal.data.TimestampTests;
 import org.csstudio.platform.internal.management.CommandContributionTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceFactoryTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceTest;
@@ -40,25 +35,25 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses( { ConnectionStateTest.class, ConnectorIdentificationTest.class,
-//		SimpleDALTest.class, 
-//		DalConnectorTest.class, 
+//		SimpleDALTest.class,
+//		DalConnectorTest.class,
 //		SimpleDAL_EPICSTest.class,
-		DalCacheBugTest.class, 
+		DalCacheBugTest.class,
 //		ProcessVariableConnectionServiceTest.class,
 		SimpleNameParserTest.class, ProcessVariableFactoryTest.class,
 		ControlSystemItemFactoriesRegistryTest.class,
 		ProcessVariableAdressTest.class, DataGeneratorInfosTest.class,
-		MetaDataTest.class, DalNameParserTest.class,
-//		MinMaxDoubleValueTest.class, 
+		DalNameParserTest.class,
+//		MinMaxDoubleValueTest.class,
 		ProcessVariableTest.class,
-		JMSLogThreadTest.class, 
+		JMSLogThreadTest.class,
 //		ControlSystemEnumTest.class,
-		ArchiveDataSourceTest.class, TimestampTests.class,
+		ArchiveDataSourceTest.class,
 		CentralLoggerTest.class, ArchiveDataSourceFactoryTest.class,
-//		ValueTest.class, 
+//		ValueTest.class,
 //		AbstractProcessVariableNameParserTest.class,
 		DALPropertyFactoriesProviderTest.class,
-		ProcessVariableAdressFactoryTest.class, DoubleValueTest.class,
+		ProcessVariableAdressFactoryTest.class,
 		StringUtilTest.class, CommandDescriptionTest.class,
 		CommandParameterDefinitionTest.class,
 		CommandParameterEnumValueTest.class, CommandParametersTest.class,

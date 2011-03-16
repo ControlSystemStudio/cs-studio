@@ -23,12 +23,12 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

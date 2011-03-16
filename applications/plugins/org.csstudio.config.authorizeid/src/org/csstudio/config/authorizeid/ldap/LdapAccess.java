@@ -21,12 +21,12 @@
  */
 package org.csstudio.config.authorizeid.ldap;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_NAME;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_ROLE;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.OU;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +39,10 @@ import org.csstudio.config.authorizeid.GroupRoleTableEntry;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdFieldsAndAttributes;
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 public final class LdapAccess {

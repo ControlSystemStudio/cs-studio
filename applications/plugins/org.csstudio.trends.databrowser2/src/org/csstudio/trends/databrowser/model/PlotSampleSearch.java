@@ -7,19 +7,19 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.data.values.ITimestamp;
 
 /** Search for samples in a haystack.
  *  Using direct PlotSample array access since PlotSampleMerger
  *  has arrays and uses System.arraycopy, which unfortunately
- *  prevents its use with the more generic PlotSamples interface. 
+ *  prevents its use with the more generic PlotSamples interface.
  *  @author Kay Kasemir
  */
 public class PlotSampleSearch
 {
     private int cmp;
     private int mid;
-    
+
     /** Perform binary search for given value.
      *  @return Returns <code>true</code> if exact match was found,
      *          otherwise <code>cmp</code> and <code>mid</code> are left accordingly:
@@ -35,7 +35,7 @@ public class PlotSampleSearch
         mid = -1;
         while (low <= high)
         {
-            mid = (low + high) / 2;  
+            mid = (low + high) / 2;
             // Compare 'mid' sample to goal
             final ITimestamp time = samples[mid].getTime();
             if (time.isGreaterThan(goal))
@@ -117,7 +117,7 @@ public class PlotSampleSearch
         }
         return -1;
     }
-    
+
     /** Find the last sample that's greater than the given value,
      *  i.e. the 'previous' sample would be equal-or-less than goal.
      *  @param goal The time to look for.
@@ -139,7 +139,7 @@ public class PlotSampleSearch
         }
         return -1;
     }
-    
+
     /** Find a sample that's bigger or equal to given value
      *  @param goal The time to look for.
      *  @return Returns index of sample bigger-or-equal to given goal, or -1.

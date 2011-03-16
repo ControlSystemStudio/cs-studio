@@ -1,14 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv.simu;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** A value that changes periodically driven by its own background thread.
  *  <p>
@@ -20,7 +27,7 @@ import org.csstudio.platform.data.IValue.Quality;
  *  updating every 0.2 seconds on a step of 0.5.
  *  <p>
  *  By default, it processes at 1 Hz with a value range of -5 .. 5 on a step of 1.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -47,7 +54,7 @@ abstract public class DynamicValue extends Value implements Runnable
      *  stops when last reference is released.
      */
     private int references = 0;
-    
+
     /** Thread that updates the PV.
      *  <p>
      *  Setting it to null will ask the thread to quit.
@@ -105,7 +112,7 @@ abstract public class DynamicValue extends Value implements Runnable
                  }
              }else{
 	            useDefault();
-             }            
+             }
         }
         // Enforce minimum period delay
         if (update_period < MIN_UPDATE_PERIOD)
@@ -123,7 +130,7 @@ abstract public class DynamicValue extends Value implements Runnable
 		    step = DEFAULT_STEP;
 		    update_period = DEFAULT_UPDATE;
 	}
-    
+
     /** {@inheritDoc} */
     public synchronized void start() throws Exception
     {
@@ -162,7 +169,7 @@ abstract public class DynamicValue extends Value implements Runnable
             // Ignore
         }
     }
-    
+
     /** Set a new value. To be called from <code>update</code>.
      *  Will adjust the alarm severity.
      *  @param time New time stamp
@@ -197,19 +204,20 @@ abstract public class DynamicValue extends Value implements Runnable
          final ISeverity severity;
          final String status;
          severity = ValueFactory.createOKSeverity();
-         status = severity.toString();        
+         status = severity.toString();
          setValue(ValueFactory.createDoubleValue(time, severity, status, meta,
                  Quality.Original, doubleArray));
     }
-    
-    
+
+
     /** To be implemented by derived class.
      *  Will be called by periodic thread.
      *  Must compute new number and call {@link #setValue(double)}
      */
     abstract protected void update();
-    
+
     /** Runnable that updates the value and fires events */
+    @Override
     public void run()
     {
         while (true)

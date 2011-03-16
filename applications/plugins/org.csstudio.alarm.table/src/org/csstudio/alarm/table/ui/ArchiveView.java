@@ -39,7 +39,7 @@ import org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferenceConstan
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;

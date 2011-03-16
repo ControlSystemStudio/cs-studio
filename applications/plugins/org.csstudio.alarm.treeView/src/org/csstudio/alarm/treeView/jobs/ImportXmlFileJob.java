@@ -21,12 +21,12 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.parseSearchResult;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
-import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

@@ -7,19 +7,19 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.data.IDoubleValue;
-import org.csstudio.platform.data.IEnumeratedMetaData;
-import org.csstudio.platform.data.IEnumeratedValue;
-import org.csstudio.platform.data.ILongValue;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.INumericMetaData;
-import org.csstudio.platform.data.ISeverity;
-import org.csstudio.platform.data.IStringValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.data.IValue.Quality;
+import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
+import org.csstudio.data.values.ISeverity;
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.IValue.Quality;
+import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.data.values.ValueFactory;
 
 /** Helper for transforming samples/values
  *  @author Kay Kasemir
@@ -57,7 +57,7 @@ public class ValueButcher
         return ValueFactory.createStringValue(time, severity, status,
                 quality, new String[] { value.toString() });
     }
-    
+
     /** Create new value with 'now' as time stamp
      *  @param value Original Value
      *  @return New value with 'now' as time stamp

@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.waveformview;
 
-import org.csstudio.platform.data.IValue;
+import org.csstudio.data.values.IValue;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
+import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
-import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser.model.Model;
