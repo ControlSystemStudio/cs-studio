@@ -29,17 +29,15 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
+import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
-import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
@@ -49,7 +47,6 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -63,13 +60,34 @@ import org.joda.time.ReadableDuration;
  */
 public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
-    private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(EquidistantTimeBinsIterator.class);
+    /**
+     * Result container for method
+     * {@link EquidistantTimeBinsIterator#findWindowOfFirstSample(TimeInstant, TimeInstant, ReadableDuration)}.
+     *
+     * @author bknerr
+     * @since Mar 16, 2011
+     */
+    private static final class SampleAndWindow<V> {
+        private final IArchiveSample<V, ISystemVariable<V>>_sample;
+        private final int _window;
+        /**
+         * Constructor.
+         */
+        public SampleAndWindow(@Nullable final IArchiveSample<V, ISystemVariable<V>> sample,
+                               final int window) {
+            _sample = sample;
+            _window = window;
+        }
+        public int getWindow() {
+            return _window;
+        }
+        @CheckForNull
+        public IArchiveSample<V, ISystemVariable<V>> getSample() {
+            return _sample;
+        }
 
-    @SuppressWarnings("rawtypes")
-    private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
-        new ArchiveSampleToIValueFunction();
 
+    }
 
     private final String _channelName;
     private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
@@ -84,11 +102,9 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
     private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
     private IArchiveSample<V, ISystemVariable<V>> _firstSample;
-    private final INumericMetaData _meta;
-    private final SampleMinMaxAggregator _agg = new SampleMinMaxAggregator();
-    private boolean _noMoreSamples = false;
-
-
+    private final INumericMetaData _metaData;
+    private final SampleMinMaxAggregator _agg;
+    private boolean _noSamples = false;
 
     /**
      * Constructor.
@@ -115,27 +131,61 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         _samples = retrieveSamplesInInterval(_channelName, _startTime, _endTime, type);
         _samplesIter = _samples.iterator();
 
-        _meta = retrieveMetaDataForChannel(channelName);
+        _metaData = retrieveMetaDataForChannel(channelName);
 
         _windowLength = calculateWindowLength(_startTime, _endTime, _numOfWindows);
 
-        _firstSample = retrieveLastSampleBeforeInterval(_channelName, _startTime);
-        if (_firstSample == null) {
-            findFirstSampleAndItsWindow();
-        }
+        final SampleAndWindow<V> saw = findFirstSampleAndItsWindow(channelName, _startTime, _windowLength, _samplesIter);
+
+        _firstSample = saw.getSample();
+        _currentWindow = saw.getWindow();
+
+        _noSamples = _firstSample == null;
+
+        _agg = initAggregator(_firstSample);
     }
 
-    private void findFirstSampleAndItsWindow() {
-        if (_samplesIter.hasNext()) {
-            _firstSample = _samplesIter.next();
-            _currentWindow = findWindowOfFirstSample(_firstSample.getSystemVariable().getTimestamp(),
-                                                     _startTime,
-                                                     _windowLength);
-            _noMoreSamples = false;
-        } else {
-            _noMoreSamples = true;
+
+    @Nonnull
+    private SampleMinMaxAggregator initAggregator(@CheckForNull final IArchiveSample<V, ISystemVariable<V>> sample) throws TypeSupportException {
+        if (sample == null) {
+            return new SampleMinMaxAggregator();
         }
+        final IArchiveMinMaxSample<V, ISystemVariable<V>> mmSample = (IArchiveMinMaxSample<V, ISystemVariable<V>>) sample;
+        final V minimum = mmSample.getMinimum();
+        final V maximum = mmSample.getMaximum();
+
+        final Double value = BaseTypeConversionSupport.toDouble(mmSample.getValue());
+        return new SampleMinMaxAggregator(value,
+                                          minimum == null ? value : BaseTypeConversionSupport.toDouble(minimum),
+                                          maximum == null ? value : BaseTypeConversionSupport.toDouble(maximum),
+                                          mmSample.getSystemVariable().getTimestamp());
     }
+
+
+    @Nonnull
+    private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final String name,
+                                                           @Nonnull final TimeInstant startTime,
+                                                           @Nonnull final ReadableDuration windowLength,
+                                                           @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter) throws ArchiveServiceException,
+                                                                              OsgiServiceUnavailableException {
+
+        final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeStartTime = retrieveLastSampleBeforeInterval(name, startTime);
+
+        if (lastSampleBeforeStartTime != null) {
+            return new SampleAndWindow<V>(lastSampleBeforeStartTime, 1);
+        } else {
+            if (samplesIter.hasNext()) {
+                final IArchiveSample<V, ISystemVariable<V>> firstSampleInWindow = samplesIter.next();
+                final int window = findWindowOfFirstSample(firstSampleInWindow.getSystemVariable().getTimestamp(),
+                                                         startTime,
+                                                         windowLength);
+                return new SampleAndWindow<V>(firstSampleInWindow, window);
+            }
+        }
+        return new SampleAndWindow<V>(null, 1);
+    }
+
 
 
     @Nonnull
@@ -146,6 +196,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     }
 
 
+
     @Nonnull
     private Collection<IArchiveSample<V, ISystemVariable<V>>> retrieveSamplesInInterval(@Nonnull final String channelName,
                                                                                         @Nonnull final TimeInstant start,
@@ -153,9 +204,9 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                                                                         @Nonnull final IArchiveRequestType type) throws OsgiServiceUnavailableException,
                                                                           ArchiveServiceException {
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
-        final Collection<IArchiveSample<V, ISystemVariable<V>>> samples = service.readSamples(channelName, start, end, type); // type == null means AUTO/DEFAULT
-        return samples;
+        return service.readSamples(channelName, start, end, type);
     }
+
 
 
     @CheckForNull
@@ -180,7 +231,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         int i = 1;
         TimeInstant nextWindowEnd =
             TimeInstantBuilder.buildFromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
-        while (nextWindowEnd.isBefore(sampleTime)) {
+        while (sampleTime.isAfter(nextWindowEnd)) {
             nextWindowEnd = nextWindowEnd.plusMillis(windowLength.getMillis());
             i++;
         }
@@ -197,12 +248,13 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         return service.readLastSampleBefore(channelName, start);
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean hasNext() {
-        if (!_noMoreSamples && _currentWindow <= _numOfWindows) {
+        if (!_noSamples && _currentWindow <= _numOfWindows) {
             return true;
         }
         return false;
@@ -213,36 +265,43 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
      */
     @Override
     @Nonnull
-    public IValue next() throws TypeSupportException {
-        if (_noMoreSamples || _currentWindow > _numOfWindows || _firstSample == null) {
+    public IValue next() throws Exception {
+        if (_noSamples || _currentWindow > _numOfWindows) {
             throw new NoSuchElementException();
         }
 
         final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(_startTime, _currentWindow, _windowLength);
 
-        if (isFirstSampleInThisWindow(_firstSample, curWindowEnd)) {
-            final IArchiveSample<V, ISystemVariable<V>> firstSampleOutsideWindow =
+        if (_samplesIter.hasNext() && hasTimestampBeforeWindowEnd(_firstSample, curWindowEnd)) {
+            _firstSample =
                 aggregateSamplesUntilWindowEnd(_firstSample, curWindowEnd, _samplesIter, _agg);
-
-            if (firstSampleOutsideWindow == null) {
-                _noMoreSamples = true;
-            } else {
-                _firstSample = firstSampleOutsideWindow;
-            }
         }
 
-        final IMinMaxDoubleValue iVal =
-            ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
-                                                 new Severity("OK"), null, _meta, IValue.Quality.Interpolated,
-                                                 new double[]{_agg.getAvg().doubleValue() },
-                                                 _agg.getMin().doubleValue(),
-                                                 _agg.getMax().doubleValue());
+        final IValue iVal = createMinMaxDoubleValue(curWindowEnd, _metaData, _agg);
 
         _currentWindow++;
         return iVal;
     }
 
-    private boolean isFirstSampleInThisWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> firstSample,
+    @Nonnull
+    private IValue createMinMaxDoubleValue(@Nonnull final TimeInstant curWindowEnd,
+                                           @Nonnull final INumericMetaData metaData,
+                                           @Nonnull final SampleMinMaxAggregator agg) throws Exception {
+        final Double avg = agg.getAvg();
+        final Double min = agg.getMin();
+        final Double max = agg.getMax();
+
+        if (avg != null || min != null || max != null) {
+            return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
+                                                        new Severity("OK"), null, metaData, IValue.Quality.Interpolated,
+                                                        new double[]{agg.getAvg().doubleValue() },
+                                                        agg.getMin().doubleValue(),
+                                                        agg.getMax().doubleValue());
+        }
+        throw new Exception("Creation of MinMaxDoubleValue failed. " + SampleMinMaxAggregator.class.getName() + " returned null values.");
+    }
+
+    private boolean hasTimestampBeforeWindowEnd(@Nonnull final IArchiveSample<V, ISystemVariable<V>> firstSample,
                                               @Nonnull final TimeInstant curWindowEnd) {
         return curWindowEnd.isAfter(firstSample.getSystemVariable().getTimestamp());
     }
@@ -260,26 +319,39 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     aggregateSamplesUntilWindowEnd(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
                                    @Nonnull final TimeInstant windowEnd,
                                    @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
-                                   @Nonnull final SampleMinMaxAggregator agg) throws TypeSupportException {
+                                   @Nonnull final SampleMinMaxAggregator aggregator) throws TypeSupportException {
 
-        IArchiveSample<V, ISystemVariable<V>> nextSample = initSample;
+        IArchiveMinMaxSample<V, ISystemVariable<V>> nextSample = (IArchiveMinMaxSample<V, ISystemVariable<V>>) initSample;
 
-        agg.reset();
-        agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
-                            nextSample.getSystemVariable().getTimestamp());
+        aggregator.reset();
+
+        aggregateMinMaxSample(aggregator, nextSample);
 
         while (iter.hasNext()) {
-            nextSample =  iter.next();
-            final TimeInstant curSampleTime = nextSample.getSystemVariable().getTimestamp();
+            nextSample =  (IArchiveMinMaxSample<V, ISystemVariable<V>>) iter.next();
 
-            if (curSampleTime.isBefore(windowEnd)) { // YES -> aggregate
-                agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
-                                    curSampleTime);
-            } else { // NO -> stop here aggregating and return the nextSample
+            final TimeInstant curSampleTime = nextSample.getSystemVariable().getTimestamp();
+            if (curSampleTime.isBefore(windowEnd)) {
+                aggregateMinMaxSample(aggregator, nextSample);
+            } else {
                 return nextSample;
             }
         }
-        return null; // No next sample outside this window detected.
+        return initSample; // No next sample outside this window detected.
+    }
+
+
+    private void aggregateMinMaxSample(@Nonnull final SampleMinMaxAggregator aggregator,
+                                       @Nonnull final IArchiveMinMaxSample<V, ISystemVariable<V>> sample) throws TypeSupportException {
+        final Double value = BaseTypeConversionSupport.toDouble(sample.getValue());
+        final V minimum = sample.getMinimum();
+        final V maximum = sample.getMaximum();
+        final TimeInstant curSampleTime = sample.getSystemVariable().getTimestamp();
+
+        aggregator.aggregate(value,
+                             minimum == null ? value : BaseTypeConversionSupport.toDouble(minimum),
+                             maximum == null ? value : BaseTypeConversionSupport.toDouble(maximum),
+                             curSampleTime);
     }
 
     /**

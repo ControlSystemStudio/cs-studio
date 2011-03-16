@@ -52,18 +52,26 @@ public class SampleMinMaxAggregator {
      * Constructor.
      */
     public SampleMinMaxAggregator(@Nonnull final Double firstVal,
+                                  @Nonnull final Double firstMin,
+                                  @Nonnull final Double firstMax,
                                   @Nonnull final TimeInstant timestamp) {
-
         _avg.accumulate(firstVal);
 
-        _minVal = firstVal;
-        _maxVal = firstVal;
+        _minVal = firstMin;
+        _maxVal = firstMax;
         _lastAvgBeforeReset = null;
 
         _lastSampleTimeStamp = timestamp;
         _resetTimeStamp = _lastSampleTimeStamp;
-    }
 
+    }
+    /**
+     * Constructor.
+     */
+    public SampleMinMaxAggregator(@Nonnull final Double firstVal,
+                                  @Nonnull final TimeInstant timestamp) {
+        this(firstVal, firstVal, firstVal, timestamp);
+    }
     /**
      * Constructor.
      */
@@ -71,7 +79,7 @@ public class SampleMinMaxAggregator {
         // EMPTY
     }
 
-    public void aggregateNewVal(@Nonnull final Double newVal,
+    public void aggregate(@Nonnull final Double newVal,
                                 @Nonnull final TimeInstant timestamp) {
         aggregate(newVal, newVal, newVal, timestamp);
     }

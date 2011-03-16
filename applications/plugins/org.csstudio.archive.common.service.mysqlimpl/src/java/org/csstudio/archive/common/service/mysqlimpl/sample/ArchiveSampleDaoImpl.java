@@ -183,7 +183,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
         } catch (final TypeSupportException e) {
-            return; // is not convertible. Type support missing.
+            return; // not convertible. Type support missing.
         }
         if (newValue.equals(Double.NaN)) {
             return; // not convertible, no data reduction possible
@@ -353,21 +353,27 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final List<IArchiveSample<V, T>> iterable = Lists.newArrayList();
         PreparedStatement stmt = null;
         try {
-            final DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
+            DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
 
-            stmt = dispatchRequestTypeToStatement(reqType);
-            stmt.setInt(1, channel.getId().intValue());
-            stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
+            ResultSet result;
+            do {
+                stmt = dispatchRequestTypeToStatement(reqType);
+                stmt.setInt(1, channel.getId().intValue());
+                stmt.setTimestamp(2, new Timestamp(s.getMillis()));
+                stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
 
-            final ResultSet result = stmt.executeQuery();
+                result = stmt.executeQuery();
 
-            while (result.next()) {
+                if (!result.next()) {
+                    reqType = reqType.getNextLowerOrderRequestType(); // set requType in case
+                }
+            } while (reqType != null);
+
+            while (result != null && result.next()) {
                 final IArchiveSample<V, T> sample =
                     createSampleFromQueryResult(reqType, channel, result);
                 iterable.add(sample);
             }
-
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
         } finally {
