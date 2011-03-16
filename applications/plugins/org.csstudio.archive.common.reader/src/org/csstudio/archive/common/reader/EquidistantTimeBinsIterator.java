@@ -107,30 +107,33 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         _startTime = start;
         _endTime = end;
         _numOfWindows = timeBins;
-        if (start.isAfter(end) || _numOfWindows <= 0) {
+
+        if (_startTime.isAfter(_endTime) || _numOfWindows <= 0) {
             throw new IllegalArgumentException("Start time is after end time or number of time bins less equal zero.");
         }
 
         _samples = retrieveSamplesInInterval(_channelName, _startTime, _endTime, type);
-
-        _meta = getDisplayRangesForChannel(channelName);
-
         _samplesIter = _samples.iterator();
+
+        _meta = retrieveMetaDataForChannel(channelName);
 
         _windowLength = calculateWindowLength(_startTime, _endTime, _numOfWindows);
 
-        final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeInterval = retrieveLastSampleBeforeInterval(_channelName, _startTime);
+        _firstSample = retrieveLastSampleBeforeInterval(_channelName, _startTime);
+        if (_firstSample == null) {
+            findFirstSampleAndItsWindow();
+        }
+    }
 
-        if (lastSampleBeforeInterval == null) {
-            if (_samplesIter.hasNext()) {
-                _firstSample = _samplesIter.next();
-                _currentWindow = findWindowOfFirstSample(_firstSample.getSystemVariable().getTimestamp(),
-                                                         _startTime,
-                                                         _windowLength);
-                _noMoreSamples = false;
-            } else {
-                _noMoreSamples = true;
-            }
+    private void findFirstSampleAndItsWindow() {
+        if (_samplesIter.hasNext()) {
+            _firstSample = _samplesIter.next();
+            _currentWindow = findWindowOfFirstSample(_firstSample.getSystemVariable().getTimestamp(),
+                                                     _startTime,
+                                                     _windowLength);
+            _noMoreSamples = false;
+        } else {
+            _noMoreSamples = true;
         }
     }
 
@@ -156,7 +159,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
 
     @CheckForNull
-    private INumericMetaData getDisplayRangesForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
+    private INumericMetaData retrieveMetaDataForChannel(@Nonnull final String channelName) throws ArchiveServiceException, OsgiServiceUnavailableException {
         final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
         final IArchiveChannel ch = service.getChannelByName(channelName);
         if (ch == null) {
