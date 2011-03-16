@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 
+import static org.csstudio.model.ReflectUtil.*;
+
 /** Helper for converting control system items
  *
  *  @author Gabriele Carcassi
@@ -73,43 +75,6 @@ public class ControlSystemObjectAdapter
     	
     	// No types found
     	return new String[0];
-    }
-    
-    // Implementing some introspection functions based on the
-    // class name instead of the class object. Using class
-    // tokens would mean that this plugin has dependencies to
-    // all plugins that have a single type.
-    
-    /**
-     * Analogous to Class.isInstance(Object obj).
-     */
-    private static boolean isInstance(Object obj, String targetClass) {
-    	// TODO this does not work if targetClass is a superclass!
-    	// need to crawl all implemented interfaces and superclasses... Sigh...
-    	return obj.getClass().getName().equals(targetClass);
-    }
-    
-    /**
-     * Analogous to Class.isArray(). True if the class is an array
-     * 
-     * @param targetClass a class name
-     * @return true if class name represents an array
-     */
-    private static boolean isArray(String targetClass) {
-    	return targetClass.charAt(0) == '[';
-    }
-    
-    /**
-     * Analogous to Class.getComponentType(). Return the type
-     * of the elements of the array.
-     * 
-     * @param targetClass a class representing an array
-     * @return the class of the array
-     */
-    private static String getComponentType(String targetClass) {
-    	if (!isArray(targetClass))
-    		return null;
-    	return targetClass.substring(2, targetClass.length() - 1);
     }
     
     /** 
