@@ -111,26 +111,28 @@ abstract public class ControlSystemDragSource
     	return arrayClasses;
     }
     
-    private static List<Transfer> supportedSingleTransfers(Object selection) {
-    	if (selection.getClass().isArray())
+    private static List<Transfer> supportedSingleTransfers(Class<?> clazz) {
+    	if (clazz.isArray())
     		throw new RuntimeException("Something wrong: you are asking for single transfers for an array");
-		String[] types = ControlSystemObjectAdapter.getAdaptableTypes(selection.getClass());
+		String[] types = ControlSystemObjectAdapter.getAdaptableTypes(clazz);
 		List<Transfer> supportedTransfers = new ArrayList<Transfer>();
-		if (selection instanceof Serializable) {
-			supportedTransfers.add(SerializableItemTransfer.getTransfer(((Serializable)selection).getClass()));
+		if (Serializable.class.isAssignableFrom(clazz)) {
+			@SuppressWarnings("unchecked")
+			Class<? extends Serializable> serializableClass = (Class<? extends Serializable>) clazz;
+			supportedTransfers.add(SerializableItemTransfer.getTransfer(serializableClass));
 		}
 		supportedTransfers.addAll(SerializableItemTransfer.getTransfers(simpleClasses(types)));
 		supportedTransfers.add(TextTransfer.getInstance());
 		return supportedTransfers;
     }
     
-    private static List<Transfer> supportedArrayTransfers(Object[] selection) {
-    	if (!selection.getClass().isArray())
+    private static List<Transfer> supportedArrayTransfers(Class<?> arrayClass) {
+    	if (!arrayClass.isArray())
     		throw new RuntimeException("Something wrong: you are asking for array transfers for an single object");
-		String[] types = ControlSystemObjectAdapter.getAdaptableTypes(selection[0].getClass());
+		String[] types = ControlSystemObjectAdapter.getAdaptableTypes(arrayClass.getComponentType());
 		List<Transfer> supportedTransfers = new ArrayList<Transfer>();
-		if (Serializable.class.isAssignableFrom(selection.getClass().getComponentType())) {
-			supportedTransfers.add(SerializableItemTransfer.getTransfer(((Serializable)selection).getClass()));
+		if (Serializable.class.isAssignableFrom(arrayClass.getComponentType())) {
+			supportedTransfers.add(SerializableItemTransfer.getTransfer(arrayClass.getName()));
 		}
 		supportedTransfers.addAll(SerializableItemTransfer.getTransfers(toArrayClasses(simpleClasses(types))));
 		supportedTransfers.addAll(SerializableItemTransfer.getTransfers(arrayClasses(types)));
@@ -139,37 +141,36 @@ abstract public class ControlSystemDragSource
     }
     
     private static Transfer[] supportedTransfers(Object selection) {
-    	Object singleSelection;
-    	Object[] arraySelection;
+    	Class<?> singleClass;
+    	Class<?> arrayClass;
     	if (selection instanceof Object[]) {
     		// Selection is an array
-    		arraySelection = (Object[]) selection;
+    		arrayClass = selection.getClass();
     		
     		if (Array.getLength(selection) == 0) {
     			// if empty, no transfers
     			return new Transfer[0];
     		} else if (Array.getLength(selection) == 1) {
     			// if size one, set single selection
-    			singleSelection = Array.get(selection, 0);
+    			singleClass = selection.getClass().getComponentType();
     		} else {
     			// no single selection
-    			singleSelection = null;
+    			singleClass = null;
     		}
     	} else {
     		// If it's a single value, the single selection is the
     		// object and the array is an array with just one element
-    		singleSelection = selection;
-    		arraySelection = (Object[]) Array.newInstance(selection.getClass(), 1);
-    		arraySelection[0] = singleSelection;
+    		singleClass = selection.getClass();
+    		arrayClass = Array.newInstance(selection.getClass(), 0).getClass();
     	}
     	
 		Set<Transfer> supportedTransfers = new HashSet<Transfer>();
 		// Add single type support, if needed
-		if (singleSelection != null) {
-			supportedTransfers.addAll(supportedSingleTransfers(singleSelection));
+		if (singleClass != null) {
+			supportedTransfers.addAll(supportedSingleTransfers(singleClass));
 		}
 		// Add array type support
-		supportedTransfers.addAll(supportedArrayTransfers(arraySelection));
+		supportedTransfers.addAll(supportedArrayTransfers(arrayClass));
     	System.out.println("Selection " + selection + " supported " + supportedTransfers);
 		return supportedTransfers.toArray(new Transfer[supportedTransfers.size()]);
     }
