@@ -57,6 +57,24 @@ public class ControlSystemObjectAdapter
     	return null;
     }
     
+    /**
+     * Returns all class names that an object of that class can be
+     * converted to.
+     * 
+     * @param clazz a class
+     * @return all the class names with registered adapterFactories
+     */
+    public static String[] getAdaptableTypes(Class<?> clazz)
+    {
+    	if (Platform.isRunning()){
+    		// Check for adapters in platform
+    	    return Platform.getAdapterManager().computeAdapterTypes(clazz);
+    	}
+    	
+    	// No types found
+    	return new String[0];
+    }
+    
     // Implementing some introspection functions based on the
     // class name instead of the class object. Using class
     // tokens would mean that this plugin has dependencies to
