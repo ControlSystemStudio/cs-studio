@@ -765,7 +765,6 @@ public class ArchiveView extends ViewPart {
     @Override
     public final void dispose() {
         _storedFilters.writeToPreferences();
-    	_columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
         super.dispose();
     }
 }

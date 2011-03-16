@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Custom exception thrown on connecting to the archive.
@@ -37,7 +38,7 @@ public class ArchiveConnectionException extends ArchiveServiceException {
      * Constructor.
      * @param e
      */
-    public ArchiveConnectionException(@Nonnull final String message, final Exception e) {
+    public ArchiveConnectionException(@Nonnull final String message, @Nullable final Exception e) {
         super(message, e);
     }
 }

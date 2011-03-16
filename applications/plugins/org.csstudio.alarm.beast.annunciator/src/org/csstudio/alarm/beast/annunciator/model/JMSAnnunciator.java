@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.model;
 
+import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
@@ -17,7 +19,7 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.beast.annunciator.Activator;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.csstudio.platform.utility.jms.JMSConnectionListener;
@@ -75,7 +77,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
 
        	translations = null;
         if (translations_file.length() <= 0)
-        		CentralLogger.getInstance().getLogger(this).debug("No translations file name => no translations will be used ");
+            Activator.getLogger().fine("No translations file name => no translations will be used ");
         else
         {
    	        // Read translations from translations_file (in preferences.ini)
@@ -129,9 +131,6 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
         // Initialize the QueueManager.
         queuemanager = new QueueManager(listener, queue, translations, threshold);
         queuemanager.start();
-
-        // Add a startup message to the queue
-        queue.add(Severity.forInfo(), "Annunciator started");
     }
 
     /** {@inhericDoc} */
@@ -141,7 +140,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
         // Handle only MapMessages
     	if (! (msg instanceof MapMessage))
         {
-    		CentralLogger.getInstance().getLogger(this).warn("Received unknown " + msg.getClass().getName());
+            Activator.getLogger().log(Level.WARNING, "Received unknown message type {0}", msg.getClass().getName());
             return;
         }
         final MapMessage map = (MapMessage) msg;

@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+
 import org.csstudio.apputil.formula.Formula;
 import org.csstudio.apputil.formula.VariableNode;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -123,8 +123,7 @@ public class Filter implements PVListener
 		final VariableNode var = findVariable(pv);
 		if (var == null)
 		{
-			CentralLogger.getInstance().getLogger(this)
-				.warn("Unknown Variable " + pv.getName());
+            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
 			return;
 		}
 		var.setValue(Double.NaN);
@@ -136,17 +135,15 @@ public class Filter implements PVListener
     public void pvValueUpdate(final PV pv)
 	{
 		final VariableNode var = findVariable(pv);
-        final Logger log = CentralLogger.getInstance().getLogger(this);
 		if (var == null)
 		{
-            log.warn("Unknown Variable " + pv.getName());
+            Activator.getLogger().log(Level.WARNING, "Unknown Variable {0}", pv.getName());
 			return;
 		}
 
         final double value = ValueUtil.getDouble(pv.getValue());
-        if (log.isDebugEnabled())
-            log.debug("Filter '" + formula.getFormula() + "': " +
-                      pv.getName() + " = " + value);
+        Activator.getLogger().log(Level.FINER, "Filter {0}: {1} = {2}",
+                new Object[] { formula.getFormula(), pv.getName(), value });
         var.setValue(value);
 		evaluate();
 	}

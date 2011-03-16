@@ -24,22 +24,24 @@ package org.csstudio.archive.common.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
- * Read-only interface for archive sample. 
- * 
+ * Read-only interface for archive sample.
+ *
  * @author bknerr
  * @since 24.01.2011
  * @param <V> the data value type
  * @param <T> the css value type with alarm information
  */
-public interface IArchiveSample<V, T extends ITimedCssValueType<V> & IHasAlarm> {
-    
+public interface IArchiveSample<V, T extends ISystemVariable<V>> {
+
     @Nonnull
     ArchiveChannelId getChannelId();
 
     @Nonnull
-    T getData();
+    T getSystemVariable();
+
+    @Nonnull
+    V getValue();
 }

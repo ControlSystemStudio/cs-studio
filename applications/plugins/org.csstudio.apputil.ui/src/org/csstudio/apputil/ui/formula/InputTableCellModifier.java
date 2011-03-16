@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.apputil.ui.formula;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.apputil.ui.Activator;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Item;
@@ -45,7 +48,7 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error("Error", ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
         }
         return null;
     }
@@ -75,7 +78,7 @@ public class InputTableCellModifier implements ICellModifier
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error("Error", ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "Formula Input Error", ex); //$NON-NLS-1$
         }
     }
 }

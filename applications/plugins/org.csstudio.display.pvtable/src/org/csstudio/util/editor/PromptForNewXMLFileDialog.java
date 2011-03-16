@@ -1,5 +1,7 @@
 package org.csstudio.util.editor;
 
+import java.util.logging.Level;
+
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.resources.IFile;
@@ -14,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 public class PromptForNewXMLFileDialog
 {
     /** Run the dialog, and return the new IFile.
-     * 
+     *
      * @param shell The shell to use
      * @param old_file The original file or <code>null</code>.
      * @return Returns the new <code>IFile</code> or <code>null</code>.
@@ -36,7 +38,7 @@ public class PromptForNewXMLFileDialog
         }
         catch (Exception ex)
         {
-            Plugin.getLogger().error("SaveAsDialog error", ex); //$NON-NLS-1$
+            Plugin.getLogger().log(Level.SEVERE, "SaveAsDialog error", ex); //$NON-NLS-1$
             return null;
         }
         if (new_resource_path == null)

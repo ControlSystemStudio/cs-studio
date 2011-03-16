@@ -2,10 +2,13 @@ package org.csstudio.utility.jmssendcmd;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
+import org.csstudio.logging.LogConfigurator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -16,6 +19,11 @@ import org.eclipse.equinox.app.IApplicationContext;
 @SuppressWarnings("nls")
 public class Application implements IApplication
 {
+    /** Plugin ID registered in MANIFEST.MF */
+    final public static String PLUGIN_ID = "org.csstudio.utility.jmssendcmd";
+
+    final private static Logger logger = Logger.getLogger(PLUGIN_ID);
+
     final private static String DEFAULT_URL = "tcp://localhost:61616";
     final private static String DEFAULT_TOPIC = "TEST";
     final private static String DEFAULT_TYPE = "log";
@@ -23,8 +31,15 @@ public class Application implements IApplication
     private String application;
     private String type;
     private boolean edm_mode;
-    
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
+
     /** @see IApplication */
+    @Override
     public Object start(IApplicationContext context) throws Exception
     {
         // Create parser for arguments and run it.
@@ -45,7 +60,7 @@ public class Application implements IApplication
                 "-app", DEFAULT_APP, "Application type (default: " + DEFAULT_APP + ")", DEFAULT_APP);
         final StringOption text = new StringOption(parser,
                 "-text", "'This is a test'", "Send given text (default: read from stdin)", null);
-        
+
         /**
          * Use the -edm_mode if the string being parsed is from EDM.  This will set
          * the edm_mode variable to true.
@@ -54,7 +69,7 @@ public class Application implements IApplication
               "-edm_mode", "Parse EDM 'write' log formatted input");
         final BooleanOption help = new BooleanOption(parser,
                 "-h", "Help");
-  
+
         final String app_info = context.getBrandingName() + " " + context.getBrandingBundle().getVersion().toString();
         try
         {
@@ -66,17 +81,19 @@ public class Application implements IApplication
             System.err.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        
+
         if (help.get())
         {
             System.out.println(app_info);
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        
+
         this.type = type.get();
         application = app.get();
         this.edm_mode = edm_mode.get();
+
+        LogConfigurator.configureFromPreferences();
 
         // Show basic info unless in 'EDM' mode
         if (! this.edm_mode)
@@ -99,41 +116,36 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            getLogger().log(Level.SEVERE, "Application error", ex);
         }
-        
+
         return IApplication.EXIT_OK;
     }
 
     /** Read message text from stdin, send to JMS
      *  @param sender JMSSender
+     *  @throws Exception on error
      */
-    private void sendMsgFromInput(final JMSSender sender)
+    private void sendMsgFromInput(final JMSSender sender) throws Exception
     {
         final BufferedReader in =
             new BufferedReader(new InputStreamReader(System.in));
-        try
+        // Prompt unless in EDM mode
+        if (!edm_mode)
+            System.out.println("Enter message lines. Ctrl-D to exit.");
+        while (true)
         {
-            // Prompt unless in EDM mode
             if (!edm_mode)
-                System.out.println("Enter message lines. Ctrl-D to exit.");
-            while (true)
-            {
-                if (!edm_mode)
-                    System.out.print(">");
-                final String text = in.readLine();
-                if (text == null)
-                    break;
-                sender.send(type, application, text, edm_mode);
-            }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
+                System.out.print(">");
+            final String text = in.readLine();
+            if (text == null)
+                break;
+            sender.send(type, application, text, edm_mode);
         }
     }
 
     /** @see IApplication */
+    @Override
     public void stop()
     {
         // Ignore

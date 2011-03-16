@@ -23,13 +23,12 @@ package org.csstudio.archive.common.service.sample;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
- * The read-only interface of a sample featuring minimum and maximum values (not necessarily, but 
+ * The read-only interface of a sample featuring minimum and maximum values (not necessarily, but
  * typically aggregated over a period of time, where the value itself represents the average).
- * 
+ *
  * TODO (bknerr) : find a better abstraction for this object - it doesn't make sense for itself but
  * necessitates external knowledge.
  *
@@ -40,7 +39,7 @@ import org.csstudio.domain.desy.types.ITimedCssValueType;
  * @param <T> the type of the composite system value (with alarm and timestamp)
  */
 public interface IArchiveMinMaxSample<V,
-                                      T extends ITimedCssValueType<V> & IHasAlarm>
+                                      T extends ISystemVariable<V>>
     extends IArchiveSample<V, T> {
 
     @Nonnull

@@ -16,6 +16,7 @@ import org.csstudio.diag.pvutil.sns.SNSPVUtilData;
 
 import org.junit.Test;
 
+@SuppressWarnings("nls")
 public class SNSPVUtilDataTest
 {
 
@@ -23,14 +24,14 @@ public class SNSPVUtilDataTest
 	public void testGetFECs() throws Exception
 	{
 		PVUtilDataAPI newPVUtil = new SNSPVUtilData();
-		
+
 		// pass string to getFECs(String) and have it return FEC[]
-		// having a list is success 
-		FEC[] fecs = newPVUtil.getFECs("%LLRF%");
+		// having a list is success
+        FEC[] fecs = newPVUtil.getFECs("%LLRF%");
 		assertTrue(fecs.length > 0);
-		
+
 		int i = 0;
-		for (FEC fec : fecs) 
+		for (FEC fec : fecs)
 		{
 			System.out.println(fec);
 			if ("No Records Returned".equals(fec.toString())) {
@@ -49,7 +50,7 @@ public class SNSPVUtilDataTest
 
 		// pass FEC string without PV filter to getPVs(String,String)
 		// and have it return PV[]
-		// having a list is success 
+		// having a list is success
 		PV[] pvs = newPVUtil.getPVs("SCL_LLRF:IOC17d","");
 		assertTrue(pvs.length > 0);
         int i = 0;
@@ -62,7 +63,7 @@ public class SNSPVUtilDataTest
 			}
 			i++;
 			if (i == 10) break;
-		}		
+		}
 	}
 
 	@Test
@@ -72,7 +73,7 @@ public class SNSPVUtilDataTest
 
 		// pass empty FEC string and PV filter to getPVs(String,String)
 		// and have it return PV[]
-		// having a list is success 
+		// having a list is success
 		PV[] pvs = newPVUtil.getPVs("","%:xAvg");
 		assertTrue(pvs.length > 0);
         int i = 0;
@@ -95,7 +96,7 @@ public class SNSPVUtilDataTest
 
 		// pass FEC string and PV filter to getPVs(String,String)
 		// and have it return PV[]
-		// having a list is success 
+		// having a list is success
 		PV[] pvs = newPVUtil.getPVs("SCL_LLRF:IOC17d","%:Time%");
 		assertTrue(pvs.length > 0);
         int i = 0;
@@ -108,6 +109,6 @@ public class SNSPVUtilDataTest
 			}
 			i++;
 			if (i == 10) break;
-		}	
+		}
 	}
 }

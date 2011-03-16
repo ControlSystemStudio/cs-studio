@@ -21,10 +21,15 @@
  */
 package org.csstudio.domain.desy.epics.alarm;
 
+import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.system.ControlSystemType;
 
 
 /**
@@ -39,7 +44,14 @@ import org.csstudio.domain.desy.alarm.IAlarm;
  *
  * @author Bastian Knerr
  */
-public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
+public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable {
+
+    public static final EpicsAlarm UNKNOWN = new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
+                                                            EpicsAlarmStatus.UNKNOWN);
+    private static final String ALARM_PREFIX = "ALARM";
+
+    private static final long serialVersionUID = -8711934153987547032L;
+
 
     private final EpicsAlarmSeverity _severity;
     private final EpicsAlarmStatus _status;
@@ -80,16 +92,6 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public String toString() {
-        return _severity.name();
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public int compareTo(@Nonnull final EpicsAlarm other) {
         return _severity.compareSeverityTo(other._severity);
     }
@@ -124,5 +126,44 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
         return true;
     }
 
+    @Nonnull
+    public static IAlarm parseFrom(@Nonnull final String strRep) throws IllegalArgumentException {
 
+        final String regEx = ALARM_PREFIX + "\\(" + getStaticOrigin().name() +
+                                    ":([^\\s]+),([^\\s]+)\\)";
+        final Pattern p = Pattern.compile(regEx);
+        final Matcher m = p.matcher(strRep);
+        if (m.matches()) {
+            final EpicsAlarmSeverity sev = Enum.valueOf(EpicsAlarmSeverity.class, m.group(1));
+            final EpicsAlarmStatus st = Enum.valueOf(EpicsAlarmStatus.class, m.group(2));
+            return new EpicsAlarm(sev, st);
+        }
+        throw new IllegalArgumentException("String representation: " + strRep + " does not match reg exp: " + regEx);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        return ALARM_PREFIX + "(" + getStaticOrigin().name() + ":" +
+                                    _severity.name() + "," +
+                                    _status.name() +
+                              ")";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ControlSystemType getControlSystemType() {
+        return getStaticOrigin();
+    }
+
+    @Nonnull
+    private static ControlSystemType getStaticOrigin() {
+        return ControlSystemType.EPICS_V3;
+    }
 }

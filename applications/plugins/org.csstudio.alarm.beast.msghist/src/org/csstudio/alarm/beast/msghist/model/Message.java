@@ -33,7 +33,7 @@ public class Message implements IPropertySource
 
     /** Property for sequential message number */
     public static final String SEQ = "SEQ"; //$NON-NLS-1$
-    
+
     /** Property for message ID in RDB */
     public static final String ID = "ID"; //$NON-NLS-1$
 
@@ -42,7 +42,7 @@ public class Message implements IPropertySource
 
     /** Property for Time when message was added to log */
     final public static String DATUM = "TIME"; //$NON-NLS-1$
-    
+
     /** Property for PV or method name */
     final public static String NAME = "NAME"; //$NON-NLS-1$
 
@@ -51,14 +51,14 @@ public class Message implements IPropertySource
 
     /** Property for Time in seconds from previous message to this message */
     final public static String DELTA = "DELTA"; //$NON-NLS-1$
-    
+
     final private int sequence, id;
-    
+
     /** Map of property names and values */
     final private HashMap<String, String> properties;
-    
+
     /** Constructor
-     *  @param sequence Sequence number 
+     *  @param sequence Sequence number
      *  @param id ID from RDB
      *  @param properties Map of message properties
      */
@@ -69,7 +69,7 @@ public class Message implements IPropertySource
         this.id = id;
         this.properties = properties;
     }
-    
+
     public static String format(final Date date)
     {
     	synchronized (date_format)
@@ -118,9 +118,10 @@ public class Message implements IPropertySource
     {
         return properties.get(property);
     }
-    
+
     /** @see IPropertySource */
-	public IPropertyDescriptor[] getPropertyDescriptors()
+	@Override
+    public IPropertyDescriptor[] getPropertyDescriptors()
 	{
 		final Set<String> key_set = properties.keySet();
 		final String keys[] = new String[key_set.size()];
@@ -135,13 +136,15 @@ public class Message implements IPropertySource
 	}
 
 	/** @see IPropertySource */
-	public Object getEditableValue()
+	@Override
+    public Object getEditableValue()
 	{
 	    return this;
 	}
 
 	 /** @see IPropertySource */
-	public Object getPropertyValue(final Object id)
+	@Override
+    public Object getPropertyValue(final Object id)
 	{
 	    if (id == ID)
 	        return Integer.toString(this.id);
@@ -149,30 +152,33 @@ public class Message implements IPropertySource
 	}
 
 	/** @see IPropertySource */
-	public boolean isPropertySet(final Object id)
+	@Override
+    public boolean isPropertySet(final Object id)
 	{
 		return getPropertyValue(id) != null;
 	}
 
 	/** @see IPropertySource */
-	public void resetPropertyValue(final Object id)
+	@Override
+    public void resetPropertyValue(final Object id)
 	{
 		// NOP, properties are read-only
 	}
 
 	/** @see IPropertySource */
-	public void setPropertyValue(final Object id, final Object value)
+	@Override
+    public void setPropertyValue(final Object id, final Object value)
 	{
 		// NOP, properties are read-only
 	}
-    
+
     /** {@inhericDoc} */
     @SuppressWarnings("nls")
     @Override
     public String toString()
     {
         final StringBuffer buf = new StringBuffer();
-        
+
         buf.append("Message ").append(id).append(" ");
         final Iterator<String> props = getProperties();
         while (props.hasNext())

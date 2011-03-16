@@ -26,7 +26,7 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -91,19 +91,9 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public Double convertToDouble(@Nonnull final N d) throws TypeSupportException {
-        return d.doubleValue();
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Boolean isOptimizableByAveraging() {
         return Boolean.TRUE;
     }
-
-
 
     /**
      * {@inheritDoc}
@@ -131,4 +121,5 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
         }
         return Lists.newArrayList(typedValues);
     }
+
 }

@@ -49,6 +49,16 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
     /**
      * Constructor.
      */
+    public ArchiverMgmtEntry(@Nonnull final ArchiveChannelId channelId,
+                             @Nonnull final ArchiverMonitorStatus status,
+                             @Nonnull final ArchiveEngineId engineId,
+                             @Nonnull final TimeInstant time,
+                             @Nullable final String info) {
+        this(ArchiverMgmtEntryId.NONE, channelId, status, engineId, time, info);
+    }
+    /**
+     * Constructor.
+     */
     public ArchiverMgmtEntry(@Nonnull final ArchiverMgmtEntryId id,
                              @Nonnull final ArchiveChannelId channelId,
                              @Nonnull final ArchiverMonitorStatus status,

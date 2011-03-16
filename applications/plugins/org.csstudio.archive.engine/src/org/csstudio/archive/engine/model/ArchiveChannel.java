@@ -8,16 +8,14 @@
 package org.csstudio.archive.engine.model;
 
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -107,8 +105,6 @@ abstract public class ArchiveChannel
     /** Buffer of received samples, periodically written */
     private final SampleBuffer buffer;
 
-    private Logger log;
-
     /** Construct an archive channel
      *  @param name Name of the channel (PV)
      *  @param enablement How channel affects its groups
@@ -125,11 +121,8 @@ abstract public class ArchiveChannel
         this.enablement = enablement;
         this.last_archived_value = last_archived_value;
         this.buffer = new SampleBuffer(name, buffer_capacity);
-        log = CentralLogger.getInstance().getLogger(this);
         if (last_archived_value == null)
-            log.info(name + ": No known last value");
-        if (!log.isDebugEnabled())
-            log = null;
+            Activator.getLogger().log(Level.INFO, "No known last value for {0}", name);
 
         pv = PVFactory.createPV(name);
         pv.addListener(new PVListener()
@@ -331,8 +324,7 @@ abstract public class ArchiveChannel
             SampleBuffer.isInErrorState() == false)
         {
             need_write_error_sample = false;
-            if (log != null)
-                log.debug(getName() + " wrote error sample");
+            Activator.getLogger().log(Level.FINE, "Wrote error sample for {0}", getName());
             addInfoToBuffer(ValueButcher.createWriteError());
             need_first_sample = true;
         }
@@ -341,8 +333,7 @@ abstract public class ArchiveChannel
             return false;
         need_first_sample = false;
         final IValue updated = ValueButcher.transformTimestampToNow(value);
-        if (log != null)
-            log.debug(getName() + " wrote first sample " + updated);
+        Activator.getLogger().log(Level.FINE, "Wrote first sample for {0}: {1}", new Object[] { getName(), updated });
         addInfoToBuffer(updated);
         return true;
     }
@@ -359,8 +350,7 @@ abstract public class ArchiveChannel
         {
             most_recent_value = null;
         }
-        if (log != null)
-            log.debug(getName() + " wrote disconnect sample");
+        Activator.getLogger().log(Level.FINE, "Wrote disconnect sample for {0}", getName());
         addInfoToBuffer(ValueButcher.createDisconnected());
         need_first_sample = true;
     }

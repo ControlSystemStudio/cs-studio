@@ -23,18 +23,17 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
-import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
 
 /**
  * Dao for archive samples.
@@ -50,20 +49,27 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V, T extends ITimedCssValueType<V> & IHasAlarm>
+    <V, T extends IAlarmSystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException;
 
 
     /**
+     * Retrieves the samples in the given time period according to the request type
      * @param id
      * @param s
      * @param e
      * @return
      */
     @Nonnull
-    <V, T extends ITimedCssAlarmValueType<V>>
-    Iterable<IArchiveMinMaxSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
-                                                         @Nonnull IArchiveChannel channel,
-                                                         @Nonnull TimeInstant s,
-                                                         @Nonnull TimeInstant e) throws ArchiveDaoException;
+    <V, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> retrieveSamples(@Nullable DesyArchiveRequestType type,
+                                                     @Nonnull IArchiveChannel channel,
+                                                     @Nonnull TimeInstant s,
+                                                     @Nonnull TimeInstant e) throws ArchiveDaoException;
+
+
+    @CheckForNull
+    <V, T extends ISystemVariable<V>>
+    IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
+                                                        @Nonnull TimeInstant time) throws ArchiveDaoException;
 }

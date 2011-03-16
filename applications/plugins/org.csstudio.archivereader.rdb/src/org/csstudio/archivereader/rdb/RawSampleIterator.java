@@ -24,15 +24,15 @@ public class RawSampleIterator extends AbstractRDBValueIterator
 {
     /** SELECT ... for the start .. end samples. */
     private PreparedStatement sel_samples = null;
-    
+
     /** Result of <code>sel_samples</code> */
     private ResultSet result_set = null;
-    
+
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
     private IValue value = null;
-    
+
     /** Initialize
      *  @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -82,7 +82,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             {
                 // System.out.print("Start time corrected from " + start_stamp);
                 start_stamp = result.getTimestamp(1);
-                // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
+                // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
                 if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
                     start_stamp.setNanos(result.getInt(2));
                 // System.out.println(" to " + start_stamp);
@@ -98,7 +98,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         sel_samples = reader.getRDB().getConnection().prepareStatement(
                 reader.getSQL().sample_sel_by_id_start_end);
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
-        
+
         // Test w/ ~170000 raw samples:
         //     10  17   seconds
         //    100   6   seconds
@@ -122,12 +122,14 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext()
     {
         return value != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public IValue next() throws Exception
     {

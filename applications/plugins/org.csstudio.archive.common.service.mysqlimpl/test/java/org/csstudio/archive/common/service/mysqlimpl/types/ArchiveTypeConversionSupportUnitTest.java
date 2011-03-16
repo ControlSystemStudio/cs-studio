@@ -34,8 +34,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.domain.desy.epics.types.EpicsEnumTriple;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -159,12 +159,12 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testScalarEnumArchiveStringConversion() {
         try {
-            final EpicsEnumTriple t = EpicsEnumTriple.createInstance(3, "in case we die", 44);
+            final EpicsEnum t = EpicsEnum.createInstance(3, "in case we die", 44);
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
             Assert.assertTrue(archiveString.equals(ARCHIVE_TUPLE_PREFIX +
                                                    "3" + ARCHIVE_TUPLE_SEP + "in case we die" + ARCHIVE_TUPLE_SEP + "44" +
                                                    ARCHIVE_TUPLE_SUFFIX));
-            final EpicsEnumTriple tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnumTriple.class, archiveString);
+            final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnum.class, archiveString);
             Assert.assertNotNull(tFromA);
             Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
             Assert.assertEquals("in case we die", tFromA.getState());
@@ -294,8 +294,8 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testMultiScalarEnumConversion() {
-        final Collection<EpicsEnumTriple> valuesE = Lists.newArrayList(EpicsEnumTriple.createInstance(0, "first", 26),
-                                                                       EpicsEnumTriple.createInstance(1, "second", 27));
+        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.createInstance(0, "first", 26),
+                                                                       EpicsEnum.createInstance(1, "second", 27));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
@@ -307,13 +307,13 @@ public class ArchiveTypeConversionSupportUnitTest {
                                 "1" + ARCHIVE_TUPLE_SEP + "second" + ARCHIVE_TUPLE_SEP + "27" +
                                 ARCHIVE_TUPLE_SUFFIX +
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
-            final Collection<EpicsEnumTriple> enums =
-                ArchiveTypeConversionSupport.fromMultiScalarArchiveString(EpicsEnumTriple.class, archiveString);
+            final Collection<EpicsEnum> enums =
+                ArchiveTypeConversionSupport.fromMultiScalarArchiveString(EpicsEnum.class, archiveString);
             Assert.assertEquals(2, enums.size());
-            final Iterator<EpicsEnumTriple> iterator = enums.iterator();
-            final EpicsEnumTriple first = iterator.next();
+            final Iterator<EpicsEnum> iterator = enums.iterator();
+            final EpicsEnum first = iterator.next();
             Assert.assertEquals("first", first.getState());
-            final EpicsEnumTriple second = iterator.next();
+            final EpicsEnum second = iterator.next();
             Assert.assertEquals("second", second.getState());
 
         } catch (final TypeSupportException e) {

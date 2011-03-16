@@ -21,7 +21,12 @@
  */
 package org.csstudio.domain.desy.system;
 
+import java.util.concurrent.ConcurrentMap;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.google.common.collect.MapMaker;
 
 /**
  * An identifiable control system of a distinct type.
@@ -29,23 +34,72 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 09.02.2011
  */
-public class ControlSystem {
+public final class ControlSystem {
 
-    private final ControlSystemId _id;
+    public static final ControlSystem EPICS_DEFAULT =
+        new ControlSystem("EpicsDefault",
+                          ControlSystemType.EPICS_V3);
+    public static final ControlSystem DOOCS_DEFAULT =
+        new ControlSystem("DoocsDefault",
+                          ControlSystemType.DOOCS);
+    public static final ControlSystem TANGO_DEFAULT =
+        new ControlSystem("TangoDefault",
+                          ControlSystemType.TANGO);
+
+    /**
+     * There will be few control systems, but many entities referring to them.
+     * Use flyweight pattern.
+     */
+    private static final ConcurrentMap<String, ControlSystem> CS_CACHE =
+        new MapMaker().initialCapacity(3).softValues().makeMap();
+    static {
+        CS_CACHE.put(EPICS_DEFAULT.getId(), EPICS_DEFAULT);
+        CS_CACHE.put(DOOCS_DEFAULT.getId(), DOOCS_DEFAULT);
+        CS_CACHE.put(TANGO_DEFAULT.getId(), TANGO_DEFAULT);
+    }
+
+    private final String _id;
     private final ControlSystemType _type;
 
     /**
      * Constructor.
      */
-    public ControlSystem(@Nonnull final ControlSystemId id,
-                         @Nonnull final ControlSystemType type) {
+    private ControlSystem(@Nonnull final String id,
+                          @Nonnull final ControlSystemType type) {
 
         _id = id;
         _type = type;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( _id == null ? 0 : _id.hashCode());
+        result = prime * result + ( _type == null ? 0 : _type.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@Nullable final Object obj) {
+        if (!(obj instanceof ControlSystem)) { // implicit obj==null check in instanceof
+            return false;
+        }
+        final ControlSystem other = (ControlSystem) obj;
+        if (!_id.equals(other._id) || !_type.equals(other._type)) {
+                return false;
+        }
+        return true;
+    }
+
     @Nonnull
-    public ControlSystemId getId() {
+    public String getId() {
         return _id;
     }
 
@@ -53,4 +107,28 @@ public class ControlSystem {
     public ControlSystemType getType() {
         return _type;
     }
+
+    /**
+     * Returns the control system with the given parameters.
+     *
+     * @param id
+     * @param type
+     * @return
+     * @throws IllegalArgumentException if the if points to an existing control system with differing type
+     */
+    @Nonnull
+    public static ControlSystem valueOf(@Nonnull final String id,
+                                        @Nonnull final ControlSystemType type) {
+        if(CS_CACHE.containsKey(id)) {
+            final ControlSystem cs = CS_CACHE.get(id);
+            if (!cs.getType().equals(type)) {
+                throw new IllegalArgumentException("Control system with id " + id +
+                                                   " exists already with different type.");
+            }
+            return cs;
+        }
+        return CS_CACHE.put(id, new ControlSystem(id, type));
+    }
+
+
 }

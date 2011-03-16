@@ -1,8 +1,10 @@
 package org.csstudio.alarm.beast.ui.alarmtree;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelConfigListener;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
@@ -105,8 +107,7 @@ public class SelectConfigurationAction extends Action implements IMenuCreator, A
 			}
 			catch (Exception ex)
 			{
-				ex.printStackTrace();
-				CentralLogger.getInstance().getLogger(this).error(ex);
+	            Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot change alarm model", ex); //$NON-NLS-1$
 			}
 		}
 	    return menu;

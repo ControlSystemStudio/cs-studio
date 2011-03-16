@@ -6,3 +6,4 @@ Bundle-Version: 1.3.0.qualifier
 Export-Package: org.csstudio.nams.common.activatorUtils
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4;bundle-version="4.5.0"
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

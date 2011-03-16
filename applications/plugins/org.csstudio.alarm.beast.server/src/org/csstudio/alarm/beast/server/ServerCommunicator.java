@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.server;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.Executor;
+import java.util.logging.Level;
 
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -23,7 +24,6 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Communicates alarm system updates between server and clients.
@@ -111,8 +111,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 if (message instanceof MapMessage)
                     handleMapMessage((MapMessage) message);
                 else
-                    CentralLogger.getInstance().getLogger(this).warn(
-                        "Message type " + message.getClass().getName() + " not handled");
+                    Activator.getLogger().log(Level.WARNING, "Message type {0} not handled", message.getClass().getName());
             }
         });
     }
@@ -150,8 +149,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         }
         catch (InterruptedException ex)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .warn("Idle Timer join failed", ex); //$NON-NLS-1$
+            Activator.getLogger().log(Level.WARNING, "Idle Timer join failed", ex);
         }
         super.stop();
     }
@@ -204,7 +202,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Cannot send idle message", ex);
                 }
             }
         });
@@ -228,7 +226,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Cannot send reload message", ex);
                 }
             }
         });
@@ -274,7 +272,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Cannot send state update message", ex);
                 }
             }
         });
@@ -311,7 +309,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Cannot send global update", ex);
                 }
             }
         });
@@ -338,7 +336,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Cannot send enablement update", ex);
                 }
             }
         });
@@ -373,8 +371,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(
-                            "Error while 'saying' " + message, ex); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.SEVERE, "Annunciation failed", ex);
                 }
             }
         });
@@ -412,10 +409,9 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                         {
                             server.updateConfig(name);
                         }
-                        catch (Exception ex)
+                        catch (Throwable ex)
                         {
-                            CentralLogger.getInstance()
-                                .getLogger(ServerCommunicator.this).error(ex);
+                            Activator.getLogger().log(Level.SEVERE, "Config update error", ex);
                         }
                     }
                 });
@@ -427,14 +423,14 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 else if (JMSAlarmMessage.VALUE_MODE_MAINTENANCE.equals(mode))
                     server.setMaintenanceMode(true);
                 else
-                    CentralLogger.getInstance().getLogger(this).warn("Unknown MODE request '" + mode + "'");
+                    Activator.getLogger().log(Level.WARNING, "Unknown MODE request {0}", mode);
             }
             else if (JMSAlarmMessage.TEXT_DEBUG.equals(text))
                 server.dump();
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+            Activator.getLogger().log(Level.SEVERE, "Message handler error", ex);
         }
     }
 }

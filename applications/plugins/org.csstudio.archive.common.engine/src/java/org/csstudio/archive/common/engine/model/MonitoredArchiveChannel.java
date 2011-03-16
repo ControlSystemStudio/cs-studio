@@ -8,10 +8,10 @@
 package org.csstudio.archive.common.engine.model;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir
@@ -19,12 +19,13 @@ import org.csstudio.domain.desy.types.ITimedCssValueType;
  *  @param <T> the css alarm value type with time info
  */
 public class MonitoredArchiveChannel<V,
-                                     T extends ITimedCssValueType<V> & IHasAlarm> extends ArchiveChannel<V, T> {
+                                     T extends IAlarmSystemVariable<V>> extends AbstractArchiveChannel<V, T> {
 
 
     public MonitoredArchiveChannel(@Nonnull final String name,
-                                   @Nonnull final ArchiveChannelId channelId) throws EngineModelException {
-        super(name, channelId);
+                                   @Nonnull final ArchiveChannelId channelId,
+                                   @Nullable final Class<V> typeClazz) throws EngineModelException {
+        super(name, channelId, typeClazz);
     }
 
 

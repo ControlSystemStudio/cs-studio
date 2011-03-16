@@ -8,6 +8,8 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.net.InetAddress;
+import java.util.logging.Level;
+
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -20,7 +22,7 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
@@ -59,6 +61,12 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         public void run()
         {
             model.updatePV(info);
+        }
+
+        @Override
+        public String toString()
+        {
+            return info.toString();
         }
     }
 
@@ -158,8 +166,8 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 if (message instanceof MapMessage)
                     handleMapMessage((MapMessage) message);
                 else
-                    CentralLogger.getInstance().getLogger(this).warn(
-                            "Message type " + message.getClass().getName() + " not handled");
+                    Activator.getLogger().log(Level.WARNING,
+                            "Message type {0} not handled", message.getClass().getName());
             }
         };
         client_consumer.setMessageListener(message_listener);
@@ -245,7 +253,8 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(ex);
+                    Activator.getLogger().log(Level.SEVERE,
+                            "Cannot request maintenance mode", ex);
                 }
             }
         });
@@ -274,7 +283,8 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(ex);
+                    Activator.getLogger().log(Level.SEVERE,
+                            "Cannot request acknowledgement", ex);
                 }
             }
         });
@@ -303,7 +313,8 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(ex);
+                    Activator.getLogger().log(Level.SEVERE,
+                            "Cannot send config update", ex);
                 }
             }
         });
@@ -327,7 +338,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(ex);
+                    Activator.getLogger().log(Level.WARNING, "Debug trigger failed", ex);
                 }
             }
         });
@@ -405,10 +416,9 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             // else: Not using queue, and queue no longer locked
             action.run();
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
-            ex.printStackTrace();
-            CentralLogger.getInstance().getLogger(this).error(ex);
+            Activator.getLogger().log(Level.SEVERE, "Message handler error", ex);
         }
     }
 }

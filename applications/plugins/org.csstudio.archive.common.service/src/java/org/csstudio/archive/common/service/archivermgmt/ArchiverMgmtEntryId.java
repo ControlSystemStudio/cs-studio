@@ -21,17 +21,19 @@
  */
 package org.csstudio.archive.common.service.archivermgmt;
 
+import org.csstudio.domain.desy.common.id.Id;
+
 
 /**
  * Id object for an ArchiverMgmtEntry.
- * 
+ *
  * @author bknerr
  * @since 02.02.2011
  */
-public class ArchiverMgmtEntryId extends org.csstudio.domain.desy.common.id.Id<ArchiverMgmtEntryId> {
-    
+public class ArchiverMgmtEntryId extends Id<ArchiverMgmtEntryId> {
+
     private static final long serialVersionUID = -4359196591799659829L;
-    
+
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */

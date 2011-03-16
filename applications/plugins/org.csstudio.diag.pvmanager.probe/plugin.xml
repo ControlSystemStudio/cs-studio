@@ -34,7 +34,6 @@
                class="org.csstudio.diag.pvmanager.probe.ShowPVManagerProbeAction"
                id="org.csstudio.diag.pvmanager.probe.showaction"
                label="PVMgr Probe"
-               menubarPath="css/diag/"
                style="push">
          </action>
       </actionSet>
@@ -63,6 +62,26 @@
                menubarPath="org.csstudio.popmenu/content">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.pvmanager.probe.OpenProbe"
+            id="org.csstudio.diag.pvmanager.probe.OpenProbe"
+            name="Probe (PVManager)">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:diag">
+         <command
+               commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
+               icon="icons/probe.png"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

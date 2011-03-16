@@ -13,23 +13,8 @@ import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 
 /**
- * This sample class demonstrates how to plug-in a new
- * workbench view. The view shows data obtained from the
- * model. The sample creates a dummy model on the fly,
- * but a real implementation would connect to the model
- * available either in this or another plug-in (e.g. the workspace).
- * The view is connected to the model using a content provider.
- * <p>
- * The view uses a label provider to define how model
- * objects should be presented in the view. Each
- * view can present the same model objects using
- * different labels and icons, if needed. Alternatively,
- * a single label provider can be shared between views
- * in order to ensure that objects of the same type are
- * presented in the same way everywhere.
- * <p>
+ * View that allows to create a waterfall plot out of a given PV.
  */
-
 public class WaterfallView extends ViewPart {
 
 	/**
@@ -48,6 +33,15 @@ public class WaterfallView extends ViewPart {
 	 */
 	public void setFocus() {
 	}
+	
+	public void setPVName(String name) {
+		System.out.println("Setting PVName to " + name);
+		combo.setText(name);
+		waterfallComposite.setPvName(name);
+	}
+	
+	private Combo combo;
+	private WaterfallWidget waterfallComposite;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -61,14 +55,14 @@ public class WaterfallView extends ViewPart {
 		lblPvName.setText("PV Name:");
 		
 		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
-		Combo combo = comboViewer.getCombo();
+		combo = comboViewer.getCombo();
 		FormData fd_combo = new FormData();
 		fd_combo.top = new FormAttachment(0, 10);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		final WaterfallWidget waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);

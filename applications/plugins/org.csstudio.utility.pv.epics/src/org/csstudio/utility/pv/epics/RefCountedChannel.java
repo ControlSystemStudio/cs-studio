@@ -1,5 +1,7 @@
 package org.csstudio.utility.pv.epics;
 
+import java.util.logging.Level;
+
 import gov.aps.jca.Channel;
 
 /** A Channel with thread-safe reference count.
@@ -54,7 +56,7 @@ class RefCountedChannel
         }
         catch (Exception ex)
         {
-        	Activator.getLogger().warn("Channel.destroy failed", ex); //$NON-NLS-1$
+        	Activator.getLogger().log(Level.WARNING, "Channel.destroy failed", ex); //$NON-NLS-1$
         }
         channel = null;
     }

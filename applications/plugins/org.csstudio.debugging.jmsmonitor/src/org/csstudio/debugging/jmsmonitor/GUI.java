@@ -8,12 +8,10 @@
 package org.csstudio.debugging.jmsmonitor;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
-import org.csstudio.platform.ui.swt.AutoSizeColumn;
-import org.csstudio.platform.ui.swt.AutoSizeColumnAction;
-import org.csstudio.platform.ui.swt.AutoSizeControlListener;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -32,6 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPageLayout;
 
@@ -140,33 +139,43 @@ public class GUI implements ModelListener
         server_name.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
 
         // Message table
-        table_viewer = new TableViewer(parent,
+        // TableColumnLayout requires table to be only child of its parent
+        final Composite table_parent = new Composite(parent, 0);
+        table_parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        final TableColumnLayout table_layout = new TableColumnLayout();
+        table_parent.setLayout(table_layout);
+
+        table_viewer = new TableViewer(table_parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        GridData gd = new GridData();
-        gd.horizontalSpan = layout.numColumns;
-        gd.grabExcessHorizontalSpace = true;
-        gd.grabExcessVerticalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        gd.verticalAlignment = SWT.FILL;
-        table.setLayoutData(gd);
 
-        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
-
-        table_viewer.setContentProvider(new ReceivedMessageProvider());
-        TableViewerColumn view_col =
-            AutoSizeColumn.make(table_viewer, Messages.DateColumn, 150, 5);
+        TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
+        TableColumn col = view_col.getColumn();
+        col.setText(Messages.DateColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(5, 150));
         view_col.setLabelProvider(new DateLabelProvider());
-        view_col = AutoSizeColumn.make(table_viewer, Messages.TypeColumn, 50, 5);
+
+        view_col = new TableViewerColumn(table_viewer, 0);
+        col = view_col.getColumn();
+        col.setText(Messages.TypeColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(5, 50));
         view_col.setLabelProvider(new TypeLabelProvider());
-        view_col = AutoSizeColumn.make(table_viewer, Messages.ContentColumn, 400, 100);
+
+        view_col = new TableViewerColumn(table_viewer, 0);
+        col = view_col.getColumn();
+        col.setText(Messages.ContentColumn);
+        col.setMoveable(true);
+        table_layout.setColumnData(col, new ColumnWeightData(100, 400));
         view_col.setLabelProvider(new ContentLabelProvider());
 
-        final Action autosize =
-            new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
+        table_viewer.setContentProvider(new ReceivedMessageProvider());
+
+        ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
 
         // Double-click on message opens detail
         table_viewer.getTable().addMouseListener(new MouseAdapter()
@@ -181,7 +190,6 @@ public class GUI implements ModelListener
         // Context menu
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.ShowProperties));
-        manager.add(autosize);
         table.setMenu(manager.createContextMenu(table));
 
         clear();

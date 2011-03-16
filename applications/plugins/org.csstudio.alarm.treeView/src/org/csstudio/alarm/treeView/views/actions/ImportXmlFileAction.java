@@ -90,6 +90,7 @@ public final class ImportXmlFileAction extends Action {
     @CheckForNull
     private String getFileNameToLoadFrom() {
         final FileDialog dialog = new FileDialog(_site.getShell(), SWT.OPEN);
+        dialog.setFilterExtensions(new String[] {"*.xml"});
         dialog.setText("Load alarm tree configuration file (.xml)");
         return dialog.open();
     }

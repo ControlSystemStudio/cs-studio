@@ -8,10 +8,10 @@
 package org.csstudio.alarm.beast;
 
 
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -250,9 +250,8 @@ public class Preferences
         final String[] rgbvals = color.split(", *");
         if (rgbvals.length != 3)
         {
-            CentralLogger.getInstance().getLogger(Preferences.class)
-                .error("Cannot decode RGB settings for " +
-                       color_pref_name + " from '" + color + "'");
+            Activator.getLogger().log(Level.WARNING, "Cannot decode RGB settings for {0} from {1}",
+                    new Object[] { color_pref_name, color });
             return rgb;
         }
         try
@@ -262,9 +261,8 @@ public class Preferences
         }
         catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(Preferences.class)
-                .error("Error parsing RGB settings for " +
-                       color_pref_name + " from '" + color + "'");
+            Activator.getLogger().log(Level.WARNING, "Error parsing RGB settings for {0} from {1}",
+                    new Object[] { color_pref_name, color });
         }
         return rgb;
     }

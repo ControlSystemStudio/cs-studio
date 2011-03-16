@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import java.util.logging.Level;
+
 import org.csstudio.alarm.beast.SQL;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -61,8 +63,8 @@ public class ReadInfoJob extends Job
         }
         catch (Exception ex)
         {   // Log
-            CentralLogger.getInstance().getLogger(this).
-                warn("Cannot read global alarm detail for " + alarm.getPathName(), ex);
+            Activator.getLogger().log(Level.WARNING,
+                    "Cannot read global alarm detail for " + alarm.getPathName(), ex);
             // End w/o informing listener
             monitor.done();
             return Status.OK_STATUS;

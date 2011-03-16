@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.diag.rack.view;
 
+import java.util.logging.Level;
+
+import org.csstudio.diag.rack.Activator;
 import org.csstudio.diag.rack.gui.GUI;
 import org.csstudio.diag.rack.model.RackModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
@@ -35,17 +37,17 @@ public class RackView extends ViewPart
 	    public static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod"; //$NON-NLS-1$
 	    private RackModel control = null;
 	    private GUI gui;
-    	
-    	
+
+
 	    public RackView()
 	    {
         	try
 	        {
-        		control = new RackModel();    
+        		control = new RackModel();
 	        }
 	        catch (Exception ex)
 	        {
-	        	CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+	            Activator.getLogger().log(Level.SEVERE, "Rack model exception", ex); //$NON-NLS-1$
 	        }
     	}
 
@@ -56,15 +58,15 @@ public class RackView extends ViewPart
 	        if (control != null)
 	        {
 	            gui = new GUI(parent, control);
-	           
+
 	            // Allow Eclipse to listen to PV selection changes
 	            final TableViewer rackTable = gui.getRackTableViewer();
 	            getSite().setSelectionProvider(rackTable);
-	            
+
 	            // Allow dragging PV names & Archive Info out of the name table.
 	            new ProcessVariableDragSource(rackTable.getTable(),
 	                            rackTable);
-	            
+
 	            // Enable 'Drop'
 	            final Text dvcOrPVFilter = gui.getDVCOrPVEntry();
 	            new ProcessVariableDropTarget(dvcOrPVFilter)
@@ -76,7 +78,7 @@ public class RackView extends ViewPart
 	                	setDVCOrPVFilter(name.getName());
 	                }
 	            };
-	            
+
 	            // Add empty context menu so that other CSS apps can
 	            // add themselves to it
 	            MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
@@ -84,7 +86,7 @@ public class RackView extends ViewPart
 	            Menu menu = menuMgr.createContextMenu(rackTable.getControl());
 	            rackTable.getControl().setMenu(menu);
 	            getSite().registerContextMenu(menuMgr, rackTable);
-	            
+
 	            // Add context menu to the name table.
 	            // One reason: Get object contribs for the NameTableItems.
 	              IWorkbenchPartSite site = getSite();
@@ -93,11 +95,11 @@ public class RackView extends ViewPart
 	              Menu contextMenu = manager.createContextMenu(rackTable.getControl());
 	              rackTable.getControl().setMenu(contextMenu);
 	              site.registerContextMenu(manager, rackTable);
-	        
+
 	        }
 	    }
 
-	   
+
 	    @Override
 	    public void setFocus()
 	    {
@@ -116,11 +118,11 @@ public class RackView extends ViewPart
 	        }
 	        catch (Exception ex)
 	        {
-	        	CentralLogger.getInstance().getLogger(new RackView()).error("Exception", ex);
+                Activator.getLogger().log(Level.SEVERE, "Rack View activation error", ex); //$NON-NLS-1$
 	        }
 	        return false;
 	    }
-	    
+
 	    public void setDVCOrPVFilter(String pv_name)
 	    {
 	    	gui.rackList.deselectAll();

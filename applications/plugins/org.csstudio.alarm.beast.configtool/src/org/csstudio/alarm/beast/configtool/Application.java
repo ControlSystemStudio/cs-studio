@@ -17,6 +17,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -125,6 +126,10 @@ public class Application implements IApplication
             return EXIT_OK;
         }
 
+        // Configure logging
+        LogConfigurator.configureFromPreferences();
+
+        // Perform selected action
         switch (mode)
         {
         case LIST:
@@ -233,14 +238,14 @@ public class Application implements IApplication
             case MODIFY:
                 {
                     System.out.println("Modifying configuration '" + root + "' from " + filename);
-                    new AlarmConfigurationLoader(config, filename);
+                    new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;
             case IMPORT:
                 {
                     System.out.println("Importing configuration '" + root + "' from " + filename);
                     config.removeAllItems();
-                    new AlarmConfigurationLoader(config, filename);
+                    new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;
             default:

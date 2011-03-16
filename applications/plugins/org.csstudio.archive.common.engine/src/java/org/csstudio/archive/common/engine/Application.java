@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -17,8 +18,8 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.server.EngineHttpServer;
 import org.csstudio.archive.common.engine.server.EngineHttpServerException;
-import org.csstudio.archive.common.engine.server.EngineServer;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
@@ -95,31 +96,23 @@ public class Application implements IApplication {
         if (!getSettings(args)) {
             return EXIT_OK;
         }
-        // Install the type supports for these engines
+        // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        // Setup groups, channels, writer
-        // This is all single-threaded!
-        LOG.info("Archive Engine " + EngineModel.VERSION);
+        LOG.info("Archive Engine Ver " + EngineModel.VERSION);
         _run = true;
+        _model = new EngineModel();
+        final EngineHttpServer httpServer = startHttpServer();
+        if (httpServer == null) {
+            return EXIT_OK;
+        }
         try {
-            _model = new EngineModel();
-            // Setup takes some time, but engine server should already respond.
-            final EngineServer httpServer = new EngineServer(_model, _port);
-
             while (_run) {
-                LOG.info("Reading configuration for engine '" + _engineName + "'");
-                final BenchmarkTimer timer = new BenchmarkTimer();
-
-                _model.readConfig(_engineName, _port);
-
-                timer.stop();
-                LOG.info("Read configuration: " + _model.getChannels().size() + " channels in " + timer.toString());
+                readEngineConfiguration();
 
                 // Run until model gets stopped via HTTPD or #stop()
                 LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
                 _model.start();
-
                 while (true) {
                     Thread.sleep(1000);
                     if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
@@ -130,33 +123,47 @@ public class Application implements IApplication {
                         break;
                     }
                 }
-                // Stop sampling
                 LOG.info("ArchiveEngine ending");
                 _model.stop();
                 _model.clearConfig();
             }
-
             LOG.info("ArchiveEngine stopped");
-            httpServer.stop();
-
-        } catch (final EngineHttpServerException e) {
-            LOG.fatal("Cannot start server on port " + _port + ": " + e.getMessage(), e);
-            return EXIT_OK;
         } catch (final EngineModelException e) {
             LOG.error("Archive engine model error - try to shutdown.", e);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
+        httpServer.stop();
         return EXIT_OK;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void stop()
-    {
+    public void stop() {
         if (_model != null) {
             _model.requestStop();
         }
+    }
+
+    private void readEngineConfiguration() throws EngineModelException {
+        LOG.info("Reading configuration for engine '" + _engineName + "'");
+        final BenchmarkTimer timer = new BenchmarkTimer();
+        _model.readConfig(_engineName, _port);
+        timer.stop();
+        LOG.info("Read configuration: " + _model.getChannels().size() + " channels in " + timer.toString());
+    }
+
+    @CheckForNull
+    private EngineHttpServer startHttpServer() {
+        EngineHttpServer httpServer = null;
+        try {
+            // Setup takes some time, but engine server should already respond.
+            httpServer = new EngineHttpServer(_model, _port);
+        } catch (final EngineHttpServerException e) {
+            LOG.fatal("Cannot start HTTP server on port " + _port + ": " + e.getMessage(), e);
+        }
+        return httpServer;
     }
 }

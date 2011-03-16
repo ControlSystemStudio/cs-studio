@@ -23,8 +23,10 @@ package org.csstudio.domain.desy.epics.types;
 
 import java.util.List;
 
-import org.csstudio.domain.desy.types.ITimedCssAlarmValueType;
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
@@ -49,13 +51,15 @@ public class EpicsIValueTypeSupportUnitTest {
     @Test
     public void testIValue2CssValueConversionReturnsNull() {
         try {
-            final ITimedCssAlarmValueType<List<Double>> cssV =
-                EpicsIValueTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                          ValueFactory.createMinorSeverity(),
-                                                                          "HIHI",
-                                                                          null,
-                                                                          null,
-                                                                          null));
+            @SuppressWarnings("unchecked")
+            final EpicsSystemVariable<List<Double>> cssV =
+                (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                    ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                      ValueFactory.createMinorSeverity(),
+                                                                      "HIHI",
+                                                                      null,
+                                                                      null,
+                                                                      null));
             Assert.assertNull(cssV);
         } catch (final TypeSupportException e) {
             Assert.fail();
@@ -65,17 +69,19 @@ public class EpicsIValueTypeSupportUnitTest {
     @Test
     public void testDoubleValue2CssValueConversion() {
         try {
-            final ITimedCssAlarmValueType<List<Double>> cssV =
-                EpicsIValueTypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                          ValueFactory.createMinorSeverity(),
-                                                                          "HIHI",
-                                                                          null,
-                                                                          null,
-                                                                          new double[]{1.0, 2.0}));
+            @SuppressWarnings("unchecked")
+            final EpicsSystemVariable<List<Double>> cssV =
+                (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                    ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                      ValueFactory.createMinorSeverity(),
+                                                                      "HIHI",
+                                                                      null,
+                                                                      null,
+                                                                      new double[]{1.0, 2.0}));
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(2, cssV.getValueData().size());
-            Assert.assertEquals(Double.valueOf(1.0), cssV.getValueData().get(0));
-            Assert.assertEquals(Double.valueOf(2.0), cssV.getValueData().get(1));
+            Assert.assertEquals(2, cssV.getData().getValueData().size());
+            Assert.assertEquals(Double.valueOf(1.0), cssV.getData().getValueData().get(0));
+            Assert.assertEquals(Double.valueOf(2.0), cssV.getData().getValueData().get(1));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -84,17 +90,19 @@ public class EpicsIValueTypeSupportUnitTest {
     @Test
     public void testLongValue2CssValueConversion() {
         try {
-            final ITimedCssAlarmValueType<List<Long>> cssV =
-                EpicsIValueTypeSupport.toCssType(ValueFactory.createLongValue(TimestampFactory.now(),
-                                                                        ValueFactory.createMinorSeverity(),
-                                                                        "HIHI",
-                                                                        null,
-                                                                        null,
-                                                                        new long[]{1L, 2L}));
+            @SuppressWarnings("unchecked")
+            final EpicsSystemVariable<List<Long>> cssV =
+                (EpicsSystemVariable<List<Long>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                    ValueFactory.createLongValue(TimestampFactory.now(),
+                                                                    ValueFactory.createMinorSeverity(),
+                                                                    "HIHI",
+                                                                    null,
+                                                                    null,
+                                                                    new long[]{1L, 2L}));
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(2, cssV.getValueData().size());
-            Assert.assertEquals(Long.valueOf(1L), cssV.getValueData().get(0));
-            Assert.assertEquals(Long.valueOf(2L), cssV.getValueData().get(1));
+            Assert.assertEquals(2, cssV.getData().getValueData().size());
+            Assert.assertEquals(Long.valueOf(1L), cssV.getData().getValueData().get(0));
+            Assert.assertEquals(Long.valueOf(2L), cssV.getData().getValueData().get(1));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -110,11 +118,12 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                              null,
                                                                              new int[]{2});
 
-            final ITimedCssAlarmValueType<EpicsEnumTriple> cssV = EpicsIValueTypeSupport.toCssType(eVal);
+            @SuppressWarnings("unchecked")
+            final EpicsSystemVariable<EpicsEnum> cssV = (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(Integer.valueOf(2), cssV.getValueData().getIndex());
-            Assert.assertEquals("part", cssV.getValueData().getState());
-            Assert.assertEquals(null, cssV.getValueData().getRaw());
+            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getValueData().getIndex());
+            Assert.assertEquals("part", cssV.getData().getValueData().getState());
+            Assert.assertEquals(null, cssV.getData().getValueData().getRaw());
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -123,12 +132,15 @@ public class EpicsIValueTypeSupportUnitTest {
     @Test
     public void testStringValue2CssValueConversion() {
         try {
-            final ITimedCssAlarmValueType<List<String>> cssV =
-                EpicsIValueTypeSupport.toCssType(ValueFactory.createStringValue(TimestampFactory.now(),
-                                                                          ValueFactory.createMinorSeverity(),
-                                                                          "HIHI",
-                                                                          null,
-                                                                          new String[]{"small", "black"}));
+            @SuppressWarnings("unchecked")
+            final EpicsSystemVariable<List<String>> sysVar =
+                (EpicsSystemVariable<List<String>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                    ValueFactory.createStringValue(TimestampFactory.now(),
+                                                                      ValueFactory.createMinorSeverity(),
+                                                                      "HIHI",
+                                                                      null,
+                                                                      new String[]{"small", "black"}));
+            final ICssValueType<List<String>> cssV = sysVar.getData();
             Assert.assertNotNull(cssV);
             Assert.assertEquals(2, cssV.getValueData().size());
             Assert.assertEquals("small", cssV.getValueData().get(0));

@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
@@ -67,12 +68,26 @@ public class AlarmTreeLabelProvider extends LabelProvider {
     @Nonnull
     public final String getText(@Nullable final Object element) {
         if (element instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) element).getName();
+            return getName((IAlarmTreeNode) element);
         }
         if (element instanceof PendingUpdateAdapter) {
             return ((PendingUpdateAdapter) element).getLabel(element);
         }
         return "";
+    }
+
+    @Nonnull
+    private String getName(@Nonnull final IAlarmTreeNode node) {
+        String result = node.getName();
+        if (isDirectChildOfRoot(node) && (node.getSource() == TreeNodeSource.XML)) {
+            result = result + " [XML]";
+        }
+        return result;
+    }
+
+    private boolean isDirectChildOfRoot(@Nonnull final IAlarmTreeNode node) {
+        IAlarmTreeNode parent = node.getParent();
+        return (parent != null) && (parent.getSource() == TreeNodeSource.ROOT);
     }
 
     /**

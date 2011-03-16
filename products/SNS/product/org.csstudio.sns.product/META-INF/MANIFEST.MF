@@ -9,6 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
  org.eclipse.ui.cheatsheets,
+ org.csstudio.logging;bundle-version="0.0.1",
+ org.csstudio.logging.ui;bundle-version="0.0.1",
  org.csstudio.platform.ui,
  org.csstudio.platform.workspace,
  org.csstudio.startup;bundle-version="1.1.2",
@@ -19,3 +21,5 @@ Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - S
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.sns.product.Activator
 Eclipse-PlatformFilter: (| (osgi.ws=win32)(osgi.ws=cocoa)(osgi.ws=gtk))
+Bundle-Description: CSS for SNS users (Office, control rooms)
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

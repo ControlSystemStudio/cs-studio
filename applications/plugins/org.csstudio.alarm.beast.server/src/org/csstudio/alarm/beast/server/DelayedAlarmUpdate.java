@@ -9,8 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
 
 /** Helper for checking alarms after a delay.
  *  It will trigger a transition to a new state only after a delay.
@@ -83,8 +82,6 @@ public class DelayedAlarmUpdate
                     }
                     if (the_state == null)
                     {
-                        // TODO Remove message when no longer needed
-                        CentralLogger.getInstance().getLogger(this).error("DelayedAlarmUpdate was cancelled just before it was about to run");
                         // Don't run because update was cancelled
                         return;
                     }
@@ -96,7 +93,7 @@ public class DelayedAlarmUpdate
                     }
                     catch (Throwable ex)
                     {
-                        CentralLogger.getInstance().getLogger(this).error("Error in delayed alarm update: " + ex.getMessage(), ex);
+                        Activator.getLogger().log(Level.SEVERE, "Error in delayed alarm update", ex);
                     }
                 }
             };

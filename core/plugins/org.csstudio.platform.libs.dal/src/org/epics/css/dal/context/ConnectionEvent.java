@@ -101,6 +101,18 @@ public class ConnectionEvent<C extends Linkable> extends EventObject
 	{
 		return state;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb= new StringBuilder(128);
+		sb.append(this.getClass().getName());
+		sb.append('{');
+		sb.append(getConnectable().getIdentifier().getUniqueName());
+		sb.append(", ");
+		sb.append(getState());
+		sb.append('}');
+		return sb.toString();
+	}
 }
 
 /* __oOo__ */

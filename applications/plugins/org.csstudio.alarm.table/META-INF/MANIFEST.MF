@@ -32,3 +32,4 @@ Bundle-ClassPath: lib/jl1.0.jar,
  .,
  lib/mailapi.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning

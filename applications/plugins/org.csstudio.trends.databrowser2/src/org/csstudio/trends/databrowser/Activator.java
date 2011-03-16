@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser;
 
 import java.util.Dictionary;
+import java.util.logging.Logger;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -26,9 +27,12 @@ public class Activator extends AbstractUIPlugin
 	/** Checkbox images */
     final public static String ICON_UNCHECKED = "icons/unchecked.gif",
 	                           ICON_CHECKED = "icons/checked.gif";
-    
+
     /** Singleton instance */
     private static Activator plugin;
+
+    /** Logger for this plugin */
+    private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
     /** {@inheritDoc} */
     @Override
@@ -51,7 +55,7 @@ public class Activator extends AbstractUIPlugin
     {
         return plugin;
     }
-    
+
     /** Obtain image descriptor from file within plugin.
      *  @param path Path within plugin to image file
      *  @return {@link ImageDescriptor}
@@ -83,5 +87,11 @@ public class Activator extends AbstractUIPlugin
     {
         final Dictionary<String, String> headers = getBundle().getHeaders();
         return headers.get("Bundle-Version");
+    }
+
+    /** @return Logger for this plugin */
+    public static Logger getLogger()
+    {
+        return logger;
     }
 }

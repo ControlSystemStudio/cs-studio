@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -18,9 +20,9 @@ import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -213,7 +215,7 @@ public class GlobalAlarmModel
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(
+            Activator.getLogger().log(Level.SEVERE,
                     "GlobalAlarmModel cannot read existing alarms", ex);
         }
         finally

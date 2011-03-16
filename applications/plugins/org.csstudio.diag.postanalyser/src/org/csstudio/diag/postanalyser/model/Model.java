@@ -1,6 +1,7 @@
 package org.csstudio.diag.postanalyser.model;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.diag.postanalyser.Activator;
 
@@ -19,14 +20,14 @@ public class Model
             new CorrelationAlgorithm(),
             new FFTAlgorithm()
     };
-    
+
     /** Channels */
-    final private ArrayList<Channel> channels = new ArrayList<Channel>();  
-    
+    final private ArrayList<Channel> channels = new ArrayList<Channel>();
+
     /** Listeners */
     final private ArrayList<ModelListener> listeners =
         new ArrayList<ModelListener>();
-    
+
     /** Add given listener */
     public void addListener(final ModelListener listener)
     {
@@ -38,31 +39,31 @@ public class Model
     {
         listeners.remove(listener);
     }
-    
+
     /** @return Number of algorithms */
     public int getAlgorithmCount()
     {
         return algorithms.length;
     }
-    
+
     /** @return Algorithm with index 0..<code>getAlgorithmCount()-1</code>. */
     public Algorithm getAlgorithm(int index)
     {
         return algorithms[index];
     }
-    
+
     /** @return Number of channels */
     public int getChannelCount()
     {
         return channels.size();
     }
-    
+
     /** @return Channel with index 0..<code>getChannelCount()-1</code>. */
     public Channel getChannel(int index)
     {
         return channels.get(index);
     }
-    
+
     /** @return Channel of given name
      * @throws Exception when channel not found
      */
@@ -99,7 +100,7 @@ public class Model
         }
         catch (Throwable ex)
         {
-            Activator.getLogger().error(ex);
+            Activator.getLogger().log(Level.SEVERE, "Error adding channel", ex); //$NON-NLS-1$
         }
     }
 
@@ -110,7 +111,7 @@ public class Model
         for (Channel channel : channels)
             if (channel.getName().equals(name))
                 channel.crop(start, end);
-                
+
     }
 
     /** Adjust all Y values of given channel to given base line */

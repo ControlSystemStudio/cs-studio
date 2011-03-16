@@ -7,10 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.ui.Controller;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
@@ -57,7 +59,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
         final boolean running = getExecutionMode() == ExecutionMode.RUN_MODE;
         // In edit mode, display the file name
         final DataBrowserWidgetFigure gui =
-            new DataBrowserWidgetFigure(running ? null : model.getFilename().toString(),
+            new DataBrowserWidgetFigure(running ? null : model.getPlainFilename().toString(),
                     model.isToolbarVisible());
 
         if (running)
@@ -70,7 +72,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).error("Cannot run Data Browser", ex); //$NON-NLS-1$
+                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot run Data Browser", ex); //$NON-NLS-1$
             }
         }
 
@@ -121,7 +123,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).error("Cannot start Data Browser Widget", ex); //$NON-NLS-1$
+                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot start Data Browser Widget", ex); //$NON-NLS-1$
             }
         }
         super.activate();

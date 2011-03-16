@@ -10,12 +10,12 @@ package org.csstudio.trends.databrowser.editor;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
@@ -109,7 +109,7 @@ public class DataBrowserEditor extends EditorPart
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error("Cannot create DataBrowserEditor", ex); //$NON-NLS-1$
+            Activator.getLogger().log(Level.SEVERE, "Cannot create DataBrowserEditor", ex); //$NON-NLS-1$
             return null;
         }
         return editor;

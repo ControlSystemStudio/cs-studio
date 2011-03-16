@@ -37,6 +37,6 @@ public class ArchiveReaderServiceTracker extends ServiceTracker {
      * Constructor.
      */
     public ArchiveReaderServiceTracker(@Nonnull final BundleContext context) {
-        super(context, IArchiveReaderService.class.getName(), null);
+        super(context, IArchiveReaderFacade.class.getName(), null);
     }
 }

@@ -30,7 +30,6 @@ import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DoubleSeqProperty;
-import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.LongProperty;
 import org.epics.css.dal.LongSeqProperty;
 import org.epics.css.dal.NumericPropertyCharacteristics;
@@ -99,7 +98,7 @@ public class PropertyProxyUtilities {
 		System.out.println(PropertyProxyUtilities.getCharacteristics(new PropertyNameDissector(name), null));
 	}
 	
-	static Class<? extends PropertyProxy<?>> getProxyImplementationClass(Class<? extends SimpleProperty> type) {
+	static Class<? extends PropertyProxy<?,?>> getProxyImplementationClass(Class<? extends SimpleProperty<?>> type) {
 		if (DoubleProperty.class.isAssignableFrom(type) || DoublePropertyImpl.class.isAssignableFrom(type)) {
 			return DoublePropertyProxyImpl.class;
 		} else if (DoubleSeqProperty.class.isAssignableFrom(type) || DoubleSeqPropertyImpl.class.isAssignableFrom(type)) {
@@ -639,11 +638,11 @@ public class PropertyProxyUtilities {
 		
 	}
 	
-	static Class<? extends PropertyProxy<?>> getPropertyProxyImplementationClass(String name) {
+	static Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String name) {
 		return getPropertyProxyImplementationClass(name, null);
 	}
 	
-	static Class<? extends PropertyProxy<?>> getPropertyProxyImplementationClass(String name, Class<? extends SimpleProperty<?>> propertyType) {
+	static Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String name, Class<? extends SimpleProperty<?>> propertyType) {
 		if (!TINEPlug.getInstance().containsName(name)) {
 			try {
 				TINEPlug.getInstance().getCharacteristics(name);

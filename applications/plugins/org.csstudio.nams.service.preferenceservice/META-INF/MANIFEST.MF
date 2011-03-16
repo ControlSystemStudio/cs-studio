@@ -14,3 +14,4 @@ Export-Package: org.csstudio.nams.service.preferenceservice;x-friends:="org.csst
  org.csstudio.nams.service.preferenceservice.declaration,
  org.csstudio.nams.service.preferenceservice.declaration.bridge4ui;x-friends:="org.csstudio.nams.service.preferenceservice.ui",
  org.csstudio.nams.service.preferenceservice.definition;x-friends:="org.csstudio.nams.testUtils.testSuites"
+Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

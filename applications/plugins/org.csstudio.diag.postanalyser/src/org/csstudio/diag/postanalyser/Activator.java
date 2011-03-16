@@ -1,7 +1,8 @@
 package org.csstudio.diag.postanalyser;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -19,8 +20,8 @@ public class Activator extends AbstractUIPlugin
     /** The shared instance */
     private static Activator plugin;
 
-    /** Lazily initialized Log4j Logger */
-    private static Logger log = null;
+    /** Logger */
+    private static Logger logger = Logger.getLogger(ID);
 
     /** Constructor */
     public Activator()
@@ -34,14 +35,12 @@ public class Activator extends AbstractUIPlugin
         return plugin;
     }
 
-    /** @return Log4j Logger */
+    /** @return Logger for plugin ID */
     public static Logger getLogger()
     {
-        if (log == null) // Also works with plugin==null during unit tests
-            log = CentralLogger.getInstance().getLogger(plugin);
-        return log;
+        return logger;
     }
-    
+
     /** Returns an image descriptor for the image file.
      *  <p>
      *  Usually, this is the image found via the the given plug-in
@@ -50,7 +49,7 @@ public class Activator extends AbstractUIPlugin
      *  If no plugin is running, because for example this is an SWT-only
      *  test, the path is used as is, i.e. relative to the current
      *  directory.
-     * 
+     *
      *  @param path the path
      *  @return the image descriptor
      */
@@ -64,12 +63,12 @@ public class Activator extends AbstractUIPlugin
         try
         {
             final Display display = Display.getCurrent();
-            final Image img = new Image(display, path);        
+            final Image img = new Image(display, path);
             return ImageDescriptor.createFromImage(img);
         }
         catch (Exception e)
         {
-            getLogger().error("Cannot load image '" + path + "'", e);
+            getLogger().log(Level.SEVERE, "Cannot load image '" + path + "'", e);
         }
         return null;
     }

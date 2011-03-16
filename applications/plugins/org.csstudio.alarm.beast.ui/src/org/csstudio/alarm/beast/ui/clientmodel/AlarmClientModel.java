@@ -10,8 +10,8 @@ package org.csstudio.alarm.beast.ui.clientmodel;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -20,9 +20,9 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -35,6 +35,7 @@ import org.eclipse.osgi.util.NLS;
  *
  *  @author Kay Kasemir, Xihui Chen
  */
+@SuppressWarnings("nls")
 public class AlarmClientModel
 {
     /** Singleton instance */
@@ -147,8 +148,7 @@ public class AlarmClientModel
             return;
         try
         {
-            CentralLogger.getInstance().getLogger(this)
-                .debug("AlarmClientModel closed."); //$NON-NLS-1$
+            Activator.getLogger().fine("AlarmClientModel closed.");
             // Don't lock the model while closing the communicator
             // because communicator could right now be in a model
             // update which in turn already locks the model -> deadlock
@@ -171,7 +171,7 @@ public class AlarmClientModel
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).warn(ex);
+            Activator.getLogger().log(Level.WARNING, "Model release failed", ex);
         }
         releaseInstance();
     }
@@ -254,13 +254,37 @@ public class AlarmClientModel
      *  May be invoked from ReadConfigJob.
      *  @param monitor Progress monitor (has not been called)
      */
-    @SuppressWarnings("nls")
     void readConfiguration(final IProgressMonitor monitor)
     {
         final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
-        // Clear old data
+        // Check if we need to create a NEW communicator,
+        // or configure existing communicator to queue updates.
+        final AlarmClientCommunicator comm;
+        synchronized (communicator_lock)
+        {
+            if (communicator == null)
+            {
+                try
+                {
+                    communicator = new AlarmClientCommunicator(this);
+                    communicator.start();
+                }
+                catch (Exception ex)
+                {
+                    Activator.getLogger().log(Level.SEVERE, "Cannot start AlarmClientCommunicator", ex);
+                    return;
+                }
+            }
+            // Queue received events until we read the whole configuration
+            communicator.setQueueMode(true);
+            comm = communicator;
+        }
+
+        // Clear old data.
+        // If updates arrived now from JMS, we'd get 'unknown PV ...' warnings,
+        // but since the JMS communicator is in 'queue' mode, that should not happen.
         synchronized (this)
         {
             // Prevent a flurry of events while items with alarms are added
@@ -301,8 +325,8 @@ public class AlarmClientModel
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
-            createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage()); //$NON-NLS-1$
+            Activator.getLogger().log(Level.SEVERE, "Cannot connect to RDB", ex);
+            createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage());
 
             synchronized (this)
             {
@@ -313,30 +337,14 @@ public class AlarmClientModel
             return;
         }
 
-        // Check if we need to create a NEW communicator
-        final AlarmClientCommunicator comm;
-        synchronized (communicator_lock)
-        {
-	        if (communicator == null)
-	        {
-		    	try
-		    	{
-			    	communicator = new AlarmClientCommunicator(this);
-			        communicator.start();
-		    	}
-		    	catch (Exception ex)
-		    	{
-		    		CentralLogger.getInstance().getLogger(this).error("Cannot start AlarmClientCommunicator", ex); //$NON-NLS-1$
-		    		return;
-		    	}
-	        }
-            // Queue received events until we read the whole configuration
-	        communicator.setQueueMode(true);
-	        comm = communicator;
-        }
-
+        // Presumably connected to JMS and RDB,
+        // but assert that we are really connected to JMS:
         // While we read the RDB, new alarms could arrive.
         // To avoid missing them, assert that we are connected to JMS.
+        // Used to block for JMS connection before connecting to RDB,
+        // but this way both types of errors are more obvious:
+        // RDB error -> exception right away
+        // JMS problem -> will usually still check RDB, so we know that's OK, then hang in here
         int wait = 0;
         while (!comm.isConnected())
         {
@@ -378,13 +386,12 @@ public class AlarmClientModel
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(ex);
-            createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage()); //$NON-NLS-1$
+            Activator.getLogger().log(Level.SEVERE, "Cannot read alarm configuration", ex);
+            createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage());
         }
         // Info about performance
         timer.stop();
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        if (logger.isInfoEnabled())
+        if (Activator.getLogger().isLoggable(Level.INFO))
         {
             final int count;
             final int pv_count;
@@ -393,7 +400,7 @@ public class AlarmClientModel
                 count = config_tree.getElementCount();
                 pv_count = config_tree.getLeafCount();
             }
-            logger.info(String.format(
+            Activator.getLogger().info(String.format(
                 "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
                 count, pv_count, timer.getSeconds(),
                 count / timer.getSeconds(),
@@ -423,7 +430,7 @@ public class AlarmClientModel
         	if (communicator != null)
         		return communicator.toString();
         }
-        return "No Communicator"; //$NON-NLS-1$
+        return "No Communicator";
     }
 
     /** Invoked by AlarmClientCommunicator whenever an 'IDLE'
@@ -665,7 +672,6 @@ public class AlarmClientModel
      *  @throws Exception on error in new path, duplicate PV name, error while
      *          adding new PV
      */
-    @SuppressWarnings("nls")
     public void duplicatePV(final AlarmTreePV pv, final String new_path_and_pv) throws Exception
     {
         if (! allow_write)
@@ -769,7 +775,6 @@ public class AlarmClientModel
      *  @param name PV name
      *  @param enabled Enabled?
      */
-    @SuppressWarnings("nls")
     public void updateEnablement(final String name, final boolean enabled)
     {
         final AlarmTreePV pv;
@@ -778,9 +783,9 @@ public class AlarmClientModel
             pv = findPV(name);
             if (pv == null)
             {
-                CentralLogger.getInstance().getLogger(this).error(
-                        "Received enablement (" + Boolean.toString(enabled) +
-                        ") for unknown PV " + name);
+                Activator.getLogger().log(Level.WARNING,
+                    "Received enablement ({0}) for unknown PV {1}",
+                    new Object[] { Boolean.toString(enabled), name });
                 return;
             }
             pv.setEnabled(enabled);
@@ -824,8 +829,8 @@ public class AlarmClientModel
         // The update comes from JMS, and the logger may also
         // send info to JMS. Is that a problem?
         // Moved this outside the lock in case that makes a difference.
-        CentralLogger.getInstance().getLogger(this).error(
-                "Received update for unknown PV " + name); //$NON-NLS-1$
+        Activator.getLogger().log(Level.WARNING,
+            "Received update for unknown PV {0}", name);
     }
 
     /** Locate PV by name
@@ -858,7 +863,7 @@ public class AlarmClientModel
      */
     private synchronized void createPseudoAlarmTree(final String info)
     {
-        config_tree = new AlarmTreeRoot("Pseudo", -1); //$NON-NLS-1$
+        config_tree = new AlarmTreeRoot("Pseudo", -1);
         new AlarmTreeItem(config_tree, info, 0);
         active_alarms.clear();
         acknowledged_alarms.clear();
@@ -886,7 +891,8 @@ public class AlarmClientModel
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Activator.getLogger().log(Level.WARNING,
+                        "Server timeout notification error", ex);
             }
         }
     }
@@ -902,7 +908,8 @@ public class AlarmClientModel
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Activator.getLogger().log(Level.WARNING,
+                    "Model update notification error", ex);
             }
         }
     }
@@ -920,7 +927,8 @@ public class AlarmClientModel
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Activator.getLogger().log(Level.WARNING,
+                    "Model config notification error", ex);
             }
         }
     }
@@ -960,7 +968,8 @@ public class AlarmClientModel
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Activator.getLogger().log(Level.WARNING,
+                    "Alarm update notification error", ex);
             }
         }
     }
@@ -969,11 +978,10 @@ public class AlarmClientModel
     @Override
     public String toString()
     {
-        return "AlarmClientModel: " + config_tree; //$NON-NLS-1$
+        return "AlarmClientModel: " + config_tree;
     }
 
     /** Dump debug information */
-    @SuppressWarnings("nls")
     public synchronized void dump()
     {
         System.out.println("== AlarmClientModel ==");

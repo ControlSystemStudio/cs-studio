@@ -23,7 +23,13 @@ package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.TypeSupportException;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
  * Type conversions for {@link Integer}.
@@ -62,5 +68,23 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
     @Nonnull
     public Integer convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
         return value.intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    // CHECKSTYLE OFF : ParameterNumber
+    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
+                                            @Nonnull final String name,
+                                            @Nonnull final String datatype,
+                                            @Nonnull final ArchiveChannelGroupId grpId,
+                                            @Nonnull final TimeInstant time,
+                                            @Nonnull final IArchiveControlSystem cs,
+                                            @Nonnull final Integer low,
+                                            @Nonnull final Integer high) {
+        // CHECKSTYLE ON : ParameterNumber
+        return new ArchiveLimitsChannel<Integer>(id, name, datatype, grpId, time, cs, low, high);
     }
 }

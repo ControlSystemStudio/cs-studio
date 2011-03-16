@@ -76,7 +76,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
                 {
                     getDescription(),
                     getName(),
-                    getTimestamp(),
+                    getTimestampText(),
                     getDuration(),
                     getSeverity().getDisplayName(),
                     getMessage()
@@ -101,6 +101,8 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     /** @return Time stamp of last status/severity update as text */
     public synchronized String getTimestampText()
     {
+        if (timestamp == null)
+            return ""; //$NON-NLS-1$
         return timestamp.format(Format.DateTimeSeconds);
     }
 
@@ -138,6 +140,6 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     @Override
     public String toString()
     {
-        return super.toString() + ": '" + getDescription() + "' @ " + timestamp;
+        return super.toString() + ": '" + getDescription() + "' @ " + getTimestampText();
     }
 }

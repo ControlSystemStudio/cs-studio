@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb;
 
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.Plugin;
 
 /** Plugin Activator
@@ -16,4 +18,12 @@ public class Activator extends Plugin
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.archive.rdb"; //$NON-NLS-1$
+
+    final private static Logger logger = Logger.getLogger(ID);
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
 }

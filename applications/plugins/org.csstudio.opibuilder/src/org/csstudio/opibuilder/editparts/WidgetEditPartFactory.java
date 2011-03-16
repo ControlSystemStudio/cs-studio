@@ -1,9 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WidgetsService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
 
@@ -14,11 +23,11 @@ import org.eclipse.gef.EditPartFactory;
 public class WidgetEditPartFactory implements EditPartFactory {
 
 	private ExecutionMode executionMode;
-	
+
 	public WidgetEditPartFactory(ExecutionMode executionMode) {
 		this.executionMode = executionMode;
 	}
-	
+
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart part = getPartForModel(model);
 		if(part != null){
@@ -29,18 +38,19 @@ public class WidgetEditPartFactory implements EditPartFactory {
 		return part;
 	}
 
-	private EditPart getPartForModel(Object model){
+	@SuppressWarnings("nls")
+    private EditPart getPartForModel(Object model){
 		if(model instanceof DisplayModel)
 			return new DisplayEditpart();
 		if(model instanceof AbstractWidgetModel){
-			AbstractBaseEditPart editpart = 
+			AbstractBaseEditPart editpart =
 				WidgetsService.getInstance().getWidgetDescriptor(
 					((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
 			return editpart;
 		}
-		CentralLogger.getInstance().error(this, "Cannot create editpart for model object: "
-				+ model);
+        OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                "Cannot create editpart for model object {0}",
+                model == null ? "null" : model.getClass().getName());
 		return null;
 	}
-	
 }

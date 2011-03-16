@@ -1,5 +1,7 @@
 package org.csstudio.diag.postanalyser;
 
+import java.util.logging.Level;
+
 import org.csstudio.diag.postanalyser.model.Channel;
 import org.csstudio.diag.postanalyser.model.Model;
 import org.csstudio.platform.data.IValue;
@@ -22,7 +24,7 @@ public final class View extends ViewPart
 
     final private Model model = new Model();
     private GUI gui;
-    
+
     /** Called by <code>ObjectContribPopupAction</code> with received data. */
     public static void activateWithPVs(final IProcessVariableWithSamples[] pvs)
     {
@@ -34,7 +36,7 @@ public final class View extends ViewPart
             final View view = (View) page.showView(View.ID);
             if (view == null)
             {
-                Activator.getLogger().error("Cannot activate view"); //$NON-NLS-1$
+                Activator.getLogger().severe("Cannot activate view"); //$NON-NLS-1$
                 return;
             }
             for (IProcessVariableWithSamples pv : pvs)
@@ -42,7 +44,7 @@ public final class View extends ViewPart
         }
         catch (Exception ex)
         {
-            Activator.getLogger().error(ex);
+            Activator.getLogger().log(Level.SEVERE, "View activation error", ex); //$NON-NLS-1$
         }
     }
 
@@ -51,7 +53,7 @@ public final class View extends ViewPart
     public void createPartControl(final Composite parent)
     {
         gui = new GUI(model, parent);
-        
+
         // TODO Accept 'dropped' PVs?
         // Does not work from Data Browser Config View;
         // never see PV-with-samples
@@ -72,7 +74,7 @@ public final class View extends ViewPart
     {
         gui.setFocus();
     }
-    
+
     /** Add samples of PV to model. */
     private void addPVSamples(final IProcessVariableWithSamples pv)
     {

@@ -34,6 +34,8 @@ org.csstudio.email.ui/**
 org.csstudio.logbook/**
 org.csstudio.logbook.sns/**
 org.csstudio.logbook.ui/**
+org.csstudio.logging/**
+org.csstudio.logging.ui/**
 org.csstudio.opibuilder/**
 org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
@@ -80,6 +82,6 @@ org.csstudio.utility.jmssendcmd/**
 org.csstudio.utility.pv/**
 org.csstudio.utility.pv.epics/**
 org.csstudio.utility.pv.simu/**
-org.csstudio.utility.pv.ui/**
+org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**

@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+
 import org.csstudio.trends.databrowser.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.ui.Controller;
@@ -51,7 +52,7 @@ public class DB2Shell {
             }
             catch (Exception ex)
             {
-            	CentralLogger.getInstance().error(this, "Error reading file");
+                Activator.getLogger().log(Level.SEVERE, "Error reading file", ex); //$NON-NLS-1$
             }
         }
 

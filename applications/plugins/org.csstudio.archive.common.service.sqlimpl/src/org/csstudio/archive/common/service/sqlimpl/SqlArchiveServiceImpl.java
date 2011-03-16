@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
-import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.IArchiveEngineService;
 import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
@@ -46,8 +46,7 @@ import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.types.ITimedCssValueType;
+import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -75,7 +74,7 @@ import com.google.common.collect.Collections2;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
+public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveEngineService {
 
     INSTANCE;
 
@@ -139,7 +138,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public int getChannelId(@Nonnull final String channelName) throws ArchiveServiceException {
+    public IArchiveChannel getChannelByName(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
             final RDBArchive rdbArchive = _archive.get();
             final ChannelConfig channel = rdbArchive != null ? rdbArchive.getChannel(channelName) :
@@ -147,7 +146,8 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
             if (channel == null) {
                 throw new NullPointerException("Channel reference from DB is null");
             }
-            return channel.getId();
+            //return new ArchiveChannel(...);
+            return null;
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel id for channel " + channelName + " failed.", e);
@@ -214,10 +214,10 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
     @CheckForNull
     public IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
 
@@ -274,7 +274,7 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public void submitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+    public void submitSample(final int channelId, @Nonnull final IValue value) throws ArchiveServiceException {
         try {
             _archive.get().batchSample(channelId, value);
         } catch (final Exception e) {
@@ -302,8 +302,8 @@ public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchi
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ITimedCssValueType<V> & IHasAlarm>
-    boolean writeSamples(final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
+    public <V, T extends IAlarmSystemVariable<V>>
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
       throw new ArchiveServiceException("Not implemented", null);
     }
 

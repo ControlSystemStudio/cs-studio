@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
@@ -258,11 +265,11 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 * @param newValue
 	 * @return
 	 */
-	private void formatValue(Object newValue, String propId, IFigure figure) {
+	protected String formatValue(Object newValue, String propId, IFigure figure) {
 		
 		
 		if(getExecutionMode() != ExecutionMode.RUN_MODE)
-			return;
+			return null;
 		IValue value = null;
 			
 
@@ -285,11 +292,21 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			break;
 		case HEX:	
 			if(value instanceof IDoubleValue)
-				text = HEX_PREFIX + Long.toHexString((long) ((IDoubleValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString((int) ((IDoubleValue)value).getValue()).toUpperCase();
 			else if(value instanceof ILongValue)
-				text = HEX_PREFIX + Long.toHexString(((ILongValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString((int) ((ILongValue)value).getValue()).toUpperCase();
 			else if(value instanceof IEnumeratedValue)
-				text = HEX_PREFIX + Integer.toHexString(((IEnumeratedValue)value).getValue());
+				text = HEX_PREFIX + Integer.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
+			else
+				text = value.format();			
+			break;
+		case HEX64:
+			if(value instanceof IDoubleValue)
+				text = HEX_PREFIX + Long.toHexString((long) ((IDoubleValue)value).getValue()).toUpperCase();
+			else if(value instanceof ILongValue)
+				text = HEX_PREFIX + Long.toHexString((long) ((ILongValue)value).getValue()).toUpperCase();
+			else if(value instanceof IEnumeratedValue)
+				text = HEX_PREFIX + Long.toHexString(((IEnumeratedValue)value).getValue()).toUpperCase();
 			else
 				text = value.format();			
 			break;
@@ -313,6 +330,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		if(isAutoSize)
 			performAutoSize(figure);
 		
+		return text;
 	}
 
 	@Override

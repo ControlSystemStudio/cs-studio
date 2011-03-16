@@ -26,8 +26,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 /**
  * Immutable data transfer object for DAOs.
@@ -43,15 +44,11 @@ public class ArchiveChannel implements IArchiveChannel {
 
     private final ArchiveChannelGroupId _groupId;
 
-    private final ArchiveSampleModeId _sampleModeId;
-
     private final String _dataType;
-
-    private final double _samplePeriod;
 
     private final TimeInstant _latestTimestamp;
 
-    private final double _sampleValue;
+    private final IArchiveControlSystem _system;
 
     /**
      * Constructor.
@@ -59,30 +56,20 @@ public class ArchiveChannel implements IArchiveChannel {
      * @param name
      * @param type
      * @param grpId
-     * @param sampleModeId
-     * @param smplPer
      * @param ltstTimestamp
-     * @param sampleValue
-     *
-     * CHECKSTYLE OFF: ParameterNumber
      */
     public ArchiveChannel(@Nonnull final ArchiveChannelId id,
-                             @Nonnull final String name,
-                             @Nonnull final String type,
-                             @Nonnull final ArchiveChannelGroupId grpId,
-                             @Nonnull final ArchiveSampleModeId sampleModeId,
-                             final double smplPer,
-                             @Nullable final TimeInstant ltstTimestamp,
-                             final double sampleValue) {
-        // CHECKSTYLE  ON : ParameterNumber
+                          @Nonnull final String name,
+                          @Nonnull final String type,
+                          @Nonnull final ArchiveChannelGroupId grpId,
+                          @Nullable final TimeInstant ltstTimestamp,
+                          @Nonnull final IArchiveControlSystem system) {
         _id = id;
         _name = name;
         _groupId = grpId;
         _dataType = type;
-        _sampleModeId = sampleModeId;
-        _samplePeriod = smplPer;
         _latestTimestamp = ltstTimestamp;
-        _sampleValue = sampleValue;
+        _system = system;
     }
 
     /**
@@ -109,27 +96,13 @@ public class ArchiveChannel implements IArchiveChannel {
     public ArchiveChannelGroupId getGroupId() {
         return _groupId;
     }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ArchiveSampleModeId getSampleModeId() {
-        return _sampleModeId;
-    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getDataType() {
         return _dataType;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getSamplePeriod() {
-        return _samplePeriod;
     }
 
     /**
@@ -145,7 +118,17 @@ public class ArchiveChannel implements IArchiveChannel {
      * {@inheritDoc}
      */
     @Override
-    public double getSampleValue() {
-        return _sampleValue;
+    @Nonnull
+    public IArchiveControlSystem getControlSystem() {
+        return _system;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public Limits<?> getDisplayLimits() {
+        return null;
     }
 }

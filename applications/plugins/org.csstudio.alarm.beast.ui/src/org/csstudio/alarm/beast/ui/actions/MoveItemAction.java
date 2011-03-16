@@ -14,7 +14,6 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -76,7 +75,6 @@ public class MoveItemAction extends AbstractUserDependentAction
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
                 MessageDialog.openError(shell, Messages.Error,
                         NLS.bind(Messages.CannotUpdateConfigurationErrorFmt,
                                 item.getName(), ex.getMessage()));

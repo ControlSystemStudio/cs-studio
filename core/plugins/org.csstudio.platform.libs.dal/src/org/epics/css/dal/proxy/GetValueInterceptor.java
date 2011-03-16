@@ -79,7 +79,7 @@ public class GetValueInterceptor<T> implements ResponseListener<T>
 	 *
 	 * @throws DataExchangeException is thrown if getValue timed out
 	 */
-	public synchronized T executeAndWait(PropertyProxy<T> proxy)
+	public synchronized T executeAndWait(PropertyProxy<T,?> proxy)
 		throws DataExchangeException
 	{
 		proxy.getValueAsync(this);

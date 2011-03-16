@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.actions.MaintenanceModeAction;
 import org.csstudio.alarm.beast.ui.actions.UnAcknowledgeAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
@@ -54,7 +56,7 @@ public class AlarmTreeView extends ViewPart
                         : ex.getMessage());
 
             // Add to log, also display in text
-            CentralLogger.getInstance().getLogger(this).error(message, ex);
+            Logger.getLogger(Activator.ID).log(Level.SEVERE, "Cannot load alarm model", ex); //$NON-NLS-1$
             parent.setLayout(new FillLayout());
             new Text(parent, SWT.READ_ONLY | SWT.BORDER | SWT.MULTI)
                 .setText(message);

@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 2.0.7.qualifier
+Bundle-Version: 2.0.9.qualifier
+Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
@@ -24,6 +25,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Eclipse-ExtensibleAPI: true
-Export-Package: org.csstudio.trends.databrowser.editor,
+Export-Package: org.csstudio.trends.databrowser,
+ org.csstudio.trends.databrowser.editor,
  org.csstudio.trends.databrowser.model,
  org.csstudio.trends.databrowser.ui

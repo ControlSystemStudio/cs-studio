@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Engine Plug-in
 Bundle-SymbolicName: org.csstudio.archive.engine;singleton:=true
-Bundle-Version: 1.2.4.qualifier
+Bundle-Version: 1.2.5.qualifier
 Bundle-Activator: org.csstudio.archive.engine.Activator
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Description: Archive Sample Engine, writes data to RDB
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4,
  javax.servlet,
+ org.csstudio.logging;bundle-version="0.0.1",
  org.csstudio.platform,
  org.csstudio.platform.utility.rdb,
  org.csstudio.apputil;bundle-version="1.1.4",

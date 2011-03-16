@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ChannelGroupConfig extends StringID
     final private RDBArchive archive;
     final private int engine_id;
     private int enabling_channel_id;
-    
+
     /** Constructor, only used within package. */
     ChannelGroupConfig(final RDBArchive archive,
             final int id, final String name, final int engine_id,
@@ -80,14 +79,15 @@ public class ChannelGroupConfig extends StringID
         {
             statement.close();
         }
-        
+
         // Sort by channel name in Java.
         // SQL should already give sorted result, but handling of upper/lowercase
         // names seems to differ between Oracle and MySQL, resulting in
         // files that were hard to compare
         Collections.sort(channels, new Comparator<ChannelConfig>()
         {
-            public int compare(ChannelConfig a, ChannelConfig b)
+            @Override
+            public int compare(final ChannelConfig a, final ChannelConfig b)
             {
                 return a.getName().compareTo(b.getName());
             }

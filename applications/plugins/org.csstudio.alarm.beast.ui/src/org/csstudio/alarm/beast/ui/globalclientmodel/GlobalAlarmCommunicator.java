@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import java.util.logging.Level;
+
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -15,8 +17,8 @@ import javax.jms.MessageListener;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.JMSCommunicationThread;
 import org.csstudio.alarm.beast.Preferences;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
-import org.csstudio.platform.logging.CentralLogger;
 
 /** JMS communicator that receives 'global' alarm updates
  *  @author Kay Kasemir
@@ -43,8 +45,8 @@ abstract public class GlobalAlarmCommunicator extends JMSCommunicationThread
                 if (message instanceof MapMessage)
                     handleMapMessage((MapMessage) message);
                 else
-                    CentralLogger.getInstance().getLogger(this).warn(
-                        "Message type " + message.getClass().getName() + " not handled");
+                    Activator.getLogger().log(Level.WARNING,
+                        "Message type {0} not handled", message.getClass().getName());
             }
         });
     }
@@ -67,8 +69,8 @@ abstract public class GlobalAlarmCommunicator extends JMSCommunicationThread
             if (AlarmTreePath.isPath(info.getNameOrPath()))
                 handleAlarmUpdate(info);
             else
-                CentralLogger.getInstance().getLogger(this).warn(
-                        "Received global update for '" + info.getNameOrPath() + "', no path");
+                Activator.getLogger().log(Level.WARNING,
+                    "Received global update for {0}, no path", info.getNameOrPath());
         }
         catch (Exception e)
         {

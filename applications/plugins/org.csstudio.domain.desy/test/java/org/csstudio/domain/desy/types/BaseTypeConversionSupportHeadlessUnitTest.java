@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.types;
 
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.junit.Assert;
 import org.junit.Test;
 

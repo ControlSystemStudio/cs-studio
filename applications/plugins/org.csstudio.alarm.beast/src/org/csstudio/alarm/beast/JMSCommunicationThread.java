@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -17,7 +19,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.csstudio.platform.utility.jms.JMSConnectionListener;
 
@@ -188,7 +189,7 @@ abstract public class JMSCommunicationThread
         }
         catch (Exception ex)
         {   // Error in connect: Quit
-            CentralLogger.getInstance().getLogger(this).error(ex);
+            Activator.getLogger().log(Level.SEVERE, "JMS connection error", ex);
             return;
         }
         synchronized (this)
@@ -205,7 +206,7 @@ abstract public class JMSCommunicationThread
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.WARNING, "JMS communication error", ex);
             }
         }
         disconnect();
@@ -248,8 +249,7 @@ abstract public class JMSCommunicationThread
             @Override
             public void onException(final JMSException ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(
-                        "JMS Exception " + ex.getMessage(), ex);
+                Activator.getLogger().log(Level.SEVERE, "JMS Exception", ex);
             }
         });
         try
@@ -278,8 +278,7 @@ abstract public class JMSCommunicationThread
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).warn(
-                    "JMS shutdown error " + ex.getMessage(), ex);
+            Activator.getLogger().log(Level.WARNING, "JMS shutdown error", ex);
         }
         try
         {
@@ -287,8 +286,7 @@ abstract public class JMSCommunicationThread
         }
         catch (JMSException ex)
         {
-            CentralLogger.getInstance().getLogger(this).warn(
-                    "JMS shutdown error " + ex.getMessage(), ex);
+            Activator.getLogger().log(Level.WARNING, "JMS shutdown error", ex);
         }
     }
 

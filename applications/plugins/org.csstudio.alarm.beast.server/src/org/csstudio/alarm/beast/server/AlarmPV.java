@@ -10,8 +10,7 @@ package org.csstudio.alarm.beast.server;
 import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
@@ -19,7 +18,6 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -34,8 +32,6 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     /** Timer used to check for connections at some delay after 'start */
     final private static Timer connection_timer =
         new Timer("Connection Check", true);
-
-    final private Logger log;
 
     final private AlarmLogic logic;
 
@@ -99,7 +95,6 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
               new AlarmState(severity, message, value, timestamp), global_delay);
-        log = CentralLogger.getInstance().getLogger(this);
         this.server = server;
         setDescription(description);
         if (server == null)
@@ -199,9 +194,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     public void filterChanged(final double value)
     {
     	final boolean new_enable_state = value > 0.0;
-        if (log.isDebugEnabled())
-            log.debug(getName() + " filter " +
-                      (new_enable_state ? "enables" : "disables"));
+    	Activator.getLogger().log(Level.FINE, "{0} filter changed to {1}",
+    	        new Object[] { getName(), new_enable_state });
         logic.setEnabled(new_enable_state);
 	}
 
@@ -268,8 +262,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     @Override
     public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
-        if (log.isDebugEnabled())
-            log.debug(getName() + " changes to " + super.toString());
+        Activator.getLogger().log(Level.FINE, "{0} changes to {1}",
+                new Object[] { getName(), super.toString() });
         if (server != null)
             server.sendStateUpdate(this,
                     current.getSeverity(), current.getMessage(),
@@ -301,8 +295,8 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     @Override
     public void globalStateChanged(final AlarmState alarm)
     {
-        if (log.isDebugEnabled())
-            log.debug(getName() + " has global state " + alarm);
+        Activator.getLogger().log(Level.FINE, "{0} has global state {1}",
+            new Object[] { getName(), alarm });
         if (server != null)
             server.sendGlobalUpdate(this,
                     alarm.getSeverity(), alarm.getMessage(),

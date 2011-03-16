@@ -10,6 +10,8 @@ package org.csstudio.debugging.jmsmonitor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
@@ -22,7 +24,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
 import org.csstudio.platform.utility.jms.JMSConnectionListener;
@@ -92,7 +93,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error(ex);
+                    Logger.getLogger(Activator.ID).log(Level.SEVERE, "JMSMonitorConnector thread error", ex);
                 }
             }
         };
@@ -148,8 +149,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
 	    }
 	    catch (Exception ex)
 	    {
-	        CentralLogger.getInstance().getLogger(this).warn(
-	                "JMS shutdown error " + ex.getMessage(), ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.WARNING, "JMS shutdown error", ex); //$NON-NLS-1$
 	    }
 	}
 
@@ -224,13 +224,11 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
             else if (message instanceof TextMessage)
                 handleTextMessage((TextMessage) message);
             else
-                CentralLogger.getInstance().getLogger(this).error(
-                    "Message type " + message.getClass().getName() + " not handled"); //$NON-NLS-1$ //$NON-NLS-2$
+                Logger.getLogger(Activator.ID).log(Level.WARNING, "Message type {0} not handled",  message.getClass().getName()); //$NON-NLS-1$
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
-            CentralLogger.getInstance().getLogger(this).error(
-                    "Message error " + ex.getMessage(), ex); //$NON-NLS-1$
+            Logger.getLogger(Activator.ID).log(Level.SEVERE, "Message handling error",  ex); //$NON-NLS-1$
         }
     }
 
@@ -294,7 +292,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
+                Logger.getLogger(Activator.ID).log(Level.SEVERE, "Model listener error",  ex); //$NON-NLS-1$
             }
         }
     }
@@ -303,7 +301,6 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     @Override
     public void onException(final JMSException ex)
     {
-        CentralLogger.getInstance().getLogger(this).error(
-                "JMS Exception " + ex.getMessage(), ex); //$NON-NLS-1$
+        Logger.getLogger(Activator.ID).log(Level.SEVERE, "JMS Exception",  ex); //$NON-NLS-1$
     }
 }

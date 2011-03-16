@@ -5,7 +5,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * Activator for the waterfall plot view.
  */
 public class Activator extends AbstractUIPlugin {
 

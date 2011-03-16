@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser.archive;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archivereader.ArchiveReader;
@@ -15,6 +16,7 @@ import org.csstudio.archivereader.ArchiveRepository;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.PVItem;
@@ -37,7 +39,7 @@ public class ArchiveFetchJob extends Job
 {
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
-    
+
     /** Item for which to fetch samples */
     final private PVItem item;
 
@@ -48,21 +50,21 @@ public class ArchiveFetchJob extends Job
     final private ArchiveFetchJobListener listener;
 
     private static volatile int worker_instance = 0;
-    
+
     /** Thread that performs the actual background work.
-     * 
+     *
      *  Instead of directly accessing the archive, ArchiveFetchJob launches
      *  a WorkerThread for the actual archive access, so that the Job
-     *  can then poll the progress monitor for cancellation and if 
+     *  can then poll the progress monitor for cancellation and if
      *  necessary interrupt the WorkerThread which might be 'stuck'
-     *  in a long running operation. 
+     *  in a long running operation.
      */
     class WorkerThread extends Thread
     {
         private String message = ""; //$NON-NLS-1$
         private volatile boolean cancelled = false;
         private volatile boolean done = false;
-        
+
         /** Archive reader that's currently queried.
          *  Synchronize 'this' on access.
          */
@@ -73,7 +75,7 @@ public class ArchiveFetchJob extends Job
         {
             super("ArchiveFetchJobWorker" + (++worker_instance)); //$NON-NLS-1$
         }
-        
+
         /** @return Message that somehow indicates progress */
         public synchronized String getMessage()
         {
@@ -96,12 +98,12 @@ public class ArchiveFetchJob extends Job
         {
             return done;
         }
-        
+
         /** {@inheritDoc} */
         @Override
         public void run()
         {
-            // System.out.println("Worker for : " + ArchiveFetchJob.this);
+            Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this); //$NON-NLS-1$
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
             for (int i=0; i<archives.length && !cancelled; ++i)
@@ -157,7 +159,7 @@ public class ArchiveFetchJob extends Job
             }
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
-            // System.out.println("End worker for : " + ArchiveFetchJob.this);
+            Activator.getLogger().log(Level.FINE, "Ended {0}", ArchiveFetchJob.this); //$NON-NLS-1$
             done = true;
         }
 
@@ -168,7 +170,7 @@ public class ArchiveFetchJob extends Job
             return "WorkerTread for " + ArchiveFetchJob.this.toString();
         }
     }
-    
+
     /** Initialize
      *  @param item
      *  @param start
@@ -200,7 +202,7 @@ public class ArchiveFetchJob extends Job
             return Status.OK_STATUS;
         // System.out.println("Start: " + this);
         BenchmarkTimer timer = new BenchmarkTimer();
-        
+
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
         worker.start();
@@ -230,10 +232,10 @@ public class ArchiveFetchJob extends Job
 
         timer.stop();
         // System.out.println(this + ": " + timer.toString());
-        
+
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }
-    
+
     /** @return Debug string */
     @SuppressWarnings("nls")
     @Override

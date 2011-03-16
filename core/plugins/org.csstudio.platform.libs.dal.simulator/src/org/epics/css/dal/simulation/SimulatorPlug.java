@@ -170,12 +170,13 @@ public class SimulatorPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewProxy(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	protected <T extends PropertyProxy<?>> T createNewPropertyProxy(
+	protected <T extends PropertyProxy<?,?>> T createNewPropertyProxy(
 		    String uniqueName, Class<T> type) throws ConnectionException
 	{
 		try {
 			if (type == PropertyProxy.class) {
-				PropertyProxyImpl<?> p = new PropertyProxyImpl(uniqueName,type);
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				PropertyProxyImpl<?> p = new PropertyProxyImpl(uniqueName,this,type);
 				putDirectoryProxyToCache(p);
 
 				return type.cast(p);
@@ -184,8 +185,8 @@ public class SimulatorPlug extends AbstractPlug
 			//			if (!PropertyProxyImpl.class.isAssignableFrom(type)) {
 			//				throw new IllegalArgumentException("Simulator plug can not instantiate class "+type.getName());
 			//			}
-			PropertyProxy<?> p = type.getConstructor(String.class)
-				.newInstance(uniqueName);
+			PropertyProxy<?,?> p = type.getConstructor(String.class,SimulatorPlug.class)
+				.newInstance(uniqueName,this);
 
 			/*
 			if (PropertyProxyImpl.class.isAssignableFrom(p.getClass()))
@@ -195,7 +196,7 @@ public class SimulatorPlug extends AbstractPlug
 
 			// adding to directory cache as well
 			if (p instanceof DirectoryProxy) {
-				putDirectoryProxyToCache((DirectoryProxy)p);
+				putDirectoryProxyToCache((DirectoryProxy<?>)p);
 			}
 
 			return type.cast(p);
@@ -216,7 +217,7 @@ public class SimulatorPlug extends AbstractPlug
 	}
 
 	@Override
-	protected DirectoryProxy createNewDirectoryProxy(String uniqueName)
+	protected DirectoryProxy<?> createNewDirectoryProxy(String uniqueName)
 	{
 		throw new RuntimeException(
 		    "Error in factory implementation, PropertyProxy must be created first.");
@@ -226,12 +227,12 @@ public class SimulatorPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#createNewDeviceProxy(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	protected <T extends DeviceProxy> T createNewDeviceProxy(
+	protected <T extends DeviceProxy<?>> T createNewDeviceProxy(
 	    String uniqueName, Class<T> type) throws ConnectionException
 	{
 		try {
 			if (type == DeviceProxy.class) {
-				DeviceProxyImpl p = new DeviceProxyImpl(uniqueName);
+				DeviceProxyImpl p = new DeviceProxyImpl(uniqueName,this);
 				putDirectoryProxyToCache(p);
 
 				return type.cast(p);
@@ -240,12 +241,12 @@ public class SimulatorPlug extends AbstractPlug
 			//			if (!DeviceProxyImpl.class.isAssignableFrom(type)) {
 			//				throw new IllegalArgumentException("Simulator plug can not instantiate class "+type.getName());
 			//			}
-			DeviceProxy p = type.getConstructor(String.class)
-				.newInstance(uniqueName);
+			DeviceProxy<?> p = type.getConstructor(String.class,SimulatorPlug.class)
+				.newInstance(uniqueName,this);
 
 			// adding to directory cache as well
 			if (p instanceof DirectoryProxy) {
-				putDirectoryProxyToCache((DirectoryProxy)p);
+				putDirectoryProxyToCache((DirectoryProxy<?>)p);
 			}
 
 			return type.cast(p);
@@ -292,10 +293,10 @@ public class SimulatorPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getPropertyProxyImplementationClass(java.lang.Class)
 	 */
 	@Override
-	public Class<?extends PropertyProxy<?>> getPropertyProxyImplementationClass(
+	public Class<?extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(
 	    Class<? extends SimpleProperty<?>> type, Class<? extends SimpleProperty <?>> implType, String propertyName) throws RemoteException
 	{
-		Class<?extends PropertyProxy<?>> impl = super
+		Class<?extends PropertyProxy<?,?>> impl = super
 			.getPropertyProxyImplementationClass(type,implType,propertyName);
 		
 		if (impl == null) {
@@ -309,8 +310,8 @@ public class SimulatorPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getDeviceProxyImplementationClass(java.lang.Class, java.lang.Class, java.lang.String)
 	 */
 	@Override
-	public Class<? extends DeviceProxy> getDeviceProxyImplementationClass(Class<? extends AbstractDevice> type, Class<? extends AbstractDevice> implementationType, String uniqueDeviceName) throws RemoteException {
-		Class<?extends DeviceProxy> impl = super.getDeviceProxyImplementationClass(type, implementationType,
+	public Class<? extends DeviceProxy<?>> getDeviceProxyImplementationClass(Class<? extends AbstractDevice> type, Class<? extends AbstractDevice> implementationType, String uniqueDeviceName) throws RemoteException {
+		Class<?extends DeviceProxy<?>> impl = super.getDeviceProxyImplementationClass(type, implementationType,
 				uniqueDeviceName);
 		if (impl == null) {
 			return SimulatorUtilities.getDeviceProxyImplementationClass(type);
@@ -378,7 +379,7 @@ public class SimulatorPlug extends AbstractPlug
 			characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE,
 			    "linear");
 			characteristics.put(NumericPropertyCharacteristics.C_UNITS, "amper");
-			simulatorContext.bind(ppi, new PropertyProxyImpl<Object>(ppi.toString(),Object.class),
+			simulatorContext.bind(ppi, new PropertyProxyImpl<Object>(ppi.toString(),null,Object.class),
 			    characteristics);
 
 			ppi = new URIName(null, DEFAULT_AUTHORITY,
@@ -416,7 +417,7 @@ public class SimulatorPlug extends AbstractPlug
 				    new Double(-9));
 			characteristicsD.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristicsD));
 			simulatorContext.bind(ppi,
-			    new DoublePropertyProxyImpl(ppi.toString()), characteristicsD);
+			    new DoublePropertyProxyImpl(ppi.toString(),null), characteristicsD);
 
 			ppi = new URIName(null, DEFAULT_AUTHORITY,
 				    "DoubleSeqPropertyProxyImpl", null);
@@ -457,7 +458,7 @@ public class SimulatorPlug extends AbstractPlug
 			    new Integer(5));
 			characteristicsDS.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristicsDS));
 			simulatorContext.bind(ppi,
-			    new DoubleSeqPropertyProxyImpl(ppi.toString()),
+			    new DoubleSeqPropertyProxyImpl(ppi.toString(),null),
 			    characteristicsDS);
 
 			ppi = new URIName(null, DEFAULT_AUTHORITY, "LongPropertyProxyImpl",
@@ -495,7 +496,7 @@ public class SimulatorPlug extends AbstractPlug
 				    new Long(-9));
 			characteristicsL.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristicsL));
 			simulatorContext.bind(ppi,
-			    new LongPropertyProxyImpl(ppi.toString()), characteristicsL);
+			    new LongPropertyProxyImpl(ppi.toString(),null), characteristicsL);
 
 			ppi = new URIName(null, DEFAULT_AUTHORITY, "EnumPropertyProxyImpl",
 				    null);
@@ -530,7 +531,7 @@ public class SimulatorPlug extends AbstractPlug
 			characteristicsEN.put(CharacteristicInfo.C_META_DATA.getName(), 
 					DataUtil.createMetaData(characteristicsEN));
 			simulatorContext.bind(ppi,
-			    new EnumPropertyProxyImpl(ppi.toString()), characteristicsEN);
+			    new EnumPropertyProxyImpl(ppi.toString(),null), characteristicsEN);
 
 			ppi = new URIName(null, DEFAULT_AUTHORITY,
 				    "StringPropertyProxyImpl", null);
@@ -543,7 +544,7 @@ public class SimulatorPlug extends AbstractPlug
 			    "property");
 
 			simulatorContext.bind(ppi,
-			    new StringPropertyProxyImpl(ppi.toString()), characteristicsS);
+			    new StringPropertyProxyImpl(ppi.toString(), this), characteristicsS);
 
 			//add devices
 			for (int i = 0; i < 5; i++) {
@@ -578,7 +579,7 @@ public class SimulatorPlug extends AbstractPlug
 	}
 
 	@Override
-	protected Class<? extends PropertyProxy<?>> getPropertyProxyImplementationClass(String uniquePropertyName) {
+	protected Class<? extends PropertyProxy<?,?>> getPropertyProxyImplementationClass(String uniquePropertyName) {
 		return null;
 	}
 
@@ -586,18 +587,18 @@ public class SimulatorPlug extends AbstractPlug
 	 * @see org.epics.css.dal.proxy.AbstractPlug#getDeviceProxyImplementationClass(java.lang.String)
 	 */
 	@Override
-	protected Class<? extends DeviceProxy> getDeviceProxyImplementationClass(String uniqueDeviceName) {
+	protected Class<? extends DeviceProxy<?>> getDeviceProxyImplementationClass(String uniqueDeviceName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public DeviceProxy getDeviceProxyFromCache1(String uniqueName) {
-		DeviceProxy proxy = super._getDeviceProxyFromCache(uniqueName);
+	public DeviceProxy<?> getDeviceProxyFromCache1(String uniqueName) {
+		DeviceProxy<?> proxy = super._getDeviceProxyFromCache(uniqueName);
 		return proxy;
 	}
 	
-	public DirectoryProxy getDirectoryProxyFromCache1(String uniqueName) {
-		DirectoryProxy proxy = super._getDirectoryProxyFromCache(uniqueName);
+	public DirectoryProxy<?> getDirectoryProxyFromCache1(String uniqueName) {
+		DirectoryProxy<?> proxy = super._getDirectoryProxyFromCache(uniqueName);
 		return proxy;
 	}
 }

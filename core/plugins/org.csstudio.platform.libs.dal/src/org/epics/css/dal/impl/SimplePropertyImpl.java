@@ -24,11 +24,9 @@ package org.epics.css.dal.impl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,10 +37,8 @@ import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueMonitor;
-import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.IllegalViewException;
 import org.epics.css.dal.RemoteException;
-import org.epics.css.dal.SimpleMonitor;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.StringAccess;
 import org.epics.css.dal.Timestamp;
@@ -55,8 +51,6 @@ import org.epics.css.dal.proxy.PropertyProxy;
 import org.epics.css.dal.proxy.Proxy;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
-
-import sun.security.action.GetLongAction;
 
 import com.cosylab.util.ListenerList;
 
@@ -74,9 +68,9 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	        new Hashtable<Class<? extends DataAccess>,Class<? extends DataAccess> >();
 	        */
 	protected Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>> dataAccessTypes = new Hashtable<Class<? extends DataAccess<?>>,Class<? extends DataAccess<?>>>();
-	protected DirectoryProxy directoryProxy;
+	protected DirectoryProxy<?> directoryProxy;
 	protected MonitorProxyWrapper<T, ? extends SimpleProperty<T>> defaultMonitor;
-	protected Set<MonitorProxyWrapper> monitors = new HashSet<MonitorProxyWrapper>();
+	protected Set<MonitorProxyWrapper<T, ? extends SimpleProperty<T>>> monitors = new HashSet<MonitorProxyWrapper<T, ? extends SimpleProperty<T>>>();
 	protected ListenerList propertyListener = new ListenerList(PropertyChangeListener.class);
 	protected String name;
 	protected Identifier identifier;
@@ -145,7 +139,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 			return type.cast(this);
 		}
 
-		Class<? extends DataAccess<?>> implClass = (Class<? extends DataAccess<?>>)dataAccessTypes.get(type);
+		Class<? extends DataAccess<?>> implClass = dataAccessTypes.get(type);
 
 		if (implClass != null) {
 			try {
@@ -173,7 +167,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public String getDescription() throws DataExchangeException
 	{
-		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || !directoryProxy.getConnectionState().isConnected())
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 
 		return (String)directoryProxy.getCharacteristic(C_DESCRIPTION);
@@ -229,7 +223,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public Object getCharacteristic(String name) throws DataExchangeException
 	{
-		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || !directoryProxy.getConnectionState().isConnected())
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 		return directoryProxy.getCharacteristic(name);
 	}
@@ -239,7 +233,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public String[] getCharacteristicNames() throws DataExchangeException
 	{
-		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || !directoryProxy.getConnectionState().isConnected())
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 		return directoryProxy.getCharacteristicNames();
 	}
@@ -249,7 +243,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public Map<String,Object> getCharacteristics(String[] names) throws DataExchangeException
 	{
-		if (directoryProxy == null || directoryProxy.getConnectionState() != ConnectionState.CONNECTED)
+		if (directoryProxy == null || !directoryProxy.getConnectionState().isConnected())
 			throw new DataExchangeException(this,"Directory proxy is not connected");
 
 		// TODO: implement wrapper listener
@@ -311,7 +305,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 */
 	public synchronized DynamicValueMonitor getDefaultMonitor()
 	{
-		if (defaultMonitor == null && proxy!=null && proxy.getConnectionState()==ConnectionState.CONNECTED) {
+		if (defaultMonitor == null && proxy!=null && proxy.getConnectionState().isConnected()) {
 			defaultMonitor = new MonitorProxyWrapper<T, SimpleProperty<T>>(this, getDvListeners());
 
 			try {
@@ -397,12 +391,12 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.impl.DataAccessImpl#initialize(org.epics.css.dal.proxy.PropertyProxy)
 	 */
-	public void initialize(PropertyProxy<T> proxy, DirectoryProxy dirProxy)
+	public void initialize(PropertyProxy<T,?> proxy, DirectoryProxy<?> dirProxy)
 	{
 		super.initialize(proxy);
 		this.directoryProxy = dirProxy;
 		
-		MonitorProxyWrapper[] mm= getMonitorWrappers();  
+		MonitorProxyWrapper<T,?>[] mm= getMonitorWrappers();  
 		
 		for (int i=0;i<mm.length;i++){
 			try {
@@ -473,7 +467,7 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 * 
 	 * @return the directory proxy
 	 */
-	public DirectoryProxy getDirectoryProxy() {
+	public DirectoryProxy<?> getDirectoryProxy() {
 		return directoryProxy;
 	}
 	
@@ -492,12 +486,12 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	 * @see org.epics.css.dal.impl.DataAccessImpl#releaseProxy(boolean)
 	 */
 	@Override
-	public Proxy[] releaseProxy(boolean destroy) {
-		MonitorProxyWrapper[] mm= getMonitorWrappers();
-		for (MonitorProxyWrapper monitor : mm) {
+	public Proxy<?>[] releaseProxy(boolean destroy) {
+		MonitorProxyWrapper<T,?>[] mm= getMonitorWrappers();
+		for (MonitorProxyWrapper<T,?> monitor : mm) {
 			monitor.releaseProxy(destroy);
 		}
-		Proxy[] tmp = new Proxy[]{super.releaseProxy(destroy)[0],directoryProxy};
+		Proxy<?>[] tmp = new Proxy[]{super.releaseProxy(destroy)[0],directoryProxy};
 		directoryProxy=null;
 		if (destroy) {
 			synchronized (monitors) {
@@ -537,13 +531,14 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 		}
 	}
 	
-	protected MonitorProxyWrapper[] getMonitorWrappers() {
+	@SuppressWarnings("unchecked")
+	protected MonitorProxyWrapper<T,?>[] getMonitorWrappers() {
 		synchronized (monitors) {
 			return monitors.toArray(new MonitorProxyWrapper[monitors.size()]);
 		}
 	}
 	
-	void removeMonitor(MonitorProxyWrapper mon) {
+	void removeMonitor(MonitorProxyWrapper<?,?> mon) {
 		synchronized (monitors) {
 			monitors.remove(mon);
 		}

@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -16,8 +23,9 @@ public class TextIndicatorModel extends LabelModel {
 		DEFAULT("Default"),
 		DECIAML("Decimal"),
 		EXP("Exponential"),
-		HEX("Hex"),
-		STRING("String");
+		HEX("Hex 32"),		
+		STRING("String"),
+		HEX64("Hex 64");
 		
 		private String description;
 		private FormatEnum(String description) {

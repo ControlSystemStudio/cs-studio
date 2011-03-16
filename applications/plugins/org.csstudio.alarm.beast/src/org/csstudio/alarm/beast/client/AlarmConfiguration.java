@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
@@ -47,7 +49,9 @@ public class AlarmConfiguration
 
     final private AlarmConfigurationReader config_reader;
 
-    /** Root of the alarm tree.  */
+    /** Root of the alarm tree.
+     *  SYNC on this for access
+     */
     private AlarmTreeRoot config_tree = null;
 
     /** Hash of all PVs in config_tree that maps PV name to PV */
@@ -75,12 +79,9 @@ public class AlarmConfiguration
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
         config_reader = new AlarmConfigurationReader(rdb, sql);
+
         // Re-enable auto-connect
         rdb.setAutoReconnect(true);
-
-        // For now assert auto-commit
-        // TODO Commit as needed, disable auto-commit.
-        rdb.getConnection().setAutoCommit(true);
     }
 
     /** List all configuration 'root' element names
@@ -112,14 +113,19 @@ public class AlarmConfiguration
     public void readConfiguration(final String root_name, final boolean create) throws Exception
     {
         rdb.setAutoReconnect(false);
+        final AlarmTreeRoot new_config;
         try
         {
-            config_tree = readAlarmTree(root_name, create);
+            new_config = readAlarmTree(root_name, create);
             closeStatements();
         }
         finally
         {
             rdb.setAutoReconnect(true);
+        }
+        synchronized (this)
+        {
+            config_tree = new_config;
         }
     }
 
@@ -291,6 +297,11 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
         finally
         {
             statement.close();
@@ -309,6 +320,7 @@ public class AlarmConfiguration
         final Statement statement = rdb.getConnection().createStatement();
         try
         {
+            // TODO Use sequence or auto-inc ID to allow concurrent modifications?
             final ResultSet result = statement.executeQuery(sql.sel_last_item_id);
             if (! result.next())
                 throw new Exception("Cannot get next component ID"); //$NON-NLS-1$
@@ -361,11 +373,11 @@ public class AlarmConfiguration
             insertAsPV.executeUpdate();
 
             rdb.getConnection().commit();
-
-        }catch (SQLException e) {
+        }
+        catch (SQLException ex)
+        {
 			rdb.getConnection().rollback();
-			System.out.println("add PV into RDB failed!");
-			throw e;
+			throw ex;
 		}
         finally
         {
@@ -409,6 +421,11 @@ public class AlarmConfiguration
     		// Update item's config time after RDB commit succeeded
             item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
     	}
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
     	finally
     	{
     		statement.close();
@@ -451,6 +468,11 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
         finally
         {
             statement.close();
@@ -488,7 +510,11 @@ public class AlarmConfiguration
     public void move(final AlarmTreeItem item, final String new_path) throws Exception
     {
         // Locate new parent ID
-        final AlarmTreeItem parent = config_tree.getItemByPath(new_path);
+        final AlarmTreeItem parent;
+        synchronized (this)
+        {
+            parent = config_tree.getItemByPath(new_path);
+        }
         if (parent == null)
             throw new Exception(NLS.bind("Unknown alarm configuration path {0}",
                                          new_path));
@@ -557,10 +583,10 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
 			rdb.getConnection().rollback();
-			throw e;
+			throw ex;
         }
         finally
         {
@@ -594,10 +620,10 @@ public class AlarmConfiguration
 
             rdb.getConnection().commit();
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
 			rdb.getConnection().rollback();
-			throw e;
+			throw ex;
         }
         finally
         {
@@ -665,10 +691,10 @@ public class AlarmConfiguration
             }
             rdb.getConnection().commit();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
             rdb.getConnection().rollback();
-            throw e;
+            throw ex;
         }
         finally
         {
@@ -707,6 +733,7 @@ public class AlarmConfiguration
     }
 
     /** Close prepared statements that are lazily created when reading config */
+    @SuppressWarnings("nls")
     private void closeStatements()
     {
         try
@@ -722,10 +749,10 @@ public class AlarmConfiguration
                 sel_pv_by_id_statement = null;
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
             // Could also ignore: We're closing anyway
-            e.printStackTrace();
+            Activator.getLogger().log(Level.INFO, "JDBC close failed", ex);
         }
         config_reader.closeStatements();
     }

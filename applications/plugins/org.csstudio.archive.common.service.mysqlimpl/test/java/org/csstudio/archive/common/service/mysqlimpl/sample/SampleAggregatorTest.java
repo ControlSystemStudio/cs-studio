@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import org.csstudio.archive.common.service.sample.SampleAggregator;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
@@ -42,37 +43,37 @@ public class SampleAggregatorTest {
     @Test
     public void initTest() {
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
-        final SampleAggregator agg = new SampleAggregator(1.0, null, ts);
+        final SampleAggregator agg = new SampleAggregator(1.0, /*null,*/ ts);
 
         Assert.assertEquals(Double.valueOf(1.0), agg.getAvg());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMin());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMax());
-        Assert.assertNull(agg.getHighestAlarm());
+        //Assert.assertNull(agg.getHighestAlarm());
         Assert.assertEquals(ts, agg.getSampleTimestamp());
         Assert.assertNull(agg.getAverageBeforeReset());
     }
 
     @Test
     public void aggregateTest() {
-        final SampleAggregator agg = new SampleAggregator(1.0, null, TimeInstantBuilder.buildFromNow());
+        final SampleAggregator agg = new SampleAggregator(1.0, /*null,*/ TimeInstantBuilder.buildFromNow());
 
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(2.0, ALARM, ts);
+        agg.aggregateNewVal(2.0, /*ALARM,*/ ts);
 
         Assert.assertEquals(Double.valueOf(1.5), agg.getAvg());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMin());
         Assert.assertEquals(Double.valueOf(2.0), agg.getMax());
-        Assert.assertNull(agg.getHighestAlarm());
+        //Assert.assertNull(agg.getHighestAlarm());
         Assert.assertEquals(ts, agg.getSampleTimestamp());
         Assert.assertNull(agg.getAverageBeforeReset());
 
 
         final TimeInstant ts3 = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(3.0, ALARM, -1.0, 20.0, ts3);
+        agg.aggregateNewVal(3.0, /*ALARM,*/ -1.0, 20.0, ts3);
         Assert.assertEquals(Double.valueOf(2.0), agg.getAvg());
         Assert.assertEquals(Double.valueOf(-1.0), agg.getMin());
         Assert.assertEquals(Double.valueOf(20.0), agg.getMax());
-        Assert.assertNull(agg.getHighestAlarm());
+        //Assert.assertNull(agg.getHighestAlarm());
         Assert.assertEquals(ts3, agg.getSampleTimestamp());
         Assert.assertNull(agg.getAverageBeforeReset());
 
@@ -80,7 +81,7 @@ public class SampleAggregatorTest {
         Assert.assertNull(agg.getAvg());
         Assert.assertNull(agg.getMin());
         Assert.assertNull(agg.getMax());
-        Assert.assertNull(agg.getHighestAlarm());
+        //Assert.assertNull(agg.getHighestAlarm());
         Assert.assertNull(agg.getSampleTimestamp());
         Assert.assertEquals(Double.valueOf(2.0), agg.getAverageBeforeReset());
         Assert.assertEquals(ts3, agg.getResetTimestamp());
@@ -89,34 +90,34 @@ public class SampleAggregatorTest {
     @Test
     public void aggregateAlarmTest() {
         final SampleAggregator agg = new SampleAggregator(1.0,
-                                                          new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM,
-                                                                         EpicsAlarmStatus.BADSUB),
+//                                                          new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM,
+//                                                                         EpicsAlarmStatus.BADSUB),
                                                           TimeInstantBuilder.buildFromNow());
 
         final EpicsAlarm minor = new EpicsAlarm(EpicsAlarmSeverity.MINOR,
                                           EpicsAlarmStatus.BADSUB);
         agg.aggregateNewVal(2.0,
-                            minor,
+                            //minor,
                             TimeInstantBuilder.buildFromNow());
         agg.aggregateNewVal(2.0,
-                            new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
-                                           EpicsAlarmStatus.BADSUB),
+//                            new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
+//                                           EpicsAlarmStatus.BADSUB),
                                            TimeInstantBuilder.buildFromNow());
-        Assert.assertTrue(minor.equals(agg.getHighestAlarm()));
+        //Assert.assertTrue(minor.equals(agg.getHighestAlarm()));
 
         final EpicsAlarm major = new EpicsAlarm(EpicsAlarmSeverity.MAJOR,
                                                 EpicsAlarmStatus.BADSUB);
         agg.aggregateNewVal(2.0,
-                            major,
+//                            major,
                             TimeInstantBuilder.buildFromNow());
-        Assert.assertTrue(major.equals(agg.getHighestAlarm()));
+        //Assert.assertTrue(major.equals(agg.getHighestAlarm()));
 
         final EpicsAlarm invalid = new EpicsAlarm(EpicsAlarmSeverity.INVALID,
                                                   EpicsAlarmStatus.BADSUB);
         agg.aggregateNewVal(2.0,
-                            invalid,
+//                            invalid,
                             TimeInstantBuilder.buildFromNow());
-        Assert.assertTrue(invalid.equals(agg.getHighestAlarm()));
+        //Assert.assertTrue(invalid.equals(agg.getHighestAlarm()));
     }
 
 }

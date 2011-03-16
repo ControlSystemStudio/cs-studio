@@ -21,10 +21,9 @@
  */
 package org.csstudio.archive.common.service.channelgroup;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
@@ -42,9 +41,15 @@ public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId
     String getName();
 
     /**
+     * @return the channel group description
+     */
+    @Nonnull
+    String getDescription();
+
+    /**
      * @return the enabling channel id
      */
-    @CheckForNull
-    ArchiveChannelId getEnablingChannelId();
+    @Nonnull
+    ArchiveEngineId getEngineId();
 
 }

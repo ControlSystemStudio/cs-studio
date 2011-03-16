@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
 import java.util.HashMap;
@@ -23,12 +30,10 @@ import org.eclipse.draw2d.IFigure;
 public class ConnectionHandler {
 
 	private final class PVConnectionListener implements PVListener {
-		@Override
 		public void pvValueUpdate(PV pv) {
 			widgetConnectionRecovered(pv);
 		}
 
-		@Override
 		public void pvDisconnected(PV pv) {
 			markWidgetAsDisconnected(pv);
 		}

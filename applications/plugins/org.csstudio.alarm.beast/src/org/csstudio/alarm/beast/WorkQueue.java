@@ -10,8 +10,7 @@ package org.csstudio.alarm.beast;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Executor;
-
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
 
 /** Queue that receives {@link Runnable}s and executes them.
  *  <p>
@@ -25,6 +24,7 @@ import org.csstudio.platform.logging.CentralLogger;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WorkQueue implements Executor
 {
     /** Task queue */
@@ -66,8 +66,7 @@ public class WorkQueue implements Executor
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
-                ex.printStackTrace();
+                Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
             synchronized (tasks)
             {
@@ -113,8 +112,7 @@ public class WorkQueue implements Executor
             }
             catch (Throwable ex)
             {
-                CentralLogger.getInstance().getLogger(this).error(ex);
-                ex.printStackTrace();
+                Activator.getLogger().log(Level.SEVERE, "Work Queue Exception", ex);
             }
             synchronized (tasks)
             {
@@ -126,7 +124,6 @@ public class WorkQueue implements Executor
     /** Assert that the work queue is executed by the same original thread
      *  @throws Error if called from thread other than the initial work queue thread
      */
-    @SuppressWarnings("nls")
     public synchronized void assertOnThread()
     {
         if (thread == null)

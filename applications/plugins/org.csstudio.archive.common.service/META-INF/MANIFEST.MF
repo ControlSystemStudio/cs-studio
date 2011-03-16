@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Service
 Bundle-SymbolicName: org.csstudio.archive.common.service
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
+Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.platform.libs.annotations,
@@ -14,13 +14,11 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
  org.junit
 Export-Package: org.csstudio.archive.common.service,
- org.csstudio.archive.common.service.adapter,
  org.csstudio.archive.common.service.archivermgmt,
  org.csstudio.archive.common.service.channel,
  org.csstudio.archive.common.service.channelgroup,
+ org.csstudio.archive.common.service.controlsystem,
  org.csstudio.archive.common.service.engine,
  org.csstudio.archive.common.service.requesttypes,
  org.csstudio.archive.common.service.sample,
- org.csstudio.archive.common.service.samplemode,
- org.csstudio.archive.common.service.severity,
- org.csstudio.archive.common.service.status
+ org.csstudio.archive.common.service.util

@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="2.5.1.qualifier"
+      version="2.5.2.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
@@ -212,13 +212,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.pv.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.logbook.ui"
          download-size="0"
          install-size="0"
@@ -269,6 +262,27 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.platform.libs.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

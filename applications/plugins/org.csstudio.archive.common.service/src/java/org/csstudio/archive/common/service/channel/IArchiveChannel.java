@@ -21,12 +21,14 @@
  */
 package org.csstudio.archive.common.service.channel;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.common.id.Identifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.Limits;
 
 /**
  * Read only interface of an channel configuration in the archive.
@@ -36,45 +38,21 @@ import org.csstudio.domain.desy.time.TimeInstant;
  */
 public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
 
-    /**
-     * @return the name of the channel
-     */
     @Nonnull
     String getName();
 
-    /**
-     * @return Channel group ID
-     */
     @Nonnull
     ArchiveChannelGroupId getGroupId();
 
-    /**
-     * @return the sample mode (int means scan or monitor typically)
-     */
-    @Nonnull
-    ArchiveSampleModeId getSampleModeId();
-
-    /**
-     * @return
-     */
-    double getSamplePeriod();
-
-    /**
-     * @return the timestamp of the latest archived sample for this channel
-     */
     @Nonnull
     TimeInstant getLatestTimestamp();
 
-
-    /**
-     * @return
-     */
+    @Nonnull
     String getDataType();
 
+    @Nonnull
+    IArchiveControlSystem getControlSystem();
 
-    /**
-     * @return
-     */
-    double getSampleValue();
-
+    @CheckForNull
+    Limits<?> getDisplayLimits();
 }

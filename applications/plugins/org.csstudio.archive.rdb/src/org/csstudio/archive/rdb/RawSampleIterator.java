@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.csstudio.archive.rdb.internal.EnumMetaDataHelper;
 import org.csstudio.archive.rdb.internal.NumericMetaDataHelper;
@@ -22,7 +23,6 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
@@ -35,7 +35,7 @@ public class RawSampleIterator implements SampleIterator
 {
 	/** Archive against which this iterator runs. */
 	final private RDBArchive archive;
-	
+
 	/** Channel.
 	 *  We set its meta data in <code>determineMetaData()</code>
 	 *  unless it's already defined.
@@ -44,10 +44,10 @@ public class RawSampleIterator implements SampleIterator
 
 	/** SELECT ... for the start .. end samples. */
 	private PreparedStatement sel_samples = null;
-	
+
     /** SELECT ... for the array samples. */
 	private PreparedStatement sel_array_samples = null;
-		
+
 	/** 'Current' value that <code>next()</code> will return,
 	 *  or <code>null</code>
 	 */
@@ -55,10 +55,10 @@ public class RawSampleIterator implements SampleIterator
 
 	/** Result of <code>sel_samples</code> */
 	private ResultSet result_set = null;
-	
+
 	/** Special Severity that's INVALID without a value */
 	private static ISeverity no_value_severity = null;
-	
+
 	/** For performance reasons, we remember the fact that we
 	 *  found (or didn't find) array samples.
 	 *  <p>
@@ -71,7 +71,7 @@ public class RawSampleIterator implements SampleIterator
 
 	/** Numeric meta data used as default if nothing else is known */
     private static INumericMetaData default_numeric_meta;
-	
+
 	/** Constructor, to be called by RDBArchive */
 	public RawSampleIterator(final RDBArchive archive,
 				   final ChannelConfig channel,
@@ -91,8 +91,8 @@ public class RawSampleIterator implements SampleIterator
 		    if (ex.getMessage().startsWith("ORA-01013"))
 		    {
 		        // Not a real error; return empty iterator
-		        CentralLogger.getInstance().getLogger(this).debug(
-		                "Channel " + channel.getName() + " request cancelled");
+		        Activator.getLogger().log(Level.FINE,
+		                "Channel {0} request cancelled", channel.getName());
 		        close();
 		    }
 		}
@@ -126,8 +126,8 @@ public class RawSampleIterator implements SampleIterator
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error("Channel " + channel.getName()
-                    + " meta data read error", ex);
+            Activator.getLogger().log(Level.WARNING,
+                    "Channel " + channel.getName() + " meta data read error", ex);
             // Continue
         }
     }
@@ -150,7 +150,7 @@ public class RawSampleIterator implements SampleIterator
         // To allow multiple sample iterators at the same time,
 		// each iterator prepares its own statements, instead
 		// of lazily initializing a single, shared one.
-		
+
 		// Get initial sample
         final Timestamp start_stamp = TimeWarp.getSQLTimestamp(start);
         final String initial_sql = archive.getSQL().sample_sel_initial_by_id_time;
@@ -173,7 +173,7 @@ public class RawSampleIterator implements SampleIterator
 		result_set = null;
 		sel_initial_sample.close();
 		sel_initial_sample = null;
-		
+
 		// Start fetching the bulk of the samples
 		sel_samples = connection.prepareStatement(
 				archive.getSQL().sample_sel_by_id_start_end);
@@ -194,30 +194,32 @@ public class RawSampleIterator implements SampleIterator
             archive.removeFromCancellation(sel_samples);
         }
     }
-	
+
 	/** @return <code>true</code> if there is another value */
-	public boolean hasNext()
+	@Override
+    public boolean hasNext()
 	{
 		return value != null;
 	}
-	
+
 	/** Return the next sample.
 	 *  <p>
 	 *  Should only be called after <code>hasNext()</code>
 	 *  indicated that there is in fact another sample.
 	 */
-	public IValue next() throws Exception
+	@Override
+    public IValue next() throws Exception
 	{	// Remember value to return...
 		final IValue result = value;
-		
+
 		// This should not happen...
 		if (result_set == null)
 		{
-            CentralLogger.getInstance().getLogger(this).error(
-                "RawSampleIterator.next(" + channel.getName() + ") called after end");
+            Activator.getLogger().log(Level.SEVERE,
+                "RawSampleIterator.next({0}) called after end", channel.getName());
 		    return null;
 		}
-		
+
 		// ... and prepare next value
 		try
 		{
@@ -232,8 +234,8 @@ public class RawSampleIterator implements SampleIterator
             if (message != null  &&  message.startsWith("ORA-01013"))
             {
                 // Not a real error; return empty iterator
-                CentralLogger.getInstance().getLogger(this).debug(
-                        "Channel " + channel.getName() + " request cancelled");
+                Activator.getLogger().log(Level.FINE,
+                        "Channel {0} request cancelled", channel.getName());
                 close();
             }
 		}
@@ -254,7 +256,7 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             result_set = null;
         }
@@ -266,7 +268,7 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             sel_samples = null;
         }
@@ -284,12 +286,12 @@ public class RawSampleIterator implements SampleIterator
             }
             catch (Exception ex)
             {
-                CentralLogger.getInstance().getLogger(this).warn(ex);
+                Activator.getLogger().log(Level.FINE, "'close' error", ex);
             }
             sel_array_samples = null;
         }
     }
-	
+
 	/** Decode the current result set values into an IValue.
 	 *  @param res ResultSet that must contain time, severity, ..., value
 	 *  @return IValue Decoded IValue
@@ -298,7 +300,7 @@ public class RawSampleIterator implements SampleIterator
 	private IValue decodeValue(final ResultSet res) throws Exception
 	{
 	    final Timestamp stamp = res.getTimestamp(1);
-	    // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
+	    // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
 	    if (archive.getRDB().getDialect() == Dialect.MySQL || archive.getRDB().getDialect() == Dialect.PostgreSQL)
 	        stamp.setNanos(res.getInt(7));
 		final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
@@ -316,7 +318,7 @@ public class RawSampleIterator implements SampleIterator
     	{
     		severity = getNoValueSeverity();
     	}
-		
+
 		// Determine the value type
         // Try double
         final double dbl0 = res.getDouble(5);
@@ -375,7 +377,7 @@ public class RawSampleIterator implements SampleIterator
         // until we hit a scalar sample.
 	    if (data_is_scalar)
 	        return new double [] { dbl0 };
-	    
+
         // See if there are more array elements
 	    if (sel_array_samples == null)   // Lazy initialization
 	        sel_array_samples = archive.getRDB().getConnection().prepareStatement(
@@ -385,7 +387,7 @@ public class RawSampleIterator implements SampleIterator
 	    // MySQL keeps nanoseconds in designated column, not TIMESTAMP
 	    if (archive.getRDB().getDialect() == Dialect.MySQL || archive.getRDB().getDialect() == Dialect.PostgreSQL)
 	        sel_array_samples.setInt(3, stamp.getNanos());
-	    
+
         // Assemble array of unknown size in ArrayList ....
         final ArrayList<Double> vals = new ArrayList<Double>();
 	    archive.addForCancellation(sel_array_samples);
@@ -401,7 +403,7 @@ public class RawSampleIterator implements SampleIterator
 	    {
 	        archive.removeFromCancellation(sel_array_samples);
 	    }
-	    
+
         // Convert to plain double array
 	    final int N = vals.size();
 	    final double ret[] = new double[N];
@@ -424,10 +426,15 @@ public class RawSampleIterator implements SampleIterator
 		if (no_value_severity == null)
 			no_value_severity = new ISeverity()
 		{
-			public boolean hasValue()  { return false; }
+			@Override
+            public boolean hasValue()  { return false; }
+            @Override
 			public boolean isInvalid() { return true;  }
+            @Override
 			public boolean isMajor()   { return false; }
+            @Override
 			public boolean isMinor()   { return false; }
+            @Override
 			public boolean isOK()      { return false; }
 			@Override
 			public String toString()   { return "INVALID"; }

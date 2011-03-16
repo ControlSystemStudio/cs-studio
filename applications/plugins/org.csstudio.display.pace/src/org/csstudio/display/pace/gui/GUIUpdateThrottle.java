@@ -1,6 +1,8 @@
 package org.csstudio.display.pace.gui;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+
+import org.csstudio.display.pace.Activator;
 
 /** GUI Update throttle
  *  <p>
@@ -106,8 +108,7 @@ abstract public class GUIUpdateThrottle<T> implements Runnable
         }
         catch (InterruptedException ex)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("GUIUpdateThrottle " + ex.getMessage()); //$NON-NLS-1$
+            Activator.getLogger().log(Level.WARNING, "GUIUpdateThrottle error", ex); //$NON-NLS-1$
         }
     }
 
