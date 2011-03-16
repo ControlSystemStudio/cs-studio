@@ -10,11 +10,10 @@
       </category>
       <view
             allowMultiple="true"
-            category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
             icon="icons/probe.png"
             id="org.csstudio.diag.pvmanager.probe.MultipleView"
-            name="Probe (PVManager)">
+            name="Probe - New instance (PVManager)">
       </view>
       <view
             allowMultiple="false"
