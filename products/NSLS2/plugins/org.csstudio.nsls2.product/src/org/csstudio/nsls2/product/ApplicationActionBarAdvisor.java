@@ -121,7 +121,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
 		// for IDE example.
 		createFileMenu(menuBar);
-		createCSSMenu(menuBar);
+//		createCSSMenu(menuBar);
 		// Placeholder for possible additions
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		createWindowMenu(menuBar);
@@ -156,38 +156,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		menu_file.add(logout);
 		menu_file.add(quit);
 		menubar.add(menu_file);
-	}
-
-	/** Create the CSS menu. */
-	private void createCSSMenu(IMenuManager menubar) {
-		final MenuManager menu_css = new MenuManager(Messages.Menu_CSS_CSS,
-				CssWorkbenchActionConstants.CSS_MENU);
-		// Alphabetical order
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,
-				CssWorkbenchActionConstants.CSS_ALARM_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Configuration,
-				CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Debug,
-				CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Diagnostics,
-				CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Display,
-				CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Editors,
-				CssWorkbenchActionConstants.CSS_EDITORS_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Management,
-				CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Trends,
-				CssWorkbenchActionConstants.CSS_TRENDS_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Utilities,
-				CssWorkbenchActionConstants.CSS_UTILITIES_MENU));
-		// .. except for test and other
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Test,
-				CssWorkbenchActionConstants.CSS_TEST_MENU));
-		menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
-				CssWorkbenchActionConstants.CSS_OTHER_MENU));
-		menu_css.add(new Separator(CssWorkbenchActionConstants.CSS_END));
-		menubar.add(menu_css);
 	}
 
 	/** Create the window menu. */
