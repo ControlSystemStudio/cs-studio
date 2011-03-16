@@ -272,7 +272,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
         final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(_startTime, _currentWindow, _windowLength);
 
-        if (_samplesIter.hasNext() && hasTimestampBeforeWindowEnd(_firstSample, curWindowEnd)) {
+        if (_firstSample != null && hasTimestampBeforeWindowEnd(_firstSample, curWindowEnd)) {
             _firstSample =
                 aggregateSamplesUntilWindowEnd(_firstSample, curWindowEnd, _samplesIter, _agg);
         }
@@ -291,12 +291,12 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         final Double min = agg.getMin();
         final Double max = agg.getMax();
 
-        if (avg != null || min != null || max != null) {
+        if (avg != null && min != null && max != null) {
             return ValueFactory.createMinMaxDoubleValue(BaseTypeConversionSupport.toTimestamp(curWindowEnd),
                                                         new Severity("OK"), null, metaData, IValue.Quality.Interpolated,
-                                                        new double[]{agg.getAvg().doubleValue() },
-                                                        agg.getMin().doubleValue(),
-                                                        agg.getMax().doubleValue());
+                                                        new double[]{avg.doubleValue()},
+                                                        min.doubleValue(),
+                                                        max.doubleValue());
         }
         throw new Exception("Creation of MinMaxDoubleValue failed. " + SampleMinMaxAggregator.class.getName() + " returned null values.");
     }
@@ -314,6 +314,11 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
         return startTime.plusMillis(currentWindow*windowLength.getMillis());
     }
 
+    /**
+     * Uses iterator to find samples before current window end and aggregates all those found.
+     * Returns either the first sample provided by the iterator that lies outside the current window
+     * or <code>null</code> if there isn't any further sample.
+     */
     @CheckForNull
     private IArchiveSample<V, ISystemVariable<V>>
     aggregateSamplesUntilWindowEnd(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
@@ -321,11 +326,12 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                    @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
                                    @Nonnull final SampleMinMaxAggregator aggregator) throws TypeSupportException {
 
-        IArchiveMinMaxSample<V, ISystemVariable<V>> nextSample = (IArchiveMinMaxSample<V, ISystemVariable<V>>) initSample;
 
         aggregator.reset();
+        aggregateMinMaxSample(aggregator, (IArchiveMinMaxSample<V, ISystemVariable<V>>) initSample);
 
-        aggregateMinMaxSample(aggregator, nextSample);
+        IArchiveMinMaxSample<V, ISystemVariable<V>> nextSample =
+            (IArchiveMinMaxSample<V, ISystemVariable<V>>) initSample;
 
         while (iter.hasNext()) {
             nextSample =  (IArchiveMinMaxSample<V, ISystemVariable<V>>) iter.next();
@@ -337,7 +343,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                 return nextSample;
             }
         }
-        return initSample; // No next sample outside this window detected.
+        return null;
     }
 
 

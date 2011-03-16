@@ -359,12 +359,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             do {
                 stmt = createReadSamplesStatement(channel, s, e, reqType);
                 result = stmt.executeQuery();
-                if (!result.next()) {
-                    reqType = reqType.getNextLowerOrderRequestType(); // set requType in case
-                }
-            } while (reqType != null);
 
-            return createRetrievedSamplesContainer(channel, reqType, result);
+                if (!result.next()) { // no result, try the next lower order request type
+                    reqType = reqType.getNextLowerOrderRequestType();
+                } else {
+                    return createRetrievedSamplesContainer(channel, reqType, result);
+                }
+            } while (reqType != null); // no other request type of lower order
 
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
