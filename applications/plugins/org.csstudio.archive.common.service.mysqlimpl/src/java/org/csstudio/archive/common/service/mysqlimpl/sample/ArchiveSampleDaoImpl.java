@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -350,36 +351,59 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final TimeInstant s,
                                                      @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
-        final List<IArchiveSample<V, T>> iterable = Lists.newArrayList();
         PreparedStatement stmt = null;
         try {
             DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
 
             ResultSet result;
             do {
-                stmt = dispatchRequestTypeToStatement(reqType);
-                stmt.setInt(1, channel.getId().intValue());
-                stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-                stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
-
+                stmt = createReadSamplesStatement(channel, s, e, reqType);
                 result = stmt.executeQuery();
-
                 if (!result.next()) {
                     reqType = reqType.getNextLowerOrderRequestType(); // set requType in case
                 }
             } while (reqType != null);
 
-            while (result != null && result.next()) {
-                final IArchiveSample<V, T> sample =
-                    createSampleFromQueryResult(reqType, channel, result);
-                iterable.add(sample);
-            }
+            return createRetrievedSamplesContainer(channel, reqType, result);
+
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
         } finally {
             closeStatement(stmt, "Closing of statement failed.");
         }
-        return iterable;
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    private <V, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> createRetrievedSamplesContainer(@Nonnull final IArchiveChannel channel,
+                                                                     @Nonnull final DesyArchiveRequestType reqType,
+                                                                     @CheckForNull final ResultSet result)
+                                                                     throws SQLException,
+                                                                            ArchiveDaoException,
+                                                                            TypeSupportException {
+        final List<IArchiveSample<V, T>> samples = Lists.newArrayList();
+        while (result != null && result.next()) {
+            final IArchiveSample<V, T> sample =
+                createSampleFromQueryResult(reqType, channel, result);
+            samples.add(sample);
+        }
+        return samples;
+    }
+
+    @Nonnull
+    private PreparedStatement createReadSamplesStatement(@Nonnull final IArchiveChannel channel,
+                                                         @Nonnull final TimeInstant s,
+                                                         @Nonnull final TimeInstant e,
+                                                         @Nonnull final DesyArchiveRequestType reqType)
+                                                         throws SQLException,
+                                                                ArchiveConnectionException {
+        PreparedStatement stmt;
+        stmt = dispatchRequestTypeToStatement(reqType);
+        stmt.setInt(1, channel.getId().intValue());
+        stmt.setTimestamp(2, new Timestamp(s.getMillis()));
+        stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
+        return stmt;
     }
 
     @Nonnull
