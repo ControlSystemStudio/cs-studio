@@ -35,7 +35,7 @@ import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.sample.SampleAggregator;
+import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.Severity;
 import org.csstudio.archivereader.ValueIterator;
@@ -85,7 +85,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
     private IArchiveSample<V, ISystemVariable<V>> _firstSample;
     private final INumericMetaData _meta;
-    private SampleAggregator _agg;
+    private final SampleMinMaxAggregator _agg = new SampleMinMaxAggregator();
     private boolean _noMoreSamples = false;
 
 
@@ -214,15 +214,21 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     @Override
     @Nonnull
     public IValue next() throws TypeSupportException {
-        if (_noMoreSamples || _currentWindow > _numOfWindows) {
+        if (_noMoreSamples || _currentWindow > _numOfWindows || _firstSample == null) {
             throw new NoSuchElementException();
         }
 
         final TimeInstant curWindowEnd = calculateCurrentWindowEndTime(_startTime, _currentWindow, _windowLength);
 
         if (isFirstSampleInThisWindow(_firstSample, curWindowEnd)) {
-            _firstSample =
-                aggregateValuesInWindow(_firstSample, curWindowEnd, _samplesIter, _agg);
+            final IArchiveSample<V, ISystemVariable<V>> firstSampleOutsideWindow =
+                aggregateSamplesUntilWindowEnd(_firstSample, curWindowEnd, _samplesIter, _agg);
+
+            if (firstSampleOutsideWindow == null) {
+                _noMoreSamples = true;
+            } else {
+                _firstSample = firstSampleOutsideWindow;
+            }
         }
 
         final IMinMaxDoubleValue iVal =
@@ -251,21 +257,21 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
 
     @CheckForNull
     private IArchiveSample<V, ISystemVariable<V>>
-    aggregateValuesInWindow(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
-                                @Nonnull final TimeInstant windowEnd,
-                                @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
-                                @Nonnull final SampleAggregator agg) throws TypeSupportException {
+    aggregateSamplesUntilWindowEnd(@Nonnull final IArchiveSample<V, ISystemVariable<V>> initSample,
+                                   @Nonnull final TimeInstant windowEnd,
+                                   @Nonnull final Iterator<IArchiveSample<V, ISystemVariable<V>>> iter,
+                                   @Nonnull final SampleMinMaxAggregator agg) throws TypeSupportException {
 
-        IArchiveSample<V, ISystemVariable<V>> nextSample = initSample; // has to be present, either as last sample from the window before
-                                                                       // or if not existing being the first within this window
+        IArchiveSample<V, ISystemVariable<V>> nextSample = initSample;
+
         agg.reset();
         agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
                             nextSample.getSystemVariable().getTimestamp());
 
         while (iter.hasNext()) {
-            nextSample =  iter.next(); // not yet clear whether this one belongs into this window
-
+            nextSample =  iter.next();
             final TimeInstant curSampleTime = nextSample.getSystemVariable().getTimestamp();
+
             if (curSampleTime.isBefore(windowEnd)) { // YES -> aggregate
                 agg.aggregateNewVal(BaseTypeConversionSupport.toDouble(nextSample.getValue()),
                                     curSampleTime);

@@ -45,7 +45,7 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.sample.SampleAggregator;
+import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -107,10 +107,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * the reduced data, I'd love to use gabriele's aggregators, but there are his alarms, and times.
      */
-    private final ThreadLocal<Map<ArchiveChannelId, SampleAggregator>> _reducedDataMapForMinutes =
-        new ThreadLocal<Map<ArchiveChannelId, SampleAggregator>>();
-    private final ThreadLocal<Map<ArchiveChannelId, SampleAggregator>> _reducedDataMapForHours =
-        new ThreadLocal<Map<ArchiveChannelId, SampleAggregator>>();
+    private final ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>> _reducedDataMapForMinutes =
+        new ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>>();
+    private final ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>> _reducedDataMapForHours =
+        new ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>>();
 
 
     /**
@@ -118,9 +118,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     public ArchiveSampleDaoImpl() {
         super();
-        final Map<ArchiveChannelId, SampleAggregator> minutesMap = Maps.newHashMap();
+        final Map<ArchiveChannelId, SampleMinMaxAggregator> minutesMap = Maps.newHashMap();
         _reducedDataMapForMinutes.set(minutesMap);
-        final Map<ArchiveChannelId, SampleAggregator> hoursMap = Maps.newHashMap();
+        final Map<ArchiveChannelId, SampleMinMaxAggregator> hoursMap = Maps.newHashMap();
         _reducedDataMapForHours.set(hoursMap);
     }
 
@@ -200,7 +200,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return;
         }
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
-        final SampleAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
+        final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
 
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours.get(),
                                                                    channelId,
@@ -216,14 +216,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         valuesPerHour.add(hourValueStr);
 
 
-        final SampleAggregator hoursAgg = _reducedDataMapForHours.get().get(channelId);
+        final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get().get(channelId);
         // for days would be here...
         hoursAgg.reset(); // and reset this aggregator
     }
 
     // CHECKSTYLE OFF: ParameterNumber
     @CheckForNull
-    private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
+    private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
                                                   @Nonnull final Double min,
@@ -231,12 +231,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   @Nonnull final TimeInstant timestamp,
                                                   @Nonnull final Duration interval) throws ArchiveDaoException {
         // CHECKSTYLE ON: ParameterNumber
-        SampleAggregator agg =  map.get(channelId);
+        SampleMinMaxAggregator agg =  map.get(channelId);
         if (agg == null) {
-            agg = new SampleAggregator(newValue, /*highestAlarm,*/ timestamp);
+            agg = new SampleMinMaxAggregator(newValue, /*highestAlarm,*/ timestamp);
             map.put(channelId, agg);
         } else {
-            agg.aggregateNewVal(newValue, /*highestAlarm,*/ min, max, timestamp);
+            agg.aggregate(newValue, /*highestAlarm,*/ min, max, timestamp);
         }
         if (!isReducedDataWriteDueAndHasChanged(newValue, agg, timestamp, interval)) {
             return null;
@@ -249,7 +249,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     private boolean isReducedDataWriteDueAndHasChanged(@Nonnull final Double newVal,
-                                                       @Nonnull final SampleAggregator agg,
+                                                       @Nonnull final SampleMinMaxAggregator agg,
                                                        @Nonnull final TimeInstant timestamp,
                                                        @Nonnull final Duration duration) {
 
