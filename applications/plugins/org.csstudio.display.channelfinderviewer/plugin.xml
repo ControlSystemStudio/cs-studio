@@ -39,25 +39,6 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="menu:org.csstudio.mainmenu">
-         <menu
-               label="CSS">
-            <menu
-                  label="Display">
-               <command
-                     commandId="org.csstudio.nsls2.channelviewer.openView"
-                     icon="icons/cficon.gif"
-                     label="ChannelFinder"
-                     style="push">
-                  <parameter
-                        name="org.eclipse.ui.views.showView.viewId"
-                        value="org.csstudio.channelfinder.views.ChannelfinderView">
-                  </parameter>
-               </command>
-            </menu>
-         </menu>
-      </menuContribution>
-      <menuContribution
             locationURI="popup:org.csstudio.popmenu">
          <command
                commandId="org.csstudio.nsls2.channelviewer.openView"
@@ -70,69 +51,20 @@
             </parameter>
          </command>
       </menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.core.expressions.definitions">
-      <definition
-            id="atleastOneElementSelected">
-         <with
-               variable="selection">
-            <count
-                  value="(0-">
-            </count>
-         </with>
-      </definition>
-      <definition
-            id="ofTypeXmlChannel">
-         <with
-               variable="selection">
-            <iterate
-                  operator="or">
-               <instanceof
-                     value="gov.bnl.channelfinder.model.XmlChannel">
-               </instanceof>
-            </iterate>
-         </with>
-      </definition>
-   </extension>
-   <extension
-         id="my.handler"
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.csstudio.channelfinder.commands.AddTags"
-            commandId="org.csstudio.channelfinder.addtag">
-         <enabledWhen>
-            <reference
-                  definitionId="ofTypeXmlChannel">
-            </reference>
-         </enabledWhen>
-      </handler>
-      <handler
-            class="org.csstudio.channelfinder.commands.RemoveTags"
-            commandId="org.csstudio.channelfinder.removetag">
-         <enabledWhen>
-            <reference
-                  definitionId="ofTypeXmlChannel">
-            </reference>
-         </enabledWhen>
-      </handler>
-   </extension>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.channelfinder"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.channelfinder.OpenChannelFinderViewer"
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/cficon.gif"
-               id="org.csstudio.channelfinder.openviewaction"
                label="Channel Finder"
-               menubarPath="css/display/"
                style="push">
-         </action>
-      </actionSet>
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channelfinder.views.ChannelfinderView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
    
 </plugin>
