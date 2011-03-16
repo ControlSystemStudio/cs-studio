@@ -4,9 +4,9 @@ import static org.junit.Assert.assertNotNull;
 
 import org.csstudio.archivereader.UnknownChannelException;
 import org.csstudio.archivereader.ValueIterator;
-import org.csstudio.platform.data.IMinMaxDoubleValue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.data.values.IMinMaxDoubleValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.TimestampFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
