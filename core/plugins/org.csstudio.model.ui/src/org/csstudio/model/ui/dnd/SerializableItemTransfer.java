@@ -33,7 +33,7 @@ import org.eclipse.swt.dnd.TransferData;
 public class SerializableItemTransfer extends ByteArrayTransfer
 {
     /** Type handled by this Transfer */
-	final private Class<?> clazz;
+	final private String className;
 
 	/** Name of the type handled by this Transfer ('java:' + class name) */
     final private String typeName;
@@ -42,8 +42,8 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     final private int typeId;
 
     /** Cache of types to the SerializableItemTransfer for that type */
-    final private static Map<Class<?>, SerializableItemTransfer> instances =
-        new HashMap<Class<?>, SerializableItemTransfer>();
+    final private static Map<String, SerializableItemTransfer> instances =
+        new HashMap<String, SerializableItemTransfer>();
 
     /** @param classes Types to be transferred
      *  @return Transfers for those types
@@ -59,16 +59,19 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     	}
     	return transfers;
     }
+    
+    public static SerializableItemTransfer getTransfer(Class<? extends Serializable> clazz) {
+    	return getTransfer(clazz.getClass().getName());
+    }
 
     /** @param clazz Type to be transferred
      *  @return Transfer for that type
      */
-    public static SerializableItemTransfer getTransfer(Class<? extends Serializable> clazz)
-    {
-    	SerializableItemTransfer transfer = instances.get(clazz);
+    public static SerializableItemTransfer getTransfer(String className) {
+    	SerializableItemTransfer transfer = instances.get(className);
     	if (transfer == null) {
-    		transfer = new SerializableItemTransfer(clazz);
-    		instances.put(clazz, transfer);
+    		transfer = new SerializableItemTransfer(className);
+    		instances.put(className, transfer);
     	}
     	return transfer;
     }
@@ -76,10 +79,10 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     /** Initialize
      *  @param clazz Type handled by this Transfer
      */
-    private SerializableItemTransfer(final Class<? extends Serializable> clazz)
+    private SerializableItemTransfer(final String className)
     {
-    	this.clazz = clazz;
-    	typeName = "java:" + clazz.getName();
+    	this.className = className;
+    	typeName = "java:" + className;
     	typeId = registerType(typeName);
     }
 
@@ -98,7 +101,11 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     }
 
     public Class<?> getTragetClass() {
-		return clazz;
+		return null;
+	}
+    
+    public String getClassName() {
+		return className;
 	}
 
     /** Serialize control system items
@@ -107,9 +114,10 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     @Override
     public void javaToNative (final Object object, final TransferData transferData)
     {
-        if (!clazz.isInstance(object)) {
-        	throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
-        }
+    	// TODO Need to re-implement the check
+//        if (!clazz.isInstance(object)) {
+//        	throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
+//        }
 
         try
         {
