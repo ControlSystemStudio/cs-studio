@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.model.ControlSystemObjectAdapter;
 import org.eclipse.swt.dnd.DND;
@@ -33,9 +35,10 @@ import static org.csstudio.model.ReflectUtil.*;
  *  @author Gabriele Carcassi
  *  @author Kay Kasemir
  */
-abstract public class ControlSystemDragSource
-{
+abstract public class ControlSystemDragSource {
     final private DragSource source;
+    
+    private static final Logger log = Logger.getLogger(ControlSystemDragSource.class.getName());
 
     /** Initialize 'drag' source
      *  @param control Control from which control system items may be dragged
@@ -69,6 +72,7 @@ abstract public class ControlSystemDragSource
             			if (transfer instanceof SerializableItemTransfer) {
             				SerializableItemTransfer objectTransfer = (SerializableItemTransfer) transfer;
             				event.data = ControlSystemObjectAdapter.convert(selection, objectTransfer.getClassName());
+            				log.log(Level.WARNING, "Converted " + selection + " to " + event.data);
             			} else if (transfer instanceof TextTransfer) {
             				// TextTransfer needs String
             				event.data = selection.toString();

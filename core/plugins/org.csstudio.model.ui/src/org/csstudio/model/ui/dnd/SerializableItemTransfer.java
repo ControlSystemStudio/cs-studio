@@ -10,8 +10,10 @@ package org.csstudio.model.ui.dnd;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,9 +22,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.model.ui.Activator;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+
+import com.sun.xml.internal.bind.v2.model.core.Adapter;
 
 /** Drag-and-Drop Transfer for Control System Items.
  *
@@ -144,7 +151,6 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         }
     }
 
-
     /** De-serialize control system items
      *  {@inheritDoc}
      */
@@ -157,19 +163,22 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         final byte[] buffer = (byte[]) super.nativeToJava(transferData);
         if (buffer == null)
             return null;
+        
 
         final Object obj;
         try
         {
+        	System.out.println("Bundle " + Activator.getDefault().getBundle());
+        	System.out.println("Context " + Activator.getDefault().getContext());
             final ByteArrayInputStream in = new ByteArrayInputStream(buffer);
-            final ObjectInputStream readIn = new ObjectInputStream(in);
+            final ObjectInputStream readIn = new ObjectInputStreamWithOsgiClassResolution(in);
             obj = readIn.readObject();
             readIn.close();
             return obj;
         }
         catch (Exception ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.FINE, "De-Serialization failed", ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "De-Serialization failed", ex);
         }
         return null;
     }

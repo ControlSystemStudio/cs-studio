@@ -205,7 +205,6 @@ public class DnDTestView extends ViewPart {
 				ProcessVariableName.class, DeviceName.class) {
 			@Override
 			public void handleDrop(final Object item) {
-				System.out.println(item.getClass());
 				if (item instanceof ProcessVariableName) {
 					both_pv.setText(((ProcessVariableName) item)
 							.getProcessVariableName());
