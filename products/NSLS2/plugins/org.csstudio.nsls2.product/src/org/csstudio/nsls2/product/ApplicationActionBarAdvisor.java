@@ -120,42 +120,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void fillMenuBar(IMenuManager menuBar) {
 		// See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
 		// for IDE example.
-		createFileMenu(menuBar);
+//		createFileMenu(menuBar);
 //		createCSSMenu(menuBar);
 		// Placeholder for possible additions
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		createWindowMenu(menuBar);
 		createHelpMenu(menuBar);
-	}
-
-	/** Create the file menu. */
-	private void createFileMenu(IMenuManager menubar) {
-		final MenuManager menu_file = new MenuManager(Messages.Menu_File,
-				IWorkbenchActionConstants.M_FILE);
-		// Markers allow other code to use MenuManager.appendToGroup(...)...
-		menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-
-		final MenuManager new_sub = new MenuManager(Messages.Menu_New,
-				ActionFactory.NEW.getId());
-		new_sub.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		new_sub.add(create_new);
-		menu_file.add(new_sub);
-		menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-		menu_file.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
-		menu_file.add(close);
-		menu_file.add(close_all);
-		menu_file.add(new Separator());
-		menu_file.add(save);
-		menu_file.add(save_as);
-		menu_file.add(new Separator());
-		menu_file.add(importAction);
-        menu_file.add(exportAction);
-        menu_file.add(new Separator());
-		menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
-		menu_file.add(new Separator());
-		menu_file.add(logout);
-		menu_file.add(quit);
-		menubar.add(menu_file);
 	}
 
 	/** Create the window menu. */
