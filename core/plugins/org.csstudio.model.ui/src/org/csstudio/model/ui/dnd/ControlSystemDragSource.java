@@ -68,7 +68,7 @@ abstract public class ControlSystemDragSource
             		if (transfer.isSupportedType(event.dataType)) {
             			if (transfer instanceof SerializableItemTransfer) {
             				SerializableItemTransfer objectTransfer = (SerializableItemTransfer) transfer;
-            				event.data = ControlSystemObjectAdapter.convert(selection, objectTransfer.getTragetClass());
+            				event.data = ControlSystemObjectAdapter.convert(selection, objectTransfer.getClassName());
             			} else if (transfer instanceof TextTransfer) {
             				// TextTransfer needs String
             				event.data = selection.toString();

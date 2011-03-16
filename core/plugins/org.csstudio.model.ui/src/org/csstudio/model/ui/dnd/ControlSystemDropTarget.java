@@ -38,7 +38,7 @@ abstract public class ControlSystemDropTarget
      *  @param accepted (Base) class of accepted items
      */
     public ControlSystemDropTarget(final Control control,
-            final Class<? extends Serializable>... accepted)
+            final Class<?>... accepted)
     {
         target = new DropTarget(control, DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
         

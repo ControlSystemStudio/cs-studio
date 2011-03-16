@@ -5,5 +5,6 @@ Bundle-SymbolicName: org.csstudio.model.test; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.model;bundle-version="0.0.1"
+ org.csstudio.model;bundle-version="0.0.1",
+ org.csstudio.model.ui;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

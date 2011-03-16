@@ -72,7 +72,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     }
     
     public static SerializableItemTransfer getTransfer(Class<? extends Serializable> clazz) {
-    	return getTransfer(clazz.getClass().getName());
+    	return getTransfer(clazz.getName());
     }
 
     /** @param clazz Type to be transferred
@@ -110,10 +110,6 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     {
         return new String[] { typeName };
     }
-
-    public Class<?> getTragetClass() {
-		return null;
-	}
     
     public String getClassName() {
 		return className;
