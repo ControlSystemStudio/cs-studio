@@ -400,6 +400,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		return propertyMap.get(id).getPropertyValue();
 	}
 	
+	public Object getRawPropertyValue(Object id) {
+		checkPropertyExist(id);
+		return propertyMap.get(id).getRawPropertyValue();
+	}
+	
 	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
 		return pvMap;
 	}
@@ -427,6 +432,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public String getTooltip(){
 		return (String)getCastedPropertyValue(PROP_TOOLTIP);
+	}
+	
+	public String getRawTooltip(){
+		return (String)getRawPropertyValue(PROP_TOOLTIP);
 	}
 	
 	public String getType(){
