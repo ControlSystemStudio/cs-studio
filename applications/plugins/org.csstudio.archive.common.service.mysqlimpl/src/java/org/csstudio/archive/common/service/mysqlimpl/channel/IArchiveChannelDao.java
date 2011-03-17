@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -46,7 +47,15 @@ public interface IArchiveChannelDao {
      * @throws ArchiveChannelDaoException when the retrieval fails
      */
     @CheckForNull
-    IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveDaoException;
+    IArchiveChannel retrieveChannelBy(@Nonnull final String name) throws ArchiveDaoException;
+
+    /**
+     * @param pattern the regular expression the channel names have to match
+     * @return the channels matching the reg exp
+     * @throws ArchiveChannelDaoException when the retrieval fails
+     */
+    @CheckForNull
+    Collection<IArchiveChannel> retrieveChannelsByNamePattern(@Nonnull final Pattern pattern) throws ArchiveDaoException;
 
     /**
      * @param groupId

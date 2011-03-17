@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -41,8 +42,8 @@ import com.google.common.collect.ImmutableSet;
  * Archive reader methods.
  *
  * TODO (bknerr): all database access methods should definitely return explicit immutables.
- *                Note, guavas immutable collections are implement 'mutable' interfaces with
- *                throwing UOEs. mmh.
+ *                Note, guavas immutable collections implement 'mutable' interfaces with
+ *                throwing UOEs.
  *
  * @author bknerr
  * @since 21.12.2010
@@ -74,7 +75,8 @@ public interface IArchiveReaderFacade {
     <V, T extends IAlarmSystemVariable<V>>
     Collection<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
                                                  @Nonnull final TimeInstant start,
-                                                 @Nonnull final TimeInstant end) throws ArchiveServiceException;
+                                                 @Nonnull final TimeInstant end)
+                                                 throws ArchiveServiceException;
 
     /**
      * Retrieves the samples from the archive for the given channel and time interval
@@ -90,7 +92,8 @@ public interface IArchiveReaderFacade {
     Collection<IArchiveSample<V, T>> readSamples(@Nonnull final String channelName,
                                                  @Nonnull final TimeInstant start,
                                                  @Nonnull final TimeInstant end,
-                                                 @Nullable final IArchiveRequestType type) throws ArchiveServiceException;
+                                                 @Nullable final IArchiveRequestType type)
+                                                 throws ArchiveServiceException;
 
     /**
      * Returns the latest sample before the specified time instant for the specified channel or
@@ -104,15 +107,16 @@ public interface IArchiveReaderFacade {
     @CheckForNull
     <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
-                                              @Nonnull final TimeInstant time) throws ArchiveServiceException;
+                                              @Nonnull final TimeInstant time)
+                                              throws ArchiveServiceException;
 
     /**
      * Returns the channel information contained in the archive.
-     * @param name
-     * @return
+     * @param name name of the channel
+     * @return the channel or <code>null</code>
      * @throws ArchiveServiceException
      */
-    @Nonnull
+    @CheckForNull
     IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
@@ -124,5 +128,12 @@ public interface IArchiveReaderFacade {
     @CheckForNull
     Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException;
 
-
+    /**
+     * Returns a collection of channel names according to the passed name pattern
+     * @param pattern the pattern the channel names shall match
+     * @return the name collection
+     */
+    @Nonnull
+    Collection<String> getChannelsByNamePattern(@Nonnull final Pattern pattern)
+                                                throws ArchiveServiceException;
 }

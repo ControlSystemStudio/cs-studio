@@ -21,6 +21,9 @@
  */
 package org.csstudio.archive.common.reader;
 
+import java.util.Collection;
+import java.util.regex.Pattern;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -121,8 +124,12 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String[] getNamesByRegExp(final int key, @Nonnull final String regExp) throws Exception {
-            // TODO Auto-generated method stub
-            return null;
+
+            final Pattern pattern = Pattern.compile(regExp);
+
+            final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
+            final Collection<String> names = service.getChannelsByNamePattern(pattern);
+            return names.toArray(new String[]{});
         }
 
         @Override
@@ -199,6 +206,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ArchiveReader getArchiveReader(@Nonnull final String url) throws Exception {
         return new DesyArchiveReader();
     }

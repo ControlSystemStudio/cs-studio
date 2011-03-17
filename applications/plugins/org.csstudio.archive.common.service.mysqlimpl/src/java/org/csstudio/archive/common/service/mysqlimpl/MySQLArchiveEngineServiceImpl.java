@@ -138,7 +138,8 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
+    public Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id)
+                                                               throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
         } catch (final ArchiveDaoException e) {
@@ -151,29 +152,15 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
+    @Nonnull
+    public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
+                                                            throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channels for group " + groupId.asString() +
                                               " could not be retrieved.", e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException {
-        IArchiveChannel channel = null;
-        try {
-            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
-        } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Channel information for " + name +
-                                              " could not be retrieved.", e);
-        }
-        return channel;
     }
 
 
@@ -191,6 +178,5 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
             throw new ArchiveServiceException("Channel info for " + id +
                                               " could not be updated.", e);
         }
-
     }
 }
