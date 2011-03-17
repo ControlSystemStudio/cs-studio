@@ -165,7 +165,7 @@ public class MultiChannelPlot extends EditorPart {
 				// get the range, casting to long to avoid overflow problems
 				Double range =(double) ((size * 10) + 1);
 				// compute a fraction of the range, 0 <= frac < range
-				Double fraction = (Double) (range * generator.nextDouble());
+				Double fraction = (Double) (range * generator.nextGaussian());
 				positions.add((Double) (fraction + 0));
 			} else {
 				positions.add(generator.nextDouble());
