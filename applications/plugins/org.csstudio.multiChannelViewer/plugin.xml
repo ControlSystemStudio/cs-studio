@@ -21,27 +21,6 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="false"
-            id="org.csstudio.multiChannelViewer.objectContribution"
-            objectClass="org.csstudio.utility.channel.ICSSChannel">
-         <action
-               class="org.csstudio.multichannelviewer.actions.OpenChannelsControlListView"
-               enablesFor="+"
-               id="org.csstudio.multiChannelViewer.openChannelsView"
-               label="Open Channels View"
-               menubarPath="org.csstudio.utility.channel.menu/group">
-         </action><action
-               class="org.csstudio.multichannelviewer.actions.OpenMultiChannelPlot"
-               enablesFor="+"
-               id="org.csstudio.multiChannelViewer.openmultichannelplot"
-               label="Open MultiChannel Plot"
-               menubarPath="org.csstudio.utility.channel.menu/group">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
             id="org.csstudio.multiChannelViewer.plotViewToolbar"
@@ -85,19 +64,6 @@
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.multiChannelViewer.actionSet"
-            label="Channel ActionSet">
-         <action
-               class="org.csstudio.multichannelviewer.actions.OpenMultiChannelPlot"
-               id="org.csstudio.multiChannelViewer.openmultichannelplot"
-               label="Open MultiChannel Plot"
-               style="push">
-         </action>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -105,6 +71,31 @@
          <command
                commandId="org.csstudio.multichannelviewer.openPerspective"
                label="Open MultiChannel Plot"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <menu
+               id="org.csstudio.ui.menu.popup.icsschannel"
+               label="Channel">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="org.csstudio.utility.channel.ICSSChannel">
+                     </adapt>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.ui.menu.popup.icsschannel">
+         <command
+               commandId="org.csstudio.multichannelviewer.openPerspective"
+               label="MultiChannel Viewer"
                style="push">
          </command>
       </menuContribution>

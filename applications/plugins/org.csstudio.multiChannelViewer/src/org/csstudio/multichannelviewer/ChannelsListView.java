@@ -15,6 +15,8 @@ import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,7 +24,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
@@ -87,6 +93,12 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 		viewer.refresh();
 
 		channelsGroup.addEventListListener(this);
+		// context menu
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getTable());
+		// Set the MenuManager
+		viewer.getTable().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
 		getSite().setSelectionProvider(viewer);
 	}
 
