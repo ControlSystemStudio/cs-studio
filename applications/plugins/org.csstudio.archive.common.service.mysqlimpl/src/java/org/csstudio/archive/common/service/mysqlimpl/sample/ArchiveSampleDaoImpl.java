@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversion
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.sample.SampleAggregator;
+import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -107,10 +108,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * the reduced data, I'd love to use gabriele's aggregators, but there are his alarms, and times.
      */
-    private final ThreadLocal<Map<ArchiveChannelId, SampleAggregator>> _reducedDataMapForMinutes =
-        new ThreadLocal<Map<ArchiveChannelId, SampleAggregator>>();
-    private final ThreadLocal<Map<ArchiveChannelId, SampleAggregator>> _reducedDataMapForHours =
-        new ThreadLocal<Map<ArchiveChannelId, SampleAggregator>>();
+    private final ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>> _reducedDataMapForMinutes =
+        new ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>>();
+    private final ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>> _reducedDataMapForHours =
+        new ThreadLocal<Map<ArchiveChannelId, SampleMinMaxAggregator>>();
 
 
     /**
@@ -118,9 +119,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     public ArchiveSampleDaoImpl() {
         super();
-        final Map<ArchiveChannelId, SampleAggregator> minutesMap = Maps.newHashMap();
+        final Map<ArchiveChannelId, SampleMinMaxAggregator> minutesMap = Maps.newHashMap();
         _reducedDataMapForMinutes.set(minutesMap);
-        final Map<ArchiveChannelId, SampleAggregator> hoursMap = Maps.newHashMap();
+        final Map<ArchiveChannelId, SampleMinMaxAggregator> hoursMap = Maps.newHashMap();
         _reducedDataMapForHours.set(hoursMap);
     }
 
@@ -183,7 +184,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
         } catch (final TypeSupportException e) {
-            return; // is not convertible. Type support missing.
+            return; // not convertible. Type support missing.
         }
         if (newValue.equals(Double.NaN)) {
             return; // not convertible, no data reduction possible
@@ -200,7 +201,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return;
         }
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
-        final SampleAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
+        final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
 
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours.get(),
                                                                    channelId,
@@ -216,14 +217,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         valuesPerHour.add(hourValueStr);
 
 
-        final SampleAggregator hoursAgg = _reducedDataMapForHours.get().get(channelId);
+        final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get().get(channelId);
         // for days would be here...
         hoursAgg.reset(); // and reset this aggregator
     }
 
     // CHECKSTYLE OFF: ParameterNumber
     @CheckForNull
-    private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleAggregator> map,
+    private String aggregateAndComposeValueString(@Nonnull final Map<ArchiveChannelId, SampleMinMaxAggregator> map,
                                                   @Nonnull final ArchiveChannelId channelId,
                                                   @Nonnull final Double newValue,
                                                   @Nonnull final Double min,
@@ -231,12 +232,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                   @Nonnull final TimeInstant timestamp,
                                                   @Nonnull final Duration interval) throws ArchiveDaoException {
         // CHECKSTYLE ON: ParameterNumber
-        SampleAggregator agg =  map.get(channelId);
+        SampleMinMaxAggregator agg =  map.get(channelId);
         if (agg == null) {
-            agg = new SampleAggregator(newValue, /*highestAlarm,*/ timestamp);
+            agg = new SampleMinMaxAggregator(newValue, /*highestAlarm,*/ timestamp);
             map.put(channelId, agg);
         } else {
-            agg.aggregateNewVal(newValue, /*highestAlarm,*/ min, max, timestamp);
+            agg.aggregate(newValue, /*highestAlarm,*/ min, max, timestamp);
         }
         if (!isReducedDataWriteDueAndHasChanged(newValue, agg, timestamp, interval)) {
             return null;
@@ -249,7 +250,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     private boolean isReducedDataWriteDueAndHasChanged(@Nonnull final Double newVal,
-                                                       @Nonnull final SampleAggregator agg,
+                                                       @Nonnull final SampleMinMaxAggregator agg,
                                                        @Nonnull final TimeInstant timestamp,
                                                        @Nonnull final Duration duration) {
 
@@ -350,30 +351,60 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final TimeInstant s,
                                                      @Nonnull final TimeInstant e) throws ArchiveDaoException {
 
-        final List<IArchiveSample<V, T>> iterable = Lists.newArrayList();
         PreparedStatement stmt = null;
         try {
-            final DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
+            DesyArchiveRequestType reqType = determineRequestType(type, channel.getDataType(), s, e);
 
-            stmt = dispatchRequestTypeToStatement(reqType);
-            stmt.setInt(1, channel.getId().intValue());
-            stmt.setTimestamp(2, new Timestamp(s.getMillis()));
-            stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
+            ResultSet result;
+            do {
+                stmt = createReadSamplesStatement(channel, s, e, reqType);
+                result = stmt.executeQuery();
 
-            final ResultSet result = stmt.executeQuery();
-
-            while (result.next()) {
-                final IArchiveSample<V, T> sample =
-                    createSampleFromQueryResult(reqType, channel, result);
-                iterable.add(sample);
-            }
+                if (!result.next()) { // no result, try the next lower order request type
+                    reqType = reqType.getNextLowerOrderRequestType();
+                } else {
+                    return createRetrievedSamplesContainer(channel, reqType, result);
+                }
+            } while (reqType != null); // no other request type of lower order
 
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
         } finally {
             closeStatement(stmt, "Closing of statement failed.");
         }
-        return iterable;
+        return Collections.emptyList();
+    }
+
+    @Nonnull
+    private <V, T extends ISystemVariable<V>>
+    Collection<IArchiveSample<V, T>> createRetrievedSamplesContainer(@Nonnull final IArchiveChannel channel,
+                                                                     @Nonnull final DesyArchiveRequestType reqType,
+                                                                     @CheckForNull final ResultSet result)
+                                                                     throws SQLException,
+                                                                            ArchiveDaoException,
+                                                                            TypeSupportException {
+        final List<IArchiveSample<V, T>> samples = Lists.newArrayList();
+        while (result != null && result.next()) {
+            final IArchiveSample<V, T> sample =
+                createSampleFromQueryResult(reqType, channel, result);
+            samples.add(sample);
+        }
+        return samples;
+    }
+
+    @Nonnull
+    private PreparedStatement createReadSamplesStatement(@Nonnull final IArchiveChannel channel,
+                                                         @Nonnull final TimeInstant s,
+                                                         @Nonnull final TimeInstant e,
+                                                         @Nonnull final DesyArchiveRequestType reqType)
+                                                         throws SQLException,
+                                                                ArchiveConnectionException {
+        PreparedStatement stmt;
+        stmt = dispatchRequestTypeToStatement(reqType);
+        stmt.setInt(1, channel.getId().intValue());
+        stmt.setTimestamp(2, new Timestamp(s.getMillis()));
+        stmt.setTimestamp(3, new Timestamp(e.getMillis() + 1)); // + 1 for all with nanosecs > 1
+        return stmt;
     }
 
     @Nonnull
