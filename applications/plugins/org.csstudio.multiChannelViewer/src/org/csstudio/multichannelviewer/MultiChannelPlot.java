@@ -1,24 +1,19 @@
 package org.csstudio.multichannelviewer;
 
-import static org.epics.pvmanager.util.TimeDuration.ms;
-import static org.epics.pvmanager.data.ExpressionLanguage.synchronizedArrayOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
-
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
-import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.csstudio.utility.pvmanager.jfreechart.widgets.XYChartWidget;
-import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -28,26 +23,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-import org.epics.pvmanager.PV;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVValueChangeListener;
-import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.VMultiDouble;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.experimental.chart.swt.ChartComposite;
 
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
 
 public class MultiChannelPlot extends EditorPart {
 	public MultiChannelPlot() {
@@ -80,7 +58,7 @@ public class MultiChannelPlot extends EditorPart {
 		fd_chart.top = new FormAttachment(0);
 		fd_chart.left = new FormAttachment(0);
 		chart.setLayoutData(fd_chart);
-		
+
 		chart.setTitle("MultiChannel Plot");
 		chart.setYAxisLabel("PV Value");
 
@@ -96,12 +74,13 @@ public class MultiChannelPlot extends EditorPart {
 					pvNames.add("sim://gaussian(50, 20, 0.1)");
 				}
 				chart.setChannelNames(pvNames);
-				chart.setChannelPositions(generatePositions(pvNames.size(),true));				
+				chart.setChannelPositions(generatePositions(pvNames.size(),
+						true));
 			}
 
 		});
 	}
-	
+
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
@@ -160,9 +139,9 @@ public class MultiChannelPlot extends EditorPart {
 		return this.channels;
 	}
 
-//	PV<VMultiDouble> getChannelGroupPV() {
-//		return this.pv;
-//	}
+	// PV<VMultiDouble> getChannelGroupPV() {
+	// return this.pv;
+	// }
 
 	/** {@inheritDoc} */
 	@Override
@@ -171,20 +150,27 @@ public class MultiChannelPlot extends EditorPart {
 		super.dispose();
 	}
 
-	protected List<Double> generatePositions(int size, boolean exponential) {
-		List<Double> positions = new ArrayList<Double>();
-		if(exponential){			
-			double step = 1;
-			for (double i = 0; i < size; i++) {
-				positions.add(i+step);
-				step=step*2;				
-			}
-		}else{
-			Random generator = new Random();
-			for (int i = 0; i < size; i++) {
+	/**
+	 * generate the positions for the test data
+	 * 
+	 * @param size
+	 * @param exponential
+	 * @return
+	 */
+	protected List<Double> generatePositions(int size, boolean gaussian) {
+		Random generator = new Random();
+		Set<Double> positions = new TreeSet<Double>();
+		for (int i = 0; i < size; i++) {
+			if (gaussian) {
+				// get the range, casting to long to avoid overflow problems
+				Double range =(double) ((size * 10) + 1);
+				// compute a fraction of the range, 0 <= frac < range
+				Double fraction = (Double) (range * generator.nextDouble());
+				positions.add((Double) (fraction + 0));
+			} else {
 				positions.add(generator.nextDouble());
 			}
 		}
-		return positions;
+		return new ArrayList<Double>(positions);
 	}
 }

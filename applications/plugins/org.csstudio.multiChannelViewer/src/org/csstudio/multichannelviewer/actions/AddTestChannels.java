@@ -4,6 +4,8 @@ import static gov.bnl.channelfinder.api.Property.Builder.property;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import static gov.bnl.channelfinder.api.Channel.Builder.channel;
 
+import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
@@ -11,54 +13,58 @@ import java.util.Random;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 
+import org.csstudio.multichannelviewer.ChannelsListView;
+import org.csstudio.multichannelviewer.model.CSSChannelGroup;
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 
 public class AddTestChannels implements IViewActionDelegate {
-	private ChannelFinderClient client = ChannelFinderClient.getInstance();
 	private Random generator = new Random(19580427);
+	private IViewPart view;
+	private Collection<ICSSChannel> channels;
+
+	CSSChannelFactory factory = CSSChannelFactory.getInstance();
 
 	@Override
 	public void init(IViewPart view) {
 		// TODO Auto-generated method stub
-
+		this.view = view;
 	}
 
 	@Override
 	public void run(IAction action) {
-		// now add all the properties and tags we are going to use.
-		// properties
-		client.add(property("Test_PropA").owner("shroffk"));
-		client.add(property("Test_PropB").owner("shroffk"));
-		client.add(property("Test_PropC").owner("shroffk"));
-		// tags
-		client.add(tag("Test_TagA").owner("shroffk"));
-		client.add(tag("Test_TagB").owner("shroffk"));
-
-		Collection<Channel.Builder> channels = new ArrayList<Channel.Builder>();
+		channels = new ArrayList<ICSSChannel>();
 
 		for (int i = 0; i < 2000; i++) {
 			String channelName = "Test_";
 			channelName += getName(i);
 			Channel.Builder channel = channel(channelName).owner("shroffk")
-					.with(
-							property("Test_PropA", Integer.toString(i)).owner(
-									"shroffk"));
+					.with(property("Test_PropA", Integer.toString(i)).owner(
+							"shroffk"));
 			if (i < 1000)
 				channel.with(tag("Test_TagA", "shroffk"));
 			if ((i >= 500) || (i < 1500))
 				channel.with(tag("Test_TagB", "Shroffk"));
-			channel.with(property("Test_PropB", Integer.toString(generator
-					.nextInt(100))));
+			channel.with(property("Test_PropB",
+					Integer.toString(generator.nextInt(100))));
 			channel.with(property("Test_PropC", "ALL"));
-			channels.add(channel);
+			channels.add(factory.getCSSChannel(channel.build()));
 		}
 		// Add all the channels;
 		try {
-			ChannelFinderClient.getInstance().add(channels);
+			ChannelsListView viewB = (ChannelsListView) view
+					.getSite()
+					.getPage()
+					.findView("org.csstudio.multichannelviewer.ChannelListView");
+			if (viewB != null) {
+				viewB.setChannelsGroup(new CSSChannelGroup("Test Channels", channels));
+			}
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -88,7 +94,6 @@ public class AddTestChannels implements IViewActionDelegate {
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -1,7 +1,5 @@
 package org.csstudio.multichannelviewer.model;
 
-import gov.bnl.channelfinder.api.ChannelUtil;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,9 +9,6 @@ import org.csstudio.channelfinder.views.GlazedSortNameComparator;
 import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.swt.SWT;
-import org.epics.pvmanager.PV;
-import org.epics.pvmanager.PVValueChangeListener;
-import org.epics.pvmanager.data.VMultiDouble;
 
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;

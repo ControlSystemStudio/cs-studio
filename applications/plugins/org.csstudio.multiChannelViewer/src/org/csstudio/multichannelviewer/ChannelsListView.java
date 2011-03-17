@@ -14,6 +14,7 @@ import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
 import org.csstudio.utility.channel.ICSSChannel;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.data.VMultiDouble;
@@ -29,10 +31,10 @@ import org.epics.pvmanager.data.VMultiDouble;
 import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
-public class ChannelsControlList extends MultiChannelPlotAwareView implements
+public class ChannelsListView extends MultiChannelPlotAwareView implements
 		ListEventListener<ICSSChannel> {
 
-	public static final String ID = "org.csstudio.orbitViewer.channelsView";
+	public static final String ID = "org.csstudio.multichannelviewer.ChannelListView";
 
 	private static int instance;
 	// Model
@@ -41,7 +43,11 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 	private GridLayout layout;
 	private TableViewer viewer;
 
-	public ChannelsControlList() {
+	public String getSomething() {
+		return "something";
+	}
+
+	public ChannelsListView() {
 	}
 
 	public void setChannelsGroup(IChannelGroup channelsGroup) {
@@ -62,7 +68,7 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 		layout = new GridLayout(1, false);
 		parent.setLayout(layout);
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.VIRTUAL | SWT.FULL_SELECTION | SWT.SINGLE);
+				| SWT.H_SCROLL | SWT.VIRTUAL | SWT.FULL_SELECTION );
 		GridData viewerGD = new GridData();
 		viewerGD.grabExcessHorizontalSpace = true;
 		viewerGD.grabExcessVerticalSpace = true;
@@ -81,9 +87,10 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 		viewer.refresh();
 
 		channelsGroup.addEventListListener(this);
+		getSite().setSelectionProvider(viewer);
 	}
 
-	private void createNewTable(TableViewer viewer){
+	private void createNewTable(TableViewer viewer) {
 		// TODO
 		while (viewer.getTable().getColumnCount() > 0) {
 			viewer.getTable().getColumn(viewer.getTable().getColumnCount() - 1)
@@ -91,7 +98,7 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 		}
 		createTable(viewer);
 	}
-	
+
 	private void createTable(TableViewer viewer) {
 		int col = 0;
 		createTableColumn(viewer, "Channel Name", "channel name", col, 100,
@@ -212,8 +219,8 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 	@Override
 	protected void updateChannelGroup(CSSChannelGroup oldGroup,
 			CSSChannelGroup newGroup) {
-//		System.out
-//				.println("Channels control view update channel group event recieved");
+		// System.out
+		// .println("Channels control view update channel group event recieved");
 		this.channelsGroup = (newGroup == null) ? new CSSChannelGroup(
 				"Empty Group") : newGroup;
 		createNewTable(viewer);
@@ -230,9 +237,9 @@ public class ChannelsControlList extends MultiChannelPlotAwareView implements
 	protected void updatePV(PV<VMultiDouble> oldPv, PV<VMultiDouble> newPv) {
 		// nothing todo since this view does not display any live data
 	}
-	
+
 	@Override
-	public void dispose(){
+	public void dispose() {
 		channelsGroup.removeEventListListener(this);
 		super.dispose();
 	}

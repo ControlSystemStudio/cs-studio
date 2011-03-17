@@ -3,7 +3,6 @@ package org.csstudio.multichannelviewer.actions;
 import java.util.Iterator;
 
 import org.csstudio.multichannelviewer.ChannelsPlot;
-import org.csstudio.multichannelviewer.ChannelsControlList;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
 import org.csstudio.utility.channel.ICSSChannel;

@@ -25,7 +25,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		left.addView(IPageLayout.ID_PROJECT_EXPLORER);
 
 		// Bottom
-		bottom.addView(ChannelsControlList.ID);
+		bottom.addView(ChannelsListView.ID);
 		bottom.addPlaceholder(ChannelFinderView.ID);;
 		bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 		bottom.addPlaceholder(IPageLayout.ID_PROBLEM_VIEW);

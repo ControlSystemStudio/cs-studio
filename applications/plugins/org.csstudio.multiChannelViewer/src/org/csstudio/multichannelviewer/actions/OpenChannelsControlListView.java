@@ -2,7 +2,7 @@ package org.csstudio.multichannelviewer.actions;
 
 import java.util.Iterator;
 
-import org.csstudio.multichannelviewer.ChannelsControlList;
+import org.csstudio.multichannelviewer.ChannelsListView;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
 import org.csstudio.utility.channel.ICSSChannel;
@@ -38,8 +38,8 @@ public class OpenChannelsControlListView implements IObjectActionDelegate {
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
-			ChannelsControlList channelsView = (ChannelsControlList) page.showView(
-					ChannelsControlList.ID, ChannelsControlList.createNewInstance(),
+			ChannelsListView channelsView = (ChannelsListView) page.showView(
+					ChannelsListView.ID, ChannelsListView.createNewInstance(),
 					IWorkbenchPage.VIEW_ACTIVATE);
 			channelsView.setChannelsGroup(channels);
 		} catch (Exception e) {

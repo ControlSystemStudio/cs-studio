@@ -25,6 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class OpenMultiChannelPlot implements IWorkbenchWindowActionDelegate {
 
 	private ISelection selection;
+	private IWorkbenchWindow window;
 
 	@Override
 	public void dispose() {
@@ -34,7 +35,7 @@ public class OpenMultiChannelPlot implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stubs
+		this.window = window;
 	}
 
 	@Override
