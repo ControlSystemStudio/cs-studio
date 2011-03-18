@@ -377,11 +377,10 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 	
 	@Override
 	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);					
-		if(ellipseButton.isVisible())
-			ellipseButton.setCursor(runMode ? cursor : null);
-		else if (squareButtonFigure.isVisible())
-			squareButtonFigure.setCursor(runMode ? cursor : null);	
+		super.setRunMode(runMode);				
+		
+		ellipseButton.setCursor(runMode ? cursor : null);		
+		squareButtonFigure.setCursor(runMode ? cursor : null);	
 	}
 	
 	/**
