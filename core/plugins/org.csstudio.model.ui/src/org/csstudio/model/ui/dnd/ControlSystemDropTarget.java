@@ -17,15 +17,18 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 
-/** Utility for allowing Drag-and-Drop "Drop" of Control System Items.
+/**
+ * General purpose utility to allowing Drag-and-Drop "Drop" of any
+ * adaptable or serializable object.
+ * <p>
+ * Filters the received items to match the desired type, based on the
+ * order or preference specified. Can also accept plain text.
  *
- *  Filters the received items to match the desired type for CSS.
- *  Can also accept plain text.
- *
- *  @author Gabriele Carcassi
- *  @author Kay Kasemir
+ * @author Gabriele Carcassi
+ * @author Kay Kasemir
  */
 abstract public class ControlSystemDropTarget
 {
@@ -35,16 +38,14 @@ abstract public class ControlSystemDropTarget
      *  @param control Control onto which items may be dropped
      *  @param accepted (Base) class of accepted items
      */
-    @SuppressWarnings("rawtypes")
     public ControlSystemDropTarget(final Control control,
-            final Class... accepted)
+            final Class<?>... accepted)
     {
         target = new DropTarget(control, DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
-
+        
         List<Transfer> supportedTransfers = new ArrayList<Transfer>();
         supportedTransfers.addAll(Arrays.asList(SerializableItemTransfer.getTransfers(accepted)));
-        if (Arrays.asList(accepted).contains(String.class))
-        {
+        if (Arrays.asList(accepted).contains(String.class)) {
         	supportedTransfers.add(TextTransfer.getInstance());
         }
         target.setTransfer(supportedTransfers.toArray(new Transfer[supportedTransfers.size()]));
@@ -57,6 +58,21 @@ abstract public class ControlSystemDropTarget
             @Override
             public void dragEnter(final DropTargetEvent event)
             {
+            	// Seems DropTarget it is not honoring the order of the transferData:
+            	// Making sure is right
+				boolean done = false;
+            	for (Transfer transfer : target.getTransfer()) {
+            		for (TransferData data : event.dataTypes) {
+            			if (transfer.isSupportedType(data)) {
+            				event.currentDataType = data;
+            				done = true;
+            				break;
+            			}
+            		}
+            		if (done)
+            			break;
+            	}
+            	
                 if ((event.operations & DND.DROP_COPY) != 0)
                     event.detail = DND.DROP_COPY;
                 else
@@ -82,4 +98,5 @@ abstract public class ControlSystemDropTarget
      *  @param item Control system item
      */
     abstract public void handleDrop(Object item);
+    
 }

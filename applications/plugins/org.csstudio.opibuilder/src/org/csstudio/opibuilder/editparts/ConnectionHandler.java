@@ -69,7 +69,7 @@ public class ConnectionHandler {
 		figure = editpart.getFigure();
 		widgetModel = editpart.getWidgetModel();
 		pvMap = new HashMap<String, PV>();
-		preTooltip = widgetModel.getTooltip();
+		preTooltip = widgetModel.getRawTooltip();
 		preBorder = figure.getBorder();
 		connected = true;
 	}
@@ -114,7 +114,7 @@ public class ConnectionHandler {
 	protected void markWidgetAsDisconnected(PV pv){
 		if(connected){
 			preBorder = figure.getBorder();
-			preTooltip = widgetModel.getTooltip();
+			preTooltip = widgetModel.getRawTooltip();
 		}
 		refreshModelTooltip();
 		if(!connected)

@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -44,6 +45,8 @@ import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -108,11 +111,10 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
                                                  @Nonnull final TimeInstant start,
                                                  @Nonnull final TimeInstant end,
                                                  @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
-
         try {
             final DesyArchiveRequestType desyType = validateRequestType(type);
 
-            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
+            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelBy(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
@@ -138,9 +140,8 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     public <V, T extends ISystemVariable<V>>
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException {
-
         try {
-            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelByName(channelName);
+            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelBy(channelName);
             return DAO_MGR.getSampleDao().retrieveLatestSampleBeforeTime(channel, time);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Latest sample retrieval failed for channel " + channelName, ade);
@@ -153,15 +154,50 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
      */
     @Override
     @CheckForNull
-    public IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException {
-        return MySQLArchiveEngineServiceImpl.INSTANCE.getChannelByName(name);
+    public IArchiveChannel getChannelByName(@Nonnull final String name)
+                                            throws ArchiveServiceException {
+        try {
+            return DAO_MGR.getChannelDao().retrieveChannelBy(name);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel information for " + name +
+                                              " could not be retrieved.", e);
+        }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public Collection<String> getChannelsByNamePattern(@Nonnull final Pattern pattern)
+    throws ArchiveServiceException {
+        try {
+            final Collection<IArchiveChannel> channels =
+                DAO_MGR.getChannelDao().retrieveChannelsByNamePattern(pattern);
+            final Collection<String> names =
+                Collections2.transform(channels,
+                                       new Function<IArchiveChannel, String>() {
+                                           @Override
+                                           @Nonnull
+                                           public String apply(@Nonnull final IArchiveChannel channel) {
+                                               return channel.getName();
+                                           }
+                                       });
+            return names;
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel information for pattern " + pattern.toString() +
+                                              " could not be retrieved.", e);
+        }
+    }
+
+
 
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelDao().retrieveDisplayRanges(channelName);

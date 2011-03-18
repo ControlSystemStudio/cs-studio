@@ -85,8 +85,6 @@ public interface IArchiveEngineFacade {
     <V, T extends IAlarmSystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException;
 
-    @Nonnull
-    IArchiveChannel getChannelByName(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Writes the monitoring information of an engine for a channel.
@@ -98,13 +96,6 @@ public interface IArchiveEngineFacade {
                                      @Nonnull final ArchiveEngineId engineId,
                                      @Nonnull final TimeInstant time,
                                      @Nonnull final String info) throws ArchiveServiceException;
-
-    /**
-     * Writes the monitoring information of an engine for a channel.
-     * @param monitorStates collection of states
-     * @throws ArchiveServiceException
-     */
-    //void writeMonitorModeInformation(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveServiceException;
 
     /**
      * Writes the channel connection information.

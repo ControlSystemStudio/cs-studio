@@ -108,6 +108,13 @@ public abstract class AbstractWidgetProperty {
 	public Object getPropertyValue() {
 		return propertyValue;
 	}
+	
+	/**
+	 * @return the raw property value that should not be treated or replaced by macros.
+	 */
+	public Object getRawPropertyValue() {
+		return propertyValue;
+	}
 
 	/**Get the formatted value to be displayed in property sheet. 
 	 * @return 
