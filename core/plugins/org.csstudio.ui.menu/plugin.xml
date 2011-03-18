@@ -8,52 +8,52 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="css"
-               label="CSS"
+               label="%CSS"
                mnemonic="C">
             <menu
                   id="display"
-                  label="Display">
+                  label="%Display">
             </menu>
             <menu
                   id="alarm"
-                  label="Alarm">
+                  label="%Alarm">
             </menu>
             <menu
                   id="diag"
-                  label="Diagnostic Tools"
+                  label="%Diagnostic"
                   mnemonic="D">
             </menu>
             <menu
                   id="debugging"
-                  label="Debugging">
+                  label="%Debugging">
             </menu>
             <menu
                   id="configuration"
-                  label="Configuration">
+                  label="%Configuration">
             </menu>
             <menu
                   id="management"
-                  label="Management">
+                  label="%Management">
             </menu>
             <menu
                   id="editors"
-                  label="Editors">
+                  label="%Editors">
             </menu>
             <menu
                   id="utility"
-                  label="Utilities">
+                  label="%Utilities">
             </menu>
             <menu
                   id="trends"
-                  label="Trends">
+                  label="%Trends">
             </menu>
             <menu
                   id="test"
-                  label="Test">
+                  label="%Test">
             </menu>
             <menu
                   id="other"
-                  label="Other">
+                  label="%Other">
             </menu>
          </menu>
       </menuContribution>
@@ -62,7 +62,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
                id="org.csstudio.ui.menu.popup.iprocessvariable"
-               label="Process Variable">
+               label="%PVName">
             <visibleWhen>
                <with
                      variable="activeMenuSelection">
