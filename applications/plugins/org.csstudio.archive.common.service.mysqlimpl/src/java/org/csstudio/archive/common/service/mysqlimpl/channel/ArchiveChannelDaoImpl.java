@@ -363,7 +363,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             Collections2.filter(allChannels, new Predicate<IArchiveChannel>() {
                 @Override
                 public boolean apply(@Nonnull final IArchiveChannel channel) {
-                    return pattern.matcher(channel.getName()).matches();
+                    final boolean matches = pattern.matcher(channel.getName()).matches();
+                    return matches;
                 }
             });
         return matchingChannels;
