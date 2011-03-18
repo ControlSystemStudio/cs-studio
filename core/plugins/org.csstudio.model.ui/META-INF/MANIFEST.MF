@@ -11,3 +11,5 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.2.0",
  org.csstudio.model;bundle-version="0.0.1";visibility:=reexport,
  org.junit
 Export-Package: org.csstudio.model.ui.dnd
+Bundle-Activator: org.csstudio.model.ui.Activator
+Bundle-ActivationPolicy: lazy

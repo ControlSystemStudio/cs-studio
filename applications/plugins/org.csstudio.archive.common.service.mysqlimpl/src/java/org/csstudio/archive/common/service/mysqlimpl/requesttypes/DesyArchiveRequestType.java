@@ -45,14 +45,19 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     AVG_PER_HOUR("Averaged over the time period of one hour.",
                  RequestTypeParameters.NUM_OF_BINS);
 
+    static {
+        AVG_PER_MINUTE._nextLowerOrderRequestType = RAW;
+        AVG_PER_HOUR._nextLowerOrderRequestType = AVG_PER_MINUTE;
+    }
 
     private final IArchiveRequestType _delegate;
+    private DesyArchiveRequestType _nextLowerOrderRequestType = null;
 
     /**
      * Constructor.
      */
     private DesyArchiveRequestType(@Nonnull final String desc) {
-        // Unfortunately enums cannot extend an abstract class, hence delegator pattern.
+        // Unfortunately enums cannot extend an abstract class, hence the delegator pattern.
         _delegate = new AbstractArchiveRequestType("f", desc) {
             // EMPTY
         };
@@ -112,10 +117,6 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
         _delegate.setParameter(id, newValue);
     }
 
-    /**
-     * Returns the default/natural request type.
-     * @return the default/natural request type for this implementation.
-     */
     @Nonnull
     public static DesyArchiveRequestType getDefault() {
         return RAW;
@@ -132,11 +133,6 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
         return _delegate.getParameter(id, clazz);
     }
 
-    /**
-     * @param type
-     * @return
-     * @throws RequestTypeParameterException
-     */
     @Nonnull
     public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) throws RequestTypeParameterException {
 
@@ -146,5 +142,10 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
         throw new IllegalArgumentException("Archive request type is not an instance of " +
                                            DesyArchiveRequestType.class.getName() +
                                            "!");
+    }
+
+    @CheckForNull
+    public DesyArchiveRequestType getNextLowerOrderRequestType() {
+        return _nextLowerOrderRequestType;
     }
 }

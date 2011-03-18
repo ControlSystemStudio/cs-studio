@@ -30,53 +30,64 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import com.google.common.collect.Ordering;
 
 /**
- * Cumulative average for Double types.
- * Caches the sum of the accumulated values, and stores their number.
- * On the {@link CumulativeAverageCache#getValue()} the accumulated value is divided by this
- * number of contributing values.
+ * Sample aggregator for average, min, max values for {@link java.lang.Double} type values.
+ * Caches the sum of the accumulated values and stores information about the timestamps of the
+ * last accumulated sample.
  *
  * @author bknerr
  * @since 25.11.2010
  */
-public class SampleAggregator {
+public class SampleMinMaxAggregator {
 
     private final CumulativeAverageCache _avg = new CumulativeAverageCache();
 
     private Double _minVal;
     private Double _maxVal;
-    private Double _lastWrittenValue;
+    private Double _lastAvgBeforeReset;
     private TimeInstant _lastSampleTimeStamp;
     private TimeInstant _resetTimeStamp;
 
 
     /**
      * Constructor.
-     * @param firstVal
-     * @param firstAlarm
-     * @param timestamp
      */
-    public SampleAggregator(@Nonnull final Double firstVal,
-                            @Nonnull final TimeInstant timestamp) {
-
+    public SampleMinMaxAggregator(@Nonnull final Double firstVal,
+                                  @Nonnull final Double firstMin,
+                                  @Nonnull final Double firstMax,
+                                  @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(firstVal);
 
-        _minVal = firstVal;
-        _maxVal = firstVal;
-        _lastWrittenValue = null;
+        _minVal = firstMin;
+        _maxVal = firstMax;
+        _lastAvgBeforeReset = null;
 
         _lastSampleTimeStamp = timestamp;
         _resetTimeStamp = _lastSampleTimeStamp;
+
+    }
+    /**
+     * Constructor.
+     */
+    public SampleMinMaxAggregator(@Nonnull final Double firstVal,
+                                  @Nonnull final TimeInstant timestamp) {
+        this(firstVal, firstVal, firstVal, timestamp);
+    }
+    /**
+     * Constructor.
+     */
+    public SampleMinMaxAggregator() {
+        // EMPTY
     }
 
-    public void aggregateNewVal(@Nonnull final Double newVal,
+    public void aggregate(@Nonnull final Double newVal,
                                 @Nonnull final TimeInstant timestamp) {
-        aggregateNewVal(newVal, newVal, newVal, timestamp);
+        aggregate(newVal, newVal, newVal, timestamp);
     }
 
-    public void aggregateNewVal(@Nonnull final Double newVal,
-                         @Nonnull final Double min,
-                         @Nonnull final Double max,
-                         @Nonnull final TimeInstant timestamp) {
+    public void aggregate(@Nonnull final Double newVal,
+                          @Nonnull final Double min,
+                          @Nonnull final Double max,
+                          @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(newVal);
         _minVal = Ordering.natural().nullsLast().min(newVal, min, max, _minVal);
         _maxVal = Ordering.natural().nullsFirst().max(newVal, min, max, _maxVal);
@@ -84,15 +95,16 @@ public class SampleAggregator {
     }
 
     /**
-     * Resets the aggregator count to the last accumulated avg value.
-     * Minimum and maximum values equal this last average.
-     * Alarm state is initialised to the minimum known alarm accumulated until now
-     * (not necessarily the minimum alarm possible).
+     * Resets the aggregator. <br/>
+     * Caches the timestamp of the last aggregated sample.
+     * Caches the last average value.
+     * Sets the minimum and maximum values to <code>null</code>.
+     * Clears the current average value cache.
      */
     public void reset() {
         _resetTimeStamp = _lastSampleTimeStamp;
         _lastSampleTimeStamp = null;
-        _lastWrittenValue = _avg.getValue();
+        _lastAvgBeforeReset = _avg.getValue();
         _minVal = null;
         _maxVal = null;
 
@@ -112,7 +124,7 @@ public class SampleAggregator {
     }
     @CheckForNull
     public Double getAverageBeforeReset() {
-        return _lastWrittenValue;
+        return _lastAvgBeforeReset;
     }
     @CheckForNull
     public TimeInstant getSampleTimestamp() {

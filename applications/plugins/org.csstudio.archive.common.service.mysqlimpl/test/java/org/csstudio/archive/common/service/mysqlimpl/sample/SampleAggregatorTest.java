@@ -21,7 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
-import org.csstudio.archive.common.service.sample.SampleAggregator;
+import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
@@ -31,7 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test for {@link SampleAggregator}.
+ * Test for {@link SampleMinMaxAggregator}.
  *
  * @author bknerr
  * @since 20.12.2010
@@ -43,7 +43,7 @@ public class SampleAggregatorTest {
     @Test
     public void initTest() {
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
-        final SampleAggregator agg = new SampleAggregator(1.0, /*null,*/ ts);
+        final SampleMinMaxAggregator agg = new SampleMinMaxAggregator(1.0, /*null,*/ ts);
 
         Assert.assertEquals(Double.valueOf(1.0), agg.getAvg());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMin());
@@ -55,10 +55,10 @@ public class SampleAggregatorTest {
 
     @Test
     public void aggregateTest() {
-        final SampleAggregator agg = new SampleAggregator(1.0, /*null,*/ TimeInstantBuilder.buildFromNow());
+        final SampleMinMaxAggregator agg = new SampleMinMaxAggregator(1.0, /*null,*/ TimeInstantBuilder.buildFromNow());
 
         final TimeInstant ts = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(2.0, /*ALARM,*/ ts);
+        agg.aggregate(2.0, /*ALARM,*/ ts);
 
         Assert.assertEquals(Double.valueOf(1.5), agg.getAvg());
         Assert.assertEquals(Double.valueOf(1.0), agg.getMin());
@@ -69,7 +69,7 @@ public class SampleAggregatorTest {
 
 
         final TimeInstant ts3 = TimeInstantBuilder.buildFromNow();
-        agg.aggregateNewVal(3.0, /*ALARM,*/ -1.0, 20.0, ts3);
+        agg.aggregate(3.0, /*ALARM,*/ -1.0, 20.0, ts3);
         Assert.assertEquals(Double.valueOf(2.0), agg.getAvg());
         Assert.assertEquals(Double.valueOf(-1.0), agg.getMin());
         Assert.assertEquals(Double.valueOf(20.0), agg.getMax());
@@ -89,17 +89,17 @@ public class SampleAggregatorTest {
 
     @Test
     public void aggregateAlarmTest() {
-        final SampleAggregator agg = new SampleAggregator(1.0,
+        final SampleMinMaxAggregator agg = new SampleMinMaxAggregator(1.0,
 //                                                          new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM,
 //                                                                         EpicsAlarmStatus.BADSUB),
                                                           TimeInstantBuilder.buildFromNow());
 
         final EpicsAlarm minor = new EpicsAlarm(EpicsAlarmSeverity.MINOR,
                                           EpicsAlarmStatus.BADSUB);
-        agg.aggregateNewVal(2.0,
+        agg.aggregate(2.0,
                             //minor,
                             TimeInstantBuilder.buildFromNow());
-        agg.aggregateNewVal(2.0,
+        agg.aggregate(2.0,
 //                            new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
 //                                           EpicsAlarmStatus.BADSUB),
                                            TimeInstantBuilder.buildFromNow());
@@ -107,14 +107,14 @@ public class SampleAggregatorTest {
 
         final EpicsAlarm major = new EpicsAlarm(EpicsAlarmSeverity.MAJOR,
                                                 EpicsAlarmStatus.BADSUB);
-        agg.aggregateNewVal(2.0,
+        agg.aggregate(2.0,
 //                            major,
                             TimeInstantBuilder.buildFromNow());
         //Assert.assertTrue(major.equals(agg.getHighestAlarm()));
 
         final EpicsAlarm invalid = new EpicsAlarm(EpicsAlarmSeverity.INVALID,
                                                   EpicsAlarmStatus.BADSUB);
-        agg.aggregateNewVal(2.0,
+        agg.aggregate(2.0,
 //                            invalid,
                             TimeInstantBuilder.buildFromNow());
         //Assert.assertTrue(invalid.equals(agg.getHighestAlarm()));
