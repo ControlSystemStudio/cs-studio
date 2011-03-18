@@ -41,6 +41,7 @@ public class VMultiChannelChartDisplay extends Canvas {
 	private String title = "title";
 	private String xAxisLabel = "X Axis";
 	private String yAxisLabel = "Y Axis";
+
 	/**
 	 * 
 	 * @param parent
@@ -76,27 +77,27 @@ public class VMultiChannelChartDisplay extends Canvas {
 		if (pvdata != null) {
 			if (chartDisplay.getChart() == null) {
 				dataset = new XYSeriesCollection();
-				chart = ChartFactory.createXYLineChart(this.title, this.xAxisLabel,
-						this.yAxisLabel, dataset, PlotOrientation.VERTICAL, true,
-						true, true);
+				chart = ChartFactory.createXYLineChart(this.title,
+						this.xAxisLabel, this.yAxisLabel, dataset,
+						PlotOrientation.VERTICAL, true, true, true);
 				chartDisplay.setChart(chart);
 				chart.getXYPlot().setDomainCrosshairVisible(false);
 				chart.getXYPlot().setDomainGridlinesVisible(false);
 				chart.getXYPlot().setRangeCrosshairVisible(false);
 				chart.getXYPlot().setRangeGridlinesVisible(false);
 				// customizing the axis greatly reduces performance
-//				ValueAxis axis;
-//				if (domainAxisType == DOMAIN_AXIS_TYPE_POSITION){
-//					axis = chart.getXYPlot().getDomainAxis();
-//					axis.setLabel("Channel Position.");
-//					axis.setVerticalTickLabels(true);
-//				} else {
-//					axis = new SymbolAxis("Channel Names",
-//							this.channelNames.toArray(new String[channelNames.size()]));
-//					axis.setVerticalTickLabels(true);
-//					chart.getXYPlot().setDomainAxis(axis);
-//				}
-				
+				// ValueAxis axis;
+				// if (domainAxisType == DOMAIN_AXIS_TYPE_POSITION){
+				// axis = chart.getXYPlot().getDomainAxis();
+				// axis.setLabel("Channel Position.");
+				// axis.setVerticalTickLabels(true);
+				// } else {
+				// axis = new SymbolAxis("Channel Names",
+				// this.channelNames.toArray(new String[channelNames.size()]));
+				// axis.setVerticalTickLabels(true);
+				// chart.getXYPlot().setDomainAxis(axis);
+				// }
+
 			} else {
 				chartDisplay.setRedraw(false);
 				dataset.removeAllSeries();
@@ -127,8 +128,10 @@ public class VMultiChannelChartDisplay extends Canvas {
 			} else if (this.positions.size() == vMultiDouble.getValues().size()) {
 				List<VDouble> values = vMultiDouble.getValues();
 				for (int index = 0; index < values.size(); index++) {
-					series.add((double) this.positions.get(index),
-							(double) values.get(index).getValue());
+					if (this.positions.get(index) != null
+							&& values.get(index).getValue() != null)
+						series.add((double) this.positions.get(index),
+								(double) values.get(index).getValue());
 				}
 			}
 			break;
@@ -167,27 +170,27 @@ public class VMultiChannelChartDisplay extends Canvas {
 	public void setPlotUsing(int plotUsing) {
 		this.domainAxisType = plotUsing;
 	}
-	
 
 	public void setTitle(String title) {
 		this.title = title;
-		if(chartDisplay.getChart() != null){
+		if (chartDisplay.getChart() != null) {
 			chartDisplay.getChart().setTitle(this.title);
 		}
 	}
-	
 
 	public void setXAxisLabel(String xAxisLabel) {
 		this.xAxisLabel = xAxisLabel;
-		if(chartDisplay.getChart() != null){
-			chartDisplay.getChart().getXYPlot().getDomainAxis().setLabel(xAxisLabel);
+		if (chartDisplay.getChart() != null) {
+			chartDisplay.getChart().getXYPlot().getDomainAxis()
+					.setLabel(xAxisLabel);
 		}
 	}
-	
+
 	public void setYAxisLabel(String yAxisLabel) {
 		this.yAxisLabel = yAxisLabel;
-		if(chartDisplay.getChart() != null){
-			chartDisplay.getChart().getXYPlot().getDomainAxis().setLabel(yAxisLabel);
+		if (chartDisplay.getChart() != null) {
+			chartDisplay.getChart().getXYPlot().getDomainAxis()
+					.setLabel(yAxisLabel);
 		}
 	}
 
