@@ -48,7 +48,7 @@
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.channelfinderviewer"/>
-      <plugin id="org.csstudio.display.pvtable" fragment=""/>
+      <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.logbook"/>
@@ -85,6 +85,7 @@
       <plugin id="org.csstudio.swt.xygraph"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
+      <plugin id="org.csstudio.ui.menu"/>
       <plugin id="org.csstudio.utility.adlParser"/>
       <plugin id="org.csstudio.utility.channel"/>
       <plugin id="org.csstudio.utility.channelfinder"/>
