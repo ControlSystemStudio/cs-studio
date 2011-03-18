@@ -25,6 +25,8 @@ import gov.aps.jca.dbr.DBR_TIME_Float;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.DBR_TIME_String;
+import gov.aps.jca.dbr.GR;
+import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.Status;
 import gov.aps.jca.dbr.TimeStamp;
 
@@ -123,6 +125,18 @@ public class DBR_Helper
                             ctrl.getLowerAlarmLimit().doubleValue(),
                             ctrl.getUpperAlarmLimit().doubleValue(),
                             0, // no precision
+                            ctrl.getUnits());
+        }else if (dbr instanceof GR)
+        {
+            final GR ctrl = (GR)dbr;
+            return ValueFactory.createNumericMetaData(
+                            ctrl.getLowerDispLimit().doubleValue(),
+                            ctrl.getUpperDispLimit().doubleValue(),
+                            ctrl.getLowerWarningLimit().doubleValue(),
+                            ctrl.getUpperWarningLimit().doubleValue(),
+                            ctrl.getLowerAlarmLimit().doubleValue(),
+                            ctrl.getUpperAlarmLimit().doubleValue(),
+                            (dbr instanceof PRECISION)? ((PRECISION)dbr).getPrecision() : 0,
                             ctrl.getUnits());
         }
         return null;
