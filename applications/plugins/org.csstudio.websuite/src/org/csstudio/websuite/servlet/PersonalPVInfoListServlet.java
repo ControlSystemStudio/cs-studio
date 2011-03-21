@@ -26,7 +26,6 @@ package org.csstudio.websuite.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +36,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.PageContent;
+import org.csstudio.websuite.utils.PageContentContainer;
 import org.csstudio.websuite.utils.PageEntry;
+import org.csstudio.websuite.utils.RequestParameter;
 import org.csstudio.websuite.utils.Severity;
 import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.Platform;
@@ -48,18 +49,18 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * 
  * @author mmoeller
  * @version 
- * @since 30.06.2010
+ * @since 01.11.2010
  */
-public class FlashInfoDynServlet extends HttpServlet {
-    
-    /** Generated serial version id */
-    private static final long serialVersionUID = 118082356835958719L;
+public class PersonalPVInfoListServlet extends HttpServlet {
 
+    /** Generated serial version id */
+    private static final long serialVersionUID = 6190291040311191351L;
+    
     /** Class that reads the value from the control system */
     private ValueReader valueReader;
-    
+
     /** Content helper that stores selected PV's, etc. */
-    private PageContent pageContent;
+    private PageContentContainer pageContentContainer;
     
     /** Hostname of the web application */
     private String hostName;
@@ -73,9 +74,9 @@ public class FlashInfoDynServlet extends HttpServlet {
     /** Private logger for this class */
     private Logger logger;
 
-    /**
-     * 
-     */
+    /** The URL of the AAPI web application */
+    private String aapiWebApp;
+
     @Override
 	public void init(ServletConfig config) throws ServletException {
         
@@ -83,11 +84,12 @@ public class FlashInfoDynServlet extends HttpServlet {
         
         logger = CentralLogger.getInstance().getLogger(this);
         valueReader = new ValueReader();
-        pageContent = new PageContent();
+        pageContentContainer = PageContentContainer.getInstance();
         
         IPreferencesService pref = Platform.getPreferencesService();
         hostName = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.HOST_NAME, "loalhost", null);
         port = pref.getInt(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.JETTY_PORT, 8080, null);
+        aapiWebApp = pref.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.AAPI_WEB_APP, "", null);
     }
     
     /**
@@ -121,38 +123,58 @@ public class FlashInfoDynServlet extends HttpServlet {
     throws ServletException, IOException {
 
         StringBuilder page = new StringBuilder();
-        boolean edit = (request.getParameter("edit") != null);
+        RequestParameter param = new RequestParameter(request);
+        
+        PageContent pageContent = null;
+        if(param.containsParameter("content") && param.hasParameterAnyValue("content")) {
+                pageContent = pageContentContainer.getPageContent(param.getParameter("content"));
+        } else {
+            logger.warn("Content page not available.");
+            response.sendRedirect("/PersonalPVInfo");
+        }
         
         logger.info("User-Agent: " + request.getHeader("User-Agent"));
         
         page.append("<html>\n");
         page.append("<head>\n");
-        page.append("<title>FLASH Info</title>\n");
+        page.append("<title>Personal PV Info</title>\n");
         page.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style/flashinfo.css\">\n");
         page.append("<meta http-equiv=\"Pragma\" content=\"no-cache\">\n");
         
-        if(edit == false) {
+        if(pageContent != null) {
             page.append("<meta http-equiv=\"Refresh\" content=\"" + RELOAD_TIME + "\">\n");
         }
         
         page.append("</head>\n");
         page.append("<body>\n");
         
-        if(edit == false) {
+        if(pageContent != null) {
             page.append("<div class=\"reloadtime\">Reload every " + RELOAD_TIME + " seconds.</div><p>\n");
         }
         
-        page.append("<table class=\"caption\"\">\n");
-        page.append("<tr><th class=\"caption\">FLASH Info</th></tr>\n");
-        page.append("<tr><td class=\"caption_thin\">&nbsp;</td></tr>\n");
-        page.append("</table>\n");
-
-        if(edit == false) {
-            createNormalPage(page);
-        } else {
-            createEditPage(page);
-        }
+        page.append("<center>");
+        page.append("<p class=\"linkbar\">");
+        page.append("<a class=\"linkbar\" href=\"./PersonalPVInfo\">Auswahlliste</a>");
+        page.append("</p>");
+        page.append("</center>");
         
+        page.append("<table class=\"caption\"\">\n");
+        
+        page.append("<tr><th class=\"caption\" colspan=\"2\" align=\"center\">"+ pageContent.getPageContentName() + "</th></tr>\n");
+        appendLineRow(page);
+        page.append("<tr><td class=\"caption_thin\">&nbsp;</td></tr>\n");
+        
+        appendEntryRow(pageContent, page);
+        appendEditButton(pageContent, page);
+        
+        page.append("</table>\n");
+        
+        page.append("<center>");
+        page.append("<p class=\"linkbar\">");
+        page.append("<a class=\"linkbar\" href=\"./PersonalPVInfo\">Auswahlliste</a>");
+        page.append("</p>");
+        page.append("</center>");
+
         page.append("</body>\n</html>");
         
         response.getOutputStream().print(page.toString());
@@ -163,104 +185,7 @@ public class FlashInfoDynServlet extends HttpServlet {
      * 
      * @param page
      */
-    private void createNormalPage(StringBuilder page) {
-        
-        page.append("<table class=\"main\"\">\n");
-
-        if(pageContent.getNumberOfEntries() > 0) {
-            this.appendEntryRow(page);
-        } else {
-            page.append("<tr>\n<td>No entry</td>\n</tr>\n");
-        }
-        
-        this.appendEditButton(page);
-        
-        page.append("</table>\n");
-    }
-    
-    /**
-     * 
-     * @param page
-     */
-    private void createEditPage(StringBuilder page) {
-        
-        page.append("<form action=\"\">\n");
-        page.append("<table class=\"main\"\">\n");
-
-        if(pageContent.getNumberOfEntries() > 0) {
-            this.appendEditRow(page);
-        } else {
-            page.append("<tr>\n<td>No entry</td>\n</tr>\n");
-        }
-        
-        // this.appendEditButton(page);
-        
-        page.append("</table>\n");
-        page.append("</form>\n");
-    }
-
-    /**
-     * 
-     * @param page
-     */
-    private void appendEditRow(StringBuilder page) {
-        
-        ArrayList<PageEntry> list = pageContent.getContent();
-        PageEntry pe = null;
-        
-        for(int i = 0;i < list.size();i++) {
-            
-            pe = list.get(i);
-            
-            // PV Name
-            page.append("<tr>\n");
-            page.append("<td class=\"main\">PV Name:</td>\n");
-            page.append("<td class=\"main\">\n");
-            page.append("<input class=\"editpage\" type=\"text\" name=\"pvName." + i + "\" value=\"" + pe.getPvName() + "\" size=\"40\" maxlength=\"40\">");
-            page.append("</td>\n");
-            page.append("</tr>\n");
-
-            page.append("<tr>\n");
-            page.append("<td class=\"main\">Level:</td>\n");
-            page.append("<td class=\"main\">\n");
-            page.append("<input class=\"editpage\" type=\"text\" name=\"label." + i + "\" value=\"" + pe.getLabel() + "\" size=\"40\" maxlength=\"40\">");
-            page.append("</td>\n");
-            page.append("</tr>\n");
-
-            page.append("<tr>\n");
-            page.append("<td class=\"main\">Delete:</td>\n");
-            page.append("<td class=\"main\">\n");
-            page.append("<input class=\"deletebox\" type=\"checkbox\" name=\"delete." + i + "\" value=\"Delete\">");
-            page.append("</td>\n");
-            page.append("</tr>\n");
-
-            // A line
-            appendLineRow(page);
-        }
-
-    }
-
-    /**
-     * 
-     * @param page
-     */
-    private void appendEditButton(StringBuilder page) {
-        
-        page.append("<tr>\n");
-        page.append("<form action=\"http://" + hostName + ":" + port + "/FlashInfoDyn\" method=\"get\">\n");
-        page.append("<td colspan=\"2\" align=\"center\" valign=\"middle\" class=\"main\">\n");
-        page.append("<input class=\"button\"type=\"submit\" value=\"Edit\">");
-        page.append("<input type=\"hidden\" name=\"edit\" value=\"true\">");
-        page.append("</td>\n");
-        page.append("</form>\n");
-        page.append("<tr>\n");
-    }
-    
-    /**
-     * 
-     * @param page
-     */
-    private void appendEntryRow(StringBuilder page) {
+    private void appendEntryRow(PageContent pageContent, StringBuilder page) {
         
         ArrayList<PageEntry> list = pageContent.getContent();
         PageEntry pe = null;
@@ -272,7 +197,7 @@ public class FlashInfoDynServlet extends HttpServlet {
             
             // PV Name
             page.append("<tr>\n");
-            page.append("<th colspan=\"2\" class=\"main\">" + pe.getPvName() + "</th>\n");
+            page.append("<th colspan=\"2\" class=\"main\"><a href=\"" + aapiWebApp + "&METHOD=GET&NAMES=" + pe.getPvName() + "\" target=\"_blank\">" + pe.getPvName() + "</a></th>\n");
             page.append("</tr>\n");
             
             appendEmptyRow(page);
@@ -282,11 +207,12 @@ public class FlashInfoDynServlet extends HttpServlet {
                 
                 String e = valueReader.getEgu(pe.getPvName());
                 pe.setEgu(e);
+                pageContentContainer.saveContentFile(pageContent.getPageContentName());
             }
             
             page.append("<tr>\n");
             page.append("<td class=\"main\"></td>\n");
-            page.append("<td class=\"main_bold\">" + pe.getLabel() + " (" + pe.getEgu() + ")</td>\n");
+            page.append("<td class=\"main_bold\">" + pe.getLabel() + "</td>\n");
             page.append("</tr>\n");
 
             Severity severity = valueReader.getSeverity(pe.getPvName());
@@ -299,7 +225,7 @@ public class FlashInfoDynServlet extends HttpServlet {
             // Severity image and value
             page.append("<tr>\n");
             page.append("<td class=\"main_image\"><img class=\"" + className + "\" src=\"/images/null.gif\"></td>\n");
-            page.append("<td class=\"main\">" + valueReader.getValueAsString(pe.getPvName()) + "</td>\n");
+            page.append("<td class=\"main\">" + valueReader.getValueAsString(pe.getPvName()) + " " + pe.getEgu() + "</td>\n");
             page.append("</tr>\n");
 
             appendEmptyRow(page);
@@ -325,5 +251,22 @@ public class FlashInfoDynServlet extends HttpServlet {
      */
     private void appendLineRow(StringBuilder page) {
         page.append("<tr>\n<td colspan=\"2\"><hr></td>\n</tr>\n");
+    }
+    
+    /**
+     * 
+     * @param page
+     */
+    private void appendEditButton(PageContent pageContent, StringBuilder page) {
+        
+        page.append("<tr>\n");
+        page.append("<form action=\"http://" + hostName + ":" + port + "/PersonalPVInfoEdit\" method=\"get\">\n");
+        page.append("<td colspan=\"2\" align=\"center\" valign=\"middle\" class=\"main\">\n");
+        page.append("<input class=\"button\" type=\"submit\" value=\"Edit\">");
+        page.append("<input type=\"hidden\" name=\"content\" value=\"" + pageContent.getPageContentName() + "\">");
+        page.append("<input type=\"hidden\" name=\"action\" value=\"edit\">");
+        page.append("</td>\n");
+        page.append("</form>\n");
+        page.append("<tr>\n");
     }
 }

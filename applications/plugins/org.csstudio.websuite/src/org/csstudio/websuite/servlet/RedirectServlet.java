@@ -43,17 +43,20 @@ public class RedirectServlet extends HttpServlet
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException
+    @Override
+	public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.sendRedirect(response.encodeRedirectURL("Info"));
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         response.sendRedirect(response.encodeRedirectURL("Info"));
     }

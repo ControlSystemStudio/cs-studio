@@ -67,8 +67,24 @@ public class PageEntry {
 
     /**
      * 
+     * @return
      */
-    public String toString() {
+    public boolean containsData() {
+        
+        boolean result = false;
+        
+        if((pvName.trim().length() > 0) || (label.trim().length() > 0)) {
+            result = true;
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 
+     */
+    @Override
+	public String toString() {
         
         return "PageEntry{" + pvName + ", " + egu + ", " + label + "}";
     }

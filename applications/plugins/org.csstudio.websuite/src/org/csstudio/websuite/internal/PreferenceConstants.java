@@ -40,6 +40,7 @@ public class PreferenceConstants
     public static final String DATABASE_PASSWORD = "databasePassword";
     
     public static final String DEFAULT_TOPIC_SET = "defaultTopicSet";
+    
     public static final String HTML_SERVLET_ADDRESS = "htmlServletAddress";
     public static final String ACTIVATE_HTML_SERVLET = "activateHtmlServlet";
     public static final String XML_SERVLET_ADDRESS = "xmlServletAddress";
@@ -47,7 +48,9 @@ public class PreferenceConstants
     public static final String XML_CHANNEL_SERVLET_ADDRESS = "xmlChannelServletAddress";
     public static final String ACTIVATE_CHANNEL_XML_SERVLET = "activateChannelServletXml";
     public static final String HTML_CHANNEL_SERVLET_ADDRESS = "htmlChannelServletAddress";
+    
     public static final String HOST_NAME = "hostName";
+    
     public static final String EPICS_WEB_APP = "epicsWebApp";
     public static final String AAPI_WEB_APP = "aapiWebApp";
     

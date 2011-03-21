@@ -135,7 +135,8 @@ public class AlarmMessageList extends MessageList {
     /**
      * Remove a message from the list.
      */
-    public synchronized  void removeMessage(BasicMessage jmsm) {
+    @Override
+	public synchronized  void removeMessage(BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
@@ -143,18 +144,21 @@ public class AlarmMessageList extends MessageList {
     /**
      * Remove an array of messages from the list.
      */
-    public synchronized void removeMessageArray(BasicMessage[] jmsm) {
+    @Override
+	public synchronized void removeMessageArray(BasicMessage[] jmsm) {
         for (BasicMessage message : jmsm) {
             _messages.remove(message);
         }
         super.removeMessageArray(jmsm);
     }
 
-    public synchronized Vector<? extends BasicMessage> getJMSMessageList() {
+    @Override
+	public synchronized Vector<? extends BasicMessage> getJMSMessageList() {
         return _messages;
     }
 
-    public synchronized void deleteAllMessages(BasicMessage[] messages) {
+    @Override
+	public synchronized void deleteAllMessages(BasicMessage[] messages) {
         removeMessageArray(messages);
     }
 

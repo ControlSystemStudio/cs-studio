@@ -65,7 +65,8 @@ public class JmsMessageReceiver implements MessageListener {
     /**
      * A new message is received. Add it to the model.
      */
-    public void onMessage(final Message message) {
+    @Override
+	public void onMessage(final Message message) {
         if (message == null) {
         	logger.warn(this, "Recived message is null");
         }else{

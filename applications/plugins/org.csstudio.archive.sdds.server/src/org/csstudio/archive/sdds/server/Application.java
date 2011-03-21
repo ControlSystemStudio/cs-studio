@@ -220,6 +220,14 @@ public class Application implements IApplication, RemotelyStoppable, Application
         }
     }
 
+    /**
+     * Stops the application. Used by JMX. 
+     */
+    @Override
+	public void stopApplication() {
+    	stopApplication(false);
+    }
+
     public void nirvana()
     {
         //sddsReader.readDataPortionSimple("HQCO7L~B", null, -1, startTime, endTime, (short)1, -1, null);

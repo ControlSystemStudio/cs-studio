@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -24,59 +24,60 @@
 
 package org.csstudio.websuite.utils;
 
-import java.util.Vector;
-
 /**
- * @author Markus Moeller
- *
+ * TODO (mmoeller) : 
+ * 
+ * @author mmoeller
+ * @version 
+ * @since 03.11.2010
  */
-public class HowToBlockingList
-{
-    /** */
-    private Vector<Long> howToList;
+public enum EditAction {
     
-    public HowToBlockingList(String l)
-    {
-        String[] list = null;
-        long value;
+    ACTION_INVALID("invalid"),
+    ACTION_EDIT("edit"),
+    ACTION_ADD("add"),
+    ACTION_NEW("new"),
+    ACTION_DELETE("delete"),
+    ACTION_OK("ok"),
+    ACTION_CANCEL("cancel"),
+    ACTION_PROCESS("process");
+    
+    /** */
+    private String name;
+    
+    /**
+     * 
+     * @param name
+     */
+    private EditAction(String name) {
+        this.name = name;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * 
+     * @param n
+     * @return
+     */
+    public static EditAction getByName(String n) {
         
-        howToList = new Vector<Long>();
+        EditAction result = ACTION_INVALID;
         
-        list = l.split(",");
-        if(list != null)
-        {
-            for(String s : list)
-            {
-                try
-                {
-                    value = Long.parseLong(s.trim());
-                    howToList.add(value);
-                }
-                catch(NumberFormatException nfe) {
-                	// Can be ignored???
-                }
+        for(EditAction o : EditAction.values()) {
+        
+            if(o.getName().compareToIgnoreCase(n) == 0) {
+                result = o;
+                break;
             }
         }
-    }
-    
-    public boolean blockEntry(long id)
-    {
-        return howToList.contains(id);
-    }
-    
-    public boolean blockEntry(String id)
-    {
-        long value = 0;
         
-        try
-        {
-            value = Long.parseLong(id);
-        }
-        catch(NumberFormatException nfe)
-        {
-            value = 0;
-        }
-        
-        return blockEntry(value);
+        return result;
     }
 }

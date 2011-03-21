@@ -50,7 +50,8 @@ public class InfoServlet extends HttpServlet {
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
         
         IPreferencesService pref = Platform.getPreferencesService();
@@ -60,12 +61,14 @@ public class InfoServlet extends HttpServlet {
         appAddress = hostName + ":" + port;
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         this.createPage(request, response);
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         this.createPage(request, response);
     }
@@ -110,6 +113,8 @@ public class InfoServlet extends HttpServlet {
         this.appendHalle55AsciiServlet(page);
         this.appendLineRow(page);
         this.appendWetterServlet(page);
+        this.appendLineRow(page);
+        this.appendGenericRecordInfoServlet(page);
         
         page.append("</table>\n");
         page.append("</body>\n</html>");
@@ -191,15 +196,13 @@ public class InfoServlet extends HttpServlet {
         page.append("</tr>\n");
     }
 
-    /*
-    private void appendFlashInfoDynServlet(StringBuilder page) {
+    private void appendGenericRecordInfoServlet(StringBuilder page) {
         
         page.append("<tr>\n");
-        page.append("<td class=\"info\"><a href=\"http://cssweb.desy.de:" + port + "/FlashInfo\">http://cssweb.desy.de:" + port + "/FlashInfo" + "</a></td>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/PersonalPVInfo\">http://" + appAddress + "/PersonalPVInfo" + "</a></td>\n");
         page.append("</tr>\n");
     }
-    */
-    
+
     private void appendHalle55Servlet(StringBuilder page) {
         
         page.append("<tr>\n");

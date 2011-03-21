@@ -53,7 +53,8 @@ public class ChannelViewServlet extends HttpServlet
     /** */
     private ProcessVariableAdressFactory pvFactory;
 
-    public void init(ServletConfig config) throws ServletException
+    @Override
+	public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
         
@@ -64,12 +65,14 @@ public class ChannelViewServlet extends HttpServlet
         pvFactory = ProcessVariableAdressFactory.getInstance();
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }

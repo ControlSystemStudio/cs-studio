@@ -71,7 +71,8 @@ public class Halle55 extends HttpServlet {
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
         
@@ -103,7 +104,8 @@ public class Halle55 extends HttpServlet {
         }
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
         // doGet will create a web page which allows to set a new cookie
@@ -339,7 +341,9 @@ public class Halle55 extends HttpServlet {
             file = false;
         } finally {
             if(dataFile != null) {
-                try{dataFile.close();}catch(Exception e) {}
+                try{dataFile.close();}catch(Exception e) {
+                	// Can be ignored
+                }
                 dataFile = null;
             }
         }
@@ -362,7 +366,7 @@ public class Halle55 extends HttpServlet {
         out.println("                <td>" + record + "</td>");
         out.println("                <td align=\"right\">" + 
                 "<a href=\"javascript:openWindowTop(\'" +
-                aapiWebApp + "&NAMES=" + record + "');\">" +
+                aapiWebApp + "&METHOD=GET&NAMES=" + record + "');\">" +
                 Utility.precision(valueReader.getValueAsString(record),
                                   Integer.parseInt(valueReader.getValueAsString(record + ".PREC"))) +
                 "</a></td>");
@@ -424,7 +428,8 @@ public class Halle55 extends HttpServlet {
         return list.toString();
     }
     
-    public void doPost( HttpServletRequest request, HttpServletResponse	response)
+    @Override
+	public void doPost( HttpServletRequest request, HttpServletResponse	response)
     throws ServletException, IOException {
         
         doGet(request, response);

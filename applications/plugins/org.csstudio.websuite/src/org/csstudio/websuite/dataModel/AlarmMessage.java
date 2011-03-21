@@ -25,8 +25,6 @@ package org.csstudio.websuite.dataModel;
 
 import java.util.HashMap;
 
-import org.csstudio.platform.model.IProcessVariable;
-
 /**
  * Message received from the JMS server. The properties of messages are not
  * restricted but the table will only display properties for which a column with
@@ -35,7 +33,7 @@ import org.csstudio.platform.model.IProcessVariable;
  * @author jhatje
  * 
  */
-public class AlarmMessage extends BasicMessage implements IProcessVariable {
+public class AlarmMessage extends BasicMessage {
 
     /**
      * for alarm table: false->no other message with the same pv name and an

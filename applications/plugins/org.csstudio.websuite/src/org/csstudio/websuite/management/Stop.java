@@ -39,7 +39,8 @@ public class Stop implements IManagementCommand
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
+    @Override
+	public CommandResult execute(CommandParameters parameters)
     {
         objectToBeStopped.stopWorking();
 

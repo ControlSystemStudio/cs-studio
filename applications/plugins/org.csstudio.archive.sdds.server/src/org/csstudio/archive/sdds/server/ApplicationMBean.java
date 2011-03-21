@@ -31,5 +31,5 @@ public interface ApplicationMBean {
      * 
      * @param restart
      */
-    public void stopApplication(boolean setRestart);
+    public void stopApplication();
 }

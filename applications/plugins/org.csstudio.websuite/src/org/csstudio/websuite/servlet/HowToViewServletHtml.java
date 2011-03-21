@@ -58,7 +58,8 @@ public class HowToViewServletHtml extends HttpServlet
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException
+    @Override
+	public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
         
@@ -85,7 +86,8 @@ public class HowToViewServletHtml extends HttpServlet
     /**
      * 
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }
@@ -93,7 +95,8 @@ public class HowToViewServletHtml extends HttpServlet
     /**
      * 
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }
