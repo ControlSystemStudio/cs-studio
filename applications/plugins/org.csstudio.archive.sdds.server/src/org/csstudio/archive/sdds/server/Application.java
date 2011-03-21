@@ -221,7 +221,7 @@ public class Application implements IApplication, RemotelyStoppable, Application
     }
 
     /**
-     * Stopps the application. Used by JMX. 
+     * Stops the application. Used by JMX. 
      */
     @Override
 	public void stopApplication() {
