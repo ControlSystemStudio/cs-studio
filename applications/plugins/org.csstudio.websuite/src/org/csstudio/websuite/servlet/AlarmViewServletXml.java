@@ -38,23 +38,26 @@ import org.csstudio.websuite.dao.AlarmMessageListProvider;
  * @author ababic
  *
  */
-public class AlarmViewServletXml extends HttpServlet
-{
+public class AlarmViewServletXml extends HttpServlet {
+    
     /** Generated serial version id */
 	private static final long serialVersionUID = 1L;
 
-	public void init(ServletConfig config) throws ServletException
-	{
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 	}
 	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException {
         doPost(request, response);
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        
         PrintWriter out = response.getWriter();
         List<String> propertyList = null;
         List<String> topicList = null;
@@ -64,23 +67,21 @@ public class AlarmViewServletXml extends HttpServlet
     	response.setContentType("text/xml");
     	
         String parameter = request.getParameter("properties");
-        if(parameter != null)
-        {
+        if(parameter != null)  {
             propertyList = Arrays.asList(parameter.split(","));
         }
           
         parameter = request.getParameter("topics");
-        if(parameter != null)
-        {
+        if(parameter != null) {
             topicList = Arrays.asList(parameter.split(","));
         }
   
         command = request.getParameter("cmd");
-        if(command == null)
-        {
+        if(command == null) {
             command = request.getParameter("command");
         }
     	
-        AlarmMessageListProvider.getInstance().getAlarmMessageListAsXml(out, propertyList, topicList, command);
+        AlarmMessageListProvider.getInstance()
+            .getAlarmMessageListAsXml(out, propertyList, topicList, command);
     }
 }

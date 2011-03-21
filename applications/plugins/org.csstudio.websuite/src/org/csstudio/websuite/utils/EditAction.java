@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -19,49 +19,65 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
  */
 
-package org.csstudio.websuite.dataModel;
+package org.csstudio.websuite.utils;
 
-
-public interface IMessageViewer {
-
-	/**
-	 * Update the view to reflect the fact that a JMSMessage was added to the
-	 * JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void addJMSMessage(BasicMessage jmsm);
-
-	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was
-	 * added to the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void addJMSMessages(BasicMessage[] jmsm);
-
-	/**
-	 * Update the view to reflect the fact that a JMSMessage was removed from
-	 * the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void removeJMSMessage(BasicMessage jmsm);
-
-	/**
-	 * Update the view to reflect the fact that an array of JMSMessages was
-	 * removed from the JMSMessage list
-	 * 
-	 * @param jmsm
-	 */
-	public void removeJMSMessage(BasicMessage[] jmsm);
-
-	/**
-	 * Update the view to reflect the fact that properties of a JMSMessages was
-	 * updated
-	 * 
-	 */
-	public void updateJMSMessage(BasicMessage jmsm);
+/**
+ * TODO (mmoeller) : 
+ * 
+ * @author mmoeller
+ * @version 
+ * @since 03.11.2010
+ */
+public enum EditAction {
+    
+    ACTION_INVALID("invalid"),
+    ACTION_EDIT("edit"),
+    ACTION_ADD("add"),
+    ACTION_NEW("new"),
+    ACTION_DELETE("delete"),
+    ACTION_OK("ok"),
+    ACTION_CANCEL("cancel"),
+    ACTION_PROCESS("process");
+    
+    /** */
+    private String name;
+    
+    /**
+     * 
+     * @param name
+     */
+    private EditAction(String name) {
+        this.name = name;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * 
+     * @param n
+     * @return
+     */
+    public static EditAction getByName(String n) {
+        
+        EditAction result = ACTION_INVALID;
+        
+        for(EditAction o : EditAction.values()) {
+        
+            if(o.getName().compareToIgnoreCase(n) == 0) {
+                result = o;
+                break;
+            }
+        }
+        
+        return result;
+    }
 }

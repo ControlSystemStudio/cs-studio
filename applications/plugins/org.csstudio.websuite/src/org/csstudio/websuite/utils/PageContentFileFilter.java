@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
@@ -24,59 +24,23 @@
 
 package org.csstudio.websuite.utils;
 
-import java.util.Vector;
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
- * @author Markus Moeller
- *
+ * TODO (mmoeller) : 
+ * 
+ * @author mmoeller
+ * @version 
+ * @since 14.10.2010
  */
-public class HowToBlockingList
-{
-    /** */
-    private Vector<Long> howToList;
+public class PageContentFileFilter implements FilenameFilter {
     
-    public HowToBlockingList(String l)
-    {
-        String[] list = null;
-        long value;
-        
-        howToList = new Vector<Long>();
-        
-        list = l.split(",");
-        if(list != null)
-        {
-            for(String s : list)
-            {
-                try
-                {
-                    value = Long.parseLong(s.trim());
-                    howToList.add(value);
-                }
-                catch(NumberFormatException nfe) {
-                	// Can be ignored???
-                }
-            }
-        }
-    }
-    
-    public boolean blockEntry(long id)
-    {
-        return howToList.contains(id);
-    }
-    
-    public boolean blockEntry(String id)
-    {
-        long value = 0;
-        
-        try
-        {
-            value = Long.parseLong(id);
-        }
-        catch(NumberFormatException nfe)
-        {
-            value = 0;
-        }
-        
-        return blockEntry(value);
+    /* (non-Javadoc)
+     * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+     */
+    @Override
+    public boolean accept(File dir, String name) {
+        return name.startsWith("content_");
     }
 }

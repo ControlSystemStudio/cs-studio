@@ -24,14 +24,15 @@
 
 package org.csstudio.websuite.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * TODO (Markus Moeller) : 
@@ -45,35 +46,41 @@ public class PageContent {
     /** Private logger for this class */
     private Logger logger;
 
+    /** The name of this page content */
+    private String pageContentName;
+    
     /** The content of the page */
     private ArrayList<PageEntry> content;
     
-    /** Path to the workspace folder */
-    private String workspacePath;
-    
-    private String FILE_SEPARATOR;
-
     /**
-     * Standard constructor
+     * 
      */
     public PageContent() {
         
         logger = CentralLogger.getInstance().getLogger(this);
-        
         content = new ArrayList<PageEntry>();
+        pageContentName = null;
+    }
+    
+    /**
+     * 
+     * @param name
+     */
+    public PageContent(String name) {
         
-        FILE_SEPARATOR = System.getProperty("file.separator");
+        this();
+        pageContentName = name;
+    }
+    
+    /**
+     * This constructor loads the content of the PageContent object from a file.
+     * 
+     * @param file
+     */
+    public PageContent(File file) {
         
-        IPath location = Platform.getLocation();
-        workspacePath = location.toOSString();
-        if(workspacePath.endsWith(FILE_SEPARATOR) == false) {
-            
-            workspacePath += FILE_SEPARATOR;
-        }
-        
-        logger.info(workspacePath);
-        
-        content = loadContentFile();
+        this();
+        content = loadContentFile(file);
     }
     
     /**
@@ -98,7 +105,23 @@ public class PageContent {
      * 
      * @return
      */
-    private ArrayList<PageEntry> loadContentFile() {
+    public String getPageContentName() {
+        return this.pageContentName;
+    }
+
+    /**
+     * 
+     * @param entry
+     */
+    public void addPageEntry(PageEntry entry) {
+        content.add(entry);
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    private ArrayList<PageEntry> loadContentFile(File file) {
         
         Properties p = new Properties();
         ArrayList<PageEntry> result = new ArrayList<PageEntry>();
@@ -106,13 +129,21 @@ public class PageContent {
         String pvName = null;
         String egu = null;
         String label = null;
-        String fileName = workspacePath + "flashinfo.properties";
         int index = 0;
         boolean moreElements = true;
         
+//        System.out.println(file.getName());
+//        System.out.println(file.getAbsolutePath());
+        
         try {
-            in = new FileInputStream(fileName);
+            in = new FileInputStream(file.getPath());
             p.load(in);
+            
+            if(p.containsKey("name")) {
+                pageContentName = p.getProperty("name", file.getName());
+            } else {
+                pageContentName = file.getName();
+            }
             
             do {
                 if(p.containsKey("pvName." + index)
@@ -134,15 +165,56 @@ public class PageContent {
                 else {
                     moreElements = false;
                 }
-                    
+                
             } while(moreElements);
+
         } catch (IOException ioe) {
             logger.error("[*** IOException ***]: " + ioe.getMessage());
-        }
-        finally {
-            if(in!=null){try{in.close();}catch(Exception e){}in=null;}
+        } finally {
+            if(in!=null){try{in.close();}catch(Exception e){/* Can be ignored */}in=null;}
         }
         
         return result;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public boolean storeContentFile(File file) {
+        
+        Properties p = new Properties();
+        FileOutputStream out = null;
+        boolean success = false;
+        
+        p.setProperty("name", pageContentName);
+        
+        int n = 0;
+        for(PageEntry pageEntry : content) {
+            
+            p.setProperty("pvName." + n, pageEntry.getPvName());
+            
+            if(pageEntry.containsEgu()) {
+                p.setProperty("egu." + n, pageEntry.getEgu());
+            }
+            
+            p.setProperty("label." + n, pageEntry.getLabel());
+            
+            n++;
+        }
+        
+        try {
+            out = new FileOutputStream(file.getPath());
+            p.store(out, null);
+            success = true;
+        } catch(FileNotFoundException fnfe) {
+            logger.error("[*** FileNotFoundException ***]: " + fnfe.getMessage());
+        } catch(IOException ioe) {
+            logger.error("[*** IOException ***]: " + ioe.getMessage());
+        } finally {
+            if(out!=null){try{out.close();}catch(Exception e){/* Can be ignored */}out=null;}
+        }
+        
+        return success;
     }
 }

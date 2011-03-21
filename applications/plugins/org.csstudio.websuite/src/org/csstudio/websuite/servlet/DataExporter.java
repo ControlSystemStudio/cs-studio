@@ -58,7 +58,8 @@ public class DataExporter extends HttpServlet {
     
     private String FILE_SEPARATOR;
 
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
         
@@ -74,7 +75,8 @@ public class DataExporter extends HttpServlet {
         }
     }
     
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
         String data = "";
@@ -96,7 +98,9 @@ public class DataExporter extends HttpServlet {
             logger.warn("Cannot write to the data file: " + ioe.getMessage());
         } finally {
             if(dataFile != null) {
-                try{dataFile.close();}catch(Exception e) {}
+                try{dataFile.close();}catch(Exception e) {
+                	// Can be ignored
+                }
                 dataFile = null;
             }
         }
