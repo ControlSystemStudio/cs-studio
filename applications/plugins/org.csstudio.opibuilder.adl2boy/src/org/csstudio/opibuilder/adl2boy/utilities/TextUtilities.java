@@ -61,15 +61,52 @@ public class TextUtilities {
 
 	/**
 	 * @param textModel
-	 *            TODO
+	 *            Model of BOY widget to be modified
 	 * @param adlTextWidget
-	 *            TODO
+	 *            Model of ADL widget.  Sourve of the data
 	 * 
 	 */
 	public static void setFormat(TextIndicatorModel textModel,
 			ADLAbstractWidget adlTextWidget) {
-		// TODO Add format to TextEntry2Model
-		TranslatorUtils.printNotHandledWarning("", "format");
+		if (adlTextWidget.getName().equals("text entry")
+				|| adlTextWidget.getName().equals("text update")) {
+			String format = ((ITextWidget)adlTextWidget).getFormat();
+			if (format.equals("")||
+					format.equals("decimal")){
+				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 1);
+			}
+			else if (format.equals("exponential") ||
+					format.equals("engr. notation")){
+				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 2);
+			}
+			else if (format.equals("hexadecimal")){
+				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 3);
+			}
+			else if (format.equals("string")){
+				textModel.setPropertyValue(TextIndicatorModel.PROP_FORMAT_TYPE, 4);
+			}
+			else if (format.equals("octal")){
+				// TODO Add format to TextUtilities handle octal format
+				TranslatorUtils.printNotHandledWarning("", "format - octal");
+			}			
+			else if (format.equals("compact")){
+				// TODO Add format to TextUtilities handle compact format
+				TranslatorUtils.printNotHandledWarning("", "format - compact");
+			}			
+			else if (format.equals("sexagesimal")){
+				// TODO Add format to TextUtilities handle sexagesimal format
+				TranslatorUtils.printNotHandledWarning("", "format - sexagesimal");
+			}			
+			else if (format.equals("sexagesimal-hms")){
+				// TODO Add format to TextUtilities handle sexagesimal-hms format
+				TranslatorUtils.printNotHandledWarning("", "format - sexagesimal-hms");
+			}			
+			else if (format.equals("sexagesimal-dms")){
+				// TODO Add format to TextUtilities handle sexagesimal-dms format
+				TranslatorUtils.printNotHandledWarning("", "format - sexagesimal-dms");
+			}			
+		}
+
 	}
 
 }
