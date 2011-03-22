@@ -102,11 +102,11 @@ public class ImmutableArrayList<T> extends ArrayList<T> implements IImmutableLis
     }
 
 
-    private void addAll(@Nonnull final IImmutableCollection<? extends T> elements) {
-        for (final T e : elements) {
-            add(e);
-        }
-    }
+//    private void addAll(@Nonnull final IImmutableCollection<? extends T> elements) {
+//        for (final T e : elements) {
+//            add(e);
+//        }
+//    }
 
     /**
      * {@inheritDoc}
