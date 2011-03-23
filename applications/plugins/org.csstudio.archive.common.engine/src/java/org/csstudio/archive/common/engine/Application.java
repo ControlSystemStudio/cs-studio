@@ -16,14 +16,17 @@ import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
+import org.csstudio.archive.common.engine.httpserver.EngineHttpServer;
+import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
-import org.csstudio.archive.common.engine.server.EngineHttpServer;
-import org.csstudio.archive.common.engine.server.EngineHttpServerException;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
+import org.csstudio.archive.common.engine.service.ServiceProvider;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
@@ -90,8 +93,12 @@ public class Application implements IApplication {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     @SuppressWarnings("nls")
     public Object start(@Nonnull final IApplicationContext context) {
+
+        final IServiceProvider provider = new ServiceProvider();
+
         final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
@@ -99,31 +106,21 @@ public class Application implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        LOG.info("Archive Engine Ver " + EngineModel.VERSION);
+        LOG.info("DESY Archive Engine Version " + EngineModel.VERSION);
         _run = true;
-        _model = new EngineModel();
+        _model = new EngineModel(provider);
         final EngineHttpServer httpServer = startHttpServer();
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
-                readEngineConfiguration();
+                readEngineConfiguration(provider);
 
-                // Run until model gets stopped via HTTPD or #stop()
-                LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
-                _model.start();
-                while (true) {
-                    Thread.sleep(1000);
-                    if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
-                        _run = false;
-                        break;
-                    }
-                    if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {
-                        break;
-                    }
-                }
+                runModelLoop();
+
                 LOG.info("ArchiveEngine ending");
+
                 _model.stop();
                 _model.clearConfig();
             }
@@ -138,6 +135,27 @@ public class Application implements IApplication {
     }
 
     /**
+     * Run until model gets stopped via HTTPD or #stop()
+     *
+     * @throws EngineModelException
+     * @throws InterruptedException
+     */
+    private void runModelLoop() throws EngineModelException, InterruptedException {
+        LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
+        _model.start();
+        while (true) {
+            Thread.sleep(1000);
+            if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
+                _run = false;
+                break;
+            }
+            if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {
+                break;
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -147,10 +165,11 @@ public class Application implements IApplication {
         }
     }
 
-    private void readEngineConfiguration() throws EngineModelException {
+    private void readEngineConfiguration(@Nonnull final IServiceProvider provider) throws EngineModelException {
         LOG.info("Reading configuration for engine '" + _engineName + "'");
+
         final BenchmarkTimer timer = new BenchmarkTimer();
-        _model.readConfig(_engineName, _port);
+        _model.readConfig(provider, _engineName, _port);
         timer.stop();
         LOG.info("Read configuration: " + _model.getChannels().size() + " channels in " + timer.toString());
     }

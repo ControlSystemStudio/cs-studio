@@ -37,8 +37,8 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -62,9 +62,9 @@ final class WriteWorker implements Runnable {
     private static final Logger WORKER_LOG =
             CentralLogger.getInstance().getLogger(WriteWorker.class);
 
-    private final WriteExecutor _writeExec;
+    //private final WriteExecutor _writeExec;
     private final String _name;
-    private final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
+    private final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
     private final long _periodInMS;
 
     /** Average number of values per write run */
@@ -76,6 +76,8 @@ final class WriteWorker implements Runnable {
 
     private TimeInstant _lastTimeWrite;
 
+    private final IServiceProvider _provider;
+
     /**
      * Constructor.
      * @param exec
@@ -83,11 +85,13 @@ final class WriteWorker implements Runnable {
      * @param channels
      * @param periodInMS
      */
-    public WriteWorker(@Nonnull final WriteExecutor exec,
+    public WriteWorker(@Nonnull final IServiceProvider provider,
+                       //@Nonnull final WriteExecutor exec,
                        @Nonnull final String name,
-                       @Nonnull final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
+                       @Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
                        final long periodInMS) {
-        _writeExec = exec;
+        _provider = provider;
+        //_writeExec = exec;
         _name = name;
         WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
         _channels = channels;
@@ -103,7 +107,7 @@ final class WriteWorker implements Runnable {
         final BenchmarkTimer timer = new BenchmarkTimer();
         try {
             timer.start();
-            // In case of a network problem, we can hang in here for a long time...
+
             final long written = write();
 
             timer.stop();
@@ -111,7 +115,8 @@ final class WriteWorker implements Runnable {
 
             final long durationInMS = timer.getMilliseconds();
             if (durationInMS >= _periodInMS) {
-                _writeExec.enhanceWriterThroughput(this);
+                // FIXME (bknerr) : this won't work, stupid
+                //_writeExec.enhanceWriterThroughput(this);
             }
 
             _avgWriteCount.accumulate(Double.valueOf(written));
@@ -121,9 +126,10 @@ final class WriteWorker implements Runnable {
             rescueData();
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
         }
+//        catch (final InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
     }
 
     private void rescueData() {
@@ -182,19 +188,19 @@ final class WriteWorker implements Runnable {
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples =
                 collectSamplesFromBuffers(_channels);
 
-        final IArchiveEngineFacade writerService = Activator.getDefault().getArchiveEngineService();
-        writerService.writeSamples(allSamples);
+        final IArchiveEngineFacade service = _provider.getEngineFacade();
+        service.writeSamples(allSamples);
 
         return allSamples.size();
     }
 
     @Nonnull
     private LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels) {
+    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels) {
 
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples = Lists.newLinkedList();
 
-        for (final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel : channels) {
+        for (final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel : channels) {
             final SampleBuffer<Object,
             IAlarmSystemVariable<Object>,
                                IArchiveSample<Object, IAlarmSystemVariable<Object>>> buffer = channel.getSampleBuffer();

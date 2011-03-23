@@ -5,13 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.common.engine.server;
+package org.csstudio.archive.common.engine.httpserver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
-import org.csstudio.archive.common.engine.model.AbstractArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -58,7 +58,7 @@ class GroupsResponse extends AbstractResponse
             double queue_avg = 0;
             int queue_max = 0;
             long received_values = 0;
-            for (final AbstractArchiveChannel<?, ?> channel : group.getChannels()) {
+            for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
 
                 if (channel.isConnected()) {
                     ++connect_count;

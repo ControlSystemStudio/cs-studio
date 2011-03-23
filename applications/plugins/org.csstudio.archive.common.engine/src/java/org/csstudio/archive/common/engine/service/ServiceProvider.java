@@ -19,25 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.server;
+package org.csstudio.archive.common.engine.service;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.csstudio.archive.common.engine.Activator;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 /**
- * Dedicated exception to handle http service exceptions.
+ * Implementation of the service provider encapsulating all OSGi services for this application.
+ *
+ * Can be replaced (mocked out) in a test environment, hence decoupling the real service retrieval
+ * via either service trackers, static references, declarative services from the service usage.
  *
  * @author bknerr
- * @since 14.02.2011
+ * @since Mar 23, 2011
  */
-public class EngineHttpServerException extends Exception {
-
-    private static final long serialVersionUID = 6625543457175539914L;
-
+public class ServiceProvider implements IServiceProvider {
     /**
-     * Constructor.
+     * {@inheritDoc}
      */
-    public EngineHttpServerException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
+    @Override
+    @Nonnull
+    public IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException {
+        return Activator.getDefault().getArchiveEngineService();
     }
 }

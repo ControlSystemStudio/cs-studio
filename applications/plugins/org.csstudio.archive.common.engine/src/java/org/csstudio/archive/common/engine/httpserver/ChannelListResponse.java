@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.common.engine.server;
+package org.csstudio.archive.common.engine.httpserver;
 
 import java.util.regex.Pattern;
 
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.Messages;
-import org.csstudio.archive.common.engine.model.AbstractArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
 /** Provide web page with list of channels (by pattern).
@@ -57,7 +57,7 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_LastArchivedValue,
         });
 
-        for (final AbstractArchiveChannel<?,?> channel : _model.getChannels()) {
+        for (final ArchiveChannel<?,?> channel : _model.getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches()) {
                 continue;

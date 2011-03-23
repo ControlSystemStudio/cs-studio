@@ -13,8 +13,7 @@ package org.csstudio.archive.common.engine;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Messages
-{
+public class Messages {
     final public static String HTTP_BatchSize = "Batch Size";
     final public static String HTTP_Channel = "Channel";
     final public static String HTTP_ChannelCount = "Channels";
