@@ -46,6 +46,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
 
     private static final String EXC_MSG = "Engine retrieval from archive failed.";
 
+    @SuppressWarnings("unused")
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveEngineDaoImpl.class);
 

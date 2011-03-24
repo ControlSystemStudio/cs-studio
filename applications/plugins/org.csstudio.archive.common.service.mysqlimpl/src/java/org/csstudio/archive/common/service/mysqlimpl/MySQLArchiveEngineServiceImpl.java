@@ -37,15 +37,20 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
+
+import com.google.inject.Inject;
 
 
 /**
@@ -58,17 +63,30 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
-    INSTANCE;
+public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveEngineServiceImpl.class);
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+
+    /**
+     * Injected by GUICE construction.
+     */
+    private final IArchiveEngineDao _engineDao;
+    private final IArchiveSampleDao _sampleDao;
+    private final IArchiveChannelDao _channelDao;
 
 
     /**
      * Constructor.
      */
-    private MySQLArchiveEngineServiceImpl() {
+    @Inject
+    public MySQLArchiveEngineServiceImpl(@Nonnull final IArchiveEngineDao engineDao,
+                                         @Nonnull final IArchiveSampleDao sampleDao,
+                                         @Nonnull final IArchiveChannelDao channelDao) {
+        _engineDao = engineDao;
+        _sampleDao = sampleDao;
+        _channelDao = channelDao;
+
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
     }
