@@ -65,7 +65,7 @@ public enum PersistEngineDataManager {
     // get no of cpus and expected no of archive engines, and available archive connections
     private final int _cpus = Runtime.getRuntime().availableProcessors();
     private final ScheduledThreadPoolExecutor _executor =
-        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus-1));
+        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus + 1));
 //    (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
     /**
      * Sorted set for submitted periodic workers - decreasing by period
@@ -147,7 +147,7 @@ public enum PersistEngineDataManager {
 
     public void submitStatementToBatch(@Nonnull final String stmt) {
         synchronized (this) {
-            if (anotherWorkerRequired()) {
+            if (isAnotherWorkerRequired()) {
                 submitNewPersistDataWorker();
             }
             _sqlStatementBatch.submitStatement(stmt);
@@ -194,7 +194,7 @@ public enum PersistEngineDataManager {
      * If not so, FIXME (bknerr) : start a data rescue worker to save the stuff to disc and inform the staff per email
      * @return
      */
-    private boolean anotherWorkerRequired() {
+    private boolean isAnotherWorkerRequired() {
         if (_executor.getPoolSize() <= 0) {
             return true; // none yet submitted, so yes we need one
         }

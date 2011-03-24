@@ -49,7 +49,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     private final String _selectChannelGroupByEngineIdStmt =
         "SELECT id, name, engine_id, description FROM " +
-        getDaoMgr().getDatabaseName() + " .channel_group" +
+        getDatabaseName() + " .channel_group" +
         " WHERE engine_id=? ORDER BY name";
 
     /**

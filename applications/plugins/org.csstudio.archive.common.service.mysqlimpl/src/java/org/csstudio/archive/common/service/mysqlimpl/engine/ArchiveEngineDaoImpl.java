@@ -54,7 +54,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectEngineByNameStmt =
-        "SELECT id, url FROM " + getDaoMgr().getDatabaseName() + "." + TAB + " WHERE name=?";
+        "SELECT id, url FROM " + getDatabaseName() + "." + TAB + " WHERE name=?";
 
 
     /**

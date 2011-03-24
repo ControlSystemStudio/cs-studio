@@ -81,7 +81,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
-    private final String _dbName = getDaoMgr().getDatabaseName();
+    private final String _dbName = getDatabaseName();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _insertSamplesStmt =

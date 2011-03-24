@@ -37,52 +37,28 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
-import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
-import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
-import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
-import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatusDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
-import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
-import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
-import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
- * The archive dao manager.
+ * The archive connection handler.
  *
  * Envisioned to handle connection pools and transactions with CRUD command abstraction.
  *
  * @author bknerr
  * @since 11.11.2010
  */
-public enum ArchiveDaoManager {
+public enum ArchiveConnectionHandler {
 
     INSTANCE;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
-    static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
+    static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class);
     static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
 
-    /**
-     * DAOs.
-     */
-    private IArchiveChannelDao _archiveChannelDao;
-    private IArchiveChannelGroupDao _archiveChannelGroupDao;
-    private IArchiveEngineDao _archiveEngineDao;
-    private IArchiverMgmtDao _archiverMgmtDao;
-    private IArchiveSampleDao _archiveSampleDao;
-    private IArchiveControlSystemDao _archiveControlSystemDao;
-    private IArchiveChannelStatusDao _archiveChannelStatusDao;
 
     /**
      * The datasource that specifies the connections.
@@ -109,7 +85,7 @@ public enum ArchiveDaoManager {
     /**
      * Constructor.
      */
-    private ArchiveDaoManager() {
+    private ArchiveConnectionHandler() {
 
         loadAndCheckPreferences();
         _dataSource = createDataSource();
@@ -173,11 +149,11 @@ public enum ArchiveDaoManager {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection:\n" +
+                    CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class).debug("MySQL connection:\n" +
                               meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
                 } else {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("No meta data for MySQL connection");
+                    CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class).debug("No meta data for MySQL connection");
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);
@@ -253,65 +229,6 @@ public enum ArchiveDaoManager {
     @CheckForNull
     public String getDatabaseName() {
         return _prefDatabaseName;
-    }
-
-    @Nonnull
-    public IArchiveChannelDao getChannelDao() {
-        if (_archiveChannelDao == null) {
-            _archiveChannelDao = new ArchiveChannelDaoImpl();
-        }
-        return _archiveChannelDao;
-    }
-
-    @Nonnull
-    public IArchiverMgmtDao getArchiverMgmtDao() {
-        if (_archiverMgmtDao == null) {
-            _archiverMgmtDao  = new ArchiverMgmtDaoImpl();
-        }
-        return _archiverMgmtDao;
-    }
-
-    @Nonnull
-    public IArchiveChannelGroupDao getChannelGroupDao() {
-        if (_archiveChannelGroupDao == null) {
-            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl();
-        }
-        return _archiveChannelGroupDao;
-    }
-
-
-    @Nonnull
-    public IArchiveSampleDao getSampleDao() {
-        if (_archiveSampleDao == null) {
-            _archiveSampleDao = new ArchiveSampleDaoImpl();
-        }
-        return _archiveSampleDao;
-    }
-
-    @Nonnull
-    public IArchiveEngineDao getEngineDao() {
-        if (_archiveEngineDao == null) {
-            _archiveEngineDao = new ArchiveEngineDaoImpl();
-        }
-        return _archiveEngineDao;
-    }
-
-
-    @Nonnull
-    public IArchiveControlSystemDao getControlSystemDao() {
-        if (_archiveControlSystemDao == null) {
-            _archiveControlSystemDao = new ArchiveControlSystemDaoImpl();
-        }
-        return _archiveControlSystemDao;
-    }
-
-
-    @Nonnull
-    public IArchiveChannelStatusDao getChannelStatusDao() {
-        if (_archiveChannelStatusDao == null) {
-            _archiveChannelStatusDao = new ArchiveChannelStatusDaoImpl();
-        }
-        return _archiveChannelStatusDao;
     }
 }
 

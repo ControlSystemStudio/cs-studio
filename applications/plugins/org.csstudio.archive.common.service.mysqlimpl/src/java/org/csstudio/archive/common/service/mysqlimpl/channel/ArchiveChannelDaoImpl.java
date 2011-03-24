@@ -81,7 +81,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
                     TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
-                "FROM " + getDaoMgr().getDatabaseName() + "." + TAB + ", " + getDaoMgr().getDatabaseName() + "." + CS_TAB;
+                "FROM " + getDatabaseName() + "." + TAB + ", " + getDatabaseName() + "." + CS_TAB;
     private final String _selectChannelSuffix = "AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
@@ -91,7 +91,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _selectChannelsByGroupId = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
                                                     " ORDER BY " + TAB + ".name";
     private final String _selectMatchingChannelsStmt = _selectChannelPrefix + " WHERE " + TAB + ".name REGEXP ? " + _selectChannelSuffix;
-    private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDaoMgr().getDatabaseName() + "." + TAB;
+    private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDatabaseName() + "." + TAB;
 
     /**
      * Constructor.
@@ -293,10 +293,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                                       @Nonnull final V displayHigh) throws ArchiveDaoException {
         String updateDisplayRangesStmt;
         try {
-            updateDisplayRangesStmt = "UPDATE " + getDaoMgr().getDatabaseName() + "." + TAB +
+            updateDisplayRangesStmt = "UPDATE " + getDatabaseName() + "." + TAB +
             " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
             ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
-            " WHERE " + getDaoMgr().getDatabaseName() + "." + TAB + ".id=" + id.asString();
+            " WHERE " + getDatabaseName() + "." + TAB + ".id=" + id.asString();
 
             getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
         } catch (final TypeSupportException e) {

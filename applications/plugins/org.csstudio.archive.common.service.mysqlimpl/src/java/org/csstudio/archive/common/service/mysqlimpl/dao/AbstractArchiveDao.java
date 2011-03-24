@@ -61,13 +61,15 @@ public abstract class AbstractArchiveDao {
      */
     @Nonnull
     protected static Connection getConnection() throws ArchiveConnectionException {
-        return ArchiveDaoManager.INSTANCE.getConnection();
+        return ArchiveConnectionHandler.INSTANCE.getConnection();
     }
 
     @Nonnull
-    protected static ArchiveDaoManager getDaoMgr() {
-        return ArchiveDaoManager.INSTANCE;
+    protected static String getDatabaseName() {
+        return ArchiveConnectionHandler.INSTANCE.getDatabaseName();
     }
+
+
     @Nonnull
     protected static PersistEngineDataManager getEngineMgr() {
         return PersistEngineDataManager.INSTANCE;

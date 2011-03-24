@@ -82,7 +82,7 @@ public class PersistDataWorker implements Runnable {
         Statement sqlStmt = null;
         Connection connection = null;
         try {
-            connection = ArchiveDaoManager.INSTANCE.getConnection();
+            connection = ArchiveConnectionHandler.INSTANCE.getConnection();
             sqlStmt = connection.createStatement();
             long size = 0;
             while (_queuedStatements.peek() != null) {
@@ -146,7 +146,7 @@ public class PersistDataWorker implements Runnable {
             try {
                 stmt.close();
             } catch (final SQLException e) {
-                ArchiveDaoManager.WORKER_LOG.warn("Closing of statemend failed.");
+                ArchiveConnectionHandler.WORKER_LOG.warn("Closing of statemend failed.");
             }
         }
     }

@@ -29,21 +29,14 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
-import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.MySQLArchiveServiceImplModule;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Scopes;
 
 /**
  * Activator.
@@ -82,26 +75,7 @@ public class Activator implements BundleActivator {
         return INSTANCE;
     }
 
-    private static class MySQLArchiveServiceImplModule extends AbstractModule {
-        /**
-         * Constructor.
-         */
-        public MySQLArchiveServiceImplModule() {
-            // EMPTY
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void configure() {
-            bind(IArchiveEngineDao.class).to(ArchiveEngineDaoImpl.class).in(Scopes.SINGLETON);
-            bind(IArchiveSampleDao.class).to(ArchiveSampleDaoImpl.class).in(Scopes.SINGLETON);
-            bind(IArchiveChannelDao.class).to(ArchiveChannelDaoImpl.class).in(Scopes.SINGLETON);
-        }
-    }
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
@@ -111,6 +85,9 @@ public class Activator implements BundleActivator {
 	    final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
 	    final MySQLArchiveEngineServiceImpl engineServiceImpl =
 	        injector.getInstance(MySQLArchiveEngineServiceImpl.class);
+	    final MySQLArchiveReaderServiceImpl readerServiceImpl =
+	        injector.getInstance(MySQLArchiveReaderServiceImpl.class);
+
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
@@ -128,7 +105,7 @@ public class Activator implements BundleActivator {
         LOG.info("Register MySQL archive reader service");
 
         context.registerService(IArchiveReaderFacade.class.getName(),
-                                MySQLArchiveReaderServiceImpl.INSTANCE,
+                                readerServiceImpl,
                                 propsRd);
 	}
 
@@ -141,6 +118,6 @@ public class Activator implements BundleActivator {
 
 	    // Services are automatically unregistered
 
-	    ArchiveDaoManager.INSTANCE.disconnect();
+	    ArchiveConnectionHandler.INSTANCE.disconnect();
 	}
 }

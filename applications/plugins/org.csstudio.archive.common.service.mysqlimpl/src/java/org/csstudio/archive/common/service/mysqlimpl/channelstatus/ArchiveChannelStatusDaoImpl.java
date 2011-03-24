@@ -41,7 +41,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     public static final String TAB = "channel_status";
 
     private static final String INSERT_ENTRY_STMT_PREFIX =
-        "INSERT INTO " + getDaoMgr().getDatabaseName() + "." + TAB +
+        "INSERT INTO " + getDatabaseName() + "." + TAB +
                      " (channel_id, connected, info, timestamp) " +
                      "VALUES ";
 
