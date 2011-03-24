@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.platform.libs.dal,
  org.csstudio.platform.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.annotations,
+ javax.annotation,
  org.csstudio.platform.libs.log4j;visibility:=reexport
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy

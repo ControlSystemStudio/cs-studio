@@ -23,10 +23,8 @@ package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.base.Joiner;
 
@@ -49,8 +47,6 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
         super();
     }
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(ArchiveChannelStatusDaoImpl.class);
 
     @Override
     public void createChannelStatus(@Nonnull final ArchiveChannelStatus entry) throws ArchiveDaoException {

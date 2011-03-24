@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test
+ * Tests the request type abstraction and the request type parameter setting and getting.
  *
  * @author bknerr
  * @since 26.01.2011
@@ -56,7 +56,7 @@ public class IArchiveRequestTypeUnitTest {
         }
         @Override
         @Nonnull
-        public Object clone() {
+        public IntegerParam deepCopy() {
             return new IntegerParam(getValue());
         }
 
@@ -84,7 +84,7 @@ public class IArchiveRequestTypeUnitTest {
         }
         @Override
         @Nonnull
-        public Object clone() {
+        public DoubleParam deepCopy() {
             return new DoubleParam(getValue());
         }
     }
@@ -113,8 +113,8 @@ public class IArchiveRequestTypeUnitTest {
             final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
             // Type mismatch on getting
             @SuppressWarnings("unused")
-            final
-            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
+            final IArchiveRequestTypeParameter<Integer> p =
+                art.getParameter(TEST_PARAM_D.getName(), Integer.class);
         }
     }
     @Test(expected=RequestTypeParameterException.class)
