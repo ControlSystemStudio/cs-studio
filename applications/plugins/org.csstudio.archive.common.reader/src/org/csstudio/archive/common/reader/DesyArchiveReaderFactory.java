@@ -58,6 +58,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
     static final ValueIterator EMPTY_ITER = new ValueIterator() {
         @Override
+        @CheckForNull
         public IValue next() throws Exception {
             return null;
         }
