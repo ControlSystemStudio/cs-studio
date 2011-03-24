@@ -94,7 +94,7 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
     @CheckForNull
     public IArchiverMgmtEntry createMgmtEntry(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveDaoException {
         final String sqlValue = M2S_FUNC.apply(entry);
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + sqlValue;
+        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + sqlValue;
 
         getEngineMgr().submitStatementToBatch(stmtStr);
         return null;
@@ -107,7 +107,7 @@ public class ArchiverMgmtDaoImpl extends AbstractArchiveDao implements IArchiver
     public boolean createMgmtEntries(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveDaoException {
 
         final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
-        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDaoMgr().getDatabaseName()) + values;
+        final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + values;
 
         getEngineMgr().submitStatementToBatch(stmtStr);
 

@@ -50,7 +50,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     public static final String TAB = "control_system";
 
     private final String _selectCSByIdStmt = "SELECT name,type FROM " +
-                                             getDaoMgr().getDatabaseName() +
+                                             getDatabaseName() +
                                              "." + TAB + " WHERE id=?";
 
 

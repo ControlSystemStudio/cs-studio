@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
- org.csstudio.platform.libs.annotations,
+ javax.annotation,
  org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
  org.csstudio.platform.libs.guava;bundle-version="0.6.0",
  org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reexport,

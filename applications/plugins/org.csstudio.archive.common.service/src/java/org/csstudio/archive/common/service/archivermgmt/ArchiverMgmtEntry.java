@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.archivermgmt;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -83,26 +84,31 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
     }
 
     @Override
+    @Nonnull
     public TimeInstant getTimestamp() {
         return _timestamp;
     }
 
     @Override
+    @Nonnull
     public ArchiveEngineId getEngineId() {
         return _engineId;
     }
 
     @Override
+    @Nonnull
     public ArchiverMonitorStatus getStatus() {
         return _status;
     }
 
     @Override
+    @Nonnull
     public ArchiveChannelId getChannelId() {
         return _channelId;
     }
 
     @Override
+    @CheckForNull
     public String getInfo() {
         return _info;
     }

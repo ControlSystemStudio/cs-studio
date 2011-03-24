@@ -75,12 +75,14 @@ public class Activator extends Plugin {
 
     /**
      * Returns the archive engine config service from the service tracker.
+     *
+     * Don't use directly but via the service provider injected by GUICE.
+     *
      * @return the archive service or <code>null</code> if not available.
      * @throws OsgiServiceUnavailableException
      */
     @Nonnull
-    public IArchiveEngineFacade getArchiveEngineService() throws OsgiServiceUnavailableException
-    {
+    public IArchiveEngineFacade getArchiveEngineService() throws OsgiServiceUnavailableException {
         final IArchiveEngineFacade service =
             (IArchiveEngineFacade) _archiveEngineServiceTracker.getService();
         if (service == null) {

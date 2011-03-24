@@ -16,6 +16,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
@@ -40,42 +41,46 @@ public class WriteExecutor {
     /** Minimum write period [seconds] */
     private static final long MIN_WRITE_PERIOD_MS = 5000;
 
-    private final ConcurrentMap<String, AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channelMap =
+    private final ConcurrentMap<String, ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channelMap =
         Maps.newConcurrentMap();
-    private ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
     private WriteWorker _writeWorker;
     private long _writePeriodInMS;
 
+    private final IServiceProvider _provider;
+
     /**
      * Construct thread for writing to server
+     * @param provider provider for the service
      */
-    public WriteExecutor() {
-        // EMPTY
+    public WriteExecutor(@Nonnull final IServiceProvider provider) {
+        _provider = provider;
     }
 
-    void enhanceWriterThroughput(@Nonnull final WriteWorker writeWorker) throws InterruptedException {
-        final long currentPeriodInMS = writeWorker.getPeriodInMS();
-        if (currentPeriodInMS > MIN_WRITE_PERIOD_MS) {
-            _executor.shutdown();
-            _executor.awaitTermination(currentPeriodInMS, TimeUnit.MILLISECONDS);
-            _executor.shutdownNow();
-
-            _executor = Executors.newSingleThreadScheduledExecutor();
-
-            _writePeriodInMS = Math.max(currentPeriodInMS>>1, MIN_WRITE_PERIOD_MS);
-            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
-                                                        0L);
-        } else {
-            LOG.warn("Archive writer duration exceeds minimum period.");
-            LOG.warn("Consider starting another writer.");
-            // TODO (bknerr) : handle writeWorker exhaustion
-        }
-    }
+//    void enhanceWriterThroughput(@Nonnull final WriteWorker writeWorker) throws InterruptedException {
+//        final long currentPeriodInMS = writeWorker.getPeriodInMS();
+//        if (currentPeriodInMS > MIN_WRITE_PERIOD_MS) {
+//            _executor.shutdown();
+//            _executor.awaitTermination(currentPeriodInMS, TimeUnit.MILLISECONDS);
+//            _executor.shutdownNow();
+//
+//            _executor = Executors.newSingleThreadScheduledExecutor();
+//
+//            _writePeriodInMS = Math.max(currentPeriodInMS>>1, MIN_WRITE_PERIOD_MS);
+//            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
+//                                                        0L);
+//        } else {
+//            LOG.warn("Archive writer duration exceeds minimum period.");
+//            LOG.warn("Consider starting another writer.");
+//            // TODO (bknerr) : handle writeWorker exhaustion
+//        }
+//    }
 
     @Nonnull
     private WriteWorker submitAndScheduleWriteWorker(final long writePeriodInMS,
                                                      final long delayInMS) {
-        final WriteWorker writeWorker = new WriteWorker(this,
+        final WriteWorker writeWorker = new WriteWorker(_provider,
+                                                        //this,
                                                         "Periodic Archive Engine Writer",
                                                         _channelMap.values(),
                                                         writePeriodInMS);
@@ -87,7 +92,7 @@ public class WriteExecutor {
     }
 
     /** Add a channel's buffer that this thread reads */
-    public void addChannel(@Nonnull final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel) {
+    public void addChannel(@Nonnull final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
@@ -106,6 +111,7 @@ public class WriteExecutor {
             writePeriod = MIN_WRITE_PERIOD_MS;
         }
         _writePeriodInMS = writePeriod;
+
 
         _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
                                                     0L);
@@ -145,7 +151,9 @@ public class WriteExecutor {
      */
     public void shutdown() {
         if (!_executor.isShutdown()) {
-            _executor.execute(new WriteWorker(this, "Shutdown worker", _channelMap.values(), 0L));
+            _executor.execute(new WriteWorker(_provider,
+                                              //this,
+                                              "Shutdown worker", _channelMap.values(), 0L));
             _executor.shutdown();
             // Await termination (either the average duration or the max termination time.
             Duration dur = getAvgWriteDuration();

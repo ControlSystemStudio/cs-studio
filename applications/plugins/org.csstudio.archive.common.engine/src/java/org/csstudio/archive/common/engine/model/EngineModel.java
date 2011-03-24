@@ -15,8 +15,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.engine.Activator;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
@@ -55,7 +55,7 @@ public final class EngineModel {
     /**
      * All channels
      */
-    private final ConcurrentMap<String, AbstractArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Groups of archived channels
      *  <p>
@@ -90,15 +90,15 @@ public final class EngineModel {
 
     /**
      * Construct model that writes to archive
+     * @param provider
      */
-    public EngineModel() {
-
+    public EngineModel(@Nonnull final IServiceProvider provider) {
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
         _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD.getValue();
 
-        _writeExecutor = new WriteExecutor();
+        _writeExecutor = new WriteExecutor(provider);
     }
 
     /** @return Name (description) */
@@ -150,13 +150,13 @@ public final class EngineModel {
 
     /** @return Channel by that name or <code>null</code> if not found */
     @CheckForNull
-    public AbstractArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
+    public ArchiveChannel<?, ?> getChannel(@Nonnull final String name) {
         return _channelMap.get(name);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
     @Nonnull
-    public Collection<AbstractArchiveChannel<?, ?>> getChannels() {
+    public Collection<ArchiveChannel<?, ?>> getChannels() {
         return _channelMap.values();
     }
 
@@ -173,7 +173,6 @@ public final class EngineModel {
         for (final ArchiveGroup group : _groupMap.values()) {
             group.start(_engine.getId(),
                         ArchiverMgmtEntry.ARCHIVER_START);
-            // Check for stop request.
             if (_state == State.SHUTDOWN_REQUESTED) {
                 break;
             }
@@ -218,7 +217,7 @@ public final class EngineModel {
     public void resetStats() {
         _writeExecutor.reset();
         synchronized (this) {
-            for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
+            for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
                 channel.reset();
             }
         }
@@ -247,12 +246,15 @@ public final class EngineModel {
 
 
     /** Read configuration of model from RDB.
+     * @param provider
      *  @param p_name Name of engine in RDB
      *  @param port Current HTTPD port
      * @throws EngineModelException
      */
     @SuppressWarnings("nls")
-    public void readConfig(@Nonnull final String engineName, final int port) throws EngineModelException {
+    public void readConfig(@Nonnull final IServiceProvider provider,
+                           @Nonnull final String engineName,
+                           final int port) throws EngineModelException {
         try {
             if (_state != State.IDLE) {
                 LOG.error("Read configuration while state " + _state + ". Should be " + State.IDLE);
@@ -260,9 +262,9 @@ public final class EngineModel {
             }
             _name = engineName;
 
-            final IArchiveEngineFacade configService = Activator.getDefault().getArchiveEngineService();
+            final IArchiveEngineFacade service = provider.getEngineFacade();
 
-            _engine = configService.findEngine(_name);
+            _engine = service.findEngine(_name);
             if (_engine == null) {
                 LOG.error("Unknown engine '" + _name + "'.");
                 return;
@@ -275,29 +277,31 @@ public final class EngineModel {
             }
 
             final Collection<IArchiveChannelGroup> groups =
-                configService.getGroupsForEngine(_engine.getId());
+                service.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
-                configureGroup(configService, groupCfg);
+                configureGroup(provider, groupCfg);
             }
         } catch (final Exception e) {
             handleExceptions(e);
         }
     }
 
-    private void configureGroup(@Nonnull final IArchiveEngineFacade configService,
+    private void configureGroup(@Nonnull final IServiceProvider provider,
                                 @Nonnull final IArchiveChannelGroup groupCfg) throws ArchiveServiceException,
-                                                                                     TypeSupportException {
+                                                                                     TypeSupportException,
+                                                                                     OsgiServiceUnavailableException {
         final ArchiveGroup group = addGroup(groupCfg);
         // Add channels to group
         final Collection<IArchiveChannel> channelCfgs =
-            configService.getChannelsByGroupId(groupCfg.getId());
+            provider.getEngineFacade().getChannelsByGroupId(groupCfg.getId());
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
+            final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
 
+            channel.setServiceProvider(provider);
             _writeExecutor.addChannel(channel);
 
             _channelMap.putIfAbsent(channel.getName(), channel);
@@ -338,7 +342,7 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void dumpDebugInfo() {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             final StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
             //buf.append(Joiner.on(",").join(channel.getGroups()));

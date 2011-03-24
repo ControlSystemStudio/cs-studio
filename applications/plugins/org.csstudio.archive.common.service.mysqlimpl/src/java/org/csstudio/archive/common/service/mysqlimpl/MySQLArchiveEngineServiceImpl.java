@@ -37,9 +37,14 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
+import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatus;
+import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
@@ -47,28 +52,51 @@ import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 
+import com.google.inject.Inject;
+
 
 /**
- * Example archive service implementation to separate the processing and logic layer from
+ * Archive service implementation to separate the processing and logic layer from
  * the data access layer.
  *
- * Uses DAO design pattern with DaoManager to handle several connections in a pool (later) and
- * facilite CRUD command infrastructure for proper multiple command transactions.
+ * Uses DAO design pattern with Guice Injection.
+ * TODO (bknerr) : CRUD command pattern
  *
  * @author bknerr
  * @since 01.11.2010
  */
-public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
-    INSTANCE;
+public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveEngineServiceImpl.class);
-    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+
+    /**
+     * Injected by GUICE construction.
+     */
+    private final IArchiverMgmtDao _mgmtDao;
+    private final IArchiveEngineDao _engineDao;
+    private final IArchiveSampleDao _sampleDao;
+    private final IArchiveChannelDao _channelDao;
+    private final IArchiveChannelGroupDao _channelGroupDao;
+    private final IArchiveChannelStatusDao _channelStatusDao;
 
 
     /**
      * Constructor.
      */
-    private MySQLArchiveEngineServiceImpl() {
+    @Inject
+    public MySQLArchiveEngineServiceImpl(@Nonnull final IArchiverMgmtDao mgmtDao,
+                                         @Nonnull final IArchiveEngineDao engineDao,
+                                         @Nonnull final IArchiveSampleDao sampleDao,
+                                         @Nonnull final IArchiveChannelDao channelDao,
+                                         @Nonnull final IArchiveChannelGroupDao channelGroupDao,
+                                         @Nonnull final IArchiveChannelStatusDao channelStatusDao) {
+        _mgmtDao = mgmtDao;
+        _engineDao = engineDao;
+        _sampleDao = sampleDao;
+        _channelDao = channelDao;
+        _channelGroupDao = channelGroupDao;
+        _channelStatusDao = channelStatusDao;
+
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
     }
@@ -81,7 +109,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     public <V, T extends IAlarmSystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
-            DAO_MGR.getSampleDao().createSamples(samples);
+            _sampleDao.createSamples(samples);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }
@@ -97,7 +125,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                            @Nonnull final String info,
                                            @Nonnull final TimeInstant timestamp) throws ArchiveServiceException {
         try {
-            DAO_MGR.getChannelStatusDao().createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
+            _channelStatusDao.createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of channel status entry failed.", e);
         }
@@ -113,7 +141,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final String info) throws ArchiveServiceException {
         try {
-            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(new ArchiverMgmtEntry(id, status, engineId, time, info));
+            _mgmtDao.createMgmtEntry(new ArchiverMgmtEntry(id, status, engineId, time, info));
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }
@@ -126,7 +154,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     @CheckForNull
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         try {
-            return DAO_MGR.getEngineDao().retrieveEngineByName(name);
+            return _engineDao.retrieveEngineByName(name);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Engine information for " + name +
                                               " could not be retrieved.", e);
@@ -141,7 +169,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     public Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id)
                                                                throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
+            return _channelGroupDao.retrieveGroupsByEngineId(id);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Groups for engine " + id.asString() +
                                               " could not be retrieved.", e);
@@ -156,7 +184,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
                                                             throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
+            return _channelDao.retrieveChannelsByGroupId(groupId);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channels for group " + groupId.asString() +
                                               " could not be retrieved.", e);
@@ -173,7 +201,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException {
         try {
-            DAO_MGR.getChannelDao().updateDisplayRanges(id, displayLow, displayHigh);
+            _channelDao.updateDisplayRanges(id, displayLow, displayHigh);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel info for " + id +
                                               " could not be updated.", e);

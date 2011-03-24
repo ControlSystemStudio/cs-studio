@@ -30,7 +30,7 @@ public class ArchiveGroup {
      *  Using thread-safe array to allow HTTPD as well as main
      *  thread to traverse
      */
-    private final ConcurrentMap<String, AbstractArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
@@ -58,7 +58,7 @@ public class ArchiveGroup {
      *  @param channel Channel to add
      */
     @SuppressWarnings("nls")
-    final void add(final AbstractArchiveChannel<?, ?> channel) {
+    final void add(final ArchiveChannel<?, ?> channel) {
         if (is_running) {
             throw new Error("Running"); //$NON-NLS-1$
         }
@@ -77,7 +77,7 @@ public class ArchiveGroup {
     }
 
     /** Remove channel from group */
-    final void remove(final AbstractArchiveChannel<?, ?> channel)
+    final void remove(final ArchiveChannel<?, ?> channel)
     {
         if (is_running)
          {
@@ -103,7 +103,7 @@ public class ArchiveGroup {
 	 *  @return Channel or <code>null</code>s
 	 */
     @CheckForNull
-    public final AbstractArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
+    public final ArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
         return _channelMap.get(name);
 	}
 
@@ -126,7 +126,7 @@ public class ArchiveGroup {
         }
         is_running = true;
 
-        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.start(engineId, info);
         }
     }
@@ -141,7 +141,7 @@ public class ArchiveGroup {
             return;
         }
         is_running = false;
-        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.stop(engineId, info);
         }
     }
@@ -160,7 +160,7 @@ public class ArchiveGroup {
     }
 
     @Nonnull
-    public Collection<AbstractArchiveChannel<?, ?>>getChannels() {
+    public Collection<ArchiveChannel<?, ?>>getChannels() {
         return _channelMap.values();
     }
 }
