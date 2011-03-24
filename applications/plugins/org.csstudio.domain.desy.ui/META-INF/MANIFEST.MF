@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Domain DESY UI
+Bundle-SymbolicName: org.csstudio.domain.desy.ui
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui;bundle-version="3.6.1",
+ javax.annotation;bundle-version="1.3.0"
+Bundle-Vendor: Desy <css-developer@desy.de>, Helge Rickens
