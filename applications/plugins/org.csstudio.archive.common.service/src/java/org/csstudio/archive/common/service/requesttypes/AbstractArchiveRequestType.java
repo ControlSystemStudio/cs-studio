@@ -68,7 +68,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
         } else {
             _paramMap = Maps.newHashMap();
             for (final IArchiveRequestTypeParameter param : params) {
-                _paramMap.put(param.getName(), (IArchiveRequestTypeParameter<?>) param.clone());
+                _paramMap.put(param.getName(), (IArchiveRequestTypeParameter<?>) param.deepCopy());
 
             }
         }
@@ -129,10 +129,11 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     @Override
+    @Nonnull
     public <T> IArchiveRequestTypeParameter<T> getParameter(@Nonnull final String id,
                                                             @Nonnull final Class<T> clazz) throws RequestTypeParameterException {
+        @SuppressWarnings("unchecked")
         final AbstractArchiveRequestTypeParameter<T> param =
             (AbstractArchiveRequestTypeParameter<T>) getParameterById(id);
         if (param.getValueType() != clazz) {
@@ -140,7 +141,7 @@ public abstract class AbstractArchiveRequestType implements IArchiveRequestType 
                                                     " either does not exist or does not have the correct class type",
                                                     null);
         }
-        return (IArchiveRequestTypeParameter<T>) param.clone();
+        return param.deepCopy();
     }
 
     private <T> void setParameterValue(@Nonnull final T newValue,

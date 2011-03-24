@@ -90,18 +90,4 @@ public abstract class AbstractArchiveRequestTypeParameter<T> implements IArchive
         return (Class<T>) _value.getClass();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public abstract T toValue(@Nonnull final String value) throws RequestTypeParameterException;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public abstract Object clone();
-
 }

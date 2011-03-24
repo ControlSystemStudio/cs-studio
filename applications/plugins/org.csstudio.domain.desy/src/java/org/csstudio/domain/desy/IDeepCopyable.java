@@ -19,35 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.archive.common.service.requesttypes;
+package org.csstudio.domain.desy;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.IDeepCopyable;
-
-
 /**
- * The read-only interface of a parameter specifying an archive request type.
+ * A class implements the <code>IDeepCopyable</code> interface to be forced to
+ * provide a method that provides a field-by-field deep copy of itself.
+ *
+ * In comparison to {@link java.lang.Cloneable} which is merely an indicator
+ * that - by convention - the {@link java.lang.Object#clone()} method
+ * <b>should better</b> be publicly overridden, this interface forces
+ * the implementer of a class to do so.
  *
  * @author bknerr
- * @since 05.01.2011
- * @param <T> the type of the param's value
+ * @since Mar 24, 2011
+ *
+ * @param <T> the type of the object instance that implements this interface
  */
-public interface IArchiveRequestTypeParameter<T> extends IDeepCopyable<IArchiveRequestTypeParameter<T>> {
+public interface IDeepCopyable<T> {
 
     @Nonnull
-    String getName();
-
-    @Nonnull
-    T getValue();
-
-    @Nonnull
-    Class<T> getValueType();
-
-    @Nonnull
-    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
-
-    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
+    T deepCopy();
 
 }
