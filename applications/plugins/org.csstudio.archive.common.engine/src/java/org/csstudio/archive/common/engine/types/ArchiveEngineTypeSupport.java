@@ -92,8 +92,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             ArchiveChannel<V, IAlarmSystemVariable<V>> channel;
             try {
                 channel = new ArchiveChannel<V, IAlarmSystemVariable<V>>(cfg.getName(),
-                                                                                  cfg.getId(),
-                                                                                  _typeClass);
+                                                                         cfg.getId(),
+                                                                         _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }

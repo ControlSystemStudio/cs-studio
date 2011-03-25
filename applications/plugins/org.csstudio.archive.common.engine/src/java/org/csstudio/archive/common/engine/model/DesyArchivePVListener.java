@@ -56,7 +56,7 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(DesyArchivePVListener.class);
 
-    private final IServiceProvider _provider;
+    private IServiceProvider _provider;
     private final String _channelName;
     private final ArchiveChannelId _channelId;
     private final Class<V> _typeClass;
@@ -197,5 +197,9 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
 
     public void setStopInfo(@Nonnull final String info) {
         _stopInfo = info;
+    }
+
+    public void setProvider(@Nonnull final IServiceProvider provider) {
+        _provider = provider;
     }
 }

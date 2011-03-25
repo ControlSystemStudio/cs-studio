@@ -239,5 +239,6 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
 
     public void setServiceProvider(@Nonnull final IServiceProvider provider) {
         _provider = provider;
+        _listener.setProvider(provider);
     }
 }

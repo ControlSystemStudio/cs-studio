@@ -155,7 +155,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
             statement.setTimestamp(1, new Timestamp(lastTimeAlive.getMillis()));
             statement.setInt(2, id.intValue());
 
-            statement.executeQuery();
+            statement.executeUpdate();
 
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);

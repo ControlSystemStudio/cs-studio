@@ -180,6 +180,7 @@ public final class EngineModel {
 
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
 
+
         _startTime = TimeInstantBuilder.buildFromNow();
 
         _state = State.RUNNING;
@@ -215,16 +216,19 @@ public final class EngineModel {
                 facade.getLatestEngineStatusInformation(engine.getId(),
                                                         engine.getLastAliveTime());
 
-            if (isFirstStart(engineStatus) || hadGracefullyShutdown(engineStatus)) {
-                return;
+            if (isNotFirstStart(engineStatus) && wasNotGracefullyShutdown(engineStatus)) {
+                facade.writeEngineStatusInformation(engine.getId(),
+                                                    EngineMonitorStatus.OFF,
+                                                    engine.getLastAliveTime(),
+                                                    "Ungraceful shutdown");
+
+                checkAndUpdateChannelsStatus(facade, engine, channels);
             }
 
             facade.writeEngineStatusInformation(engine.getId(),
-                                                EngineMonitorStatus.OFF,
-                                                engine.getLastAliveTime(),
-                                                "Ungraceful shutdown");
-
-            checkAndUpdateChannelsStatus(facade, engine, channels);
+                                                EngineMonitorStatus.ON,
+                                                TimeInstantBuilder.buildFromNow(),
+                                                "Engine Startup");
 
         } catch (@Nonnull final Exception e) {
             handleExceptions(e);
@@ -232,13 +236,13 @@ public final class EngineModel {
     }
 
 
-    private boolean hadGracefullyShutdown(@Nonnull final IArchiveEngineStatus engineStatus) {
-        return EngineMonitorStatus.OFF.equals(engineStatus.getStatus());
+    private boolean wasNotGracefullyShutdown(@Nonnull final IArchiveEngineStatus engineStatus) {
+        return !EngineMonitorStatus.OFF.equals(engineStatus.getStatus());
     }
 
 
-    private boolean isFirstStart(@CheckForNull final IArchiveEngineStatus engineStatus) {
-        return engineStatus == null;
+    private boolean isNotFirstStart(@CheckForNull final IArchiveEngineStatus engineStatus) {
+        return engineStatus != null;
     }
 
 
@@ -325,6 +329,15 @@ public final class EngineModel {
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
             group.stop(ArchiveEngineStatus.ENGINE_STOP);
+        }
+
+        try {
+            _provider.getEngineFacade().writeEngineStatusInformation(_engine.getId(),
+                                                                     EngineMonitorStatus.OFF,
+                                                                     TimeInstantBuilder.buildFromNow(),
+                                                                     "Graceful Shutdown");
+        } catch (final Exception e) {
+            handleExceptions(e);
         }
 
         LOG.info("Shutting down writer");
