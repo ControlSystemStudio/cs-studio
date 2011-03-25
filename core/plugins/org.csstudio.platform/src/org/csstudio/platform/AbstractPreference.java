@@ -233,6 +233,6 @@ public abstract class AbstractPreference<T> {
      * @return the subclass has to define the plugin ID, this is used as the qualifier for preference retrieval.
      */
     @Nonnull
-    protected abstract String getPluginID();
+    public abstract String getPluginID();
 
 }

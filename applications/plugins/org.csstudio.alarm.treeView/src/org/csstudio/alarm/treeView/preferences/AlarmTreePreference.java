@@ -72,7 +72,7 @@ public final class AlarmTreePreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return AlarmTreePlugin.PLUGIN_ID;
     }
 

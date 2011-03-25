@@ -60,7 +60,7 @@ public final class Preference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return Activator.PLUGIN_ID;
     }
 

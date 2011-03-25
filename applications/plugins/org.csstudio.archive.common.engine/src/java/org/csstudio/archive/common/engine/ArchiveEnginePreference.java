@@ -80,7 +80,7 @@ public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
      */
     @Override
     @Nonnull
-    protected String getPluginID() {
+    public String getPluginID() {
         return Activator.PLUGIN_ID;
     }
 }
