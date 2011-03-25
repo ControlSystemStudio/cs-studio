@@ -34,6 +34,8 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 
+import com.google.inject.Inject;
+
 
 /**
  * Abstract implementation of an archive DAO.
@@ -46,6 +48,10 @@ public abstract class AbstractArchiveDao {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
 
+    @Inject
+    private static ArchiveConnectionHandler CONNECTION_HANDLER;
+    @Inject
+    private static PersistEngineDataManager ENGINE_MGR;
 
     /**
      * Constructor.
@@ -61,18 +67,18 @@ public abstract class AbstractArchiveDao {
      */
     @Nonnull
     protected static Connection getConnection() throws ArchiveConnectionException {
-        return ArchiveConnectionHandler.INSTANCE.getConnection();
+        return CONNECTION_HANDLER.getConnection();
     }
 
     @Nonnull
     protected static String getDatabaseName() {
-        return ArchiveConnectionHandler.INSTANCE.getDatabaseName();
+        return CONNECTION_HANDLER.getDatabaseName();
     }
 
 
     @Nonnull
     protected static PersistEngineDataManager getEngineMgr() {
-        return PersistEngineDataManager.INSTANCE;
+        return ENGINE_MGR;
     }
 
     /**

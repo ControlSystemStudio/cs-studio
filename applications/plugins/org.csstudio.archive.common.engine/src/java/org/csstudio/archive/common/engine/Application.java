@@ -15,7 +15,6 @@ import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
-import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.httpserver.EngineHttpServer;
 import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -23,6 +22,10 @@ import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -108,16 +111,15 @@ public class Application implements IApplication {
 
         LOG.info("DESY Archive Engine Version " + EngineModel.VERSION);
         _run = true;
-        _model = new EngineModel(provider);
+        _model = new EngineModel(_engineName, provider);
         final EngineHttpServer httpServer = startHttpServer();
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
-                readEngineConfiguration(provider);
 
-                runModelLoop();
+                runEngineLoop();
 
                 LOG.info("ArchiveEngine ending");
 
@@ -140,9 +142,14 @@ public class Application implements IApplication {
      * @throws EngineModelException
      * @throws InterruptedException
      */
-    private void runModelLoop() throws EngineModelException, InterruptedException {
+    private void runEngineLoop() throws EngineModelException, InterruptedException {
+
+        readEngineConfiguration();
+
         LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
+
         _model.start();
+
         while (true) {
             Thread.sleep(1000);
             if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
@@ -154,6 +161,15 @@ public class Application implements IApplication {
             }
         }
     }
+    private void readEngineConfiguration() throws EngineModelException {
+        LOG.info("Reading configuration for engine '" + _engineName + "'");
+        final RunningStopWatch watch = StopWatch.start();
+        _model.readConfig(_port);
+        final long elapsedTimeInMillis = watch.getElapsedTimeInMillis();
+        LOG.info("Read configuration: " + _model.getChannels().size() +
+                 " channels in " +
+                 TimeInstantBuilder.buildFromMillis(elapsedTimeInMillis).formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS));
+    }
 
     /**
      * {@inheritDoc}
@@ -163,15 +179,6 @@ public class Application implements IApplication {
         if (_model != null) {
             _model.requestStop();
         }
-    }
-
-    private void readEngineConfiguration(@Nonnull final IServiceProvider provider) throws EngineModelException {
-        LOG.info("Reading configuration for engine '" + _engineName + "'");
-
-        final BenchmarkTimer timer = new BenchmarkTimer();
-        _model.readConfig(provider, _engineName, _port);
-        timer.stop();
-        LOG.info("Read configuration: " + _model.getChannels().size() + " channels in " + timer.toString());
     }
 
     @CheckForNull

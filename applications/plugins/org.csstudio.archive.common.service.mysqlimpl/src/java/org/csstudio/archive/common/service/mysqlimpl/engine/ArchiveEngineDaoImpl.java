@@ -21,9 +21,12 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.engine;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -34,6 +37,8 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -44,6 +49,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchiveEngineDao {
 
+
     private static final String EXC_MSG = "Engine retrieval from archive failed.";
 
     @SuppressWarnings("unused")
@@ -53,8 +59,14 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     private static final String TAB = "engine";
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
+    private static final String SELECT_ENGINE_PREFIX = "SELECT id, url, alive FROM ";
+
     private final String _selectEngineByNameStmt =
-        "SELECT id, url FROM " + getDatabaseName() + "." + TAB + " WHERE name=?";
+        SELECT_ENGINE_PREFIX + getDatabaseName() + "." + TAB + " WHERE name=?";
+    private final String _selectEngineByIdStmt =
+        SELECT_ENGINE_PREFIX + getDatabaseName() + "." + TAB + " WHERE id=?";
+    private final String _updateEngineIsAliveStmt =
+        "UPDATE " + getDatabaseName() + "." + TAB + " SET alive=? WHERE id=?";
 
 
     /**
@@ -69,27 +81,80 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
+    public IArchiveEngine retrieveEngineById(@Nonnull final ArchiveEngineId id) throws ArchiveDaoException {
+        try {
+            final PreparedStatement statement = getConnection().prepareStatement(_selectEngineByIdStmt);
+            statement.setInt(1, id.intValue());
+            return retrieveEngineByStmt(statement);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG, e);
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
     public IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveDaoException {
 
-        PreparedStatement statement = null;
         try {
-            statement = getConnection().prepareStatement(_selectEngineByNameStmt);
+            final PreparedStatement statement = getConnection().prepareStatement(_selectEngineByNameStmt);
             statement.setString(1, name);
+            return retrieveEngineByStmt(statement);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG, e);
+        }
+        return null;
+    }
+
+    @CheckForNull
+    private IArchiveEngine retrieveEngineByStmt(@Nonnull final PreparedStatement statement)
+                                                throws SQLException,
+                                                       MalformedURLException {
+        try {
             final ResultSet result = statement.executeQuery();
             if (result.next()) {
-                // id, url
-                final int id = result.getInt(1);
-                final String url = result.getString(2);
-                return new ArchiveEngine(new ArchiveEngineId(id),
-                                            new URL(url));
+                return createArchiveEngineFromResult(result);
             }
+        } finally {
+            closeStatement(statement, "Closing of statement " + statement.toString() + " failed.");
+        }
+        return null;
+    }
+
+    @Nonnull
+    private IArchiveEngine createArchiveEngineFromResult(@Nonnull final ResultSet result)
+                                                         throws SQLException,
+                                                                MalformedURLException {
+        // id, url, alive
+        final int id = result.getInt("id");
+        final String url = result.getString("url");
+        final Timestamp time = result.getTimestamp("alive");
+        return new ArchiveEngine(new ArchiveEngineId(id),
+                                 new URL(url),
+                                 TimeInstantBuilder.buildFromMillis(time.getTime()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateEngineAlive(@Nonnull final ArchiveEngineId id,
+                                  @Nonnull final TimeInstant lastTimeAlive) throws ArchiveDaoException {
+        PreparedStatement statement = null;
+        try {
+            statement = getConnection().prepareStatement(_updateEngineIsAliveStmt);
+            statement.setTimestamp(1, new Timestamp(lastTimeAlive.getMillis()));
+            statement.setInt(2, id.intValue());
+
+            statement.executeQuery();
+
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
             closeStatement(statement, "Closing of statement " + _selectEngineByNameStmt + " failed.");
         }
-        return null;
     }
-
-
 }

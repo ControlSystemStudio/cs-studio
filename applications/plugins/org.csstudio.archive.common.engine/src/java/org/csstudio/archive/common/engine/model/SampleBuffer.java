@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
@@ -35,7 +35,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *  @param <S> the archive sample type atop the channel and the css value type
  */
 public class SampleBuffer<V,
-                          T extends IAlarmSystemVariable<V>,
+                          T extends ISystemVariable<V>,
                           S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.

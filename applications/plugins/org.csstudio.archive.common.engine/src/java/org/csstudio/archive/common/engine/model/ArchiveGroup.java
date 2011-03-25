@@ -13,8 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-
 import com.google.common.collect.MapMaker;
 
 /** A group of archived channels.
@@ -109,8 +107,8 @@ public class ArchiveGroup {
 
 
     /** @return <code>true</code> if group is currently enabled */
-    public boolean isEnabled() {
-        return true ;
+    public final boolean isEnabled() {
+        return true;
     }
 
     /** Start all the channels in group
@@ -119,15 +117,14 @@ public class ArchiveGroup {
      * @throws EngineModelException
      */
     @Nonnull
-    final void start(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws EngineModelException {
+    final void start(@Nonnull final String info) throws EngineModelException {
         if (is_running) {
             return;
         }
         is_running = true;
 
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.start(engineId, info);
+            channel.start(info);
         }
     }
 
@@ -135,21 +132,19 @@ public class ArchiveGroup {
      * Stop all the channels in group
      * @throws EngineModelException
      */
-    public void stop(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws EngineModelException {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         if (!is_running) {
             return;
         }
         is_running = false;
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.stop(engineId, info);
+            channel.stop(info);
         }
     }
 
-    public void restart(@Nonnull final ArchiveEngineId engineId,
-                        @Nonnull final String info) throws EngineModelException {
-        stop(engineId, info);
-        start(engineId, info);
+    public void restart(@Nonnull final String info) throws EngineModelException {
+        stop(info);
+        start(info);
     }
 
 

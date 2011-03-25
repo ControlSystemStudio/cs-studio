@@ -19,16 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.archivermgmt;
+package org.csstudio.archive.common.service.enginestatus;
+
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * The monitor status of the archiver, typically used as indicator whether a channel is 
- * currently configured to be monitored by an archive engine.
- * 
+ * Read-only interface for ArchiverMgmtEntry.
+ *
  * @author bknerr
  * @since 02.02.2011
  */
-public enum ArchiverMonitorStatus {
-    ON,
-    OFF;
+public interface IEngineStatus extends Identifiable<EngineStatusId> {
+
+    @Nonnull
+    String getInfo();
+
+    @Nonnull
+    EngineMonitorStatus getStatus();
+
+    @Nonnull
+    ArchiveEngineId getEngineId();
+
+    @Nonnull
+    TimeInstant getTimestamp();
+
 }

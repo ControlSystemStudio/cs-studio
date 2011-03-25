@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.archivermgmt;
+package org.csstudio.archive.common.service.enginestatus;
 
 import org.csstudio.domain.desy.common.id.Id;
 
@@ -30,21 +30,21 @@ import org.csstudio.domain.desy.common.id.Id;
  * @author bknerr
  * @since 02.02.2011
  */
-public class ArchiverMgmtEntryId extends Id<ArchiverMgmtEntryId> {
+public class EngineStatusId extends Id<EngineStatusId> {
 
     private static final long serialVersionUID = -4359196591799659829L;
 
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
-    public static final ArchiverMgmtEntryId NONE = new ArchiverMgmtEntryId(-1L);
+    public static final EngineStatusId NONE = new EngineStatusId(-1L);
 
     /**
      * Constructor.
      *
      * @param value the value
      */
-    public ArchiverMgmtEntryId(final long value) {
+    public EngineStatusId(final long value) {
         super(value);
     }
 }

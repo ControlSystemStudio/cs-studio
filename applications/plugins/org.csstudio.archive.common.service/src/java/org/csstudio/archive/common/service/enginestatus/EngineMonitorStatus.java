@@ -19,28 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.archivermgmt;
-
-import java.util.Collection;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.common.service.archivermgmt.IArchiverMgmtEntry;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+package org.csstudio.archive.common.service.enginestatus;
 
 /**
- * Dao for archiver managment information.
- *
+ * The monitor status of the archiver, typically used as indicator whether a channel is 
+ * currently configured to be monitored by an archive engine.
+ * 
  * @author bknerr
  * @since 02.02.2011
  */
-public interface IArchiverMgmtDao {
-
-
-    @CheckForNull
-    IArchiverMgmtEntry createMgmtEntry(@Nonnull final IArchiverMgmtEntry entry) throws ArchiveDaoException;
-
-
-    boolean createMgmtEntries(@Nonnull final Collection<IArchiverMgmtEntry> monitorStates) throws ArchiveDaoException;
+public enum EngineMonitorStatus {
+    ON,
+    OFF;
 }

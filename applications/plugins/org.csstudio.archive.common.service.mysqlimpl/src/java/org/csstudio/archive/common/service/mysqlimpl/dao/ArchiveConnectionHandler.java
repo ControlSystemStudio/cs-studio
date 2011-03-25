@@ -51,7 +51,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @since 11.11.2010
  */
 public enum ArchiveConnectionHandler {
-
     INSTANCE;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -63,7 +62,7 @@ public enum ArchiveConnectionHandler {
     /**
      * The datasource that specifies the connections.
      */
-    private MysqlDataSource _dataSource;
+    private final MysqlDataSource _dataSource;
 
     /**
      * Any thread owns a connection.

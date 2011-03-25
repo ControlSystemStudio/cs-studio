@@ -21,8 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.ArchiverMgmtDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
@@ -33,6 +31,8 @@ import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveContro
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.EngineStatusDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IEngineStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 
@@ -61,7 +61,12 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
      */
     @Override
     protected void configure() {
-        bind(IArchiverMgmtDao.class).to(ArchiverMgmtDaoImpl.class).in(Scopes.SINGLETON);
+        bind(ArchiveConnectionHandler.class);
+        bind(PersistEngineDataManager.class);
+
+        requestStaticInjection(AbstractArchiveDao.class);
+
+        bind(IEngineStatusDao.class).to(EngineStatusDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelDao.class).to(ArchiveChannelDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelGroupDao.class).to(ArchiveChannelGroupDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelStatusDao.class).to(ArchiveChannelStatusDaoImpl.class).in(Scopes.SINGLETON);

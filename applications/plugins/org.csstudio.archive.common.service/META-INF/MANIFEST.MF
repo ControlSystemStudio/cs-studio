@@ -14,11 +14,11 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
  org.junit
 Export-Package: org.csstudio.archive.common.service,
- org.csstudio.archive.common.service.archivermgmt,
  org.csstudio.archive.common.service.channel,
  org.csstudio.archive.common.service.channelgroup,
  org.csstudio.archive.common.service.controlsystem,
  org.csstudio.archive.common.service.engine,
+ org.csstudio.archive.common.service.enginestatus,
  org.csstudio.archive.common.service.requesttypes,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.util

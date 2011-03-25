@@ -27,6 +27,7 @@ import java.net.URL;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Read only interface of an engine in the archive.
@@ -43,5 +44,11 @@ public interface IArchiveEngine extends Identifiable<ArchiveEngineId>{
      */
     @Nonnull
     URL getUrl() throws MalformedURLException;
+
+    /**
+     * @return
+     */
+    @Nonnull
+    TimeInstant getLastAliveTime();
 
 }

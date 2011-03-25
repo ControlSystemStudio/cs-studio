@@ -19,13 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.archivermgmt;
+package org.csstudio.archive.common.service.enginestatus;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -35,14 +34,13 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 02.02.2011
  */
-public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
+public class EngineStatus implements IEngineStatus {
 
-    public static final String ARCHIVER_START = "Archiver Started";
-    public static final String ARCHIVER_STOP = "Archiver Stopped";
+    public static final String ENGINE_START = "Started";
+    public static final String ENGINE_STOP = "Stopped";
 
-    private final ArchiverMgmtEntryId _id;
-    private final ArchiveChannelId _channelId;
-    private final ArchiverMonitorStatus _status;
+    private final EngineStatusId _id;
+    private final EngineMonitorStatus _status;
     private final ArchiveEngineId _engineId;
     private final TimeInstant _timestamp;
     private final String _info;
@@ -50,24 +48,21 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
     /**
      * Constructor.
      */
-    public ArchiverMgmtEntry(@Nonnull final ArchiveChannelId channelId,
-                             @Nonnull final ArchiverMonitorStatus status,
-                             @Nonnull final ArchiveEngineId engineId,
-                             @Nonnull final TimeInstant time,
-                             @Nullable final String info) {
-        this(ArchiverMgmtEntryId.NONE, channelId, status, engineId, time, info);
+    public EngineStatus(@Nonnull final ArchiveEngineId engineId,
+                        @Nonnull final EngineMonitorStatus status,
+                        @Nonnull final TimeInstant time,
+                        @Nullable final String info) {
+        this(EngineStatusId.NONE, engineId, status, time, info);
     }
     /**
      * Constructor.
      */
-    public ArchiverMgmtEntry(@Nonnull final ArchiverMgmtEntryId id,
-                             @Nonnull final ArchiveChannelId channelId,
-                             @Nonnull final ArchiverMonitorStatus status,
-                             @Nonnull final ArchiveEngineId engineId,
-                             @Nonnull final TimeInstant time,
-                             @Nullable final String info) {
+    public EngineStatus(@Nonnull final EngineStatusId id,
+                        @Nonnull final ArchiveEngineId engineId,
+                        @Nonnull final EngineMonitorStatus status,
+                        @Nonnull final TimeInstant time,
+                        @Nullable final String info) {
         _id = id;
-        _channelId = channelId;
         _status = status;
         _engineId = engineId;
         _timestamp = time;
@@ -79,7 +74,7 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
      */
     @Override
     @Nonnull
-    public ArchiverMgmtEntryId getId() {
+    public EngineStatusId getId() {
         return _id;
     }
 
@@ -97,14 +92,8 @@ public class ArchiverMgmtEntry implements IArchiverMgmtEntry {
 
     @Override
     @Nonnull
-    public ArchiverMonitorStatus getStatus() {
+    public EngineMonitorStatus getStatus() {
         return _status;
-    }
-
-    @Override
-    @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
     }
 
     @Override

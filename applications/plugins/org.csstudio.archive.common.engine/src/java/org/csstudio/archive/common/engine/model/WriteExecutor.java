@@ -17,6 +17,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
@@ -49,38 +50,25 @@ public class WriteExecutor {
 
     private final IServiceProvider _provider;
 
+    private final ArchiveEngineId _engineId;
+
     /**
      * Construct thread for writing to server
      * @param provider provider for the service
      */
-    public WriteExecutor(@Nonnull final IServiceProvider provider) {
+    public WriteExecutor(@Nonnull final IServiceProvider provider,
+                         @Nonnull final ArchiveEngineId engineId) {
         _provider = provider;
+        _engineId = engineId;
     }
 
-//    void enhanceWriterThroughput(@Nonnull final WriteWorker writeWorker) throws InterruptedException {
-//        final long currentPeriodInMS = writeWorker.getPeriodInMS();
-//        if (currentPeriodInMS > MIN_WRITE_PERIOD_MS) {
-//            _executor.shutdown();
-//            _executor.awaitTermination(currentPeriodInMS, TimeUnit.MILLISECONDS);
-//            _executor.shutdownNow();
-//
-//            _executor = Executors.newSingleThreadScheduledExecutor();
-//
-//            _writePeriodInMS = Math.max(currentPeriodInMS>>1, MIN_WRITE_PERIOD_MS);
-//            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
-//                                                        0L);
-//        } else {
-//            LOG.warn("Archive writer duration exceeds minimum period.");
-//            LOG.warn("Consider starting another writer.");
-//            // TODO (bknerr) : handle writeWorker exhaustion
-//        }
-//    }
-
     @Nonnull
-    private WriteWorker submitAndScheduleWriteWorker(final long writePeriodInMS,
+    private WriteWorker submitAndScheduleWriteWorker(@Nonnull final ArchiveEngineId engineId,
+                                                     @Nonnull final IServiceProvider provider,
+                                                     final long writePeriodInMS,
                                                      final long delayInMS) {
-        final WriteWorker writeWorker = new WriteWorker(_provider,
-                                                        //this,
+        final WriteWorker writeWorker = new WriteWorker(engineId,
+                                                        provider,
                                                         "Periodic Archive Engine Writer",
                                                         _channelMap.values(),
                                                         writePeriodInMS);
@@ -104,18 +92,24 @@ public class WriteExecutor {
             LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
             return;
         }
-        long writePeriod = pWritePeriod;
-        if (writePeriod < MIN_WRITE_PERIOD_MS) {
-            LOG.warn("Adjusting write period from "
-                    + pWritePeriod + " to " + MIN_WRITE_PERIOD_MS);
-            writePeriod = MIN_WRITE_PERIOD_MS;
-        }
-        _writePeriodInMS = writePeriod;
 
+        _writePeriodInMS = adjustWritePeriod(pWritePeriod, MIN_WRITE_PERIOD_MS);
 
-        _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
+        _writeWorker = submitAndScheduleWriteWorker(_engineId,
+                                                    _provider,
+                                                    _writePeriodInMS,
                                                     0L);
 
+    }
+
+    private long adjustWritePeriod(final long pWritePeriod, final long minWritePeriodMs) {
+        long writePeriod = pWritePeriod;
+        if (writePeriod < minWritePeriodMs) {
+            LOG.warn("Adjusting write period from "
+                    + pWritePeriod + " to " + minWritePeriodMs);
+            writePeriod = minWritePeriodMs;
+        }
+        return writePeriod;
     }
 
     /** Reset statistics */
@@ -151,7 +145,8 @@ public class WriteExecutor {
      */
     public void shutdown() {
         if (!_executor.isShutdown()) {
-            _executor.execute(new WriteWorker(_provider,
+            _executor.execute(new WriteWorker(_engineId,
+                                              _provider,
                                               //this,
                                               "Shutdown worker", _channelMap.values(), 0L));
             _executor.shutdown();

@@ -19,36 +19,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.archivermgmt;
+package org.csstudio.archive.common.service.mysqlimpl.enginestatus;
 
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Read-only interface for ArchiverMgmtEntry. 
- * 
+ * Dao for archiver managment information.
+ *
  * @author bknerr
  * @since 02.02.2011
  */
-public interface IArchiverMgmtEntry extends Identifiable<ArchiverMgmtEntryId> {
+public interface IEngineStatusDao {
+
+
+    @CheckForNull
+    IEngineStatus createMgmtEntry(@Nonnull final IEngineStatus entry) throws ArchiveDaoException;
+
+    boolean createMgmtEntries(@Nonnull final Collection<IEngineStatus> monitorStates) throws ArchiveDaoException;
 
     @Nonnull
-    String getInfo();
-
-    @Nonnull
-    ArchiveChannelId getChannelId();
-
-    @Nonnull
-    ArchiverMonitorStatus getStatus();
-
-    @Nonnull
-    ArchiveEngineId getEngineId();
-
-    @Nonnull
-    TimeInstant getTimestamp();
-    
+    IEngineStatus retrieveLastMgmtEntry(@Nonnull final ArchiveEngineId id,
+                                             @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException;
 }

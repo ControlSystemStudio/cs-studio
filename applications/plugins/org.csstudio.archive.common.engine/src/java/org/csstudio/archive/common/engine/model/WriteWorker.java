@@ -36,14 +36,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
@@ -62,40 +64,36 @@ final class WriteWorker implements Runnable {
     private static final Logger WORKER_LOG =
             CentralLogger.getInstance().getLogger(WriteWorker.class);
 
-    //private final WriteExecutor _writeExec;
     private final String _name;
     private final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
-    private final long _periodInMS;
 
+    private final long _periodInMS;
     /** Average number of values per write run */
     private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
-
-
     /** Average duration of write run */
     private final CumulativeAverageCache _avgWriteDurationInMS = new CumulativeAverageCache();
 
-    private TimeInstant _lastTimeWrite;
 
     private final IServiceProvider _provider;
 
+    private final ArchiveEngineId _engineId;
+
+    private TimeInstant _lastTimeWrite;
     /**
      * Constructor.
-     * @param exec
-     * @param name
-     * @param channels
-     * @param periodInMS
      */
-    public WriteWorker(@Nonnull final IServiceProvider provider,
-                       //@Nonnull final WriteExecutor exec,
+    public WriteWorker(@Nonnull final ArchiveEngineId engineId,
+                       @Nonnull final IServiceProvider provider,
                        @Nonnull final String name,
                        @Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
                        final long periodInMS) {
+        _engineId = engineId;
         _provider = provider;
-        //_writeExec = exec;
         _name = name;
-        WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
         _channels = channels;
         _periodInMS = periodInMS;
+
+        WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
     }
 
     /**
@@ -104,16 +102,15 @@ final class WriteWorker implements Runnable {
     @Override
     public void run() {
         WORKER_LOG.info("RUN: " + TimeInstantBuilder.buildFromNow().formatted());
-        final BenchmarkTimer timer = new BenchmarkTimer();
+
         try {
-            timer.start();
+            final RunningStopWatch watch = StopWatch.start();
 
-            final long written = write();
-
-            timer.stop();
+            final long written = collectAndWriteSamples(_provider, _channels);
             _lastTimeWrite = TimeInstantBuilder.buildFromNow();
+            updateEngineHeartBeat(_provider, _engineId, _lastTimeWrite);
 
-            final long durationInMS = timer.getMilliseconds();
+            final long durationInMS = watch.getElapsedTimeInMillis();
             if (durationInMS >= _periodInMS) {
                 // FIXME (bknerr) : this won't work, stupid
                 //_writeExec.enhanceWriterThroughput(this);
@@ -130,6 +127,16 @@ final class WriteWorker implements Runnable {
 //        catch (final InterruptedException e) {
 //            Thread.currentThread().interrupt();
 //        }
+    }
+
+    private void updateEngineHeartBeat(@Nonnull final IServiceProvider provider,
+                                       @Nonnull final ArchiveEngineId engineId,
+                                       @Nonnull final TimeInstant lastTimeWrite)
+                                       throws ArchiveServiceException,
+                                       OsgiServiceUnavailableException {
+        final IArchiveEngineFacade engineFacade = provider.getEngineFacade();
+        engineFacade.updateEngineIsAlive(engineId, lastTimeWrite);
+
     }
 
     private void rescueData() {
@@ -178,17 +185,21 @@ final class WriteWorker implements Runnable {
     }
 
     /**
-     * Drain all data from the buffers to the service interface.
+     * Drains all data from the buffers and writes them to the persistence service.
+     * @param provider the provider for the service to write to
+     * @param channels the channels of which the buffers should be drained to the persistence layer
      *  @return number of samples drained/written to the service
      * @throws OsgiServiceUnavailableException
      * @throws ArchiveServiceException
      */
-    private long write() throws OsgiServiceUnavailableException, ArchiveServiceException {
+    private long collectAndWriteSamples(@Nonnull final IServiceProvider provider,
+                              @Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels)
+                              throws OsgiServiceUnavailableException, ArchiveServiceException {
 
         final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples =
-                collectSamplesFromBuffers(_channels);
+                collectSamplesFromBuffers(channels);
 
-        final IArchiveEngineFacade service = _provider.getEngineFacade();
+        final IArchiveEngineFacade service = provider.getEngineFacade();
         service.writeSamples(allSamples);
 
         return allSamples.size();

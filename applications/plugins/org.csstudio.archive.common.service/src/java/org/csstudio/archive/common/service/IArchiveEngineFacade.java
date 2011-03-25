@@ -26,13 +26,14 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
+import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -65,7 +66,8 @@ public interface IArchiveEngineFacade {
      *  @throws ArchiveServiceException
      */
     @Nonnull
-    Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException;
+    Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id)
+                                                        throws ArchiveServiceException;
 
     /**
      * @param group_config
@@ -73,7 +75,8 @@ public interface IArchiveEngineFacade {
      * @throws ArchiveServiceException
      */
     @Nonnull
-    Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException;
+    Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
+                                                     throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -83,7 +86,8 @@ public interface IArchiveEngineFacade {
      * @throws ArchiveServiceException
      */
     <V, T extends IAlarmSystemVariable<V>>
-    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException;
+    boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples)
+                         throws ArchiveServiceException;
 
 
     /**
@@ -91,11 +95,10 @@ public interface IArchiveEngineFacade {
      *
      * @throws ArchiveServiceException
      */
-    void writeMonitorModeInformation(@Nonnull final ArchiveChannelId id,
-                                     @Nonnull final ArchiverMonitorStatus st,
-                                     @Nonnull final ArchiveEngineId engineId,
-                                     @Nonnull final TimeInstant time,
-                                     @Nonnull final String info) throws ArchiveServiceException;
+    void writeEngineStatusInformation(@Nonnull final ArchiveEngineId engineId,
+                                      @Nonnull final EngineMonitorStatus st,
+                                      @Nonnull final TimeInstant time,
+                                      @Nonnull final String info) throws ArchiveServiceException;
 
     /**
      * Writes the channel connection information.
@@ -106,10 +109,11 @@ public interface IArchiveEngineFacade {
      * @param timestamp the timestamp of the event, whether it originates
      *        from the control system or the engine is up to the invoker.
      */
-    void writeChannelConnectionInfo(@Nonnull final ArchiveChannelId id,
-                                    final boolean connected,
-                                    @Nonnull final String info,
-                                    @Nonnull final TimeInstant timestamp) throws ArchiveServiceException;
+    void writeChannelStatusInfo(@Nonnull final ArchiveChannelId id,
+                                final boolean connected,
+                                @Nonnull final String info,
+                                @Nonnull final TimeInstant timestamp)
+                                throws ArchiveServiceException;
 
     /**
      * Writes the channel display range info
@@ -121,5 +125,24 @@ public interface IArchiveEngineFacade {
     void writeChannelDisplayRangeInfo(@Nonnull final ArchiveChannelId id,
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException;
+
+    /**
+     * Updates the time information for the given archive engine.
+     * @param engineId
+     * @param lastTimeAlive
+     */
+    void updateEngineIsAlive(@Nonnull final ArchiveEngineId engineId,
+                             @Nonnull final TimeInstant lastTimeAlive) throws ArchiveServiceException;
+
+    /**
+     *
+     * @param id
+     * @return
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    IEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
+                                                        @Nonnull final TimeInstant latestAliveTime)
+                                                        throws ArchiveServiceException;
 
 }
