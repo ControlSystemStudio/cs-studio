@@ -33,7 +33,7 @@ import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
-import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -141,7 +141,7 @@ public interface IArchiveEngineFacade {
      * @throws ArchiveServiceException
      */
     @Nonnull
-    IEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
+    IArchiveEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
                                                         @Nonnull final TimeInstant latestAliveTime)
                                                         throws ArchiveServiceException;
 

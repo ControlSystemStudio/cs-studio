@@ -21,30 +21,30 @@
  */
 package org.csstudio.archive.common.service.enginestatus;
 
-import org.csstudio.domain.desy.common.id.Id;
+import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Id object for an ArchiverMgmtEntry.
+ * Read-only interface for ArchiverMgmtEntry.
  *
  * @author bknerr
  * @since 02.02.2011
  */
-public class EngineStatusId extends Id<EngineStatusId> {
+public interface IArchiveEngineStatus extends Identifiable<ArchiveEngineStatusId> {
 
-    private static final long serialVersionUID = -4359196591799659829L;
+    @Nonnull
+    String getInfo();
 
-    /**
-     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
-     */
-    public static final EngineStatusId NONE = new EngineStatusId(-1L);
+    @Nonnull
+    EngineMonitorStatus getStatus();
 
-    /**
-     * Constructor.
-     *
-     * @param value the value
-     */
-    public EngineStatusId(final long value) {
-        super(value);
-    }
+    @Nonnull
+    ArchiveEngineId getEngineId();
+
+    @Nonnull
+    TimeInstant getTimestamp();
+
 }

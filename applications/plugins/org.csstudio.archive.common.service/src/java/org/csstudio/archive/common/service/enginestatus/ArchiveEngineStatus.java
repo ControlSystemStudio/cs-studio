@@ -34,12 +34,12 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 02.02.2011
  */
-public class EngineStatus implements IEngineStatus {
+public class ArchiveEngineStatus implements IArchiveEngineStatus {
 
     public static final String ENGINE_START = "Started";
     public static final String ENGINE_STOP = "Stopped";
 
-    private final EngineStatusId _id;
+    private final ArchiveEngineStatusId _id;
     private final EngineMonitorStatus _status;
     private final ArchiveEngineId _engineId;
     private final TimeInstant _timestamp;
@@ -48,20 +48,20 @@ public class EngineStatus implements IEngineStatus {
     /**
      * Constructor.
      */
-    public EngineStatus(@Nonnull final ArchiveEngineId engineId,
-                        @Nonnull final EngineMonitorStatus status,
-                        @Nonnull final TimeInstant time,
-                        @Nullable final String info) {
-        this(EngineStatusId.NONE, engineId, status, time, info);
+    public ArchiveEngineStatus(@Nonnull final ArchiveEngineId engineId,
+                               @Nonnull final EngineMonitorStatus status,
+                               @Nonnull final TimeInstant time,
+                               @Nullable final String info) {
+        this(ArchiveEngineStatusId.NONE, engineId, status, time, info);
     }
     /**
      * Constructor.
      */
-    public EngineStatus(@Nonnull final EngineStatusId id,
-                        @Nonnull final ArchiveEngineId engineId,
-                        @Nonnull final EngineMonitorStatus status,
-                        @Nonnull final TimeInstant time,
-                        @Nullable final String info) {
+    public ArchiveEngineStatus(@Nonnull final ArchiveEngineStatusId id,
+                               @Nonnull final ArchiveEngineId engineId,
+                               @Nonnull final EngineMonitorStatus status,
+                               @Nonnull final TimeInstant time,
+                               @Nullable final String info) {
         _id = id;
         _status = status;
         _engineId = engineId;
@@ -74,7 +74,7 @@ public class EngineStatus implements IEngineStatus {
      */
     @Override
     @Nonnull
-    public EngineStatusId getId() {
+    public ArchiveEngineStatusId getId() {
         return _id;
     }
 
