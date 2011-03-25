@@ -19,31 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
-
-import java.sql.Connection;
+package org.csstudio.archive.common.service.channelstatus;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * General DAO Manager interface.
+ * Read only interface for channel status information.
  *
  * @author bknerr
- * @since 02.02.2011
+ * @since Mar 25, 2011
  */
-public interface IDaoManager {
+public interface IArchiveChannelStatus extends Identifiable<ArchiveChannelStatusId> {
 
     @Nonnull
-    Connection getConnection() throws ArchiveConnectionException;
+    ArchiveChannelId getChannelId();
 
-//    @CheckForNull
-//    Object execute(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-//
-//    @CheckForNull
-//    Object executeAndClose(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
-//
-//    @CheckForNull
-//    Object transaction(@Nonnull final IArchiveDaoCommand command) throws ArchiveDaoException;
+    @Nonnull
+    String getInfo();
+
+    @Nonnull
+    TimeInstant getTime();
+
+    @Nonnull
+    Boolean isConnected();
+
 }

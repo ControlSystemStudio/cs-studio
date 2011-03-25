@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.archive.common.service.mysqlimpl.dao.MySQLArchiveServiceImplModule;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

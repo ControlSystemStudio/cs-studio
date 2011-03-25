@@ -81,7 +81,7 @@ public enum PersistEngineDataManager {
                                 return Long.valueOf(arg0.getPeriodInMS()).compareTo(Long.valueOf(arg1.getPeriodInMS()));
                             }
                         });
-    AtomicInteger _workerId = new AtomicInteger(0);
+    private final AtomicInteger _workerId = new AtomicInteger(0);
 
     /**
      * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL

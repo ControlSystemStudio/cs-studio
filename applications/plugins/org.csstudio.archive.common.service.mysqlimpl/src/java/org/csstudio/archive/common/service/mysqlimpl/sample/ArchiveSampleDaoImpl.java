@@ -65,6 +65,7 @@ import org.joda.time.Minutes;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * Archive sample dao implementation.
@@ -119,6 +120,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * Constructor.
      */
+    @Inject
     public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);

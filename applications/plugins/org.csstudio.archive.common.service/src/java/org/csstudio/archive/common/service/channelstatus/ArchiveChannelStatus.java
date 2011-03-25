@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
+package org.csstudio.archive.common.service.channelstatus;
 
 import javax.annotation.Nonnull;
 
@@ -31,8 +31,9 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author baschtl
  * @since Feb 26, 2011
  */
-public class ArchiveChannelStatus {
+public class ArchiveChannelStatus implements IArchiveChannelStatus {
 
+    private final ArchiveChannelStatusId _id;
     private final ArchiveChannelId _channelId;
     private final Boolean _connected;
     private final String _info;
@@ -42,30 +43,65 @@ public class ArchiveChannelStatus {
                                 @Nonnull final boolean connected,
                                 @Nonnull final String info,
                                 @Nonnull final TimeInstant time) {
+        this(ArchiveChannelStatusId.NONE, channelId, connected, info, time);
+    }
+
+    public ArchiveChannelStatus(@Nonnull final ArchiveChannelStatusId id,
+                                @Nonnull final ArchiveChannelId channelId,
+                                @Nonnull final boolean connected,
+                                @Nonnull final String info,
+                                @Nonnull final TimeInstant time) {
+        _id = id;
         _channelId = channelId;
         _connected = Boolean.valueOf(connected);
         _info = info;
         _time = time;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveChannelStatusId getId() {
+        return _id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
     public ArchiveChannelId getChannelId() {
         return _channelId;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
     public String getInfo() {
         return _info;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
     public TimeInstant getTime() {
         return _time;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
     public Boolean isConnected() {
         return _connected;
     }
+
 }
 

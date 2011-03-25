@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManage
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * Dao implementation for archive control system.
@@ -61,6 +62,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     /**
      * Constructor.
      */
+    @Inject
     public ArchiveControlSystemDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                        @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);

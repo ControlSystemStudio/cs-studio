@@ -165,10 +165,10 @@ public class Application implements IApplication {
         LOG.info("Reading configuration for engine '" + _engineName + "'");
         final RunningStopWatch watch = StopWatch.start();
         _model.readConfig(_port);
-        final long elapsedTimeInMillis = watch.getElapsedTimeInMillis();
+        final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: " + _model.getChannels().size() +
                  " channels in " +
-                 TimeInstantBuilder.buildFromMillis(elapsedTimeInMillis).formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS));
+                 TimeInstantBuilder.buildFromMillis(millis).formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS));
     }
 
     /**

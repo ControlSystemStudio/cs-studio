@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -57,6 +58,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     /**
      * Constructor.
      */
+    @Inject
     public ArchiveChannelGroupDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                       @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);

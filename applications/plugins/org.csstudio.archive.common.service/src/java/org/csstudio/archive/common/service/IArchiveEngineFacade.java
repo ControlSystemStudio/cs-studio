@@ -30,6 +30,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
@@ -135,14 +136,21 @@ public interface IArchiveEngineFacade {
                              @Nonnull final TimeInstant lastTimeAlive) throws ArchiveServiceException;
 
     /**
-     *
      * @param id
      * @return
      * @throws ArchiveServiceException
      */
     @Nonnull
     IArchiveEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
-                                                        @Nonnull final TimeInstant latestAliveTime)
+                                                          @Nonnull final TimeInstant latestAliveTime)
+                                                          throws ArchiveServiceException;
+
+    /**
+     * @param name
+     * @return
+     */
+    @CheckForNull
+    IArchiveChannelStatus getChannelStatusByChannelName(@Nonnull final String name)
                                                         throws ArchiveServiceException;
 
 }

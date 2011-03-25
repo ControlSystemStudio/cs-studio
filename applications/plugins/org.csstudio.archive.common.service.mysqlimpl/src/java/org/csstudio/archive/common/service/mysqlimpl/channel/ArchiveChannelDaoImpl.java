@@ -100,8 +100,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      * Constructor.
      */
     @Inject
-    public ArchiveChannelDaoImpl(final ArchiveConnectionHandler handler,
-                                 final PersistEngineDataManager persister) {
+    public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
     }
 

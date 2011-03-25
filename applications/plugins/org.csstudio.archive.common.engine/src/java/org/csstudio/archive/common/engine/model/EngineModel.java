@@ -22,11 +22,11 @@ import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
-import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
+import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
-import org.csstudio.archive.common.service.enginestatus.EngineStatus;
-import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -174,13 +174,11 @@ public final class EngineModel {
      */
     public void start() throws EngineModelException {
 
-        if (_engine == null) {
-            throw new EngineModelException("Engine id has not been set. Did you read the engine configuration successfully?", null);
+        if (_engine == null || _writeExecutor == null) {
+            throw new EngineModelException("Engine or writeExecutor is null. Did you read the engine configuration successfully?", null);
         }
 
-        checkAndUpdateLastShutdownStatus(_provider, _engine);
-
-        _writeExecutor = new WriteExecutor(_provider, _engine.getId());
+        checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
 
         _startTime = TimeInstantBuilder.buildFromNow();
 
@@ -188,8 +186,9 @@ public final class EngineModel {
 
         _writeExecutor.start(_writePeriodInMS);
 
-        startChannelGroups(_engine.getId(), _groupMap.values());
+        startChannelGroups(_groupMap.values());
     }
+
 
     /**
      * Retrieves the last archiver status from the archive.
@@ -201,35 +200,69 @@ public final class EngineModel {
      * last engine.alive value.
      * 2) update the channel_status table for all channels of this engine that have status
      * 'connected' with a new row disconnected and the timestamp of the last engine.alive value.
+     * @param collection
      *
      * @throws EngineModelException
      */
     private void checkAndUpdateLastShutdownStatus(@Nonnull final IServiceProvider provider,
-                                                  @Nonnull final IArchiveEngine engine)
+                                                  @Nonnull final IArchiveEngine engine,
+                                                  @Nonnull final Collection<ArchiveChannel<?, ?>> channels)
                                                   throws EngineModelException {
-        IEngineStatus engineStatus;
         try {
-            engineStatus = provider.getEngineFacade().getLatestEngineStatusInformation(engine.getId(),
-                                                                                       engine.getLastAliveTime());
+            final IArchiveEngineFacade facade = provider.getEngineFacade();
 
-            if (EngineMonitorStatus.OFF.equals(engineStatus.getStatus())) {
-                return; // archiver was gracefully shutdown (it would state on otherwise
+            final IArchiveEngineStatus engineStatus =
+                facade.getLatestEngineStatusInformation(engine.getId(),
+                                                        engine.getLastAliveTime());
+
+            if (isFirstStart(engineStatus) || hadGracefullyShutdown(engineStatus)) {
+                return;
             }
 
-            provider.getEngineFacade().writeEngineStatusInformation(engine.getId(),
-                                                                    EngineMonitorStatus.OFF,
-                                                                    engine.getLastAliveTime(),
-                                                                    "Ungraceful shutdown");
-            // TODO (bknerr) : update channel status
+            facade.writeEngineStatusInformation(engine.getId(),
+                                                EngineMonitorStatus.OFF,
+                                                engine.getLastAliveTime(),
+                                                "Ungraceful shutdown");
+
+            checkAndUpdateChannelsStatus(facade, engine, channels);
+
         } catch (@Nonnull final Exception e) {
             handleExceptions(e);
         }
     }
 
-    private void startChannelGroups(@Nonnull final ArchiveEngineId engineId,
-                                    @Nonnull final Collection<ArchiveGroup> groups) throws EngineModelException {
+
+    private boolean hadGracefullyShutdown(@Nonnull final IArchiveEngineStatus engineStatus) {
+        return EngineMonitorStatus.OFF.equals(engineStatus.getStatus());
+    }
+
+
+    private boolean isFirstStart(@CheckForNull final IArchiveEngineStatus engineStatus) {
+        return engineStatus == null;
+    }
+
+
+    private void checkAndUpdateChannelsStatus(@Nonnull final IArchiveEngineFacade facade,
+                                              @Nonnull final IArchiveEngine engine,
+                                              @Nonnull final Collection<ArchiveChannel<?, ?>> channels)
+                                              throws ArchiveServiceException {
+        for (final ArchiveChannel<?, ?> channel : channels) {
+            final IArchiveChannelStatus status =
+                facade.getChannelStatusByChannelName(channel.getName());
+
+            if (status!= null && status.isConnected()) { // still connected?
+                facade.writeChannelStatusInfo(status.getChannelId(),
+                                              false,
+                                              "Ungraceful engine shutdown",
+                                              engine.getLastAliveTime());
+            }
+        }
+    }
+
+
+    private void startChannelGroups(@Nonnull final Collection<ArchiveGroup> groups) throws EngineModelException {
         for (final ArchiveGroup group : groups) {
-            group.start(EngineStatus.ENGINE_START);
+            group.start(ArchiveEngineStatus.ENGINE_START);
             if (getState() == State.SHUTDOWN_REQUESTED) {
                 break;
             }
@@ -291,7 +324,7 @@ public final class EngineModel {
         // Disconnect from network
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
-            group.stop(EngineStatus.ENGINE_STOP);
+            group.stop(ArchiveEngineStatus.ENGINE_STOP);
         }
 
         LOG.info("Shutting down writer");
@@ -317,7 +350,10 @@ public final class EngineModel {
 
             _engine = findEngineConfByName(port, _provider);
 
+            _writeExecutor = new WriteExecutor(_provider, _engine.getId());
+
             final IArchiveEngineFacade service = _provider.getEngineFacade();
+
             final Collection<IArchiveChannelGroup> groups =
                 service.getGroupsForEngine(_engine.getId());
 

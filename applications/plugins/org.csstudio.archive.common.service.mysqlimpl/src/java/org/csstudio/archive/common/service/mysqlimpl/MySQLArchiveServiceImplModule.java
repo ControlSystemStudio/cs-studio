@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
+package org.csstudio.archive.common.service.mysqlimpl;
 
 import org.csstudio.archive.common.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
@@ -29,10 +29,13 @@ import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChanne
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.IArchiveControlSystemDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.EngineStatusDaoImpl;
-import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IEngineStatusDao;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.ArchiveEngineStatusDaoImpl;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 
@@ -66,7 +69,7 @@ public class MySQLArchiveServiceImplModule extends AbstractModule {
 
         requestStaticInjection(AbstractArchiveDao.class);
 
-        bind(IEngineStatusDao.class).to(EngineStatusDaoImpl.class).in(Scopes.SINGLETON);
+        bind(IArchiveEngineStatusDao.class).to(ArchiveEngineStatusDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelDao.class).to(ArchiveChannelDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelGroupDao.class).to(ArchiveChannelGroupDaoImpl.class).in(Scopes.SINGLETON);
         bind(IArchiveChannelStatusDao.class).to(ArchiveChannelStatusDaoImpl.class).in(Scopes.SINGLETON);

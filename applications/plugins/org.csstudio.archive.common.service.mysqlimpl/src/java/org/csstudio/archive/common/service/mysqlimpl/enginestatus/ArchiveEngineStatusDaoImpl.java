@@ -31,10 +31,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatusId;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
-import org.csstudio.archive.common.service.enginestatus.EngineStatus;
-import org.csstudio.archive.common.service.enginestatus.EngineStatusId;
-import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
@@ -45,6 +45,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.inject.Inject;
 
 /**
  * TODO (bknerr) :
@@ -52,7 +53,7 @@ import com.google.common.collect.Iterables;
  * @author bknerr
  * @since 02.02.2011
  */
-public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineStatusDao {
+public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IArchiveEngineStatusDao {
 
     /**
      * Converter function to single sql VALUE, i.e. comma separated strings embraced by parentheses.
@@ -61,7 +62,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
      * @author bknerr
      * @since 03.02.2011
      */
-    private static final class MonitorStates2SqlValue implements Function<IEngineStatus, String> {
+    private static final class MonitorStates2SqlValue implements Function<IArchiveEngineStatus, String> {
         /**
          * Constructor.
          */
@@ -74,7 +75,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
          */
         @Override
         @Nonnull
-        public String apply(@Nonnull final IEngineStatus from) {
+        public String apply(@Nonnull final IArchiveEngineStatus from) {
 
             return "(" +
                    Joiner.on(",").join(from.getEngineId().longValue(),
@@ -99,8 +100,9 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
     /**
      * Constructor.
      */
-    public EngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
-                               @Nonnull final PersistEngineDataManager persister) {
+    @Inject
+    public ArchiveEngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                      @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
     }
 
@@ -114,7 +116,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
      */
     @Override
     @CheckForNull
-    public IEngineStatus createMgmtEntry(@Nonnull final IEngineStatus entry) throws ArchiveDaoException {
+    public IArchiveEngineStatus createMgmtEntry(@Nonnull final IArchiveEngineStatus entry) throws ArchiveDaoException {
         final String sqlValue = M2S_FUNC.apply(entry);
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + sqlValue;
 
@@ -126,7 +128,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
      * {@inheritDoc}
      */
     @Override
-    public boolean createMgmtEntries(@Nonnull final Collection<IEngineStatus> monitorStates) throws ArchiveDaoException {
+    public boolean createMgmtEntries(@Nonnull final Collection<IArchiveEngineStatus> monitorStates) throws ArchiveDaoException {
 
         final String values = Joiner.on(",").join(Iterables.transform(monitorStates, M2S_FUNC));
         final String stmtStr = createMgmtEntryUpdateStmtPrefix(getDatabaseName()) + values;
@@ -140,8 +142,8 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
      */
     @Override
     @Nonnull
-    public IEngineStatus retrieveLastMgmtEntry(@Nonnull final ArchiveEngineId id,
-                                                    @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
+    public IArchiveEngineStatus retrieveLastEngineStatus(@Nonnull final ArchiveEngineId id,
+                                                         @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
         try {
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
             // time between ? and ? and engine_id=?
@@ -160,7 +162,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
     }
 
     @Nonnull
-    private IEngineStatus createIArchiverMgmtEntryFromResult(@Nonnull final ResultSet resultSet)
+    private IArchiveEngineStatus createIArchiverMgmtEntryFromResult(@Nonnull final ResultSet resultSet)
                                                                   throws SQLException {
         // id, monitor_mode, engine_id, time, info
         final int idVal = resultSet.getInt("id");
@@ -169,7 +171,7 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
         final Timestamp time = resultSet.getTimestamp("time");
         final String info = resultSet.getString("info");
 
-        return new EngineStatus(new EngineStatusId(idVal),
+        return new ArchiveEngineStatus(new ArchiveEngineStatusId(idVal),
                                 new ArchiveEngineId(engineId),
                                 EngineMonitorStatus.valueOf(status),
                                 TimeInstantBuilder.buildFromMillis(time.getTime()),

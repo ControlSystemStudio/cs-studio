@@ -43,6 +43,8 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
+import com.google.inject.Inject;
+
 /**
  * DAO implementation for engine table.
  *
@@ -74,6 +76,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * Constructor.
      */
+    @Inject
     public ArchiveEngineDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                 @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
