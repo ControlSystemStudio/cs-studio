@@ -45,7 +45,9 @@ import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -58,6 +60,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -96,8 +99,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     /**
      * Constructor.
      */
-    public ArchiveChannelDaoImpl() {
-        super();
+    @Inject
+    public ArchiveChannelDaoImpl(final ArchiveConnectionHandler handler,
+                                 final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     @Nonnull

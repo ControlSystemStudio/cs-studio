@@ -36,7 +36,9 @@ import org.csstudio.archive.common.service.engine.ArchiveEngine;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
@@ -72,8 +74,9 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * Constructor.
      */
-    public ArchiveEngineDaoImpl() {
-        super();
+    public ArchiveEngineDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     /**

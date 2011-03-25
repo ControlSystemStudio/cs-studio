@@ -36,7 +36,9 @@ import org.csstudio.archive.common.service.enginestatus.EngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineStatusId;
 import org.csstudio.archive.common.service.enginestatus.IEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
@@ -97,8 +99,9 @@ public class EngineStatusDaoImpl extends AbstractArchiveDao implements IEngineSt
     /**
      * Constructor.
      */
-    public EngineStatusDaoImpl() {
-        super();
+    public EngineStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                               @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     @Nonnull

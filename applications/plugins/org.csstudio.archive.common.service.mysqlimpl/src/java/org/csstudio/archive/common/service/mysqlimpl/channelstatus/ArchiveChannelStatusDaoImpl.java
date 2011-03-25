@@ -24,7 +24,9 @@ package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 
 import com.google.common.base.Joiner;
 
@@ -38,13 +40,14 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
 
     public static final String TAB = "channel_status";
 
-    private static final String INSERT_ENTRY_STMT_PREFIX =
+    private final String _insertChannelStatusStmtPrefix =
         "INSERT INTO " + getDatabaseName() + "." + TAB +
                      " (channel_id, connected, info, timestamp) " +
                      "VALUES ";
 
-    public ArchiveChannelStatusDaoImpl() {
-        super();
+    public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                       @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
 
@@ -56,7 +59,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
                                                    "'" + entry.getTime().formatted() + "'");
 
 
-        getEngineMgr().submitStatementToBatch(INSERT_ENTRY_STMT_PREFIX + "("  + stmtStr + ")");
+        getEngineMgr().submitStatementToBatch(_insertChannelStatusStmtPrefix + "("  + stmtStr + ")");
     }
 
 }

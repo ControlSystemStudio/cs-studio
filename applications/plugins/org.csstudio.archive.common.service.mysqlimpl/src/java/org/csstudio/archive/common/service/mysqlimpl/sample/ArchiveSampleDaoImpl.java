@@ -40,7 +40,9 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
@@ -117,8 +119,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * Constructor.
      */
-    public ArchiveSampleDaoImpl() {
-        super();
+    public ArchiveSampleDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
         final Map<ArchiveChannelId, SampleMinMaxAggregator> minutesMap = Maps.newHashMap();
         _reducedDataMapForMinutes.set(minutesMap);
         final Map<ArchiveChannelId, SampleMinMaxAggregator> hoursMap = Maps.newHashMap();
