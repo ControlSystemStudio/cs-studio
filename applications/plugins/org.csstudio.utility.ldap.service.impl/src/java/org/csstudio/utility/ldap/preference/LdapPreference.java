@@ -92,7 +92,7 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      */
     @Override
     @Nonnull
-    protected String getPluginID() {
+    public String getPluginID() {
         return LdapActivator.PLUGIN_ID;
     }
 }
