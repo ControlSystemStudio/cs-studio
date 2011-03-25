@@ -90,7 +90,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return AlarmServiceActivator.PLUGIN_ID;
     }
 

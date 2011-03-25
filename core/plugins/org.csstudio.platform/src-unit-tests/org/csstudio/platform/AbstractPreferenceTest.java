@@ -161,7 +161,7 @@ public class AbstractPreferenceTest {
         }
 
         @Override
-        protected String getPluginID() {
+        public String getPluginID() {
             return "QualifierForTest";
         }
 

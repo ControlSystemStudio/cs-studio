@@ -70,7 +70,7 @@ public final class AlarmViewPreference<T> extends AbstractPreference<T> {
     }
     
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return JmsLogsPlugin.PLUGIN_ID;
     }
     
