@@ -166,7 +166,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
     /**
      * The map Contain all PrmText entries. The Key is the Index.
      */
-    private HashMap<String, HashMap<Integer,PrmText>> _prmTextMap;
+    private HashMap<String, HashMap<Integer,PrmTextItem>> _prmTextMap;
 
     private UserPrmDataModel _userPrmDataModel;
 
@@ -359,22 +359,22 @@ public class GsdSlaveModel extends GsdGeneralModel {
         _userPrmDataModel = userPrmDataModel;
     }
 
-    public final HashMap<String, HashMap<Integer,PrmText>> getPrmTextMap() {
+    public final HashMap<String, HashMap<Integer,PrmTextItem>> getPrmTextMap() {
         return _prmTextMap;
     }
 
-    public final void setPrmTextMap(final HashMap<String, HashMap<Integer,PrmText>> prmTextMap) {
+    public final void setPrmTextMap(final HashMap<String, HashMap<Integer,PrmTextItem>> prmTextMap) {
         _prmTextMap = prmTextMap;
     }
 
-    public void addPrmText(final String index, final HashMap<Integer,PrmText> prmText){
+    public void addPrmText(final String index, final HashMap<Integer,PrmTextItem> prmText){
         if(_prmTextMap==null){
-            _prmTextMap = new HashMap<String, HashMap<Integer,PrmText>>();
+            _prmTextMap = new HashMap<String, HashMap<Integer,PrmTextItem>>();
         }
         _prmTextMap.put(index, prmText);
     }
 
-    public HashMap<Integer,PrmText> getPrmText(final String index){
+    public HashMap<Integer,PrmTextItem> getPrmText(final String index){
         return _prmTextMap.get(index);
     }
 

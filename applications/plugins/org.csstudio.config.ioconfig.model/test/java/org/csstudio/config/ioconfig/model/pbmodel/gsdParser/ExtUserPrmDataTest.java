@@ -166,14 +166,14 @@ public class ExtUserPrmDataTest {
     @Test
     public void prmText() {
         GsdSlaveModel gsdSlaveModel = new GsdSlaveModel();
-        HashMap<String, HashMap<Integer, PrmText>> hashMap = new HashMap<String, HashMap<Integer,PrmText>>();
-        HashMap<Integer, PrmText> value = new HashMap<Integer, PrmText>();
-        hashMap.put("key", new HashMap<Integer, PrmText>());
+        HashMap<String, HashMap<Integer, PrmTextItem>> hashMap = new HashMap<String, HashMap<Integer,PrmTextItem>>();
+        HashMap<Integer, PrmTextItem> value = new HashMap<Integer, PrmTextItem>();
+        hashMap.put("key", new HashMap<Integer, PrmTextItem>());
         gsdSlaveModel.setPrmTextMap(hashMap);
         ExtUserPrmData out = new ExtUserPrmData(gsdSlaveModel, null, null);
         
         out.setPrmTextRef("key");
-        HashMap<Integer, PrmText> prmText = out.getPrmText();
+        HashMap<Integer, PrmTextItem> prmText = out.getPrmText();
         assertNotNull(prmText);
         assertEquals(prmText, value);
     }

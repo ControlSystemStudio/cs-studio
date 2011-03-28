@@ -24,41 +24,41 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.1 $
  * @since 18.07.2008
  */
-public class PrmText {
+public class PrmTextItem {
     /**
-     * The text description of the Value.
+     * The text description of the index.
      */
-    private String _text;
-    /**
-     * The Value.
-     */
-    private Integer _value;
+    private final String _description;
+
+    private final Integer _index;
     
-    public PrmText(String text, Integer value){
-        setText(text);
-        setValue(value);
+    public PrmTextItem(@Nonnull String description, @Nonnull Integer index){
+        _description = description;
+        _index = index;
     }
+    
+    @Nonnull 
     public final String getText() {
-        return _text;
+        return _description;
     }
-    public final void setText(String text) {
-        _text = text;
+    
+    @Nonnull 
+    public final Integer getIndex() {
+        return _index;
     }
-    public final Integer getValue() {
-        return _value;
-    }
-    public final void setValue(Integer value) {
-        _value = value;
-    }
+    
     @Override
+    @Nonnull 
     public String toString() {
-        return getValue()+" : "+getText();
+        return getIndex()+" : "+getText();
     }
 
     

@@ -296,7 +296,7 @@ public class GsdModuleModel {
         return arrayList;
     }
 
-    public final HashMap<Integer, PrmText> getPrmText(String prmTextRef) {
+    public final HashMap<Integer, PrmTextItem> getPrmText(String prmTextRef) {
         return _gsdSlaveModel.getPrmText(prmTextRef);
     }
 

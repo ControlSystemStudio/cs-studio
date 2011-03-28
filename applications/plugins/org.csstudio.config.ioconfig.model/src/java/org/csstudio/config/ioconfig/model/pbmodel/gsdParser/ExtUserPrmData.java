@@ -297,7 +297,7 @@ public class ExtUserPrmData {
      *
      * @return The Parameter Text Map.
      */
-    public final HashMap<Integer, PrmText> getPrmText() {
+    public final HashMap<Integer, PrmTextItem> getPrmText() {
         return _gsdSlaveModel.getPrmTextMap().get(getPrmTextRef());
     }
 
