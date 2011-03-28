@@ -140,13 +140,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.pv.epics"
          download-size="0"
          install-size="0"
@@ -351,6 +344,27 @@
 
    <plugin
          id="org.csstudio.ui.menu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform"
          download-size="0"
          install-size="0"
          version="0.0.0"

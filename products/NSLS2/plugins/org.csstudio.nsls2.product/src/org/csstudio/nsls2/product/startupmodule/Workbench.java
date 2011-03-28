@@ -1,14 +1,13 @@
 package org.csstudio.nsls2.product.startupmodule;
 
-import java.util.Dictionary;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.workspace.RelaunchConstants;
-import org.csstudio.nsls2.product.Activator;
+import org.csstudio.logging.LogConfigurator;
 import org.csstudio.nsls2.product.ApplicationWorkbenchAdvisor;
 import org.csstudio.nsls2.product.Messages;
 import org.csstudio.nsls2.startuphelper.StartupAuthenticationHelper;
+import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.csstudio.startup.module.ProjectExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
@@ -18,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -73,6 +71,18 @@ public class Workbench implements WorkbenchExtPoint {
 	public Object runWorkbench(Display display, IApplicationContext context,
 			Map<String, Object> parameters)
 	{
+		// Configure Logging
+	    try
+	    {
+	        LogConfigurator.configureFromPreferences();
+	    }
+	    catch (Exception ex)
+	    {
+	        ex.printStackTrace();
+	        // Continue without customized log configuration
+	    }
+	    final Logger logger = Logger.getLogger(getClass().getName());
+	    
         Object o = parameters.get(LoginExtPoint.USERNAME);
 		String username = o != null ? (String)o : null;
 		o = parameters.get(LoginExtPoint.PASSWORD);
@@ -95,7 +105,7 @@ public class Workbench implements WorkbenchExtPoint {
             Integer.getInteger(RelaunchConstants.PROP_EXIT_CODE);
         if (IApplication.EXIT_RELAUNCH.equals(exit_code))
         {   // RELAUCH with new command line
-            CentralLogger.getInstance().getLogger(this).debug("RELAUNCH, command line:\n" //$NON-NLS-1$
+            logger.fine("RELAUNCH, command line:\n" //$NON-NLS-1$
                     + System.getProperty(RelaunchConstants.PROP_EXIT_DATA));
             return IApplication.EXIT_RELAUNCH;
         }
