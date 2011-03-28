@@ -28,11 +28,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -54,146 +54,15 @@ public final class GsdFileParser {
      */
     private static String _LINE;
     private static GsdSlaveModel _SLAVE;
-
+    
     private static List<String> _WARNING_LIST = new ArrayList<String>();
+
+    private Integer _moduleNo = 1;
     
-    /**
-     * Default Constructor.
-     */
-    private GsdFileParser() {
-        // Constructor
-    }
-    
-    public static GsdSlaveModel parseSlave(@Nonnull final GSDFileDBO gsdFile,
-                                           @Nonnull final GsdSlaveModel model) {
-        _SLAVE = model;
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new StringReader(gsdFile.getGSDFile()));
-            while ((_LINE = br.readLine()) != null) {
-                _LINE = _LINE.trim();
-                slave(br);
-            }
-        } catch (FileNotFoundException e1) {
-            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                              "The DDB for the GSD File " + gsdFile.getName()
-                                                      + "(ID: " + gsdFile.getId()
-                                                      + ") no fiel entry.",
-                                              e1);
-        } catch (IOException e) {
-            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                              "The DDB for the GSD File " + gsdFile.getName()
-                                                      + "(ID: " + gsdFile.getId()
-                                                      + ") wrong fiel entry.",
-                                              e);
-        } finally {
-            try {
-                if (br != null) {
-                    br.close();
-                    br = null;
-                }
-            } catch (IOException e) {
-                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                                  "The DDB for the GSD File " + gsdFile.getName()
-                                                          + "(ID: " + gsdFile.getId()
-                                                          + ") wrong fiel entry.",
-                                                  e);
-            }
-        }
-        return _SLAVE;
-    }
-    
-    /**
-     *
-     * @param br
-     * @throws IOException
-     */
-    private static void slave(final BufferedReader br) throws IOException {
-        if (_LINE.startsWith(";")) {
-            return;
-        }
-        if (_LINE.startsWith("Station_Type")) {
-            _SLAVE.setStationType(getByteValue(_LINE));
-        } else if (_LINE.startsWith("Freeze_Mode_supp")) {
-            _SLAVE.setFreezeModeSupp(getBooleanValue(_LINE));
-        } else if (_LINE.startsWith("Sync_Mode_supp")) {
-            _SLAVE.setSyncModeSupp(getBooleanValue(_LINE));
-        } else if (_LINE.startsWith("Auto_Baud_supp")) {
-            _SLAVE.setAutoBaudSupp(getBooleanValue(_LINE));
-        } else if (_LINE.startsWith("Set_Slave_Add_supp")) {
-            _SLAVE.setSetSlaveAddSupp(getBooleanValue(_LINE));
-        } else if (_LINE.startsWith("User_Prm_Data_Len")) {
-            _SLAVE.setUserPrmDataLen(getByteValue(_LINE));
-        } else if (_LINE.startsWith("Module")) {
-            while (lineIsNotEndBlock(br, "EndModule")) {
-                ;// skip Module lines
-            }
-        } else if (_LINE.startsWith("PrmText")) {
-            String[] lineParts = _LINE.split("[=;]");
-            String index;
-            if (lineParts.length < 1) {
-                CentralLogger.getInstance().error(GsdFileParser.class,
-                                                  "The PrmText line wrong: " + _LINE);
-                return;
-            }
-            index = lineParts[1].trim();
-            HashMap<Integer, PrmTextItem> prmText = new HashMap<Integer, PrmTextItem>();
-            while (lineIsNotEndBlock(br, "EndPrmText")) {
-                // 0 |1|2| 3
-                // Text(0) = "POWER ON RESET"
-                String[] prmTextParts = _LINE.split("[=()]");
-                Integer value = Integer.parseInt(prmTextParts[1].trim());
-                prmText.put(value, new PrmTextItem(prmTextParts[3].replaceAll("\"", "").trim(), value));
-            }
-            _SLAVE.addPrmText(index, prmText);
-        } else if (_LINE.startsWith("ExtUserPrmData")) {
-            createExtUserPrmData(br);
-        } else if (_LINE.startsWith("Ext_User_Prm_Data_Const")) {
-            // 0 |1 |2| 3 | 4
-            // Ext_User_Prm_Data_Const(13) = 0 ; Reserved
-            String[] lineParts = _LINE.split("[()=;]");
-            if (lineParts.length < 4) {
-                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                                  "The Ext_User_Prm_Data_Const line wrong: "
-                                                          + _LINE);
-                return;
-            }
-            String value = lineParts[3].trim();
-            while (value.endsWith("\\")) {
-                value = value.substring(0, value.length() - 1).trim()
-                        .concat(br.readLine().split(";")[0].trim());
-            }
-            
-            ExtUserPrmDataConst extUserPrmDataConst = new ExtUserPrmDataConst(lineParts[1].trim(),
-                                                                              value);
-            _SLAVE.addExtUserPrmDataConst(extUserPrmDataConst.getIndex(), extUserPrmDataConst);
-            
-        } else if (_LINE.startsWith("Ext_User_Prm_Data_Ref")) {
-            // 0 |1| 2 | 3 | 4
-            // Ext_User_Prm_Data_Ref(5) = 1 ;
-            String[] lineParts = _LINE.split("[()=;]");
-            if (lineParts.length < 4) {
-                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                                  "The Ext_User_Prm_Data_Ref line wrong: " + _LINE);
-                return;
-            }
-            ExtUserPrmDataRef extUserPrmDataRef = new ExtUserPrmDataRef(lineParts[1].trim(),
-                                                                        lineParts[3].trim());
-            
-            _SLAVE.addExtUserPrmDataRef(extUserPrmDataRef.getIndex(), extUserPrmDataRef);
-            
-        } else if (_LINE.startsWith("Unit_Diag_Bit")) {
-            // 0 | 1 |2|3| 4 | 5 | 6
-            // Unit_Diag_Bit(0001) = "Invalid VOR Cmd" ;
-            String[] lineParts = _LINE.split("[()=\";]");
-            if (lineParts.length < 5) {
-                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                                  "The Unit_Diag_Bit line wrong: " + _LINE);
-                return;
-            }
-            UnitDiagBit unitDiagBit = new UnitDiagBit(lineParts[1].trim(), lineParts[4].trim());
-            _SLAVE.addUnitDiagBit(unitDiagBit.getIndex(), unitDiagBit);
-            
+    public static void addValues2IntList(@Nonnull String value, @Nonnull List<Integer> valueList) {
+        String[] values = value.split(",");
+        for (String val : values) {
+            valueList.add(GsdFileParser.gsdValue2Int(val));
         }
     }
     
@@ -316,20 +185,43 @@ public final class GsdFileParser {
     }
     
     /**
+     * @param line
+     * @param lineCounter
      * @param br
-     * @param endBlockSting
      * @return
      * @throws IOException
      */
-    private static boolean lineIsNotEndBlock(final BufferedReader br, final String endBlockSting) throws IOException {
-        _LINE = br.readLine();
-        return ((_LINE != null) && !_LINE.trim().startsWith(endBlockSting));
+    @Nonnull
+    private static KeyValuePair extractKeyValue(@Nonnull final String line,
+                                                @Nonnull LineCounter lineCounter,
+                                                @Nonnull BufferedReader br) throws IOException {
+        try {
+        int keyEnd = line.indexOf('=');
+        String key = line.substring(0, keyEnd).trim();
+        String value = line.substring(keyEnd + 1).trim();
+        value = getValue(value, lineCounter, br);
+        KeyValuePair keyValuePair = new KeyValuePair(key, value);
+        return keyValuePair;
+        } catch (IndexOutOfBoundsException e) {
+            String warning = String.format("Can't corret handle, at line %s, the Property: %s",
+                                            lineCounter,
+                                            line);
+            LOG.warn(warning);
+            _WARNING_LIST.add(warning);
+            throw e;
+        }
+    }
+    
+    @Nonnull
+    public static List<String> getAndClearWarnings() {
+        ArrayList<String> arrayList = new ArrayList<String>(_WARNING_LIST);
+        _WARNING_LIST.clear();
+        return arrayList;
     }
     
     /**
      * @param line
      * @return
-     * @throws ParseException
      */
     private static boolean getBooleanValue(final String line) {
         int commendIndex = line.indexOf(';');
@@ -349,7 +241,6 @@ public final class GsdFileParser {
     /**
      * @param line
      * @return
-     * @throws ParseException
      */
     private static Byte getByteValue(final String line) {
         int commendIndex = line.indexOf(';');
@@ -364,170 +255,6 @@ public final class GsdFileParser {
             
         }
         return Byte.valueOf(line.substring(valueStartIndex, commendIndex).trim());
-    }
-    
-    /**
-     * @param fileAsString
-     * @return
-     * @throws IOException 
-     */
-    public static ParsedGsdFileModel parse(GSDFileDBO gsdFileDBO) throws IOException {
-        StringReader sr = new StringReader(gsdFileDBO.getGSDFile());
-        BufferedReader br = new BufferedReader(sr);
-        try {
-            ParsedGsdFileModel parsedGsdFileModel = new ParsedGsdFileModel(gsdFileDBO.getName());
-            return parse(br, parsedGsdFileModel);
-        } finally {
-            if (br != null) {
-                br.close();
-                br = null;
-            }
-            if (sr != null) {
-                sr.close();
-                sr = null;
-            }
-        }
-    }
-    
-    /**
-     * @param br
-     * @param parsedGsdFileModel 
-     * @return
-     * @throws IOException 
-     */
-    @Nonnull
-    private static ParsedGsdFileModel parse(@Nonnull BufferedReader br,
-                                            @Nonnull ParsedGsdFileModel parsedGsdFileModel) throws IOException {
-        String line;
-        LineCounter lineCounter = new LineCounter();
-        while ((line = br.readLine()) != null) {
-            lineCounter.count();
-            line = line.trim();
-            if (line.startsWith(";") || line.isEmpty()) {
-                // skip line,  is a comment or empty
-                continue;
-            } else if (line.startsWith("#")) {
-                // contain Profibus Type
-                continue;
-            } else if (line.startsWith("PrmText")) {
-                buildPrmText(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("ExtUserPrmData")) {
-                buildExtUserPrmData(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("Module")) {
-                buildModule(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("UnitDiagType")) {
-                buildUnitDiagType(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("SlotDefinition")) {
-                buildSlotDefinition(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("Unit_Diag_Area")) {
-                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("X_Unit_Diag_Area")) {
-                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
-            } else if (line.startsWith("Slave_Family")) {
-                // TODO (hrickens) [28.03.2011]: Hier könnte man den Text noch als zweite variante setzen. (Das was nach dem @ kommt)
-                setProperty(line.split("@")[0], lineCounter, parsedGsdFileModel, br);
-            } else {
-                setProperty(line, lineCounter, parsedGsdFileModel, br);
-            }
-            
-            // TODO(hrickens) [25.03.2011]: create and fill ParsedGsdFileModel
-        }
-        return parsedGsdFileModel;
-    }
-    
-    /**
-     * @param line
-     * @param lineCounter
-     * @param parsedGsdFileModel
-     * @param br
-     * @throws IOException 
-     */
-    private static void buildUnitDiagType(@Nonnull String line,
-                                          @Nonnull LineCounter lineCounter,
-                                          @Nonnull ParsedGsdFileModel parsedGsdFileModel,
-                                          @Nonnull BufferedReader br) throws IOException {
-        String tmpLine = line;
-        while ((tmpLine = br.readLine()) != null && !tmpLine.startsWith("EndUnitDiagType")) {
-            lineCounter.count();
-            tmpLine = tmpLine.trim();
-        }
-    }
-    
-    /**
-     * @param line
-     * @param lineCounter
-     * @param parsedGsdFileModel
-     * @param br
-     * @throws IOException 
-     */
-    private static void buildSlotDefinition(@Nonnull String line,
-                                            @Nonnull LineCounter lineCounter,
-                                            @Nonnull ParsedGsdFileModel parsedGsdFileModel,
-                                            @Nonnull BufferedReader br) throws IOException {
-        String tmpLine = line;
-        while ((tmpLine = br.readLine()) != null && !tmpLine.startsWith("EndSlotDefinition")) {
-            lineCounter.count();
-            tmpLine = tmpLine.trim();
-        }
-    }
-    
-    /**
-     * @param line
-     * @param lineCounter
-     * @param parsedGsdFileModel
-     * @param br
-     * @throws IOException 
-     */
-    private static void buildUnitDiagArea(@Nonnull String line,
-                                          @Nonnull LineCounter lineCounter,
-                                          @Nonnull ParsedGsdFileModel parsedGsdFileModel,
-                                          @Nonnull BufferedReader br) throws IOException {
-        String tmpLine = line;
-        while ((tmpLine = br.readLine()) != null && !tmpLine.endsWith("Unit_Diag_Area_End")) {
-            lineCounter.count();
-            tmpLine = tmpLine.trim();
-        }
-        
-    }
-    
-    /**
-     * @param line
-     * @param parsedGsdFileModel
-     * @param br
-     * @throws IOException 
-     */
-    private static void setProperty(@Nonnull String line,
-                                    @Nonnull LineCounter lineCounter,
-                                    @Nonnull ParsedGsdFileModel parsedGsdFileModel,
-                                    @Nonnull BufferedReader br) throws IOException {
-        KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
-        try {
-            parsedGsdFileModel.setProperty(keyValuePair);
-        } catch (NumberFormatException e) {
-            String warning = String.format("Can't corret handle from GSD File %s, at line %s, the Property: %s",parsedGsdFileModel.getName(), lineCounter, line);
-            LOG.warn(warning, e);
-            _WARNING_LIST.add(warning);
-        }
-        
-    }
-
-    /**
-     * @param line
-     * @param lineCounter
-     * @param br
-     * @return
-     * @throws IOException
-     */
-    @Nonnull 
-    private static KeyValuePair extractKeyValue(@Nonnull String line,
-                                                @Nonnull LineCounter lineCounter,
-                                                @Nonnull BufferedReader br) throws IOException {
-        int keyEnd = line.indexOf('=');
-        String key = line.substring(0, keyEnd).trim();
-        String value = line.substring(keyEnd + 1).trim();
-        value = getValue(value, lineCounter, br);
-        KeyValuePair keyValuePair = new KeyValuePair(key, value);
-        return keyValuePair;
     }
     
     /**
@@ -549,6 +276,73 @@ public final class GsdFileParser {
                     .concat(br.readLine().split(";")[0].trim());
         }
         return value;
+    }
+    
+    /**
+     * @param val
+     * @return
+     */
+    @Nonnull
+    public static Integer gsdValue2Int(@Nonnull String value) {
+        String tmpValue = value.toLowerCase().trim();
+        Integer val;
+        int radix = 10;
+        if (tmpValue.startsWith("0x")) {
+            tmpValue = tmpValue.substring(2);
+            radix = 16;
+        }
+        val = Integer.parseInt(tmpValue, radix);
+        return val;
+    }
+    
+    /**
+     * @param br
+     * @param endBlockSting
+     * @return
+     * @throws IOException
+     */
+    private static boolean lineIsNotEndBlock(final BufferedReader br, final String endBlockSting) throws IOException {
+        _LINE = br.readLine();
+        return ((_LINE != null) && !_LINE.trim().startsWith(endBlockSting));
+    }
+    
+    public static GsdSlaveModel parseSlave(@Nonnull final GSDFileDBO gsdFile,
+                                           @Nonnull final GsdSlaveModel model) {
+        _SLAVE = model;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new StringReader(gsdFile.getGSDFile()));
+            while ((_LINE = br.readLine()) != null) {
+                _LINE = _LINE.trim();
+                slave(br);
+            }
+        } catch (FileNotFoundException e1) {
+            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                              "The DDB for the GSD File " + gsdFile.getName()
+                                                      + "(ID: " + gsdFile.getId()
+                                                      + ") no fiel entry.",
+                                              e1);
+        } catch (IOException e) {
+            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                              "The DDB for the GSD File " + gsdFile.getName()
+                                                      + "(ID: " + gsdFile.getId()
+                                                      + ") wrong fiel entry.",
+                                              e);
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                    br = null;
+                }
+            } catch (IOException e) {
+                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                                  "The DDB for the GSD File " + gsdFile.getName()
+                                                          + "(ID: " + gsdFile.getId()
+                                                          + ") wrong fiel entry.",
+                                                  e);
+            }
+        }
+        return _SLAVE;
     }
     
     /**
@@ -575,18 +369,136 @@ public final class GsdFileParser {
     /**
      * @param line
      * @param parsedGsdFileModel
-     * @param br 
+     * @param br
      * @throws IOException 
      */
-    private static void buildModule(@Nonnull String line,
+    private static void setProperty(@Nonnull String line,
                                     @Nonnull LineCounter lineCounter,
                                     @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                     @Nonnull BufferedReader br) throws IOException {
-        String tmpLine = line;
-        while ((tmpLine = br.readLine()) != null && !tmpLine.startsWith("EndModule")) {
-            lineCounter.count();
-            tmpLine = tmpLine.trim();
+        try {
+            KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
+            parsedGsdFileModel.setProperty(keyValuePair);
+        } catch (NumberFormatException e) {
+            String warning = String
+                    .format("Can't corret handle from GSD File %s, at line %s, the Property: %s",
+                            parsedGsdFileModel.getName(),
+                            lineCounter,
+                            line);
+            LOG.warn(warning, e);
+            _WARNING_LIST.add(warning);
+        } catch (IndexOutOfBoundsException e) {
+            String warning = String
+                    .format("Can't corret handle from GSD File %s, at line %s, the Property: %s",
+                            parsedGsdFileModel.getName(),
+                            lineCounter,
+                            line);
+            LOG.warn(warning, e);
+            _WARNING_LIST.add(warning);
         }
+        
+    }
+    
+    /**
+     *
+     * @param br
+     * @throws IOException
+     */
+    private static void slave(final BufferedReader br) throws IOException {
+        if (_LINE.startsWith(";")) {
+            return;
+        }
+        if (_LINE.startsWith("Station_Type")) {
+            _SLAVE.setStationType(getByteValue(_LINE));
+        } else if (_LINE.startsWith("Freeze_Mode_supp")) {
+            _SLAVE.setFreezeModeSupp(getBooleanValue(_LINE));
+        } else if (_LINE.startsWith("Sync_Mode_supp")) {
+            _SLAVE.setSyncModeSupp(getBooleanValue(_LINE));
+        } else if (_LINE.startsWith("Auto_Baud_supp")) {
+            _SLAVE.setAutoBaudSupp(getBooleanValue(_LINE));
+        } else if (_LINE.startsWith("Set_Slave_Add_supp")) {
+            _SLAVE.setSetSlaveAddSupp(getBooleanValue(_LINE));
+        } else if (_LINE.startsWith("User_Prm_Data_Len")) {
+            _SLAVE.setUserPrmDataLen(getByteValue(_LINE));
+        } else if (_LINE.startsWith("Module")) {
+            while (lineIsNotEndBlock(br, "EndModule")) {
+                // skip Module lines
+            }
+        } else if (_LINE.startsWith("PrmText")) {
+            String[] lineParts = _LINE.split("[=;]");
+            String index;
+            if (lineParts.length < 1) {
+                CentralLogger.getInstance().error(GsdFileParser.class,
+                                                  "The PrmText line wrong: " + _LINE);
+                return;
+            }
+            index = lineParts[1].trim();
+            HashMap<Integer, PrmTextItem> prmText = new HashMap<Integer, PrmTextItem>();
+            while (lineIsNotEndBlock(br, "EndPrmText")) {
+                // 0 |1|2| 3
+                // Text(0) = "POWER ON RESET"
+                String[] prmTextParts = _LINE.split("[=()]");
+                Integer value = Integer.parseInt(prmTextParts[1].trim());
+                prmText.put(value, new PrmTextItem(prmTextParts[3].replaceAll("\"", "").trim(),
+                                                   value));
+            }
+            _SLAVE.addPrmText(index, prmText);
+        } else if (_LINE.startsWith("ExtUserPrmData")) {
+            createExtUserPrmData(br);
+        } else if (_LINE.startsWith("Ext_User_Prm_Data_Const")) {
+            // 0 |1 |2| 3 | 4
+            // Ext_User_Prm_Data_Const(13) = 0 ; Reserved
+            String[] lineParts = _LINE.split("[()=;]");
+            if (lineParts.length < 4) {
+                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                                  "The Ext_User_Prm_Data_Const line wrong: "
+                                                          + _LINE);
+                return;
+            }
+            String value = lineParts[3].trim();
+            while (value.endsWith("\\")) {
+                value = value.substring(0, value.length() - 1).trim()
+                        .concat(br.readLine().split(";")[0].trim());
+            }
+            
+            ExtUserPrmDataConst extUserPrmDataConst = new ExtUserPrmDataConst(lineParts[1].trim(),
+                                                                              value);
+            _SLAVE.addExtUserPrmDataConst(extUserPrmDataConst.getIndex(), extUserPrmDataConst);
+            
+        } else if (_LINE.startsWith("Ext_User_Prm_Data_Ref")) {
+            // 0 |1| 2 | 3 | 4
+            // Ext_User_Prm_Data_Ref(5) = 1 ;
+            String[] lineParts = _LINE.split("[()=;]");
+            if (lineParts.length < 4) {
+                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                                  "The Ext_User_Prm_Data_Ref line wrong: " + _LINE);
+                return;
+            }
+            ExtUserPrmDataRef extUserPrmDataRef = new ExtUserPrmDataRef(lineParts[1].trim(),
+                                                                        lineParts[3].trim());
+            
+            _SLAVE.addExtUserPrmDataRef(extUserPrmDataRef.getIndex(), extUserPrmDataRef);
+            
+        } else if (_LINE.startsWith("Unit_Diag_Bit")) {
+            // 0 | 1 |2|3| 4 | 5 | 6
+            // Unit_Diag_Bit(0001) = "Invalid VOR Cmd" ;
+            String[] lineParts = _LINE.split("[()=\";]");
+            if (lineParts.length < 5) {
+                CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+                                                  "The Unit_Diag_Bit line wrong: " + _LINE);
+                return;
+            }
+            UnitDiagBit unitDiagBit = new UnitDiagBit(lineParts[1].trim(), lineParts[4].trim());
+            _SLAVE.addUnitDiagBit(unitDiagBit.getIndex(), unitDiagBit);
+            
+        }
+    }
+    
+    /**
+     * Default Constructor.
+     */
+    GsdFileParser() {
+        // Constructor
     }
     
     /**
@@ -595,14 +507,17 @@ public final class GsdFileParser {
      * @param br 
      * @throws IOException 
      */
-    private static void buildExtUserPrmData(@Nonnull String line,
+    private void buildExtUserPrmData(@Nonnull String line,
                                             @Nonnull LineCounter lineCounter,
                                             @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                             @Nonnull BufferedReader br) throws IOException {
+        // TODO (hrickens) [28.03.2011]: buildExtUserPrmData
         String tmpLine = line;
-        while ((tmpLine = br.readLine()) != null && !tmpLine.startsWith("EndExtUserPrmData")) {
+        tmpLine = br.readLine();
+        while (!isLineParameter(tmpLine, "EndExtUserPrmData")) {
             lineCounter.count();
             tmpLine = tmpLine.trim();
+            tmpLine = br.readLine();
         }
     }
     
@@ -612,44 +527,204 @@ public final class GsdFileParser {
      * @param br 
      * @throws IOException 
      */
-    private static void buildPrmText(@Nonnull String line,
+    private void buildModule(@Nonnull String line,
+                             @Nonnull LineCounter lineCounter,
+                             @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                             @Nonnull BufferedReader br) throws IOException {
+        String[] lineParts = line.split("[\";]");
+        assert lineParts.length > 2;
+        Integer moduleNo  =null;
+        String name = lineParts[1].trim();
+        
+        ArrayList<Integer> valueList = new ArrayList<Integer>();
+        String value = getValue(lineParts[2], lineCounter, br);
+        GsdFileParser.addValues2IntList(value, valueList);
+        
+        GsdModuleModel2 gsdModuleModel = new GsdModuleModel2(name, valueList);
+        String tmpLine = br.readLine();
+        while (!isLineParameter(tmpLine, "endmodule")) {
+            lineCounter.count();
+            tmpLine = tmpLine.trim();
+            if (isLineParameter(tmpLine, ";") || tmpLine.isEmpty()) {
+                // do nothing. Is a empty line or a comment;
+            } else if (isLineParameter(tmpLine, "Ext_Module_Prm_Data_Len")
+                    || isLineParameter(tmpLine, "F_Ext_Module_Prm_Data_Len")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                gsdModuleModel.setExtModulePrmDataLen(extractKeyValue.getIntValue());
+            } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
+                    || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                //TODO set Ext_User_Prm_Data_Const
+            } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
+                    || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                //TODO set Ext_User_Prm_Data_Ref
+            } else if (isLineParameter(tmpLine, "Info_Text")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                //TODO set Info_Text
+            } else if (isLineParameter(tmpLine, "F_ParamDescCRC")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                //TODO set F_ParamDescCRC
+            } else if (isLineParameter(tmpLine, "F_IO_StructureDescCRC")) {
+                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+                //TODO set F_IO_StructureDescCRC
+            } else {
+                try {
+                    moduleNo = gsdValue2Int(tmpLine);
+                } catch (NumberFormatException e) {
+                    String warning = String
+                            .format("Module parameter wrong at GSD File %s in line %s. Line: %s",
+                                    parsedGsdFileModel.getName(),
+                                    lineCounter,
+                                    tmpLine);
+                    LOG.warn(warning);
+                    _WARNING_LIST.add(warning);
+                }
+            }
+            tmpLine = br.readLine();
+        }
+        if(moduleNo==null) {
+            moduleNo=_moduleNo++;
+        } else if(_moduleNo<moduleNo) {
+            _moduleNo = moduleNo; 
+        }
+        gsdModuleModel.setModuleNumber(moduleNo);
+        parsedGsdFileModel.setModule(gsdModuleModel);
+    }
+    
+    /**
+     * @param line
+     * @param parsedGsdFileModel
+     * @param br 
+     * @throws IOException 
+     */
+    private void buildPrmText(@Nonnull String line,
                                      @Nonnull LineCounter lineCounter,
                                      @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
-        String tmpLine = line;
-        KeyValuePair prmTextKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+        KeyValuePair prmTextKeyValue = extractKeyValue(line, lineCounter, br);
         Integer index = prmTextKeyValue.getIntValue();
         PrmText prmText = new PrmText(index);
-        while ((tmpLine = br.readLine()) != null && !tmpLine.startsWith("EndPrmText")) {
+        String tmpLine = br.readLine();
+        while (!isLineParameter(tmpLine, "EndPrmText")) {
             lineCounter.count();
             tmpLine = tmpLine.trim();
             KeyValuePair prmItemKeyValue = extractKeyValue(tmpLine, lineCounter, br);
             prmText.setPrmTextItem(prmItemKeyValue);
+            tmpLine = br.readLine();
         }
         parsedGsdFileModel.putPrmText(prmText);
     }
-
-    /**
-     * @param val
-     * @return
-     */
-    @Nonnull 
-    public static Integer gsdValue2Int(@Nonnull String value) {
-        String tmpValue = value.toLowerCase().trim();
-        Integer val;
-        int radix = 10;
-        if(tmpValue.startsWith("0x")) {
-            tmpValue = tmpValue.substring(2);
-            radix = 16;
+    
+    private void buildSlotDefinition(@Nonnull String line,
+                                     @Nonnull LineCounter lineCounter,
+                                     @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                     @Nonnull BufferedReader br) throws IOException {
+     // TODO (hrickens) [28.03.2011]:  buildSlotDefinition
+        String tmpLine = line;
+        while (!isLineParameter(tmpLine, "EndSlotDefinition")) {
+            lineCounter.count();
+            tmpLine = tmpLine.trim();
+            tmpLine = br.readLine();
         }
-        val = Integer.parseInt(tmpValue, radix);
-        return val;
     }
     
+    private void buildUnitDiagArea(@Nonnull String line,
+                                   @Nonnull LineCounter lineCounter,
+                                   @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                   @Nonnull BufferedReader br) throws IOException {
+        // TODO (hrickens) [28.03.2011]: buildUnitDiagArea
+        String tmpLine = line;
+        while (!isLineParameter(tmpLine, "Unit_Diag_Area_End")) {
+            lineCounter.count();
+            tmpLine = tmpLine.trim();
+            tmpLine = br.readLine();
+        }
+        
+    }
+    
+    private void buildUnitDiagType(@Nonnull String line,
+                                   @Nonnull LineCounter lineCounter,
+                                   @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                   @Nonnull BufferedReader br) throws IOException {
+     // TODO (hrickens) [28.03.2011]: buildUnitDiagType
+        String tmpLine = line;
+        while (!isLineParameter(tmpLine, "EndUnitDiagType")) {
+            lineCounter.count();
+            tmpLine = tmpLine.trim();
+            tmpLine = br.readLine();
+        }
+    }
+    
+    private boolean isLineParameter(@CheckForNull String line, @Nonnull String parameter) {
+        return ((line != null) && (line.toLowerCase().startsWith(parameter.toLowerCase())));
+    }
+    
+    /**
+     * @param br
+     * @param parsedGsdFileModel 
+     * @return
+     * @throws IOException 
+     */
     @Nonnull
-    public static List<String> getAndClearWarnings() {
-        ArrayList<String> arrayList = new ArrayList<String>(_WARNING_LIST);
-        _WARNING_LIST.clear();
-        return arrayList;
+    private ParsedGsdFileModel parse(@Nonnull BufferedReader br,
+                                     @Nonnull ParsedGsdFileModel parsedGsdFileModel) throws IOException {
+        String line;
+        LineCounter lineCounter = new LineCounter();
+        while ((line = br.readLine()) != null) {
+            lineCounter.count();
+            line = line.trim();
+            if (isLineParameter(line, ";") || line.isEmpty()) {
+                // skip line,  is a comment or empty
+                continue;
+            } else if (isLineParameter(line, "#")) {
+                // contain Profibus Type
+                continue;
+            } else if (isLineParameter(line, "PrmText")) {
+                buildPrmText(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "ExtUserPrmData")) {
+                buildExtUserPrmData(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "Module")) {
+                buildModule(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "UnitDiagType")) {
+                buildUnitDiagType(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "SlotDefinition")) {
+                buildSlotDefinition(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "Unit_Diag_Area")) {
+                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "X_Unit_Diag_Area")) {
+                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "Slave_Family")) {
+                // TODO (hrickens) [28.03.2011]: Hier könnte man den Text noch als zweite variante setzen. (Das was nach dem @ kommt)
+                setProperty(line.split("@")[0], lineCounter, parsedGsdFileModel, br);
+            } else {
+                setProperty(line, lineCounter, parsedGsdFileModel, br);
+            }
+        }
+        return parsedGsdFileModel;
+    }
+    
+    /**
+     * @param fileAsString
+     * @return
+     * @throws IOException 
+     */
+    @Nonnull
+    public ParsedGsdFileModel parse(@Nonnull GSDFileDBO gsdFileDBO) throws IOException {
+        StringReader sr = new StringReader(gsdFileDBO.getGSDFile());
+        BufferedReader br = new BufferedReader(sr);
+        try {
+            ParsedGsdFileModel parsedGsdFileModel = new ParsedGsdFileModel(gsdFileDBO.getName());
+            return parse(br, parsedGsdFileModel);
+        } finally {
+            if (br != null) {
+                br.close();
+                br = null;
+            }
+            if (sr != null) {
+                sr.close();
+                sr = null;
+            }
+        }
     }
 }

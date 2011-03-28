@@ -23,59 +23,44 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import javax.annotation.CheckForNull;
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.annotation.Nonnull;
 
 /**
- * A String-String key value pair.
- * The value can build from multiline. 
+ * The class represents one PrmText of a GSD file.  
  * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 28.03.2011
  */
-public class KeyValuePair {
-
-    private final String _key;
-    private final String _value;
-    private final Integer _index;
-
+public class PrmText {
+    
+    private final int _index;
+    private final Map<Integer, PrmTextItem> _prmTextItemMap = new TreeMap<Integer, PrmTextItem>();
+    
     /**
      * Constructor.
-     * @param key
-     * @param value
      */
-    public KeyValuePair(@Nonnull String key, @Nonnull String value) {
-        _key = key;
-        _value = value;
-        int indexStart = _key.indexOf("(")+1;
-        if(indexStart>0) {
-            String index = _key.substring(indexStart, _key.indexOf(")"));
-            _index = GsdFileParser.gsdValue2Int(index);
-        } else {
-            _index = null;
+    public PrmText(int index) {
+        _index = index;
+    }
+
+    /**
+     * @param prmItemKeyValue
+     */
+    public void setPrmTextItem(@Nonnull KeyValuePair prmItemKeyValue) {
+        Integer index = prmItemKeyValue.getIndex();
+        if(index!=null) {
+            _prmTextItemMap.put(index, new PrmTextItem(prmItemKeyValue.getValue(), index));
         }
+        
     }
 
-    @Nonnull 
-    public String getKey() {
-        return _key;
-    }
-
-    @Nonnull 
-    public String getValue() {
-        return _value;
-    }
-    
-    @CheckForNull
-    public Integer getIndex() {
+    public int getIndex() {
         return _index;
     }
-
-    @Nonnull
-    public Integer getIntValue() {
-        return GsdFileParser.gsdValue2Int(getValue()); 
-    }
-
+    
 }

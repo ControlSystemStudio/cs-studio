@@ -23,59 +23,49 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import javax.annotation.CheckForNull;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 /**
- * A String-String key value pair.
- * The value can build from multiline. 
+ * The class represents one module of a GSD file. 
  * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 28.03.2011
  */
-public class KeyValuePair {
+public class GsdModuleModel2 {
 
-    private final String _key;
-    private final String _value;
-    private final Integer _index;
+    private final String _name;
+    private final List<Integer> _value;
+    private Integer _extModulePrmDataLen;
+    private int _moduleNo;
 
     /**
      * Constructor.
-     * @param key
-     * @param value
+     * @param line
      */
-    public KeyValuePair(@Nonnull String key, @Nonnull String value) {
-        _key = key;
+    public GsdModuleModel2(@Nonnull String name, @Nonnull List<Integer> value) {
+        _name = name;
         _value = value;
-        int indexStart = _key.indexOf("(")+1;
-        if(indexStart>0) {
-            String index = _key.substring(indexStart, _key.indexOf(")"));
-            _index = GsdFileParser.gsdValue2Int(index);
-        } else {
-            _index = null;
-        }
+        
     }
 
-    @Nonnull 
-    public String getKey() {
-        return _key;
+    /**
+     * @param extModulePrmDataLen
+     */
+    public void setExtModulePrmDataLen(@Nonnull Integer extModulePrmDataLen) {
+        _extModulePrmDataLen = extModulePrmDataLen;
     }
 
-    @Nonnull 
-    public String getValue() {
-        return _value;
+    public void setModuleNumber(int moduleNo) {
+        _moduleNo = moduleNo;
     }
     
-    @CheckForNull
-    public Integer getIndex() {
-        return _index;
-    }
-
     @Nonnull
-    public Integer getIntValue() {
-        return GsdFileParser.gsdValue2Int(getValue()); 
+    public Integer getModuleNumber() {
+        return _moduleNo;
     }
-
+    
 }

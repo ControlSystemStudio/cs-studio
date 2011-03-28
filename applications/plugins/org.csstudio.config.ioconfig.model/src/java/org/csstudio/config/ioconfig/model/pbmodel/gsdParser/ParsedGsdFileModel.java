@@ -22,6 +22,7 @@ public class ParsedGsdFileModel {
     private final Map<String, Integer> _intergerValueMap;
     private final Map<String, List<Integer>> _intArrayValueMap;
     private final Map<Integer, PrmText> _prmTextMap;
+    private final Map<Integer, GsdModuleModel2> _gsdModuleModelMap;
 
     /**
      * Constructor.
@@ -33,6 +34,7 @@ public class ParsedGsdFileModel {
         _intergerValueMap = new HashMap<String, Integer>();
         _intArrayValueMap = new HashMap<String, List<Integer>>();
         _prmTextMap = new TreeMap<Integer, PrmText>();
+        _gsdModuleModelMap = new TreeMap<Integer, GsdModuleModel2>();
     }
 
     /**
@@ -44,7 +46,7 @@ public class ParsedGsdFileModel {
     }
 
     /**
-     * TODO 
+     * Sets the property according to their type. (type-safe)
      */
     public void setProperty(@Nonnull KeyValuePair keyValuePair) {
         String value = keyValuePair.getValue();
@@ -63,12 +65,8 @@ public class ParsedGsdFileModel {
     }
 
     private void setIntArrayValue(@Nonnull KeyValuePair keyValuePair) {
-        
         List<Integer> valueList = new ArrayList<Integer>();
-        String[] values = keyValuePair.getValue().split(",");
-        for (String val : values) {
-            valueList.add(GsdFileParser.gsdValue2Int(val));
-        }
+        GsdFileParser.addValues2IntList(keyValuePair.getValue(), valueList);
         _intArrayValueMap.put(keyValuePair.getKey(), valueList);
     }
 
@@ -85,6 +83,16 @@ public class ParsedGsdFileModel {
      */
     public void putPrmText(@Nonnull PrmText prmText) {
         _prmTextMap.put(prmText.getIndex(), prmText);
+    }
+
+    /**
+     * @param gsdModuleModel
+     */
+    public void setModule(@Nonnull GsdModuleModel2 gsdModuleModel) {
+        GsdModuleModel2 put = _gsdModuleModelMap.put(gsdModuleModel.getModuleNumber(), gsdModuleModel);
+        if(put!=null) {
+            throw new IllegalArgumentException();
+        }
     }
     
 }
