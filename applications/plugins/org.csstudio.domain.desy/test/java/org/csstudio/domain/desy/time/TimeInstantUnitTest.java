@@ -35,38 +35,38 @@ public class TimeInstantUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromNanosNegative() {
-        TimeInstantBuilder.buildFromNanos(-1L);
+        TimeInstantBuilder.fromNanos(-1L);
     }
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromMillisNegative() {
-        TimeInstantBuilder.buildFromMillis(-1L);
+        TimeInstantBuilder.fromMillis(-1L);
     }
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromSecondsNegative() {
-        TimeInstantBuilder.buildFromSeconds(-1L);
+        TimeInstantBuilder.fromSeconds(-1L);
     }
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromTooManySeconds() {
-        TimeInstantBuilder.buildFromSeconds(TimeInstant.MAX_SECONDS + 1);
+        TimeInstantBuilder.fromSeconds(TimeInstant.MAX_SECONDS + 1);
     }
 
 
     @Test
     public void constructorFactoryMethodsValidZero() {
 
-        TimeInstant ts = TimeInstantBuilder.buildFromNanos(0L);
+        TimeInstant ts = TimeInstantBuilder.fromNanos(0L);
 
         Assert.assertEquals(ts.getFractalMillisInNanos(), 0L);
         Assert.assertEquals(ts.getMillis(), 0L);
         Assert.assertEquals(ts.getSeconds(), 0L);
 
-        ts = TimeInstantBuilder.buildFromMillis(0L);
+        ts = TimeInstantBuilder.fromMillis(0L);
 
         Assert.assertEquals(ts.getFractalMillisInNanos(), 0L);
         Assert.assertEquals(ts.getMillis(), 0L);
         Assert.assertEquals(ts.getSeconds(), 0L);
 
-        ts = TimeInstantBuilder.buildFromSeconds(0L);
+        ts = TimeInstantBuilder.fromSeconds(0L);
 
         Assert.assertEquals(ts.getFractalMillisInNanos(), 0L);
         Assert.assertEquals(ts.getMillis(), 0L);
@@ -76,7 +76,7 @@ public class TimeInstantUnitTest {
     @Test
     public void constructorFactoryMethodsValid() {
 
-        TimeInstant ts = TimeInstantBuilder.buildFromNanos(999123456789L);
+        TimeInstant ts = TimeInstantBuilder.fromNanos(999123456789L);
 
         Assert.assertEquals(456789L, ts.getFractalMillisInNanos());
         Assert.assertEquals(123456789L, ts.getFractalSecondsInNanos());
@@ -84,7 +84,7 @@ public class TimeInstantUnitTest {
         Assert.assertEquals(999123L, ts.getMillis());
         Assert.assertEquals(999L, ts.getSeconds());
 
-        ts = TimeInstantBuilder.buildFromMillis(999123L);
+        ts = TimeInstantBuilder.fromMillis(999123L);
 
         Assert.assertEquals(0L, ts.getFractalMillisInNanos());
         Assert.assertEquals(123000000L, ts.getFractalSecondsInNanos());
@@ -92,7 +92,7 @@ public class TimeInstantUnitTest {
         Assert.assertEquals(999123L, ts.getMillis());
         Assert.assertEquals(999L, ts.getSeconds());
 
-        ts = TimeInstantBuilder.buildFromSeconds(999L);
+        ts = TimeInstantBuilder.fromSeconds(999L);
 
         Assert.assertEquals(0L, ts.getFractalMillisInNanos());
         Assert.assertEquals(0L, ts.getFractalSecondsInNanos());
@@ -105,8 +105,8 @@ public class TimeInstantUnitTest {
 
     @Test
     public void compareTimeTest() {
-        final TimeInstant first = TimeInstantBuilder.buildFromMillis(0L);
-        final TimeInstant now = TimeInstantBuilder.buildFromNow();
+        final TimeInstant first = TimeInstantBuilder.fromMillis(0L);
+        final TimeInstant now = TimeInstantBuilder.fromNow();
 
         Assert.assertEquals(0, first.compareTo(first));
         Assert.assertEquals(-1, first.compareTo(now));
@@ -115,8 +115,8 @@ public class TimeInstantUnitTest {
         Assert.assertFalse(first.equals(now));
         Assert.assertFalse(first.getInstant().equals(now.getInstant()));
 
-        final TimeInstant t1 = TimeInstantBuilder.buildFromMillis(123456L);
-        final TimeInstant t2 = TimeInstantBuilder.buildFromMillis(123456L);
+        final TimeInstant t1 = TimeInstantBuilder.fromMillis(123456L);
+        final TimeInstant t2 = TimeInstantBuilder.fromMillis(123456L);
         Assert.assertEquals(0, t1.compareTo(t2));
         Assert.assertEquals(0, t2.compareTo(t1));
         Assert.assertTrue(t1.equals(t2));
@@ -127,8 +127,8 @@ public class TimeInstantUnitTest {
         Assert.assertFalse(t1.isBefore(t2));
         Assert.assertFalse(t2.isBefore(t1));
 
-        final TimeInstant t3 = TimeInstantBuilder.buildFromNanos(123456000000L);
-        final TimeInstant t4 = TimeInstantBuilder.buildFromNanos(123456000001L);
+        final TimeInstant t3 = TimeInstantBuilder.fromNanos(123456000000L);
+        final TimeInstant t4 = TimeInstantBuilder.fromNanos(123456000001L);
         Assert.assertEquals(-1, t3.compareTo(t4));
         Assert.assertEquals(1, t4.compareTo(t3));
         Assert.assertFalse(t3.equals(t4));
@@ -143,19 +143,19 @@ public class TimeInstantUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void invalidPlusTest1() {
-        final TimeInstant t1 = TimeInstantBuilder.buildFromNanos(0L);
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         t1.plusMillis(-1L);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void invalidPlusTest2() {
-        final TimeInstant t1 = TimeInstantBuilder.buildFromNanos(0L);
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         t1.plusNanosPerSecond(-1L);
     }
 
     @Test
     public void plusTest() {
-        final TimeInstant t1 = TimeInstantBuilder.buildFromNanos(0L);
+        final TimeInstant t1 = TimeInstantBuilder.fromNanos(0L);
         final TimeInstant t2 = t1.plusMillis(0L);
         Assert.assertTrue(t1.equals(t2));
 

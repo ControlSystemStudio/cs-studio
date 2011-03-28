@@ -140,7 +140,7 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                                            throws EngineModelException {
         try {
             final IArchiveEngineFacade service = _provider.getEngineFacade();
-            service.writeChannelStatusInfo(id, connected, info, TimeInstantBuilder.buildFromNow());
+            service.writeChannelStatusInfo(id, connected, info, TimeInstantBuilder.fromNow());
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Service unavailable to handle channel connection info.", e);
         } catch (final ArchiveServiceException e) {

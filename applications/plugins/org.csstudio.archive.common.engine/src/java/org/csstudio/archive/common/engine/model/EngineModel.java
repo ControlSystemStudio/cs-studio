@@ -28,7 +28,7 @@ import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -181,7 +181,7 @@ public final class EngineModel {
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
 
 
-        _startTime = TimeInstantBuilder.buildFromNow();
+        _startTime = TimeInstantBuilder.fromNow();
 
         _state = State.RUNNING;
 
@@ -227,7 +227,7 @@ public final class EngineModel {
 
             facade.writeEngineStatusInformation(engine.getId(),
                                                 EngineMonitorStatus.ON,
-                                                TimeInstantBuilder.buildFromNow(),
+                                                TimeInstantBuilder.fromNow(),
                                                 "Engine Startup");
 
         } catch (@Nonnull final Exception e) {
@@ -334,7 +334,7 @@ public final class EngineModel {
         try {
             _provider.getEngineFacade().writeEngineStatusInformation(_engine.getId(),
                                                                      EngineMonitorStatus.OFF,
-                                                                     TimeInstantBuilder.buildFromNow(),
+                                                                     TimeInstantBuilder.fromNow(),
                                                                      "Graceful Shutdown");
         } catch (final Exception e) {
             handleExceptions(e);
@@ -411,7 +411,7 @@ public final class EngineModel {
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
 
-            final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel =
+            final ArchiveChannel<Object, ISystemVariable<Object>> channel =
                 ArchiveEngineTypeSupport.toArchiveChannel(channelCfg);
             channel.setServiceProvider(provider);
 

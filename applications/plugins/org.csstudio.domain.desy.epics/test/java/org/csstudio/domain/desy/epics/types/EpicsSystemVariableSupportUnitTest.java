@@ -66,7 +66,7 @@ public class EpicsSystemVariableSupportUnitTest {
             new EpicsSystemVariable<Float>("NONE",
                                             new CssValueType<Float>(input),
                                             ControlSystem.EPICS_DEFAULT,
-                                            TimeInstantBuilder.buildFromNow(),
+                                            TimeInstantBuilder.fromNow(),
                                             new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);
@@ -85,7 +85,7 @@ public class EpicsSystemVariableSupportUnitTest {
             new EpicsSystemVariable<Double>("NONE",
                     new CssValueType<Double>(input),
                     ControlSystem.EPICS_DEFAULT,
-                    TimeInstantBuilder.buildFromNow(),
+                    TimeInstantBuilder.fromNow(),
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
 
@@ -105,7 +105,7 @@ public class EpicsSystemVariableSupportUnitTest {
         new EpicsSystemVariable<Byte>("NONE",
                 new CssValueType<Byte>(input),
                 ControlSystem.EPICS_DEFAULT,
-                TimeInstantBuilder.buildFromNow(),
+                TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);
@@ -124,7 +124,7 @@ public class EpicsSystemVariableSupportUnitTest {
         new EpicsSystemVariable<Integer>("NONE",
                 new CssValueType<Integer>(input),
                 ControlSystem.EPICS_DEFAULT,
-                TimeInstantBuilder.buildFromNow(),
+                TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
@@ -143,7 +143,7 @@ public class EpicsSystemVariableSupportUnitTest {
         new EpicsSystemVariable<Long>("NONE",
                 new CssValueType<Long>(input),
                 ControlSystem.EPICS_DEFAULT,
-                TimeInstantBuilder.buildFromNow(),
+                TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);
@@ -161,7 +161,7 @@ public class EpicsSystemVariableSupportUnitTest {
         new EpicsSystemVariable<Collection<Double>>("NONE",
                 new CssValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0))),
                 ControlSystem.EPICS_DEFAULT,
-                TimeInstantBuilder.buildFromNow(),
+                TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);
 
@@ -180,7 +180,7 @@ public class EpicsSystemVariableSupportUnitTest {
                                                                          Lists.newArrayList(EpicsEnum.createInstance(Integer.valueOf(1), "ON", null),
                                                                                             EpicsEnum.createInstance(Integer.valueOf(0), "OFF", null))),
                 ControlSystem.EPICS_DEFAULT,
-                TimeInstantBuilder.buildFromNow(),
+                TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
 
         final IValue iVal = SystemVariableSupport.toIValue(cssVal);

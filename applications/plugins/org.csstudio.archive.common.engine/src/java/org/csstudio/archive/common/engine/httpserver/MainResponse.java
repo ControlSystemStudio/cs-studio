@@ -79,7 +79,7 @@ class MainResponse extends AbstractResponse {
             });
 
             final Duration dur = new Duration(start.getInstant(),
-                                              TimeInstantBuilder.buildFromNow().getInstant());
+                                              TimeInstantBuilder.fromNow().getInstant());
 
             html.tableLine(new String[]
             {

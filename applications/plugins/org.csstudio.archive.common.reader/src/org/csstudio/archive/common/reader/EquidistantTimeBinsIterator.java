@@ -230,7 +230,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                         @Nonnull final ReadableDuration windowLength) {
         int i = 1;
         TimeInstant nextWindowEnd =
-            TimeInstantBuilder.buildFromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
+            TimeInstantBuilder.fromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
         while (sampleTime.isAfter(nextWindowEnd)) {
             nextWindowEnd = nextWindowEnd.plusMillis(windowLength.getMillis());
             i++;

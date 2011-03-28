@@ -65,7 +65,7 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
 
     @Nonnull
     public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
-        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
+        return TimeInstantBuilder.fromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
     }
 
     @Nonnull

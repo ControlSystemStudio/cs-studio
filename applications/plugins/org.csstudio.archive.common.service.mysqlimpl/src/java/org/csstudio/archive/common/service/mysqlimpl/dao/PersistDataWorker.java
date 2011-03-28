@@ -77,7 +77,7 @@ public class PersistDataWorker implements Runnable {
      */
     @Override
     public void run() {
-        LOG.info("RUN: " + _name + " - " + TimeInstantBuilder.buildFromNow().formatted());
+        LOG.info("RUN: " + _name + " - " + TimeInstantBuilder.fromNow().formatted());
 
         Statement sqlStmt = null;
         Connection connection = null;

@@ -50,7 +50,6 @@ import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.domain.desy.system.ControlSystem;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -134,7 +133,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException {
         try {
             final List<String> stmts = composeStatements(samples);
@@ -151,7 +150,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <V, T extends IAlarmSystemVariable<V>>
+    private <V, T extends ISystemVariable<V>>
         List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
 
         final List<String> values = Lists.newArrayList();
@@ -179,7 +178,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
 
-    private <T extends IAlarmSystemVariable<?>>
+    private <T extends ISystemVariable<?>>
         void writeReducedData(@Nonnull final ArchiveChannelId channelId,
                               @Nonnull final T data,
                               @Nonnull final TimeInstant timestamp,
@@ -301,7 +300,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * "(channel_id, smpl_time, /// severity_id, status_id, // str_val, nanosecs),"
      */
     @Nonnull
-    private <T extends IAlarmSystemVariable<?>>
+    private <T extends ISystemVariable<?>>
         String createSampleValueStmtStr(@Nonnull final ArchiveChannelId channelId,
                                         @Nonnull final T value,
                                         @Nonnull final TimeInstant timestamp) {
@@ -467,7 +466,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             default:
                 break;
         }
-        final TimeInstant timeInstant = TimeInstantBuilder.buildFromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
+        final TimeInstant timeInstant = TimeInstantBuilder.fromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
         final IArchiveControlSystem cs = channel.getControlSystem();
         final ISystemVariable<V> sysVar = SystemVariableSupport.create(channel.getName(),
                                                                        value,

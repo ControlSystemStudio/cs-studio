@@ -102,8 +102,8 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @return the 'now' time instant
          */
         @Nonnull
-        public static TimeInstant buildFromNow() {
-            return buildFromMillis(System.currentTimeMillis());
+        public static TimeInstant fromNow() {
+            return fromMillis(System.currentTimeMillis());
         }
 
         /**
@@ -113,7 +113,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if seconds is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromSeconds(final long seconds) {
+        public static TimeInstant fromSeconds(final long seconds) {
             if (seconds < 0 || seconds > MAX_SECONDS) {
                 throw new IllegalArgumentException("Number of seconds for TimeInstant must be non-negative and smaller " + MAX_SECONDS);
             }
@@ -126,7 +126,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if millis is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromMillis(final long millis) {
+        public static TimeInstant fromMillis(final long millis) {
             if (millis < 0) {
                 throw new IllegalArgumentException("Number of milliseconds for TimeInstant must be non-negative.");
             }
@@ -139,7 +139,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if nanos is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromNanos(final long nanos) {
+        public static TimeInstant fromNanos(final long nanos) {
             if (nanos < 0) {
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }

@@ -118,7 +118,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final long groupId = result.getLong(TAB + ".group_id");
         final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
         final TimeInstant time = lastSampleTime == null ? null :
-                                                    TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
+                                                    TimeInstantBuilder.fromMillis(lastSampleTime.getTime());
         final String dispHi = result.getString(TAB + ".display_high");
         final String dispLo = result.getString(TAB + ".display_low");
 

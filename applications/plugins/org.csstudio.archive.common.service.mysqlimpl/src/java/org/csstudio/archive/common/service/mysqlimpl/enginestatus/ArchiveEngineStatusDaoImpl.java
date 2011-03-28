@@ -148,7 +148,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
             // time between ? and ? and engine_id=?
             stmt.setTimestamp(1, new Timestamp(latestAliveTime.getMillis()));
-            stmt.setTimestamp(2, new Timestamp(TimeInstantBuilder.buildFromNow().getMillis()));
+            stmt.setTimestamp(2, new Timestamp(TimeInstantBuilder.fromNow().getMillis()));
             stmt.setInt(3, id.intValue());
 
             final ResultSet resultSet = stmt.executeQuery();
@@ -174,7 +174,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         return new ArchiveEngineStatus(new ArchiveEngineStatusId(idVal),
                                 new ArchiveEngineId(engineId),
                                 EngineMonitorStatus.valueOf(status),
-                                TimeInstantBuilder.buildFromMillis(time.getTime()),
+                                TimeInstantBuilder.fromMillis(time.getTime()),
                                 info);
     }
 

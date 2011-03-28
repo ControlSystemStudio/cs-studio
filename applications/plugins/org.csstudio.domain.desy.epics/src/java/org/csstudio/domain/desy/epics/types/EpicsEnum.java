@@ -61,14 +61,11 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
     /**
      * Constructor.
-     * @param first
-     * @param second
-     * @param third
      */
-    protected EpicsEnum(@Nonnull final Integer first,
-                        @Nonnull final String second,
-                        @Nullable final Integer third) {
-        super(first, second, third);
+    protected EpicsEnum(@Nonnull final Integer index,
+                        @Nonnull final String state,
+                        @Nullable final Integer raw) {
+        super(index, state, raw);
     }
     @Nonnull
     public Integer getIndex() {
