@@ -4,6 +4,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jca-2.3.5.jar" sourcepath="lib/jca-2.3.5-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="lib/caj-1.1.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/caj-1.1.7.jar" sourcepath="lib/caj-1.1.7-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
