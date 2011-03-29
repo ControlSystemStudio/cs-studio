@@ -61,28 +61,29 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
         DateTimeFormat.forPattern("HH:mm:ss");
     public static final DateTimeFormatter STD_TIME_FMT_FOR_FS =
         new DateTimeFormatterBuilder().appendHourOfDay(2)
-                                      .appendPattern("_")
+                                      .appendLiteral("_")
                                       .appendMinuteOfHour(2)
-                                      .appendPattern("_")
+                                      .appendLiteral("_")
                                       .appendSecondOfMinute(2)
                                       .toFormatter();
     public static final DateTimeFormatter STD_DATETIME_FMT_FOR_FS =
         new DateTimeFormatterBuilder().append(STD_DATE_FMT)
-                                      .appendPattern(" ")
+                                      .appendLiteral("_")
                                       .appendHourOfDay(2)
-                                      .appendPattern("_")
+                                      .appendLiteral("h")
                                       .appendMinuteOfHour(2)
-                                      .appendPattern("_")
+                                      .appendLiteral("m")
                                       .appendSecondOfMinute(2)
+                                      .appendLiteral("s")
                                       .toFormatter();
     public static final DateTimeFormatter STD_DATETIME_FMT =
         new DateTimeFormatterBuilder().append(STD_DATE_FMT)
-                                      .appendPattern(" ")
+                                      .appendLiteral(" ")
                                       .append(STD_TIME_FMT)
                                       .toFormatter();
     public static final DateTimeFormatter STD_DATETIME_FMT_WITH_MILLIS =
         new DateTimeFormatterBuilder().append(STD_DATETIME_FMT)
-                                      .appendPattern(".")
+                                      .appendLiteral(".")
                                       .appendMillisOfSecond(3)
                                       .toFormatter();
 

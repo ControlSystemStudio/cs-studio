@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
  * @since 16.02.2011
  * @param <T> the base value type
  */
+@Deprecated
 public class CssValueType<T> implements ICssValueType<T> {
 
     private final T _data;

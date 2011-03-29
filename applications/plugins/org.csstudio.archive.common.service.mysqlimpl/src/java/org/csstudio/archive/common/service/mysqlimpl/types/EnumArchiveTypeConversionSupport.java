@@ -122,7 +122,7 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
         try {
             final Integer i = Integer.parseInt(iStr);
             final Integer raw = ARCHIVE_NULL_ENTRY.equals(rawStr) ? null : Integer.parseInt(rawStr);
-            return EpicsEnum.createInstance(i, state,  raw);
+            return EpicsEnum.create(i, state,  raw);
 
         } catch (final NumberFormatException e) {
             throw new TypeSupportException("1st and 3rd part of EpicsEnumTriple '" + value + "' cannot be parsed into Integer.", e);

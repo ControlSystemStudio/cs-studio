@@ -168,7 +168,7 @@ public class Application implements IApplication {
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: " + _model.getChannels().size() +
                  " channels in " +
-                 TimeInstantBuilder.fromMillis(millis).formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS));
+                 TimeInstantBuilder.fromMillis(millis).formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS));
     }
 
     /**

@@ -84,7 +84,7 @@ final class IEnumeratedValueConversionTypeSupport extends
         // Now I know that IEnumeratedValue has been concisely filled, yeah.
         // (And I already got rid of some boilerplate...)
         // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
-        final EpicsEnum eVal = EpicsEnum.createInstance(index, state, null);
+        final EpicsEnum eVal = EpicsEnum.create(index, state, null);
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());

@@ -53,9 +53,9 @@ import com.google.common.base.Joiner;
 public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
     @Nonnull
-    public static final EpicsEnum createInstance(@Nonnull final Integer index,
-                                                 @Nonnull final String state,
-                                                 @Nullable final Integer raw) {
+    public static final EpicsEnum create(@Nonnull final Integer index,
+                                         @Nonnull final String state,
+                                         @Nullable final Integer raw) {
         return new EpicsEnum(index, state, raw);
     }
 

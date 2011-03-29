@@ -43,7 +43,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
  */
 class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
-    private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
+    private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
 
     private TimeInstant _timeStamp;
 
@@ -57,7 +57,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
      */
     ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
         super();
-        _samples = samples;
+        _samplesToBeSerialized = samples;
         _timeStamp = TimeInstantBuilder.fromNow();
     }
 
@@ -69,7 +69,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
     @Override
     protected void writeToFile(@Nonnull final ObjectOutput output) throws IOException {
-        output.writeObject(_samples);
+        output.writeObject(_samplesToBeSerialized);
     }
 
     /**
@@ -78,7 +78,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     @Override
     @Nonnull
     protected String composeRescueFileName() {
-        return "rescue_" + _timeStamp.formatted(TimeInstant.STD_TIME_FMT_FOR_FS) + "_S" + _samples.size()+ ".ser";
+        return "rescue_" + _timeStamp.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + _samplesToBeSerialized.size()+ ".ser";
     }
 
     /**

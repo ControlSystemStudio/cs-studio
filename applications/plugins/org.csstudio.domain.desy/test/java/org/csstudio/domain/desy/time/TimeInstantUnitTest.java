@@ -195,7 +195,7 @@ public class TimeInstantUnitTest {
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d", dateTimeWithMS));
 
         final String dateTimeFS = NOW.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS);
-        Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d\\s\\d\\d_\\d\\d_\\d\\d", dateTimeFS));
+        Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d\\dh\\d\\dm\\d\\ds", dateTimeFS));
 
 
     }

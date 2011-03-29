@@ -21,11 +21,16 @@
  */
 package org.csstudio.archive.common.engine.model;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
@@ -35,14 +40,15 @@ import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.CssValueType;
-import org.eclipse.core.internal.preferences.PreferencesService;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-
-import com.google.common.collect.Lists;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * TODO (bknerr) : 
@@ -52,16 +58,19 @@ import com.google.common.collect.Lists;
  */
 public class ArchiveEngineSampleRescuerTest {
     
-    private static URL RESCUE_DIR;
+    private static File RESCUE_DIR;
     
     private static List<IArchiveSample<Object, ISystemVariable<Object>>> SAMPLES;
     
+    @Rule
+    public TemporaryFolder _folder = new TemporaryFolder();
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Before
-    void setup() throws MalformedURLException {  
-        RESCUE_DIR = new URL("test");
+    public void setup() throws IOException {  
+        RESCUE_DIR = _folder.newFolder("test");
         
-        ArchiveSample<Double, ISystemVariable<Double>> sample1 = 
+        IArchiveSample<Double, ISystemVariable<Double>> sample1 = 
             new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1), 
                                                                new EpicsSystemVariable("foo", 
                                                                                        new CssValueType<Double>(2.0), 
@@ -69,59 +78,61 @@ public class ArchiveEngineSampleRescuerTest {
                                                                                        TimeInstantBuilder.fromNow(),
                                                                                        null), 
                                                                null);
-        ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample2 = 
-            new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(1), 
+        IArchiveSample<Integer, ISystemVariable<Integer>> sample2 = 
+            new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(3), 
                     new EpicsSystemVariable("bar", 
-                                            new CssValueType<EpicsEnum>(EpicsEnum.createInstance(1, "ON", 10)), 
+                                            new CssValueType<Integer>(Integer.valueOf(26)), 
+                                            ControlSystem.EPICS_DEFAULT, 
+                                            TimeInstantBuilder.fromNow(),
+                                            null), 
+                                            null);
+        IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 = 
+            new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3), 
+                    new EpicsSystemVariable("bar", 
+                                            new CssValueType<EpicsEnum>(EpicsEnum.create(1, "foo", 666)), 
                                             ControlSystem.EPICS_DEFAULT, 
                                             TimeInstantBuilder.fromNow(),
                                             null), 
                                             null);
         
         SAMPLES = new ArrayList();
-        SAMPLES.add((ArchiveSample) sample1);
-        SAMPLES.add((ArchiveSample)sample2);
+        SAMPLES.add((IArchiveSample) sample1);
+        SAMPLES.add((IArchiveSample) sample2);
+        SAMPLES.add((IArchiveSample) sample3);
         
     }
     
     @Test
-    void saveToPathTest() throws DataRescueException {
-        ArchiveEngineSampleRescuer.with(SAMPLES).to(RESCUE_DIR).rescue();
+    public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
+        TimeInstant now = TimeInstantBuilder.fromNow();
+        ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
+
+        File infile = findInputFile(now);
+
+        List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
         
-        testIfFileExists(RESCUE_DIR);
-        
-        
-        
-        // READ IN FROM FILE
-        int objectCount = 0;
-        Junk object = null;
-        
-        objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream("C:/JunkObjects.bin")));
-        
-        // Read from the stream until we hit the end
-        while (objectCount < 3) {
-            object = (Junk) objectIn.readObject();
-            objectCount++;
-            System.out.println(object);
-        }
-        
+        Assert.assertEquals(3, result.size());
+        Assert.assertEquals(Double.valueOf(2.0), (Double) result.get(0).getValue());
+        Assert.assertEquals(Integer.valueOf(26), (Integer) result.get(1).getValue());
+        Assert.assertEquals(Integer.valueOf(666), ((EpicsEnum) result.get(2).getValue()).getRaw());
+        Assert.assertEquals("foo", ((EpicsEnum) result.get(2).getValue()).getState());
+    }
+
+    private List<IArchiveSample<?, ?>> readSamplesFromFile(File infile) throws IOException,
+                                                                         FileNotFoundException,
+                                                                         ClassNotFoundException {
+        ObjectInputStream objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream(infile)));
+        @SuppressWarnings("unchecked")
+        List<IArchiveSample<?,?>> result = (List<IArchiveSample<?,?>>) objectIn.readObject();
         objectIn.close();
-
-
-        
-    }
-    
-    /**
-     * 
-     */
-    private void testIfFileExists() {
-        ObjectInputStream objectIn = null;
-        // TODO Auto-generated method stub
-        
+        return result;
     }
 
-    @After
-    void clear() {
-        
+    @Nonnull
+    private File findInputFile(@Nonnull final TimeInstant now) {
+        String name = "rescue_" + now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + SAMPLES.size() + ".ser";
+        File file = new File(RESCUE_DIR.toString(), name);
+        Assert.assertNotNull(file);
+        return file;
     }
 }

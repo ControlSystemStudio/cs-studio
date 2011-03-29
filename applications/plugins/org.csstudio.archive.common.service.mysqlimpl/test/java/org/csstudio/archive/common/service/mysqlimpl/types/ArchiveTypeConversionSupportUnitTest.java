@@ -159,7 +159,7 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testScalarEnumArchiveStringConversion() {
         try {
-            final EpicsEnum t = EpicsEnum.createInstance(3, "in case we die", 44);
+            final EpicsEnum t = EpicsEnum.create(3, "in case we die", 44);
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
             Assert.assertTrue(archiveString.equals(ARCHIVE_TUPLE_PREFIX +
                                                    "3" + ARCHIVE_TUPLE_SEP + "in case we die" + ARCHIVE_TUPLE_SEP + "44" +
@@ -294,8 +294,8 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testMultiScalarEnumConversion() {
-        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.createInstance(0, "first", 26),
-                                                                       EpicsEnum.createInstance(1, "second", 27));
+        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.create(0, "first", 26),
+                                                                       EpicsEnum.create(1, "second", 27));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +

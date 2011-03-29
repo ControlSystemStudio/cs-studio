@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import javax.annotation.Nonnull;
 
@@ -47,7 +46,7 @@ public abstract class AbstractToFileDataRescuer {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AbstractToFileDataRescuer.class);
 
-    private URL _rescueDir;
+    private File _rescueDir;
 
     protected AbstractToFileDataRescuer() {
         // EMPTY
@@ -75,7 +74,7 @@ public abstract class AbstractToFileDataRescuer {
     }
 
     @Nonnull
-    public AbstractToFileDataRescuer to(@Nonnull final URL rescueDir) {
+    public AbstractToFileDataRescuer to(@Nonnull final File rescueDir) {
         _rescueDir = rescueDir;
         return this;
     }
@@ -90,9 +89,11 @@ public abstract class AbstractToFileDataRescuer {
     @Nonnull
     private ObjectOutput createObjectOutput() throws IOException {
         final String fileName = composeRescueFileName();
-        final URL path = _rescueDir;
+        final File path = _rescueDir;
 
-        final OutputStream ostream = new FileOutputStream(new File(path.getFile(), fileName));
+        final File file = new File(path, fileName);
+
+        final OutputStream ostream = new FileOutputStream(file);
         final OutputStream buffer = new BufferedOutputStream(ostream);
         return new ObjectOutputStream(buffer);
     }

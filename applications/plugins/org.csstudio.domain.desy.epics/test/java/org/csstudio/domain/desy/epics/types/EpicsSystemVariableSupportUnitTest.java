@@ -177,8 +177,8 @@ public class EpicsSystemVariableSupportUnitTest {
         final IAlarmSystemVariable<Collection<EpicsEnum>> cssVal =
             new EpicsSystemVariable<Collection<EpicsEnum>>("NONE",
                                                                  new CssValueType<Collection<EpicsEnum>>(
-                                                                         Lists.newArrayList(EpicsEnum.createInstance(Integer.valueOf(1), "ON", null),
-                                                                                            EpicsEnum.createInstance(Integer.valueOf(0), "OFF", null))),
+                                                                         Lists.newArrayList(EpicsEnum.create(Integer.valueOf(1), "ON", null),
+                                                                                            EpicsEnum.create(Integer.valueOf(0), "OFF", null))),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));

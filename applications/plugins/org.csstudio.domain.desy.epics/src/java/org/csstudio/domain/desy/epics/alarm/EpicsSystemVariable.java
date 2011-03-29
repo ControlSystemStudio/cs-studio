@@ -39,6 +39,8 @@ public class EpicsSystemVariable<T>
     extends AbstractAlarmSystemVariable<T, EpicsAlarm> {
 
 
+    private static final long serialVersionUID = -65443362121378192L;
+
     /**
      * Constructor.
      * @param name

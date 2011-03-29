@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -30,7 +32,8 @@ import javax.annotation.Nonnull;
  * @since 26.11.2010
  * @param <T>
  */
-public interface ICssValueType<T> {
+@Deprecated
+public interface ICssValueType<T> extends Serializable {
 
     /**
      * Returns the value datum/data.

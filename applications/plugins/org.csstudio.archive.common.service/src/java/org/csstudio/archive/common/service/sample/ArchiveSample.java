@@ -61,6 +61,7 @@ public class ArchiveSample<V,
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ArchiveChannelId getChannelId() {
         return _channelId;
     }
@@ -69,6 +70,7 @@ public class ArchiveSample<V,
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public T getSystemVariable() {
         return _sysVar;
     }
@@ -77,6 +79,7 @@ public class ArchiveSample<V,
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public V getValue() {
         return _sysVar.getData().getValueData();
     }
