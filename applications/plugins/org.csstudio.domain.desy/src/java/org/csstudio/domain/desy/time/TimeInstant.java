@@ -30,6 +30,7 @@ import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -54,10 +55,37 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     private static final long serialVersionUID = 3157468437971986526L;
 
+    public static final DateTimeFormatter STD_DATE_FMT =
+        DateTimeFormat.forPattern("yyyy-MM-dd");
     public static final DateTimeFormatter STD_TIME_FMT =
-        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    public static final DateTimeFormatter STD_TIME_FMT_WITH_MILLIS =
-        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateTimeFormat.forPattern("HH:mm:ss");
+    public static final DateTimeFormatter STD_TIME_FMT_FOR_FS =
+        new DateTimeFormatterBuilder().appendHourOfDay(2)
+                                      .appendPattern("_")
+                                      .appendMinuteOfHour(2)
+                                      .appendPattern("_")
+                                      .appendSecondOfMinute(2)
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT_FOR_FS =
+        new DateTimeFormatterBuilder().append(STD_DATE_FMT)
+                                      .appendPattern(" ")
+                                      .appendHourOfDay(2)
+                                      .appendPattern("_")
+                                      .appendMinuteOfHour(2)
+                                      .appendPattern("_")
+                                      .appendSecondOfMinute(2)
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT =
+        new DateTimeFormatterBuilder().append(STD_DATE_FMT)
+                                      .appendPattern(" ")
+                                      .append(STD_TIME_FMT)
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT_WITH_MILLIS =
+        new DateTimeFormatterBuilder().append(STD_DATETIME_FMT)
+                                      .appendPattern(".")
+                                      .appendMillisOfSecond(3)
+                                      .toFormatter();
+
     public static final PeriodFormatter STD_DURATION_FMT =
         new PeriodFormatterBuilder().appendHours()
                                     .appendSuffix(":")
@@ -71,6 +99,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     private static final int MILLIS_PER_SECOND = 1000;
 
     public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
+
 
     /**
      * The wrapped immutable joda time instant.
@@ -323,7 +352,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
      */
     @Nonnull
     public String formatted() {
-        return formatted(STD_TIME_FMT);
+        return formatted(STD_DATETIME_FMT);
     }
 
     /**
