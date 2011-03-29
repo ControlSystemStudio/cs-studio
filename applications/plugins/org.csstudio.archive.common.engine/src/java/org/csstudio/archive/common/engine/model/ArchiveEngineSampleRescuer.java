@@ -27,13 +27,12 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.AbstractToFileDataRescuer;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Implements a data rescue functionality in case the archive services are unavailable.
@@ -44,10 +43,9 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(ArchiveEngineSampleRescuer.class);
-
     private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samples;
+
+    private TimeInstant _timeStamp;
 
     @Nonnull
     public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
@@ -60,6 +58,13 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
         super();
         _samples = samples;
+        _timeStamp = TimeInstantBuilder.fromNow();
+    }
+
+    @Nonnull
+    public ArchiveEngineSampleRescuer at(@Nonnull final TimeInstant time) {
+        _timeStamp = time;
+        return this;
     }
 
     @Override
@@ -73,7 +78,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     @Override
     @Nonnull
     protected String composeRescueFileName() {
-        return "rescue_" + TimeInstantBuilder.fromNow() + "_S" + _samples.size()+ ".ser";
+        return "rescue_" + _timeStamp.formatted(TimeInstant.STD_TIME_FMT_FOR_FS) + "_S" + _samples.size()+ ".ser";
     }
 
     /**
@@ -81,6 +86,6 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
      */
     @Override
     protected void handleException(@Nonnull final IOException e) throws DataRescueException {
-        //Notifications.send();
+        throw new DataRescueException("Mmh", e);
     }
 }
