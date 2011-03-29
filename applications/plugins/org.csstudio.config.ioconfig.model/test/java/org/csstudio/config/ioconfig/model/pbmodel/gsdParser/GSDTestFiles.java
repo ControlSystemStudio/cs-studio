@@ -18,6 +18,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 public enum GSDTestFiles {
     B756_P33("B756_P33.GSD"),
     BIMF5861("BIMF5861.GSD"),
+    DESY_MSyS_V10("DESY_MSyS_V10.gsd"),
     DESY_MSyS_V11("DESY_MSyS_V11.gsd"),
     SOFTB203("SOFTB203.GSD"),
     YP0004C2("YP0004C2.GSD"),

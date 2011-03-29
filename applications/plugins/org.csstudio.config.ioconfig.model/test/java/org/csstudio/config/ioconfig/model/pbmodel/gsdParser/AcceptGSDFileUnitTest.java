@@ -38,6 +38,13 @@ public class AcceptGSDFileUnitTest {
     }
     
     @Test
+    public void GSDTestFile_DESY_MSyS_V10() throws Exception {
+        GsdFileParser gsdFileParser = new GsdFileParser();
+        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
+        Assert.assertNotNull(model);
+    }
+    
+    @Test
     public void GSDTestFile_DESY_MSyS_V11() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
         ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V11.getFileAsGSDFileDBO());
