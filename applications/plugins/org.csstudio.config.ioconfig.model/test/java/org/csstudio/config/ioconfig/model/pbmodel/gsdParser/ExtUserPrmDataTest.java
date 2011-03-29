@@ -1,32 +1,12 @@
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 public class ExtUserPrmDataTest {
-
-    @Test
-    public void ExtUserPrmData() {
-        assertNotNull(new ExtUserPrmData(null, null, null));
-        ExtUserPrmData out = new ExtUserPrmData(new GsdSlaveModel(), "index", "desc");
-        assertNotNull(out);
-        assertEquals(out.getIndex(), "index");
-        assertEquals(out.getText(), "desc");
-    }
-
-    @Test
-    public void index() {
-        ExtUserPrmData out = new ExtUserPrmData(null, "index", null);
-        assertEquals(out.getIndex(), "index");
-        out.setIndex("");
-        assertEquals(out.getIndex(), "");
-        out.setIndex("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-        assertEquals(out.getIndex(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-    }
-
 
     @Test
     public void text() {
@@ -42,8 +22,6 @@ public class ExtUserPrmDataTest {
     @Test
     public void dataType() {
         ExtUserPrmData out = new ExtUserPrmData(null, null, null);
-        assertNull(out.getDataType());
-        out.setDataType("");
         assertEquals(out.getDataType(), "");
         out.setDataType("UINT8");
         assertEquals(out.getDataType(), "UINT8");
@@ -149,41 +127,6 @@ public class ExtUserPrmDataTest {
         assertFalse(out.getMaxValue()==10);
         assertTrue(out.getMaxValue()==0);
 
-    }
-
-    @Test
-    public void prmTextRef() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
-        assertNull(out.getPrmTextRef());
-        out.setPrmTextRef("");
-        assertEquals(out.getPrmTextRef(), "");
-        out.setPrmTextRef("test");
-        assertEquals(out.getPrmTextRef(), "test");
-        out.setPrmTextRef("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-        assertEquals(out.getPrmTextRef(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-    }
-
-    @Test
-    public void prmText() {
-        GsdSlaveModel gsdSlaveModel = new GsdSlaveModel();
-        HashMap<String, HashMap<Integer, PrmTextItem>> hashMap = new HashMap<String, HashMap<Integer,PrmTextItem>>();
-        HashMap<Integer, PrmTextItem> value = new HashMap<Integer, PrmTextItem>();
-        hashMap.put("key", new HashMap<Integer, PrmTextItem>());
-        gsdSlaveModel.setPrmTextMap(hashMap);
-        ExtUserPrmData out = new ExtUserPrmData(gsdSlaveModel, null, null);
-        
-        out.setPrmTextRef("key");
-        HashMap<Integer, PrmTextItem> prmText = out.getPrmText();
-        assertNotNull(prmText);
-        assertEquals(prmText, value);
-    }
-
-    @Test
-    public void testToString() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
-        out.setIndex("index");
-        out.setText("text");
-        assertEquals(out.toString(), "index : text");
     }
 
 }

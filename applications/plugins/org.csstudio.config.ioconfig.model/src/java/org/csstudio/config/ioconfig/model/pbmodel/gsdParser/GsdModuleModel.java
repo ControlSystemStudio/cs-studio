@@ -69,18 +69,18 @@ public class GsdModuleModel {
     /**
      * The parent gsd Slave Model.
      */
-    private GsdSlaveModel _gsdSlaveModel;
+    private final GsdSlaveModel _gsdSlaveModel;
     
     /**
      * The map of all ext User Prm Data Ref.<br>
      * The key is the reference and the value is the byte position.
      */
-    private HashMap<String, String> _extUserPrmDataRefMap = new HashMap<String, String>();
+    private final HashMap<String, String> _extUserPrmDataRefMap = new HashMap<String, String>();
 
     /**
      * A Map with all "ext User Prm Data" modification.
      */
-    private HashMap<Integer, Integer[]> _modifications = new HashMap<Integer, Integer[]>();
+    private final HashMap<Integer, Integer[]> _modifications = new HashMap<Integer, Integer[]>();
 
     /**
      * Example of a GSD Module.<br>
@@ -281,9 +281,10 @@ public class GsdModuleModel {
         }
         Collections.sort(arrayList, new Comparator<ExtUserPrmData>() {
 
+            @Override
             public int compare(ExtUserPrmData arg0, ExtUserPrmData arg1) {
                 try {
-                return Integer.parseInt(arg0.getIndex()) - Integer.parseInt(arg1.getIndex());
+                return arg0.getIndex() - arg1.getIndex();
                 }catch (ArrayIndexOutOfBoundsException e) {
                     CentralLogger.getInstance().warn(this, "arg0: +"+arg0+"\t"+arg0.getIndex());
                     CentralLogger.getInstance().warn(this, "arg1: +"+arg1+"\t"+arg1.getIndex());

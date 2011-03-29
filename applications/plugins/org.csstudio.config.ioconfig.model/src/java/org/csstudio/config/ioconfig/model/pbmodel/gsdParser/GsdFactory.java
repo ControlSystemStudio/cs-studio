@@ -81,7 +81,7 @@ public final class GsdFactory {
             if (dataInstanz.setSlaveStruct(gsdFile.getGSDFile(), slaveModel) != 0) {
                 return null;
             }
-            GsdFileParser.parseSlave(gsdFile, slaveModel);
+//            GsdFileParser.parseSlave(gsdFile, slaveModel);
             _GSD_SLAVE_MODEL_MAP.put(gsdFile.getId(), slaveModel);
         }        
 
