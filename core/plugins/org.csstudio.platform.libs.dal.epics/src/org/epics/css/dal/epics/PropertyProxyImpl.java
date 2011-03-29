@@ -372,7 +372,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			 */
 			return;
 		}
-		if (ev.getStatus() == CAStatus.NORMAL)
+		if (ev.getStatus() == CAStatus.NORMAL && ev.getDBR()!=null)
 			createCharacteristics(ev.getDBR());
 		else if (ev.getDBR() == null) {
 			recoverFromNullDbr();
@@ -1034,21 +1034,36 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	private GetListener fallbackListener = new GetListener() {
 
 		public void getCompleted(GetEvent ev) {
-			DBR dbr = ev.getDBR();
-			if (dbr == null) return;
-			
-			createCharacteristics(dbr);
-			T defaultValue = PlugUtilities.defaultValue(dataType);
-			
-			if (isMonitorListCreated()) {
-				synchronized (getMonitors()) {
-					for (MonitorProxyImpl<T> monitor : getMonitors()) {
-						monitor.addFallbackResponse(defaultValue);
-					}
-				}
+			if (!connectionStateMachine.isConnected() 
+					|| channel.getConnectionState()!= Channel.CONNECTED) 
+			{
+				/*
+				 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
+				 * In this case CTRL_DBR has nothing to do any more.
+				 */
+				return;
 			}
 			
-			fallbackInProgress = false;
+			try {
+				DBR dbr = ev.getDBR();
+				if (dbr == null) return;
+				
+				createCharacteristics(dbr);
+				
+				/*
+				T defaultValue = PlugUtilities.defaultValue(dataType);
+				if (isMonitorListCreated()) {
+					synchronized (getMonitors()) {
+						for (MonitorProxyImpl<T> monitor : getMonitors()) {
+							monitor.addFallbackResponse(defaultValue);
+						}
+					}
+				}*/
+			} catch (Throwable t) {
+				plug.getLogger().warn("Recovery from null DBR failed.", t);
+			} finally {
+				fallbackInProgress = false;
+			}
 		}
 	};
 
@@ -1061,10 +1076,12 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			public void run() {
 		
 				try {
+					plug.getLogger().warn("Received NULL DBR, trying again with reovery procedure.");
 					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
 					plug.flushIO();
-				} catch (CAException e) {
-//					plug.getLogger().warn("Recovery from null DBR failed.", e);
+				} catch (Throwable e) {
+					plug.getLogger().warn("Recovery from null DBR failed.", e);
+					fallbackInProgress = false;
 				}
 				
 			}
