@@ -11,3 +11,4 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.2.0",
 Bundle-Activator: org.csstudio.platform.SimpleDalPluginActivator
 Export-Package: org.csstudio.platform.model.pvs,
  org.csstudio.platform.simpledal
+Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
