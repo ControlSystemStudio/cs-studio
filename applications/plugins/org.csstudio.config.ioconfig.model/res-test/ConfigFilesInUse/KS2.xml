@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <PROFIBUS-DP_PARAMETERSET>
   <BUSPARAMETER>
-    <MASTER bus_para_len="66" fdl_add="41" baud_rate="6" tslot="300" min_tsdr="11" max_tsdr="150" tqui="0" tset="1" ttr="300000" gap="10" hsa="125" max_retry_limit="1" bp_flag="0" min_slave_interval="6" poll_timeout="1000" data_control_time="100" reserved="0,0,0,0,0,0" master_user_data_length="32" master_user_data="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" />
+    <MASTER bus_para_len="66" fdl_add="40" baud_rate="6" tslot="300" min_tsdr="11" max_tsdr="150" tqui="0" tset="1" ttr="300000" gap="10" hsa="125" max_retry_limit="1" bp_flag="0" min_slave_interval="6" poll_timeout="1000" data_control_time="100" reserved="0,0,0,0,0,0" master_user_data_length="32" master_user_data="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" />
     <FMB_SET max_number_slaves="40" max_slave_output_len="160" max_slave_input_len="160" max_slave_diag_entries="126" max_slave_diag_len="32" max_bus_para_len="128" max_slave_para_len="244" />
   </BUSPARAMETER>
   <SLAVE_CONFIGURATION>

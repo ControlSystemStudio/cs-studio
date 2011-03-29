@@ -26,7 +26,6 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +39,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -152,7 +150,7 @@ public class SlaveDBO extends AbstractNodeDBO {
         this(master, -1);
     }
 
-    public SlaveDBO(final MasterDBO master, final int stationAddress) throws PersistenceException {
+    private SlaveDBO(final MasterDBO master, final int stationAddress) throws PersistenceException {
         setParent(master);
         master.addChild(this);
         moveSortIndex(stationAddress);

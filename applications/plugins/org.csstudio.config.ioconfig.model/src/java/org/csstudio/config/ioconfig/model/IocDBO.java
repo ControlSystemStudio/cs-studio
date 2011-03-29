@@ -24,7 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -67,7 +66,7 @@ public class IocDBO extends AbstractNodeDBO {
      * @param maxStationAddress the highest possible Station Address.
      * @throws PersistenceException 
      */
-    public IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
+    private IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
         setParent(facility);
         facility.addChild(this);
     }
