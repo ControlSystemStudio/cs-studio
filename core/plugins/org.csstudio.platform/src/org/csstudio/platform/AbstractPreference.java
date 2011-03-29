@@ -23,6 +23,7 @@
  */
 package org.csstudio.platform;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -140,6 +141,14 @@ public abstract class AbstractPreference<T> {
                 }
             }
          });
+        TYPE_MAP.put(File.class, new PrefStrategy<File>() {
+            @Override
+            @Nonnull
+            public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return new File(prefs.getString(context, key, defaultValue.toString(), null));
+            }
+        });
     }
     
     
