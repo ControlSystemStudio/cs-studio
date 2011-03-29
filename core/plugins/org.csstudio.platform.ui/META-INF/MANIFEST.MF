@@ -20,15 +20,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;visibility:=reexport,
  org.csstudio.platform.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.jdom;bundle-version="1.1.0",
- org.csstudio.platform.simpledal;bundle-version="1.0.0"
+ org.csstudio.platform.libs.jdom;bundle-version="1.1.0"
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.composites,
  org.csstudio.platform.ui.dialogs,
  org.csstudio.platform.ui.display,
- org.csstudio.platform.ui.dnd,
- org.csstudio.platform.ui.dnd.rfc,
  org.csstudio.platform.ui.internal.actions,
  org.csstudio.platform.ui.internal.console,
  org.csstudio.platform.ui.internal.dataexchange,
