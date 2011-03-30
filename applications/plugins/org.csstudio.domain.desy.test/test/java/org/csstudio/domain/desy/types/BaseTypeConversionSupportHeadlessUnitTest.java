@@ -27,8 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) :
- *
  * @author bknerr
  * @since 27.01.2011
  */
@@ -37,9 +35,9 @@ public class BaseTypeConversionSupportHeadlessUnitTest {
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() {
 
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getName(),
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getSimpleName(),
                                                                                  "java.lang"));
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(EpicsEnum.class.getName(),
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(EpicsEnum.class.getSimpleName(),
                                                                                  "org.csstudio.domain.desy.epics.types"));
         Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala",
                                                                               "org.csstudio.domain.desy.epics.types"));
