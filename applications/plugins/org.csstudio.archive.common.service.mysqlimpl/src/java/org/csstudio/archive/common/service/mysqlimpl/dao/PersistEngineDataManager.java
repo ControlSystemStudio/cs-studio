@@ -106,9 +106,10 @@ public enum PersistEngineDataManager {
 
         _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
         if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
-            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
-                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
+            LOG.info("fuup");
+//            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
+//                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
+//                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
             _prefPeriodInMS = DEFAULT_PERIOD_MS;
         }
 
@@ -132,6 +133,7 @@ public enum PersistEngineDataManager {
         final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
                                                                   _sqlStatementBatch,
                                                                   _prefPeriodInMS);
+        LOG.info("What???");
         _executor.scheduleAtFixedRate(newWorker,
                                       0L,
                                       newWorker.getPeriodInMS(),
