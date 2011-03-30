@@ -41,6 +41,8 @@ import org.csstudio.domain.desy.types.ICssValueType;
 public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
     extends AbstractSystemVariable<T> implements IAlarmSystemVariable<T> {
 
+    private static final long serialVersionUID = -7349013176888329772L;
+
     private final A _alarm;
 
     /**
