@@ -7,6 +7,5 @@ org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
-org.csstudio.platform.simpledal
-org.csstudio.platform.libs.dal.ui
+org.csstudio.platform.libs.epics
 
