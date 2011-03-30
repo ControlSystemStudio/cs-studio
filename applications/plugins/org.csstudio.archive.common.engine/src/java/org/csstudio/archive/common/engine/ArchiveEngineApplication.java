@@ -34,8 +34,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
-public class Application implements IApplication {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
+public class ArchiveEngineApplication implements IApplication {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
     private int _port;

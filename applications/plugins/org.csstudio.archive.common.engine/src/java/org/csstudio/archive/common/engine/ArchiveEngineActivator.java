@@ -20,14 +20,14 @@ import org.osgi.framework.BundleContext;
  *  @author Kay Kasemir
  *  @author Bastian Knerr
  */
-public class Activator extends Plugin {
+public class ArchiveEngineActivator extends Plugin {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.engine"; //$NON-NLS-1$
 
     /** The shared instance */
-    private static Activator INSTANCE;
+    private static ArchiveEngineActivator INSTANCE;
 
     // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
     private ArchiveEngineServiceTracker _archiveEngineServiceTracker;
@@ -36,7 +36,7 @@ public class Activator extends Plugin {
      * Don't instantiate.
      * Called by framework.
      */
-    public Activator() {
+    public ArchiveEngineActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
@@ -45,7 +45,7 @@ public class Activator extends Plugin {
 
     /** @return the shared instance */
     @Nonnull
-    public static Activator getDefault() {
+    public static ArchiveEngineActivator getDefault() {
         return INSTANCE;
     }
 

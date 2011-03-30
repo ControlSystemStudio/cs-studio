@@ -69,6 +69,6 @@ public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
     @Override
     @Nonnull
     public String getPluginID() {
-        return Activator.PLUGIN_ID;
+        return ArchiveEngineActivator.PLUGIN_ID;
     }
 }

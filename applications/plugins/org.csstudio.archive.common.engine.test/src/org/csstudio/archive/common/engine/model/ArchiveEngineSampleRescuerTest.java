@@ -105,9 +105,10 @@ public class ArchiveEngineSampleRescuerTest {
     @Test
     public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
         TimeInstant now = TimeInstantBuilder.fromNow();
-        ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
 
-        File infile = findInputFile(now);
+        ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
+        
+        File infile = findInputFile(RESCUE_DIR, now, SAMPLES.size());
 
         List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
         
@@ -129,9 +130,9 @@ public class ArchiveEngineSampleRescuerTest {
     }
 
     @Nonnull
-    private File findInputFile(@Nonnull final TimeInstant now) {
-        String name = "rescue_" + now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + SAMPLES.size() + ".ser";
-        File file = new File(RESCUE_DIR.toString(), name);
+    private File findInputFile(@Nonnull final File dir, @Nonnull final TimeInstant now, int size) {
+        String name = "rescue_" + now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + size + ".ser";
+        File file = new File(dir.toString(), name);
         Assert.assertNotNull(file);
         return file;
     }
