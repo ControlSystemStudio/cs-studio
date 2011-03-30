@@ -33,10 +33,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.csstudio.platform.simpledal.ValueType;
 
 /**
  * @author Markus Moeller

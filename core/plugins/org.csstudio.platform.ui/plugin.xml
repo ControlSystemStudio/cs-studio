@@ -35,11 +35,6 @@
             class="org.csstudio.platform.ui.internal.logging.JmsAppenderPreferencePage"
             id="org.csstudio.platform.log.logPreferences.jms"
             name="%logJmsAppenderPageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.logging.ControlSystemPreferencePage"
-            id="org.csstudio.platform.log.controlsystemPreferences"
-            name="Control System"/>
    </extension>
    <extension
          point="org.eclipse.help.toc">
@@ -66,27 +61,6 @@
             adaptableType="org.csstudio.platform.model.IControlSystemItem"
             class="org.csstudio.platform.ui.internal.workbench.ControlSystemItemAdapterFactory">
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.platform.model.pvs.ControlSystemEnum"
-            class="org.csstudio.platform.ui.internal.workbench.ControlSystemEnumAdapterFactory">
-         <adapter
-               type="org.eclipse.ui.model.IWorkbenchAdapter">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAddress"
-            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressAdapterFactory">
-         <adapter
-               type="org.eclipse.ui.model.IWorkbenchAdapter">
-         </adapter>
-      </factory>
-      <factory
-            adaptableType="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider"
-            class="org.csstudio.platform.ui.internal.workbench.ProcessVariableAdressProviderAdapterFactory">
-         <adapter
-               type="org.eclipse.ui.IActionFilter">
-         </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.core.resources.IWorkspace"
@@ -205,23 +179,10 @@
             id="org.csstudio"
             name="CSS"/>
       <view
-            allowMultiple="false"
-            class="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
-            icon="icons/containerView.gif"
-            id="org.csstudio.platform.ui.internal.developmentsupport.util.ContainerView"
-            name="Container View"/>
-      <view
             class="org.eclipse.ui.ExtensionFactory:progressView"
             icon="icons/pview.gif"
             id="org.csstudio.platform.ui.views.progress"
             name="%progressView"/>
-      <view
-            category="org.csstudio"
-            class="org.csstudio.platform.ui.internal.connectionview.ConnectionStateView"
-            icon="icons/connections.png"
-            id="org.csstudio.platform.ui.ConnectionStateView"
-            name="%connectorView">
-      </view>
       <view
             allowMultiple="true"
             category="org.csstudio"
@@ -303,16 +264,6 @@
 
   <extension
         point="org.eclipse.ui.popupMenus">
-     <objectContribution
-           id="IProcessVariableAdressProviderContributions"
-           objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
-        <action
-              class="org.csstudio.platform.ui.internal.developmentsupport.util.PrintPvsAction"
-              icon="icons/listpvs.png"
-              id="PrintPvsAction"
-              label="Print selected Pvs">
-        </action>
-     </objectContribution>
      <objectContribution
            adaptable="true"
            id="org.csstudio.platform.ui.copyPvToClipboard"

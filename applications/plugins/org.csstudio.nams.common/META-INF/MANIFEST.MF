@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.service.logging,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.platform.libs.dal,
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.junit4;bundle-version="4.5.0",
  org.csstudio.platform.libs.easymock;bundle-version="1.0.0"
 Eclipse-LazyStart: true
