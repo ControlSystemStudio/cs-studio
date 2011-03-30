@@ -48,22 +48,17 @@ public class EpicsIValueTypeSupportUnitTest {
     }
 
 
-    @Test
-    public void testIValue2CssValueConversionReturnsNull() {
-        try {
-            @SuppressWarnings("unchecked")
-            final EpicsSystemVariable<List<Double>> cssV =
-                (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
-                                                    ValueFactory.createDoubleValue(TimestampFactory.now(),
-                                                                      ValueFactory.createMinorSeverity(),
-                                                                      "HIHI",
-                                                                      null,
-                                                                      null,
-                                                                      null));
-            Assert.assertNull(cssV);
-        } catch (final TypeSupportException e) {
-            Assert.fail();
-        }
+    @Test(expected=TypeSupportException.class)
+    public void testIValue2CssValueConversionReturnsNull() throws TypeSupportException {
+        @SuppressWarnings({ "unchecked", "unused" })
+        final EpicsSystemVariable<List<Double>> cssV =
+            (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
+                                                                                        ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                                                                       ValueFactory.createMinorSeverity(),
+                                                                                                                       "HIHI",
+                                                                                                                       null,
+                                                                                                                       null,
+                                                                                                                       null));
     }
 
     @Test
