@@ -29,6 +29,7 @@ import org.csstudio.platform.internal.dal.DataAccessLayerTest1;
 import org.csstudio.platform.internal.dal.DataAccessLayerTest2;
 import org.csstudio.platform.internal.dal.DataAccessLayerTest3;
 import org.csstudio.platform.internal.model.pvs.AbstractProcessVariableNameParserTest;
+import org.csstudio.platform.internal.model.pvs.ControlSystemEnumTest;
 import org.csstudio.platform.internal.model.pvs.DALPropertyFactoriesProviderTest;
 import org.csstudio.platform.internal.model.pvs.DalNameParserTest;
 import org.csstudio.platform.internal.model.pvs.ProcessVariableAdressTest;
@@ -53,6 +54,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
         AbstractProcessVariableNameParserTest.class,
+        ControlSystemEnumTest.class,
         DalNameParserTest.class,
         DALPropertyFactoriesProviderTest.class,
         ProcessVariableAdressTest.class,
