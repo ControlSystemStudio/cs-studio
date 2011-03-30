@@ -23,6 +23,7 @@ package org.csstudio.testsuite;
 
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
@@ -39,8 +40,17 @@ import org.csstudio.platform.util.StringUtil;
  * @author bknerr
  * @since 21.07.2010
  */
+// CHECKSTYLE:OFF due to bug in 5.3 - "This class should be declared 'abstract'" WTF?!
 public final class TestSuiteFactory {
+// CHECKSTYLE:ON
 
+    /**
+     * Don't instantiate.
+     */
+    private TestSuiteFactory() {
+        // Empty
+    }
+    
     /**
      * The common suffix for all test classes.
      */
@@ -48,6 +58,7 @@ public final class TestSuiteFactory {
 
     // Get site specific test data provider
     private static TestDataProvider PROV = createTestDataProvider();
+    @CheckForNull
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(Activator.PLUGIN_ID);
@@ -71,15 +82,6 @@ public final class TestSuiteFactory {
      *
      */
     private static final String PACKAGE_BLACKLIST = (String) PROV.get("packageBlacklist");
-
-
-
-    /**
-     * Don't instantiate.
-     */
-    private TestSuiteFactory() {
-        // EMPTY
-    }
 
     /**
      * The test suite provider.
