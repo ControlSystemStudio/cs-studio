@@ -21,26 +21,27 @@
  */
 package org.csstudio.domain.desy.types;
 
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) : 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
  * @since 27.01.2011
  */
 public class BaseTypeConversionSupportHeadlessUnitTest {
-    
+
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() {
-        
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString("String", 
+
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getName(),
                                                                                  "java.lang"));
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString("EpicsEnumTriple", 
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(EpicsEnum.class.getName(),
                                                                                  "org.csstudio.domain.desy.epics.types"));
-        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala", 
+        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala",
                                                                               "org.csstudio.domain.desy.epics.types"));
     }
 }
