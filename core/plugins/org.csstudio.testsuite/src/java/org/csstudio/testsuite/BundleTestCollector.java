@@ -161,15 +161,11 @@ public class BundleTestCollector {
                                       @Nonnull final Class<?> testClass) {
         final String className = testClass.getName();
 
-        if (isClassBlackListed(className, blackList)) {
-            return false;
-        }
-        if (Modifier.isAbstract(testClass.getModifiers())) {
+        if (isBlacklistedOrAbstract(blackList, testClass, className)) {
             return false;
         }
 
-        if (checkForTestClass(testClass)) {
-            // TEST FOUND
+        if (isItATestClass(testClass)) {
             if (!className.endsWith(commonFilterSuffix)) {
                 LOG.warn("Class " + className + " is a test, but does not end on *" + commonFilterSuffix + ".java.\n" +
                          "Please rename to one out of for this launch config: " + testClassFilters);
@@ -181,11 +177,22 @@ public class BundleTestCollector {
                 }
             }
         } else {
-            // NOT A TEST
             if (className.endsWith(commonFilterSuffix)) {
                 LOG.warn("Class " + className + " is NOT a test!\n" +
                          "Please rename to a different suffix. (Perhaps *Demo?).");
             }
+        }
+        return false;
+    }
+
+    private boolean isBlacklistedOrAbstract(@Nonnull final List<String> blackList,
+                                            @Nonnull final Class<?> testClass,
+                                            @Nonnull final String className) {
+        if (isClassBlackListed(className, blackList)) {
+            return true;
+        }
+        if (Modifier.isAbstract(testClass.getModifiers())) {
+            return true;
         }
         return false;
     }
@@ -213,7 +220,7 @@ public class BundleTestCollector {
      * @param testClass
      * @return
      */
-    private boolean checkForTestClass(@Nonnull final Class<?> testClass) {
+    private boolean isItATestClass(@Nonnull final Class<?> testClass) {
 
         // Check for junit <4.0 test
         Class<?> parent = testClass.getSuperclass();

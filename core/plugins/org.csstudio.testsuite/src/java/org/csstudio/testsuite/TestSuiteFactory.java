@@ -37,8 +37,6 @@ import org.csstudio.platform.util.StringUtil;
  * Factory for test suites that collect test classes over all existing bundles.
  *
  * @author bknerr
- * @author $Author: bknerr $
- * @version $Revision: 1.1.2.1 $
  * @since 21.07.2010
  */
 public final class TestSuiteFactory {
