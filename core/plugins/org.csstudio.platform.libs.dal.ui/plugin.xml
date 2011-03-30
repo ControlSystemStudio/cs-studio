@@ -35,6 +35,13 @@
                type="org.eclipse.ui.IActionFilter">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.platform.model.pvs.ControlSystemEnum"
+            class="org.csstudio.platform.ui.internal.workbench.ControlSystemEnumAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
