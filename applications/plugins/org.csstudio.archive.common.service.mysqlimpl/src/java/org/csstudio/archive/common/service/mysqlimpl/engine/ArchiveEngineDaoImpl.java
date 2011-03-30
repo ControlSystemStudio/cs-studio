@@ -140,7 +140,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         final Timestamp time = result.getTimestamp("alive");
         return new ArchiveEngine(new ArchiveEngineId(id),
                                  new URL(url),
-                                 TimeInstantBuilder.buildFromMillis(time.getTime()));
+                                 TimeInstantBuilder.fromMillis(time.getTime()));
     }
 
     /**

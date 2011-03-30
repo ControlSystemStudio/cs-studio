@@ -13,7 +13,7 @@
 
    <windowImages/>
 
-   <launcher name="ArchiveEngine2">
+   <launcher name="DesyArchiveEngine">
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -25,6 +25,7 @@
 
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.csstudio.apputil"/>
@@ -34,7 +35,6 @@
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.guava"/>
@@ -50,7 +50,7 @@
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
-      <plugin id="org.csstudio.utility.pv.simu" fragment=""/>
+      <plugin id="org.csstudio.utility.pv.simu"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.eclipse.core.commands"/>

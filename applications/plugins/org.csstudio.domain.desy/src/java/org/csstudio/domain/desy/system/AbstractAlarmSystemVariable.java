@@ -54,7 +54,7 @@ public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
         super(name, data, origin, time);
         _alarm = alarm;
         // plausibility check
-        if (!origin.getType().equals(alarm.getControlSystemType())) {
+        if (alarm != null && !origin.getType().equals(alarm.getControlSystemType())) {
             throw new IllegalArgumentException("Control system type and alarm type do not match.");
         }
     }

@@ -34,8 +34,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
-public class Application implements IApplication {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(Application.class);
+public class ArchiveEngineApplication implements IApplication {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
     private int _port;
@@ -168,7 +168,7 @@ public class Application implements IApplication {
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: " + _model.getChannels().size() +
                  " channels in " +
-                 TimeInstantBuilder.buildFromMillis(millis).formatted(TimeInstant.STD_TIME_FMT_WITH_MILLIS));
+                 TimeInstantBuilder.fromMillis(millis).formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS));
     }
 
     /**

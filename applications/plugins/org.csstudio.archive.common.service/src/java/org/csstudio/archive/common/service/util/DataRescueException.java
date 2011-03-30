@@ -19,36 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.archive.common.service.util;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * TODO (bknerr) :
+ * Dedicated exception for data rescuer.
  *
  * @author bknerr
- * @since 16.02.2011
- * @param <T> the base value type
+ * @since Mar 28, 2011
  */
-@Deprecated
-public class CssValueType<T> implements ICssValueType<T> {
-
-    private final T _data;
+public class DataRescueException extends Exception {
+    private static final long serialVersionUID = 4788870762080920820L;
 
     /**
      * Constructor.
      */
-    public CssValueType(@Nonnull final T data) {
-        _data = data;
+    public DataRescueException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public T getValueData() {
-        return _data;
-    }
-
 }

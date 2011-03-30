@@ -117,7 +117,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
                                         new ArchiveChannelId(channelId),
                                         connected,
                                         info,
-                                        TimeInstantBuilder.buildFromMillis(timestamp.getTime()));
+                                        TimeInstantBuilder.fromMillis(timestamp.getTime()));
     }
 
 }
