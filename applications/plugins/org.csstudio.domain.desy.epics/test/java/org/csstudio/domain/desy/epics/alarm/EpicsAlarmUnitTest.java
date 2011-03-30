@@ -28,7 +28,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
 import org.junit.Test;
 
 /**
- * Tests the EPICS alarm class.
+ * Tests the EPICS_V3 alarm class.
  *
  * @author bknerr
  * @since 16.02.2011
@@ -37,7 +37,7 @@ public class EpicsAlarmUnitTest {
 
     @Test
     public void testParseFromAndToString() {
-        final String rep = "ALARM(EPICS:MINOR,COMM)";
+        final String rep = "ALARM(EPICS_V3:MINOR,COMM)";
         final IAlarm parsed = EpicsAlarm.parseFrom(rep);
         Assert.assertNotNull(parsed);
         Assert.assertEquals(ControlSystemType.EPICS_V3, parsed.getControlSystemType());
@@ -46,21 +46,21 @@ public class EpicsAlarmUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testParseFromStringFailed() {
-        final String rep = "ALRM(EPICS:MINOR,COMM)";
+        final String rep = "ALRM(EPICS_V3:MINOR,COMM)";
         final IAlarm parsed = EpicsAlarm.parseFrom(rep);
         Assert.assertNotNull(parsed);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testParseFromStringFailed2() {
-        final String rep = "ALARM(PICS:MINOR,COMM)";
+        final String rep = "ALARM(XXX:MINOR,COMM)";
         final IAlarm parsed = EpicsAlarm.parseFrom(rep);
         Assert.assertNotNull(parsed);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testParseFromStringFailed3() {
-        final String rep = "ALARM(EPICS:MINOR,FOO)";
+        final String rep = "ALARM(EPICS_V3:MINOR,FOO)";
         final IAlarm parsed = EpicsAlarm.parseFrom(rep);
         Assert.assertNotNull(parsed);
     }
