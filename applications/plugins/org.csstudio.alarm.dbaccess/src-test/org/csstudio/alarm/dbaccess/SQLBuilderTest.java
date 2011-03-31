@@ -75,7 +75,7 @@ public class SQLBuilderTest {
 
 
 	@Test
-	public void testcomposeSQLStmtForNoFilter() throws SQLException {
+	public void testComposeSQLStmtForNoFilter() throws SQLException {
 	    final List<FilterItem> noFilterItems = Collections.emptyList();
 
 	    final SQLBuilder b = new SQLBuilder(HANDLER_MOCK);
@@ -106,7 +106,7 @@ public class SQLBuilderTest {
 	}
 
 	@Test
-	public void testcomposeSQLStmtFor2FilterItems() throws SQLException {
+	public void testComposeSQLStmtFor2FilterItems() throws SQLException {
 	    final List<FilterItem> twoSimpleFilterItems = new ArrayList<FilterItem>();
 	    twoSimpleFilterItems.add(_severityItem);
 	    twoSimpleFilterItems.add(_typeItem);
@@ -145,7 +145,7 @@ public class SQLBuilderTest {
 	    Assert.assertEquals(TWO_SIMPLE_FILTER_ITEMS_NO_ROW, erg);
 	}
 	@Test
-	public void testcomposeSQLStmtFor2SubQueryFilterItems() throws SQLException {
+	public void testComposeSQLStmtFor2SubQueryFilterItems() throws SQLException {
 	    final List<FilterItem> twoSubqueryFilterItems = new ArrayList<FilterItem>();
 
 	    twoSubqueryFilterItems.add(_hostItem);
@@ -181,7 +181,7 @@ public class SQLBuilderTest {
 	}
 
 	@Test
-	public void testcomposeSQLStmtFor4FilterItemsBothTypes() throws SQLException {
+	public void testComposeSQLStmtFor4FilterItemsBothTypes() throws SQLException {
 	    final List<FilterItem> fourFilterItemsBothTypes = new ArrayList<FilterItem>();
 	    fourFilterItemsBothTypes.add(_hostItem);
 	    fourFilterItemsBothTypes.add(_severityItem);
@@ -226,7 +226,7 @@ public class SQLBuilderTest {
 
 
 	@Test
-	public void testcomposeSQLStmtFor4FilterItemsBothTypesCount() throws SQLException {
+	public void testComposeSQLStmtFor4FilterItemsBothTypesCount() throws SQLException {
 	    final List<FilterItem> fourFilterItemsBothTypesCount = new ArrayList<FilterItem>();
 	    fourFilterItemsBothTypesCount.add(_hostItem);
 	    fourFilterItemsBothTypesCount.add(_severityItem);
