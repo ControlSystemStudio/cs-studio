@@ -112,9 +112,11 @@ public class ProcessVariableAdressFactory {
         final IPreferencesService prefService = Platform.getPreferencesService();
 
         if (prefService != null) {
-            final String defaultCs = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,
-                    PROP_CONTROL_SYSTEM, "", //$NON-NLS-1$
-                    null);
+            final String defaultCs = 
+                Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,
+                                                           PROP_CONTROL_SYSTEM, 
+                                                           ControlSystemEnum.LOCAL.name(), //$NON-NLS-1$
+                                                           null);
             controlSystem = ControlSystemEnum.valueOf(defaultCs);
         }
 
