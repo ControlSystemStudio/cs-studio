@@ -283,7 +283,8 @@ public final class ConnectionUtilNew {
 				+ responsibleDalPlugId;
 	    }
 		final String property = pv.getProperty();
-		return new RemoteInfo(cs, property, null, null);
+		String characteristic = pv.getCharacteristic();
+		return new RemoteInfo(cs, property, characteristic, null);
 	}
 
 }

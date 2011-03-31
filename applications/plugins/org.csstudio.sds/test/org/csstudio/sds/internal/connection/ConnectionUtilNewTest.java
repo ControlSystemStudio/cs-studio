@@ -6,14 +6,10 @@ import static org.junit.Assert.assertEquals;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.epics.css.dal.simple.RemoteInfo;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ConnectionUtilNewTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public final void testTranslate() {
@@ -21,7 +17,6 @@ public class ConnectionUtilNewTest {
 		IProcessVariableAddress pv2 = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress("dal-epics://Chiller:Pressure:1[graphMin]");
 		RemoteInfo ri1 = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"EPICS", "Chiller:Pressure:1", null, null);
 		RemoteInfo ri2 = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX+"EPICS", "Chiller:Pressure:1", "graphMin", null);
-		RemoteInfo pv11 = ConnectionUtilNew.translate(pv1);
 		verifyEquality(ri1, ConnectionUtilNew.translate(pv1));
 		verifyEquality(ri2, ConnectionUtilNew.translate(pv2));
 	}
