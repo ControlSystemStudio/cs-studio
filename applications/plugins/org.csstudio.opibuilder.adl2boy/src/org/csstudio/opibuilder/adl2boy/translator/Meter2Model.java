@@ -7,6 +7,7 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -29,15 +30,14 @@ public class Meter2Model extends AbstractADL2Model {
 
 		//set color mode
 		String color_mode = meterWidget.getColor_mode();
-		System.out.println("Meter Color mode " + color_mode);
 		if ( color_mode.equals("static") ){
-			widgetModel.setPropertyValue(XMeterModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
 		}
 		else if (color_mode.equals("alarm") ){
-			widgetModel.setPropertyValue(XMeterModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
 		}
 		else if (color_mode.equals("discrete") ){
-			widgetModel.setPropertyValue(XMeterModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
 			//TODO Meter2Model Figure out what to do if colorMode is discrete
 		}
 		
