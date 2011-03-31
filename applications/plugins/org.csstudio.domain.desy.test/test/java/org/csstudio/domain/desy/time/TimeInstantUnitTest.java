@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,13 +33,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 18.11.2010
  */
-public class TimeInstantUnitTest {
-
-    TimeInstant NOW;
-    @Before
-    public void setup() {
-        NOW = TimeInstantBuilder.fromNow();
-    }
+public final class TimeInstantUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromNanosNegative() {
@@ -179,22 +172,24 @@ public class TimeInstantUnitTest {
 
     @Test
     public void testFormats() {
-        final String date = NOW.formatted(TimeInstant.STD_DATE_FMT);
+        final TimeInstant now = TimeInstantBuilder.fromNow();
+        
+        final String date = now.formatted(TimeInstant.STD_DATE_FMT);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d", date));
 
-        final String time = NOW.formatted(TimeInstant.STD_TIME_FMT);
+        final String time = now.formatted(TimeInstant.STD_TIME_FMT);
         Assert.assertTrue(Pattern.matches("\\d\\d:\\d\\d:\\d\\d", time));
 
-        final String timeFS = NOW.formatted(TimeInstant.STD_TIME_FMT_FOR_FS);
+        final String timeFS = now.formatted(TimeInstant.STD_TIME_FMT_FOR_FS);
         Assert.assertTrue(Pattern.matches("\\d\\d_\\d\\d_\\d\\d", timeFS));
 
-        final String dateTime = NOW.formatted(TimeInstant.STD_DATETIME_FMT);
+        final String dateTime = now.formatted(TimeInstant.STD_DATETIME_FMT);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d", dateTime));
 
-        final String dateTimeWithMS = NOW.formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS);
+        final String dateTimeWithMS = now.formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\d", dateTimeWithMS));
 
-        final String dateTimeFS = NOW.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS);
+        final String dateTimeFS = now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS);
         Assert.assertTrue(Pattern.matches("\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d\\dh\\d\\dm\\d\\ds", dateTimeFS));
 
 

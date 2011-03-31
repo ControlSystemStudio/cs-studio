@@ -19,49 +19,39 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.alarm;
+package org.csstudio.domain.desy.typesupport;
 
-import junit.framework.Assert;
+import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.system.ControlSystemType;
-import org.junit.Test;
+import org.epics.pvmanager.TypeSupport;
 
 /**
- * Tests the EPICS_V3 alarm class.
+ * Abstract type support to encapsulate some methods from {@link TypeSupport} that
+ * do not act as we'd like them to.
  *
  * @author bknerr
- * @since 16.02.2011
+ * @since Mar 30, 2011
+ * @param <T> the type parameter for this support's discriminator
  */
-public class EpicsAlarmUnitTest {
+public abstract class AbstractTypeSupport<T> extends TypeSupport<T> {
 
-    @Test
-    public void testParseFromAndToString() {
-        final String rep = "ALARM(EPICS_V3:MINOR,COMM)";
-        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
-        Assert.assertNotNull(parsed);
-        Assert.assertEquals(ControlSystemType.EPICS_V3, parsed.getControlSystemType());
-        Assert.assertEquals(rep, parsed.toString());
+    /**
+     * Constructor.
+     */
+    protected AbstractTypeSupport(@Nonnull final Class<T> type,
+                               @SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> typeSupportFamily) {
+        super(type, typeSupportFamily);
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testParseFromStringFailed() {
-        final String rep = "ALRM(EPICS_V3:MINOR,COMM)";
-        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
-        Assert.assertNotNull(parsed);
+    @Nonnull
+    protected static <T> TypeSupport<T> findTypeSupportForOrThrowTSE(@SuppressWarnings("rawtypes") @Nonnull final Class<? extends TypeSupport> supportFamily,
+                                                                     @Nonnull final Class<T> typeClass)
+                                                                     throws TypeSupportException {
+        final TypeSupport<T> support = findTypeSupportFor(supportFamily, typeClass);
+        if (support == null) {
+            throw new TypeSupportException("Type support for " + typeClass.getName() + " not present in family " + supportFamily.getName(), null);
+        }
+        return support;
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testParseFromStringFailed2() {
-        final String rep = "ALARM(XXX:MINOR,COMM)";
-        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
-        Assert.assertNotNull(parsed);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testParseFromStringFailed3() {
-        final String rep = "ALARM(EPICS_V3:MINOR,FOO)";
-        final IAlarm parsed = EpicsAlarm.parseFrom(rep);
-        Assert.assertNotNull(parsed);
-    }
 }

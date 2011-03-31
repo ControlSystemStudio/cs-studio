@@ -102,7 +102,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                         @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
@@ -115,7 +115,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.convertToIMinMaxDoubleValue(sysVar, min, max);
     }
 
@@ -129,7 +129,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.createEpicsVariable(name, value, system, timestamp);
     }
 
@@ -143,7 +143,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
     }
 

@@ -32,7 +32,9 @@ import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeCon
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -89,7 +91,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String sd = d.toString();
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(d);
             Assert.assertTrue(archiveString.equals(sd));
-            final Double dFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Double.class, archiveString);
+            final Double dFromA = ArchiveTypeConversionSupport.fromArchiveString(Double.class, archiveString);
             Assert.assertNotNull(dFromA);
             Assert.assertTrue(dFromA.equals(d));
         } catch (final TypeSupportException e) {
@@ -104,7 +106,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String si = i.toString();
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(i);
             Assert.assertTrue(archiveString.equals(si));
-            final Integer iFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Integer.class, archiveString);
+            final Integer iFromA = ArchiveTypeConversionSupport.fromArchiveString(Integer.class, archiveString);
             Assert.assertNotNull(iFromA);
             Assert.assertTrue(iFromA.equals(i));
         } catch (final TypeSupportException e) {
@@ -119,7 +121,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String sb = b.toString();
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(b);
             Assert.assertTrue(archiveString.equals(sb));
-            final Byte bFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Byte.class, archiveString);
+            final Byte bFromA = ArchiveTypeConversionSupport.fromArchiveString(Byte.class, archiveString);
             Assert.assertNotNull(bFromA);
             Assert.assertTrue(bFromA.equals(b));
         } catch (final TypeSupportException e) {
@@ -135,7 +137,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String sf = f.toString();
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(f);
             Assert.assertTrue(archiveString.equals(sf));
-            final Float fFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(Float.class, archiveString);
+            final Float fFromA = ArchiveTypeConversionSupport.fromArchiveString(Float.class, archiveString);
             Assert.assertNotNull(fFromA);
             Assert.assertTrue(fFromA.equals(f));
         } catch (final TypeSupportException e) {
@@ -148,7 +150,7 @@ public class ArchiveTypeConversionSupportUnitTest {
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString("test me");
             Assert.assertTrue(archiveString.equals("test me"));
-            final String sFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(String.class, archiveString);
+            final String sFromA = ArchiveTypeConversionSupport.fromArchiveString(String.class, archiveString);
             Assert.assertNotNull(sFromA);
             Assert.assertTrue(sFromA.equals(archiveString));
         } catch (final TypeSupportException e) {
@@ -164,7 +166,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             Assert.assertTrue(archiveString.equals(ARCHIVE_TUPLE_PREFIX +
                                                    "3" + ARCHIVE_TUPLE_SEP + "in case we die" + ARCHIVE_TUPLE_SEP + "44" +
                                                    ARCHIVE_TUPLE_SUFFIX));
-            final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromScalarArchiveString(EpicsEnum.class, archiveString);
+            final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
             Assert.assertNotNull(tFromA);
             Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
             Assert.assertEquals("in case we die", tFromA.getState());
@@ -182,7 +184,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesEmpty);
             Assert.assertEquals("", archiveString);
 
-            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(IDoNotExist.class, "Iwasborninafactory,,,,whohoo");
+            ArchiveTypeConversionSupport.fromArchiveString("IDoNotExist", "Iwasborninafactory,,,,whohoo");
         } catch (final TypeSupportException e) {
             Assert.assertTrue(true);
         }
@@ -191,7 +193,7 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testMultiScalarMisMatchConversion() {
         try {
-            ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Integer.class, "theshapeofpunk,tocome");
+            ArchiveTypeConversionSupport.fromArchiveString(Integer.class, "theshapeofpunk,tocome");
         } catch (final TypeSupportException e) {
             Assert.assertTrue(true);
         }
@@ -240,7 +242,7 @@ public class ArchiveTypeConversionSupportUnitTest {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesF);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
 
-            final Collection<Float> coll = ArchiveTypeConversionSupport.fromArchiveString("Set<Float>", archiveString);
+            final Collection<Float> coll = ArchiveTypeConversionSupport.fromArchiveString("HashSet<Float>", archiveString);
 
             final Iterator<Float> iterator = coll.iterator();
             Assert.assertTrue(iterator.next().equals(1.0F));
@@ -260,7 +262,7 @@ public class ArchiveTypeConversionSupportUnitTest {
 
 
             final Collection<Byte> coll =
-                ArchiveTypeConversionSupport.fromArchiveString("List<Byte>", archiveString);
+                ArchiveTypeConversionSupport.fromArchiveString("ArrayList<Byte>", archiveString);
 
             final Iterator<Byte> iterator = coll.iterator();
             Assert.assertEquals(Byte.valueOf("127"), iterator.next());
@@ -295,7 +297,7 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testMultiScalarEnumConversion() {
         final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.create(0, "first", 26),
-                                                                       EpicsEnum.create(1, "second", 27));
+                                                                 EpicsEnum.create(1, "second", 27));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
@@ -307,12 +309,14 @@ public class ArchiveTypeConversionSupportUnitTest {
                                 "1" + ARCHIVE_TUPLE_SEP + "second" + ARCHIVE_TUPLE_SEP + "27" +
                                 ARCHIVE_TUPLE_SUFFIX +
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
-            final Collection<EpicsEnum> enums =
-                ArchiveTypeConversionSupport.fromMultiScalarArchiveString(EpicsEnum.class, archiveString);
+            final Vector<EpicsEnum> enums =
+                (Vector<EpicsEnum>) ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Vector.class, EpicsEnum.class, archiveString);
             Assert.assertEquals(2, enums.size());
+
             final Iterator<EpicsEnum> iterator = enums.iterator();
             final EpicsEnum first = iterator.next();
             Assert.assertEquals("first", first.getState());
+
             final EpicsEnum second = iterator.next();
             Assert.assertEquals("second", second.getState());
 
@@ -338,10 +342,10 @@ public class ArchiveTypeConversionSupportUnitTest {
     }
     @Test(expected=TypeSupportException.class)
     public void testInvalidCollectionTypeConversions1() throws TypeSupportException {
-        ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Collection.class, "");
+        ArchiveTypeConversionSupport.fromMultiScalarArchiveString(LinkedList.class, Collection.class, "");
     }
     @Test(expected=TypeSupportException.class)
     public void testInvalidCollectionTypeConversions2() throws TypeSupportException {
-        ArchiveTypeConversionSupport.fromScalarArchiveString(Collection.class, "");
+        ArchiveTypeConversionSupport.fromArchiveString(Collection.class, "");
     }
 }

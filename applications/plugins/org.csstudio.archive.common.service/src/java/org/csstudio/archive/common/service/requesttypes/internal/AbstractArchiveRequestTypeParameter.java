@@ -47,7 +47,7 @@ public abstract class AbstractArchiveRequestTypeParameter<T> implements IArchive
      * Constructor.
      */
     public AbstractArchiveRequestTypeParameter(@Nonnull final String name,
-                                       @Nonnull final T value) {
+                                               @Nonnull final T value) {
         _name = name;
         _value = value;
     }
@@ -73,7 +73,7 @@ public abstract class AbstractArchiveRequestTypeParameter<T> implements IArchive
     @Override
     public void setValue(@Nonnull final T newValue) throws RequestTypeParameterException {
         final Class<?> clazz = newValue.getClass();
-        if (getValueType() != clazz) { // TODO (bknerr) : check whether isAssignableFrom is better in any way
+        if (getValueType() != clazz) {
             throw new RequestTypeParameterException("New value object's class type " + clazz.getName() +
                                                     " does not match the required type " + getValueType().getName(), null);
         }
