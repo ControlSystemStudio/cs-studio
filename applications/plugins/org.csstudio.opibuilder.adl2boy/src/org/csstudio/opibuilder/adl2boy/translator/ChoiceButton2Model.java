@@ -37,6 +37,9 @@ public class ChoiceButton2Model extends AbstractADL2Model {
 				((AbstractChoiceModel)widgetModel).setPropertyValue(AbstractChoiceModel.PROP_HORIZONTAL, false);
 			}
 		}
+		else{
+			((AbstractChoiceModel)widgetModel).setPropertyValue(AbstractChoiceModel.PROP_HORIZONTAL, false);
+		}
 		String color_mode = choiceWidget.getColor_mode();
 		if ( color_mode.equals("static") ){
 			((AbstractPVWidgetModel)widgetModel).setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);

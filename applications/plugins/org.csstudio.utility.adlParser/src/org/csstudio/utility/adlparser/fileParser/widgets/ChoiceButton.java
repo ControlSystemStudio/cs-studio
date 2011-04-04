@@ -18,7 +18,7 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  */
 public class ChoiceButton extends ADLAbstractWidget {
 	private String color_mode = new String("static");
-	private String stacking = new String("column");
+	private String stacking = new String("row");
 
 	public ChoiceButton(ADLWidget adlWidget) {
 		super(adlWidget);
