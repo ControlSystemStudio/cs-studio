@@ -23,10 +23,10 @@
    </vm>
 
    <plugins>
+      <plugin id="javax.annotation"/>
       <plugin id="org.csstudio.archive.sdds.server"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.annotations" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
