@@ -64,9 +64,12 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
     
 	@Override
 	protected String changePressed() {
-		IPath path = new Path(getTextControl().getText());
-
-		return getPath(path).toPortableString();
+		IPath startPath = new Path(getTextControl().getText());
+		IPath path = getPath(startPath);
+		if(path != null)
+			return path.toPortableString();
+		else
+			return ""; //$NON-NLS-1$
 
 	}
 	
