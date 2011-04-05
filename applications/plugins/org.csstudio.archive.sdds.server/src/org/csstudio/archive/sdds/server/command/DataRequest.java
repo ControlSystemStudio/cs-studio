@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
-import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
+import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.DataCollector;
 import org.csstudio.archive.sdds.server.data.DataCollectorException;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
@@ -138,26 +138,27 @@ public class DataRequest extends ServerCommand {
                 }
             }
             
-            SampleCtrl sampleCtrl = data.getSampleCtrl();
-            
-            dos.writeInt(sampleCtrl.getPrecision());
-            dos.writeDouble(sampleCtrl.getDisplayHigh());
-            dos.writeDouble(sampleCtrl.getDisplayLow());
-            dos.writeDouble(sampleCtrl.getHighAlarm());
-            dos.writeDouble(sampleCtrl.getHighWarning());
-            dos.writeDouble(sampleCtrl.getLowAlarm());
-            dos.writeDouble(sampleCtrl.getLowWarning());
-            dos.writeInt(sampleCtrl.getUnitsLength());
-            dos.writeChars(sampleCtrl.getUnits());
-            dos.write('\0');
+            if (data != null) {
+	            
+            	SampleParameter sampleParameter = data.getSampleParameter();
+	            
+	            dos.writeInt(sampleParameter.getPrecision());
+	            dos.writeDouble(sampleParameter.getDisplayHigh());
+	            dos.writeDouble(sampleParameter.getDisplayLow());
+	            dos.writeDouble(sampleParameter.getHighAlarm());
+	            dos.writeDouble(sampleParameter.getHighWarning());
+	            dos.writeDouble(sampleParameter.getLowAlarm());
+	            dos.writeDouble(sampleParameter.getLowWarning());
+	            dos.writeInt(sampleParameter.getUnitsLength());
+	            dos.writeChars(sampleParameter.getUnits());
+	            dos.write('\0');
+            }
             
             receivedValue.setData(baos.toByteArray());
             
         } catch(IOException ioe) {
-            
             logger.error("[*** IOException ***]: " + ioe.getMessage());
-        }
-        finally {
+        } finally {
             if(dos!=null) {
             	try{dos.close();}catch(Exception e) { /* Can be ignored */ }
             	dos = null;

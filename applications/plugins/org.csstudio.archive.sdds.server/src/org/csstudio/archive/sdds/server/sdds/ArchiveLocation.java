@@ -43,6 +43,8 @@ import org.csstudio.archive.sdds.server.util.TimeInterval;
 public class ArchiveLocation
 {
     /**
+     * TODO: A job has to read in the data paths every xx hours!!!!!
+     * 
      * TreeMap object that contains all pathes to the years. The key of the map is the year and the
      * value is the full path to the folder of the year.
      */
