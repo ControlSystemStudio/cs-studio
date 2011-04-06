@@ -41,5 +41,15 @@ public class ReflectUtil {
     		return null;
     	return targetClass.substring(2, targetClass.length() - 1);
     }
+    
+    /**
+     * Returns the array class name for the given class name.
+     * 
+     * @param className a class name
+     * @return the corresponding array class
+     */
+    public static String toArrayClass(String className) {
+		return "[L" + className + ";";
+    }
 
 }

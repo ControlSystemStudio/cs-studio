@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
 import static org.csstudio.ui.util.ReflectUtil.*;
 
@@ -34,6 +36,29 @@ public class AdapterUtil
     	
     	// No types found
     	return new String[0];
+    }
+    
+    /**
+     * Returns the current selection converted to an array of the desired type,
+     * or to an empty array if not possible.
+     * 
+     * @param <T> requested type
+     * @param selection a selection
+     * @param clazz the desired type
+     * @return an array of the desired type
+     */
+    public static <T> T[] convert(ISelection selection, Class<T> clazz) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection strucSelection = (IStructuredSelection) selection;
+			
+			@SuppressWarnings("unchecked")
+			T[] result = (T[]) convert(strucSelection.toArray(), ReflectUtil.toArrayClass(clazz.getName()));
+			return result;
+		} else {
+			@SuppressWarnings("unchecked")
+			T[] result = (T[]) Array.newInstance(clazz, 0);
+			return result;
+		}
     }
     
     /** 
