@@ -6,10 +6,9 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.csdata.ProcessVariableName;
 import org.csstudio.diag.pvmanager.probe.Activator;
 import org.csstudio.diag.pvmanager.probe.Messages;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.util.swt.meter.MeterWidget;
 import org.eclipse.jface.action.IMenuManager;
@@ -136,8 +135,7 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	private void createGUI(Composite parent) {
-		final boolean canExecute = SecurityFacade.getInstance().canExecute(
-				SECURITY_ID, true);
+		final boolean canExecute = true;//SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 		final FormLayout layout = new FormLayout();
 		parent.setLayout(layout);
 
@@ -661,7 +659,7 @@ public class PVManagerProbe extends ViewPart {
 	 * @param pvName the pv
 	 * @return true if successful
 	 */
-	public static boolean activateWithPV(IProcessVariable pvName) {
+	public static boolean activateWithPV(ProcessVariableName pvName) {
 		 try
 	        {
 	            final IWorkbench workbench = PlatformUI.getWorkbench();
@@ -669,7 +667,7 @@ public class PVManagerProbe extends ViewPart {
 	            final IWorkbenchPage page = window.getActivePage();
 	            final PVManagerProbe probe = (PVManagerProbe) page.showView(SINGLE_VIEW_ID, createNewInstance(),
 	                                                IWorkbenchPage.VIEW_ACTIVATE);
-	            probe.setPVName(pvName.getName());
+	            probe.setPVName(pvName.getProcessVariableName());
 	            return true;
 	        }
 	        catch (final Exception e)
