@@ -9,11 +9,10 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
 import java.util.HashSet;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.NotificationSupport;
-import org.epics.pvmanager.TimeSupport;
 import org.epics.pvmanager.ValueCache;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +39,7 @@ public class JCADataSource extends DataSource {
     private static JCALibrary jca = JCALibrary.getInstance();
     private volatile Context ctxt = null;
     private final String className;
+    private final int monitorMask;
 
     static final JCADataSource INSTANCE = new JCADataSource();
 
@@ -47,16 +47,18 @@ public class JCADataSource extends DataSource {
      * Creates a new data source using pure Java implementation
      */
     public JCADataSource() {
-        this(JCALibrary.CHANNEL_ACCESS_JAVA);
+        this(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.VALUE | Monitor.ALARM);
     }
 
     /**
      * Creates a new data source using the className to create the context.
      *
      * @param className JCALibrary.CHANNEL_ACCESS_JAVA, JCALibrary.JNI_THREAD_SAFE, ...
+     * @param monitorMask Monitor.VALUE, ...
      */
-    public JCADataSource(String className) {
+    public JCADataSource(String className, int monitorMask) {
         this.className = className;
+        this.monitorMask = monitorMask;
     }
 
     /*
@@ -118,7 +120,7 @@ public class JCADataSource extends DataSource {
         try {
             Channel channel = ctxt.createChannel(pvName);
             @SuppressWarnings("unchecked")
-            ValueProcessor processor = new JCAProcessor(channel, collector, cache, handler);
+            ValueProcessor processor = new JCAProcessor(channel, collector, cache, handler, monitorMask);
             ctxt.flushIO();
             return processor;
         } catch (CAException e) {
