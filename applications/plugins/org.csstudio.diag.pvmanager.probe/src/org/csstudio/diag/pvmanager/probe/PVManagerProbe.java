@@ -28,9 +28,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
@@ -47,9 +49,8 @@ import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.util.TimeStampFormat;
 
 /**
- *
+ * Probe view.
  */
-
 public class PVManagerProbe extends ViewPart {
 	
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
@@ -84,6 +85,7 @@ public class PVManagerProbe extends ViewPart {
 	/** Formatting used for the value text field */
 	private ValueFormat valueFormat;
 	
+	/** Formatting used for the time text field */
 	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
 	
 	// No writing to ioc option.
@@ -118,7 +120,20 @@ public class PVManagerProbe extends ViewPart {
 		valueFormat = new SimpleValueFormat(3);
 		//valueFormat.setNumberFormat(new DecimalFormat("0.##########E0"));
 	}
+	
+    @Override
+    public void init(final IViewSite site, final IMemento memento) throws PartInitException {
+        super.init(site, memento);
+        // Save the memento
+        this.memento = memento;
+    }
 
+    @Override
+    public void saveState(final IMemento memento) {
+        super.saveState(memento);
+        // Save the currently selected variable
+        memento.putString(PV_TAG, PVName.getProcessVariableName());
+    }
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
@@ -344,7 +359,7 @@ public class PVManagerProbe extends ViewPart {
 
 		name_helper.loadSettings();
 
-		if (memento != null) {
+		if (memento != null && memento.getString(PV_TAG) != null) {
 			setPVName(new ProcessVariableName(memento.getString(PV_TAG)));
 			// Per default, the meter is shown.
 			// Hide according to memento.
@@ -442,7 +457,6 @@ public class PVManagerProbe extends ViewPart {
 	 * Changes the PV currently displayed by probe.
 	 * 
 	 * @param pvName the new pv name or null
-	 * @return
 	 */
 	public void setPVName(ProcessVariableName pvName) {
 		log.log(Level.FINE, "setPVName ({0})", pvName);
