@@ -52,7 +52,7 @@ import org.epics.pvmanager.util.TimeStampFormat;
  * Probe view.
  */
 public class PVManagerProbe extends ViewPart {
-	
+
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
 
 	/**
@@ -75,19 +75,19 @@ public class PVManagerProbe extends ViewPart {
 	private Composite bottom_box;
 	private Button show_meter;
 	private Button btn_save_to_ioc;
-	
+
 	/** Currently displayed pv */
 	private ProcessVariableName PVName;
-	
+
 	/** Currently connected pv */
 	private PV<?> pv;
-	
+
 	/** Formatting used for the value text field */
-	private ValueFormat valueFormat;
-	
+	private ValueFormat valueFormat = new SimpleValueFormat(3);
+
 	/** Formatting used for the time text field */
 	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
-	
+
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
 
@@ -113,42 +113,28 @@ public class PVManagerProbe extends ViewPart {
 	private GridData gd_timeField;
 	private GridData gd_statusField;
 
-	/**
-	 * The constructor.
-	 */
-	public PVManagerProbe() {
-		valueFormat = new SimpleValueFormat(3);
-		//valueFormat.setNumberFormat(new DecimalFormat("0.##########E0"));
+	@Override
+	public void init(final IViewSite site, final IMemento memento)
+			throws PartInitException {
+		super.init(site, memento);
+		// Save the memento
+		this.memento = memento;
 	}
-	
-    @Override
-    public void init(final IViewSite site, final IMemento memento) throws PartInitException {
-        super.init(site, memento);
-        // Save the memento
-        this.memento = memento;
-    }
 
-    @Override
-    public void saveState(final IMemento memento) {
-        super.saveState(memento);
-        // Save the currently selected variable
-        memento.putString(PV_TAG, PVName.getProcessVariableName());
-    }
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
+	@Override
+	public void saveState(final IMemento memento) {
+		super.saveState(memento);
+		// Save the currently selected variable
+		if (PVName != null) {
+			memento.putString(PV_TAG, PVName.getProcessVariableName());
+		}
+	}
+
 	public void createPartControl(Composite parent) {
-		// Create the help context id for the viewer's control
-		createGUI(parent);
-		makeActions();
-		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
-	}
-
-	private void createGUI(Composite parent) {
-		final boolean canExecute = true;//SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+		// Create the view
+		final boolean canExecute = true;
+		// final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+		
 		final FormLayout layout = new FormLayout();
 		parent.setLayout(layout);
 
@@ -225,12 +211,13 @@ public class PVManagerProbe extends ViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		btn_save_to_ioc.setLayoutData(gd);
 		btn_save_to_ioc.setEnabled(canExecute);
-		
+
 		lblAlarm = new Label(bottom_box, SWT.NONE);
 		lblAlarm.setText("Alarm:");
-		
+
 		alarmField = new Label(bottom_box, SWT.BORDER);
-		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
+				false, 1, 1));
 		alarmField.setText("");
 		new Label(bottom_box, SWT.NONE);
 
@@ -404,40 +391,51 @@ public class PVManagerProbe extends ViewPart {
 			Alarm alarm = Util.alarmOf(value);
 			Display display = Util.displayOf(value);
 			Class<?> type = Util.typeOf(value);
-			
+
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
 				info.append(Messages.S_STATEDisconn).append(nl);
 			} else {
-				if (alarm != null && AlarmSeverity.UNDEFINED.equals(alarm.getAlarmSeverity())) {
+				if (alarm != null
+						&& AlarmSeverity.UNDEFINED.equals(alarm
+								.getAlarmSeverity())) {
 					info.append(Messages.S_STATEDisconn).append(nl);
 				} else {
 					info.append(Messages.S_STATEConn).append(nl);
 				}
 			}
-			
+
 			if (type != null) {
-				info.append("Data type: ").append(type.getSimpleName()).append(nl);
+				info.append("Data type: ").append(type.getSimpleName())
+						.append(nl);
 			}
-			
+
 			if (display != null) {
 				info.append("Numeric display information:").append(nl)
-			    .append("  Low display limit: ").append(display.getLowerDisplayLimit()).append(nl)
-			    .append("  Low alarm limit: ").append(display.getLowerAlarmLimit()).append(nl)
-			    .append("  Low warn limit: ").append(display.getLowerWarningLimit()).append(nl)
-			    .append("  High warn limit: ").append(display.getUpperWarningLimit()).append(nl)
-			    .append("  High alarm limit: ").append(display.getUpperAlarmLimit()).append(nl)
-			    .append("  High display limit: ").append(display.getUpperDisplayLimit()).append(nl);
+						.append("  Low display limit: ")
+						.append(display.getLowerDisplayLimit()).append(nl)
+						.append("  Low alarm limit: ")
+						.append(display.getLowerAlarmLimit()).append(nl)
+						.append("  Low warn limit: ")
+						.append(display.getLowerWarningLimit()).append(nl)
+						.append("  High warn limit: ")
+						.append(display.getUpperWarningLimit()).append(nl)
+						.append("  High alarm limit: ")
+						.append(display.getUpperAlarmLimit()).append(nl)
+						.append("  High display limit: ")
+						.append(display.getUpperDisplayLimit()).append(nl);
 			}
-			
+
 			if (value instanceof org.epics.pvmanager.data.Enum) {
 				Enum enumValue = (Enum) value;
-				info.append("Enum metadata: ").append(enumValue.getLabels().size()).append(" labels").append(nl);
+				info.append("Enum metadata: ")
+						.append(enumValue.getLabels().size()).append(" labels")
+						.append(nl);
 				for (String label : enumValue.getLabels()) {
 					info.append("  ").append(label).append(nl);
 				}
 			}
-			
+
 		}
 		if (info.length() == 0) {
 			info.append(Messages.S_NoInfo);
@@ -456,22 +454,23 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * Changes the PV currently displayed by probe.
 	 * 
-	 * @param pvName the new pv name or null
+	 * @param pvName
+	 *            the new pv name or null
 	 */
 	public void setPVName(ProcessVariableName pvName) {
 		log.log(Level.FINE, "setPVName ({0})", pvName);
-		
+
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
 			cbo_name.getCombo().setText(pvName.getProcessVariableName());
 		}
-		
+
 		// The PV is different, so disconnect and reset the visuals
 		if (pv != null)
 			pv.close();
-		
+
 		setValue(null);
 		setAlarm(null);
 		setTime(null);
@@ -485,16 +484,18 @@ public class PVManagerProbe extends ViewPart {
 
 		// If new name, add to history and connect
 		name_helper.addEntry(pvName);
-		
+
 		// Update displayed name, unless it's already current
-		if (!(cbo_name.getCombo().getText().equals(pvName.getProcessVariableName()))) {
+		if (!(cbo_name.getCombo().getText().equals(pvName
+				.getProcessVariableName()))) {
 			cbo_name.getCombo().setText(pvName.getProcessVariableName());
 		}
-		
+
 		setStatus(Messages.S_Searching);
-		pv = PVManager.read(channel(pvName.getProcessVariableName())).andNotify(onSWTThread()).atHz(25);
+		pv = PVManager.read(channel(pvName.getProcessVariableName()))
+				.andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
-			
+
 			@Override
 			public void pvValueChanged() {
 				Object obj = pv.getValue();
@@ -503,17 +504,17 @@ public class PVManagerProbe extends ViewPart {
 				setAlarm(Util.alarmOf(obj));
 				setTime(Util.timeOf(obj));
 				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
-            }
+			}
 		});
 		this.PVName = pvName;
-		
+
 		// If this is an instance of the multiple view, show the PV name
 		// as the title
 		if (MULTIPLE_VIEW_ID.equals(getSite().getId())) {
 			setPartName(pvName.getProcessVariableName());
 		}
 	}
-	
+
 	/**
 	 * Returns the currently displayed PV.
 	 * 
@@ -521,34 +522,6 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	public ProcessVariableName getPVName() {
 		return this.PVName;
-	}
-
-	private void hookContextMenu() {
-	}
-
-	private void contributeToActionBars() {
-	}
-
-	@SuppressWarnings("unused")
-	private void fillLocalPullDown(IMenuManager manager) {
-	}
-
-	@SuppressWarnings("unused")
-	private void fillContextMenu(IMenuManager manager) {
-	}
-
-	@SuppressWarnings("unused")
-	private void fillLocalToolBar(IToolBarManager manager) {
-	}
-
-	private void makeActions() {
-	}
-
-	private void hookDoubleClickAction() {
-	}
-
-	@SuppressWarnings("unused")
-	private void showMessage(String message) {
 	}
 
 	/**
@@ -561,7 +534,7 @@ public class PVManagerProbe extends ViewPart {
 		++instance;
 		return Integer.toString(instance);
 	}
-	
+
 	/**
 	 * Modifies the prove status.
 	 * 
@@ -574,7 +547,7 @@ public class PVManagerProbe extends ViewPart {
 			statusField.setText(status);
 		}
 	}
-	
+
 	/**
 	 * Displays the last error in the status.
 	 * 
@@ -587,7 +560,7 @@ public class PVManagerProbe extends ViewPart {
 			statusField.setText(ex.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Displays the new value.
 	 * 
@@ -599,9 +572,8 @@ public class PVManagerProbe extends ViewPart {
 		} else {
 			valueField.setText(value);
 		}
-			
 	}
-	
+
 	/**
 	 * Displays the new alarm.
 	 * 
@@ -611,10 +583,11 @@ public class PVManagerProbe extends ViewPart {
 		if (alarm == null) {
 			alarmField.setText("");
 		} else {
-			alarmField.setText(alarm.getAlarmSeverity() + " - " + alarm.getAlarmStatus());
+			alarmField.setText(alarm.getAlarmSeverity() + " - "
+					+ alarm.getAlarmStatus());
 		}
 	}
-	
+
 	/**
 	 * Displays the new time.
 	 * 
@@ -627,7 +600,7 @@ public class PVManagerProbe extends ViewPart {
 			timeField.setText(timeFormat.format(time.getTimeStamp()));
 		}
 	}
-	
+
 	/**
 	 * Displays a new value in the meter.
 	 * 
@@ -637,23 +610,22 @@ public class PVManagerProbe extends ViewPart {
 	private void setMeter(Double value, Display display) {
 		if (value == null || display == null) {
 			meter.setEnabled(false);
-			//meter.setValue(0.0);
-		} else if (display.getUpperDisplayLimit() <= display.getLowerDisplayLimit()) {
+			// meter.setValue(0.0);
+		} else if (display.getUpperDisplayLimit() <= display
+				.getLowerDisplayLimit()) {
 			meter.setEnabled(false);
-			//meter.setValue(0.0);
+			// meter.setValue(0.0);
 		} else {
 			meter.setEnabled(true);
 			meter.setLimits(display.getLowerDisplayLimit(),
-					display.getLowerAlarmLimit(), 
+					display.getLowerAlarmLimit(),
 					display.getLowerWarningLimit(),
 					display.getUpperWarningLimit(),
 					display.getUpperAlarmLimit(),
-					display.getUpperDisplayLimit(),
-					1);
+					display.getUpperDisplayLimit(), 1);
 			meter.setValue(value);
 		}
 	}
-	
 
 	/**
 	 * {@inheritDoc}
@@ -672,21 +644,20 @@ public class PVManagerProbe extends ViewPart {
 	 * @return true if successful
 	 */
 	public static boolean activateWithPV(ProcessVariableName pvName) {
-		 try
-	        {
-	            final IWorkbench workbench = PlatformUI.getWorkbench();
-	            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	            final IWorkbenchPage page = window.getActivePage();
-	            final PVManagerProbe probe = (PVManagerProbe) page.showView(SINGLE_VIEW_ID, createNewInstance(),
-	                                                IWorkbenchPage.VIEW_ACTIVATE);
-	            probe.setPVName(pvName);
-	            return true;
-	        }
-	        catch (final Exception e)
-	        {
-//	            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
-	            e.printStackTrace();
-	        }
-	        return false;
+		try {
+			final IWorkbench workbench = PlatformUI.getWorkbench();
+			final IWorkbenchWindow window = workbench
+					.getActiveWorkbenchWindow();
+			final IWorkbenchPage page = window.getActivePage();
+			final PVManagerProbe probe = (PVManagerProbe) page.showView(
+					SINGLE_VIEW_ID, createNewInstance(),
+					IWorkbenchPage.VIEW_ACTIVATE);
+			probe.setPVName(pvName);
+			return true;
+		} catch (final Exception e) {
+			//	            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
