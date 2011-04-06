@@ -61,8 +61,8 @@ public abstract class ComboHistoryHelper {
 		combo.getCombo().addSelectionListener(new SelectionListener() {
 			// Called after <Return> was pressed
 			public void widgetDefaultSelected(SelectionEvent e) {
-				String new_entry = ComboHistoryHelper.this.combo.getCombo()
-						.getText();
+				ProcessVariableName new_entry = new ProcessVariableName(
+						ComboHistoryHelper.this.combo.getCombo().getText());
 				addEntry(new_entry);
 				newSelection(new_entry);
 			}
@@ -83,10 +83,9 @@ public abstract class ComboHistoryHelper {
 
 	/** Add entry to the list. */
 	@SuppressWarnings("nls")
-	public void addEntry(String new_entry) {
+	public void addEntry(ProcessVariableName pvName) {
 		if (debug)
-			System.out.println("ComboHelper: Add " + new_entry);
-		ProcessVariableName pv = new ProcessVariableName(new_entry);
+			System.out.println("ComboHelper: Add " + pvName);
 
 		// Locate & remove the entry to avoid duplicates.
 		// A simple remove() would throw exception in case the elem isn't found.
@@ -95,7 +94,7 @@ public abstract class ComboHistoryHelper {
 		for (int i = 0; i < ctrl.getItemCount(); ++i) {
 			final Object obj = combo.getElementAt(i);
 			ProcessVariableName elem = (ProcessVariableName) obj;
-			if (elem.getProcessVariableName().equals(new_entry)) {
+			if (elem.equals(pvName)) {
 				combo.remove(obj);
 				only_a_reorg = true;
 			}
@@ -105,7 +104,7 @@ public abstract class ComboHistoryHelper {
 			combo.remove(combo.getElementAt(0));
 
 		// Add new entry to the end
-		combo.add(pv);
+		combo.add(pvName);
 		if (!only_a_reorg)
 			ctrl.select(ctrl.getItemCount() - 1);
 
@@ -118,11 +117,11 @@ public abstract class ComboHistoryHelper {
 	/** Notify about new selection. */
 	private void handleNewSelection() {
 		String name = combo.getCombo().getText();
-		newSelection(name);
+		newSelection(new ProcessVariableName(name));
 	}
 
 	/** Invoked whenever a new entry was entered or selected. */
-	public abstract void newSelection(String entry);
+	public abstract void newSelection(ProcessVariableName entry);
 
 	/** Load persisted list values. */
 	public void loadSettings() {
