@@ -20,9 +20,10 @@ public class Epics3DataSource extends DataSource {
         boolean use_pure_java = EpicsPlugin.getDefault().usePureJava();
         String className = use_pure_java ?
                 JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
+        int mask = EpicsPlugin.getDefault().getMonitorMask().getMask();
         JCADataSource initDataSource = null;
         try {
-        	initDataSource = new JCADataSource(className);
+        	initDataSource = new JCADataSource(className, mask);
         } catch(Throwable ex) {
         	cause = ex;
         	log.log(Level.SEVERE, "Could not initialize PVManager EPICS data source", ex);
