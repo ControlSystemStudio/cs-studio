@@ -271,6 +271,7 @@ public class PVTableViewerHelper
         Menu menu = manager.createContextMenu(table_viewer.getControl());
         table_viewer.getControl().setMenu(menu);
         site.registerContextMenu(manager, table_viewer);
+        site.setSelectionProvider(table_viewer);
     }
 
     /** @return Returns the PVs which are currently selected in the table. */
