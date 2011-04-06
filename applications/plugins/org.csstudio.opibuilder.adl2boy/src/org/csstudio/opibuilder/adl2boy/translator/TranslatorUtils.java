@@ -120,6 +120,9 @@ public class TranslatorUtils {
 						setDefaultBasicAttribute(child);
 					}
 				}
+				else if (widgetType.equals("shell command")){
+					printNotHandledMessage(widgetType);
+				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
