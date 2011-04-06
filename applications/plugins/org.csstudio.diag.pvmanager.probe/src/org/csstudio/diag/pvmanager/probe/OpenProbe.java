@@ -37,7 +37,7 @@ public class OpenProbe extends AbstractHandler implements IHandler {
 			if (pvs.length == 1) {
 				PVManagerProbe probe = (PVManagerProbe) page
 						.showView(PVManagerProbe.SINGLE_VIEW_ID);
-				probe.setPVName(pvs[0].getProcessVariableName());
+				probe.setPVName(pvs[0]);
 
 			// If it's a multiple selection, open a new multiple view
 			// instance
@@ -48,7 +48,7 @@ public class OpenProbe extends AbstractHandler implements IHandler {
 							PVManagerProbe.MULTIPLE_VIEW_ID,
 							PVManagerProbe.createNewInstance(),
 							IWorkbenchPage.VIEW_ACTIVATE);
-					probe.setPVName(item.getProcessVariableName());
+					probe.setPVName(item);
 				}
 			}
 

@@ -78,7 +78,7 @@ public class PVManagerProbe extends ViewPart {
 	private Button btn_save_to_ioc;
 	
 	/** Currently displayed pv */
-	private String PVName;
+	private ProcessVariableName PVName;
 	
 	/** Currently connected pv */
 	private PV<?> pv;
@@ -281,7 +281,7 @@ public class PVManagerProbe extends ViewPart {
 		name_helper = new ComboHistoryHelper(Activator.getDefault()
 				.getDialogSettings(), PV_LIST_TAG, cbo_name) {
 			@Override
-			public void newSelection(final String pv_name) {
+			public void newSelection(final ProcessVariableName pv_name) {
 				setPVName(pv_name);
 			}
 		};
@@ -347,7 +347,7 @@ public class PVManagerProbe extends ViewPart {
 		name_helper.loadSettings();
 
 		if (memento != null) {
-			setPVName(memento.getString(PV_TAG));
+			setPVName(new ProcessVariableName(memento.getString(PV_TAG)));
 			// Per default, the meter is shown.
 			// Hide according to memento.
 			final String show = memento.getString(METER_TAG);
@@ -446,14 +446,14 @@ public class PVManagerProbe extends ViewPart {
 	 * @param pvName the new pv name or null
 	 * @return
 	 */
-	public void setPVName(String pvName) {
+	public void setPVName(ProcessVariableName pvName) {
 		log.log(Level.FINE, "setPVName ({0})", pvName);
 		
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
-			cbo_name.getCombo().setText(pvName);
+			cbo_name.getCombo().setText(pvName.getProcessVariableName());
 		}
 		
 		// The PV is different, so disconnect and reset the visuals
@@ -475,12 +475,12 @@ public class PVManagerProbe extends ViewPart {
 		name_helper.addEntry(pvName);
 		
 		// Update displayed name, unless it's already current
-		if (!(cbo_name.getCombo().getText().equals(pvName))) {
-			cbo_name.getCombo().setText(pvName);
+		if (!(cbo_name.getCombo().getText().equals(pvName.getProcessVariableName()))) {
+			cbo_name.getCombo().setText(pvName.getProcessVariableName());
 		}
 		
 		setStatus(Messages.S_Searching);
-		pv = PVManager.read(channel(pvName)).andNotify(onSWTThread()).atHz(25);
+		pv = PVManager.read(channel(pvName.getProcessVariableName())).andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
 			
 			@Override
@@ -498,7 +498,7 @@ public class PVManagerProbe extends ViewPart {
 		// If this is an instance of the multiple view, show the PV name
 		// as the title
 		if (MULTIPLE_VIEW_ID.equals(getSite().getId())) {
-			setPartName(pvName);
+			setPartName(pvName.getProcessVariableName());
 		}
 	}
 	
@@ -507,7 +507,7 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @return pv name or null
 	 */
-	public String getPVName() {
+	public ProcessVariableName getPVName() {
 		return this.PVName;
 	}
 
@@ -667,7 +667,7 @@ public class PVManagerProbe extends ViewPart {
 	            final IWorkbenchPage page = window.getActivePage();
 	            final PVManagerProbe probe = (PVManagerProbe) page.showView(SINGLE_VIEW_ID, createNewInstance(),
 	                                                IWorkbenchPage.VIEW_ACTIVATE);
-	            probe.setPVName(pvName.getProcessVariableName());
+	            probe.setPVName(pvName);
 	            return true;
 	        }
 	        catch (final Exception e)
