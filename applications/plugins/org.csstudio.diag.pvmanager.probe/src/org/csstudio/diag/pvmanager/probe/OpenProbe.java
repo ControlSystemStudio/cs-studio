@@ -1,7 +1,6 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import org.csstudio.csdata.ProcessVariableName;
-import org.csstudio.diag.pvmanager.probe.views.PVManagerProbe;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

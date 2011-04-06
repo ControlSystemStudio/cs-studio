@@ -1,6 +1,5 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import org.csstudio.diag.pvmanager.probe.views.PVManagerProbe;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

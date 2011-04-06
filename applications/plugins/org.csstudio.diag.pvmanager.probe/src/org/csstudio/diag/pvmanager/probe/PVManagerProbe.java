@@ -1,4 +1,4 @@
-package org.csstudio.diag.pvmanager.probe.views;
+package org.csstudio.diag.pvmanager.probe;
 
 import static org.csstudio.utility.pvmanager.ui.SWTUtil.onSWTThread;
 import static org.epics.pvmanager.ExpressionLanguage.channel;
@@ -7,8 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariableName;
-import org.csstudio.diag.pvmanager.probe.Activator;
-import org.csstudio.diag.pvmanager.probe.Messages;
 import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.util.swt.meter.MeterWidget;
 import org.eclipse.jface.action.IMenuManager;
