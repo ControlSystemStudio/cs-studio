@@ -26,7 +26,8 @@ Require-Bundle: org.csstudio.platform.libs.jms;bundle-version="1.1.1",
  org.csstudio.utility.ldap.service;bundle-version="1.0.0",
  org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
- org.csstudio.platform.libs.mockito;bundle-version="1.8.5"
+ org.csstudio.platform.libs.mockito;bundle-version="1.8.5",
+ org.csstudio.platform.libs.dal.epics;bundle-version="1.3.0"
 Export-Package: org.csstudio.alarm.service,
  org.csstudio.alarm.service.declaration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -21,6 +21,7 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -144,6 +145,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                 announcedPV = announcedPVsQ.poll(pvChunkWaitMsec, TimeUnit.MILLISECONDS);
                 if (announcedPV != null) {
                     remainingPVs.remove(announcedPV);
+                    // TODO (jpenning) deregister?
                 }
                 proceed = (announcedPV != null) && !remainingPVs.isEmpty();
             } catch (InterruptedException e) {
@@ -224,27 +226,15 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         
         @Override
         public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
-            try {
-                final DynamicValueCondition condition = channel.getProperty().getCondition();
-                boolean isError = condition.containsAnyOfStates(DynamicValueState.ERROR);
-                boolean hasAlarm = !condition.containsAnyOfStates(DynamicValueState.NO_VALUE);
-                boolean hasReported = isError || hasAlarm;
-                boolean isFinished = channel.getProperty().getConnectionState() == ConnectionState.DESTROYED;
-                
-                if (isFinished) {
-                    if (hasAlarm) {
-                        processAlarmMessage(channel);
-                    } else {
-                        processErroneousMessage(channel);
-                    }
-                } else if (hasReported) {
-                    _queue.offer(channel.getUniqueName());
-                }
-                // CHECKSTYLE OFF: EmptyBlock
-            } catch (IllegalStateException e) {
-                // Ignore. This may happen if the channel is already released but still tells us something.
+            ConnectionState state = channel.getProperty().getConnectionState();
+            System.out.println("+++++ STATE: " + state);
+            if (state == ConnectionState.CONNECTION_FAILED) {
+                processErroneousMessage(channel);
+                _queue.offer(channel.getUniqueName());
+            } else if (state == ConnectionState.OPERATIONAL) {
+                processAlarmMessage(channel);
+                _queue.offer(channel.getUniqueName());
             }
-            // CHECKSTYLE ON: EmptyBlock
         }
         
         private void processErroneousMessage(@Nonnull final AnyDataChannel channel) {
