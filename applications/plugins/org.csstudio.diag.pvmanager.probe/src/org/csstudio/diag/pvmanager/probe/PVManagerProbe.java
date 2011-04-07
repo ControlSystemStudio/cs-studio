@@ -7,10 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariableName;
-import org.csstudio.util.swt.ComboHistoryHelper;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.util.swt.meter.MeterWidget;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -292,10 +290,10 @@ public class PVManagerProbe extends ViewPart {
 
 		// Connect actions
 		pvNameHelper = new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), PV_LIST_TAG, pvNameField) {
+				.getDialogSettings(), PV_LIST_TAG, pvNameField.getCombo()) {
 			@Override
-			public void newSelection(final ProcessVariableName pv_name) {
-				setPVName(pv_name);
+			public void newSelection(final String pvName) {
+				setPVName(new ProcessVariableName(pvName));
 			}
 		};
 
@@ -498,7 +496,7 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		// If new name, add to history and connect
-		pvNameHelper.addEntry(pvName);
+		pvNameHelper.addEntry(pvName.getProcessVariableName());
 
 		// Update displayed name, unless it's already current
 		if (!(pvNameField.getCombo().getText().equals(pvName
