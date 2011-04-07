@@ -670,7 +670,7 @@ public class PVManagerProbe extends ViewPart {
 			probe.setPVName(pvName);
 			return true;
 		} catch (final Exception e) {
-			e.printStackTrace();
+			log.log(Level.WARNING, "Failed while opening probe", e);
 		}
 		return false;
 	}

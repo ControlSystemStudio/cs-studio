@@ -1,5 +1,8 @@
 package org.csstudio.util.swt;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.csdata.ProcessVariableName;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -23,7 +26,9 @@ import org.eclipse.swt.widgets.Combo;
  * @author Helge Rickens
  */
 public abstract class ComboHistoryHelper {
-	private static final boolean debug = false;
+	
+	private static final Logger log = Logger.getLogger(ComboHistoryHelper.class.getName());
+	
 	private static final String TAG = "values"; //$NON-NLS-1$
 	private static final int DEFAULT_MAX = 10;
 	private final IDialogSettings settings;
@@ -84,8 +89,7 @@ public abstract class ComboHistoryHelper {
 	/** Add entry to the list. */
 	@SuppressWarnings("nls")
 	public void addEntry(ProcessVariableName pvName) {
-		if (debug)
-			System.out.println("ComboHelper: Add " + pvName);
+		log.log(Level.FINE, "ComboHelper: Add {0}", pvName);
 
 		// Locate & remove the entry to avoid duplicates.
 		// A simple remove() would throw exception in case the elem isn't found.
@@ -108,10 +112,9 @@ public abstract class ComboHistoryHelper {
 		if (!only_a_reorg)
 			ctrl.select(ctrl.getItemCount() - 1);
 
-		if (debug)
+		if (log.isLoggable(Level.FINE))
 			for (int i = 0; i < ctrl.getItemCount(); ++i)
-				System.out.println(String.format("Item %2d: '%s'", i,
-						combo.getElementAt(i)));
+				log.log(Level.FINE, "Item {0}: {1}", new Object[]{ i, combo.getElementAt(i)});
 	}
 
 	/** Notify about new selection. */
