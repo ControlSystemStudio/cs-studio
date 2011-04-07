@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariableName;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
-import org.csstudio.util.swt.meter.MeterWidget;
+import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
