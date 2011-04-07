@@ -52,6 +52,8 @@ import org.epics.pvmanager.util.TimeStampFormat;
  * Probe view.
  */
 public class PVManagerProbe extends ViewPart {
+	public PVManagerProbe() {
+	}
 
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
 
@@ -63,13 +65,17 @@ public class PVManagerProbe extends ViewPart {
 	private static int instance = 0;
 
 	// GUI
-	private Label lblAlarm;
+	private Label alarmLabel;
+	private Label valueLabel;
+	private Label timestampLabel;
+	private Label statusLabel;
+	private Label newValueLabel;
+	private Label timestampField;
 	private Label alarmField;
+	private Label valueField;
+	private Label statusField;
 	private ComboViewer cbo_name;
 	private ComboHistoryHelper name_helper;
-	private Label valueField;
-	private Label timeField;
-	private Label statusField;
 	private MeterWidget meter;
 	private Composite top_box;
 	private Composite bottom_box;
@@ -91,7 +97,7 @@ public class PVManagerProbe extends ViewPart {
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
 
-	private Text new_value;
+	private Text newValueField;
 
 	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
@@ -110,7 +116,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private static final String SAVE_VALUE_COMMAND_ID = "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
 	private GridData gd_valueField;
-	private GridData gd_timeField;
+	private GridData gd_timestampField;
 	private GridData gd_statusField;
 
 	@Override
@@ -180,8 +186,8 @@ public class PVManagerProbe extends ViewPart {
 		grid.numColumns = 3;
 		bottom_box.setLayout(grid);
 
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Value);
+		valueLabel = new Label(bottom_box, 0);
+		valueLabel.setText(Messages.S_Value);
 
 		valueField = new Label(bottom_box, SWT.BORDER);
 		gd_valueField = new GridData();
@@ -195,14 +201,14 @@ public class PVManagerProbe extends ViewPart {
 		show_meter.setSelection(true);
 
 		// New Row
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Timestamp);
+		timestampLabel = new Label(bottom_box, 0);
+		timestampLabel.setText(Messages.S_Timestamp);
 
-		timeField = new Label(bottom_box, SWT.BORDER);
-		gd_timeField = new GridData();
-		gd_timeField.grabExcessHorizontalSpace = true;
-		gd_timeField.horizontalAlignment = SWT.FILL;
-		timeField.setLayoutData(gd_timeField);
+		timestampField = new Label(bottom_box, SWT.BORDER);
+		gd_timestampField = new GridData();
+		gd_timestampField.grabExcessHorizontalSpace = true;
+		gd_timestampField.horizontalAlignment = SWT.FILL;
+		timestampField.setLayoutData(gd_timestampField);
 
 		btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
 		btn_save_to_ioc.setText(Messages.S_SaveToIoc);
@@ -212,8 +218,8 @@ public class PVManagerProbe extends ViewPart {
 		btn_save_to_ioc.setLayoutData(gd);
 		btn_save_to_ioc.setEnabled(canExecute);
 
-		lblAlarm = new Label(bottom_box, SWT.NONE);
-		lblAlarm.setText(Messages.Probe_alarmLabelTest);
+		alarmLabel = new Label(bottom_box, SWT.NONE);
+		alarmLabel.setText(Messages.Probe_alarmLabelTest);
 
 		alarmField = new Label(bottom_box, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
@@ -222,16 +228,15 @@ public class PVManagerProbe extends ViewPart {
 		new Label(bottom_box, SWT.NONE);
 
 		// New Row
-		final Label new_value_label = new Label(bottom_box, 0);
-		new_value_label.setText(Messages.S_NewValueLabel);
-		new_value_label.setVisible(false);
+		newValueLabel = new Label(bottom_box, 0);
+		newValueLabel.setText(Messages.S_NewValueLabel);
+		newValueLabel.setVisible(false);
 
-		new_value = new Text(bottom_box, SWT.BORDER);
-		new_value.setToolTipText(Messages.S_NewValueTT);
-		new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-		new_value.setVisible(false);
-		// new_value.setText(value.getValueDisplayText());
-		new_value.setText(""); //$NON-NLS-1$
+		newValueField = new Text(bottom_box, SWT.BORDER);
+		newValueField.setToolTipText(Messages.S_NewValueTT);
+		newValueField.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+		newValueField.setVisible(false);
+		newValueField.setText(""); //$NON-NLS-1$
 
 		final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
 		btn_adjust.setText(Messages.S_Adjust);
@@ -246,8 +251,8 @@ public class PVManagerProbe extends ViewPart {
 		gd.horizontalSpan = grid.numColumns;
 		label.setLayoutData(gd);
 
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Status);
+		statusLabel = new Label(bottom_box, 0);
+		statusLabel.setText(Messages.S_Status);
 
 		statusField = new Label(bottom_box, SWT.BORDER);
 		statusField.setText(Messages.S_Waiting);
@@ -305,12 +310,12 @@ public class PVManagerProbe extends ViewPart {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
 				final boolean enable = btn_adjust.getSelection();
-				new_value_label.setVisible(enable);
-				new_value.setVisible(enable);
+				newValueLabel.setVisible(enable);
+				newValueField.setVisible(enable);
 			}
 		});
 
-		new_value.addSelectionListener(new SelectionAdapter() {
+		newValueField.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// adjustValue(new_value.getText().trim());
@@ -597,9 +602,9 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setTime(Time time) {
 		if (time == null) {
-			timeField.setText(""); //$NON-NLS-1$
+			timestampField.setText(""); //$NON-NLS-1$
 		} else {
-			timeField.setText(timeFormat.format(time.getTimeStamp()));
+			timestampField.setText(timeFormat.format(time.getTimeStamp()));
 		}
 	}
 
