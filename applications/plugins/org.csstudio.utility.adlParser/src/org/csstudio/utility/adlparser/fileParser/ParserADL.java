@@ -72,9 +72,9 @@ public final class ParserADL {
                 if(line.length()>0){
                     if(line.startsWith("#")){
                         // do nothing comment line
-                    }else if(line.contains("{")){ //$NON-NLS-1$
+                    }else if(line.contains("{") && !line.contains("textix=")){ //$NON-NLS-1$
                         children = new ADLWidget(line,children, lineNr++);
-                    }else if (line.contains("}")){ //$NON-NLS-1$
+                    }else if (line.contains("}")&& !line.contains("textix=")){ //$NON-NLS-1$
                         children.getParent().addObject(children);
                         children = children.getParent();
                     }else{

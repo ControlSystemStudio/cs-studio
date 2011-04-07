@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.util.MediaService;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -86,6 +87,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 				if(event.getProperty().equals(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)){
 					System.setProperty("prohibit_advanced_graphics", //$NON-NLS-1$
 							PreferencesHelper.isAdvancedGraphicsDisabled() ? "true": "false"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				if(event.getProperty().equals(PreferencesHelper.SCHEMA_OPI)){
+					SchemaService.getInstance().reLoad();
 				}
 			}
 

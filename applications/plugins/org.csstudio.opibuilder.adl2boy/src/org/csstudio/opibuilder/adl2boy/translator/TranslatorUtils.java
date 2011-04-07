@@ -120,6 +120,9 @@ public class TranslatorUtils {
 						setDefaultBasicAttribute(child);
 					}
 				}
+				else if (widgetType.equals("shell command")){
+					printNotHandledMessage(widgetType);
+				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
@@ -189,6 +192,7 @@ public class TranslatorUtils {
 	 * @return
 	 */
 	public static DisplayModel convertAdlToModel(String fullADLFileName) {
+		File adlFile = new File(fullADLFileName);
 		ADLWidget root = ParserADL.getNextElement(new File(fullADLFileName));
 		// Get the color map
 		RGB[] colorMap = getColorMap(root);
@@ -198,7 +202,8 @@ public class TranslatorUtils {
 		//Dynamic and basic attribute are static in Translator utils to allow for defaults to be set (used before vers 020200)
 		initDefaultBasicAttribute();
 		initDefaultDynamicAttribute();
-		
+
+		displayModel.setName(adlFile.getName().substring(0, adlFile.getName().indexOf(".")));
 		ConvertChildren(root.getObjects(), displayModel, colorMap);
 		return displayModel;
 	}
