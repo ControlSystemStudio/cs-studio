@@ -1,4 +1,4 @@
-package org.csstudio.util.swt.meter;
+package org.csstudio.ui.util.widgets;
 
 import java.text.NumberFormat;
 

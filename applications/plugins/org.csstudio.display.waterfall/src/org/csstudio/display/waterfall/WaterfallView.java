@@ -1,6 +1,9 @@
 package org.csstudio.display.waterfall;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
@@ -9,7 +12,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
-import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 
 /**
@@ -22,6 +25,12 @@ public class WaterfallView extends ViewPart {
 	 */
 	public static final String ID = "org.csstudio.display.waterfall.WaterfallView";
 
+	/** Memento */
+	private IMemento memento = null;
+	
+	/** Memento tag */
+	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+	
 	/**
 	 * The constructor.
 	 */
@@ -33,9 +42,25 @@ public class WaterfallView extends ViewPart {
 	 */
 	public void setFocus() {
 	}
+
+	@Override
+	public void init(final IViewSite site, final IMemento memento)
+			throws PartInitException {
+		super.init(site, memento);
+		// Save the memento
+		this.memento = memento;
+	}
+
+	@Override
+	public void saveState(final IMemento memento) {
+		super.saveState(memento);
+		// Save the currently selected variable
+		if (waterfallComposite.getPvName() != null) {
+			memento.putString(MEMENTO_PVNAME, waterfallComposite.getPvName());
+		}
+	}
 	
 	public void setPVName(String name) {
-		System.out.println("Setting PVName to " + name);
 		combo.setText(name);
 		waterfallComposite.setPvName(name);
 	}
@@ -79,5 +104,9 @@ public class WaterfallView extends ViewPart {
 			}
 		};
 		name_helper.loadSettings();
+		
+		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
+			setPVName(memento.getString(MEMENTO_PVNAME));
+		}
 	}
 }

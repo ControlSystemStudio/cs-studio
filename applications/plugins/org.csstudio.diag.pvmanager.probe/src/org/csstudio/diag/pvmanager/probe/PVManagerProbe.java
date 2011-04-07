@@ -7,10 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariableName;
-import org.csstudio.util.swt.ComboHistoryHelper;
-import org.csstudio.util.swt.meter.MeterWidget;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -52,29 +50,43 @@ import org.epics.pvmanager.util.TimeStampFormat;
  * Probe view.
  */
 public class PVManagerProbe extends ViewPart {
+	public PVManagerProbe() {
+	}
 
 	private static final Logger log = Logger.getLogger(PVManagerProbe.class.getName());
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView";
-	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView";
+	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView"; //$NON-NLS-1$
+	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView"; //$NON-NLS-1$
 	private static int instance = 0;
 
 	// GUI
-	private Label lblAlarm;
+	private Label alarmLabel;
+	private Label valueLabel;
+	private Label timestampLabel;
+	private Label statusLabel;
+	private Label newValueLabel;
+	private Label pvNameLabel;
+	private Label timestampField;
 	private Label alarmField;
-	private ComboViewer cbo_name;
-	private ComboHistoryHelper name_helper;
 	private Label valueField;
-	private Label timeField;
 	private Label statusField;
+	private ComboViewer pvNameField;
+	private ComboHistoryHelper pvNameHelper;
 	private MeterWidget meter;
-	private Composite top_box;
-	private Composite bottom_box;
-	private Button show_meter;
-	private Button btn_save_to_ioc;
+	private Composite topBox;
+	private Composite bottomBox;
+	private Button showMeterButton;
+	private Button saveToIocButton;
+	private Button infoButton;
+	private GridData gd_valueField;
+	private GridData gd_timestampField;
+	private GridData gd_statusField;
+	private GridLayout gl_topBox;
+	private FormData fd_topBox;
+	private FormData fd_bottomBox;
 
 	/** Currently displayed pv */
 	private ProcessVariableName PVName;
@@ -86,14 +98,14 @@ public class PVManagerProbe extends ViewPart {
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 
 	/** Formatting used for the time text field */
-	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
+	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
 
-	private Text new_value;
+	private Text newValueField;
 
-	private static final String SECURITY_ID = "operating";
+	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
@@ -109,9 +121,6 @@ public class PVManagerProbe extends ViewPart {
 	 * Id of the save value command.
 	 */
 	private static final String SAVE_VALUE_COMMAND_ID = "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
-	private GridData gd_valueField;
-	private GridData gd_timeField;
-	private GridData gd_statusField;
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -151,150 +160,152 @@ public class PVManagerProbe extends ViewPart {
 		// Status: ...
 		//
 		// Inside top & bottom, it's a grid layout
-		top_box = new Composite(parent, 0);
-		GridLayout grid = new GridLayout();
-		grid.numColumns = 3;
-		top_box.setLayout(grid);
+		topBox = new Composite(parent, 0);
+		GridLayout gl_bottomBox;
+		gl_topBox = new GridLayout();
+		gl_topBox.numColumns = 3;
+		topBox.setLayout(gl_topBox);
 
-		Label label = new Label(top_box, SWT.READ_ONLY);
-		label.setText(Messages.S_PVName);
+		Label label;
+		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
+		pvNameLabel.setText(Messages.Probe_pvNameLabelText);
 
-		cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
-		cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
+		pvNameField = new ComboViewer(topBox, SWT.SINGLE | SWT.BORDER);
+		pvNameField.getCombo().setToolTipText(Messages.Probe_pvNameFieldToolTipText);
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		cbo_name.getCombo().setLayoutData(gd);
+		pvNameField.getCombo().setLayoutData(gd);
 
-		final Button btn_info = new Button(top_box, SWT.PUSH);
-		btn_info.setText(Messages.S_Info);
-		btn_info.setToolTipText(Messages.S_ObtainInfo);
+		infoButton = new Button(topBox, SWT.PUSH);
+		infoButton.setText(Messages.Probe_infoTitle);
+		infoButton.setToolTipText(Messages.Probe_infoButtonToolTipText);
 
 		// New Box with only the meter
 		meter = new MeterWidget(parent, 0);
 		meter.setEnabled(false);
 
 		// Button Box
-		bottom_box = new Composite(parent, 0);
-		grid = new GridLayout();
-		grid.numColumns = 3;
-		bottom_box.setLayout(grid);
+		bottomBox = new Composite(parent, 0);
+		gl_bottomBox = new GridLayout();
+		gl_bottomBox.numColumns = 3;
+		bottomBox.setLayout(gl_bottomBox);
 
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Value);
+		valueLabel = new Label(bottomBox, 0);
+		valueLabel.setText(Messages.Probe_valueLabelText);
 
-		valueField = new Label(bottom_box, SWT.BORDER);
+		valueField = new Label(bottomBox, SWT.BORDER);
 		gd_valueField = new GridData();
 		gd_valueField.grabExcessHorizontalSpace = true;
 		gd_valueField.horizontalAlignment = SWT.FILL;
 		valueField.setLayoutData(gd_valueField);
 
-		show_meter = new Button(bottom_box, SWT.CHECK);
-		show_meter.setText(Messages.S_Meter);
-		show_meter.setToolTipText(Messages.S_Meter_TT);
-		show_meter.setSelection(true);
+		showMeterButton = new Button(bottomBox, SWT.CHECK);
+		showMeterButton.setText(Messages.Probe_showMeterButtonText);
+		showMeterButton.setToolTipText(Messages.Probe_showMeterButtonToolTipText);
+		showMeterButton.setSelection(true);
 
 		// New Row
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Timestamp);
+		timestampLabel = new Label(bottomBox, 0);
+		timestampLabel.setText(Messages.Probe_timestampLabelText);
 
-		timeField = new Label(bottom_box, SWT.BORDER);
-		gd_timeField = new GridData();
-		gd_timeField.grabExcessHorizontalSpace = true;
-		gd_timeField.horizontalAlignment = SWT.FILL;
-		timeField.setLayoutData(gd_timeField);
+		timestampField = new Label(bottomBox, SWT.BORDER);
+		gd_timestampField = new GridData();
+		gd_timestampField.grabExcessHorizontalSpace = true;
+		gd_timestampField.horizontalAlignment = SWT.FILL;
+		timestampField.setLayoutData(gd_timestampField);
 
-		btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
-		btn_save_to_ioc.setText(Messages.S_SaveToIoc);
-		btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
+		saveToIocButton = new Button(bottomBox, SWT.PUSH);
+		saveToIocButton.setText(Messages.Probe_saveToIocButtonText);
+		saveToIocButton.setToolTipText(Messages.Probe_saveToIocButtonToolTipText);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
-		btn_save_to_ioc.setLayoutData(gd);
-		btn_save_to_ioc.setEnabled(canExecute);
+		saveToIocButton.setLayoutData(gd);
+		saveToIocButton.setEnabled(canExecute);
 
-		lblAlarm = new Label(bottom_box, SWT.NONE);
-		lblAlarm.setText("Alarm:");
+		alarmLabel = new Label(bottomBox, SWT.NONE);
+		alarmLabel.setText(Messages.Probe_alarmLabelText);
 
-		alarmField = new Label(bottom_box, SWT.BORDER);
+		alarmField = new Label(bottomBox, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false, 1, 1));
-		alarmField.setText("");
-		new Label(bottom_box, SWT.NONE);
+		alarmField.setText(""); //$NON-NLS-1$
+		new Label(bottomBox, SWT.NONE);
 
 		// New Row
-		final Label new_value_label = new Label(bottom_box, 0);
-		new_value_label.setText(Messages.S_NewValueLabel);
-		new_value_label.setVisible(false);
+		newValueLabel = new Label(bottomBox, 0);
+		newValueLabel.setText(Messages.Probe_newValueLabelText);
+		newValueLabel.setVisible(false);
 
-		new_value = new Text(bottom_box, SWT.BORDER);
-		new_value.setToolTipText(Messages.S_NewValueTT);
-		new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-		new_value.setVisible(false);
-		// new_value.setText(value.getValueDisplayText());
-		new_value.setText("TEXT");
+		newValueField = new Text(bottomBox, SWT.BORDER);
+		newValueField.setToolTipText(Messages.Probe_newValueFieldToolTipText);
+		newValueField.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+		newValueField.setVisible(false);
+		newValueField.setText(""); //$NON-NLS-1$
 
-		final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
+		final Button btn_adjust = new Button(bottomBox, SWT.CHECK);
 		btn_adjust.setText(Messages.S_Adjust);
 		btn_adjust.setToolTipText(Messages.S_ModValue);
 		btn_adjust.setEnabled(canExecute);
 
 		// Status bar
-		label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label = new Label(bottomBox, SWT.SEPARATOR | SWT.HORIZONTAL);
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		gd.horizontalSpan = grid.numColumns;
+		gd.horizontalSpan = gl_bottomBox.numColumns;
 		label.setLayoutData(gd);
 
-		label = new Label(bottom_box, 0);
-		label.setText(Messages.S_Status);
+		statusLabel = new Label(bottomBox, 0);
+		statusLabel.setText(Messages.Probe_statusLabelText);
 
-		statusField = new Label(bottom_box, SWT.BORDER);
-		statusField.setText(Messages.S_Waiting);
+		statusField = new Label(bottomBox, SWT.BORDER);
+		statusField.setText(Messages.Probe_statusWaitingForPV);
 		gd_statusField = new GridData();
 		gd_statusField.grabExcessHorizontalSpace = true;
 		gd_statusField.horizontalAlignment = SWT.FILL;
-		gd_statusField.horizontalSpan = grid.numColumns - 1;
+		gd_statusField.horizontalSpan = gl_bottomBox.numColumns - 1;
 		statusField.setLayoutData(gd_statusField);
 
 		// Connect the 3 boxes in form layout
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(100, 0);
-		top_box.setLayoutData(fd);
+		FormData fd;
+		fd_topBox = new FormData();
+		fd_topBox.left = new FormAttachment(0, 0);
+		fd_topBox.top = new FormAttachment(0, 0);
+		fd_topBox.right = new FormAttachment(100, 0);
+		topBox.setLayoutData(fd_topBox);
 
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(top_box);
+		fd.top = new FormAttachment(topBox);
 		fd.right = new FormAttachment(100, 0);
-		fd.bottom = new FormAttachment(bottom_box);
+		fd.bottom = new FormAttachment(bottomBox);
 		meter.setLayoutData(fd);
 
-		fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(100, 0);
-		fd.bottom = new FormAttachment(100, 0);
-		bottom_box.setLayoutData(fd);
+		fd_bottomBox = new FormData();
+		fd_bottomBox.left = new FormAttachment(0, 0);
+		fd_bottomBox.right = new FormAttachment(100, 0);
+		fd_bottomBox.bottom = new FormAttachment(100, 0);
+		bottomBox.setLayoutData(fd_bottomBox);
 
 		// Connect actions
-		name_helper = new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), PV_LIST_TAG, cbo_name) {
+		pvNameHelper = new ComboHistoryHelper(Activator.getDefault()
+				.getDialogSettings(), PV_LIST_TAG, pvNameField.getCombo()) {
 			@Override
-			public void newSelection(final ProcessVariableName pv_name) {
-				setPVName(pv_name);
+			public void newSelection(final String pvName) {
+				setPVName(new ProcessVariableName(pvName));
 			}
 		};
 
-		cbo_name.getCombo().addDisposeListener(new DisposeListener() {
+		pvNameField.getCombo().addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(final DisposeEvent e) {
 				if (pv != null)
 					pv.close();
-				name_helper.saveSettings();
+				pvNameHelper.saveSettings();
 			}
 		});
 
-		btn_info.addSelectionListener(new SelectionAdapter() {
+		infoButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
 				showInfo();
@@ -305,19 +316,19 @@ public class PVManagerProbe extends ViewPart {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
 				final boolean enable = btn_adjust.getSelection();
-				new_value_label.setVisible(enable);
-				new_value.setVisible(enable);
+				newValueLabel.setVisible(enable);
+				newValueField.setVisible(enable);
 			}
 		});
 
-		new_value.addSelectionListener(new SelectionAdapter() {
+		newValueField.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(final SelectionEvent e) {
 				// adjustValue(new_value.getText().trim());
 			}
 		});
 
-		btn_save_to_ioc.addSelectionListener(new SelectionAdapter() {
+		saveToIocButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				// saveToIoc();
@@ -337,14 +348,14 @@ public class PVManagerProbe extends ViewPart {
 		// // Set the initial vilibility of the button
 		// updateSaveToIocButtonVisibility();
 
-		show_meter.addSelectionListener(new SelectionAdapter() {
+		showMeterButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
-				showMeter(show_meter.getSelection());
+				showMeter(showMeterButton.getSelection());
 			}
 		});
 
-		name_helper.loadSettings();
+		pvNameHelper.loadSettings();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
 			setPVName(new ProcessVariableName(memento.getString(PV_TAG)));
@@ -353,7 +364,7 @@ public class PVManagerProbe extends ViewPart {
 			final String show = memento.getString(METER_TAG);
 			if ((show != null) && show.equals("false")) //$NON-NLS-1$
 			{
-				show_meter.setSelection(false);
+				showMeterButton.setSelection(false);
 				showMeter(false);
 			}
 		}
@@ -367,14 +378,14 @@ public class PVManagerProbe extends ViewPart {
 			fd.left = new FormAttachment(0, 0);
 			fd.right = new FormAttachment(100, 0);
 			fd.bottom = new FormAttachment(100, 0);
-			bottom_box.setLayoutData(fd);
+			bottomBox.setLayoutData(fd);
 		} else { // Meter about to be hidden.
 			// Attach bottom box to top box.
 			final FormData fd = new FormData();
 			fd.left = new FormAttachment(0, 0);
-			fd.top = new FormAttachment(top_box);
+			fd.top = new FormAttachment(topBox);
 			fd.right = new FormAttachment(100, 0);
-			bottom_box.setLayoutData(fd);
+			bottomBox.setLayoutData(fd);
 		}
 		meter.setVisible(show);
 		meter.getShell().layout(true, true);
@@ -382,10 +393,12 @@ public class PVManagerProbe extends ViewPart {
 
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
+		final String space = " "; //$NON-NLS-1$
+		final String indent = "  "; //$NON-NLS-1$
 
 		final StringBuilder info = new StringBuilder();
 		if (pv == null) {
-			info.append(Messages.S_NotConnected).append(nl);
+			info.append(Messages.Probe_infoStateNotConnected).append(nl);
 		} else {
 			Object value = pv.getValue();
 			Alarm alarm = Util.alarmOf(value);
@@ -394,58 +407,58 @@ public class PVManagerProbe extends ViewPart {
 
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
-				info.append(Messages.S_STATEDisconn).append(nl);
+				info.append(Messages.Probe_infoStateDisconnected).append(nl);
 			} else {
 				if (alarm != null
 						&& AlarmSeverity.UNDEFINED.equals(alarm
 								.getAlarmSeverity())) {
-					info.append(Messages.S_STATEDisconn).append(nl);
+					info.append(Messages.Probe_infoStateDisconnected).append(nl);
 				} else {
-					info.append(Messages.S_STATEConn).append(nl);
+					info.append(Messages.Probe_infoStateConnected).append(nl);
 				}
 			}
 
 			if (type != null) {
-				info.append("Data type: ").append(type.getSimpleName())
+				info.append(Messages.Probe_infoDataType).append(space).append(type.getSimpleName())
 						.append(nl);
 			}
 
 			if (display != null) {
-				info.append("Numeric display information:").append(nl)
-						.append("  Low display limit: ")
+				info.append(Messages.Probe_infoNumericDisplay).append(nl)
+						.append(indent).append(Messages.Probe_infoLowDisplayLimit).append(space)
 						.append(display.getLowerDisplayLimit()).append(nl)
-						.append("  Low alarm limit: ")
+						.append(indent).append(Messages.Probe_infoLowAlarmLimit).append(space)
 						.append(display.getLowerAlarmLimit()).append(nl)
-						.append("  Low warn limit: ")
+						.append(indent).append(Messages.Probe_infoLowWarnLimit).append(space)
 						.append(display.getLowerWarningLimit()).append(nl)
-						.append("  High warn limit: ")
+						.append(indent).append(Messages.Probe_infoHighWarnLimit).append(space)
 						.append(display.getUpperWarningLimit()).append(nl)
-						.append("  High alarm limit: ")
+						.append(indent).append(Messages.Probe_infoHighAlarmLimit).append(space)
 						.append(display.getUpperAlarmLimit()).append(nl)
-						.append("  High display limit: ")
+						.append(indent).append(Messages.Probe_infoHighDisplayLimit).append(space)
 						.append(display.getUpperDisplayLimit()).append(nl);
 			}
 
 			if (value instanceof org.epics.pvmanager.data.Enum) {
 				Enum enumValue = (Enum) value;
-				info.append("Enum metadata: ")
-						.append(enumValue.getLabels().size()).append(" labels")
+				info.append(Messages.Probe_infoEnumMetadata).append(space)
+						.append(enumValue.getLabels().size()).append(space).append(Messages.Probe_infoLabels)
 						.append(nl);
 				for (String label : enumValue.getLabels()) {
-					info.append("  ").append(label).append(nl);
+					info.append(indent).append(label).append(nl);
 				}
 			}
 
 		}
 		if (info.length() == 0) {
-			info.append(Messages.S_NoInfo);
+			info.append(Messages.Probe_infoNoInfoAvailable);
 		}
 		final MessageBox box = new MessageBox(valueField.getShell(),
 				SWT.ICON_INFORMATION);
 		if (pv == null) {
-			box.setText(Messages.S_Info);
+			box.setText(Messages.Probe_infoTitle);
 		} else {
-			box.setText("Channel information for " + pv.getName());
+			box.setText(Messages.Probe_infoChannelInformationFor + pv.getName());
 		}
 		box.setMessage(info.toString());
 		box.open();
@@ -458,13 +471,13 @@ public class PVManagerProbe extends ViewPart {
 	 *            the new pv name or null
 	 */
 	public void setPVName(ProcessVariableName pvName) {
-		log.log(Level.FINE, "setPVName ({0})", pvName);
+		log.log(Level.FINE, "setPVName ({0})", pvName); //$NON-NLS-1$
 
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
-			cbo_name.getCombo().setText(pvName.getProcessVariableName());
+			pvNameField.getCombo().setText(pvName.getProcessVariableName());
 		}
 
 		// The PV is different, so disconnect and reset the visuals
@@ -477,21 +490,21 @@ public class PVManagerProbe extends ViewPart {
 		setMeter(null, null);
 
 		// If name is blank, update status to waiting and qui
-		if ((pvName == null) || pvName.equals("")) {
-			cbo_name.getCombo().setText("");
-			setStatus(Messages.S_Waiting);
+		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
+			pvNameField.getCombo().setText(""); //$NON-NLS-1$
+			setStatus(Messages.Probe_statusWaitingForPV);
 		}
 
 		// If new name, add to history and connect
-		name_helper.addEntry(pvName);
+		pvNameHelper.addEntry(pvName.getProcessVariableName());
 
 		// Update displayed name, unless it's already current
-		if (!(cbo_name.getCombo().getText().equals(pvName
+		if (!(pvNameField.getCombo().getText().equals(pvName
 				.getProcessVariableName()))) {
-			cbo_name.getCombo().setText(pvName.getProcessVariableName());
+			pvNameField.getCombo().setText(pvName.getProcessVariableName());
 		}
 
-		setStatus(Messages.S_Searching);
+		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.read(channel(pvName.getProcessVariableName()))
 				.andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
@@ -542,7 +555,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setStatus(String status) {
 		if (status == null) {
-			statusField.setText(Messages.S_Waiting);
+			statusField.setText(Messages.Probe_statusWaitingForPV);
 		} else {
 			statusField.setText(status);
 		}
@@ -555,7 +568,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setLastError(Exception ex) {
 		if (ex == null) {
-			statusField.setText("Connected");
+			statusField.setText(Messages.Probe_statusConnected);
 		} else {
 			statusField.setText(ex.getMessage());
 		}
@@ -568,7 +581,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setValue(String value) {
 		if (value == null) {
-			valueField.setText("");
+			valueField.setText(""); //$NON-NLS-1$
 		} else {
 			valueField.setText(value);
 		}
@@ -581,9 +594,9 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setAlarm(Alarm alarm) {
 		if (alarm == null) {
-			alarmField.setText("");
+			alarmField.setText(""); //$NON-NLS-1$
 		} else {
-			alarmField.setText(alarm.getAlarmSeverity() + " - "
+			alarmField.setText(alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
 					+ alarm.getAlarmStatus());
 		}
 	}
@@ -595,9 +608,9 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setTime(Time time) {
 		if (time == null) {
-			timeField.setText("");
+			timestampField.setText(""); //$NON-NLS-1$
 		} else {
-			timeField.setText(timeFormat.format(time.getTimeStamp()));
+			timestampField.setText(timeFormat.format(time.getTimeStamp()));
 		}
 	}
 
@@ -655,8 +668,7 @@ public class PVManagerProbe extends ViewPart {
 			probe.setPVName(pvName);
 			return true;
 		} catch (final Exception e) {
-			//	            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
-			e.printStackTrace();
+			log.log(Level.WARNING, "Failed while opening probe", e);
 		}
 		return false;
 	}
