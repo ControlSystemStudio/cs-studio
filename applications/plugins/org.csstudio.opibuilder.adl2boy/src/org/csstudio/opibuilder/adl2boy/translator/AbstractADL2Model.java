@@ -202,6 +202,29 @@ public abstract class AbstractADL2Model {
 		return newRule;
 	}
 
+
+	/**
+	 * Perform a translation between an MEDM style 
+	 * calc expression for visibility rules.  Makes 
+	 * the following assumptions
+	 * 1. The rule is fairy simple. The only
+	 *    alpha characters are A, B, C & D
+	 * 2. That the pv fields A, B, C & D are 
+	 *    used sequentially. (i.e. If B is used
+	 *    A is used, if C is used A & Bare used).
+	 *    This allows the substitutions
+	 *        A = pv0
+	 *        B = pv1
+	 *        C = pv2
+	 *        D = PV3
+	 * 3. Only basic desion maiking is hapenning
+	 *    ()+-/*=<># were used.  No use of math
+	 *    functions like ABS, SIN, ...
+	 * 4. The characters = and # are replaced by 
+	 *    == and != respecively.
+	 * @param adlExpr
+	 * @return
+	 */
 	private String translateExpression(String adlExpr) {
 		String opiExpr = adlExpr;
 		opiExpr = replaceChannel("A", "pv0", opiExpr);
