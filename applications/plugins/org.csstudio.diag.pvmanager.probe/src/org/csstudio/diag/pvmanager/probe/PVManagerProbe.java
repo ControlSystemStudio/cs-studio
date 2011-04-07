@@ -173,15 +173,15 @@ public class PVManagerProbe extends ViewPart {
 		pvNameLabel.setText(Messages.Probe_pvNameLabelText);
 
 		pvNameField = new ComboViewer(topBox, SWT.SINGLE | SWT.BORDER);
-		pvNameField.getCombo().setToolTipText(Messages.S_EnterPVName);
+		pvNameField.getCombo().setToolTipText(Messages.Probe_pvNameFieldToolTipText);
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		pvNameField.getCombo().setLayoutData(gd);
 
 		infoButton = new Button(topBox, SWT.PUSH);
-		infoButton.setText(Messages.S_Info);
-		infoButton.setToolTipText(Messages.S_ObtainInfo);
+		infoButton.setText(Messages.Probe_infoTitle);
+		infoButton.setToolTipText(Messages.Probe_infoButtonToolTipText);
 
 		// New Box with only the meter
 		meter = new MeterWidget(parent, 0);
@@ -194,7 +194,7 @@ public class PVManagerProbe extends ViewPart {
 		bottomBox.setLayout(gl_bottomBox);
 
 		valueLabel = new Label(bottomBox, 0);
-		valueLabel.setText(Messages.S_Value);
+		valueLabel.setText(Messages.Probe_valueLabelText);
 
 		valueField = new Label(bottomBox, SWT.BORDER);
 		gd_valueField = new GridData();
@@ -203,13 +203,13 @@ public class PVManagerProbe extends ViewPart {
 		valueField.setLayoutData(gd_valueField);
 
 		showMeterButton = new Button(bottomBox, SWT.CHECK);
-		showMeterButton.setText(Messages.S_Meter);
-		showMeterButton.setToolTipText(Messages.S_Meter_TT);
+		showMeterButton.setText(Messages.Probe_showMeterButtonText);
+		showMeterButton.setToolTipText(Messages.Probe_showMeterButtonToolTipText);
 		showMeterButton.setSelection(true);
 
 		// New Row
 		timestampLabel = new Label(bottomBox, 0);
-		timestampLabel.setText(Messages.S_Timestamp);
+		timestampLabel.setText(Messages.Probe_timestampLabelText);
 
 		timestampField = new Label(bottomBox, SWT.BORDER);
 		gd_timestampField = new GridData();
@@ -218,15 +218,15 @@ public class PVManagerProbe extends ViewPart {
 		timestampField.setLayoutData(gd_timestampField);
 
 		saveToIocButton = new Button(bottomBox, SWT.PUSH);
-		saveToIocButton.setText(Messages.S_SaveToIoc);
-		saveToIocButton.setToolTipText(Messages.S_SaveToIocTooltip);
+		saveToIocButton.setText(Messages.Probe_saveToIocButtonText);
+		saveToIocButton.setToolTipText(Messages.Probe_saveToIocButtonToolTipText);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		saveToIocButton.setLayoutData(gd);
 		saveToIocButton.setEnabled(canExecute);
 
 		alarmLabel = new Label(bottomBox, SWT.NONE);
-		alarmLabel.setText(Messages.Probe_alarmLabelTest);
+		alarmLabel.setText(Messages.Probe_alarmLabelText);
 
 		alarmField = new Label(bottomBox, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
@@ -236,11 +236,11 @@ public class PVManagerProbe extends ViewPart {
 
 		// New Row
 		newValueLabel = new Label(bottomBox, 0);
-		newValueLabel.setText(Messages.S_NewValueLabel);
+		newValueLabel.setText(Messages.Probe_newValueLabelText);
 		newValueLabel.setVisible(false);
 
 		newValueField = new Text(bottomBox, SWT.BORDER);
-		newValueField.setToolTipText(Messages.S_NewValueTT);
+		newValueField.setToolTipText(Messages.Probe_newValueFieldToolTipText);
 		newValueField.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		newValueField.setVisible(false);
 		newValueField.setText(""); //$NON-NLS-1$
@@ -259,10 +259,10 @@ public class PVManagerProbe extends ViewPart {
 		label.setLayoutData(gd);
 
 		statusLabel = new Label(bottomBox, 0);
-		statusLabel.setText(Messages.S_Status);
+		statusLabel.setText(Messages.Probe_statusLabelText);
 
 		statusField = new Label(bottomBox, SWT.BORDER);
-		statusField.setText(Messages.S_Waiting);
+		statusField.setText(Messages.Probe_statusWaitingForPV);
 		gd_statusField = new GridData();
 		gd_statusField.grabExcessHorizontalSpace = true;
 		gd_statusField.horizontalAlignment = SWT.FILL;
@@ -400,7 +400,7 @@ public class PVManagerProbe extends ViewPart {
 
 		final StringBuilder info = new StringBuilder();
 		if (pv == null) {
-			info.append(Messages.S_NotConnected).append(nl);
+			info.append(Messages.Probe_infoStateNotConnected).append(nl);
 		} else {
 			Object value = pv.getValue();
 			Alarm alarm = Util.alarmOf(value);
@@ -409,14 +409,14 @@ public class PVManagerProbe extends ViewPart {
 
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
-				info.append(Messages.S_STATEDisconn).append(nl);
+				info.append(Messages.Probe_infoStateDisconnected).append(nl);
 			} else {
 				if (alarm != null
 						&& AlarmSeverity.UNDEFINED.equals(alarm
 								.getAlarmSeverity())) {
-					info.append(Messages.S_STATEDisconn).append(nl);
+					info.append(Messages.Probe_infoStateDisconnected).append(nl);
 				} else {
-					info.append(Messages.S_STATEConn).append(nl);
+					info.append(Messages.Probe_infoStateConnected).append(nl);
 				}
 			}
 
@@ -453,12 +453,12 @@ public class PVManagerProbe extends ViewPart {
 
 		}
 		if (info.length() == 0) {
-			info.append(Messages.S_NoInfo);
+			info.append(Messages.Probe_infoNoInfoAvailable);
 		}
 		final MessageBox box = new MessageBox(valueField.getShell(),
 				SWT.ICON_INFORMATION);
 		if (pv == null) {
-			box.setText(Messages.S_Info);
+			box.setText(Messages.Probe_infoTitle);
 		} else {
 			box.setText(Messages.Probe_infoChannelInformationFor + pv.getName());
 		}
@@ -494,7 +494,7 @@ public class PVManagerProbe extends ViewPart {
 		// If name is blank, update status to waiting and qui
 		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
 			pvNameField.getCombo().setText(""); //$NON-NLS-1$
-			setStatus(Messages.S_Waiting);
+			setStatus(Messages.Probe_statusWaitingForPV);
 		}
 
 		// If new name, add to history and connect
@@ -506,7 +506,7 @@ public class PVManagerProbe extends ViewPart {
 			pvNameField.getCombo().setText(pvName.getProcessVariableName());
 		}
 
-		setStatus(Messages.S_Searching);
+		setStatus(Messages.Probe_statusSearching);
 		pv = PVManager.read(channel(pvName.getProcessVariableName()))
 				.andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
@@ -557,7 +557,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setStatus(String status) {
 		if (status == null) {
-			statusField.setText(Messages.S_Waiting);
+			statusField.setText(Messages.Probe_statusWaitingForPV);
 		} else {
 			statusField.setText(status);
 		}
