@@ -9,7 +9,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Combo;
-import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 
 /**
