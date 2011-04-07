@@ -70,17 +70,25 @@ public class PVManagerProbe extends ViewPart {
 	private Label timestampLabel;
 	private Label statusLabel;
 	private Label newValueLabel;
+	private Label pvNameLabel;
 	private Label timestampField;
 	private Label alarmField;
 	private Label valueField;
 	private Label statusField;
-	private ComboViewer cbo_name;
-	private ComboHistoryHelper name_helper;
+	private ComboViewer pvNameField;
+	private ComboHistoryHelper pvNameHelper;
 	private MeterWidget meter;
-	private Composite top_box;
-	private Composite bottom_box;
-	private Button show_meter;
-	private Button btn_save_to_ioc;
+	private Composite topBox;
+	private Composite bottomBox;
+	private Button showMeterButton;
+	private Button saveToIocButton;
+	private Button infoButton;
+	private GridData gd_valueField;
+	private GridData gd_timestampField;
+	private GridData gd_statusField;
+	private GridLayout gl_topBox;
+	private FormData fd_topBox;
+	private FormData fd_bottomBox;
 
 	/** Currently displayed pv */
 	private ProcessVariableName PVName;
@@ -115,9 +123,6 @@ public class PVManagerProbe extends ViewPart {
 	 * Id of the save value command.
 	 */
 	private static final String SAVE_VALUE_COMMAND_ID = "org.csstudio.platform.ui.commands.saveValue"; //$NON-NLS-1$
-	private GridData gd_valueField;
-	private GridData gd_timestampField;
-	private GridData gd_statusField;
 
 	@Override
 	public void init(final IViewSite site, final IMemento memento)
@@ -157,149 +162,152 @@ public class PVManagerProbe extends ViewPart {
 		// Status: ...
 		//
 		// Inside top & bottom, it's a grid layout
-		top_box = new Composite(parent, 0);
-		GridLayout grid = new GridLayout();
-		grid.numColumns = 3;
-		top_box.setLayout(grid);
+		topBox = new Composite(parent, 0);
+		GridLayout gl_bottomBox;
+		gl_topBox = new GridLayout();
+		gl_topBox.numColumns = 3;
+		topBox.setLayout(gl_topBox);
 
-		Label label = new Label(top_box, SWT.READ_ONLY);
-		label.setText(Messages.Probe_pvNameLabelText);
+		Label label;
+		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
+		pvNameLabel.setText(Messages.Probe_pvNameLabelText);
 
-		cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
-		cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
+		pvNameField = new ComboViewer(topBox, SWT.SINGLE | SWT.BORDER);
+		pvNameField.getCombo().setToolTipText(Messages.S_EnterPVName);
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		cbo_name.getCombo().setLayoutData(gd);
+		pvNameField.getCombo().setLayoutData(gd);
 
-		final Button btn_info = new Button(top_box, SWT.PUSH);
-		btn_info.setText(Messages.S_Info);
-		btn_info.setToolTipText(Messages.S_ObtainInfo);
+		infoButton = new Button(topBox, SWT.PUSH);
+		infoButton.setText(Messages.S_Info);
+		infoButton.setToolTipText(Messages.S_ObtainInfo);
 
 		// New Box with only the meter
 		meter = new MeterWidget(parent, 0);
 		meter.setEnabled(false);
 
 		// Button Box
-		bottom_box = new Composite(parent, 0);
-		grid = new GridLayout();
-		grid.numColumns = 3;
-		bottom_box.setLayout(grid);
+		bottomBox = new Composite(parent, 0);
+		gl_bottomBox = new GridLayout();
+		gl_bottomBox.numColumns = 3;
+		bottomBox.setLayout(gl_bottomBox);
 
-		valueLabel = new Label(bottom_box, 0);
+		valueLabel = new Label(bottomBox, 0);
 		valueLabel.setText(Messages.S_Value);
 
-		valueField = new Label(bottom_box, SWT.BORDER);
+		valueField = new Label(bottomBox, SWT.BORDER);
 		gd_valueField = new GridData();
 		gd_valueField.grabExcessHorizontalSpace = true;
 		gd_valueField.horizontalAlignment = SWT.FILL;
 		valueField.setLayoutData(gd_valueField);
 
-		show_meter = new Button(bottom_box, SWT.CHECK);
-		show_meter.setText(Messages.S_Meter);
-		show_meter.setToolTipText(Messages.S_Meter_TT);
-		show_meter.setSelection(true);
+		showMeterButton = new Button(bottomBox, SWT.CHECK);
+		showMeterButton.setText(Messages.S_Meter);
+		showMeterButton.setToolTipText(Messages.S_Meter_TT);
+		showMeterButton.setSelection(true);
 
 		// New Row
-		timestampLabel = new Label(bottom_box, 0);
+		timestampLabel = new Label(bottomBox, 0);
 		timestampLabel.setText(Messages.S_Timestamp);
 
-		timestampField = new Label(bottom_box, SWT.BORDER);
+		timestampField = new Label(bottomBox, SWT.BORDER);
 		gd_timestampField = new GridData();
 		gd_timestampField.grabExcessHorizontalSpace = true;
 		gd_timestampField.horizontalAlignment = SWT.FILL;
 		timestampField.setLayoutData(gd_timestampField);
 
-		btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
-		btn_save_to_ioc.setText(Messages.S_SaveToIoc);
-		btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
+		saveToIocButton = new Button(bottomBox, SWT.PUSH);
+		saveToIocButton.setText(Messages.S_SaveToIoc);
+		saveToIocButton.setToolTipText(Messages.S_SaveToIocTooltip);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
-		btn_save_to_ioc.setLayoutData(gd);
-		btn_save_to_ioc.setEnabled(canExecute);
+		saveToIocButton.setLayoutData(gd);
+		saveToIocButton.setEnabled(canExecute);
 
-		alarmLabel = new Label(bottom_box, SWT.NONE);
+		alarmLabel = new Label(bottomBox, SWT.NONE);
 		alarmLabel.setText(Messages.Probe_alarmLabelTest);
 
-		alarmField = new Label(bottom_box, SWT.BORDER);
+		alarmField = new Label(bottomBox, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false, 1, 1));
 		alarmField.setText(""); //$NON-NLS-1$
-		new Label(bottom_box, SWT.NONE);
+		new Label(bottomBox, SWT.NONE);
 
 		// New Row
-		newValueLabel = new Label(bottom_box, 0);
+		newValueLabel = new Label(bottomBox, 0);
 		newValueLabel.setText(Messages.S_NewValueLabel);
 		newValueLabel.setVisible(false);
 
-		newValueField = new Text(bottom_box, SWT.BORDER);
+		newValueField = new Text(bottomBox, SWT.BORDER);
 		newValueField.setToolTipText(Messages.S_NewValueTT);
 		newValueField.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		newValueField.setVisible(false);
 		newValueField.setText(""); //$NON-NLS-1$
 
-		final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
+		final Button btn_adjust = new Button(bottomBox, SWT.CHECK);
 		btn_adjust.setText(Messages.S_Adjust);
 		btn_adjust.setToolTipText(Messages.S_ModValue);
 		btn_adjust.setEnabled(canExecute);
 
 		// Status bar
-		label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label = new Label(bottomBox, SWT.SEPARATOR | SWT.HORIZONTAL);
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		gd.horizontalSpan = grid.numColumns;
+		gd.horizontalSpan = gl_bottomBox.numColumns;
 		label.setLayoutData(gd);
 
-		statusLabel = new Label(bottom_box, 0);
+		statusLabel = new Label(bottomBox, 0);
 		statusLabel.setText(Messages.S_Status);
 
-		statusField = new Label(bottom_box, SWT.BORDER);
+		statusField = new Label(bottomBox, SWT.BORDER);
 		statusField.setText(Messages.S_Waiting);
 		gd_statusField = new GridData();
 		gd_statusField.grabExcessHorizontalSpace = true;
 		gd_statusField.horizontalAlignment = SWT.FILL;
-		gd_statusField.horizontalSpan = grid.numColumns - 1;
+		gd_statusField.horizontalSpan = gl_bottomBox.numColumns - 1;
 		statusField.setLayoutData(gd_statusField);
 
 		// Connect the 3 boxes in form layout
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(100, 0);
-		top_box.setLayoutData(fd);
+		FormData fd;
+		fd_topBox = new FormData();
+		fd_topBox.left = new FormAttachment(0, 0);
+		fd_topBox.top = new FormAttachment(0, 0);
+		fd_topBox.right = new FormAttachment(100, 0);
+		topBox.setLayoutData(fd_topBox);
 
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(top_box);
+		fd.top = new FormAttachment(topBox);
 		fd.right = new FormAttachment(100, 0);
-		fd.bottom = new FormAttachment(bottom_box);
+		fd.bottom = new FormAttachment(bottomBox);
 		meter.setLayoutData(fd);
 
-		fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(100, 0);
-		fd.bottom = new FormAttachment(100, 0);
-		bottom_box.setLayoutData(fd);
+		fd_bottomBox = new FormData();
+		fd_bottomBox.left = new FormAttachment(0, 0);
+		fd_bottomBox.right = new FormAttachment(100, 0);
+		fd_bottomBox.bottom = new FormAttachment(100, 0);
+		bottomBox.setLayoutData(fd_bottomBox);
 
 		// Connect actions
-		name_helper = new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), PV_LIST_TAG, cbo_name) {
+		pvNameHelper = new ComboHistoryHelper(Activator.getDefault()
+				.getDialogSettings(), PV_LIST_TAG, pvNameField) {
 			@Override
 			public void newSelection(final ProcessVariableName pv_name) {
 				setPVName(pv_name);
 			}
 		};
 
-		cbo_name.getCombo().addDisposeListener(new DisposeListener() {
+		pvNameField.getCombo().addDisposeListener(new DisposeListener() {
 			public void widgetDisposed(final DisposeEvent e) {
 				if (pv != null)
 					pv.close();
-				name_helper.saveSettings();
+				pvNameHelper.saveSettings();
 			}
 		});
 
-		btn_info.addSelectionListener(new SelectionAdapter() {
+		infoButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
 				showInfo();
@@ -322,7 +330,7 @@ public class PVManagerProbe extends ViewPart {
 			}
 		});
 
-		btn_save_to_ioc.addSelectionListener(new SelectionAdapter() {
+		saveToIocButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				// saveToIoc();
@@ -342,14 +350,14 @@ public class PVManagerProbe extends ViewPart {
 		// // Set the initial vilibility of the button
 		// updateSaveToIocButtonVisibility();
 
-		show_meter.addSelectionListener(new SelectionAdapter() {
+		showMeterButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent ev) {
-				showMeter(show_meter.getSelection());
+				showMeter(showMeterButton.getSelection());
 			}
 		});
 
-		name_helper.loadSettings();
+		pvNameHelper.loadSettings();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
 			setPVName(new ProcessVariableName(memento.getString(PV_TAG)));
@@ -358,7 +366,7 @@ public class PVManagerProbe extends ViewPart {
 			final String show = memento.getString(METER_TAG);
 			if ((show != null) && show.equals("false")) //$NON-NLS-1$
 			{
-				show_meter.setSelection(false);
+				showMeterButton.setSelection(false);
 				showMeter(false);
 			}
 		}
@@ -372,14 +380,14 @@ public class PVManagerProbe extends ViewPart {
 			fd.left = new FormAttachment(0, 0);
 			fd.right = new FormAttachment(100, 0);
 			fd.bottom = new FormAttachment(100, 0);
-			bottom_box.setLayoutData(fd);
+			bottomBox.setLayoutData(fd);
 		} else { // Meter about to be hidden.
 			// Attach bottom box to top box.
 			final FormData fd = new FormData();
 			fd.left = new FormAttachment(0, 0);
-			fd.top = new FormAttachment(top_box);
+			fd.top = new FormAttachment(topBox);
 			fd.right = new FormAttachment(100, 0);
-			bottom_box.setLayoutData(fd);
+			bottomBox.setLayoutData(fd);
 		}
 		meter.setVisible(show);
 		meter.getShell().layout(true, true);
@@ -471,7 +479,7 @@ public class PVManagerProbe extends ViewPart {
 		if (this.PVName != null && this.PVName.equals(pvName)) {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
-			cbo_name.getCombo().setText(pvName.getProcessVariableName());
+			pvNameField.getCombo().setText(pvName.getProcessVariableName());
 		}
 
 		// The PV is different, so disconnect and reset the visuals
@@ -485,17 +493,17 @@ public class PVManagerProbe extends ViewPart {
 
 		// If name is blank, update status to waiting and qui
 		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
-			cbo_name.getCombo().setText(""); //$NON-NLS-1$
+			pvNameField.getCombo().setText(""); //$NON-NLS-1$
 			setStatus(Messages.S_Waiting);
 		}
 
 		// If new name, add to history and connect
-		name_helper.addEntry(pvName);
+		pvNameHelper.addEntry(pvName);
 
 		// Update displayed name, unless it's already current
-		if (!(cbo_name.getCombo().getText().equals(pvName
+		if (!(pvNameField.getCombo().getText().equals(pvName
 				.getProcessVariableName()))) {
-			cbo_name.getCombo().setText(pvName.getProcessVariableName());
+			pvNameField.getCombo().setText(pvName.getProcessVariableName());
 		}
 
 		setStatus(Messages.S_Searching);
