@@ -6,6 +6,34 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.diag.pvmanager.probe.messages"; //$NON-NLS-1$
 
+	public static String Probe_alarmLabelTest;
+
+	public static String Probe_infoChannelInformationFor;
+
+	public static String Probe_infoDataType;
+
+	public static String Probe_infoEnumMetadata;
+
+	public static String Probe_infoHighAlarmLimit;
+
+	public static String Probe_infoHighDisplayLimit;
+
+	public static String Probe_infoHighWarnLimit;
+
+	public static String Probe_infoLabels;
+
+	public static String Probe_infoLowAlarmLimit;
+
+	public static String Probe_infoLowDisplayLimit;
+
+	public static String Probe_infoLowWarnLimit;
+
+	public static String Probe_infoNumericDisplay;
+
+	public static String Probe_pvNameLabelText;
+
+	public static String Probe_statusConnected;
+
 	public static String S_SaveToIoc;
 	public static String S_SaveToIocTooltip;
 	public static String S_ErrorDialogTitle;
@@ -37,7 +65,6 @@ public class Messages extends NLS
     public static String S_OK;
     public static String S_Period;
     public static String S_Seconds;
-    public static String S_PVName;
     public static String S_Searching;
     public static String S_STATEConn;
     public static String S_STATEDisconn;

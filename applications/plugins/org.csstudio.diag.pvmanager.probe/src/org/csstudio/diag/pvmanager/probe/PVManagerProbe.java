@@ -58,8 +58,8 @@ public class PVManagerProbe extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView";
-	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView";
+	public static final String SINGLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.SingleView"; //$NON-NLS-1$
+	public static final String MULTIPLE_VIEW_ID = "org.csstudio.diag.pvmanager.probe.MultipleView"; //$NON-NLS-1$
 	private static int instance = 0;
 
 	// GUI
@@ -86,14 +86,14 @@ public class PVManagerProbe extends ViewPart {
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 
 	/** Formatting used for the time text field */
-	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
+	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
 
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
 
 	private Text new_value;
 
-	private static final String SECURITY_ID = "operating";
+	private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
 	/** Memento used to preserve the PV name. */
 	private IMemento memento = null;
@@ -157,7 +157,7 @@ public class PVManagerProbe extends ViewPart {
 		top_box.setLayout(grid);
 
 		Label label = new Label(top_box, SWT.READ_ONLY);
-		label.setText(Messages.S_PVName);
+		label.setText(Messages.Probe_pvNameLabelText);
 
 		cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
 		cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
@@ -213,12 +213,12 @@ public class PVManagerProbe extends ViewPart {
 		btn_save_to_ioc.setEnabled(canExecute);
 
 		lblAlarm = new Label(bottom_box, SWT.NONE);
-		lblAlarm.setText("Alarm:");
+		lblAlarm.setText(Messages.Probe_alarmLabelTest);
 
 		alarmField = new Label(bottom_box, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false,
 				false, 1, 1));
-		alarmField.setText("");
+		alarmField.setText(""); //$NON-NLS-1$
 		new Label(bottom_box, SWT.NONE);
 
 		// New Row
@@ -231,7 +231,7 @@ public class PVManagerProbe extends ViewPart {
 		new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		new_value.setVisible(false);
 		// new_value.setText(value.getValueDisplayText());
-		new_value.setText("TEXT");
+		new_value.setText(""); //$NON-NLS-1$
 
 		final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
 		btn_adjust.setText(Messages.S_Adjust);
@@ -382,6 +382,8 @@ public class PVManagerProbe extends ViewPart {
 
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
+		final String space = " "; //$NON-NLS-1$
+		final String indent = "  "; //$NON-NLS-1$
 
 		final StringBuilder info = new StringBuilder();
 		if (pv == null) {
@@ -406,33 +408,33 @@ public class PVManagerProbe extends ViewPart {
 			}
 
 			if (type != null) {
-				info.append("Data type: ").append(type.getSimpleName())
+				info.append(Messages.Probe_infoDataType).append(space).append(type.getSimpleName())
 						.append(nl);
 			}
 
 			if (display != null) {
-				info.append("Numeric display information:").append(nl)
-						.append("  Low display limit: ")
+				info.append(Messages.Probe_infoNumericDisplay).append(nl)
+						.append(indent).append(Messages.Probe_infoLowDisplayLimit).append(space)
 						.append(display.getLowerDisplayLimit()).append(nl)
-						.append("  Low alarm limit: ")
+						.append(indent).append(Messages.Probe_infoLowAlarmLimit).append(space)
 						.append(display.getLowerAlarmLimit()).append(nl)
-						.append("  Low warn limit: ")
+						.append(indent).append(Messages.Probe_infoLowWarnLimit).append(space)
 						.append(display.getLowerWarningLimit()).append(nl)
-						.append("  High warn limit: ")
+						.append(indent).append(Messages.Probe_infoHighWarnLimit).append(space)
 						.append(display.getUpperWarningLimit()).append(nl)
-						.append("  High alarm limit: ")
+						.append(indent).append(Messages.Probe_infoHighAlarmLimit).append(space)
 						.append(display.getUpperAlarmLimit()).append(nl)
-						.append("  High display limit: ")
+						.append(indent).append(Messages.Probe_infoHighDisplayLimit).append(space)
 						.append(display.getUpperDisplayLimit()).append(nl);
 			}
 
 			if (value instanceof org.epics.pvmanager.data.Enum) {
 				Enum enumValue = (Enum) value;
-				info.append("Enum metadata: ")
-						.append(enumValue.getLabels().size()).append(" labels")
+				info.append(Messages.Probe_infoEnumMetadata).append(space)
+						.append(enumValue.getLabels().size()).append(space).append(Messages.Probe_infoLabels)
 						.append(nl);
 				for (String label : enumValue.getLabels()) {
-					info.append("  ").append(label).append(nl);
+					info.append(indent).append(label).append(nl);
 				}
 			}
 
@@ -445,7 +447,7 @@ public class PVManagerProbe extends ViewPart {
 		if (pv == null) {
 			box.setText(Messages.S_Info);
 		} else {
-			box.setText("Channel information for " + pv.getName());
+			box.setText(Messages.Probe_infoChannelInformationFor + pv.getName());
 		}
 		box.setMessage(info.toString());
 		box.open();
@@ -458,7 +460,7 @@ public class PVManagerProbe extends ViewPart {
 	 *            the new pv name or null
 	 */
 	public void setPVName(ProcessVariableName pvName) {
-		log.log(Level.FINE, "setPVName ({0})", pvName);
+		log.log(Level.FINE, "setPVName ({0})", pvName); //$NON-NLS-1$
 
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
@@ -477,8 +479,8 @@ public class PVManagerProbe extends ViewPart {
 		setMeter(null, null);
 
 		// If name is blank, update status to waiting and qui
-		if ((pvName == null) || pvName.equals("")) {
-			cbo_name.getCombo().setText("");
+		if ((pvName == null) || pvName.equals("")) { //$NON-NLS-1$
+			cbo_name.getCombo().setText(""); //$NON-NLS-1$
 			setStatus(Messages.S_Waiting);
 		}
 
@@ -555,7 +557,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setLastError(Exception ex) {
 		if (ex == null) {
-			statusField.setText("Connected");
+			statusField.setText(Messages.Probe_statusConnected);
 		} else {
 			statusField.setText(ex.getMessage());
 		}
@@ -568,7 +570,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setValue(String value) {
 		if (value == null) {
-			valueField.setText("");
+			valueField.setText(""); //$NON-NLS-1$
 		} else {
 			valueField.setText(value);
 		}
@@ -581,9 +583,9 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setAlarm(Alarm alarm) {
 		if (alarm == null) {
-			alarmField.setText("");
+			alarmField.setText(""); //$NON-NLS-1$
 		} else {
-			alarmField.setText(alarm.getAlarmSeverity() + " - "
+			alarmField.setText(alarm.getAlarmSeverity() + " - " //$NON-NLS-1$
 					+ alarm.getAlarmStatus());
 		}
 	}
@@ -595,7 +597,7 @@ public class PVManagerProbe extends ViewPart {
 	 */
 	private void setTime(Time time) {
 		if (time == null) {
-			timeField.setText("");
+			timeField.setText(""); //$NON-NLS-1$
 		} else {
 			timeField.setText(timeFormat.format(time.getTimeStamp()));
 		}
@@ -655,7 +657,6 @@ public class PVManagerProbe extends ViewPart {
 			probe.setPVName(pvName);
 			return true;
 		} catch (final Exception e) {
-			//	            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
 			e.printStackTrace();
 		}
 		return false;
