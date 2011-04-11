@@ -82,12 +82,11 @@ public final class TestDataProvider {
     /**
      * @param pluginId
      * @param testConfigFileName
-     * @throws FileNotFoundException
      * @throws IOException
      */
     private static void loadProperties(@Nonnull final String pluginId,
                                        @Nonnull final String testConfigFileName)
-        throws FileNotFoundException, IOException {
+        throws IOException {
 
         openStreamAndLoadProps(pluginId, testConfigFileName);
         final String secretFile = findSensitiveDataFile();
@@ -116,13 +115,11 @@ public final class TestDataProvider {
     /**
      * @param pluginId
      * @param testConfigFileName
-     * @throws MalformedURLException
-     * @throws FileNotFoundException
      * @throws IOException
      */
     private static void openStreamAndLoadProps(@Nonnull final String pluginId,
                                                @Nonnull final String testConfigFileName)
-        throws MalformedURLException, FileNotFoundException, IOException {
+        throws IOException {
 
         InputStream openStream = null;
         try {
@@ -197,7 +194,7 @@ public final class TestDataProvider {
                 }
             }
 
-            if (! INSTANCE._pluginId.equals(pluginId)) {
+            if (!INSTANCE._pluginId.equals(pluginId)) {
                 TestDataProvider.PROPERTIES.clear();
                 testConfigFileName = createSiteSpecificName();
                 loadProperties(pluginId, testConfigFileName);
@@ -210,7 +207,7 @@ public final class TestDataProvider {
     }
 
     @Nonnull
-    private static String createSiteSpecificName() throws IllegalArgumentException {
+    private static String createSiteSpecificName() {
 
         final String siteProp = System.getProperty("siteId");
         if (siteProp == null) {
