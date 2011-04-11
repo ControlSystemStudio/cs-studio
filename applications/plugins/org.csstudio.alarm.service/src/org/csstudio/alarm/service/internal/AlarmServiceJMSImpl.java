@@ -21,7 +21,6 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +39,6 @@ import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
@@ -82,6 +79,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     @Override
     public final void retrieveInitialState(@Nonnull final List<IAlarmInitItem> initItems) {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
+        long start = System.currentTimeMillis();
         
         // There may be several thousand pvs for which the initial state is requested at once.
         // Therefore the process of registering is performed in chunks and resources are freed after each chunk.
@@ -105,7 +103,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             LOG.debug("retrieveInitialState about to free resources");
             freeResources(broker);
         }
-        LOG.debug("retrieveInitialState finished");
+        LOG.debug("retrieveInitialState finished after " + (System.currentTimeMillis() - start) + " msec");
     }
     
     // May be overridden in a test
@@ -145,7 +143,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                 announcedPV = announcedPVsQ.poll(pvChunkWaitMsec, TimeUnit.MILLISECONDS);
                 if (announcedPV != null) {
                     remainingPVs.remove(announcedPV);
-                    // TODO (jpenning) deregister?
+                } else {
+                    LOG.debug("announcedPV was null");
                 }
                 proceed = (announcedPV != null) && !remainingPVs.isEmpty();
             } catch (InterruptedException e) {
@@ -153,8 +152,21 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                 proceed = false;
             }
         }
-        LOG.debug("processing time was " + (System.currentTimeMillis() - startTime) + ". "
-                + remainingPVs.size() + " (of " + currentChunkOfPVs.size() + ") not processed");
+        logResult(startTime, currentChunkOfPVs.size(), remainingPVs.size());
+    }
+
+    private void logResult(final long startTime,
+                           final int currentChunkOfPVsSize,
+                           final int remainingPVsSize) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("processing time was "
+                    + (System.currentTimeMillis() - startTime)
+                    + ". "
+                    + currentChunkOfPVsSize
+                    + " PVs processed."
+                    + (remainingPVsSize == 0 ? " All finished." : " Failure: " + remainingPVsSize
+                            + " PVs unfinished."));
+        }
     }
     
     @Override
@@ -188,7 +200,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     }
     
     private void freeResources(@Nonnull final SimpleDALBroker broker) {
-        waitFixedTime(100);
+        waitFixedTime(10);
         broker.releaseAll();
     }
     
