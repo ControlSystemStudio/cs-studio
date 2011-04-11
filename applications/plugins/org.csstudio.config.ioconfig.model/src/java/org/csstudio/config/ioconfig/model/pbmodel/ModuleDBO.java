@@ -24,21 +24,24 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.hibernate.annotations.BatchSize;
 
 /**
@@ -266,6 +269,20 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Transient
+    @CheckForNull
+    public GsdModuleModel2 getGsdModuleModel2() throws IOException {
+        try {
+            GsdModuleModel2 module = getSlave().getGSDFile().getParsedGsdFileModel().getModule(getModuleNumber());
+//            if (module == null) {
+//                module = getSlave().getGSDFile().getParsedGsdFileModel().getModule(getModuleNumber());
+//            }
+            return module;
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+
+    @Transient
     public GsdModuleModel getGsdModuleModel() {
         try {
             if (getSlave().getGSDSlaveData().getGsdModuleList().containsKey(getModuleNumber())) {
@@ -276,7 +293,7 @@ public class ModuleDBO extends AbstractNodeDBO {
             return null;
         }
     }
-
+    
     @Transient
     public short getMaxOffset() {
         if (getGsdModuleModel() != null) {

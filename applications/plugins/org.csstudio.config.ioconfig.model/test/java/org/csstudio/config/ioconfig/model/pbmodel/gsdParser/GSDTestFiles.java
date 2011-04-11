@@ -27,6 +27,7 @@ public enum GSDTestFiles {
     YP0206CA("YP0206CA.gsd");
     
     private final String _fileName;
+    private GSDFileDBO _gsdFileDBO;
 
     /**
      * 
@@ -49,6 +50,9 @@ public enum GSDTestFiles {
     }
     
     public GSDFileDBO getFileAsGSDFileDBO() throws IOException {
-        return new GSDFileDBO(_fileName, getFileAsString());
+        if(_gsdFileDBO == null) {
+            _gsdFileDBO = new GSDFileDBO(_fileName, getFileAsString());
+        }
+        return _gsdFileDBO;
     }
 }

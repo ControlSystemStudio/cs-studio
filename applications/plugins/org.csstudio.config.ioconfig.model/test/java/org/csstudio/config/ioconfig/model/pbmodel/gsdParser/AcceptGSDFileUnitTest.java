@@ -26,56 +26,57 @@ public class AcceptGSDFileUnitTest {
     @Test
     public void GSDTestFile_B756_P33() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+//        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = GSDTestFiles.B756_P33.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
     }
 
     @Test
     public void GSDTestFile_BIMF5861() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.BIMF5861.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.BIMF5861.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_DESY_MSyS_V10() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_DESY_MSyS_V11() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V11.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V11.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_SOFTB203() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.SOFTB203.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.SOFTB203.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_YP0004C2() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.YP0004C2.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.YP0004C2.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_YP003051() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.YP003051.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.YP003051.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_YP0206CA() throws Exception {
         GsdFileParser gsdFileParser = new GsdFileParser();
-        ParsedGsdFileModel model = gsdFileParser.parse(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
 }

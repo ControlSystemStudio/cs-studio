@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
  * @version $Revision: 1.7 $
  * @since 28.03.2011
  */
-public class GsdModuleModel2 {
+public class GsdModuleModel2 extends AbstractGsdPropertyModel {
 
     private final String _name;
     private final List<Integer> _value;
@@ -53,6 +53,33 @@ public class GsdModuleModel2 {
     }
 
     /**
+     * @return
+     */
+    @Nonnull
+    public String getExtUserPrmDataConst() {
+        String extUserPrmDataConst = getStringValue("Ext_User_Prm_Data_Const");
+        if(extUserPrmDataConst != null) {
+            extUserPrmDataConst="";
+        }
+        return extUserPrmDataConst;
+    }
+
+    @Nonnull
+    public Integer getModuleNumber() {
+        return _moduleNo;
+    }
+
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+
+    @Nonnull
+    public List<Integer> getValue() {
+        return _value;
+    }
+
+    /**
      * @param extModulePrmDataLen
      */
     public void setExtModulePrmDataLen(@Nonnull Integer extModulePrmDataLen) {
@@ -62,10 +89,4 @@ public class GsdModuleModel2 {
     public void setModuleNumber(int moduleNo) {
         _moduleNo = moduleNo;
     }
-    
-    @Nonnull
-    public Integer getModuleNumber() {
-        return _moduleNo;
-    }
-    
 }

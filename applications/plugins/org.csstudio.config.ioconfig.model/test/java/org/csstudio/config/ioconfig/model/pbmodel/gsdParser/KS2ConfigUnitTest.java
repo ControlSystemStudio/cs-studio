@@ -37,6 +37,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +52,20 @@ import org.junit.Test;
  */
 public class KS2ConfigUnitTest {
     
+    private BufferedReader _expected;
+    private int _lineNo;
+    private String _eLine;
+    private String _outLine;
+    private BufferedReader _out;
+
+
+
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
+        _expected = new BufferedReader(new FileReader("./res-test/ConfigFilesInUse/KS2.xml"));
     }
     
     @Test
@@ -143,41 +153,73 @@ public class KS2ConfigUnitTest {
         
         generator.getXmlFile(sw);
         
-        System.out.println(sw.toString());
+        _out = new BufferedReader(new StringReader(sw.toString()));
         
-        BufferedReader expected = new BufferedReader(new FileReader("./res-test/ConfigFilesInUse/KS2.xml"));
-        BufferedReader out = new BufferedReader(new StringReader(sw.toString()));
-        
-        int lineNo = 1;
-        String eLine = expected.readLine();
-        String outLine = out.readLine();
-        while (eLine != null && outLine != null) {
-            System.out.println(lineNo+eLine);
-            eLine = eLine.replaceAll(", 0", ", 0");
-            Assert.assertEquals(eLine, outLine);
-            eLine = expected.readLine();
-            outLine = out.readLine();
-            lineNo++;
+        _lineNo = 1;
+        _eLine = _expected.readLine();
+        _outLine = _out.readLine();
+        while (_eLine != null && _outLine != null) {
+            System.out.println("E: "+_lineNo+_eLine);
+            System.out.println("C: "+_lineNo+_outLine);
+            _eLine = _eLine.replaceAll(", 0", ", 0");
+            Assert.assertEquals(_eLine, _outLine);
+            _eLine = _expected.readLine();
+            _outLine = _out.readLine();
+            _lineNo++;
         }
         
-        if (eLine != null || outLine != null) {
+        if (_eLine != null || _outLine != null) {
             Assert.fail("Config files have not the same size");
         }
     }
 
+    @After
+    public void setDown() throws Exception {
+        System.out.println("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
+        while (_eLine != null && _outLine != null) {
+            _eLine = _expected.readLine();
+            _outLine = _out.readLine();
+            _lineNo++;
+            System.out.println("E: "+_lineNo+_eLine);
+            System.out.println("C: "+_lineNo+_outLine);
+        }
+        System.out.println("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
+        while (_eLine != null) {
+            _eLine = _expected.readLine();
+            _lineNo++;
+            System.out.println(_lineNo+_eLine);
+        }
+        _out.close();
+        _expected.close();
+    }
+    
     private void buildSlave2(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 2);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
         pk2.setGSDFile(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
+        mo.setModuleNumber(6);
+        
+        mo = new ModuleDBO(pk2);
+        mo.setModuleNumber(6);
+        
+        mo = new ModuleDBO(pk2);
+        mo.setModuleNumber(6);
+        
+        mo = new ModuleDBO(pk2);
+        mo.setModuleNumber(6);
+        
+        mo = new ModuleDBO(pk2);
+        mo.setModuleNumber(6);
+        
+        mo = new ModuleDBO(pk2);
         mo.setModuleNumber(6);
         
     }
 
     private void buildSlave3(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 3);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -186,7 +228,7 @@ public class KS2ConfigUnitTest {
 
     private void buildSlave4(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 4);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -195,7 +237,7 @@ public class KS2ConfigUnitTest {
 
     private void buildSlave5(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 5);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -204,7 +246,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave6(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 6);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -213,7 +255,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave7(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 7);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -222,7 +264,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave8(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 8);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -231,7 +273,7 @@ public class KS2ConfigUnitTest {
 
     private void buildSlave9(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 9);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -240,7 +282,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave10(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 10);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -249,7 +291,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave11(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 11);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -258,7 +300,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave12(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 12);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -267,7 +309,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave13(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 13);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -276,7 +318,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave14(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 14);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -285,7 +327,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave15(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 15);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -294,7 +336,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave16(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 16);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -303,7 +345,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave17(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 17);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -312,7 +354,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave18(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 18);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -321,7 +363,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave19(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 19);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -330,7 +372,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave20(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 20);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -339,7 +381,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave21(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 21);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -348,7 +390,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave22(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 22);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -357,7 +399,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave23(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 23);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -366,7 +408,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave25(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 25);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -375,7 +417,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave29(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 29);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.PF009A8.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -384,7 +426,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave30(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 30);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -393,7 +435,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave31(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 31);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -402,7 +444,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave32(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 32);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -411,7 +453,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave33(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 33);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -420,7 +462,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave34(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 34);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -429,7 +471,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave35(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 35);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -438,7 +480,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave36(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 36);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -447,7 +489,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave37(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 37);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -456,7 +498,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave38(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 38);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
+
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
         ModuleDBO mo = new ModuleDBO(pk2);
@@ -465,9 +507,7 @@ public class KS2ConfigUnitTest {
     
     private void buildSlave39(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 39);
-        //        pk2.setFdlAddress(fdlAddress) // TODO (hrickens) [29.03.2011]:
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
-        
         ModuleDBO mo = new ModuleDBO(pk2);
         mo.setModuleNumber(6);
     }
@@ -481,6 +521,9 @@ public class KS2ConfigUnitTest {
         slave.setMinTsdr(11);
         slave.setWdFact1(100);
         slave.setWdFact2(10);
+        slave.setStationStatus(136);
+        slave.setSlaveFlag(192);
+        
         return slave;
     }
     

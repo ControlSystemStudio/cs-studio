@@ -63,7 +63,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -688,7 +688,7 @@ public class ModuleEditor extends AbstractNodeEditor {
             String extUserPrmDataRef = _module.getGsdModuleModel()
                     .getExtUserPrmDataRef(input.getIndex());
 
-            Integer bitValue = ((PrmText) selection.getFirstElement()).getValue();
+            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
             int index = ProfibusConfigXMLGenerator.getInt(extUserPrmDataRef);
             extUserPrmDataConst[index] = setValue2BitMask(input,
                                                           bitValue,
@@ -820,7 +820,7 @@ public class ModuleEditor extends AbstractNodeEditor {
     private void makecurrentUserParamData(@Nonnull final Composite currentUserParamDataGroup,
                                           @Nonnull final ExtUserPrmData extUserPrmData,
                                           @CheckForNull final Integer value) {
-        HashMap<Integer, PrmText> prmTextMap = null;
+        HashMap<Integer, PrmTextItem> prmTextMap = null;
 
         Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
 
@@ -890,7 +890,7 @@ public class ModuleEditor extends AbstractNodeEditor {
     private ComboViewer makeComboViewer(@Nonnull final Composite parent,
                                         @CheckForNull final Integer value,
                                         @Nonnull final ExtUserPrmData extUserPrmData,
-                                        @Nonnull final HashMap<Integer, PrmText> prmTextMap) {
+                                        @Nonnull final HashMap<Integer, PrmTextItem> prmTextMap) {
         Integer localValue = value;
         ComboViewer prmTextCV = new ComboViewer(parent);
         RowData data = new RowData();
@@ -903,13 +903,13 @@ public class ModuleEditor extends AbstractNodeEditor {
             public Object[] getElements(@Nullable final Object inputElement) {
                 if (inputElement instanceof ExtUserPrmData) {
                     ExtUserPrmData extUserPrmData = (ExtUserPrmData) inputElement;
-                    HashMap<Integer, PrmText> prmText = extUserPrmData.getPrmText();
+                    HashMap<Integer, PrmTextItem> prmText = extUserPrmData.getPrmText();
                     if (prmText == null) {
-                        PrmText[] prmTextArray = new PrmText[extUserPrmData.getMaxValue()
+                        PrmTextItem[] prmTextArray = new PrmTextItem[extUserPrmData.getMaxValue()
                                 - extUserPrmData.getMinValue() + 1];
                         for (int i = extUserPrmData.getMinValue(); i <= extUserPrmData
                                 .getMaxValue(); i++) {
-                            prmTextArray[i] = new PrmText(Integer.toString(i), i);
+                            prmTextArray[i] = new PrmTextItem(Integer.toString(i), i);
                         }
                         return prmTextArray;
                     }
@@ -933,10 +933,10 @@ public class ModuleEditor extends AbstractNodeEditor {
             public int compare(@Nullable final Viewer viewer,
                                @Nullable final Object e1,
                                @Nullable final Object e2) {
-                if ( (e1 instanceof PrmText) && (e2 instanceof PrmText)) {
-                    PrmText eUPD1 = (PrmText) e1;
-                    PrmText eUPD2 = (PrmText) e2;
-                    return eUPD1.getValue() - eUPD2.getValue();
+                if ( (e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
+                    PrmTextItem eUPD1 = (PrmTextItem) e1;
+                    PrmTextItem eUPD2 = (PrmTextItem) e2;
+                    return eUPD1.getIndex() - eUPD2.getIndex();
                 }
                 return super.compare(viewer, e1, e2);
             }
@@ -947,7 +947,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         }
         prmTextCV.setInput(extUserPrmData);
         if (prmTextMap != null) {
-            PrmText prmText = prmTextMap.get(localValue);
+            PrmTextItem prmText = prmTextMap.get(localValue);
             if (prmText != null) {
                 prmTextCV.setSelection(new StructuredSelection(prmTextMap.get(localValue)));
             } else {
@@ -966,7 +966,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      * @param prmTextCV
      */
     private void setModify(@Nonnull final ComboViewer prmTextCV) {
-        PrmText prmText = (PrmText) ((StructuredSelection) prmTextCV.getSelection())
+        PrmTextItem prmText = (PrmTextItem) ((StructuredSelection) prmTextCV.getSelection())
                 .getFirstElement();
         ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
         String index = extUserPrmData.getIndex();
@@ -977,7 +977,7 @@ public class ModuleEditor extends AbstractNodeEditor {
 
         int val = 0;
         if (prmText != null) {
-            val = prmText.getValue();
+            val = prmText.getIndex();
         }
         gsdModule.addModify(bytePos, bitMin, bitMax, val);
     }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.annotation.CheckForNull;
@@ -16,15 +17,13 @@ import javax.annotation.Nonnull;
  * @author hrickens
  *
  */
-public class ParsedGsdFileModel {
+public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
 
     private final String _name;
-    private final Map<String, String> _stringValueMap;
-    private final Map<String, Integer> _intergerValueMap;
-    private final Map<String, List<Integer>> _intArrayValueMap;
     private final Map<Integer, PrmText> _prmTextMap;
     private final Map<Integer, GsdModuleModel2> _gsdModuleModelMap;
     private final Map<Integer, ExtUserPrmData> _gsdExtUserPrmData;
+    private final SortedMap<Integer, Integer> _gsdExtUserPrmDataConst;
     
 
     /**
@@ -33,12 +32,10 @@ public class ParsedGsdFileModel {
      */
     public ParsedGsdFileModel(@Nonnull String name) {
         _name = name;
-        _stringValueMap = new HashMap<String, String>();
-        _intergerValueMap = new HashMap<String, Integer>();
-        _intArrayValueMap = new HashMap<String, List<Integer>>();
         _prmTextMap = new TreeMap<Integer, PrmText>();
         _gsdModuleModelMap = new TreeMap<Integer, GsdModuleModel2>();
         _gsdExtUserPrmData = new HashMap<Integer, ExtUserPrmData>();
+        _gsdExtUserPrmDataConst = new TreeMap<Integer, Integer>();
     }
 
     @Nonnull 
@@ -58,17 +55,6 @@ public class ParsedGsdFileModel {
         getPrmTextMap().put(prmText.getIndex(), prmText);
     }
 
-    private void setIntArrayValue(@Nonnull KeyValuePair keyValuePair) {
-        List<Integer> valueList = new ArrayList<Integer>();
-        GsdFileParser.addValues2IntList(keyValuePair.getValue(), valueList);
-        _intArrayValueMap.put(keyValuePair.getKey(), valueList);
-    }
-
-    private void setIntegerValue(@Nonnull KeyValuePair keyValuePair) {
-        Integer inValue = GsdFileParser.gsdValue2Int(keyValuePair.getValue());
-        _intergerValueMap.put(keyValuePair.getKey(), inValue);
-    }
-
     /**
      * @param gsdModuleModel
      */
@@ -79,26 +65,34 @@ public class ParsedGsdFileModel {
         }
     }
 
-    /**
-     * Sets the property according to their type. (type-safe)
-     */
-    public void setProperty(@Nonnull KeyValuePair keyValuePair) {
-        String value = keyValuePair.getValue();
-        if(value.startsWith("\"")) {
-            setStringValue(keyValuePair);
-        } else if(value.contains(",")) {
-            setIntArrayValue(keyValuePair);
-        } else {
-            setIntegerValue(keyValuePair);
-        }
-    }
-
-    private void setStringValue(@Nonnull KeyValuePair keyValuePair) {
-        _stringValueMap.put(keyValuePair.getKey(), keyValuePair.getValue());
-    }
-
     public void setExtUserPrmData(@Nonnull ExtUserPrmData extUserPrmData) {
         _gsdExtUserPrmData.put(extUserPrmData.getIndex(), extUserPrmData);
+    }
+
+    public void setExtUserPrmDataConst(@Nonnull KeyValuePair keyValuePair) {
+        String stringValue = keyValuePair.getValue();
+        Integer index = keyValuePair.getIndex();
+        if(stringValue.contains(",")) {
+            List<Integer> valueList = new ArrayList<Integer>();
+            GsdFileParser.addValues2IntList(keyValuePair.getValue(), valueList);
+            for (Integer value : valueList) {
+                _gsdExtUserPrmDataConst.put(index++, value);
+            }
+        } else {
+            _gsdExtUserPrmDataConst.put(index, keyValuePair.getIntValue());
+        }
+    }
+    
+    public List<Integer> getExtUserPrmDataConst() {
+        List<Integer> valueList = new ArrayList<Integer>();
+        for (int i = 0; i < _gsdExtUserPrmDataConst.lastKey(); i++) {
+            Integer value = _gsdExtUserPrmDataConst.get(i);
+            if (value == null) {
+                value=0;
+            }
+            valueList.add(value);
+        }
+        return valueList; 
     }
     
     @CheckForNull
@@ -108,23 +102,10 @@ public class ParsedGsdFileModel {
     }
 
     @CheckForNull
-    List<Integer> getIntListValue(@Nonnull String propertty) {
-        return _intArrayValueMap.get(propertty);
-    }
-
-    @CheckForNull
-    String getStringValue(@Nonnull String propertty) {
-        return _stringValueMap.get(propertty);
-    }
-
-    @CheckForNull
-    Integer getIntValue(@Nonnull String propertty) {
-        return _intergerValueMap.get(propertty);
-    }
-
-    @CheckForNull
     public GsdModuleModel2 getModule(@Nonnull Integer moduleNumber) {
         return _gsdModuleModelMap.get(moduleNumber);
     }
+    
+    
     
 }

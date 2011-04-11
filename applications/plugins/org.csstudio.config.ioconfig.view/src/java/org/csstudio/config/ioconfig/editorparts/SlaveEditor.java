@@ -53,7 +53,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -431,7 +431,7 @@ public class SlaveEditor extends AbstractNodeEditor {
             int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
             ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
             StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-            Integer bitValue = ((PrmText) selection.getFirstElement()).getValue();
+            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
             String newValue = setValue2BitMask(input, bitValue, _slave.getPrmUserDataList()
                     .get(byteIndex));
             _slave.setPrmUserDataByte(byteIndex, newValue);
@@ -663,7 +663,7 @@ public class SlaveEditor extends AbstractNodeEditor {
     private ComboViewer makeComboViewer(@Nonnull final Composite parent,
                                         @Nullable final Integer value,
                                         @Nonnull final ExtUserPrmData extUserPrmData,
-                                        @CheckForNull final HashMap<Integer, PrmText> prmTextMap,
+                                        @CheckForNull final HashMap<Integer, PrmTextItem> prmTextMap,
                                         @Nonnull final String byteIndex) {
         Integer localValue = value;
         
@@ -682,7 +682,7 @@ public class SlaveEditor extends AbstractNodeEditor {
         prmTextCV.setInput(extUserPrmData);
         
         if (prmTextMap != null) {
-            PrmText prmText = prmTextMap.get(localValue);
+            PrmTextItem prmText = prmTextMap.get(localValue);
             if (prmText != null) {
                 prmTextCV.setSelection(new StructuredSelection(prmTextMap.get(localValue)));
             } else {
@@ -777,7 +777,7 @@ public class SlaveEditor extends AbstractNodeEditor {
     private void makeCurrentUserParamDataItem(@Nonnull final Composite currentUserParamDataGroup,
                                               @Nullable final ExtUserPrmData extUserPrmData,
                                               @Nullable final Integer value, @Nonnull final String byteIndex) {
-        HashMap<Integer, PrmText> prmTextMap = null;
+        HashMap<Integer, PrmTextItem> prmTextMap = null;
         
         Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
         
@@ -1320,12 +1320,12 @@ public class SlaveEditor extends AbstractNodeEditor {
         public Object[] getElements(@Nullable final Object inputElement) {
             if (inputElement instanceof ExtUserPrmData) {
                 ExtUserPrmData eUPD = (ExtUserPrmData) inputElement;
-                HashMap<Integer, PrmText> prmText = eUPD.getPrmText();
+                HashMap<Integer, PrmTextItem> prmText = eUPD.getPrmText();
                 if (prmText == null) {
-                    PrmText[] prmTextArray = new PrmText[eUPD.getMaxValue() - eUPD.getMinValue()
+                    PrmTextItem[] prmTextArray = new PrmTextItem[eUPD.getMaxValue() - eUPD.getMinValue()
                             + 1];
                     for (int i = eUPD.getMinValue(); i <= eUPD.getMaxValue(); i++) {
-                        prmTextArray[i] = new PrmText(Integer.toString(i), i);
+                        prmTextArray[i] = new PrmTextItem(Integer.toString(i), i);
                     }
                     return prmTextArray;
                 }
@@ -1342,7 +1342,7 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
     
     /**
-     * {@link PrmText} Label provider that mark the default selection with a
+     * {@link PrmTextItem} Label provider that mark the default selection with a
      * '*'. The {@link ExtUserPrmData} give the default.
      * 
      * @author hrickens
@@ -1367,9 +1367,9 @@ public class SlaveEditor extends AbstractNodeEditor {
          */
         @Override
         public String getText(@Nullable Object element) {
-            if (element instanceof PrmText) {
-                PrmText prmText = (PrmText) element;
-                if (prmText.getValue() == _extUserPrmData.getDefault()) {
+            if (element instanceof PrmTextItem) {
+                PrmTextItem prmText = (PrmTextItem) element;
+                if (prmText.getIndex() == _extUserPrmData.getDefault()) {
                     return "*" + element.toString();
                 }
             }
@@ -1378,7 +1378,7 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
     
     /**
-     * {@link PrmText} Sorter
+     * {@link PrmTextItem} Sorter
      * 
      * @author hrickens
      * @author $Author: $
@@ -1395,10 +1395,10 @@ public class SlaveEditor extends AbstractNodeEditor {
         @Override
         public int compare(@Nullable final Viewer viewer, @Nullable final Object e1,
                            @Nullable final Object e2) {
-            if ( (e1 instanceof PrmText) && (e2 instanceof PrmText)) {
-                PrmText eUPD1 = (PrmText) e1;
-                PrmText eUPD2 = (PrmText) e2;
-                return eUPD1.getValue() - eUPD2.getValue();
+            if ( (e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
+                PrmTextItem eUPD1 = (PrmTextItem) e1;
+                PrmTextItem eUPD2 = (PrmTextItem) e2;
+                return eUPD1.getIndex() - eUPD2.getIndex();
             }
             return super.compare(viewer, e1, e2);
         }

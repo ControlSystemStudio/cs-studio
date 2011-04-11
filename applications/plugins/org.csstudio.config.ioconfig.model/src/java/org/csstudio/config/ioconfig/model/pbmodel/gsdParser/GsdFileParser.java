@@ -494,7 +494,7 @@ public final class GsdFileParser {
     /**
      * Default Constructor.
      */
-    GsdFileParser() {
+    public GsdFileParser() {
         // Constructor
     }
     
@@ -563,14 +563,14 @@ public final class GsdFileParser {
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-                //TODO set Ext_User_Prm_Data_Const
+                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-                //TODO set Ext_User_Prm_Data_Ref
+                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Info_Text")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-                //TODO set Info_Text. If this information required or can it be ignored?
+                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "F_ParamDescCRC")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
                 //TODO set F_ParamDescCRC. If this information required or can it be ignored?
@@ -627,7 +627,7 @@ public final class GsdFileParser {
     
     private void buildSlotDefinition(@Nonnull String line,
                                      @Nonnull LineCounter lineCounter,
-                                     @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                     @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
      // XXX (hrickens) [28.03.2011]:  buildSlotDefinition. If this information required or can it be ignored?
         String tmpLine = line;
@@ -640,7 +640,7 @@ public final class GsdFileParser {
     
     private void buildUnitDiagArea(@Nonnull String line,
                                    @Nonnull LineCounter lineCounter,
-                                   @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                   @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull BufferedReader br) throws IOException {
         // XXX (hrickens) [28.03.2011]: buildUnitDiagArea. If this information required or can it be ignored? 
         String tmpLine = line;
@@ -654,7 +654,7 @@ public final class GsdFileParser {
     
     private void buildUnitDiagType(@Nonnull String line,
                                    @Nonnull LineCounter lineCounter,
-                                   @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                   @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull BufferedReader br) throws IOException {
      // XXX (hrickens) [28.03.2011]: buildUnitDiagType. If this information required or can it be ignored?
         String tmpLine = line;
@@ -676,7 +676,7 @@ public final class GsdFileParser {
      * @throws IOException 
      */
     @Nonnull
-    private ParsedGsdFileModel parse(@Nonnull BufferedReader br,
+    private AbstractGsdPropertyModel parse(@Nonnull BufferedReader br,
                                      @Nonnull ParsedGsdFileModel parsedGsdFileModel) throws IOException {
         String line;
         LineCounter lineCounter = new LineCounter();
@@ -719,7 +719,7 @@ public final class GsdFileParser {
      * @throws IOException 
      */
     @Nonnull
-    public ParsedGsdFileModel parse(@Nonnull GSDFileDBO gsdFileDBO) throws IOException {
+    public AbstractGsdPropertyModel parse(@Nonnull GSDFileDBO gsdFileDBO) throws IOException {
         StringReader sr = new StringReader(gsdFileDBO.getGSDFile());
         BufferedReader br = new BufferedReader(sr);
         try {
