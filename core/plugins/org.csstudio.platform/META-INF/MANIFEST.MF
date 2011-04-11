@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.data;bundle-version="1.0.0";visibility:=reexport,
  org.csstudio.platform.workspace,
  org.eclipse.equinox.security,
- javax.annotation,
  org.csstudio.platform.libs.log4j;visibility:=reexport
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
@@ -30,7 +29,6 @@ Export-Package: org.csstudio.platform,
  org.csstudio.platform.service.osgi,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
- org.csstudio.platform.test,
  org.csstudio.platform.util,
  org.jdom,
  org.jdom.adapters,
