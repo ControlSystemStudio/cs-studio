@@ -8,6 +8,7 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.adl2boy.utilities.TextUtilities;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -31,14 +32,23 @@ public class TextUpdate2Model extends AbstractADL2Model {
 			setADLMonitorProps(textUpdateWidget, widgetModel);
 		}
 		TextUtilities.setWidgetFont((LabelModel)widgetModel);
-
 		TextUtilities.setAlignment((LabelModel)widgetModel, textUpdateWidget);
 		TextUtilities.setFormat((TextIndicatorModel)widgetModel, textUpdateWidget);
+
 		//TODO Add limits to TextUpdate2Model
 		TranslatorUtils.printNotHandledWarning(className, "limits" );
-		
-		//TODO Add color mode to TextUpdate2Model
-		TranslatorUtils.printNotHandledWarning(className, "color mode" );
+		//set color mode
+		String color_mode = textUpdateWidget.getColor_mode();
+		if ( color_mode.equals("static") ){
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+		}
+		else if (color_mode.equals("alarm") ){
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, true);
+		}
+		else if (color_mode.equals("discrete") ){
+			widgetModel.setPropertyValue(AbstractPVWidgetModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
+			//TODO TextEntry2Model Figure out what to do if colorMode is discrete
+		}
 	}
 
 	@Override

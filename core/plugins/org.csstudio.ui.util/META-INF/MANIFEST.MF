@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SWT/JFace utilities
+Bundle-Description: Helper classes for Drag-and-Drop support, adapting selections, ...
+Bundle-SymbolicName: org.csstudio.ui.util
+Bundle-Version: 0.0.1.qualifier
+Bundle-Vendor: Gabriele Carcassi, Kay Kasemir  <carcassi@bnl.gov>,<kasemirk@ornl.gov - BNL, SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.jface;bundle-version="3.6.0",
+ org.junit,
+ org.eclipse.core.runtime;bundle-version="3.6.0"
+Export-Package: org.csstudio.ui.util,
+ org.csstudio.ui.util.dnd,
+ org.csstudio.ui.util.helpers,
+ org.csstudio.ui.util.widgets
+Bundle-Activator: org.csstudio.ui.util.Activator
+Bundle-ActivationPolicy: lazy

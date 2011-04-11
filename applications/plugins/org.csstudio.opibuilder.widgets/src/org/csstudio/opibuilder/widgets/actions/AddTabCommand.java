@@ -33,7 +33,7 @@ public class AddTabCommand extends Command {
 	@Override
 	public void execute() {
 		if(tabItem == null)
-			tabItem = new TabItem(tabIndex);
+			tabItem = new TabItem(tabModel, tabIndex);
 		tabModel.addTab(tabIndex, tabItem);
 	}
 	

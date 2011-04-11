@@ -60,6 +60,10 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
+	
+	private static String nullToEmpty(String string) {
+		return string == null ? "" : string;
+	}
 
 	public void installCFPreferences() {
 		final IPreferencesService prefs = Platform.getPreferencesService();
@@ -72,11 +76,9 @@ public class Activator extends AbstractUIPlugin {
 				PreferenceConstants.Username, "", null));
 		preferences.put(
 				"password",
-				SecureStorage.retrieveSecureStorage(Activator.PLUGIN_ID,
-						PreferenceConstants.Password) == null ? ""
-						: SecureStorage.retrieveSecureStorage(
+				nullToEmpty(SecureStorage.retrieveSecureStorage(
 								Activator.PLUGIN_ID,
-								PreferenceConstants.Password));
+								PreferenceConstants.Password)));
 	}
 
 }

@@ -108,7 +108,7 @@ public abstract class TypeSupport<T> {
         TypeSupportMap supportMap = allTypeSupports.get(supportFamily);
         
         if (supportMap == null || calcSupportMap == null) {
-            throw new RuntimeException("No type support found for family " + supportFamily, null);
+            throw new RuntimeException("No " + supportFamily.getSimpleName() + " support found for " + typeClass , null);
         }
 
         // If we get the cached support for a specific type,

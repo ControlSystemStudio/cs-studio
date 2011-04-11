@@ -26,12 +26,15 @@ import org.epics.pvmanager.ValueCache;
 class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType> {
 
     private Class<VType> cacheType;
+    private final int monitorMask;
 
     protected JCAProcessor(final Channel channel, Collector collector,
-            ValueCache<VType> cache, final ExceptionHandler handler)
+            ValueCache<VType> cache, final ExceptionHandler handler,
+            int monitorMask)
             throws CAException {
         super(collector, cache, handler);
         this.cacheType = cache.getType();
+        this.monitorMask = monitorMask;
 
         // Need to wait for the connection to be established
         // before reading the metadata
@@ -77,9 +80,9 @@ class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType>
                 metadata = channel.get(vTypeFactory.getEpicsMetaType(), 1);
             }
             if (vTypeFactory.isArray()) {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), Monitor.VALUE, monitorListener);
+                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
             } else {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, Monitor.VALUE, monitorListener);
+                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
             }
             channel.getContext().flushIO();
         }

@@ -92,10 +92,9 @@ The MEDM widgets map to the following BOY widgets:
 			</tr>
 			<tr>
 				<td>Text Monitor</td><td>Text Update</td>
-				<td>Alignment not handled<br/>
-				Limits not handled<br/>
-				Format not handled<br></br>
-				Color mode not handled</td>
+				<td>Limits not handled<br/>Not 
+				all Format options handled<br></br>
+				Not all color modes are handled</td>
 			</tr>
 			<tr>
 				<td>Cartesian Plot</td><td>XY Graph</td>
@@ -127,12 +126,12 @@ The MEDM widgets map to the following BOY widgets:
 			<tr>
 				<td>Text Entry</td><td>Text Input</td>
 				<td>Limits not handled<br>
-				format not handled<br/>
+				Not all format options handled<br/>Not all
 				color mode not handled</td>
 			</tr>
 			<tr>
 				<td>Menu</td><td>Menu Button</td>
-				<td>See conversion of <a href="#color_mode">color mode</a></td>
+				<td>See conversion of <a href="#color_mode">color mode</a><br>On some platforms MEDM does not set the color.  This option was added to prevent<br>interactions with CDE.  If the color was set in MEDM this color will be used in the<br>conversion.  Comparison on some platforms may indicate a problem.  The Windows<br>MEDM distribution seems to have display the colors properly.</td>
 			</tr>
 			<tr>
 				<td>Related Display</td><td>Action Button</td>

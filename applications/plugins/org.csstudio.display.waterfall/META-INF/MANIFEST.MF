@@ -8,9 +8,9 @@ Bundle-Description: View that creates a waterfall plot of a given waveform chann
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager.widgets;bundle-version="[1.0.0,2.0.0)",
- org.csstudio.apputil.ui;bundle-version="[1.1.5,2.0.0)",
- org.csstudio.platform,
- org.csstudio.ui.menu
+ org.csstudio.ui.menu,
+ org.csstudio.csdata;bundle-version="0.0.1",
+ org.csstudio.ui.util;bundle-version="0.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

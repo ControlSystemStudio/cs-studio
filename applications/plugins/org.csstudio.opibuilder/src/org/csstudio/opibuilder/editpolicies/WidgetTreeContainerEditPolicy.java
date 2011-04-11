@@ -90,7 +90,7 @@ public class WidgetTreeContainerEditPolicy extends TreeContainerEditPolicy {
 			Rectangle r, int index, String label){
 		
 		WidgetCreateCommand cmd = new WidgetCreateCommand(
-				widgetModel, (AbstractContainerModel) getHost().getModel(), r, false);
+				widgetModel, (AbstractContainerModel) getHost().getModel(), r, false, true);
 		cmd.setLabel(label);
 		cmd.setIndex(index);
 		return cmd;

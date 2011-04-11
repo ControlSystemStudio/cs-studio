@@ -63,7 +63,7 @@ public class DropPVtoContainerEditPolicy extends DropPVtoPVWidgetEditPolicy {
 								getWidgetDescriptor(typeID).getWidgetModel();												
 							command.add(new WidgetCreateCommand(widgetModel, container,
 									new Rectangle(location.getCopy().translate(lastWidth, lastHeight),
-											new Dimension(-1, -1)), i!=1));
+											new Dimension(-1, -1)), i!=1, true));
 							command.add(new SetWidgetPropertyCommand(widgetModel, 
 									AbstractPVWidgetModel.PROP_PVNAME, pvName.trim()));
 							if(i%WIDGETS_ACCOUNT_ON_A_ROW == 0){

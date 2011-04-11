@@ -44,6 +44,8 @@ public class PreferencesHelper {
 	public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
 	public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
 	public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
+	public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
+	
 
 	private static final char ROW_SEPARATOR = '|'; 
 	private static final char ITEM_SEPARATOR = ','; 
@@ -100,6 +102,20 @@ public class PreferencesHelper {
     			return new URLPath(probeOPIPath);
     		else
     			return new Path(probeOPIPath);
+    	}
+    	return null;
+    }
+    
+    /**Get the schema OPI path from preference store.
+     * @return the schema OPI path. null if not specified.
+     */
+    public static IPath getSchemaOPIPath(){
+    	String schemaOPIPath = getString(SCHEMA_OPI);
+    	if(schemaOPIPath != null){
+    		if(ResourceUtil.isURL(schemaOPIPath))
+    			return new URLPath(schemaOPIPath);
+    		else
+    			return new Path(schemaOPIPath);
     	}
     	return null;
     }

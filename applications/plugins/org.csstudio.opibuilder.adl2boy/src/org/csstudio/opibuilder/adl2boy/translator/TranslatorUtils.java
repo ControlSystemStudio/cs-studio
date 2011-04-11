@@ -120,6 +120,9 @@ public class TranslatorUtils {
 						setDefaultBasicAttribute(child);
 					}
 				}
+				else if (widgetType.equals("shell command")){
+					printNotHandledMessage(widgetType);
+				}
 				else if (widgetType.equals("dynamic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
 					for (ADLWidget child : children){
@@ -168,51 +171,6 @@ public class TranslatorUtils {
 	public static void printNotHandledWarning(String translator, String message){
 		System.out.println("---Warning - " + translator + ": " + message + " is not handled" );
 	}
-	public static int convertTextHeightToFontSize(int h){
-		if (h < 9) {
-			return 6;
-		}
-		else if (h < 10 ){
-			return 6;
-		}
-		else if (h < 13) {
-			return 8;
-		}
-		else if (h < 14) {
-			return 9;
-		}
-		else if (h < 15) {
-			return 10;
-		}
-		else if (h < 16) {
-			return 12;
-		}
-		else if (h < 20) {
-			return 14;
-		}
-		else if (h < 21) {
-			return 16;
-		}
-		else if (h < 24) {
-			return 18;
-		}
-		else if (h < 26) {
-			return 18;
-		}
-		else if (h < 27) {
-			return 20;
-		}
-		else if (h < 35) {
-			return 24;
-		}
-		else if (h < 36) {
-			return 26;
-		}
-		else {
-			return 30;
-		}
-	}
-
 	public static ADLBasicAttribute getDefaultBasicAttribute(){
 		return TranslatorUtils.defaultBasicAttribute;
 	}
@@ -234,6 +192,7 @@ public class TranslatorUtils {
 	 * @return
 	 */
 	public static DisplayModel convertAdlToModel(String fullADLFileName) {
+		File adlFile = new File(fullADLFileName);
 		ADLWidget root = ParserADL.getNextElement(new File(fullADLFileName));
 		// Get the color map
 		RGB[] colorMap = getColorMap(root);
@@ -243,7 +202,8 @@ public class TranslatorUtils {
 		//Dynamic and basic attribute are static in Translator utils to allow for defaults to be set (used before vers 020200)
 		initDefaultBasicAttribute();
 		initDefaultDynamicAttribute();
-		
+
+		displayModel.setName(adlFile.getName().substring(0, adlFile.getName().indexOf(".")));
 		ConvertChildren(root.getObjects(), displayModel, colorMap);
 		return displayModel;
 	}

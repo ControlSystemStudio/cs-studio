@@ -141,37 +141,146 @@ public abstract class AbstractADL2Model {
 		if (!(dynAttr.get_vis().equals("static"))) {
 			if (dynAttr.get_chan() != null) {
 				if (dynAttr.get_vis().equals("if not zero")) {
-					RulesInput ruleInput = widgetModel.getRulesInput();
-					List<RuleData> ruleData = ruleInput.getRuleDataList();
-					RuleData newRule = new RuleData(widgetModel);
-					PVTuple pvs = new PVTuple(dynAttr.get_chan(), true);
-					newRule.addPV(pvs);
-					newRule.addExpression(new Expression("pv0==0", false));
-					ruleData.add(newRule);
-					newRule.setName("Visibility");
-					newRule.setPropId(AbstractWidgetModel.PROP_VISIBLE);
-					widgetModel.setPropertyValue(
-							AbstractWidgetModel.PROP_RULES, ruleData);
+					addSimpleVisibilityRule("pv0==0", dynAttr.get_chan(),
+							widgetModel);
 				} else if (dynAttr.get_vis().equals("if zero")) {
-					RulesInput ruleInput = widgetModel.getRulesInput();
-					List<RuleData> ruleData = ruleInput.getRuleDataList();
-					RuleData newRule = new RuleData(widgetModel);
-					PVTuple pvs = new PVTuple(dynAttr.get_chan(), true);
-					newRule.addPV(pvs);
-					newRule.addExpression(new Expression("!(pv0==0)", false));
-					newRule.setName("Visibility");
-					newRule.setPropId(AbstractWidgetModel.PROP_VISIBLE);
-					ruleData.add(newRule);
-					widgetModel.setPropertyValue(
-							AbstractWidgetModel.PROP_RULES, ruleData);
-
+					addSimpleVisibilityRule("!(pv0==0)", dynAttr.get_chan(),
+							widgetModel);
 				} else if (dynAttr.get_vis().equals("calc")) {
-					// TODO Figure out calc option on dynamic attributes
-					// AbstractADL2Model
+					RuleData newRule = createNewVisibilityRule(widgetModel);
+
+					addPVToRule(dynAttr.get_chan(), newRule);
+					addPVToRule(dynAttr.get_chanb(), newRule);
+					addPVToRule(dynAttr.get_chanc(), newRule);
+					addPVToRule(dynAttr.get_chand(), newRule);
+					String newExpr = translateExpression(dynAttr.get_calc());
+					newRule.addExpression(new Expression(newExpr, false));
+
+					addVisibilityRuleToWidgetModel(newRule, widgetModel);
 				}
 			}
 		}
 
+	}
+
+	private void addVisibilityRuleToWidgetModel(RuleData newRule,
+			AbstractWidgetModel widgetModel) {
+		RulesInput ruleInput = widgetModel.getRulesInput();
+		List<RuleData> ruleData = ruleInput.getRuleDataList();
+		ruleData.add(newRule);
+
+		widgetModel.setPropertyValue(
+				AbstractWidgetModel.PROP_RULES, ruleData);
+	}
+
+	/** Create a simple visibility rule.  This places a simple logical
+	 * expression for one channel
+	 * @param booleanExpression
+	 * @param chan
+	 * @param widgetModel
+	 * @return
+	 */
+	private void addSimpleVisibilityRule(String booleanExpression,
+			String chan, AbstractWidgetModel widgetModel) {
+		RuleData newRule = createNewVisibilityRule(widgetModel);
+		PVTuple pvs = new PVTuple(chan, true);
+		newRule.addPV(pvs);
+		newRule.addExpression(new Expression(booleanExpression, false));
+		addVisibilityRuleToWidgetModel(newRule, widgetModel);
+	}
+
+
+	/**
+	 * Create a new empty visibility rule.
+	 * @param widgetModel
+	 * @return
+	 */
+	private RuleData createNewVisibilityRule(AbstractWidgetModel widgetModel) {
+		RuleData newRule = new RuleData(widgetModel);
+		newRule.setName("Visibility");
+		newRule.setPropId(AbstractWidgetModel.PROP_VISIBLE);
+		return newRule;
+	}
+
+
+	/**
+	 * Perform a translation between an MEDM style 
+	 * calc expression for visibility rules.  Makes 
+	 * the following assumptions
+	 * 1. The rule is fairy simple. The only
+	 *    alpha characters are A, B, C & D
+	 * 2. That the pv fields A, B, C & D are 
+	 *    used sequentially. (i.e. If B is used
+	 *    A is used, if C is used A & Bare used).
+	 *    This allows the substitutions
+	 *        A = pv0
+	 *        B = pv1
+	 *        C = pv2
+	 *        D = PV3
+	 * 3. Only basic desion maiking is hapenning
+	 *    ()+-/*=<># were used.  No use of math
+	 *    functions like ABS, SIN, ...
+	 * 4. The characters = and # are replaced by 
+	 *    == and != respecively.
+	 * @param adlExpr
+	 * @return
+	 */
+	private String translateExpression(String adlExpr) {
+		String opiExpr = adlExpr;
+		opiExpr = replaceChannel("A", "pv0", opiExpr);
+		opiExpr = replaceChannel("B", "pv1", opiExpr);
+		opiExpr = replaceChannel("C", "pv2", opiExpr);
+		opiExpr = replaceChannel("D", "pv3", opiExpr);
+		opiExpr = replaceString("=", "==", opiExpr);
+		opiExpr = replaceString("#", "!=", opiExpr);
+		return opiExpr.toString();
+	}
+
+	/**
+	 * 
+	 * @param adlChanName
+	 * @param opiChanName
+	 * @param opiExpr
+	 * @return
+	 */
+	private String replaceChannel(String adlChanName, String opiChanName,
+			String opiExpr) {
+		opiExpr = replaceString(adlChanName, opiChanName, opiExpr);
+		opiExpr = replaceString(adlChanName.toLowerCase(), opiChanName, opiExpr);
+		return opiExpr;
+	}
+
+	private String replaceString(String inName, String outName, String expr) {
+		String retExpr = expr;
+		if (retExpr.contains(inName)){
+			StringBuffer tempExpr = new StringBuffer();
+			String[] parts = retExpr.split(inName);
+			tempExpr.append(parts[0]);
+			for (int occur = 0; occur<(parts.length-1); occur++){
+				if (!inName.equals("=") ||
+						(inName.equals("=") &&
+						(tempExpr.toString().endsWith(">") 
+								|| tempExpr.toString().endsWith(">")))
+						)
+				{
+					tempExpr.append(outName);
+					tempExpr.append(parts[occur+1]);
+				} else 
+				{
+					tempExpr.append("=");
+					tempExpr.append(parts[occur+1]);					
+				}
+			}
+			retExpr = tempExpr.toString();
+		} 
+		return retExpr;
+	}
+
+	private void addPVToRule(String chan, RuleData newRule) {
+		if (!chan.equals("")){
+			PVTuple pvs = new PVTuple(chan, true);
+			newRule.addPV(pvs);
+		}
 	}
 
 	/**
