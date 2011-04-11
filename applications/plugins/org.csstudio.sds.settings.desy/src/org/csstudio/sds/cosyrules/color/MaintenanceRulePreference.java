@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.settings.desy.Activator;
 import org.eclipse.core.resources.IResource;

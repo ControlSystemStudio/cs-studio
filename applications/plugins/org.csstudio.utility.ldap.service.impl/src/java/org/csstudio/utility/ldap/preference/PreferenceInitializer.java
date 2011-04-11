@@ -23,7 +23,7 @@ package org.csstudio.utility.ldap.preference;
 
 import java.util.List;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;

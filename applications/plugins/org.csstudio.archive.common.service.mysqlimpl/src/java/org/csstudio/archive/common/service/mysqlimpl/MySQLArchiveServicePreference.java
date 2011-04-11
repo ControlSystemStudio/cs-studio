@@ -23,7 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for archive service preferences (mimicked enum with inheritance).

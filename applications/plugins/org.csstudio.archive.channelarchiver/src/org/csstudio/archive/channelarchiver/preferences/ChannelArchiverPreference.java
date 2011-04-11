@@ -23,7 +23,7 @@
  */
 package org.csstudio.archive.channelarchiver.preferences;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for channel archiver preferences
