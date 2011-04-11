@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
@@ -224,9 +221,8 @@ public final class StringUtil {
      * @param separator the separator character to use, null treated as ""
      * @return the joined String, <code>null</code> if null array input
      */
-	@CheckForNull
-    public static String join(@CheckForNull final Object[] array,
-                              @CheckForNull final String sep) {
+    public static String join(final Object[] array,
+                              final String sep) {
         if (array == null) {
             return null;
         }
@@ -258,9 +254,8 @@ public final class StringUtil {
      * @return the joined string with separated entries
      * @throws NamingException
      */
-    @CheckForNull
-    public static String join(@CheckForNull final NamingEnumeration<String> values,
-                              @CheckForNull final String separator) throws NamingException {
+    public static String join(final NamingEnumeration<String> values,
+                              final String separator) throws NamingException {
 
         final String sep = separator != null ? separator : "";
 
@@ -317,7 +312,7 @@ public final class StringUtil {
      * @param s the string 
      * @return the number of bytes of the unicode characters
      */
-    public static int getSizeInBytes(@Nullable final String s) {
+    public static int getSizeInBytes(final String s) {
         if (isBlank(s)) {
             return 0;
         }
