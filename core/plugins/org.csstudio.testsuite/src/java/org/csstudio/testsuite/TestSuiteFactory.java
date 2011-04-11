@@ -30,9 +30,9 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.platform.test.TestProviderException;
 import org.csstudio.platform.util.StringUtil;
+import org.csstudio.testsuite.util.TestDataProvider;
+import org.csstudio.testsuite.util.TestProviderException;
 
 /**
  * Factory for test suites that collect test classes over all existing bundles.
