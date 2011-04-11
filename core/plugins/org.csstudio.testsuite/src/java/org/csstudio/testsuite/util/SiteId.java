@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.platform.test;
+package org.csstudio.testsuite.util;
 
 import javax.annotation.Nonnull;
 
