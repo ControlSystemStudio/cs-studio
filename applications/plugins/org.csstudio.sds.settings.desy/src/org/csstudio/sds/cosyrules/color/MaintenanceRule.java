@@ -3,8 +3,6 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import java.util.Map;
-
 import org.csstudio.sds.model.IRule;
 import org.eclipse.core.runtime.IPath;
 
@@ -14,23 +12,20 @@ import org.eclipse.core.runtime.IPath;
  */
 public class MaintenanceRule implements IRule {
 
-    private static final IPath DEFAULT_PATH = null;
-    private Map<String, IPath> _rTypUrlMap;
+    private static IPath DEFAULT_PATH;
+    private IPath _dispayPath = null;
+    private String _preFileName = null;
+//    private Map<String, IPath> _rTypUrlMap;
 
     /**
      * 
      */
     public MaintenanceRule() {
-        init();
+        DEFAULT_PATH = MaintenanceRulePreference.getUnknownDispayPath();
+        _dispayPath = MaintenanceRulePreference.getDispayPath();
+        _preFileName = MaintenanceRulePreference.getPreFileName();
     }
     
-    /**
-     * 
-     */
-    private void init() {
-        _rTypUrlMap = MaintenanceRulePreference.getRTypUrlMap();
-    }
-
     /* (non-Javadoc)
      * @see org.csstudio.sds.model.IRule#evaluate(java.lang.Object[])
      */
@@ -38,9 +33,10 @@ public class MaintenanceRule implements IRule {
     public Object evaluate(Object[] arguments) {
         IPath iPath =  DEFAULT_PATH;
         if(arguments.length>0) {
-            Object key = arguments[0];
-            if(_rTypUrlMap.containsKey(key)) {
-                iPath = _rTypUrlMap.get(key);
+            Object obj = arguments[0];
+            if (obj instanceof String) {
+                String rtyp = (String) obj;
+                iPath= _dispayPath.append(_preFileName+rtyp+".css-sds");
             }
         }
         return iPath;
