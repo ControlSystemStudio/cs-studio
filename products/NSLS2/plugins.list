@@ -18,6 +18,8 @@ org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
+org.csstudio.logging
+org.csstudio.logging.ui
 org.csstudio.multiChannelViewer
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
