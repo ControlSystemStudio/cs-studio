@@ -63,20 +63,26 @@ public final class TestDataProvider {
 
     private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";
 
+    public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
+
     private static TestDataProvider INSTANCE;
 
-    private static Properties PROPERTIES;
+    private static Properties PROPERTIES = new Properties();
 
     private final String _pluginId;
 
-
     /**
      * Constructor.
-     * @throws IOException
      */
-    private TestDataProvider(@Nonnull final String pluginId) throws IOException {
+    private TestDataProvider() {
+        _pluginId = "<emptyProvider>";
+    }
+    
+    /**
+     * Constructor.
+     */
+    private TestDataProvider(@Nonnull final String pluginId) {
         _pluginId = pluginId;
-        PROPERTIES = new Properties();
     }
 
     /**
