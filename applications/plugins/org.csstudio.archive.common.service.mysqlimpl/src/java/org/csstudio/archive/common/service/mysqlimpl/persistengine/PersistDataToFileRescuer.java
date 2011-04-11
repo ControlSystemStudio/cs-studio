@@ -22,7 +22,8 @@
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,7 @@ import com.google.common.collect.Lists;
 public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
 
     private static final String FILE_SUFFIX = ".sql";
-    private static final String SQL_STATEMENT_DELIMITER = ";";
+    public static final String SQL_STATEMENT_DELIMITER = ";";
 
     private final List<String> _statements;
 
@@ -65,11 +66,14 @@ public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
      * {@inheritDoc}
      */
     @Override
-    protected void writeToFile(@Nonnull final ObjectOutput output) throws IOException {
+    protected void writeToFile(@Nonnull final OutputStream outStream) throws IOException {
+
+        final OutputStreamWriter writer = new OutputStreamWriter(outStream);
         for (final String statement : _statements) {
-            output.writeChars(statement);
-            output.writeChars(SQL_STATEMENT_DELIMITER + "\n");
+            writer.write(statement);
+            writer.write(SQL_STATEMENT_DELIMITER + "\n");
         }
+        writer.close();
     }
 
     /**

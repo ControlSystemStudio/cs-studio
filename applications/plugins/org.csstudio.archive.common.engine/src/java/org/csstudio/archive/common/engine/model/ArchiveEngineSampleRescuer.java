@@ -24,6 +24,8 @@ package org.csstudio.archive.common.engine.model;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -63,8 +65,9 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
 
     @Override
-    protected void writeToFile(@Nonnull final ObjectOutput output) throws IOException {
-        output.writeObject(_samplesToBeSerialized);
+    protected void writeToFile(@Nonnull final OutputStream output) throws IOException {
+        final ObjectOutput objectOutput = new ObjectOutputStream(output);
+        objectOutput.writeObject(_samplesToBeSerialized);
     }
 
     /**

@@ -25,8 +25,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import javax.annotation.Nonnull;
@@ -56,12 +54,13 @@ public abstract class AbstractToFileDataRescuer {
         setTimeStamp(TimeInstantBuilder.fromNow());
     }
 
-
+    @Nonnull
     public DataRescueResult rescue() throws DataRescueException {
-        ObjectOutput output = null;
+        OutputStream output = null;
         try {
-            output = createObjectOutput();
+            output = createOutputStream();
             writeToFile(output);
+            output.flush();
         } catch (final Exception e) {
             return handleExceptionForRescueResult(e);
         } finally {
@@ -82,7 +81,7 @@ public abstract class AbstractToFileDataRescuer {
         return this;
     }
 
-    protected abstract void writeToFile(@Nonnull final ObjectOutput output) throws IOException;
+    protected abstract void writeToFile(@Nonnull final OutputStream output) throws IOException;
     @Nonnull
     protected abstract String composeRescueFileName();
     @Nonnull
@@ -95,7 +94,7 @@ public abstract class AbstractToFileDataRescuer {
     }
 
     @Nonnull
-    private ObjectOutput createObjectOutput() throws IOException {
+    private OutputStream createOutputStream() throws IOException {
         final String fileName = composeRescueFileName();
         final File path = _rescueDir;
 
@@ -103,7 +102,7 @@ public abstract class AbstractToFileDataRescuer {
 
         final OutputStream ostream = new FileOutputStream(_rescueFilePath);
         final OutputStream buffer = new BufferedOutputStream(ostream);
-        return new ObjectOutputStream(buffer);
+        return buffer;
     }
 
 
