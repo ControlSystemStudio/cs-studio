@@ -38,7 +38,6 @@ import org.junit.Test;
  */
 public class SampleAggregatorTest {
 
-    private static EpicsAlarm ALARM = new EpicsAlarm(EpicsAlarmSeverity.INVALID, EpicsAlarmStatus.BADSUB);
 
     @Test
     public void initTest() {

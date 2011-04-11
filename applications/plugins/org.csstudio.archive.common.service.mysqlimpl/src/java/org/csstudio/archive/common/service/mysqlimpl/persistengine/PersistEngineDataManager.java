@@ -21,11 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.EMAIL_ADDRESS;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +36,10 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
-import org.csstudio.email.EMailSender;
+import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
+import org.csstudio.archive.common.service.util.DataRescueException;
+import org.csstudio.archive.common.service.util.DataRescueResult;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
@@ -92,9 +92,6 @@ public enum PersistEngineDataManager {
     private Integer _prefPeriodInMS;
     private Integer _prefMaxAllowedPacketInBytes;
 
-    private String _prefMailHost;
-    private String _prefEmailReceiver;
-
     private PersistEngineDataManager() {
         loadAndCheckPreferences();
 
@@ -106,10 +103,9 @@ public enum PersistEngineDataManager {
 
         _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
         if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
-            LOG.info("fuup");
-//            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-//                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
-//                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
+            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
+                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
+                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
             _prefPeriodInMS = DEFAULT_PERIOD_MS;
         }
 
@@ -124,9 +120,6 @@ public enum PersistEngineDataManager {
         } else {
             _prefMaxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
         }
-
-        _prefMailHost = SMTP_HOST.getValue();
-        _prefEmailReceiver = EMAIL_ADDRESS.getValue();
     }
 
     private void submitNewPersistDataWorker() {
@@ -177,7 +170,7 @@ public enum PersistEngineDataManager {
                             LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                             final List<String> statements = Lists.newLinkedList();
                             _sqlStatementBatch.getQueue().drainTo(statements);
-                            rescueData(statements);
+                            rescueDataToFileSystem(statements);
                         }
                     } catch (final InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -197,60 +190,72 @@ public enum PersistEngineDataManager {
      * @return
      */
     private boolean isAnotherWorkerRequired() {
-        if (_executor.getPoolSize() <= 0) {
-            return true; // none yet submitted, so yes we need one
+        if (noWorkerPresentYet()) {
+            return true;
         }
 
-        // More than one necessary? If queue gets larger than what can be committed in one batch
-        if (_sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes) {
-            // Do it, but is there still space in the pool for another worker?
-            if (_executor.getPoolSize() < _executor.getCorePoolSize()) {
-                return true; // Yes, submit another one
-            } else {
-                // No, but perhaps we could increase the frequency of the scheduled tasks?
+        if (doesSqlQueueLengthExceedMaxAllowedPacketSize()) {
+            if (poolSizeExhausted()) {
                 final Iterator<PersistDataWorker> it = _submittedWorkers.iterator();
                 final PersistDataWorker oldestWorker = it.next();
                 final long period = oldestWorker.getPeriodInMS();
-                if (Long.valueOf(period).intValue() <= MIN_PERIOD_MS) {
-                    // No, already set to minimum
-                    // FIXME (bknerr) : handle pool and thread frequency exhaustion
-                    // notify staff, rescue data to disc with dedicated worker
+                if (isPeriodAlreadySetToMinimum(period)) {
+                    handlePoolExhaustionWithMinimumPeriodCornerCase();
                     return false;
                 }
-                // Yes, lower the frequency and remove the oldest periodic worker, return true
-                _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
-                LOG.info("Remove Worker: " + oldestWorker.getName());
-                _executor.remove(oldestWorker);
-                it.remove();
-                return true;
+                lowerPeriodAndRemoveOldestWorker(it, oldestWorker);
             }
+            return true;
         }
         return false;
     }
 
-    /**
-     * FIXME (bknerr) : data rescue on failover fail not yet implemented!
-     * @param statements
-     */
-    void rescueData(@Nonnull final List<String> statements) {
-        LOG.info("Rescue statements " + statements.size());
 
-        EMailSender mailer;
-        try {
-            mailer = new EMailSender(_prefMailHost,
-                                     "DontReply@MySQLArchiver",
-                                     _prefEmailReceiver,
-                                     "[MySQL archiver notification]: Failed failover");
-            mailer.addText("Statements rescued:\n");
-            for (final String stmt : statements) {
-                mailer.addText(stmt + "\n");
-            }
-            mailer.close();
-        } catch (final IOException e) {
-            // TODO (bknerr) : handle exceptions on notifications
-            e.printStackTrace();
-        }
 
+    private boolean noWorkerPresentYet() {
+        return _executor.getPoolSize() <= 0;
     }
 
+    private boolean doesSqlQueueLengthExceedMaxAllowedPacketSize() {
+        return _sqlStatementBatch.sizeInBytes() > _prefMaxAllowedPacketInBytes;
+    }
+
+    private boolean poolSizeExhausted() {
+        return _executor.getPoolSize() >= _executor.getCorePoolSize();
+    }
+
+    private boolean isPeriodAlreadySetToMinimum(final long period) {
+        return Long.valueOf(period).intValue() <= MIN_PERIOD_MS;
+    }
+
+    private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
+        // FIXME (bknerr) : handle pool and thread frequency exhaustion
+        // notify staff, rescue data to disc with dedicated worker
+    }
+
+    private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
+                                                  @Nonnull final PersistDataWorker oldestWorker) {
+        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
+        LOG.info("Remove Worker: " + oldestWorker.getName());
+        _executor.remove(oldestWorker);
+        it.remove();
+    }
+
+
+    public void rescueDataToFileSystem(@Nonnull final List<String> statements) {
+        LOG.warn("Rescue statements: " + statements.size());
+
+        try {
+            final DataRescueResult result =
+                PersistDataToFileRescuer.with(statements)
+                                        .at(TimeInstantBuilder.fromNow())
+                                        .to(MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue())
+                                        .rescue();
+            if (!result.hasSucceeded()) {
+                ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
+            }
+        } catch (final DataRescueException e) {
+            ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, e.getMessage());
+        }
+    }
 }

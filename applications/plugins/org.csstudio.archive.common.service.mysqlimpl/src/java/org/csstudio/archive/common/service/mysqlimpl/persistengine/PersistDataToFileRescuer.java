@@ -19,52 +19,57 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.model;
+package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.AbstractToFileDataRescuer;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
+import com.google.common.collect.Lists;
+
 /**
- * Implements a data rescue functionality in case the archive services are unavailable.
- * Writes the samples serialized to the file system and notifies the staff of the action.
+ * Implements the data rescue of the given SQL statement strings to a file with .sql
+ * suffix.
  *
  * @author bknerr
- * @since Mar 28, 2011
+ * @since 11.04.2011
  */
-class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
+public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
 
-    private static final String FILE_SUFFIX = ".ser";
-    private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
+    private static final String FILE_SUFFIX = ".sql";
+    private static final String SQL_STATEMENT_DELIMITER = ";";
 
-    @Nonnull
-    public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
-        return new ArchiveEngineSampleRescuer(samples);
-    }
+    private final List<String> _statements;
 
     /**
      * Constructor.
      */
-    ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
+    PersistDataToFileRescuer(@Nonnull final List<String> statements) {
         super();
-        _samplesToBeSerialized = samples;
+        _statements = Lists.newLinkedList(statements);
     }
 
+    @Nonnull
+    public static PersistDataToFileRescuer with(@Nonnull final List<String> statements) {
+        return new PersistDataToFileRescuer(statements);
+    }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeToFile(@Nonnull final ObjectOutput output) throws IOException {
-        output.writeObject(_samplesToBeSerialized);
+        for (final String statement : _statements) {
+            output.writeChars(statement);
+            output.writeChars(SQL_STATEMENT_DELIMITER + "\n");
+        }
     }
 
     /**
@@ -73,7 +78,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     @Override
     @Nonnull
     protected String composeRescueFileName() {
-        return "rescue_" + getTimeStamp().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + _samplesToBeSerialized.size()+ FILE_SUFFIX;
+        return "rescue_" + getTimeStamp().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + FILE_SUFFIX;
     }
 
     /**
@@ -82,14 +87,7 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     @Override
     @Nonnull
     protected DataRescueResult handleExceptionForRescueResult(@Nonnull final Exception e) throws DataRescueException {
-        try {
-            throw e;
-        } catch (final FileNotFoundException fe) {
-            throw new DataRescueException("Mmh", fe);
-        } catch (final IOException ioe) {
-            throw new DataRescueException("Mmh", ioe);
-        } catch (final Exception ee) {
-            throw new DataRescueException("Unknown exception.", ee);
-        }
+        throw new DataRescueException("Mmh", e);
     }
+
 }

@@ -97,13 +97,13 @@ public class PersistDataWorker implements Runnable {
 
         } catch (final ArchiveConnectionException se) {
             LOG.error("Batched update failed. Drain unpersisted statements to file system.");
-            _mgr.rescueData(_batchedStatements);
+            _mgr.rescueDataToFileSystem(_batchedStatements);
         } catch (final BatchUpdateException be) {
             LOG.error("Batched update failed. Drain unpersisted statements to file system.");
             processFailedBatch(_batchedStatements, be);
         } catch (final SQLException se) {
             LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.");
-            _mgr.rescueData(_batchedStatements);
+            _mgr.rescueDataToFileSystem(_batchedStatements);
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
@@ -129,16 +129,16 @@ public class PersistDataWorker implements Runnable {
     }
 
     private void processFailedBatch(@Nonnull final List<String> batchedStatements,
-                                           @Nonnull final BatchUpdateException be) {
+                                    @Nonnull final BatchUpdateException be) {
         // NOT all statements have been successfully executed! (Depends on RDBM)
         final int[] updateCounts = be.getUpdateCounts();
         if (updateCounts.length == batchedStatements.size()) {
             // All statements have been tried executed, look for the failed ones
             final List<String> failedStmts = findFailedStatements(updateCounts, batchedStatements);
-            _mgr.rescueData(failedStmts);
+            _mgr.rescueDataToFileSystem(failedStmts);
         } else {
             // Not all statements have been tried to be executed - safe only the failed ones
-            _mgr.rescueData(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
+            _mgr.rescueDataToFileSystem(batchedStatements.subList(updateCounts.length, batchedStatements.size()));
         }
     }
 

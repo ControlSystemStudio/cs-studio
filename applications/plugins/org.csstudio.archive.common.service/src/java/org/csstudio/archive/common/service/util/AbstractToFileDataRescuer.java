@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -33,6 +32,8 @@ import java.io.OutputStream;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -47,21 +48,22 @@ public abstract class AbstractToFileDataRescuer {
             .getLogger(AbstractToFileDataRescuer.class);
 
     private File _rescueDir;
+    private File _rescueFilePath;
+
+    private TimeInstant _timeStamp;
 
     protected AbstractToFileDataRescuer() {
-        // EMPTY
+        setTimeStamp(TimeInstantBuilder.fromNow());
     }
 
 
-    public void rescue() throws DataRescueException {
+    public DataRescueResult rescue() throws DataRescueException {
         ObjectOutput output = null;
         try {
             output = createObjectOutput();
             writeToFile(output);
-        } catch (final FileNotFoundException e) {
-            handleException(e);
-        } catch (final IOException e) {
-            handleException(e);
+        } catch (final Exception e) {
+            return handleExceptionForRescueResult(e);
         } finally {
             if (output != null) {
                 try {
@@ -71,6 +73,7 @@ public abstract class AbstractToFileDataRescuer {
                 }
             }
         }
+        return DataRescueResult.success(_rescueFilePath.toString(), _timeStamp);
     }
 
     @Nonnull
@@ -83,18 +86,35 @@ public abstract class AbstractToFileDataRescuer {
     @Nonnull
     protected abstract String composeRescueFileName();
     @Nonnull
-    protected abstract void handleException(@Nonnull final IOException e) throws DataRescueException;
+    protected abstract DataRescueResult handleExceptionForRescueResult(@Nonnull final Exception e) throws DataRescueException;
 
+    @Nonnull
+    public AbstractToFileDataRescuer at(@Nonnull final TimeInstant time) {
+        setTimeStamp(time);
+        return this;
+    }
 
     @Nonnull
     private ObjectOutput createObjectOutput() throws IOException {
         final String fileName = composeRescueFileName();
         final File path = _rescueDir;
 
-        final File file = new File(path, fileName);
+        _rescueFilePath = new File(path, fileName);
 
-        final OutputStream ostream = new FileOutputStream(file);
+        final OutputStream ostream = new FileOutputStream(_rescueFilePath);
         final OutputStream buffer = new BufferedOutputStream(ostream);
         return new ObjectOutputStream(buffer);
     }
+
+
+    protected void setTimeStamp(@Nonnull final TimeInstant timeStamp) {
+        _timeStamp = timeStamp;
+    }
+
+    @Nonnull
+    protected TimeInstant getTimeStamp() {
+        return _timeStamp;
+    }
+
+
 }
