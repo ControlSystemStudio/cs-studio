@@ -131,11 +131,4 @@ public class ArchiveEngineSampleRescuerTest {
         return result;
     }
 
-    @Nonnull
-    private File findInputFile(@Nonnull final File dir, @Nonnull final TimeInstant now, int size) {
-        String name = "rescue_" + now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + size + ".ser";
-        File file = new File(dir.toString(), name);
-        Assert.assertNotNull(file);
-        return file;
-    }
 }
