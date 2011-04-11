@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.dao;
+package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
@@ -146,7 +147,7 @@ public class PersistDataWorker implements Runnable {
             try {
                 stmt.close();
             } catch (final SQLException e) {
-                ArchiveConnectionHandler.WORKER_LOG.warn("Closing of statemend failed.");
+                LOG.warn("Closing of statement failed: " + stmt);
             }
         }
     }
