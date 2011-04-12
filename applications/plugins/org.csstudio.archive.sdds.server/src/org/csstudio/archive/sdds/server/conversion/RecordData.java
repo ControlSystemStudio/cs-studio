@@ -45,7 +45,7 @@ public class RecordData
     private Vector<SampleDouble> samples;
     
     /** */
-    private SampleCtrl ctrl;
+    private SampleParameter sampleParameter;
 
     public long getError()
     {
@@ -87,13 +87,13 @@ public class RecordData
         this.samples = samples;
     }
 
-    public SampleCtrl getCtrl()
+    public SampleParameter getSampleParameter()
     {
-        return ctrl;
+        return sampleParameter;
     }
 
-    public void setCtrl(SampleCtrl ctrl)
+    public void setSampleParameter(SampleParameter param)
     {
-        this.ctrl = ctrl;
+        this.sampleParameter = param;
     }
 }
