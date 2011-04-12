@@ -36,7 +36,7 @@ import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistryTe
 import org.csstudio.platform.internal.model.ProcessVariableFactoryTest;
 import org.csstudio.platform.internal.model.ProcessVariableTest;
 import org.csstudio.platform.logging.CentralLoggerTest;
-import org.csstudio.platform.logging.JMSLogThreadHeadlessTest;
+import org.csstudio.platform.logging.JMSLogThreadUnitTest;
 import org.csstudio.platform.management.CommandDescriptionTest;
 import org.csstudio.platform.management.CommandParameterDefinitionTest;
 import org.csstudio.platform.management.CommandParameterEnumValueTest;
@@ -64,7 +64,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ProcessVariableTest.class,
 
         CentralLoggerTest.class,
-        JMSLogThreadHeadlessTest.class,
+        JMSLogThreadUnitTest.class,
 
         CommandDescriptionTest.class,
         CommandParameterDefinitionTest.class,
@@ -72,9 +72,8 @@ import org.junit.runners.Suite.SuiteClasses;
         CommandParametersTest.class,
         CommandResultTest.class,
 
-        StringUtilTest.class,
+        StringUtilTest.class
 
-        AbstractPreferenceTest.class
 })
 public class AllTests {
     // EMPTY

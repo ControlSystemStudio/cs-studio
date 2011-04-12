@@ -27,7 +27,7 @@ package org.csstudio.utility.ldap.preference;
 import javax.annotation.Nonnull;
 import javax.naming.Context;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.utility.ldap.LdapActivator;
 
 /**

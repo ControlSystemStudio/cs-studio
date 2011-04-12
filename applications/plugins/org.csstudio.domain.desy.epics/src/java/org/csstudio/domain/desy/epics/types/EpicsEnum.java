@@ -52,6 +52,8 @@ import com.google.common.base.Joiner;
  */
 public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
+    private static final long serialVersionUID = -3340079923729173798L;
+
     @Nonnull
     public static final EpicsEnum create(@Nonnull final Integer index,
                                          @Nonnull final String state,

@@ -32,8 +32,8 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.epics.pvmanager.TypeSupport;
 
 
 /**
@@ -45,7 +45,7 @@ import org.epics.pvmanager.TypeSupport;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
+public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
 // CHECKSTYLE ON : AbstractClassName
 
     /**
@@ -69,7 +69,7 @@ public abstract class EpicsIValueTypeSupport<T> extends TypeSupport<T> {
 
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<T> support =
-            (AbstractIValueConversionTypeSupport<T>) findTypeSupportFor(EpicsIValueTypeSupport.class,
+            (AbstractIValueConversionTypeSupport<T>) findTypeSupportForOrThrowTSE(EpicsIValueTypeSupport.class,
                                                                            typeClass);
         return support.convertToSystemVariable(name, value);
     }

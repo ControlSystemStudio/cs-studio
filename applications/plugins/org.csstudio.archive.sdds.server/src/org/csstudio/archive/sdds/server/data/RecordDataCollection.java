@@ -23,7 +23,7 @@ package org.csstudio.archive.sdds.server.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
+import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 
 /**
  * TODO (mmoeller) :
@@ -38,28 +38,44 @@ public class RecordDataCollection {
     private List<EpicsRecordData> data;
     
     /** The parameters of the data samples */
-    private SampleCtrl sampleCtrl;
+    private SampleParameter sampleParameter;
     
     /** Standard constructor */
     public RecordDataCollection() {
         data = new ArrayList<EpicsRecordData>(0);
-        sampleCtrl = new SampleCtrl();
+        sampleParameter = new SampleParameter();
     }
 
+    /**
+     * 
+     * @return
+     */
     public List<EpicsRecordData> getData() {
         return data;
     }
 
+    /**
+     * 
+     * @param data
+     */
     public void setData(List<EpicsRecordData> data) {
         this.data = data;
     }
 
-    public SampleCtrl getSampleCtrl() {
-        return sampleCtrl;
+    /**
+     * 
+     * @return
+     */
+    public SampleParameter getSampleParameter() {
+        return sampleParameter;
     }
 
-    public void setSampleCtrl(SampleCtrl sampleCtrl) {
-        this.sampleCtrl = sampleCtrl;
+    /**
+     * 
+     * @param sampleParameter
+     */
+    public void setSampleParameter(SampleParameter sampleParameter) {
+        this.sampleParameter = sampleParameter;
     }
     
     /**

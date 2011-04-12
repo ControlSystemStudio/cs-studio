@@ -26,6 +26,7 @@ package org.csstudio.domain.desy.ui.FieldEditors;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -59,49 +60,49 @@ import org.eclipse.swt.widgets.TableItem;
 public abstract class AbstractTableFieldEditor extends FieldEditor {
     // the string to separate the columns.
     private static final String COLUMN_SEPARATOR = "?";
-    
+
     // the string to separate the rows.
     private static final String ROW_SEPARATOR = ";";
-    
+
     protected static final int EDITABLECOLUMN = 1;
-    
+
     /**
      * The table for the items in the menu. (Currently the options of the JFace
      * component are not used. The TableViewer is just a container for the SWT
      * table. Maybe the TableViewer can be replaced with the SWT table.)
      */
     private TableViewer _tableViewer;
-    
+
     /**
      * The button box containing the Add, Remove, Up, and Down buttons;
      * <code>null</code> if none (before creation or after disposal).
      */
     private Composite _buttonBox;
-    
+
     /**
      * The Add button.
      */
     private Button _addButton;
-    
+
     /**
      * The Remove button.
      */
     private Button _removeButton;
-    
+
     /**
      * The Up button.
      */
     private Button _upButton;
-    
+
     /**
      * The Down button.
      */
     private Button _downButton;
-    
+
     private List<List<String>> _parseString;
 
     private SelectionListener _addButtonSelectionListner;
-    
+
     private SelectionListener _downButtonSelectionListner;
 
     private SelectionListener _upButtonSelectionListner;
@@ -109,14 +110,14 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
     private SelectionListener _removeButtonSelectionListner;
 
     private SelectionAdapter _tableSelectionChangeListner;
-    
+
     /**
      * Creates a new list field editor
      */
     protected AbstractTableFieldEditor() {
         // NOP
     }
-    
+
     public void init(@Nonnull final String name,
                      @Nonnull final String labelText,
                      @Nonnull final Composite parent) {
@@ -124,7 +125,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         createSelectionListener();
         createControl(parent);
     }
-    
+
     /*
      * (non-Javadoc) Method declared on FieldEditor.
      */
@@ -134,43 +135,43 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         ((GridData) control.getLayoutData()).horizontalSpan = numColumns;
         ((GridData) _tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
     }
-    
+
     /**
      * Creates a selection listener.
      */
     public void createSelectionListener() {
         _downButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(final SelectionEvent event) {
+            public void widgetSelected(@Nullable final SelectionEvent event) {
                 downPressed();
             }
         };
         _upButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(final SelectionEvent event) {
+            public void widgetSelected(@Nullable final SelectionEvent event) {
                 upPressed();
             }
         };
         _addButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(final SelectionEvent event) {
+            public void widgetSelected(@Nullable final SelectionEvent event) {
                 addPressed();
             }
         };
         _removeButtonSelectionListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(final SelectionEvent event) {
+            public void widgetSelected(@Nullable final SelectionEvent event) {
                 removePressed();
             }
         };
         _tableSelectionChangeListner = new SelectionAdapter() {
             @Override
-            public void widgetSelected(final SelectionEvent event) {
+            public void widgetSelected(@Nullable final SelectionEvent event) {
                 selectionChanged();
             }
         };
     }
-    
+
     /**
      * Returns this field editor's button box containing the Add, Remove, Up,
      * and Down button.
@@ -179,7 +180,8 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the parent control
      * @return the button box
      */
-    public Composite getButtonBoxControl(final Composite parent) {
+    @Nonnull
+    public Composite getButtonBoxControl(@Nonnull final Composite parent) {
         if (_buttonBox == null) {
             _buttonBox = new Composite(parent, SWT.NULL);
             final GridLayout layout = new GridLayout();
@@ -188,32 +190,32 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             createButtons(_buttonBox);
             _buttonBox.addDisposeListener(new DisposeListener() {
                 @Override
-                public void widgetDisposed(final DisposeEvent event) {
+                public void widgetDisposed(@Nullable final DisposeEvent event) {
                     disposeButtonBox();
                 }
             });
-            
+
         } else {
             checkParent(_buttonBox, parent);
         }
-        
+
         selectionChanged();
         return _buttonBox;
     }
-    
+
     /**
      * Creates the Add, Remove, Up, and Down button in the given button box.
      *
      * @param box
      *            the box for the buttons
      */
-    private void createButtons(final Composite box) {
+    private void createButtons(@Nonnull final Composite box) {
         _addButton = createPushButton(box, "ListEditor.add", _addButtonSelectionListner);//$NON-NLS-1$
         _removeButton = createPushButton(box, "ListEditor.remove", _removeButtonSelectionListner);//$NON-NLS-1$
         _upButton = createPushButton(box, "ListEditor.up", _upButtonSelectionListner);//$NON-NLS-1$
         _downButton = createPushButton(box, "ListEditor.down", _downButtonSelectionListner);//$NON-NLS-1$
     }
-    
+
     /**
      * Helper method to create a push button.
      *
@@ -223,7 +225,10 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the resource name used to supply the button's label text
      * @return Button
      */
-    private Button createPushButton(final Composite parent, final String key, final SelectionListener selectionListener) {
+    @Nonnull
+    private Button createPushButton(@Nonnull final Composite parent,
+                                    @Nonnull final String key,
+                                    @Nonnull final SelectionListener selectionListener) {
         final Button button = new Button(parent, SWT.PUSH);
         button.setText(JFaceResources.getString(key));
         button.setFont(parent.getFont());
@@ -234,7 +239,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         button.addSelectionListener(selectionListener);
         return button;
     }
-    
+
     /**
      * Returns this field editor's table control.
      *
@@ -242,10 +247,11 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      *            the parent control
      * @return the list control
      */
-    public TableViewer getTableControl(Composite parent) {
+    @Nonnull
+    public TableViewer getTableControl(@Nonnull final Composite parent) {
         if (!hasTableViewer()) {
-            int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
-            Table table = new Table(parent, style);
+            final int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
+            final Table table = new Table(parent, style);
             table.setLinesVisible(true);
             table.setHeaderVisible(true);
             setTableViewer(new TableViewer(table));
@@ -254,7 +260,7 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             getTable().addSelectionListener(_tableSelectionChangeListner);
             getTable().addDisposeListener(new DisposeListener() {
                 @Override
-                public void widgetDisposed(final DisposeEvent event) {
+                public void widgetDisposed(@Nullable final DisposeEvent event) {
                     removeTableViewer();
                 }
             });
@@ -263,18 +269,18 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         }
         return getTableViewer();
     }
-    
+
     /**
      * @param table
      */
     public abstract void createColumns();
-    
+
     @Override
     public int getNumberOfControls() {
         // One for the Table one for the Buttons
         return 2;
     }
-    
+
     /*
      * (non-Javadoc) Method declared on FieldEditor.
      */
@@ -285,12 +291,12 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             table.setFocus();
         }
     }
-    
+
     /*
      * @see FieldEditor.setEnabled(boolean,Composite).
      */
     @Override
-    public void setEnabled(final boolean enabled, final Composite parent) {
+    public void setEnabled(final boolean enabled, @Nullable final Composite parent) {
         super.setEnabled(enabled, parent);
         getTableControl(parent).getTable().setEnabled(enabled);
         _addButton.setEnabled(enabled);
@@ -298,20 +304,20 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         _upButton.setEnabled(enabled);
         _downButton.setEnabled(enabled);
     }
-    
+
     /**
      * Notifies that the Add button has been pressed. A new tableItem is set at
      * the end of the table with initial stings that the user has to adjust.
      */
     protected void addPressed() {
         setPresentsDefaultValue(false);
-        List<String> newRowList = new ArrayList<String>();
+        final List<String> newRowList = new ArrayList<String>();
         newRowList.add("<typ>");
         newRowList.add("<path>");
         _parseString.add(newRowList);
         getTableViewer().refresh(_parseString);
     }
-    
+
     /**
      * Notifies that the Remove button has been pressed.
      */
@@ -323,34 +329,34 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             selectionChanged();
         }
     }
-    
+
     /**
      * Notifies that the Up button has been pressed.
      */
     protected void upPressed() {
         swap(true);
     }
-    
+
     /**
      * Notifies that the Down button has been pressed.
      */
     protected void downPressed() {
         swap(false);
     }
-    
+
     /**
      * Notifies that the list selection has changed.
      */
     protected void selectionChanged() {
-        
+
         final int index = _tableViewer.getTable().getSelectionIndex();
         final int size = _tableViewer.getTable().getItemCount();
-        
+
         _removeButton.setEnabled(index >= 0);
-        _upButton.setEnabled((size > 1) && (index > 0));
-        _downButton.setEnabled((size > 1) && (index >= 0) && (index < size - 1));
+        _upButton.setEnabled(size > 1 && index > 0);
+        _downButton.setEnabled(size > 1 && index >= 0 && index < size - 1);
     }
-    
+
     /**
      * Moves the currently selected item up or down.
      *
@@ -372,26 +378,26 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             selectionChanged();
         }
     }
-    
+
     @Nonnull
     protected final TableViewer getTableViewer() {
         assert hasTableViewer() : "_tableViewer must not be null";
         return _tableViewer;
     }
-    
+
     protected final boolean hasTableViewer() {
         return _tableViewer != null;
     }
-    
+
     protected final void setTableViewer(@Nonnull final TableViewer tableViewer) {
         _tableViewer = tableViewer;
     }
-    
+
     protected final void removeTableViewer() {
         _tableViewer = null;
-        
+
     }
-    
+
     /**
      * Combines the given list of items into a single string. This method is the
      * converse of <code>parseString</code>.
@@ -404,11 +410,12 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
      * @return the combined string
      * @see #parseString
      */
-    protected String createList(TableItem[] items) {
-        int columnCount = getTable().getColumnCount();
-        StringBuffer preferenceString = new StringBuffer();
+    @Nonnull
+    protected String createList(@Nonnull final TableItem[] items) {
+        final int columnCount = getTable().getColumnCount();
+        final StringBuilder preferenceString = new StringBuilder();
         if (columnCount > 0) {
-            for (TableItem tableItem : items) {
+            for (final TableItem tableItem : items) {
                 for (int i = 0; i < columnCount; i++) {
                     preferenceString.append(tableItem.getText(i));
                     preferenceString.append(COLUMN_SEPARATOR);
@@ -419,27 +426,27 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         }
         return preferenceString.toString();
     }
-    
+
     @Override
-    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
+    protected void doFillIntoGrid(@Nullable final Composite parent, final int numColumns) {
         final Control control = getLabelControl(parent);
         GridData gd = new GridData();
         gd.horizontalSpan = numColumns;
         control.setLayoutData(gd);
-        
+
         _tableViewer = getTableControl(parent);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.verticalAlignment = GridData.FILL;
         gd.horizontalSpan = numColumns - 1;
         gd.grabExcessHorizontalSpace = true;
         _tableViewer.getTable().setLayoutData(gd);
-        
+
         _buttonBox = getButtonBoxControl(parent);
         gd = new GridData();
         gd.verticalAlignment = GridData.BEGINNING;
         _buttonBox.setLayoutData(gd);
     }
-    
+
     /**
      * Set the file path and menu name set by the user from preferences in the
      * table rows.
@@ -447,37 +454,38 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
     @Override
     protected void doLoad() {
         final String s = getPreferenceStore().getString(getPreferenceName());
-        List<List<String>> parseString = parseString(s);
+        final List<List<String>> parseString = parseString(s);
         setPreferenceStructure(parseString);
         getTableViewer().setInput(parseString);
     }
-    
+
     /**
      * @param parseString
      */
-    public void setPreferenceStructure(final List<List<String>> parseString) {
+    public void setPreferenceStructure(@Nonnull final List<List<String>> parseString) {
         _parseString = parseString;
     }
-    
+
     /**
      * @param s
      * @return
      */
-    public static List<List<String>> parseString(String s) {
-        List<List<String>> rowsList = new ArrayList<List<String>>();
-        
-        String[] rows = s.split(ROW_SEPARATOR);
-        for (String row : rows) {
-            String[] columns = row.split("\\" + COLUMN_SEPARATOR);
-            List<String> columnsList = new ArrayList<String>();
-            for (String columnWidthSet : columns) {
+    @Nonnull
+    public static List<List<String>> parseString(@Nonnull final String s) {
+        final List<List<String>> rowsList = new ArrayList<List<String>>();
+
+        final String[] rows = s.split(ROW_SEPARATOR);
+        for (final String row : rows) {
+            final String[] columns = row.split("\\" + COLUMN_SEPARATOR);
+            final List<String> columnsList = new ArrayList<String>();
+            for (final String columnWidthSet : columns) {
                 columnsList.add(columnWidthSet);
             }
             rowsList.add(columnsList);
         }
         return rowsList;
     }
-    
+
     /*
      * (non-Javadoc) Method declared on FieldEditor.
      */
@@ -486,16 +494,16 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         _parseString.clear();
         getTableViewer().refresh(_parseString);
     }
-    
+
     /*
      * (non-Javadoc) Method declared on FieldEditor.
      */
     @Override
     protected void doStore() {
         setTableSettingsToPreferenceString();
-        StringBuffer buffer = new StringBuffer();
-        for (List<String> columnSetting : _parseString) {
-            for (String string : columnSetting) {
+        final StringBuffer buffer = new StringBuffer();
+        for (final List<String> columnSetting : _parseString) {
+            for (final String string : columnSetting) {
                 buffer.append(string);
                 buffer.append(COLUMN_SEPARATOR);
             }
@@ -503,34 +511,36 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
             buffer.append(ROW_SEPARATOR);
         }
         buffer.deleteCharAt(buffer.length() - 1);
-        String string = buffer.toString();
+        final String string = buffer.toString();
         getPreferenceStore().setValue(getPreferenceName(), string);
     }
-    
+
     /**
      * @param table
      */
     public abstract void setTableSettingsToPreferenceString();
-    
-    protected void setAddButton(@Nullable Button addButton) {
+
+    protected void setAddButton(@Nullable final Button addButton) {
         _addButton = addButton;
     }
-    
+
+    @CheckForNull
     protected Button getAddButton() {
         return _addButton;
     }
-    
+
     /**
-     * @return 
+     * @return
      * @return
      */
+    @CheckForNull
     public Table getTable() {
-        TableViewer tableViewer = getTableViewer();
-        return tableViewer != null ? tableViewer.getTable() : null;  
+        final TableViewer tableViewer = getTableViewer();
+        return tableViewer.getTable();
     }
 
     /**
-     * 
+     *
      */
     protected void disposeButtonBox() {
         setAddButton(null);
@@ -539,5 +549,5 @@ public abstract class AbstractTableFieldEditor extends FieldEditor {
         _downButton = null;
         _buttonBox = null;
     }
-    
+
 }

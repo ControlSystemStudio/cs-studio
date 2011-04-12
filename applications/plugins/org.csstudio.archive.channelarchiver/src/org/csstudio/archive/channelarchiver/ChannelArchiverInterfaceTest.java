@@ -11,7 +11,7 @@ import org.csstudio.archive.NameInfo;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.test.TestDataProvider;
+import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

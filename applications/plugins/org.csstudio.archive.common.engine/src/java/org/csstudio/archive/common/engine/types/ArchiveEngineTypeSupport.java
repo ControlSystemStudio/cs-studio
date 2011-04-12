@@ -32,6 +32,7 @@ import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
@@ -47,7 +48,7 @@ import org.epics.pvmanager.TypeSupport;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class is accessed statically, hence the name should be short and descriptive!
  */
-public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
+public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
     /**
@@ -166,7 +167,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             scalar = false;
         }
         final ArchiveEngineTypeSupport<V> support =
-            (ArchiveEngineTypeSupport<V>) findTypeSupportFor(ArchiveEngineTypeSupport.class, typeClass);
+            (ArchiveEngineTypeSupport<V>) findTypeSupportForOrThrowTSE(ArchiveEngineTypeSupport.class,
+                                                                       typeClass);
 
         if (scalar) {
             return support.createArchiveChannel(cfg);

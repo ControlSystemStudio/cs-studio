@@ -31,7 +31,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
 import org.apache.log4j.Logger;
-import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
+import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
 import org.csstudio.platform.logging.CentralLogger;
@@ -63,6 +63,8 @@ public class SddsFileReader {
         
         dataPath = new ArchiveLocation();
         dataPath.loadLocationList("./archive_data_source.txt");
+        
+        System.out.println(" OK");
     }
     
     /**
@@ -137,9 +139,9 @@ public class SddsFileReader {
         
         dataCollection.setData(result);
         if(reader[0] != null) {
-            dataCollection.setSampleCtrl(reader[0].getSampleCtrl());
+            dataCollection.setSampleParameter(reader[0].getSampleCtrl());
         } else {
-            dataCollection.setSampleCtrl(new SampleCtrl());
+            dataCollection.setSampleParameter(new SampleParameter());
         }
         
         return dataCollection;

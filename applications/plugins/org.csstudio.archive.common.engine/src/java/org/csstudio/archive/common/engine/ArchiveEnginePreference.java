@@ -25,7 +25,7 @@ import java.io.File;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 
 /**

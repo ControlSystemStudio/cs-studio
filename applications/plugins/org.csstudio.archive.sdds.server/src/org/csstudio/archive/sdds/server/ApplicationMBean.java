@@ -26,10 +26,7 @@ package org.csstudio.archive.sdds.server;
 
 public interface ApplicationMBean {
     
-    /**
-     * Sets the restart flag.
-     * 
-     * @param restart
-     */
     public void stopApplication();
+    
+    public String readVersion();
 }

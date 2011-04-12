@@ -15,6 +15,7 @@ org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
+org.csstudio.csdata
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
@@ -37,6 +38,7 @@ org.csstudio.opi.intro
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
+org.csstudio.testsuite
 org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.shell.fragment

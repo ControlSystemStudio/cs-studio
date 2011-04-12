@@ -32,7 +32,9 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
@@ -42,6 +44,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 
 /**
  * Archive type conversion for system variables.
@@ -53,7 +56,7 @@ import com.google.common.collect.Collections2;
  *                 This class is accessed statically, hence the name should be short and descriptive!
  *
  */
-public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
+public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
     private static final String[] SCALAR_TYPE_PACKAGES =
@@ -170,7 +173,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertToArchiveString(value);
     }
@@ -184,10 +187,10 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      * @throws TypeSupportException
      */
     @CheckForNull
-    public static <T> T fromScalarArchiveString(@Nonnull final Class<T> typeClass,
-                                                @Nonnull final String value) throws TypeSupportException {
+    public static <T> T fromArchiveString(@Nonnull final Class<T> typeClass,
+                                          @Nonnull final String value) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertFromArchiveString(value);
     }
@@ -208,12 +211,13 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
      */
     @Nonnull
     public static <T> Collection<T>
-    fromMultiScalarArchiveString(@Nonnull final Class<T> elemClass,
+    fromMultiScalarArchiveString(@Nonnull final Class<?> collectionClass,
+                                 @Nonnull final Class<T> elemClass,
                                  @Nonnull final String values) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
-                                                                   elemClass);
-        return support.convertFromArchiveStringToMultiScalar(values);
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
+                                                                           elemClass);
+        return support.convertFromArchiveStringToMultiScalar(collectionClass, values);
     }
 
 
@@ -228,7 +232,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                    typeClass);
         return support.convertFromDouble(value);
     }
@@ -261,7 +265,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @Nonnull
     public static <T> Boolean isDataTypeOptimizable(@Nonnull final Class<T> dataType) throws TypeSupportException {
         final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<?>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                  dataType);
         return support.isOptimizableByAveraging();
     }
@@ -273,7 +277,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
                                                                          SCALAR_TYPE_PACKAGES);
         if (typeClass != null) {
-            return fromScalarArchiveString(typeClass, value);
+            return fromArchiveString(typeClass, value);
         }
 
         return multiScalarSupport(datatype, value);
@@ -301,7 +305,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         }
         final Class<Object> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype, SCALAR_TYPE_PACKAGES);
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                  typeClass);
         return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs,
                                      (T) fromArchiveString(datatype, low),
@@ -336,11 +340,17 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     private static <T> T multiScalarSupport(@Nonnull final String datatype,
                                             @Nonnull final String value) throws TypeSupportException {
 
+
+        final Class<T> collClass =
+            BaseTypeConversionSupport.createCollectionClassFromMultiScalarString(datatype,
+                                                                                 MULTI_SCALAR_TYPE_PACKAGES);
+
         final Class<T> typeClass =
             BaseTypeConversionSupport.createTypeClassFromMultiScalarString(datatype,
-                                                             MULTI_SCALAR_TYPE_PACKAGES);
+                                                                           SCALAR_TYPE_PACKAGES);
+
         if (typeClass != null) {
-            return (T) fromMultiScalarArchiveString(typeClass, value);
+            return (T) fromMultiScalarArchiveString(collClass, typeClass, value);
         }
 
         throw new TypeSupportException("Either class unknown or conversion type support not registered for " + datatype, null);
@@ -354,7 +364,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
         }
         @SuppressWarnings("unchecked")
         final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportFor(ArchiveTypeConversionSupport.class,
+            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                    values.iterator().next().getClass());
 
         final Collection<String> items =
@@ -374,7 +384,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @CheckForNull
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @Nonnull
-    protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException;
+    protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull Class<?> collectionClass, @Nonnull final String values) throws TypeSupportException;
     @Nonnull
     protected abstract T convertFromDouble(@Nonnull final Double value) throws TypeSupportException;
     /**
@@ -386,6 +396,36 @@ public abstract class ArchiveTypeConversionSupport<T> extends TypeSupport<T> {
     @Nonnull
     protected Boolean isOptimizableByAveraging() {
         return Boolean.FALSE;
+    }
+
+    @Nonnull
+    protected static <T> Collection<T> createCollectionFromIterable(@Nonnull final Class<?> collectionClass,
+                                                                    @Nonnull final Iterable<T> values) throws TypeSupportException {
+        try {
+            @SuppressWarnings("unchecked")
+            final Collection<T> collection = (Collection<T>) collectionClass.newInstance();
+            for (final T elem : values) {
+                collection.add(elem);
+            }
+            return collection;
+        } catch (final InstantiationException e) {
+            throw new TypeSupportException("Collection class " + collectionClass.getName() + " could not be created.", e);
+        } catch (final IllegalAccessException e) {
+            throw new TypeSupportException("Collection class " + collectionClass.getName() + " could not be created.", e);
+        }
+    }
+
+    protected static <T> void checkInputVsOutputSize(@Nonnull final Iterable<String> strings,
+                                                     @Nonnull final Iterable<T> typedValues) throws TypeSupportException {
+        int size;
+        try {
+            size = Iterables.size(typedValues);
+        } catch (final NumberFormatException e) {
+            throw new TypeSupportException("Values representation is not convertible to " + EpicsEnum.class.getName(), e);
+        }
+        if (Iterables.size(strings) != size) {
+            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
+        }
     }
 
 }
