@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.domain.desy.ui.FieldEditors.AbstractTableFieldEditor;
-import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -54,7 +55,9 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
- * TODO (Rickens Helge) : 
+ * The class is no longer needed!
+ * 
+ * This class serves only as an example of using the {@link AbstractTableFieldEditor}
  * 
  * @author Rickens Helge
  * @author $Author: $
@@ -204,7 +207,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                             public IStatus validate(Object[] selection) {
                                 if (selection != null && selection.length > 0) {
                                     Object object = selection[0];
-                                    if (object instanceof File) {
+                                    if (object instanceof IFile) {
                                         return Status.OK_STATUS;
                                     }
                                 }
@@ -218,8 +221,8 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                             public boolean select(Viewer viewer,
                                                   Object parentElement,
                                                   Object element) {
-                                if (element instanceof File) {
-                                    File file = (File) element;
+                                if (element instanceof IFile) {
+                                    IFile file = (IFile) element;
                                     if (file != null && file.getFileExtension() != null) {
                                         return file.getFileExtension().toLowerCase().equals("css-sds");
                                     }
@@ -231,8 +234,8 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                         
                         int open = dialog.open();
                         switch (open) {
-                            case ElementTreeSelectionDialog.OK:
-                                File firstResult = (File) dialog.getFirstResult();
+                            case Window.OK:
+                                IFile firstResult = (IFile) dialog.getFirstResult();
                                 IPath fullPath = firstResult.getFullPath();
                                 String string = fullPath.toString();
                                 return string;

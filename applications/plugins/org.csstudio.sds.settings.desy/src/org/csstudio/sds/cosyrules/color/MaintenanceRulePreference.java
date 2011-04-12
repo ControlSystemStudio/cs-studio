@@ -23,16 +23,8 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.settings.desy.Activator;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -45,17 +37,12 @@ import org.eclipse.core.runtime.IPath;
  */
 public class MaintenanceRulePreference<T> extends AbstractPreference<T> {
     
- // the string to separate the columns.
-    private static final String COLUMN_SEPARATOR = "?";
-    
-    // the string to separate the rows.
-    private static final String ROW_SEPARATOR = ";";
-    
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(MaintenanceRulePreference.class);
-    
-    public static final MaintenanceRulePreference<String> MAINTENANCE_DISPLAY_PATHS =
-        new MaintenanceRulePreference<String>("MaintenanceDisplayPaths","");
+    public static final MaintenanceRulePreference<IPath> MAINTENANCE_UNKNOWN_DISPLAY_PATH =
+        new MaintenanceRulePreference<IPath>("MaintenanceUnknownDisplayPath", null);
+    public static final MaintenanceRulePreference<IPath> MAINTENANCE_DISPLAY_PATH =
+        new MaintenanceRulePreference<IPath>("MaintenanceDisplayPath", null);
+    public static final MaintenanceRulePreference<String> MAINTENANCE_PRE_FILE_NAME =
+        new MaintenanceRulePreference<String>("MaintenancePreFileName","");
     
     /**
      * Constructor.
@@ -81,19 +68,29 @@ public class MaintenanceRulePreference<T> extends AbstractPreference<T> {
         return Activator.PLUGIN_ID;
     }
     
-    public static Map<String, IPath> getRTypUrlMap(){
-        String value = MAINTENANCE_DISPLAY_PATHS.getValue();
-        Map<String, IPath> rTypUrlMap = new HashMap<String, IPath>();
-        String[] rows = value.split(ROW_SEPARATOR);
-        for (String row : rows) {
-            String[] columns = row.split("\\" + COLUMN_SEPARATOR);
-            if(columns.length == 2) {
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                IResource findMember = workspace.getRoot().findMember(columns[1]);
-                rTypUrlMap.put(columns[0], findMember.getFullPath());
-            }
-        }
-        return rTypUrlMap;
-    }
+//    /**
+//     * @return
+//     */
+//    public static IPath getDispayPath() {
+//        String value = MAINTENANCE_DISPLAY_PATH.getValue();
+//        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+//        return workspace.getRoot().findMember(value).getFullPath();
+//    }
+//
+//    /**
+//     * @return
+//     */
+//    public static String getPreFileName() {
+//        return MAINTENANCE_PRE_FILE_NAME.getValue();
+//    }
+//
+//    /**
+//     * @return
+//     */
+//    public static IPath getUnknownDispayPath() {
+//        String value = MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
+//        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+//        return workspace.getRoot().findMember(value).getFullPath();
+//    }
     
 }

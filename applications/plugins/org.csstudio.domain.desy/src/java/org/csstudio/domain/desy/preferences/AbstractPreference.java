@@ -36,6 +36,9 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -51,7 +54,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * Example:
  * {@code}static final Preference<Integer> TIME = new Preference<Integer>("Time", 3600);
- * 
+ *
  * Supported explicit types:<br/>
  * <li> java.util.String </li>
  * <li> java.util.Integer </li>
@@ -72,13 +75,22 @@ public abstract class AbstractPreference<T> {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractPreference.class);
 
+    /**
+     * Strategy pattern for type safe preference handling.
+     * For any preference type a strategy is registered and put into the type->strategy map.
+     *
+     * @author bknerr
+     * @since 12.04.2011
+     */
     interface PrefStrategy<T> {
         @Nonnull
         T getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final T defaultValue);
     }
+
     private static Map<Class<?>, PrefStrategy<?>> TYPE_MAP = new HashMap<Class<?>, PrefStrategy<?>>();
     static {
-        TYPE_MAP.put(Integer.class, new PrefStrategy<Integer>() {
+        TYPE_MAP.put(Integer.class,
+                     new PrefStrategy<Integer>() {
             @Override
             @Nonnull
             public Integer getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Integer defaultValue) {
@@ -86,7 +98,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getInt(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(Long.class, new PrefStrategy<Long>() {
+        TYPE_MAP.put(Long.class,
+                     new PrefStrategy<Long>() {
             @Override
             @Nonnull
             public Long getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Long defaultValue) {
@@ -94,7 +107,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getLong(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(Float.class, new PrefStrategy<Float>() {
+        TYPE_MAP.put(Float.class,
+                     new PrefStrategy<Float>() {
             @Override
             @Nonnull
             public Float getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Float defaultValue) {
@@ -102,7 +116,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getFloat(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(Double.class, new PrefStrategy<Double>() {
+        TYPE_MAP.put(Double.class,
+                     new PrefStrategy<Double>() {
             @Override
             @Nonnull
             public Double getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Double defaultValue) {
@@ -110,7 +125,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getDouble(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(Boolean.class, new PrefStrategy<Boolean>() {
+        TYPE_MAP.put(Boolean.class,
+                     new PrefStrategy<Boolean>() {
             @Override
             @Nonnull
             public Boolean getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final Boolean defaultValue) {
@@ -118,7 +134,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getBoolean(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(String.class, new PrefStrategy<String>() {
+        TYPE_MAP.put(String.class,
+                     new PrefStrategy<String>() {
             @Override
             @Nonnull
             public String getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final String defaultValue) {
@@ -126,7 +143,8 @@ public abstract class AbstractPreference<T> {
                 return prefs.getString(context, key, defaultValue, null);
             }
         });
-        TYPE_MAP.put(URL.class, new PrefStrategy<URL>() {
+        TYPE_MAP.put(URL.class,
+                     new PrefStrategy<URL>() {
             @Override
             @Nonnull
             public URL getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final URL defaultValue) {
@@ -134,24 +152,39 @@ public abstract class AbstractPreference<T> {
                 try {
                     return new URL(prefs.getString(context, key, defaultValue.toString(), null));
                 } catch (final MalformedURLException e) {
-                    CentralLogger.getInstance().error(AbstractPreference.class, 
+                    CentralLogger.getInstance().error(AbstractPreference.class,
                                                       "URL preference is not well formed.", e);
                     throw new IllegalArgumentException("URL preference not well-formed. " +
                                                        "That is not supposed to happen, since the defaultValue is by definition of type URL.");
                 }
             }
-         });
-        TYPE_MAP.put(File.class, new PrefStrategy<File>() {
-            @Override
-            @Nonnull
-            public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
-                final IPreferencesService prefs = Platform.getPreferencesService();
-                return new File(prefs.getString(context, key, defaultValue.toString(), null));
-            }
         });
+        TYPE_MAP.put(File.class,
+                     new PrefStrategy<File>() {
+                         @Override
+                         @Nonnull
+                         public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
+                             final IPreferencesService prefs = Platform.getPreferencesService();
+                             return new File(prefs.getString(context, key, defaultValue.toString(), null));
+                         }
+                     });
+        TYPE_MAP.put(IPath.class,
+                     new PrefStrategy<IPath>() {
+                         @Override
+                         @Nonnull
+                         public IPath getResult(@Nonnull final String context,
+                                                @Nonnull final String key,
+                                                @Nonnull final IPath defaultValue) {
+                             final IPreferencesService prefs = Platform.getPreferencesService();
+                             final String value = prefs.getString(context, key, defaultValue.toString(), null);
+
+                             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                             return workspace.getRoot().findMember(value).getFullPath();
+                         }
+                     });
     }
-    
-    
+
+
     private final String _keyAsString;
     private final T _defaultValue;
     private final Class<T> _type;
@@ -178,16 +211,16 @@ public abstract class AbstractPreference<T> {
         return _keyAsString;
     }
 
-    
-    
+
+
     /**
      * @return the correctly typed value
      */
     @SuppressWarnings("unchecked")
     @Nonnull
     public final T getValue() {
-        PrefStrategy<T> prefAction = (PrefStrategy<T>) TYPE_MAP.get(_type);
-        return prefAction.getResult(getPluginID(), getKeyAsString(), _defaultValue);
+        final PrefStrategy<T> strategy = (PrefStrategy<T>) TYPE_MAP.get(_type);
+        return strategy.getResult(getPluginID(), getKeyAsString(), _defaultValue);
     }
 
     @Nonnull
