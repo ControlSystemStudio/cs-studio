@@ -11,6 +11,5 @@ Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.junit4,
  org.csstudio.platform;bundle-version="1.2.0";visibility:=reexport,
  org.csstudio.archive;bundle-version="1.1.0";visibility:=reexport,
- org.csstudio.testsuite;bundle-version="1.0.0",
- org.csstudio.domain.desy;bundle-version="1.0.0"
+ org.csstudio.testsuite;bundle-version="1.0.0"
 Eclipse-LazyStart: true
