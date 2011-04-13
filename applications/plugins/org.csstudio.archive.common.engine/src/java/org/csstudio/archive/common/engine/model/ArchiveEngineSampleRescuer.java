@@ -21,8 +21,11 @@
  */
 package org.csstudio.archive.common.engine.model;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -30,9 +33,9 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.AbstractToFileDataRescuer;
 import org.csstudio.archive.common.service.util.DataRescueException;
+import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 /**
  * Implements a data rescue functionality in case the archive services are unavailable.
@@ -43,9 +46,8 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
  */
 class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
 
+    private static final String FILE_SUFFIX = ".ser";
     private final List<IArchiveSample<Object, ISystemVariable<Object>>> _samplesToBeSerialized;
-
-    private TimeInstant _timeStamp;
 
     @Nonnull
     public static ArchiveEngineSampleRescuer with(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
@@ -58,18 +60,14 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     ArchiveEngineSampleRescuer(@Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples) {
         super();
         _samplesToBeSerialized = samples;
-        _timeStamp = TimeInstantBuilder.fromNow();
     }
 
-    @Nonnull
-    public ArchiveEngineSampleRescuer at(@Nonnull final TimeInstant time) {
-        _timeStamp = time;
-        return this;
-    }
+
 
     @Override
-    protected void writeToFile(@Nonnull final ObjectOutput output) throws IOException {
-        output.writeObject(_samplesToBeSerialized);
+    protected void writeToFile(@Nonnull final OutputStream output) throws IOException {
+        final ObjectOutput objectOutput = new ObjectOutputStream(output);
+        objectOutput.writeObject(_samplesToBeSerialized);
     }
 
     /**
@@ -78,14 +76,23 @@ class ArchiveEngineSampleRescuer extends AbstractToFileDataRescuer {
     @Override
     @Nonnull
     protected String composeRescueFileName() {
-        return "rescue_" + _timeStamp.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + _samplesToBeSerialized.size()+ ".ser";
+        return "rescue_" + getTimeStamp().formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + _samplesToBeSerialized.size()+ FILE_SUFFIX;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void handleException(@Nonnull final IOException e) throws DataRescueException {
-        throw new DataRescueException("Mmh", e);
+    @Nonnull
+    protected DataRescueResult handleExceptionForRescueResult(@Nonnull final Exception e) throws DataRescueException {
+        try {
+            throw e;
+        } catch (final FileNotFoundException fe) {
+            throw new DataRescueException("Mmh", fe);
+        } catch (final IOException ioe) {
+            throw new DataRescueException("Mmh", ioe);
+        } catch (final Exception ee) {
+            throw new DataRescueException("Unknown exception.", ee);
+        }
     }
 }

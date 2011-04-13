@@ -36,6 +36,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.DataRescueException;
+import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -106,9 +107,10 @@ public class ArchiveEngineSampleRescuerTest {
     public void saveToPathTest() throws DataRescueException, IOException, ClassNotFoundException {
         TimeInstant now = TimeInstantBuilder.fromNow();
 
-        ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
+        DataRescueResult rescueResult = ArchiveEngineSampleRescuer.with(SAMPLES).at(now).to(RESCUE_DIR).rescue();
         
-        File infile = findInputFile(RESCUE_DIR, now, SAMPLES.size());
+        File infile = new File(rescueResult.getFilePath());
+        Assert.assertNotNull(infile);
 
         List<IArchiveSample<?, ?>> result = readSamplesFromFile(infile);
         
@@ -129,11 +131,4 @@ public class ArchiveEngineSampleRescuerTest {
         return result;
     }
 
-    @Nonnull
-    private File findInputFile(@Nonnull final File dir, @Nonnull final TimeInstant now, int size) {
-        String name = "rescue_" + now.formatted(TimeInstant.STD_DATETIME_FMT_FOR_FS) + "_S" + size + ".ser";
-        File file = new File(dir.toString(), name);
-        Assert.assertNotNull(file);
-        return file;
-    }
 }

@@ -21,9 +21,11 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl;
 
+import java.io.File;
+
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for archive service preferences (mimicked enum with inheritance).
@@ -62,8 +64,14 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> SMTP_HOST =
         new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
 
+    public static final MySQLArchiveServicePreference<File> DATA_RESCUE_DIR =
+        new MySQLArchiveServicePreference<File>("dataRescueDir", new File("./persistDataRescue"));
+
     public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
         new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
+
+
+
 
     /**
      * Constructor.

@@ -23,8 +23,9 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.sds.settings.desy.Activator;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 
@@ -39,7 +40,7 @@ import org.eclipse.core.runtime.IPath;
 public class MaintenanceRulePreference<T> extends AbstractPreference<T> {
     
     public static final MaintenanceRulePreference<IPath> MAINTENANCE_UNKNOWN_DISPLAY_PATH =
-        new MaintenanceRulePreference<IPath>("MaintenanceUnknownDisplayPath",ResourcesPlugin.getWorkspace().getRoot().getFullPath());
+        new MaintenanceRulePreference<IPath>("MaintenanceUnknownDisplayPath", null);
     public static final MaintenanceRulePreference<IPath> MAINTENANCE_DISPLAY_PATH =
         new MaintenanceRulePreference<IPath>("MaintenanceDisplayPath",ResourcesPlugin.getWorkspace().getRoot().getFullPath());
     public static final MaintenanceRulePreference<String> MAINTENANCE_PRE_FILE_NAME =

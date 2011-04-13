@@ -5,6 +5,7 @@ package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.IRule;
 import org.eclipse.core.runtime.IPath;
+import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.*;
 
 /**
  * @author hrickens
@@ -21,9 +22,9 @@ public class MaintenanceRule implements IRule {
      * 
      */
     public MaintenanceRule() {
-        DEFAULT_PATH = MaintenanceRulePreference.MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
-        _dispayPath = MaintenanceRulePreference.MAINTENANCE_DISPLAY_PATH.getValue();
-        _preFileName = MaintenanceRulePreference.MAINTENANCE_PRE_FILE_NAME.getValue();
+        DEFAULT_PATH = MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
+        _dispayPath = MAINTENANCE_DISPLAY_PATH.getValue();
+        _preFileName = MAINTENANCE_PRE_FILE_NAME.getValue();
     }
     
     /* (non-Javadoc)

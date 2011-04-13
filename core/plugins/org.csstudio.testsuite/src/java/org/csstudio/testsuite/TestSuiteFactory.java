@@ -23,16 +23,15 @@ package org.csstudio.testsuite;
 
 import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.platform.test.TestProviderException;
 import org.csstudio.platform.util.StringUtil;
+import org.csstudio.testsuite.util.TestDataProvider;
+import org.csstudio.testsuite.util.TestProviderException;
 
 /**
  * Factory for test suites that collect test classes over all existing bundles.
@@ -58,7 +57,7 @@ public final class TestSuiteFactory {
 
     // Get site specific test data provider
     private static TestDataProvider PROV = createTestDataProvider();
-    @CheckForNull
+    @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(Activator.PLUGIN_ID);
@@ -66,23 +65,20 @@ public final class TestSuiteFactory {
             Assert.fail("Unexpected exception creating the test data provider for plugin " +
                         Activator.PLUGIN_ID + ".\n" + e.getMessage());
         }
-        return null;
+        return TestDataProvider.EMPTY_PROVIDER;
     }
 
-    /**
-     * Comma separated list, if list is empty, every bundle will be chosen
-     */
-    private static final String BUNDLES = (String) PROV.get("bundles");
-    /**
-     * Comma separated bundle black list.
-     */
-    private static final String BUNDLES_BLACKLIST = (String) PROV.get("bundleBlacklist");
-
-    /**
-     *
-     */
-    private static final String PACKAGE_BLACKLIST = (String) PROV.get("packageBlacklist");
-
+    private static final String BUNDLES = getPropertyOrEmptyString("bundles", PROV);
+    private static final String BUNDLES_BLACKLIST  = getPropertyOrEmptyString("bundleBlacklist", PROV);
+    private static final String PACKAGE_BLACKLIST = getPropertyOrEmptyString("packageBlacklist", PROV);
+    
+    @Nonnull
+    private static String getPropertyOrEmptyString(@Nonnull final String property, 
+                                                   @Nonnull final TestDataProvider prov) {
+        String result = (String) prov.get(property);
+        return result == null ? "" : result;
+    }
+    
     /**
      * The test suite provider.
      *
