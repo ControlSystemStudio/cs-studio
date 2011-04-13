@@ -39,6 +39,8 @@ public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
 
     public static final ArchiveEnginePreference<Long> WRITE_PERIOD =
         new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(7));
+    public static final ArchiveEnginePreference<Long> HEARTBEAT_PERIOD =
+        new ArchiveEnginePreference<Long>("heartBeatPeriodInS", Long.valueOf(1));
     public static final ArchiveEnginePreference<File> DATA_RESCUE_DIR =
         new ArchiveEnginePreference<File>("dataRescueDir", new File("./engineRescue"));
 

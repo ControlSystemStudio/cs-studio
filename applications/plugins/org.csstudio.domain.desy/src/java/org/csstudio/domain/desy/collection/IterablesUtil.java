@@ -19,41 +19,34 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.typesupport;
+package org.csstudio.domain.desy.collection;
 
-import javax.annotation.CheckForNull;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
-import org.csstudio.data.values.IMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsEnum;
-import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import com.google.common.collect.Sets;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since Mar 8, 2011
+ * @since 13.04.2011
  */
-public class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsEnum> {
+public final class IterablesUtil {
 
     /**
-     * Constructor.
+     * Don't instantiate.
      */
-    public EpicsEnumConversionSupport() {
-        super(EpicsEnum.class);
+    private IterablesUtil() {
+        // Empty
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
-        final IEnumeratedMetaData enumData = checkAndConvertToEnumerated(data, EpicsEnum.class);
-
-        final String[] states = enumData.getStates();
-        return new EpicsMetaData(states);
+    public static <T> boolean containsDuplicates(@Nonnull final T[] array) {
+        final Set<T> set = Sets.newHashSet(array);
+        if (set.size() < array.length) {
+            return true;
+        }
+        return false;
     }
 }

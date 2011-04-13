@@ -35,7 +35,13 @@ import com.google.common.collect.Maps;
  */
 public class WriteExecutor {
 
-    private static final int MAX_AWAIT_TERM_TIME_S = 2;
+    /**
+     * For a periodically scheduled write worker, a periodically scheduled heart beat worker, and
+     * in case of a graceful shutdown, another shutdown worker.
+     */
+    private static final int CORE_POOL_SIZE = 3;
+
+    private static final int MAX_AWAIT_TERMINATION_TIME_S = 2;
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteExecutor.class);
 
@@ -44,7 +50,9 @@ public class WriteExecutor {
 
     private final ConcurrentMap<String, ArchiveChannel<Object, ISystemVariable<Object>>> _channelMap =
         Maps.newConcurrentMap();
-    private final ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
+
+    private final ScheduledExecutorService _executor =
+        Executors.newScheduledThreadPool(CORE_POOL_SIZE);
     private WriteWorker _writeWorker;
     private long _writePeriodInMS;
 
@@ -62,13 +70,48 @@ public class WriteExecutor {
         _engineId = engineId;
     }
 
+
+    public void addChannel(@Nonnull final ArchiveChannel<Object, ISystemVariable<Object>> channel) {
+        _channelMap.putIfAbsent(channel.getName(), channel);
+    }
+
+    public void start(final long pHeartBeatPeriodInMS, final long pWritePeriodInMS) {
+        if (_writeWorker != null) {
+            LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
+            return;
+        }
+
+        _writePeriodInMS = adjustWritePeriod(pWritePeriodInMS, MIN_WRITE_PERIOD_MS);
+
+        submitAndScheduleHeartBeatWorker(_engineId,
+                                         _provider,
+                                         pHeartBeatPeriodInMS);
+
+        _writeWorker = submitAndScheduleWriteWorker(_provider,
+                                                    _writePeriodInMS,
+                                                    0L);
+
+    }
+
+
     @Nonnull
-    private WriteWorker submitAndScheduleWriteWorker(@Nonnull final ArchiveEngineId engineId,
-                                                     @Nonnull final IServiceProvider provider,
+    private HeartBeatWorker submitAndScheduleHeartBeatWorker(@Nonnull final ArchiveEngineId engineId,
+                                                             @Nonnull final IServiceProvider provider,
+                                                             final long period) {
+        final HeartBeatWorker heartBeatWorker = new HeartBeatWorker(engineId,
+                                                                    provider);
+        _executor.scheduleAtFixedRate(heartBeatWorker,
+                                      0L,
+                                      period,
+                                      TimeUnit.MILLISECONDS);
+        return heartBeatWorker;
+
+    }
+    @Nonnull
+    private WriteWorker submitAndScheduleWriteWorker(@Nonnull final IServiceProvider provider,
                                                      final long writePeriodInMS,
                                                      final long delayInMS) {
-        final WriteWorker writeWorker = new WriteWorker(engineId,
-                                                        provider,
+        final WriteWorker writeWorker = new WriteWorker(provider,
                                                         "Periodic Archive Engine Writer",
                                                         _channelMap.values(),
                                                         writePeriodInMS);
@@ -77,29 +120,6 @@ public class WriteExecutor {
                                       writeWorker.getPeriodInMS(),
                                       TimeUnit.MILLISECONDS);
         return writeWorker;
-    }
-
-    /** Add a channel's buffer that this thread reads */
-    public void addChannel(@Nonnull final ArchiveChannel<Object, ISystemVariable<Object>> channel) {
-        _channelMap.putIfAbsent(channel.getName(), channel);
-    }
-
-    /** Start the write worker.
-     *  @param pWritePeriod Period between writes in seconds
-     */
-    public void start(final long pWritePeriod) {
-        if (_writeWorker != null) {
-            LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
-            return;
-        }
-
-        _writePeriodInMS = adjustWritePeriod(pWritePeriod, MIN_WRITE_PERIOD_MS);
-
-        _writeWorker = submitAndScheduleWriteWorker(_engineId,
-                                                    _provider,
-                                                    _writePeriodInMS,
-                                                    0L);
-
     }
 
     private long adjustWritePeriod(final long pWritePeriod, final long minWritePeriodMs) {
@@ -119,10 +139,9 @@ public class WriteExecutor {
         }
     }
 
-    /** @return Timestamp of end of last write run */
     @CheckForNull
     public TimeInstant getLastWriteTime() {
-        return _writeWorker != null ? _writeWorker.getLastTimeWrite() : null;
+        return _writeWorker != null ? _writeWorker.getLastWriteTime() : null;
     }
 
     /** @return Average number of values per write run */
@@ -139,27 +158,34 @@ public class WriteExecutor {
     }
 
     /**
-     * Stop the write workers, after having submitted a directly executed shutdown worker that
-     * shall empty the channels' sample buffers.
-     * Gracefully shutdown of the executor.
+     * Stop the write and heartbeat worker, after having submitted a directly executed shutdown worker that
+     * shall drain the channels' sample buffers.
+     * Then gracefully shutdown the executor.
      */
     public void shutdown() {
         if (!_executor.isShutdown()) {
-            _executor.execute(new WriteWorker(_engineId,
-                                              _provider,
-                                              //this,
-                                              "Shutdown worker", _channelMap.values(), 0L));
+            _executor.execute(new WriteWorker(_provider,
+                                              "Shutdown worker",
+                                              _channelMap.values(),
+                                              0L));
             _executor.shutdown();
+
+            final Duration dur = computeAwaitTerminationTime();
             // Await termination (either the average duration or the max termination time.
-            Duration dur = getAvgWriteDuration();
-            if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERM_TIME_S).getMillis()) {
-                dur = Duration.standardSeconds(MAX_AWAIT_TERM_TIME_S);
-            }
             try {
                 _executor.awaitTermination(dur.getMillis(), TimeUnit.MILLISECONDS);
             } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    @Nonnull
+    private Duration computeAwaitTerminationTime() {
+        Duration dur = getAvgWriteDuration();
+        if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S).getMillis()) {
+            dur = Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S);
+        }
+        return dur;
     }
 }

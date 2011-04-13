@@ -22,18 +22,19 @@
 package org.csstudio.domain.desy.epics.typesupport;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.util.StringUtil;
 
 /**
  * IEnumeratedValue conversion support.
@@ -60,39 +61,48 @@ final class IEnumeratedValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<EpicsEnum> convertToSystemVariable(@Nonnull final String name,
-                                                                           @Nonnull final IEnumeratedValue value) throws TypeSupportException {
+                                                                     @Nonnull final IEnumeratedValue value,
+                                                                     @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         // This is a nice example for what happens when physicists 'design' programs.
-        // (...and I already got rid of an unsafe cast)
         final int[] values = value.getValues();
         if (values == null || values.length <= 0) {
             throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!", null);
         }
-        final IEnumeratedMetaData metaData = value.getMetaData();
-        if (metaData == null) {
-            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any metadata!", null);
-        }
-        final String[] states = metaData.getStates();
-        final int index = values[0];
-        if (states == null || index < 0 || index >= states.length) {
-            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue's index cannot be linked to a state!", null);
-        }
-        final String state = states[index];
-        if (StringUtil.isBlank(state)) {
-            throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue's state is null or empty string!", null);
-        }
 
-        // Now I know that IEnumeratedValue has been concisely filled, yeah.
-        // (And I already got rid of some boilerplate...)
-        // TODO (bknerr) : where's the raw value from epics... couldn't find it in EnumeratedValue
-        final EpicsEnum eVal = EpicsEnum.create(index, state, null);
+        final int index = values[0];
+        final EpicsEnum enumState;
+        /**
+         * Take care. It might happen that we receive value updates (including the very first one for a 'successful' connection)
+         * where the IEnumeratedValues do not contain data for the possible states (IEnumeratedMetaData is empty).
+         * That leads to the situation with the values[0]=X field (typically X=0) being the only info
+         * and the possible states are all unknown.
+         * Hence, the only thing to do is creating an 'unknown' epics enum with the fields  (X,UNKNOWN,null).
+         *
+         * And the WTF/minute count is even higher than it already was...
+         */
+        if (metaData == null || metaData.getStates().isEmpty()) {
+            final IEnumeratedMetaData iMetaData = value.getMetaData();
+
+            String state = EpicsEnum.UNKNOWN_STATE;
+            if (iMetaData != null) {
+                final String[] states = iMetaData.getStates();
+                if (states.length != 0 && index >=0 && index < states.length) {
+                    state = states[index];
+                }
+            }
+            enumState = EpicsEnum.create(index, state, null);
+        } else {
+            enumState = metaData.getState(index);
+        }
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
 
         return new EpicsSystemVariable<EpicsEnum>(name,
-                                                        new CssValueType<EpicsEnum>(eVal),
-                                                        ControlSystem.EPICS_DEFAULT,
-                                                        timestamp,
-                                                        alarm);
+                                                  new CssValueType<EpicsEnum>(enumState),
+                                                  ControlSystem.EPICS_DEFAULT,
+                                                  timestamp,
+                                                  alarm);
     }
+
 }

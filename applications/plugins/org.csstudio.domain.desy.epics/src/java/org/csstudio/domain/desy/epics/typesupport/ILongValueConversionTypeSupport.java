@@ -24,10 +24,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.ILongValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
@@ -59,7 +61,8 @@ final class ILongValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final ILongValue value) throws TypeSupportException {
+                                                             @Nonnull final ILongValue value,
+                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final long[] values = value.getValues();
         if (values == null || values.length == 0) {
             throw new TypeSupportException("ILongValue doesn't have any values. Conversion failed.", null);

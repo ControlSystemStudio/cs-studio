@@ -34,7 +34,6 @@ import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
@@ -71,19 +70,15 @@ final class WriteWorker implements Runnable {
 
     private final IServiceProvider _provider;
 
-    private final ArchiveEngineId _engineId;
-
-    private TimeInstant _lastTimeWrite;
+    private TimeInstant _lastWriteTime;
 
     /**
      * Constructor.
      */
-    public WriteWorker(@Nonnull final ArchiveEngineId engineId,
-                       @Nonnull final IServiceProvider provider,
+    public WriteWorker(@Nonnull final IServiceProvider provider,
                        @Nonnull final String name,
                        @Nonnull final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> channels,
                        final long periodInMS) {
-        _engineId = engineId;
         _provider = provider;
         _name = name;
         _channels = channels;
@@ -106,10 +101,7 @@ final class WriteWorker implements Runnable {
             samples = collectSamplesFromBuffers(_channels);
 
             final long written = writeSamples(_provider,  samples);
-
-            _lastTimeWrite = TimeInstantBuilder.fromNow();
-
-            updateEngineHeartBeat(_provider, _engineId, _lastTimeWrite);
+            _lastWriteTime = TimeInstantBuilder.fromNow();
 
             final long durationInMS = watch.getElapsedTimeInMillis();
             if (durationInMS >= _periodInMS) {
@@ -122,19 +114,6 @@ final class WriteWorker implements Runnable {
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
         }
-    }
-
-    private void updateEngineHeartBeat(@Nonnull final IServiceProvider provider,
-                                       @Nonnull final ArchiveEngineId engineId,
-                                       @Nonnull final TimeInstant lastTimeWrite)
-                                       throws ArchiveServiceException {
-        try {
-            final IArchiveEngineFacade engineFacade  = provider.getEngineFacade();
-            engineFacade.updateEngineIsAlive(engineId, lastTimeWrite);
-        } catch (final OsgiServiceUnavailableException e) {
-            WORKER_LOG.error("Service unavailable. Engine heartbeat for engine " + engineId + " not written.", e);
-        }
-
     }
 
     private long writeSamples(@Nonnull final IServiceProvider provider,
@@ -187,13 +166,13 @@ final class WriteWorker implements Runnable {
     }
 
     @CheckForNull
-    protected TimeInstant getLastTimeWrite() {
-        return _lastTimeWrite;
+    protected TimeInstant getLastWriteTime() {
+        return _lastWriteTime;
     }
 
     public void clear() {
         _avgWriteCount.clear();
         _avgWriteDurationInMS.clear();
-        _lastTimeWrite = null;
+        _lastWriteTime = null;
     }
 }

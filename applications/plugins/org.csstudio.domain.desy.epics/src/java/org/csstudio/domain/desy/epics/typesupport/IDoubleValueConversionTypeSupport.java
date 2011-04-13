@@ -24,10 +24,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
@@ -56,7 +58,8 @@ final class IDoubleValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final IDoubleValue value) throws TypeSupportException {
+                                                             @Nonnull final IDoubleValue value,
+                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final double[] values = value.getValues();
         if (values == null || values.length == 0) {
             throw new TypeSupportException("IValue doesn't have any values. Conversion failed.", null);
@@ -73,9 +76,9 @@ final class IDoubleValueConversionTypeSupport extends
                                                    alarm);
         }
         return new EpicsSystemVariable<List<Double>>(name,
-                                                    new CssValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values))),
-                                                    ControlSystem.EPICS_DEFAULT,
-                                                    timestamp,
-                                                    alarm);
+                                                     new CssValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values))),
+                                                     ControlSystem.EPICS_DEFAULT,
+                                                     timestamp,
+                                                     alarm);
     }
 }

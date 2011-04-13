@@ -19,15 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.alarm;
+package org.csstudio.domain.desy.epics.types;
 
-import java.util.Set;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.platform.util.StringUtil;
+
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 /**
  * TODO (bknerr) : Consider a hierarchical data structure for meta data
@@ -38,23 +44,37 @@ import com.google.common.collect.ImmutableSet;
  */
 public class EpicsMetaData {
 
-    private final EpicsGraphicsData<? extends Comparable<?>> _grData;
+    private final EpicsGraphicsData<? extends Comparable<?>> _graphicsData;
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
     private final Short _precision;
     private final EpicsAlarm _alarm;
-    private final ImmutableSet<String> _states;
+    private final Map<Integer, EpicsEnum> _stateMap;
+
 
 
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nonnull final Set<String> states) {
-        _states = ImmutableSet.<String>builder().addAll(states).build();
+    public EpicsMetaData(@Nonnull final String[] states) {
+        _stateMap = initStateMap(states);
 
         _alarm = null;
-        _grData = null;
+        _graphicsData = null;
         _ctrlLimits = null;
         _precision = null;
+    }
+
+    private Map<Integer, EpicsEnum> initStateMap(@Nonnull final String[] states) {
+
+        final LinkedHashMap<Integer, EpicsEnum> stateMap = Maps.newLinkedHashMap();
+        int i = 0;
+        for (final String state : states) {
+            // States may contain a lot of empty strings, as EPICS uses them this way
+            if (!StringUtil.isBlank(state)) {
+                stateMap.put(Integer.valueOf(i), EpicsEnum.create(i++, state, null));
+            }
+        }
+        return stateMap;
     }
 
     /**
@@ -65,20 +85,21 @@ public class EpicsMetaData {
                          @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
                          @Nullable final Short precision) {
         _alarm = alarm;
-        _grData = gr;
+        _graphicsData = gr;
         _ctrlLimits = ctrl;
-        if (_grData != null && _ctrlLimits != null &&
+        if (_graphicsData != null && _ctrlLimits != null &&
             !gr.getAlarmHigh().getClass().equals(_ctrlLimits.getCtrlHigh().getClass())) {
-                throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and graphics don't have the same class type.");
+                throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and " +
+                		                           "graphics don't have the same class type.");
         }
         _precision = precision;
 
-        _states = null;
+        _stateMap = Collections.emptyMap();
     }
 
     @CheckForNull
     public EpicsGraphicsData<?> getGrData() {
-        return _grData;
+        return _graphicsData;
     }
 
     @CheckForNull
@@ -95,8 +116,22 @@ public class EpicsMetaData {
         return _alarm;
     }
 
+    /**
+     * Returns an immutable copy of the values of a linked hash map.
+     * That means the underlying set of states is ordered according to the order
+     * of the array which was used to construct this object.
+     * @return an immutable copy of the states.
+     */
     @CheckForNull
-    public ImmutableSet<String> getStates() {
-        return _states;
+    public ImmutableSet<EpicsEnum> getStates() {
+        return ImmutableSet.<EpicsEnum>builder().addAll(_stateMap.values()).build();
+    }
+
+    @CheckForNull
+    public EpicsEnum getState(final int index) {
+        if (_stateMap.containsKey(Integer.valueOf(index))) {
+            return _stateMap.get(Integer.valueOf(index));
+        }
+        return null;
     }
 }

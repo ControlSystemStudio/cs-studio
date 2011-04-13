@@ -54,6 +54,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -71,6 +72,8 @@ import com.google.inject.Inject;
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
     private static final String EXC_MSG = "Channel table access failed.";
+
+    private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
     /**
      * Archive channel configuration cache.
      */
@@ -117,10 +120,15 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
         final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
-        final TimeInstant time = lastSampleTime == null ? null :
-                                                    TimeInstantBuilder.fromMillis(lastSampleTime.getTime());
-        final String dispHi = result.getString(TAB + ".display_high");
-        final String dispLo = result.getString(TAB + ".display_low");
+
+        final TimeInstant time = lastSampleTime.after(DEFAULT_ZERO_TIMESTAMP) ?
+                                 TimeInstantBuilder.fromMillis(lastSampleTime.getTime()) :
+                                 null;
+
+        String dispHi = result.getString(TAB + ".display_high");
+        dispHi = StringUtil.isBlank(dispHi) ? null : dispHi;
+        String dispLo = result.getString(TAB + ".display_low");
+        dispLo = StringUtil.isBlank(dispLo) ? null : dispLo;
 
         final ArchiveControlSystemId csId = new ArchiveControlSystemId(result.getLong(CS_TAB + ".id"));
         final String csName = result.getString(CS_TAB + ".name");

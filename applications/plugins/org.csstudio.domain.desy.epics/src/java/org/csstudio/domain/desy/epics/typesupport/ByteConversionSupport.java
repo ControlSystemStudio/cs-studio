@@ -26,8 +26,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.domain.desy.epics.alarm.EpicsGraphicsData;
-import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 

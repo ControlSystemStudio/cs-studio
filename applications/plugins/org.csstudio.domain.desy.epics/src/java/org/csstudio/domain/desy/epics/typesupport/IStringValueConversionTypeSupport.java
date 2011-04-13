@@ -23,10 +23,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IStringValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.CssValueType;
@@ -56,7 +58,8 @@ final class IStringValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final IStringValue value) throws TypeSupportException {
+                                                             @Nonnull final IStringValue value,
+                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
 
         final String[] values = value.getValues();
         if (values == null || values.length == 0) {

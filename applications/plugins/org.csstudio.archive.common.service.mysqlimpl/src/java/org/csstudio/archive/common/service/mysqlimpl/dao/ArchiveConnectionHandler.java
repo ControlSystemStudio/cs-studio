@@ -118,6 +118,8 @@ public enum ArchiveConnectionHandler {
         ds.setFailOverReadOnly(false);
         ds.setMaxAllowedPacket(64*1024); // up tp 64MB TODO (bknerr): same pref as in the engine mgr
 
+        ds.setUseTimezone(true);
+
         return ds;
     }
 

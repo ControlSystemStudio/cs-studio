@@ -41,7 +41,7 @@ import com.google.common.base.Joiner;
    field(TWST, "val of 12")<br>
    field(THST, "val of 45")<br>
    <br>
-   Resulting EpicsEnumTriples:<br>
+   Resulting EpicsEnums:<br>
    (0, "val of 33", 33)<br>
    (1, "val of 21", 21)<br>
    (2, "val of 12", 12)<br>
@@ -53,6 +53,7 @@ import com.google.common.base.Joiner;
 public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
     private static final long serialVersionUID = -3340079923729173798L;
+    public static final String UNKNOWN_STATE = "UNKNOWN";
 
     @Nonnull
     public static final EpicsEnum create(@Nonnull final Integer index,
@@ -94,5 +95,36 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
             rawStr = raw.toString();
         }
         return "(" + Joiner.on(",").join(getIndex(), getState(), rawStr) + ")";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + getState().hashCode();
+        final Integer raw = getRaw();
+        if (raw != null) {
+            result = 31 * result + getRaw().hashCode();
+        }
+        return result;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        if (!(obj instanceof EpicsEnum)) {
+            return false;
+        }
+        final EpicsEnum other = (EpicsEnum) obj;
+        if (!getState().equals(other.getState())) {
+            return false;
+        }
+        if (getRaw() != other.getRaw()) {
+            return false;
+        }
+        return true;
     }
 }

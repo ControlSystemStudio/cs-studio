@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
@@ -64,6 +64,7 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
         TypeSupport.addTypeSupport(new ByteConversionSupport());
         TypeSupport.addTypeSupport(new DoubleConversionSupport());
         TypeSupport.addTypeSupport(new FloatConversionSupport());
+        TypeSupport.addTypeSupport(new EpicsEnumConversionSupport());
 
         INSTALLED = true;
     }
@@ -77,7 +78,7 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
 
         final EpicsIMetaDataTypeSupport<T> support =
             (EpicsIMetaDataTypeSupport<T>) findTypeSupportForOrThrowTSE(EpicsIMetaDataTypeSupport.class,
-                                                              valueClazz);
+                                                                        valueClazz);
         return support.convertToMetaData(meta);
     }
 

@@ -57,6 +57,24 @@ public class ArchiveChannelGroup implements IArchiveChannelGroup {
      */
     @Override
     @Nonnull
+    public ArchiveEngineId getEngineId() {
+        return _engineId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getDescription() {
+        return _description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
     public ArchiveChannelGroupId getId() {
         return _id;
     }
@@ -70,22 +88,5 @@ public class ArchiveChannelGroup implements IArchiveChannelGroup {
         return _name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ArchiveEngineId getEngineId() {
-        return _engineId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getDescription() {
-        return _description;
-    }
 
 }

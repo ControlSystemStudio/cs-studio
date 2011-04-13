@@ -93,7 +93,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
 
     private final String _selectLatestEngineStatusInfoStmt =
         "SELECT id, engine_id, status, time, info FROM " + getDatabaseName() + "." + TAB +
-        " WHERE time between ? " + "AND ?" +
+        " WHERE time < ?" +
         " AND engine_id=? ORDER BY time DESC LIMIT 1";
 
 
@@ -146,10 +146,9 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
                                                          @Nonnull final TimeInstant latestAliveTime) throws ArchiveDaoException {
         try {
             final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestEngineStatusInfoStmt);
-            // time between ? and ? and engine_id=?
-            stmt.setTimestamp(1, new Timestamp(latestAliveTime.getMillis()));
-            stmt.setTimestamp(2, new Timestamp(TimeInstantBuilder.fromNow().getMillis()));
-            stmt.setInt(3, id.intValue());
+            // time < now
+            stmt.setTimestamp(1, new Timestamp(TimeInstantBuilder.fromNow().getMillis()));
+            stmt.setInt(2, id.intValue());
 
             final ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {

@@ -31,7 +31,8 @@ import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -61,17 +62,24 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         AbstractIValueConversionTypeSupport.install();
     }
 
-    @SuppressWarnings("unchecked")
     @CheckForNull
     public static <T extends IValue>
     EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
                                             @Nonnull final T value) throws TypeSupportException {
+        return toSystemVariable(name, value, null);
+    }
 
+    @SuppressWarnings("unchecked")
+    @CheckForNull
+    public static <T extends IValue>
+    EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
+                                            @Nonnull final T value,
+                                            @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<T> support =
             (AbstractIValueConversionTypeSupport<T>) findTypeSupportForOrThrowTSE(EpicsIValueTypeSupport.class,
-                                                                           typeClass);
-        return support.convertToSystemVariable(name, value);
+                                                                                  typeClass);
+        return support.convertToSystemVariable(name, value, metaData);
     }
 
     /**

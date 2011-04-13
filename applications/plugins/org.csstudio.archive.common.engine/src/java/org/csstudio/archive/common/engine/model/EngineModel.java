@@ -86,8 +86,8 @@ public final class EngineModel {
     /** Start time of the model */
     private TimeInstant _startTime = null;
 
-    /** Write period in seconds */
     private final long _writePeriodInMS;
+    private final long _heartBeatPeriodInMS;
 
     private IArchiveEngine _engine;
 
@@ -107,6 +107,7 @@ public final class EngineModel {
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
 
         _writePeriodInMS = 1000*ArchiveEnginePreference.WRITE_PERIOD.getValue();
+        _heartBeatPeriodInMS = 1000*ArchiveEnginePreference.HEARTBEAT_PERIOD.getValue();
     }
 
     /** @return Name (description) */
@@ -185,7 +186,7 @@ public final class EngineModel {
 
         _state = State.RUNNING;
 
-        _writeExecutor.start(_writePeriodInMS);
+        _writeExecutor.start(_heartBeatPeriodInMS, _writePeriodInMS);
 
         startChannelGroups(_groupMap.values());
     }

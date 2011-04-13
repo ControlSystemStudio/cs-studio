@@ -25,6 +25,7 @@ import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.channel.ArchiveChannel;
@@ -38,6 +39,7 @@ import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.util.StringUtil;
 import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.base.Function;
@@ -290,12 +292,12 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                                                            @Nonnull final String name,
                                                            @Nonnull final String datatype,
                                                            @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
-                                                           @Nonnull final TimeInstant time,
+                                                           @Nullable final TimeInstant time,
                                                            @Nonnull final IArchiveControlSystem cs,
                                                            @CheckForNull final String low,
                                                            @CheckForNull final String high) throws TypeSupportException {
         // CHECKSTYLE ON : ParameterNumber
-        if (low == null || high == null) {
+        if (StringUtil.isBlank(low) || StringUtil.isBlank(high)) {
             return new ArchiveChannel(id,
                                       name,
                                       datatype,
