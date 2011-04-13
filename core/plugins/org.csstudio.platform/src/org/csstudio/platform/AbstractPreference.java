@@ -36,6 +36,9 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -147,6 +150,16 @@ public abstract class AbstractPreference<T> {
             public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
                 final IPreferencesService prefs = Platform.getPreferencesService();
                 return new File(prefs.getString(context, key, defaultValue.toString(), null));
+            }
+        });
+        TYPE_MAP.put(IPath.class, new PrefStrategy<IPath>() {
+            @Override
+            @Nonnull
+            public IPath getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final IPath defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                String value = prefs.getString(context, key, defaultValue.toString(), null);
+                IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                return workspace.getRoot().findMember(value).getFullPath();
             }
         });
     }
