@@ -204,6 +204,21 @@ public abstract class AbstractPreference<T> {
         _type = (Class<T>) defaultValue.getClass();
     }
 
+    /**
+     * Constructor.
+     * @param keyAsString the string used to define the preference in initializers
+     * @param defaultValue the value used if none is defined in initializers. The type is derived from this value and must match T.
+     */
+    @SuppressWarnings("unchecked")
+    protected AbstractPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue, @Nonnull final Class<T> type) {
+        assert keyAsString != null : "keyAsString must not be null";
+        assert defaultValue != null : "defaultValue must not be null";
+
+        _keyAsString = keyAsString;
+        _defaultValue = defaultValue;
+        _type = type;
+    }
+
     @Nonnull
     public final String getKeyAsString() {
         assert _keyAsString != null : "_keyAsString must not be null";
