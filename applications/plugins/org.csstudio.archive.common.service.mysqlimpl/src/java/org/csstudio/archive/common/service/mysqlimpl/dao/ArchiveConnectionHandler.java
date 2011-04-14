@@ -165,35 +165,12 @@ public enum ArchiveConnectionHandler {
                 _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
-            handleExceptions(e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
         if (connection == null || StringUtil.isBlank(_prefDatabaseName)) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
-    }
-
-    /**
-     * To reduce the readability of the invoking method. Catches checked exceptions, wraps them in
-     * dedicated abstraction level exception. Rethrows any other exception as new RuntimeException.
-     *
-     * @param e Exception to handle
-     * @throws RuntimeException wrapper for unhandled exception
-     */
-    private void handleExceptions(@Nonnull final Exception e) throws ArchiveConnectionException {
-        try {
-            throw e;
-        } catch (final InstantiationException ie) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, ie);
-        } catch (final IllegalAccessException iae) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, iae);
-        } catch (final ClassNotFoundException cfe) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, cfe);
-        } catch (final SQLException se) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, se);
-        } catch (final Exception re) {
-            throw new RuntimeException(re);
-        }
     }
 
     /**

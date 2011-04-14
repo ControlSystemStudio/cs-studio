@@ -113,7 +113,6 @@ public enum PersistEngineDataManager {
             _prefPeriodInMS = DEFAULT_PERIOD_MS;
         }
 
-
         final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
 
         if (maxAllowedPacketInKB < MIN_PACKET_SIZE_KB || maxAllowedPacketInKB > MAX_PACKET_SIZE_KB) {
