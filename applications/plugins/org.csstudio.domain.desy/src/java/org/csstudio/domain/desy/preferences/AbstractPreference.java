@@ -166,8 +166,8 @@ public abstract class AbstractPreference<T> {
                          public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
                              final IPreferencesService prefs = Platform.getPreferencesService();
                              return new File(prefs.getString(context, key, defaultValue.toString(), null));
-                         }
-                     });
+            }
+        });
         TYPE_MAP.put(IPath.class,
                      new PrefStrategy<IPath>() {
                          @Override
@@ -202,6 +202,21 @@ public abstract class AbstractPreference<T> {
         _keyAsString = keyAsString;
         _defaultValue = defaultValue;
         _type = (Class<T>) defaultValue.getClass();
+    }
+
+    /**
+     * Constructor.
+     * @param keyAsString the string used to define the preference in initializers
+     * @param defaultValue the value used if none is defined in initializers. The type is derived from this value and must match T.
+     */
+    @SuppressWarnings("unchecked")
+    protected AbstractPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue, @Nonnull final Class<T> type) {
+        assert keyAsString != null : "keyAsString must not be null";
+        assert defaultValue != null : "defaultValue must not be null";
+
+        _keyAsString = keyAsString;
+        _defaultValue = defaultValue;
+        _type = type;
     }
 
     @Nonnull

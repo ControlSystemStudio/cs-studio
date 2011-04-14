@@ -306,13 +306,13 @@ public abstract class AbstractPlug implements PlugContext
 					    + "' and not of expected type '" + type.getName() + "'.");
 				}
 	
-				getLogger().info("'"+uniqueName+"' reused    (c:"+p.getConnectionInfo()+" t:"+type.getName()+").");
+				getLogger().debug("'"+uniqueName+"' reused    (c:"+p.getConnectionInfo()+" t:"+type.getName()+").");
 				return type.cast(p);
 			}
 		
 			TT pp = createNewPropertyProxy(uniqueName, type);
 			
-			getLogger().info("'"+uniqueName+"' created   (c:"+pp.getConnectionInfo()+" t:"+type.getName()+").");
+			getLogger().debug("'"+uniqueName+"' created   (c:"+pp.getConnectionInfo()+" t:"+type.getName()+").");
 
 			putPropertyProxyToCache(pp);
 
@@ -422,7 +422,7 @@ public abstract class AbstractPlug implements PlugContext
 		if (canDestroy) {
 			try {
 				proxy.destroy();
-				getLogger().info("'"+proxy.getUniqueName()+"' destroyed (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").");
+				getLogger().debug("'"+proxy.getUniqueName()+"' destroyed (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").");
 			} catch (Exception e) {
 				getLogger().warn("'"+proxy.getUniqueName()+"' destroyed with error (c:"+proxy.getConnectionInfo()+" t:"+proxy.getClass().getName()+").",e);
 			}

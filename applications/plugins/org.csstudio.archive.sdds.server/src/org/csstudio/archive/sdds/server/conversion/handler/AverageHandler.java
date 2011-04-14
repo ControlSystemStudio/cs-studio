@@ -128,8 +128,13 @@ public class AverageHandler extends AlgorithmHandler {
             index++;
         }
         
+        if (index >= data.length) {
+            return new ArrayList<EpicsRecordData>(0);
+        }
+        
         // The variable index now contains the index of the first data sample
         // in the requested time interval
+        
         
         List<EpicsRecordData> resultData = new ArrayList<EpicsRecordData>(header.getMaxNumOfSamples());
         

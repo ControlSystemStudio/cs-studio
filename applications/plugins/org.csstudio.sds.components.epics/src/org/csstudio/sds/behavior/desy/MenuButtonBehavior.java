@@ -27,8 +27,8 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.CursorStyleEnum;
-import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -53,7 +53,7 @@ public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {
 
     @Override
     protected void doProcessConnectionStateChange(MenuButtonModel widget,
-            ConnectionState connectionState) {
+            AnyDataChannel anyDataChannel) {
 
     }
 

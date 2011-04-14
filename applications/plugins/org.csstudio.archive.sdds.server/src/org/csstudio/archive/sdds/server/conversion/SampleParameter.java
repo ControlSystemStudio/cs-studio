@@ -28,7 +28,7 @@ package org.csstudio.archive.sdds.server.conversion;
  * @author Markus Moeller
  *
  */
-public class SampleCtrl
+public class SampleParameter
 {
     /** Precision */
     private int precision;
@@ -61,7 +61,7 @@ public class SampleCtrl
      * Standard constructor that sets all fields to zero.
      * 
      */
-    public SampleCtrl()
+    public SampleParameter()
     {
         this.precision = 0;
         this.displayHigh = 0.0;
@@ -85,7 +85,7 @@ public class SampleCtrl
      * @param unitsLength
      * @param units
      */
-    public SampleCtrl(int precision, double displayHigh, double displayLow,
+    public SampleParameter(int precision, double displayHigh, double displayLow,
             double highAlarm, double highWarning, double lowWarning,
             double lowAlarm, int unitsLength, String units)
     {

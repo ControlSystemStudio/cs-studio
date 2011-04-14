@@ -26,7 +26,7 @@ package org.csstudio.archive.sdds.server.sdds;
 
 import java.util.TreeSet;
 import org.csstudio.archive.sdds.server.Activator;
-import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
+import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -47,7 +47,7 @@ public class SddsDataReader implements Runnable {
     private SDDSFile sddsFile;
 
     /** Holds the parameter of a PV */
-    private SampleCtrl sampleCtrl;
+    private SampleParameter sampleParameter;
     
     /** Path of SDDS file to read */
     private String filePath;
@@ -77,7 +77,7 @@ public class SddsDataReader implements Runnable {
         this.startTime = startTime;
         this.endTime = endTime;
         sddsFile = new SDDSFile();
-        sampleCtrl = new SampleCtrl();
+        sampleParameter = new SampleParameter();
         sddsFile.setFileName(filePath);
         sddsFile.setEndian(littleEndian);
         // result = new Vector<EpicsRecordData>();
@@ -125,8 +125,8 @@ public class SddsDataReader implements Runnable {
      * 
      * @return
      */
-    public SampleCtrl getSampleCtrl() {
-        return sampleCtrl;
+    public SampleParameter getSampleCtrl() {
+        return sampleParameter;
     }
     
     /**
@@ -151,7 +151,7 @@ public class SddsDataReader implements Runnable {
         
         list = sddsFile.getParameterNames();
         // types = sddsFile.getParameterTypes();
-        sampleCtrl = this.getParameters(list);
+        sampleParameter = this.getParameters(list);
         
         time = sddsFile.getColumnValues(0, 1, false);
         nanoSec = sddsFile.getColumnValues(1, 1, false);
@@ -195,9 +195,9 @@ public class SddsDataReader implements Runnable {
      * @param list
      * @return
      */
-    private SampleCtrl getParameters(String[] list) {
+    private SampleParameter getParameters(String[] list) {
         
-        SampleCtrl result = new SampleCtrl();
+        SampleParameter result = new SampleParameter();
         String[] name = null;
         String value = null;
         int index;
