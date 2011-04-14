@@ -46,31 +46,27 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- *
- * @author baschtl
+ * Manager that handles the persistence worker thread.
+ * @author Bastian Knerr
  * @since Feb 26, 2011
  */
 public enum PersistEngineDataManager {
     INSTANCE;
 
-    private static final int MAX_PACKET_SIZE_KB = 65536;
-
-    private static final int MIN_PACKET_SIZE_KB = 1024;
-
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(PersistEngineDataManager.class);
 
-    private static final int KBYTE_SIZE = 1024;
-    private static final int MIN_PERIOD_MS = 3000;
-    private static final int MAX_PERIOD_MS = 60000;
-    private static final int DEFAULT_PERIOD_MS = 5000;
+    private static final Integer KBYTE_SIZE = 1024;
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
     private final int _cpus = Runtime.getRuntime().availableProcessors();
+    /**
+     * The thread pool executor for the periodicallz scheduled workers.
+     */
     private final ScheduledThreadPoolExecutor _executor =
-        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(1, _cpus + 1));
-//    (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
+        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(2, _cpus + 1));
+
     /**
      * Sorted set for submitted periodic workers - decreasing by period
      */
@@ -88,7 +84,7 @@ public enum PersistEngineDataManager {
     private final AtomicInteger _workerId = new AtomicInteger(0);
 
     /**
-     * Entity managing access to blocking queue for consumer-producer pattern of submitted SQL
+     * Entity managing the access to the blocking queue for consumer-producer pattern of submitted SQL
      * statements.
      */
     private final SqlStatementBatch _sqlStatementBatch;
@@ -96,32 +92,20 @@ public enum PersistEngineDataManager {
     private Integer _prefPeriodInMS;
     private Integer _prefMaxAllowedPacketInBytes;
 
+    /**
+     * Constructor.
+     */
     private PersistEngineDataManager() {
         loadAndCheckPreferences();
 
         _sqlStatementBatch = SqlStatementBatch.INSTANCE;
+
         addGracefullyShutdownHook();
     }
 
     private void loadAndCheckPreferences() {
-
         _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
-        if (_prefPeriodInMS < MIN_PERIOD_MS || _prefPeriodInMS > MAX_PERIOD_MS) {
-            LOG.warn("Initial interval in seconds for the PersistDataWorker thread out of recommended bounds [" +
-                     MIN_PERIOD_MS + "," + MAX_PERIOD_MS+ "]." +
-                     "Set to " + DEFAULT_PERIOD_MS + "ms.");
-            _prefPeriodInMS = DEFAULT_PERIOD_MS;
-        }
-
-        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
-
-        if (maxAllowedPacketInKB < MIN_PACKET_SIZE_KB || maxAllowedPacketInKB > MAX_PACKET_SIZE_KB) {
-            LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
-                     MIN_PACKET_SIZE_KB + "," + MAX_PACKET_SIZE_KB + "]kb. Set to " + MAX_ALLOWED_PACKET_IN_KB.getDefaultValue() + " kb.");
-            _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getDefaultValue() * KBYTE_SIZE;
-        } else {
-            _prefMaxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
-        }
+        _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * KBYTE_SIZE;
     }
 
     private void submitNewPersistDataWorker() {
@@ -211,8 +195,6 @@ public enum PersistEngineDataManager {
         return false;
     }
 
-
-
     private boolean noWorkerPresentYet() {
         return _executor.getPoolSize() <= 0;
     }
@@ -226,7 +208,7 @@ public enum PersistEngineDataManager {
     }
 
     private boolean isPeriodAlreadySetToMinimum(final long period) {
-        return Long.valueOf(period).intValue() <= MIN_PERIOD_MS;
+        return Long.valueOf(period).intValue() <= 2000;
     }
 
     private void handlePoolExhaustionWithMinimumPeriodCornerCase() {
@@ -236,7 +218,7 @@ public enum PersistEngineDataManager {
 
     private void lowerPeriodAndRemoveOldestWorker(@Nonnull final Iterator<PersistDataWorker> it,
                                                   @Nonnull final PersistDataWorker oldestWorker) {
-        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, MIN_PERIOD_MS);
+        _prefPeriodInMS = Math.max(_prefPeriodInMS>>1, 2000);
         LOG.info("Remove Worker: " + oldestWorker.getName());
         _executor.remove(oldestWorker);
         it.remove();

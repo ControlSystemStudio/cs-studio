@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -189,40 +188,7 @@ public abstract class AbstractPreference<T> {
     private final String _keyAsString;
     private final T _defaultValue;
     private final Class<T> _type;
-    private final IPreferenceValidator<T> _validator;
-
-    /**
-     * Constructor.
-     */
-    protected AbstractPreference(@Nonnull final String keyAsString,
-                                 @Nonnull final T defaultValue,
-                                 @Nonnull final Class<T> type,
-                                 @Nullable final IPreferenceValidator<T> validator) {
-        assert keyAsString != null : "keyAsString must not be null";
-        assert defaultValue != null : "defaultValue must not be null";
-
-        _keyAsString = keyAsString;
-        _defaultValue = defaultValue;
-        _type = type;
-        _validator = validator;
-    }
-    /**
-     * Constructor.
-     */
-    @SuppressWarnings("unchecked")
-    protected AbstractPreference(@Nonnull final String keyAsString,
-                                 @Nonnull final T defaultValue,
-                                 @Nullable final IPreferenceValidator<T> validator) {
-        this(keyAsString, defaultValue, (Class<T>) defaultValue.getClass(), validator);
-    }
-    /**
-     * Constructor.
-     */
-    @SuppressWarnings("unchecked")
-    protected AbstractPreference(@Nonnull final String keyAsString,
-                                 @Nonnull final T defaultValue) {
-        this(keyAsString, defaultValue, (Class<T>) defaultValue.getClass(), null);
-    }
+    private IPreferenceValidator<T> _validator;
 
     /**
      * Constructor.
@@ -230,7 +196,26 @@ public abstract class AbstractPreference<T> {
     protected AbstractPreference(@Nonnull final String keyAsString,
                                  @Nonnull final T defaultValue,
                                  @Nonnull final Class<T> type) {
-        this(keyAsString, defaultValue, type, null);
+        assert keyAsString != null : "keyAsString must not be null";
+        assert defaultValue != null : "defaultValue must not be null";
+
+        _keyAsString = keyAsString;
+        _defaultValue = defaultValue;
+        _type = type;
+    }
+    /**
+     * Constructor.
+     */
+    @SuppressWarnings("unchecked")
+    protected AbstractPreference(@Nonnull final String keyAsString,
+                                 @Nonnull final T defaultValue) {
+        this(keyAsString, defaultValue, (Class<T>) defaultValue.getClass());
+    }
+
+    @Nonnull
+    protected AbstractPreference<T> addValidator(@Nonnull final IPreferenceValidator<T> validator) {
+        _validator = validator;
+        return this;
     }
 
     @Nonnull

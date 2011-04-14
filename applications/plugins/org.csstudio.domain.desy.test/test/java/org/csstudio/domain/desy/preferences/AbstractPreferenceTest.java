@@ -158,9 +158,8 @@ public class AbstractPreferenceTest {
             new TestPreference<Double>("Double_Pref", 12.34);
 
         public static final TestPreference<Double> DOUBLE_PREF_WITH_VAL =
-            new TestPreference<Double>("Double_Pref", 
-                                       12.34, 
-                                       new MinMaxPreferenceValidator<Double>(0.0, 100.0));
+            (TestPreference<Double>) new TestPreference<Double>("Double_Pref", 
+                                   12.34).addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
         public static final TestPreference<Boolean> BOOLEAN_PREF =
             new TestPreference<Boolean>("Boolean_Pref", true);
@@ -180,11 +179,6 @@ public class AbstractPreferenceTest {
          * public final TestPreference<Boolean> NOT_STATIC =
          *     new TestPreference<Boolean>("NOT_STATIC", true);
          */
-        private TestPreference(@Nonnull final String keyAsString, 
-                               @Nonnull final T defaultValue, 
-                               @Nonnull final IPreferenceValidator<T> validator) {
-            super(keyAsString, defaultValue, validator);
-        }
         private TestPreference(@Nonnull final String keyAsString, 
                                @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
