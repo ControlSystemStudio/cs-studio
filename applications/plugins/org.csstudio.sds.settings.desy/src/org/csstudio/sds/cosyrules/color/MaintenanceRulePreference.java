@@ -39,9 +39,9 @@ import org.eclipse.core.runtime.IPath;
 public class MaintenanceRulePreference<T> extends AbstractPreference<T> {
     
     public static final MaintenanceRulePreference<IPath> MAINTENANCE_UNKNOWN_DISPLAY_PATH =
-        new MaintenanceRulePreference<IPath>("MaintenanceUnknownDisplayPath", (IPath) ResourcesPlugin.getWorkspace().getRoot().getFullPath(), IPath.class);
+        new MaintenanceRulePreference<IPath>("MaintenanceUnknownDisplayPath", ResourcesPlugin.getWorkspace().getRoot().getFullPath(), IPath.class);
     public static final MaintenanceRulePreference<IPath> MAINTENANCE_DISPLAY_PATH =
-        new MaintenanceRulePreference<IPath>("MaintenanceDisplayPath", (IPath) ResourcesPlugin.getWorkspace().getRoot().getFullPath(), IPath.class);
+        new MaintenanceRulePreference<IPath>("MaintenanceDisplayPath", ResourcesPlugin.getWorkspace().getRoot().getFullPath(), IPath.class);
     public static final MaintenanceRulePreference<String> MAINTENANCE_PRE_FILE_NAME =
         new MaintenanceRulePreference<String>("MaintenancePreFileName","", String.class);
     

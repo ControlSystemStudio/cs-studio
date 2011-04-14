@@ -25,6 +25,7 @@ import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -84,7 +85,8 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
 
     @Override
     protected void doProcessConnectionStateChange(final BargraphModel widget,
-            final org.epics.css.dal.context.ConnectionState connectionState) {
+            final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         // .. border
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                 determineBorderStyle(connectionState));
@@ -100,7 +102,7 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
                 determineBackgroundColor(connectionState));
 
         // .. transparency
-        Boolean transparent = _transparencyByConnectionState.get(connectionState);
+        Boolean transparent = _transparencyByConnectionState.get(anyDataChannel);
 
         if (transparent != null) {
             widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);

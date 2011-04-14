@@ -94,7 +94,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
 	 * this method delegates event handling to different template methods
 	 * {@link #doProcessMetaDataChange(AbstractWidgetModel, MetaData)} ,
 	 * {@link #doProcessValueChange(AbstractWidgetModel, AnyData)} and
-	 * {@link #doProcessConnectionStateChange(AbstractWidgetModel, ConnectionState)}
+	 * {@link #doProcessConnectionStateChange(AbstractWidgetModel, AnyDataChannel)}
 	 * hiding some of the flexibility that comes with {@link AnyDataChannel}.
 	 *
 	 * Subclasses that need to access all features offered by
@@ -118,11 +118,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
 		doProcessValueChange(model, data);
 
 		// .. handle connection state
-		ConnectionState state = channel.getProperty().getConnectionState();
-		if (latestConnectionState != state) {
-			latestConnectionState = state;
-			doProcessConnectionStateChange(model, latestConnectionState);
-		}
+		doProcessConnectionStateChange(model, channel);
 
 	}
 
@@ -130,7 +126,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
 	 * Processes DAL events received via
 	 * {@link ChannelListener#channelDataUpdate(AnyDataChannel)}. By default
 	 * this method delegates event handling to
-	 * {@link #doProcessConnectionStateChange(AbstractWidgetModel, ConnectionState)}
+	 * {@link #doProcessConnectionStateChange(AbstractWidgetModel, AnyDataChannel)}
 	 * hiding some of the flexibility that comes with {@link AnyDataChannel}.
 	 *
 	 * Subclasses that need to access all features offered by
@@ -142,13 +138,13 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
 	 *            the {@link AnyDataChannel}
 	 */
 	public void processChannelStateUpdate(final W model, final AnyDataChannel channel) {
-		org.epics.css.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
+//		org.epics.css.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
 
 		// .. handle connection state
-		if (latestConnectionState != state) {
-			latestConnectionState = state;
-			doProcessConnectionStateChange(model, latestConnectionState);
-		}
+//		if (latestConnectionState != state) {
+//			latestConnectionState = state;
+			doProcessConnectionStateChange(model, channel);
+//		}
 	}
 
 	/**
@@ -241,10 +237,10 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
 	 *
 	 * @param widget
 	 *            the widget
-	 * @param connectionState
+	 * @param anyDataChannel
 	 *            the current connection state
 	 */
-	protected abstract void doProcessConnectionStateChange(W widget, org.epics.css.dal.context.ConnectionState connectionState);
+	protected abstract void doProcessConnectionStateChange(W widget, AnyDataChannel anyDataChannel);
 
 	/**
 	 * Template method which is called when the value of the underlying channel
