@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
@@ -80,6 +81,7 @@ public enum ArchiveConnectionHandler {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
+    private Integer _prefMaxAllowedPacketSizeInKB;
 
 
     /**
@@ -99,6 +101,7 @@ public enum ArchiveConnectionHandler {
         _prefDatabaseName = DATABASE_NAME.getValue();
         _prefUser = USER.getValue();
         _prefPassword = PASSWORD.getValue();
+        _prefMaxAllowedPacketSizeInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
 
     }
 
@@ -116,7 +119,7 @@ public enum ArchiveConnectionHandler {
         ds.setUser(_prefUser);
         ds.setPassword(_prefPassword);
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(64*1024); // up tp 64MB TODO (bknerr): same pref as in the engine mgr
+        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
 
         ds.setUseTimezone(true);
 

@@ -61,10 +61,14 @@ public class HeartBeatWorker implements Runnable {
      */
     @Override
     public void run() {
+        //LOG.info("RUN: Heartbeat at " + TimeInstantBuilder.fromNow().formatted());
         try {
             updateEngineHeartBeat(_provider, _engineId);
         } catch (final ArchiveServiceException e) {
             LOG.error("Exception within service impl. Archive engine heart beat persistence failed.", e);
+        } catch (final Throwable t) {
+            LOG.error("Unknown throwable. Thread HeartBeatWorker is terminated");
+            t.printStackTrace();
         }
     }
 

@@ -165,7 +165,9 @@ public abstract class AbstractPreference<T> {
                          @Nonnull
                          public File getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final File defaultValue) {
                              final IPreferencesService prefs = Platform.getPreferencesService();
-                             return new File(prefs.getString(context, key, defaultValue.toString(), null));
+                             final String fileStr = prefs.getString(context, key, defaultValue.toString(), null);
+                            File file = new File(fileStr);
+                            return file;
                          }
                      });
         TYPE_MAP.put(IPath.class,

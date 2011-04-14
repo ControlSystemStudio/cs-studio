@@ -92,10 +92,11 @@ final class WriteWorker implements Runnable {
      */
     @Override
     public void run() {
-        WORKER_LOG.info("RUN: " + TimeInstantBuilder.fromNow().formatted());
-
-        List<IArchiveSample<Object, ISystemVariable<Object>>> samples = Collections.emptyList();
         try {
+            //WORKER_LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
+
+            List<IArchiveSample<Object, ISystemVariable<Object>>> samples = Collections.emptyList();
+
             final RunningStopWatch watch = StopWatch.start();
 
             samples = collectSamplesFromBuffers(_channels);
@@ -113,6 +114,9 @@ final class WriteWorker implements Runnable {
             _avgWriteDurationInMS.accumulate(Double.valueOf(durationInMS));
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
+        } catch (final Throwable t) {
+            WORKER_LOG.error("Unknown throwable. Thread " + _name + " is terminated");
+            t.printStackTrace();
         }
     }
 

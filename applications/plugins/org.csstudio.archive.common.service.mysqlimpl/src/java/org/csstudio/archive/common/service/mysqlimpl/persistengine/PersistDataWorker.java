@@ -78,7 +78,7 @@ public class PersistDataWorker implements Runnable {
      */
     @Override
     public void run() {
-        LOG.info("RUN: " + _name + " - " + TimeInstantBuilder.fromNow().formatted());
+        LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
         Statement sqlStmt = null;
         Connection connection = null;
@@ -95,15 +95,8 @@ public class PersistDataWorker implements Runnable {
             LOG.info("Execute batched stmt - size:\t" + size);
             sqlStmt.executeBatch();
 
-        } catch (final ArchiveConnectionException se) {
-            LOG.error("Batched update failed. Drain unpersisted statements to file system.");
-            _mgr.rescueDataToFileSystem(_batchedStatements);
-        } catch (final BatchUpdateException be) {
-            LOG.error("Batched update failed. Drain unpersisted statements to file system.");
-            processFailedBatch(_batchedStatements, be);
-        } catch (final SQLException se) {
-            LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.");
-            _mgr.rescueDataToFileSystem(_batchedStatements);
+        } catch (final Throwable t) {
+            handleThrowable(t);
         } finally {
             _batchedStatements.clear();
             closeStatement(sqlStmt);
@@ -114,6 +107,25 @@ public class PersistDataWorker implements Runnable {
             } catch (final SQLException e) {
                 LOG.warn("Closing of connection failed on termination of worker");
             }
+        }
+    }
+
+    void handleThrowable(@Nonnull final Throwable t) {
+        try {
+            throw t;
+        } catch (final ArchiveConnectionException se) {
+            LOG.error("Archive Connection failed. No batch update. Drain unpersisted statements to file system.", se);
+            _mgr.rescueDataToFileSystem(_batchedStatements);
+        } catch (final BatchUpdateException be) {
+            LOG.error("Batched update failed. Drain unpersisted statements to file system.", be);
+            processFailedBatch(_batchedStatements, be);
+        } catch (final SQLException se) {
+            LOG.error("Batched update failed. Statement was already closed or driver does not support batched statements.", se);
+            _mgr.rescueDataToFileSystem(_batchedStatements);
+        } catch (final Throwable tt) {
+            LOG.error("Unknown throwable. Thread " + _name + " is terminated", tt);
+            t.printStackTrace();
+            _mgr.rescueDataToFileSystem(_batchedStatements);
         }
     }
 

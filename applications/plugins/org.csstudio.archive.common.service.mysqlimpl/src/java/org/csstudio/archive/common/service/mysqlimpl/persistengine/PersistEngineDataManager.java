@@ -21,7 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -52,6 +52,10 @@ import com.google.common.collect.Sets;
  */
 public enum PersistEngineDataManager {
     INSTANCE;
+
+    private static final int MAX_PACKET_SIZE_KB = 65536;
+
+    private static final int MIN_PACKET_SIZE_KB = 1024;
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(PersistEngineDataManager.class);
@@ -110,13 +114,12 @@ public enum PersistEngineDataManager {
         }
 
 
-        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET.getValue();
+        final int maxAllowedPacketInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
 
-        // TODO (bknerr) : test code for minimum size [1kB,64MB]
-        if (maxAllowedPacketInKB < 1 || maxAllowedPacketInKB > 64 * 1024) {
+        if (maxAllowedPacketInKB < MIN_PACKET_SIZE_KB || maxAllowedPacketInKB > MAX_PACKET_SIZE_KB) {
             LOG.warn("MaxAllowedPacket connection parameter out of recommended range [" +
-                     KBYTE_SIZE + "," + 64 * KBYTE_SIZE + "]kb. Set to " + 16 * KBYTE_SIZE + " kb.");
-            _prefMaxAllowedPacketInBytes = 16 * KBYTE_SIZE * KBYTE_SIZE;
+                     MIN_PACKET_SIZE_KB + "," + MAX_PACKET_SIZE_KB + "]kb. Set to " + MAX_ALLOWED_PACKET_IN_KB.getDefaultValue() + " kb.");
+            _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getDefaultValue() * KBYTE_SIZE;
         } else {
             _prefMaxAllowedPacketInBytes = maxAllowedPacketInKB * KBYTE_SIZE;
         }
@@ -126,7 +129,6 @@ public enum PersistEngineDataManager {
         final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
                                                                   _sqlStatementBatch,
                                                                   _prefPeriodInMS);
-        LOG.info("What???");
         _executor.scheduleAtFixedRate(newWorker,
                                       0L,
                                       newWorker.getPeriodInMS(),

@@ -58,14 +58,14 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> PASSWORD =
         new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET =
-        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 16384);
+    public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET_IN_KB =
+        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 32768);
 
     public static final MySQLArchiveServicePreference<String> SMTP_HOST =
         new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<File> DATA_RESCUE_DIR =
-        new MySQLArchiveServicePreference<File>("dataRescueDir", new File("./persistDataRescue"));
+        new MySQLArchiveServicePreference<File>("dataRescueDir", new File("C:\\temp\\persistDataRescue"));
 
     public static final MySQLArchiveServicePreference<String> EMAIL_ADDRESS =
         new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");

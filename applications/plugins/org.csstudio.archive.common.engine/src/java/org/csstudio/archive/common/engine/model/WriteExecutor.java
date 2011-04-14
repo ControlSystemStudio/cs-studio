@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -35,12 +36,6 @@ import com.google.common.collect.Maps;
  */
 public class WriteExecutor {
 
-    /**
-     * For a periodically scheduled write worker, a periodically scheduled heart beat worker, and
-     * in case of a graceful shutdown, another shutdown worker.
-     */
-    private static final int CORE_POOL_SIZE = 3;
-
     private static final int MAX_AWAIT_TERMINATION_TIME_S = 2;
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteExecutor.class);
@@ -51,8 +46,11 @@ public class WriteExecutor {
     private final ConcurrentMap<String, ArchiveChannel<Object, ISystemVariable<Object>>> _channelMap =
         Maps.newConcurrentMap();
 
-    private final ScheduledExecutorService _executor =
-        Executors.newScheduledThreadPool(CORE_POOL_SIZE);
+    private final ScheduledExecutorService _heartBeatExecutor =
+        Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService _writeSamplesExecutor =
+        Executors.newSingleThreadScheduledExecutor();
+
     private WriteWorker _writeWorker;
     private long _writePeriodInMS;
 
@@ -76,6 +74,7 @@ public class WriteExecutor {
     }
 
     public void start(final long pHeartBeatPeriodInMS, final long pWritePeriodInMS) {
+
         if (_writeWorker != null) {
             LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
             return;
@@ -83,13 +82,12 @@ public class WriteExecutor {
 
         _writePeriodInMS = adjustWritePeriod(pWritePeriodInMS, MIN_WRITE_PERIOD_MS);
 
+
+        _writeWorker = submitAndScheduleWriteWorker(_provider,
+                                                    _writePeriodInMS);
         submitAndScheduleHeartBeatWorker(_engineId,
                                          _provider,
                                          pHeartBeatPeriodInMS);
-
-        _writeWorker = submitAndScheduleWriteWorker(_provider,
-                                                    _writePeriodInMS,
-                                                    0L);
 
     }
 
@@ -100,25 +98,24 @@ public class WriteExecutor {
                                                              final long period) {
         final HeartBeatWorker heartBeatWorker = new HeartBeatWorker(engineId,
                                                                     provider);
-        _executor.scheduleAtFixedRate(heartBeatWorker,
-                                      0L,
-                                      period,
-                                      TimeUnit.MILLISECONDS);
+        _heartBeatExecutor.scheduleAtFixedRate(heartBeatWorker,
+                                               0L,
+                                               period,
+                                               TimeUnit.MILLISECONDS);
         return heartBeatWorker;
 
     }
     @Nonnull
     private WriteWorker submitAndScheduleWriteWorker(@Nonnull final IServiceProvider provider,
-                                                     final long writePeriodInMS,
-                                                     final long delayInMS) {
+                                                     final long writePeriodInMS) {
         final WriteWorker writeWorker = new WriteWorker(provider,
                                                         "Periodic Archive Engine Writer",
                                                         _channelMap.values(),
                                                         writePeriodInMS);
-        _executor.scheduleAtFixedRate(writeWorker,
-                                      delayInMS,
-                                      writeWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
+        _writeSamplesExecutor.scheduleAtFixedRate(writeWorker,
+                                                  500L,
+                                                  writePeriodInMS,
+                                                  TimeUnit.MILLISECONDS);
         return writeWorker;
     }
 
@@ -163,20 +160,29 @@ public class WriteExecutor {
      * Then gracefully shutdown the executor.
      */
     public void shutdown() {
-        if (!_executor.isShutdown()) {
-            _executor.execute(new WriteWorker(_provider,
-                                              "Shutdown worker",
-                                              _channelMap.values(),
-                                              0L));
-            _executor.shutdown();
+        if (!_writeSamplesExecutor.isShutdown()) {
+            _writeSamplesExecutor.shutdown();
+        }
+        if (!_heartBeatExecutor.isShutdown()) {
+            _heartBeatExecutor.shutdown();
+        }
+        performFinalWriteBeforeShutdown();
+    }
 
-            final Duration dur = computeAwaitTerminationTime();
-            // Await termination (either the average duration or the max termination time.
-            try {
-                _executor.awaitTermination(dur.getMillis(), TimeUnit.MILLISECONDS);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+    private void performFinalWriteBeforeShutdown() {
+        final ExecutorService finalWriteExecutor = Executors.newSingleThreadExecutor();
+        finalWriteExecutor.execute(new WriteWorker(_provider,
+                                                   "Shutdown worker",
+                                                   _channelMap.values(),
+                                                   0L));
+
+
+        final Duration dur = computeAwaitTerminationTime();
+        // Await termination (either the average duration or the max termination time.
+        try {
+            finalWriteExecutor.awaitTermination(dur.getMillis(), TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 

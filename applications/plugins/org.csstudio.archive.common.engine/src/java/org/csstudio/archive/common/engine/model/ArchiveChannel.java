@@ -9,7 +9,6 @@ package org.csstudio.archive.common.engine.model;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.apache.log4j.Logger;
@@ -49,7 +48,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
 
 
     /** Buffer of received samples, periodically written */
-    final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
+    private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
 
 
     /** Is this channel currently running?
@@ -60,7 +59,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      *  the 'running' state.
      */
     @GuardedBy("this")
-    volatile boolean _isStarted = false;
+    private volatile boolean _isStarted = false;
 
     /** Most recent value of the PV.
      *  <p>
@@ -68,19 +67,19 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      *  is is not necessarily written to the archive.
      *  <p>
      */
-    @GuardedBy("this") T _mostRecentSysVar;
+    @GuardedBy("this")
+    private T _mostRecentSysVar;
 
     /**
      * The most recent value send to the archive.
      */
     @GuardedBy("this")
-    protected T _lastArchivedSample;
+    private T _lastArchivedSample;
 
-    /** Counter for received values (monitor updates) */
-    long _receivedSampleCount = 0;
-
-    //volatile boolean _connected = false;
-
+    /**
+     * Counter for received values (monitor updates)
+     */
+    private long _receivedSampleCount = 0;
 
     private IServiceProvider _provider = new IServiceProvider() {
         @Override
@@ -98,7 +97,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
      */
     public ArchiveChannel(@Nonnull final String name,
                           @Nonnull final ArchiveChannelId id,
-                          @Nullable final Class<V> clazz) throws EngineModelException {
+                          @Nonnull final Class<V> clazz) throws EngineModelException {
         _name = name;
         _id = id;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
@@ -109,11 +108,12 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
             throw new EngineModelException("Creation of pv failed for channel " + name, e);
         }
 
-        _listener = new DesyArchivePVListener<V, T>(_provider, name, id, clazz) {
+        _listener = new DesyArchivePVListener<V, T>(_provider, name, _id, clazz) {
+                        @SuppressWarnings("synthetic-access")
                         @Override
                         protected void addSampleToBuffer(@Nonnull final IArchiveSample<V, T> sample) {
                             synchronized (this) {
-                                ++_receivedSampleCount;
+                                _receivedSampleCount++;
                                 _mostRecentSysVar = sample.getSystemVariable();
                             }
                             _buffer.add(sample);
@@ -121,6 +121,7 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
                     };
         _pv.addListener(_listener);
     }
+
 
     /** @return Name of channel */
     @Nonnull
