@@ -31,7 +31,7 @@ public class MaintenanceRulePreferencePage extends FieldEditorPreferencePage imp
         setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
                                                      MaintenanceRulePreference.MAINTENANCE_DISPLAY_PATH
                                                              .getPluginID()));
-        setDescription("Das Display setzt sich aus den Pfad, dem Name, den RTYP und \".css-sds\" zusammen");
+        setDescription("Das Display setzt sich aus den Pfad, dem Name und dem RTYP zusammen.\nDer Filename ist dabei so anzugeben das {rtyp} durch den RTYP ersetzt wird.\n(Bsp.: Mein{rtyp}File.css-sds");
     }
     
     /* (non-Javadoc)
