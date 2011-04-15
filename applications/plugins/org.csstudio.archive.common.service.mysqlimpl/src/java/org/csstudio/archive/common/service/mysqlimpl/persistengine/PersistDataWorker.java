@@ -92,7 +92,7 @@ public class PersistDataWorker implements Runnable {
                 sqlStmt.addBatch(queuedStmt);
                 size += StringUtil.getSizeInBytes(queuedStmt);
             }
-            LOG.info("Execute batched stmt - size:\t" + size);
+            LOG.info("Execute batched stmt - size: " + size + " - " + _batchedStatements.size());
             sqlStmt.executeBatch();
 
         } catch (final Throwable t) {

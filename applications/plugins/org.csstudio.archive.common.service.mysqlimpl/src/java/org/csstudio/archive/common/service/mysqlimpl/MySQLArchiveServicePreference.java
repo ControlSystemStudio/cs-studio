@@ -39,8 +39,8 @@ import org.csstudio.domain.desy.preferences.MinMaxPreferenceValidator;
  */
 public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
-    private static final Integer MIN_PACKET_SIZE_KB = Integer.valueOf(1024);
-    private static final Integer MAX_PACKET_SIZE_KB = Integer.valueOf(65536);
+    private static final Integer MIN_PACKET_SIZE_KB = 1024;
+    private static final Integer MAX_PACKET_SIZE_KB = 65536;
     private static final int MIN_PERIOD_MS = 2000;
     private static final int MAX_PERIOD_MS = 60000;
 
@@ -50,7 +50,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
         new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<Integer> PERIOD =
+    public static final MySQLArchiveServicePreference<Integer> PERIOD_IN_MS =
         new MySQLArchiveServicePreference<Integer>("periodInMS", 5000)
             .with(new MinMaxPreferenceValidator<Integer>(MIN_PERIOD_MS, MAX_PERIOD_MS));
 

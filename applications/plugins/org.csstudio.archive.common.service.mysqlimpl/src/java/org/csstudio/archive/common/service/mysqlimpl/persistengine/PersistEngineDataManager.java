@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PERIOD_IN_MS;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -55,8 +56,6 @@ public enum PersistEngineDataManager {
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(PersistEngineDataManager.class);
-
-    private static final Integer KBYTE_SIZE = 1024;
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
@@ -104,8 +103,8 @@ public enum PersistEngineDataManager {
     }
 
     private void loadAndCheckPreferences() {
-        _prefPeriodInMS = MySQLArchiveServicePreference.PERIOD.getValue();
-        _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * KBYTE_SIZE;
+        _prefMaxAllowedPacketInBytes = MAX_ALLOWED_PACKET_IN_KB.getValue() * 1024;
+        _prefPeriodInMS = PERIOD_IN_MS.getValue();
     }
 
     private void submitNewPersistDataWorker() {

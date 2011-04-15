@@ -200,11 +200,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
         final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get(channelId);
 
+        final Double avg = minuteAgg.getAvg();
+        final Double min = minuteAgg.getMin();
+        final Double max = minuteAgg.getMax();
+
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours,
                                                                    channelId,
-                                                                   minuteAgg.getAvg(),
-                                                                   minuteAgg.getMin(),
-                                                                   minuteAgg.getMax(),
+                                                                   avg == null ? newValue : avg,
+                                                                   min == null ? newValue : min,
+                                                                   max == null ? newValue : max,
                                                                    timestamp,
                                                                    Hours.ONE.toStandardDuration());
         minuteAgg.reset();
