@@ -2,6 +2,9 @@ package org.csstudio.management.internal.xmpplogindialog;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -13,7 +16,9 @@ public class Activator extends AbstractCssUiPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
 	/**
 	 * The constructor
 	 */
@@ -25,6 +30,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(context, ISessionService.class);
+		_genericServiceTracker.open();
 		plugin = this;
 	}
 
@@ -33,6 +40,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
 	protected void doStop(BundleContext context) throws Exception {
+		_genericServiceTracker.close();
 		plugin = null;
 	}
 
@@ -53,4 +61,7 @@ public class Activator extends AbstractCssUiPlugin {
 		return PLUGIN_ID;
 	}
 
+	public void addSessionServiceListener(IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }
