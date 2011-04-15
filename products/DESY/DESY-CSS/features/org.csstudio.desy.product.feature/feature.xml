@@ -77,6 +77,10 @@
          id="org.csstudio.desy.development.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.desy.platform.remote.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.desy.product"
          download-size="0"

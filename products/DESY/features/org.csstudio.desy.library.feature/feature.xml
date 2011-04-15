@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
+   </url>
+
    <plugin
          id="org.csstudio.apputil"
          download-size="0"
@@ -208,6 +212,13 @@
 
    <plugin
          id="org.csstudio.utility.ldap.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.domain.desy.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

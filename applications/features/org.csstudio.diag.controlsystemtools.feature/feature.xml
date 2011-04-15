@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.diag.controlsystemtools.feature"
-      label="Control System Tools"
+      label="Control System Tools Feature"
       version="1.3.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -41,7 +41,7 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
    </license>
 
    <url>
-      <update url="http://eclipse.desy.de/update/"/>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
    </url>
 
    <plugin
