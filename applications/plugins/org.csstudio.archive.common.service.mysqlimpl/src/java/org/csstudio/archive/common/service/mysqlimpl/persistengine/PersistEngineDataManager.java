@@ -150,7 +150,7 @@ public enum PersistEngineDataManager {
                                                             Integer.valueOf(0)));
                     _executor.shutdown();
                     try {
-                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.SECONDS)) {
+                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.MILLISECONDS)) {
                             LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
                             final List<String> statements = Lists.newLinkedList();
                             _sqlStatementBatch.getQueue().drainTo(statements);

@@ -42,15 +42,6 @@
 		<copy todir="${workspaceLocation}/build">
 			<fileset dir="${workspaceLocation}/applications"/>
 		</copy>
-		<copy todir="${workspaceLocation}/build/features">
-			<fileset dir="${workspaceLocation}/products/DESY/DESY-LDAP/features"/>
-		</copy>
-		<copy todir="${workspaceLocation}/build/plugins">
-			<fileset dir="${workspaceLocation}/products/DESY/DESY-LDAP/plugins"/>
-		</copy>
-		<copy todir="${workspaceLocation}/build/plugins">
-			<fileset dir="${workspaceLocation}/products/NSLS2/plugins"/>
-		</copy>
 		<copy todir="${workspaceLocation}/build">
 			<fileset dir="D:/Java/hudson/EclipseTargetPlatform/e360"/>
 		</copy>
