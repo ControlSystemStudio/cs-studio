@@ -47,11 +47,11 @@ import org.csstudio.config.ioconfig.model.Diagnose;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -81,7 +81,7 @@ public class GSDFileDBO {
 	 */
 	private Boolean _slave;
 	
-	private AbstractGsdPropertyModel _parsedGsdFileModel;
+	private ParsedGsdFileModel _parsedGsdFileModel;
 
 	@Column(nullable = true)
 	public Boolean getMaster() {
@@ -259,7 +259,7 @@ public class GSDFileDBO {
 
 
 	@Transient
-    public AbstractGsdPropertyModel getParsedGsdFileModel() throws IOException {
+    public ParsedGsdFileModel getParsedGsdFileModel() throws IOException {
 	    if(_parsedGsdFileModel == null) {
 	        GsdFileParser gsdFileParser = new GsdFileParser();
 	        _parsedGsdFileModel =  gsdFileParser.parse(this);

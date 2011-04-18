@@ -20,32 +20,6 @@ public class ExtUserPrmDataTest {
     }
 
     @Test
-    public void dataType() {
-        ExtUserPrmData out = new ExtUserPrmData(null, null, null);
-        assertEquals(out.getDataType(), "");
-        out.setDataType("UINT8");
-        assertEquals(out.getDataType(), "UINT8");
-        out.setDataType("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-        assertEquals(out.getDataType(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-        out.setDataType("Bit(1)");
-        assertEquals(out.getDataType(), "Bit(1)");
-        assertEquals(1, out.getMinValue());
-        assertEquals(1, out.getMaxValue());
-        out.setDataType("Bit (100)");
-        assertEquals(out.getDataType(), "Bit (100)");
-        assertEquals(out.getMinValue(), 100);
-        assertEquals(out.getMaxValue(), 100);
-        out.setDataType("BitArea(1-5)");
-        assertEquals(out.getDataType(), "BitArea(1-5)");
-        assertEquals(out.getMinValue(), 1);
-        assertEquals(out.getMaxValue(), 5);
-        out.setDataType("BitArea (15-50)");
-        assertEquals(out.getDataType(), "BitArea (15-50)");
-        assertEquals(out.getMinValue(), 15);
-        assertEquals(out.getMaxValue(), 50);
-    }
-
-    @Test
     public void defaults() {
         ExtUserPrmData out = new ExtUserPrmData(null, null, null);
         assertTrue(out.getDefault()==0);
@@ -111,21 +85,22 @@ public class ExtUserPrmDataTest {
     @Test
     public void maxValue() {
         ExtUserPrmData out = new ExtUserPrmData(null, null, null);
-        assertTrue(out.getMaxValue()==0);
-        out.setMaxValue("0");
-        assertTrue(out.getMaxValue()==0);
-        out.setMaxValue("-100000000");
-        assertTrue(out.getMaxValue()==-100000000);
-        out.setMaxValue("100000000");
-        assertTrue(out.getMaxValue()==100000000);
 
+        out.setValueRange("-100", "0");
+        assertEquals(-100, out.getMinValue());
+        assertEquals(0, out.getMaxValue());
         
-        out.setMaxValue("0xA");
-        assertFalse(out.getMaxValue()==10);
-        assertTrue(out.getMaxValue()==0);
-        out.setMaxValue("ten");
-        assertFalse(out.getMaxValue()==10);
-        assertTrue(out.getMaxValue()==0);
+        out.setValueRange("-200000000", "-100000000");
+        assertEquals(-200000000, out.getMinValue());
+        assertEquals(-100000000, out.getMaxValue());
+        
+        out.setValueRange("200000000", "100000000");
+        assertEquals(100000000, out.getMinValue());
+        assertEquals(200000000, out.getMaxValue());
+
+        out.setValueRange("0xA", "0xA0");
+        assertEquals(10, out.getMinValue());
+        assertEquals(160, out.getMaxValue());
 
     }
 

@@ -28,8 +28,8 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
+import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.jdom.Element;
 
@@ -61,6 +61,7 @@ public class XmlSlave {
         _slaveElement.setAttribute("fdl_add", Integer.toString(slave.getFdlAddress()));
         Comparator<ModuleDBO> comparator = new Comparator<ModuleDBO>() {
 
+            @Override
             public int compare(final ModuleDBO o1, final ModuleDBO o2) {
                 return o1.getSortIndex() - o2.getSortIndex();
             }
@@ -119,8 +120,9 @@ public class XmlSlave {
         Element slavePrmData = new Element("SLAVE_PRM_DATA");
         GsdSlaveModel slaveData = slave.getGSDSlaveData();
         StringBuilder prmDataSB = new StringBuilder();
-        if ((slave.getGSDSlaveData() != null)
-                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
+        {
+//        if ((slave.getGSDSlaveData() != null)
+//                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
 
 //            prmDataSB.append(slave.getGSDSlaveData().getModiExtUserPrmDataConst());
 //            prmDataSB.append(slave.getGSDSlaveData().getUserPrmData());

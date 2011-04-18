@@ -24,15 +24,11 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
 
-import javax.annotation.Nonnull;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
@@ -172,10 +168,10 @@ public class GsdSlaveModel extends GsdGeneralModel {
 
     private HashMap<String, ExtUserPrmData> _extUserPrmDataMap;
 
-    private TreeMap<String, ExtUserPrmDataConst> _extUserPrmDataConstMap;
+//    private TreeMap<String, ExtUserPrmDataConst> _extUserPrmDataConstMap;
 
     //FIXME: Müssen die anderen HashMap's auch TreeMaps sein? Nein Was hat diese Map für einen Sinn sie wird nie Ausgelese!
-    private List<ExtUserPrmDataRef> _extUserPrmDataRefMap;
+//    private List<ExtUserPrmDataRef> _extUserPrmDataRefMap;
 
     /**
      * A Map with all "ext User Prm Data" modification.
@@ -404,38 +400,38 @@ public class GsdSlaveModel extends GsdGeneralModel {
     }
 
 
-    /**
-     * @param index
-     * @param extUserPrmDataConst
-     */
-    public void addExtUserPrmDataConst(final String index, final ExtUserPrmDataConst extUserPrmDataConst) {
-        if(_extUserPrmDataConstMap==null){
-            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
-        }
-        _extUserPrmDataConstMap.put(index, extUserPrmDataConst);
+//    /**
+//     * @param index
+//     * @param extUserPrmDataConst
+//     */
+//    public void addExtUserPrmDataConst(final String index, final ExtUserPrmDataConst extUserPrmDataConst) {
+//        if(_extUserPrmDataConstMap==null){
+//            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
+//        }
+//        _extUserPrmDataConstMap.put(index, extUserPrmDataConst);
+//
+//    }
 
-    }
-
-    /**
-     *
-     * @param index the selection Index.
-     * @return the Extend User Parameter Data Constant.
-     */
-    public ExtUserPrmDataConst getExtUserPrmDataConst(final String index) {
-        if(_extUserPrmDataConstMap==null){
-            return null;
-        }
-        return _extUserPrmDataConstMap.get(index);
-
-    }
-
-    public TreeMap<String,ExtUserPrmDataConst> getExtUserPrmDataConst() {
-        if(_extUserPrmDataConstMap==null){
-            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
-        }
-        return _extUserPrmDataConstMap;
-
-    }
+//    /**
+//     *
+//     * @param index the selection Index.
+//     * @return the Extend User Parameter Data Constant.
+//     */
+//    public ExtUserPrmDataConst getExtUserPrmDataConst(final String index) {
+//        if(_extUserPrmDataConstMap==null){
+//            return null;
+//        }
+//        return _extUserPrmDataConstMap.get(index);
+//
+//    }
+//
+//    public TreeMap<String,ExtUserPrmDataConst> getExtUserPrmDataConst() {
+//        if(_extUserPrmDataConstMap==null){
+//            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
+//        }
+//        return _extUserPrmDataConstMap;
+//
+//    }
 
     /**
      * Add a modification for the ExtUserPrmDataConst.
@@ -450,77 +446,77 @@ public class GsdSlaveModel extends GsdGeneralModel {
         _modifications.put(startBit, new Integer[] { bytePos, bitMin, bitMax, value });
     }
 
-    @Nonnull
-    public String getModiExtUserPrmDataConst() {
-        if ((getExtUserPrmDataConst() != null) && (_extUserPrmDataRefMap !=null)) {
-            ArrayList<String> split = new ArrayList<String>();
-            Set<String> keySet = getExtUserPrmDataConst().keySet();
-            for (String key : keySet) {
-                ExtUserPrmDataConst extUserPrmDataConst = getExtUserPrmDataConst().get(key);
-                String[] sp = extUserPrmDataConst.toString().split(",");
-                split.addAll(Arrays.asList(sp));
-            }
-
-            for (ExtUserPrmDataRef extUserPrmDataRef : _extUserPrmDataRefMap) {
-                ExtUserPrmData eupd = getExtUserPrmData(extUserPrmDataRef.getValue());
-
-//                PrmText prmText = (PrmText) ((StructuredSelection) prmTextCV.getSelection())
-//                .getFirstElement();
-//                ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
-//                String index = extUserPrmData.getIndex();
-
-                int bytePos = Integer.parseInt(extUserPrmDataRef.getIndex());
-                int bitMin = eupd.getMinBit();
-                int bitMax = eupd.getMaxBit();
-
-                int val = Integer.parseInt(extUserPrmDataRef.getValue());
-                addModify(bytePos, bitMin, bitMax, val);
-            }
-            for (int bytePosAbs : _modifications.keySet()) {
-                Integer[] modis = _modifications.get(bytePosAbs);
-                int value = modis[3];
-                int bytePos = modis[0];
-                int low = modis[1];
-                int high = modis[2];
-                int mask = ~((int)Math.pow(2, high+1) - (int)Math.pow(2, low));
-                int radix = 10;
-                if((high>8)&&(high<16)){
-                    if (bytePos+1 < split.size()) {
-                        String byteValue = split.get(bytePos+1);
-                        byteValue = byteValue.concat(split.get(bytePos));
-                        if (byteValue.startsWith("0x")) {
-                            byteValue = byteValue.replaceAll("0x", "");
-                            radix = 16;
-                        }
-                        int parseInt = Integer.parseInt(byteValue, radix);
-                        value = value << (low);
-                        int result = (parseInt & mask) | (value);
-                        String tmp = dec2Hex(result);
-                        split.set(bytePos+1,"0x"+tmp.substring(0,1));
-                        split.set(bytePos,"0x"+tmp.substring(2,3));
-                    }
-                }else{
-                    if (bytePos < split.size()) {
-                        String byteValue = split.get(bytePos);
-                        if (byteValue.startsWith("0x")) {
-                            byteValue = byteValue.substring(2);
-                            radix = 16;
-                        }
-                        int parseInt = Integer.parseInt(byteValue, radix);
-                        value = value << (low);
-                        int result = (parseInt & mask) | (value);
-                        split.set(bytePos, dec2Hex(result));
-                    }
-                }
-            }
-            String string = split.toString();
-            string = string.substring(1, string.length() - 1);
-            return string;
-        } else if(_userPrmData != null) {
-            return _userPrmData;
-        }
-        return "";
-    }
+//    @Nonnull
+//    public String getModiExtUserPrmDataConst() {
+//        if ((getExtUserPrmDataConst() != null) && (_extUserPrmDataRefMap !=null)) {
+//            ArrayList<String> split = new ArrayList<String>();
+//            Set<String> keySet = getExtUserPrmDataConst().keySet();
+//            for (String key : keySet) {
+//                ExtUserPrmDataConst extUserPrmDataConst = getExtUserPrmDataConst().get(key);
+//                String[] sp = extUserPrmDataConst.toString().split(",");
+//                split.addAll(Arrays.asList(sp));
+//            }
+//
+//            for (ExtUserPrmDataRef extUserPrmDataRef : _extUserPrmDataRefMap) {
+//                ExtUserPrmData eupd = getExtUserPrmData(extUserPrmDataRef.getValue());
+//
+////                PrmText prmText = (PrmText) ((StructuredSelection) prmTextCV.getSelection())
+////                .getFirstElement();
+////                ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
+////                String index = extUserPrmData.getIndex();
+//
+//                int bytePos = Integer.parseInt(extUserPrmDataRef.getIndex());
+//                int bitMin = eupd.getMinBit();
+//                int bitMax = eupd.getMaxBit();
+//
+//                int val = Integer.parseInt(extUserPrmDataRef.getValue());
+//                addModify(bytePos, bitMin, bitMax, val);
+//            }
+//            for (int bytePosAbs : _modifications.keySet()) {
+//                Integer[] modis = _modifications.get(bytePosAbs);
+//                int value = modis[3];
+//                int bytePos = modis[0];
+//                int low = modis[1];
+//                int high = modis[2];
+//                int mask = ~((int)Math.pow(2, high+1) - (int)Math.pow(2, low));
+//                int radix = 10;
+//                if((high>8)&&(high<16)){
+//                    if (bytePos+1 < split.size()) {
+//                        String byteValue = split.get(bytePos+1);
+//                        byteValue = byteValue.concat(split.get(bytePos));
+//                        if (byteValue.startsWith("0x")) {
+//                            byteValue = byteValue.replaceAll("0x", "");
+//                            radix = 16;
+//                        }
+//                        int parseInt = Integer.parseInt(byteValue, radix);
+//                        value = value << (low);
+//                        int result = (parseInt & mask) | (value);
+//                        String tmp = dec2Hex(result);
+//                        split.set(bytePos+1,"0x"+tmp.substring(0,1));
+//                        split.set(bytePos,"0x"+tmp.substring(2,3));
+//                    }
+//                }else{
+//                    if (bytePos < split.size()) {
+//                        String byteValue = split.get(bytePos);
+//                        if (byteValue.startsWith("0x")) {
+//                            byteValue = byteValue.substring(2);
+//                            radix = 16;
+//                        }
+//                        int parseInt = Integer.parseInt(byteValue, radix);
+//                        value = value << (low);
+//                        int result = (parseInt & mask) | (value);
+//                        split.set(bytePos, dec2Hex(result));
+//                    }
+//                }
+//            }
+//            String string = split.toString();
+//            string = string.substring(1, string.length() - 1);
+//            return string;
+//        } else if(_userPrmData != null) {
+//            return _userPrmData;
+//        }
+//        return "";
+//    }
 
 
 
@@ -534,23 +530,23 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return f.toString();
     }
 
-    /**
-     * @param index
-     * @param extUserPrmDataRef
-     */
-    public void addExtUserPrmDataRef(final String index, final ExtUserPrmDataRef extUserPrmDataRef) {
-        if(_extUserPrmDataRefMap==null){
-            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
-        }
-        _extUserPrmDataRefMap.add(extUserPrmDataRef);
-    }
-
-    public List<ExtUserPrmDataRef> getExtUserPrmDataRefMap() {
-        if(_extUserPrmDataRefMap==null){
-            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
-        }
-        return _extUserPrmDataRefMap;
-    }
+//    /**
+//     * @param index
+//     * @param extUserPrmDataRef
+//     */
+//    public void addExtUserPrmDataRef(final String index, final ExtUserPrmDataRef extUserPrmDataRef) {
+//        if(_extUserPrmDataRefMap==null){
+//            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
+//        }
+//        _extUserPrmDataRefMap.add(extUserPrmDataRef);
+//    }
+//
+//    public List<ExtUserPrmDataRef> getExtUserPrmDataRefMap() {
+//        if(_extUserPrmDataRefMap==null){
+//            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
+//        }
+//        return _extUserPrmDataRefMap;
+//    }
     /**
      * @param index
      * @param unitDiagBit
