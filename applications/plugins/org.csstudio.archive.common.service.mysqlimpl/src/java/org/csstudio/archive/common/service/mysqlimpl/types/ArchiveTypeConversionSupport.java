@@ -188,7 +188,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
      * @return an instance of the given type with the values extracted from the string.
      * @throws TypeSupportException
      */
-    @CheckForNull
+    @Nonnull
     public static <T> T fromArchiveString(@Nonnull final Class<T> typeClass,
                                           @Nonnull final String value) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
@@ -273,7 +273,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     }
 
 
-    @CheckForNull
+    @Nonnull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
         final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
@@ -308,7 +308,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         final Class<Object> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype, SCALAR_TYPE_PACKAGES);
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                 typeClass);
+                                                                           typeClass);
         return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs,
                                      (T) fromArchiveString(datatype, low),
                                      (T) fromArchiveString(datatype, high));
@@ -383,7 +383,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
 
     @Nonnull
     protected abstract String convertToArchiveString(@Nonnull final T value) throws TypeSupportException;
-    @CheckForNull
+    @Nonnull
     protected abstract T convertFromArchiveString(@Nonnull final String value) throws TypeSupportException;
     @Nonnull
     protected abstract Collection<T> convertFromArchiveStringToMultiScalar(@Nonnull Class<?> collectionClass, @Nonnull final String values) throws TypeSupportException;

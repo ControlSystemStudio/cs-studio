@@ -177,14 +177,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                               @Nonnull final TimeInstant timestamp,
                               @Nonnull final List<String> valuesPerMinute,
                               @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
-        Double newValue = null;
-        try {
-            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
-        } catch (final TypeSupportException e) {
-            return; // not convertible. Type support missing.
-        }
-        if (newValue.equals(Double.NaN)) {
-            return; // not convertible, no data reduction possible
+
+        final Double newValue = createDoubleFromValueOrNull(data);
+        if (newValue == null) {
+            return;
         }
 
         final String minuteValueStr = aggregateAndComposeValueString(_reducedDataMapForMinutes,
@@ -221,6 +217,21 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get(channelId);
         // for days would be here...
         hoursAgg.reset(); // and reset this aggregator
+    }
+
+    @CheckForNull
+    private <T extends ISystemVariable<?>>
+    Double createDoubleFromValueOrNull(@Nonnull final T data) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
+        } catch (final TypeSupportException e) {
+            return null; // not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
+            return null; // not convertible, no data reduction possible
+        }
+        return newValue;
     }
 
     // CHECKSTYLE OFF: ParameterNumber
@@ -461,7 +472,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 break;
             }
             default:
-                break;
+                throw new ArchiveDaoException("Archive request type unknown. Sample could not be created from query", null);
         }
         final TimeInstant timeInstant = TimeInstantBuilder.fromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
         final IArchiveControlSystem cs = channel.getControlSystem();

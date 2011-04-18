@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PERIOD_IN_MS;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +57,10 @@ public enum PersistEngineDataManager {
 
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(PersistEngineDataManager.class);
+
+
+    private static final File DATA_RESCUE_DIR = MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
+
 
     // TODO (bknerr) : number of threads?
     // get no of cpus and expected no of archive engines, and available archive connections
@@ -231,7 +236,7 @@ public enum PersistEngineDataManager {
             final DataRescueResult result =
                 PersistDataToFileRescuer.with(statements)
                                         .at(TimeInstantBuilder.fromNow())
-                                        .to(MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue())
+                                        .to(DATA_RESCUE_DIR)
                                         .rescue();
             if (!result.hasSucceeded()) {
                 ArchiveNotifications.notify(NotificationType.PERSIST_DATA_FAILED, result.getFilePath());
