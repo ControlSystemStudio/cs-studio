@@ -46,7 +46,7 @@ public class Tag {
 			return xml;
 		}
 		
-		Tag build(){
+		public Tag build(){
 			return new Tag(this);
 		}
 	}
