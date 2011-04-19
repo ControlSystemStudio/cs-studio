@@ -32,6 +32,7 @@
       <plugin id="org.csstudio.archive.common.engine"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
       <plugin id="org.csstudio.platform"/>
