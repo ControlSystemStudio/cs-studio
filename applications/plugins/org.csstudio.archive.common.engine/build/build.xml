@@ -13,17 +13,19 @@
 	-->
 	
 	<echo message="'workspaceLocation: ${workspaceLocation}"/>
-	<echo message="'e360TP: targetPlatformLocation"/>
+	<echo message="'e360TP: ${targetPlatformLocation}"/>
+	<echo message="'e362 additionals: ${targetPlatformLocation_2}"/>
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'jenkinsbase: ${jenkinsbase}"/>
 	<echo message="'base: ${base}"/>
 	<echo message="'tstamp: ${tstamp}"/>
 	<echo message="'jenkinsjob: ${jenkinsjob}"/>
-	<echo message="'BaseLocation: targetPlatformLocation"/>
+	<echo message="'CS Studio location:  ${csStudioLocation}"/>
+	<echo message="'DESY Config location:  ${desyConfigLocation}"/>
 	<echo message="'buckminsterLocation: ${buckminsterLocation}"/>
 	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
 	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
-    <echo message="targetPlatformLocation/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+    <echo message="launcher: ${targetPlatformLocation}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 	
 	
 	<!--
@@ -38,7 +40,9 @@
 		<sync todir="${workspaceLocation}/build">
 		  <fileset dir="${csStudioLocation}/core"/>
 		  <fileset dir="${csStudioLocation}/applications"/>
-          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectName}/plugin_customization.ini"/>
+          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectName}" casesensitive="yes">
+          	<filename name="plugin_customization.ini"/>
+          </fileset>
           <fileset dir="${targetPlatformLocation}"/>
           <fileset dir="${targetPlatformLocation_2}"/>
 		</sync>
