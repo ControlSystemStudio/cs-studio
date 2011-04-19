@@ -5,18 +5,10 @@ import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames
 
 import java.util.List;
 
-import org.csstudio.channelfinder.views.GlazedSortNameComparator;
-import org.csstudio.channelfinder.views.GlazedSortOwnerComparator;
-import org.csstudio.channelfinder.views.GlazedSortPropertyComparator;
-import org.csstudio.channelfinder.views.GlazedSortTagComparator;
-import org.csstudio.channelfinder.views.IDirectionalComparator;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
-import org.csstudio.multichannelviewer.model.CSSChannelGroupPV;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
 import org.csstudio.utility.channel.ICSSChannel;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -26,11 +18,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.data.VMultiDouble;
 
