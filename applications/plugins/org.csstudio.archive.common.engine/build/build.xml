@@ -17,7 +17,7 @@
 	<echo message="Eclipse instance: ${eclipseInstance}"/>
 	<echo message="Eclipse target platform: ${targetPlatformLocation}"/>
 	<echo message="Eclipse target platform additionals: ${targetPlatformLocation_2}"/>
-	<echo message="Build directory: ${buildDirectory}"/>
+	<echo message="Build directory: ${desyBuildDirectory}"/>
 	<echo message="Jenkins base: ${jenkinsbase}"/>
 	<echo message="Base dir: ${basedir}"/>
 	<echo message="Timestamp: ${timestamp}"/>
@@ -32,11 +32,12 @@
 	 directory (avoiding unnecessary copying and deleting as much as possible).
 	-->
 	<target name="syncPlugins">
-      <!--  
+        <delete dir="${desyBuildDirectory}/${pdeBuildDirectory}"/>
+		<!--  
          overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
          deletes files from ${workspaceLocation}/build that are not present in filesets. 
         -->
-        <sync todir="${buildDirectory}">
+        <sync todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}/core"/>
           <fileset dir="${csStudioLocation}/applications">
             <exclude name="plugins/${projectDir}/build/build.xml"/>
@@ -48,7 +49,7 @@
         <!-- 
          copy the pde build files into the build directory 
         -->
-        <copy todir="${buildDirectory}">
+        <copy todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
             <include name="build.properties"/>
             <include name="productBuild.xml"/>
@@ -77,7 +78,7 @@
 	-->
     <target name="pdeBuildWin">
         <java classname="org.eclipse.equinox.launcher.Main" 
-              dir="${buildDirectory}"
+              dir="${desyBuildDirectory}"
               fork="true" 
               failonerror="true">           
             <arg value="-application" />
