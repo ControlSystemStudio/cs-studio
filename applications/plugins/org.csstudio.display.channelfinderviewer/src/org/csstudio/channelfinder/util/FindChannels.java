@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelfinder.util;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
@@ -7,7 +7,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import org.csstudio.channelfinder.views.ChannelFinderView;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.csstudio.utility.channel.ICSSChannelFactory;
 import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
@@ -17,11 +19,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 
-public class SearchChannels extends Job {
+public class FindChannels extends Job {
 	private String searchPattern;
 	private ChannelFinderView channelFinderView;
+	private static Logger logger = Logger.getLogger("org.csstudio.channelfinder.views.FindChannels");
 
-	public SearchChannels(String name, String pattern,
+	public FindChannels(String name, String pattern,
 			ChannelFinderView channelFinderView) {
 		super(name);
 		this.searchPattern = pattern;
@@ -31,15 +34,12 @@ public class SearchChannels extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
-		final Collection<ICSSChannel> channels = new HashSet<ICSSChannel>();
+		final Collection<Channel> channels = new HashSet<Channel>();
 		try {
-			for (Channel channel : ChannelFinderClient.getInstance()
-					.findChannels(buildSearchMap(searchPattern))) {
-				ICSSChannelFactory cssChannelFactory = CSSChannelFactory
-						.getInstance();
-				channels.add(cssChannelFactory.getCSSChannel(channel));
-			}
-			// final XmlChannels channels = testData(); // to use test data
+			if(searchPattern.startsWith("sim:"))
+				channels.addAll(GenerateTestChannels.getChannels(Integer.valueOf(searchPattern.split("sim:")[1])));
+			else
+				channels.addAll(ChannelFinderClient.getInstance().findChannels(buildSearchMap(searchPattern)));
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -49,8 +49,7 @@ public class SearchChannels extends Job {
 				}
 			});
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.severe("Failed to find channels from channelfinder:"+ e.getMessage());
 		}
 		monitor.done();
 		return Status.OK_STATUS;

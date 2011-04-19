@@ -1,21 +1,21 @@
 package org.csstudio.channelfinder.views;
 
-import static gov.bnl.channelfinder.api.ChannelUtil.getPropertyNames;
-import static gov.bnl.channelfinder.api.ChannelUtil.getTagNames;
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
-import org.csstudio.utility.channel.ICSSChannel;
+import org.csstudio.channelfinder.util.FindChannels;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,19 +25,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.event.ListEvent;
-import ca.odell.glazedlists.event.ListEventListener;
+import com.swtdesigner.TableViewerColumnSorter;
 
 /**
  * 
@@ -51,18 +45,17 @@ public class ChannelFinderView extends ViewPart {
 	public static final String ID = "org.csstudio.channelfinder.views.ChannelfinderView";
 
 	private static int instance;
-
-	private TableViewer viewer;
 	private Text text;
 	private Button search;
 	private GridLayout layout;
 
 	// private Collection<ICSSChannel> channelsList = new
-	// HashSet<ICSSChannel>();
 
-	private List<ICSSChannel> rootList;
-	private EventList<ICSSChannel> eventList;
-	private SortedList<ICSSChannel> sortedList;
+	private Table table;
+	private TableViewer tableViewer;
+
+	// Simple Model
+	Collection<Channel> channels = new ArrayList<Channel>();
 
 	/*
 	 * The content provider class is responsible for providing objects to the
@@ -84,11 +77,54 @@ public class ChannelFinderView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		createGUI(parent);
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(),
-				"org.csstudio.channelfinder.viewer");
+
+		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION
+				| SWT.MULTI | SWT.VIRTUAL);
+		table = tableViewer.getTable();
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+
+		TableViewerColumn channelNameColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		channelNameColumn.setLabelProvider(new CellLabelProvider() {			
+			@Override
+			public void update(ViewerCell cell) {
+				cell.setText(((Channel)cell.getElement()).getName());
+			}
+		});
+		new TableViewerColumnSorter(channelNameColumn) {
+			@Override
+			protected Object getValue(Object o) {
+				return ((Channel) o).getName();
+			}
+		};
+		TableColumn tblclmnChannelName = channelNameColumn.getColumn();
+		tblclmnChannelName.setWidth(100);
+		tblclmnChannelName.setText("Channel Name");
+
+		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
+				tableViewer, SWT.NONE);
+		channelOwnerColumn.setLabelProvider(new CellLabelProvider() {
+			private long count = 0;
+			@Override
+			public void update(ViewerCell cell) {
+				System.out.println(count++);
+				cell.setText(((Channel)cell.getElement()).getOwner());
+			}
+		});
+		new TableViewerColumnSorter(channelOwnerColumn) {
+			@Override
+			protected Object getValue(Object o) {
+				return ((Channel) o).getOwner();
+			}
+		};
+		TableColumn tblclmnOwner = channelOwnerColumn.getColumn();
+		tblclmnOwner.setWidth(100);
+		tblclmnOwner.setText("Owner");
+		tableViewer.setContentProvider(new ChannelContentProvider());
+//		tableViewer.setLabelProvider(new ChannelLabelProvider());
 		hookContextMenu();
-		getSite().setSelectionProvider(viewer);
 	}
 
 	/** @return a new view instance */
@@ -98,58 +134,6 @@ public class ChannelFinderView extends ViewPart {
 	}
 
 	private void createGUI(Composite parent) {
-		rootList = new ArrayList<ICSSChannel>();
-		eventList = GlazedLists.eventList(rootList);
-		sortedList = new SortedList<ICSSChannel>(eventList, null);
-		sortedList.addListEventListener(new ListEventListener<ICSSChannel>() {
-
-			@Override
-			public void listChanged(ListEvent<ICSSChannel> listChanges) {
-				try {
-					viewer.getTable().setRedraw(false);
-
-					// get the list PRIOR to looping, otherwise it won't be the
-					// same
-					// list as it's modified continuously
-					final List<ICSSChannel> changeList = listChanges
-							.getSourceList();
-
-					while (listChanges.next()) {
-						int sourceIndex = listChanges.getIndex();
-						int changeType = listChanges.getType();
-						switch (changeType) {
-						case ListEvent.DELETE:
-							// note the remove of the object fetched from the
-							// event list
-							// here, we need to remove by index which the viewer
-							// does
-							// not support
-							// and we're removing from the raw list, not the
-							// filtered
-							// list
-							viewer.remove(eventList.get(sourceIndex));
-							viewer.refresh(eventList.get(sourceIndex), true);
-							break;
-						case ListEvent.INSERT:
-							final ICSSChannel obj = changeList.get(sourceIndex);
-							viewer.insert(obj, sourceIndex);
-							break;
-						case ListEvent.UPDATE:
-							break;
-						}
-					}
-				} catch (Exception err) {
-					err.printStackTrace();
-				} finally {
-					viewer.setItemCount(sortedList.size());
-					viewer.getTable().setRedraw(true);
-					// we could do detailed refreshes, but this isn't much of a
-					// performance hit
-					viewer.refresh(true);
-				}
-			}
-		});
-
 		layout = new GridLayout(2, false);
 		parent.setLayout(layout);
 
@@ -162,34 +146,16 @@ public class ChannelFinderView extends ViewPart {
 		search = new Button(parent, SWT.PUSH);
 		search.setText("Search");
 		search.setToolTipText("search for channels");
-		search.setLayoutData(new GridData());
 		search.setEnabled(false);
-
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL | SWT.FULL_SELECTION);
 		GridData viewerGD = new GridData();
 		viewerGD.horizontalSpan = 2;
 		viewerGD.grabExcessHorizontalSpace = true;
 		viewerGD.grabExcessVerticalSpace = true;
 		viewerGD.horizontalAlignment = SWT.FILL;
 		viewerGD.verticalAlignment = SWT.FILL;
-		viewer.getControl().setLayoutData(viewerGD);
-		viewer.getTable().setLinesVisible(true);
-		viewer.getTable().setHeaderVisible(true);
 
 		int col = 0;
-		createTableColumn(viewer, "Channel Name", "channel name", col, 100,
-				new GlazedSortNameComparator(col, SWT.NONE));
 		col++;
-		createTableColumn(viewer, "Owner", "owner", col, 100,
-				new GlazedSortOwnerComparator(col, SWT.NONE));
-
-		viewer.setContentProvider(new ChannelFinderViewContentProvider(
-				sortedList));
-		viewer.setLabelProvider(new ChannelFinderViewLabelProvider(sortedList));
-		viewer.setInput(sortedList);
-		viewer.setItemCount(sortedList.size());
-		viewer.refresh();
 
 		text.addSelectionListener(new SelectionAdapter() {
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -218,46 +184,9 @@ public class ChannelFinderView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				search(text.getText());
-				// updateList(SearchChannels.testData());
-				viewer.refresh();
 			}
 		});
 
-	}
-
-	private void createTableColumn(TableViewer viewer, String text,
-			String tooltip, int index, int width,
-			final IDirectionalComparator<ICSSChannel> comparator) {
-		final int col = index;
-		final TableColumn tvc = new TableColumn(viewer.getTable(), SWT.NONE);
-		tvc.setText(text);
-		tvc.setToolTipText(tooltip);
-		tvc.setWidth(width);
-		tvc.setResizable(true);
-		tvc.setMoveable(false);
-		tvc.pack();
-		tvc.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event arg0) {
-				sortColumn(col, comparator);
-			}
-		});
-	}
-
-	private void sortColumn(int col,
-			IDirectionalComparator<ICSSChannel> comparator) {
-		int dir = SWT.UP;
-		int current = viewer.getTable().getSortDirection();
-		TableColumn tc = viewer.getTable().getColumn(col);
-		if (viewer.getTable().getSortColumn() == tc) {
-			dir = (current == SWT.UP ? SWT.DOWN : SWT.UP);
-		}
-
-		viewer.getTable().setSortColumn(tc);
-		viewer.getTable().setSortDirection(dir);
-		comparator.setDirection(dir);
-		// now tell the sorted list we've updated
-		sortedList.setComparator(comparator);
 	}
 
 	private void search(String text) {
@@ -268,94 +197,72 @@ public class ChannelFinderView extends ViewPart {
 				return;
 		}
 
-		Job job = new SearchChannels("search", text, this);
+		Job job = new FindChannels("search", text, this);
 		job.schedule();
 	}
 
 	private void hookContextMenu() {
 		MenuManager menuManager = new MenuManager();
 		menuManager.setRemoveAllWhenShown(true);
-		Menu menu = menuManager.createContextMenu(viewer.getTable());
 		// Set the MenuManager
 		fillContextMenu(menuManager);
-		viewer.getTable().setMenu(menu);
-		getSite().registerContextMenu(menuManager, viewer);
 	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(new Separator());
-	}
-
+	
 	private void fillContextMenu(IMenuManager manager) {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
-
-	private void fillLocalToolBar(IToolBarManager manager) {
 	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		tableViewer.getControl().setFocus();
 	}
 
-	public synchronized void updateList(Collection<ICSSChannel> channels) {
+	public synchronized void updateList(Collection<Channel> newChannels) {
 		// Clear the channel list;
-		eventList.getReadWriteLock().writeLock().lock();
-		try {
-			eventList.clear();
-			eventList.addAll(channels);
-		} finally {
-			eventList.getReadWriteLock().writeLock().unlock();
-		}
+		channels.clear();
+		channels.addAll(newChannels);
+		tableViewer.setInput(channels.toArray());
+		tableViewer.setItemCount(channels.size());
 		// Remove all old columns
 		// TODO add the additional columns in the correct sorted order.
-		while (viewer.getTable().getColumnCount() > 2) {
-			viewer.getTable().getColumn(viewer.getTable().getColumnCount() - 1)
+		while (tableViewer.getTable().getColumnCount() > 2) {
+			tableViewer.getTable().getColumn(table.getColumnCount() - 1)
 					.dispose();
 		}
-		int col = 1;
 		// Add a new column for each property
-		for (String propertyName : getAllPropertyNames(eventList)) {
-			col++;
-			createTableColumn(viewer, propertyName, propertyName, col, 100,
-					new GlazedSortPropertyComparator(propertyName, col,
-							SWT.NONE));
+		for (String propertyName : ChannelUtil.getPropertyNames(newChannels)) {
+			// Property Column
+			TableViewerColumn channelPropertyColumn = new TableViewerColumn(
+					tableViewer, SWT.NONE);
+			channelPropertyColumn.setLabelProvider(new PropertyCellLabelProvider(propertyName));
+			new TableViewerChannelPropertySorter(channelPropertyColumn,
+					propertyName);
+			TableColumn tblclmnNumericprop = channelPropertyColumn.getColumn();
+			// tcl_composite.setColumnData(tblclmnNumericprop, new
+			// ColumnPixelData(
+			// 100, true, true));
+
+			tblclmnNumericprop.setText(propertyName);
+			tblclmnNumericprop.setWidth(100);
 		}
 		// Add a new column for each Tag
-		for (String tagName : getAllTagNames(eventList)) {
-			col++;
-			createTableColumn(viewer, tagName, tagName, col, 100,
-					new GlazedSortTagComparator(tagName, col, SWT.NONE));
+		for (String tagName : ChannelUtil.getAllTagNames(newChannels)) {
+			// Tag Column
+			TableViewerColumn channelTagColumn = new TableViewerColumn(
+					tableViewer, SWT.NONE);
+			channelTagColumn.setLabelProvider(new TagCellLabelProvider(tagName));
+			new TableViewerChannelTagSorter(channelTagColumn, tagName);
+			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
+			// tcl_composite.setColumnData(tblclmnNumericprop, new
+			// ColumnPixelData(
+			// 100, true, true));
+			tblclmnNumericprop.setText(tagName);
+			tblclmnNumericprop.setWidth(100);
 		}
-
-		viewer.setLabelProvider(new ChannelFinderViewLabelProvider(sortedList));
-	}
-
-	private Collection<String> getAllTagNames(
-			Collection<ICSSChannel> channelItems) {
-		Collection<String> tagNames = new HashSet<String>();
-		for (ICSSChannel channelItem : channelItems) {
-			tagNames.addAll(getTagNames(channelItem.getChannel()));
-		}
-		return tagNames;
-
-	}
-
-	private Collection<String> getAllPropertyNames(
-			Collection<ICSSChannel> channelItems) {
-		Collection<String> propertyNames = new HashSet<String>();
-		for (ICSSChannel channelItem : channelItems) {
-			propertyNames.addAll(getPropertyNames(channelItem.getChannel()));
-		}
-		return propertyNames;
+		
+		tableViewer.refresh();
 	}
 }

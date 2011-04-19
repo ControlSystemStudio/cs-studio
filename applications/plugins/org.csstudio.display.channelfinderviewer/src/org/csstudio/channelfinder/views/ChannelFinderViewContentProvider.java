@@ -6,7 +6,6 @@ import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import ca.odell.glazedlists.SortedList;
 
 public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
