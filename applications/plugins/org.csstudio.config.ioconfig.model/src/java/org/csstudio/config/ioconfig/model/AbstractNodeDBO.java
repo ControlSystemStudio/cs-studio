@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.CheckForNull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -564,7 +565,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return if this node equals whit the give node return 0.
      */
     @Override
-    public int compareTo(final AbstractNodeDBO other) {
+    public int compareTo(@CheckForNull final AbstractNodeDBO other) {
 
         if (other == null) {
             return -1;

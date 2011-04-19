@@ -24,13 +24,17 @@
  */
 package org.csstudio.config.ioconfig.model.xml;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.jdom.Element;
 
 /**
@@ -40,7 +44,7 @@ import org.jdom.Element;
  * @since 14.05.2008
  */
 public class XmlSlave {
-
+    
     /**
      * The Slave root {@link Element}.
      */
@@ -49,40 +53,47 @@ public class XmlSlave {
      * Set of Profibus Modules.
      */
     private final TreeSet<ModuleDBO> _modules;
-
+    
     /**
      * Generate a GSD Configfile XML-Tag for a Profibus Slave.
      *
      * @param slave
      *            The Profibus slave.
+     * @throws PersistenceException 
      */
-    public XmlSlave(final SlaveDBO slave) {
+    public XmlSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
         _slaveElement = new Element("SLAVE");
         _slaveElement.setAttribute("fdl_add", Integer.toString(slave.getFdlAddress()));
         Comparator<ModuleDBO> comparator = new Comparator<ModuleDBO>() {
-
+            
             @Override
-            public int compare(final ModuleDBO o1, final ModuleDBO o2) {
+            public int compare(@Nonnull final ModuleDBO o1, @Nonnull final ModuleDBO o2) {
                 return o1.getSortIndex() - o2.getSortIndex();
             }
-
+            
         };
         _modules = new TreeSet<ModuleDBO>(comparator);
         _modules.addAll(slave.getModules());
-        Element e2 = setSlavePrmData(slave);
-        Element e3 = setSlaveCfgData(slave);
-        Element e4 = setSlaveAatData(slave);
-        Element e5 = setSlaveUserData(slave);
-        int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
-        int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
-        Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
-        _slaveElement.addContent(e1);
-        _slaveElement.addContent(e2);
-        _slaveElement.addContent(e3);
-        _slaveElement.addContent(e4);
-        _slaveElement.addContent(e5);
+        //        _modules.addAll((Collection<? extends ModuleDBO>) slave.getChildrenAsMap());
+        Element e2;
+        try {
+            e2 = setSlavePrmData(slave);
+            Element e3 = setSlaveCfgData(slave);
+            Element e4 = setSlaveAatData(slave);
+            Element e5 = setSlaveUserData(slave);
+            int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
+            int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
+            Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
+            _slaveElement.addContent(e1);
+            _slaveElement.addContent(e2);
+            _slaveElement.addContent(e3);
+            _slaveElement.addContent(e4);
+            _slaveElement.addContent(e5);
+        } catch (IOException e) {
+            throw new PersistenceException(e);
+        }
     }
-
+    
     /**
      * Set all XML slave_para_set parameter.
      *
@@ -98,8 +109,11 @@ public class XmlSlave {
      *            The user data length.
      * @return The XML Slave Para Set Element.
      */
-    private Element setSlaveParaSet(final SlaveDBO slave, final int prmDataLen, final int cfgDataLen,
-            final int slaveAatLen, final int slaveUserDataLen) {
+    private Element setSlaveParaSet(final SlaveDBO slave,
+                                    final int prmDataLen,
+                                    final int cfgDataLen,
+                                    final int slaveAatLen,
+                                    final int slaveUserDataLen) {
         Element slaveParaSet = new Element("SLAVE_PARA_SET");
         int slaveParaLen = 16 + prmDataLen + cfgDataLen + slaveAatLen + slaveUserDataLen;
         slaveParaSet.setAttribute("slave_para_len", Integer.toString(slaveParaLen));
@@ -108,24 +122,27 @@ public class XmlSlave {
         slaveParaSet.setAttribute("reserved", "0,0,0,0,0,0,0,0,0,0,0,0");
         return slaveParaSet;
     }
-
+    
     /**
      * Set all slave_prm_data parameter.
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Prm Data Element.
+     * @throws IOException 
      */
-    public final Element setSlavePrmData(final SlaveDBO slave) {
+    @Nonnull
+    public final Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
         Element slavePrmData = new Element("SLAVE_PRM_DATA");
-        GsdSlaveModel slaveData = slave.getGSDSlaveData();
+        //        GsdSlaveModel slaveData = slave.getGSDSlaveData();
+        ParsedGsdFileModel slaveData = slave.getGSDFile().getParsedGsdFileModel();
         StringBuilder prmDataSB = new StringBuilder();
         {
-//        if ((slave.getGSDSlaveData() != null)
-//                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
-
-//            prmDataSB.append(slave.getGSDSlaveData().getModiExtUserPrmDataConst());
-//            prmDataSB.append(slave.getGSDSlaveData().getUserPrmData());
+            //        if ((slave.getGSDSlaveData() != null)
+            //                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
+            
+            //            prmDataSB.append(slave.getGSDSlaveData().getModiExtUserPrmDataConst());
+            //            prmDataSB.append(slave.getGSDSlaveData().getUserPrmData());
             prmDataSB.append(slave.getPrmUserData());
             /*
             TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = slave.getGSDSlaveData().getExtUserPrmDataConst();
@@ -139,9 +156,9 @@ public class XmlSlave {
             }
             */
 
-//            prmData = slave.getGSDSlaveData().getExtUserPrmDataConst().values().toString()
-//                    .replaceAll("[\\[\\]]", "");
-
+            //            prmData = slave.getGSDSlaveData().getExtUserPrmDataConst().values().toString()
+            //                    .replaceAll("[\\[\\]]", "");
+            
             // XXX: Die ExtUserPrmData von den Modulen gehören hier wohl nicht hin!
             for (ModuleDBO module : _modules) {
                 String modiExtUserPrmDataConst = module.getConfigurationData();
@@ -150,8 +167,8 @@ public class XmlSlave {
                 if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
                     // Do Nothing
                 } else if ((modiExtUserPrmDataConstDef != null)
-                        && (modiExtUserPrmDataConstDef.split(",").length
-                           > modiExtUserPrmDataConst.split(",").length)) {
+                        && (modiExtUserPrmDataConstDef.split(",").length > modiExtUserPrmDataConst
+                                .split(",").length)) {
                     modiExtUserPrmDataConst = modiExtUserPrmDataConstDef;
                     prmDataSB.append(',');
                     prmDataSB.append(modiExtUserPrmDataConst);
@@ -176,26 +193,28 @@ public class XmlSlave {
              * 2nd. The parameter ident_number in the <SLAVE> section must be write in hex notation.
              * Otherwise the Station will not work. You will get the error code 0x42 0x05 0x00.
              */
-            slavePrmData.setAttribute("ident_number", "0x"
-                    + Integer.toHexString(slaveData.getIdentNumber()));
+            slavePrmData.setAttribute("ident_number",
+                                      "0x" + Integer.toHexString(slaveData.getIdentNumber()));
         }
         slavePrmData.setAttribute("group_ident", Integer.toString(slave.getGroupIdent()));
         slavePrmData.setText(prmDataSB.toString());
         return slavePrmData;
     }
-
+    
     /**
      * Set all slave_cfg_data parameter.
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Cfg Data Element.
+     * @throws IOException 
      */
-    public final Element setSlaveCfgData(final SlaveDBO slave) {
+    @Nonnull
+    public final Element setSlaveCfgData(@Nonnull final SlaveDBO slave) throws IOException {
         Element slaveCfgData = new Element("SLAVE_CFG_DATA");
         String cfgData = "";
         for (ModuleDBO module : _modules) {
-            cfgData = cfgData.concat(module.getGsdModuleModel().getValue() + ",").trim();
+            cfgData = cfgData.concat(module.getGsdModuleModel2().getValueAsString() + ",").trim();
         }
         if (cfgData.endsWith(",")) {
             cfgData = cfgData.substring(0, cfgData.length() - 1);
@@ -205,7 +224,7 @@ public class XmlSlave {
         slaveCfgData.setText(cfgData);
         return slaveCfgData;
     }
-
+    
     /**
      * Set all SlaveAatData parameter.
      *
@@ -236,7 +255,7 @@ public class XmlSlave {
         slaveAatData.setText("");
         return slaveAatData;
     }
-
+    
     /**
      * Set all slave_user_data parameter.
      *
@@ -252,7 +271,7 @@ public class XmlSlave {
         slaveUserData.setText("");
         return slaveUserData;
     }
-
+    
     /**
      *
      * @return the Slave {@link Element}
@@ -260,5 +279,5 @@ public class XmlSlave {
     public final Element getSlave() {
         return _slaveElement;
     }
-
+    
 }

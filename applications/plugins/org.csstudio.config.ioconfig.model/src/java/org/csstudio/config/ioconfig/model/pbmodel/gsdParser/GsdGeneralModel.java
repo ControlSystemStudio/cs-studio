@@ -637,9 +637,9 @@ abstract class GsdGeneralModel implements Keywords{
         _hardwareRelease = hardwareRelease;
     }
 
-    public final int getIdentNumber() {
-        return _identNumber;
-    }
+//    public final int getIdentNumber() {
+//        return _identNumber;
+//    }
 
     public final void setIdentNumber(final int identNumber) {
         _identNumber = identNumber;

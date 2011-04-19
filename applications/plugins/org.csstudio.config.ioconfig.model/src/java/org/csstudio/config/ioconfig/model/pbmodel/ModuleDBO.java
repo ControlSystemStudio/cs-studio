@@ -25,11 +25,14 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -115,6 +118,17 @@ public class ModuleDBO extends AbstractNodeDBO {
 
     public void setConfigurationData(final String configurationData) {
         _configurationData = configurationData;
+    }
+    @Transient
+    public void setConfigurationData(@Nonnull final List<Integer> configurationDataList) {
+        StringBuilder sb = new StringBuilder();
+        for (Integer value : configurationDataList) {
+            sb.append(String.format("0x%02X,", value));
+        }
+        if(sb.length()>0) {
+            sb.deleteCharAt(sb.length()-1);
+        }
+        _configurationData = sb.toString();
     }
 
     /**
@@ -204,9 +218,6 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     public void setModuleNumber(final int moduleNumber) {
-        if (_moduleNumber == moduleNumber) {
-            return;
-        }
         _moduleNumber = moduleNumber;
     }
 
@@ -285,10 +296,11 @@ public class ModuleDBO extends AbstractNodeDBO {
     @Transient
     public GsdModuleModel getGsdModuleModel() {
         try {
-            if (getSlave().getGSDSlaveData().getGsdModuleList().containsKey(getModuleNumber())) {
-                return getSlave().getGSDSlaveData().getGsdModuleList().get(getModuleNumber());
+            HashMap<Integer, GsdModuleModel> gsdModuleList = getSlave().getGSDSlaveData().getGsdModuleList();
+            if (gsdModuleList.containsKey(getModuleNumber())) {
+                return gsdModuleList.get(getModuleNumber());
             }
-            return getSlave().getGSDSlaveData().getGsdModuleList().values().iterator().next();
+            return gsdModuleList.values().iterator().next();
         } catch (NullPointerException e) {
             return null;
         }
@@ -406,4 +418,23 @@ public class ModuleDBO extends AbstractNodeDBO {
         return NodeType.MODULE;
     }
 
+    /**
+     * @return The Name of this Node.
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        if (getSortIndex() != null) {
+            sb.append(getSortIndex());
+        }
+        sb.append('[');
+        sb.append(getModuleNumber());
+        sb.append(']');
+        if (getName() != null) {
+            sb.append(':');
+            sb.append(getName());
+        }
+        return sb.toString();
+    }
+    
 }

@@ -24,7 +24,8 @@ public enum GSDTestFiles {
     SOFTB203("SOFTB203.GSD"),
     YP0004C2("YP0004C2.GSD"),
     YP003051("YP003051.gsd"),
-    YP0206CA("YP0206CA.gsd");
+    YP0206CA("YP0206CA.gsd"),
+    SiPart("SiPart.gsd");
     
     private final String _fileName;
     private GSDFileDBO _gsdFileDBO;

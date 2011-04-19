@@ -311,9 +311,9 @@ public class GsdSlaveModel extends GsdGeneralModel {
         _syncModeSupp = syncModeSupp;
     }
 
-    public String getUserPrmData() {
-        return _userPrmData;
-    }
+//    public String getUserPrmData() {
+//        return _userPrmData;
+//    }
 
     public void setUserPrmData(final String userPrmData) {
         _userPrmData = userPrmData;

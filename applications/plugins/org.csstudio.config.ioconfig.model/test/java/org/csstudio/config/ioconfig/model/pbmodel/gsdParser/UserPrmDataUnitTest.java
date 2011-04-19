@@ -59,7 +59,7 @@ public class UserPrmDataUnitTest {
     public void UserPrmDataB756_P33Test() throws Exception {
         List<Integer> expected = Arrays.asList(0,0,0,0,0,0,0,2,0,203,67,195,127,0,1,0,0,0,0);
         _B756_P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        ParsedGsdFileModel parsedGsdFileModel = _B756_P33.getParsedGsdFileModel();
+        AbstractGsdPropertyModel parsedGsdFileModel = _B756_P33.getParsedGsdFileModel();
         List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
         assertNotNull(out);
         assertEquals(expected.size(), out.size());
@@ -75,7 +75,7 @@ public class UserPrmDataUnitTest {
     public void UserPrmBIMF5861DataTest() throws Exception {
         List<Integer> expected = Arrays.asList(0,1,0,55,0,19,0,0,0,1,1);
         _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
-        ParsedGsdFileModel parsedGsdFileModel = _BIMF5861.getParsedGsdFileModel();
+        AbstractGsdPropertyModel parsedGsdFileModel = _BIMF5861.getParsedGsdFileModel();
         List<Integer> out = parsedGsdFileModel.getExtUserPrmDataConst();
         assertNotNull(out);
         assertEquals(expected.size(), out.size());

@@ -55,7 +55,7 @@ public final class GsdFileParser {
     
     private static List<String> _WARNING_LIST = new ArrayList<String>();
     
-    private Integer _moduleNo = 1;
+    private Integer _moduleNo = 0;
     
     public static void addValues2IntList(@Nonnull String value, @Nonnull List<Integer> valueList) {
         String[] values = value.split(",");
@@ -563,11 +563,12 @@ public final class GsdFileParser {
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Const")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Const")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-                gsdModuleModel.setProperty(extractKeyValue);
+                gsdModuleModel.setExtUserPrmDataConst(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Ext_User_Prm_Data_Ref")
                     || isLineParameter(tmpLine, "F_Ext_User_Prm_Data_Ref")) {
-                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
-                gsdModuleModel.setProperty(extractKeyValue);
+                buildExtUserPrmDataRef(tmpLine, lineCounter, parsedGsdFileModel, gsdModuleModel, br);
+//                KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
+//                gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "Info_Text")) {
                 KeyValuePair extractKeyValue = extractKeyValue(tmpLine, lineCounter, br);
                 gsdModuleModel.setProperty(extractKeyValue);
@@ -579,6 +580,7 @@ public final class GsdFileParser {
                 //TODO set F_IO_StructureDescCRC. If this information required or can it be ignored?
             } else {
                 try {
+                    tmpLine = tmpLine.split(";")[0].trim();
                     moduleNo = gsdValue2Int(tmpLine);
                 } catch (NumberFormatException e) {
                     String warning = String
@@ -595,7 +597,7 @@ public final class GsdFileParser {
         if (moduleNo == null) {
             moduleNo = _moduleNo++;
         } else if (_moduleNo < moduleNo) {
-            _moduleNo = moduleNo;
+            _moduleNo = moduleNo+1;
         }
         gsdModuleModel.setModuleNumber(moduleNo);
         parsedGsdFileModel.setModule(gsdModuleModel);
@@ -714,6 +716,8 @@ public final class GsdFileParser {
             } else if (isLineParameter(line, "Slave_Family")) {
                 // TODO (hrickens) [28.03.2011]: Hier könnte man den Text noch als zweite variante setzen. (Das was nach dem @ kommt)
                 setProperty(line.split("@")[0], lineCounter, parsedGsdFileModel, br);
+            } else if (isLineParameter(line, "End_Physical_Interface")) {
+                continue; // unused property
             } else {
                 setProperty(line, lineCounter, parsedGsdFileModel, br);
             }
@@ -736,6 +740,15 @@ public final class GsdFileParser {
         ExtUserPrmData eupd = parsedGsdFileModel.getExtUserPrmData(keyValuePair.getIntValue());
         parsedGsdFileModel.setExtUserPrmDataDefault(eupd, keyValuePair.getIndex());
     }
+    private void buildExtUserPrmDataRef(@Nonnull String line,
+                                        @Nonnull LineCounter lineCounter,
+                                        @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                        @Nonnull AbstractGsdPropertyModel abstractGsdPropertyModel,
+                                        @Nonnull BufferedReader br) throws IOException {
+        KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
+        ExtUserPrmData eupd = parsedGsdFileModel.getExtUserPrmData(keyValuePair.getIntValue());
+        abstractGsdPropertyModel.setExtUserPrmDataDefault(eupd, keyValuePair.getIndex());
+    }
     
     /**
      * @param line
@@ -746,7 +759,7 @@ public final class GsdFileParser {
      */
     private void buildExtUserPrmDataConst(@Nonnull String line,
                                           @Nonnull LineCounter lineCounter,
-                                          @Nonnull ParsedGsdFileModel parsedGsdFileModel,
+                                          @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                           @Nonnull BufferedReader br) throws IOException {
         KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
         parsedGsdFileModel.setExtUserPrmDataConst(keyValuePair);

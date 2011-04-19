@@ -71,6 +71,7 @@ public final class GsdFactory {
      */
     public static GsdSlaveModel makeGsdSlave(final GSDFileDBO gsdFile){
         
+//        ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         GsdSlaveModel slaveModel = _GSD_SLAVE_MODEL_MAP.get(gsdFile.getId());
         if(slaveModel==null) {
             GSD2OBJ dataInstanz = new GSD2OBJ();

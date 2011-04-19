@@ -216,8 +216,9 @@ public class ProfibusConfigXMLGenerator {
      *
      * @param slave
      *            The Profibus Slave.
+     * @throws PersistenceException 
      */
-	private void addSlave(final SlaveDBO slave) {
+	private void addSlave(final SlaveDBO slave) throws PersistenceException {
 		/*
 		 * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
 		 * a configuration on the IOC.

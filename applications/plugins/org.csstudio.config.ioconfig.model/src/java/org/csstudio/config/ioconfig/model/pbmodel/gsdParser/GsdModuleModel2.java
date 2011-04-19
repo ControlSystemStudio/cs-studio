@@ -52,18 +52,6 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
         
     }
 
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getExtUserPrmDataConst() {
-        String extUserPrmDataConst = getStringValue("Ext_User_Prm_Data_Const");
-        if(extUserPrmDataConst != null) {
-            extUserPrmDataConst="";
-        }
-        return extUserPrmDataConst;
-    }
-
     @Nonnull
     public Integer getModuleNumber() {
         return _moduleNo;
@@ -79,6 +67,18 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
         return _value;
     }
 
+    @Nonnull
+    public String getValueAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (Integer value : _value) {
+            sb.append(String.format("0x%02X,", value));
+        }
+        if(sb.length()>0) {
+            sb.deleteCharAt(sb.length()-1);
+        }
+        return sb.toString();
+    }
+    
     /**
      * @param extModulePrmDataLen
      */

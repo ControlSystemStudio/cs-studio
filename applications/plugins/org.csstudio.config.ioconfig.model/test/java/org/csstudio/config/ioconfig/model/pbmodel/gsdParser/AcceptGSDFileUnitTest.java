@@ -79,4 +79,11 @@ public class AcceptGSDFileUnitTest {
         AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         Assert.assertNotNull(model);
     }
+
+    @Test
+    public void GSDTestFile_SiPart() throws Exception {
+        GsdFileParser gsdFileParser = new GsdFileParser();
+        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.SiPart.getFileAsGSDFileDBO());
+        Assert.assertNotNull(model);
+    }
 }
