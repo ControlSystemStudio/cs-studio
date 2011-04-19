@@ -15,7 +15,9 @@
 <!-- the properties which callers can control. -->
 <!-- ===================================================================== -->
 <property name="allElementsFile" value="${eclipse.pdebuild.scripts}/productBuild/allElements.xml"/>
+
 <import file="${eclipse.pdebuild.scripts}/build.xml"/>
+
 <property name="pluginPath" value=""/>
 <property name="pluginList" value=""/>
 <property name="featureList" value=""/>

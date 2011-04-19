@@ -1,6 +1,6 @@
 <project name="css.hudson.build" default="build">
 	<property file="build.properties" />
-	<property file="tools.properties" />
+	<property file="build.eclipse.properties" />
 	
 
 	<target name="build" depends="syncPlugins, buildWindows, buildSolaris"/>
@@ -11,21 +11,18 @@
 	<!--
 		Debug output
 	-->
-	
 	<echo message="'workspaceLocation: ${workspaceLocation}"/>
-	<echo message="'e360TP: ${targetPlatformLocation}"/>
-	<echo message="'e362 additionals: ${targetPlatformLocation_2}"/>
+	<echo message="'eclipse instance: ${eclipseInstance}"/>
+	<echo message="'eclipse target platform: ${targetPlatformLocation}"/>
+	<echo message="'eclipse target platform additionals: ${targetPlatformLocation_2}"/>
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'jenkinsbase: ${jenkinsbase}"/>
-	<echo message="'base: ${base}"/>
+	<echo message="'base: ${basedir}"/>
 	<echo message="'tstamp: ${tstamp}"/>
 	<echo message="'jenkinsjob: ${jenkinsjob}"/>
 	<echo message="'CS Studio location:  ${csStudioLocation}"/>
 	<echo message="'DESY Config location:  ${desyConfigLocation}"/>
-	<echo message="'buckminsterLocation: ${buckminsterLocation}"/>
-	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
-	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
-    <echo message="launcher: ${targetPlatformLocation}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+    <echo message="launcher: ${equinoxLauncher}" />
 	
 	
 	<!--
@@ -69,11 +66,11 @@
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${base}/productBuild.xml" />
-			<arg value="-DbaseLocation=targetPlatformLocation" />
+			<arg value="${basedir}/productBuild.xml" />
+			<arg value="-DbaseLocation=${targetPlatformLocation}" />
 			<arg value="-Dconfigs=win32, win32, x86" />
 			<classpath>
-				<pathelement location="targetPlatformLocation/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+				<pathelement location="${equinoxLauncher}" />
 			</classpath>
 		</java>
 	</target>
@@ -86,11 +83,11 @@
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${base}/productBuild.xml" />
-			<arg value="-DbaseLocation=targetPlatformLocation" />
+			<arg value="${basedir}/productBuild.xml" />
+			<arg value="-DbaseLocation=${targetPlatformLocation}" />
 			<arg value="-Dconfigs=solaris, gtk, sparc" />
 			<classpath>
-				<pathelement location="targetPlatformLocation/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+				<pathelement location="${equinoxLauncher}" />
 			</classpath>
 		</java>
 	</target>
@@ -101,9 +98,10 @@
 	<target name="updateConfigWin">
 		<mkdir dir="${workspaceLocation}build/initmp/${archivePrefix}" />
 		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
-			<fileset file="${workspaceLocation}/plugin_customization.ini"/>
+			<fileset file="${workspaceLocation}/build/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}/build/${buildLabel}/${buildId}-win32.win32.x86.zip" basedir="${workspaceLocation}/build/initmp" update="true" />
+		<zip destfile="${workspaceLocation}/build/${buildLabel}/${buildId}-win32.win32.x86.zip" 
+			 basedir="${workspaceLocation}/build/initmp" update="true" />
 	</target>
 
 	<!--
@@ -114,20 +112,23 @@
 		<copy todir="${workspaceLocation}/build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}/build/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" basedir="${workspaceLocation}/build/initmp" update="true" />
+		<zip destfile="${workspaceLocation}/build/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
+			 basedir="${workspaceLocation}/build/initmp" update="true" />
 	</target>
 
 	<!--
 		Copy win product to artifact folder from hudson
 	-->
 	<target name="jenkinsUpdateWin">
-		<copy file="${workspaceLocation}/build/${buildLabel}/${buildId}-win32.win32.x86.zip" todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
+		<copy file="${workspaceLocation}/build/${buildLabel}/${buildId}-win32.win32.x86.zip" 
+			  todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
 	</target>
 
 	<!--
 		Copy solaris product to artifact folder from hudson
 	-->
 	<target name="jenkinsUpdateSolaris">
-		<copy file="${workspaceLocation}/build/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
+		<copy file="${workspaceLocation}/build/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
+			  todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
 	</target>
 </project>
