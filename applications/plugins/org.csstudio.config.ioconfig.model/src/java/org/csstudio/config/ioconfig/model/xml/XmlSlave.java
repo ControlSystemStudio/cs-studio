@@ -34,6 +34,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.jdom.Element;
 
@@ -214,7 +215,10 @@ public class XmlSlave {
         Element slaveCfgData = new Element("SLAVE_CFG_DATA");
         String cfgData = "";
         for (ModuleDBO module : _modules) {
-            cfgData = cfgData.concat(module.getGsdModuleModel2().getValueAsString() + ",").trim();
+            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2!=null) {
+                cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
+            }
         }
         if (cfgData.endsWith(",")) {
             cfgData = cfgData.substring(0, cfgData.length() - 1);

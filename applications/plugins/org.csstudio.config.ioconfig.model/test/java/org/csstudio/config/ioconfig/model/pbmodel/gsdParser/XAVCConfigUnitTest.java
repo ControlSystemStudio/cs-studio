@@ -66,11 +66,7 @@ public class XAVCConfigUnitTest {
         ModuleDBO mo = new ModuleDBO(pk2);
         mo.setSortIndex(sortIndex);
         mo.setModuleNumber(moduleNumber);
-        try {
-            mo.setConfigurationData(mo.getGsdModuleModel2().getExtUserPrmDataConst());
-        } catch (Exception e) {
-            System.out.println("hier!");
-        }
+        mo.setConfigurationData(mo.getGsdModuleModel2().getExtUserPrmDataConst());
     }
     
     private void buildSlave05(MasterDBO xavcMaster) throws PersistenceException, IOException {

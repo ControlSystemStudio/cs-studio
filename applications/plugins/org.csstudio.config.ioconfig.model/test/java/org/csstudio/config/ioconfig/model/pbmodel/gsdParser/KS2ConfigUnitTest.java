@@ -112,11 +112,11 @@ public class KS2ConfigUnitTest {
         ks2Master
                 .setMasterUserData("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         
-        buildSlave2(ks2Master);
+        buildSlave02(ks2Master);
         buildSlave3(ks2Master);
         buildSlave4(ks2Master);
         buildSlave5(ks2Master);
-        buildSlave6(ks2Master);
+        buildSlave06(ks2Master);
         buildSlave7(ks2Master);
         buildSlave8(ks2Master);
         buildSlave9(ks2Master);
@@ -159,10 +159,10 @@ public class KS2ConfigUnitTest {
         _eLine = _expected.readLine();
         _outLine = _out.readLine();
         while (_eLine != null && _outLine != null) {
-            System.out.println("E: "+_lineNo+_eLine);
-            System.out.println("C: "+_lineNo+_outLine);
-            _eLine = _eLine.replaceAll(", 0", ", 0");
-            Assert.assertEquals(_eLine, _outLine);
+            System.out.println("E: " + _lineNo + _eLine);
+            System.out.println("C: " + _lineNo + _outLine);
+            _eLine = _eLine.replaceAll(", 0", ",0");
+            Assert.assertEquals("@Line "+_lineNo, _eLine.toLowerCase(), _outLine.toLowerCase());
             _eLine = _expected.readLine();
             _outLine = _out.readLine();
             _lineNo++;
@@ -193,64 +193,87 @@ public class KS2ConfigUnitTest {
         _expected.close();
     }
     
-    private void buildSlave2(MasterDBO ks2Master) throws PersistenceException, IOException {
+    private void buildSlave02(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 2);
         pk2.setGSDFile(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
         
-        mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
-        
-        mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
-        
-        mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
-        
-        mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
-        
-        mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
-        
+        addNewModule(pk2, 6, sortIndex++);
+        addNewModule(pk2, 6, sortIndex++);
+        addNewModule(pk2, 6, sortIndex++);
+        addNewModule(pk2, 6, sortIndex++);
+        addNewModule(pk2, 6, sortIndex++);
+        ModuleDBO module = addNewModule(pk2, 6, sortIndex++);
+        String configurationData = module.getConfigurationData();
+        int lastIndexOf = configurationData.lastIndexOf(',', configurationData.lastIndexOf(',')-1);
+        configurationData = configurationData.substring(0, lastIndexOf).concat(",0x00,0x00");
+        module.setConfigurationData(configurationData);
     }
 
     private void buildSlave3(MasterDBO ks2Master) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(ks2Master, 3);
-
-        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        SlaveDBO pk3 = getNewSlave(ks2Master, 3);
+        pk3.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        int sortIndex = 0;
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        addNewModule(pk3, 8330, sortIndex++);
+        addNewModule(pk3, 5300, sortIndex++);
+        addNewModule(pk3, 4360, sortIndex++);
+        addNewModule(pk3, 4360, sortIndex++);
+        
     }
 
     private void buildSlave4(MasterDBO ks2Master) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(ks2Master, 4);
+        SlaveDBO pk4 = getNewSlave(ks2Master, 4);
 
-        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        pk4.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        int sortIndex = 0;
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        addNewModule(pk4, 8330, sortIndex++);
+        addNewModule(pk4, 4780, sortIndex++);
+
+        for (int i = 0; i < 15; i++) {
+            addNewModule(pk4, 4550, sortIndex++);
+        }
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk4, 4360, sortIndex++);
+        }
+        
     }
 
     private void buildSlave5(MasterDBO ks2Master) throws PersistenceException, IOException {
-        SlaveDBO pk2 = getNewSlave(ks2Master, 5);
+        SlaveDBO pk5 = getNewSlave(ks2Master, 5);
 
-        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        pk5.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        int sortIndex = 0;
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        addNewModule(pk5, 8330, sortIndex++);
+        
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk5, 4780, sortIndex++);
+        }
+        for (int i = 0; i < 2; i++) {
+            addNewModule(pk5, 4550, sortIndex++);
+        }
+        addNewModule(pk5, 4360, sortIndex++);
+        addNewModule(pk5, 4550, sortIndex++);
     }
     
-    private void buildSlave6(MasterDBO ks2Master) throws PersistenceException, IOException {
+    private void buildSlave06(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 6);
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5300, sortIndex++);
+            addNewModule(pk2, 4360, sortIndex++);
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        addNewModule(pk2, 5300, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
     }
     
     private void buildSlave7(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -258,8 +281,19 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 4310, sortIndex++);
+        }
+        addNewModule(pk2, 5010, sortIndex++);
+        addNewModule(pk2, 5010, sortIndex++);
+        for (int i = 0; i < 7; i++) {
+            addNewModule(pk2, 4540, sortIndex++);
+        }
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 2000, sortIndex++);
+        }
     }
     
     private void buildSlave8(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -267,17 +301,24 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
     }
 
     private void buildSlave9(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 9);
 
-        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        pk2.setGSDFile(GSDTestFiles.DESY_MSyS_V11.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
+        for (int i = 0; i < 6; i++) {
+            addNewModule(pk2, 9, sortIndex++);
+        }
     }
     
     private void buildSlave10(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -285,8 +326,18 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 4550, sortIndex++);
+        }
+        addNewModule(pk2, 5300, sortIndex++);
+        addNewModule(pk2, 5300, sortIndex++);
+        for (int i = 0; i < 5; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
     }
     
     private void buildSlave11(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -294,8 +345,16 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 5300, sortIndex++);
+        }
+        for (int i = 0; i < 5; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        addNewModule(pk2, 4550, sortIndex++);
     }
     
     private void buildSlave12(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -303,8 +362,14 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave13(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -312,8 +377,14 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
     }
     
     private void buildSlave14(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -321,8 +392,21 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5301, sortIndex++);
+        }
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 1000, sortIndex++);
+        addNewModule(pk2, 1000, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 2240, sortIndex++);
+        }
+        addNewModule(pk2, 2000, sortIndex++);
+        addNewModule(pk2, 2000, sortIndex++);
     }
     
     private void buildSlave15(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -330,8 +414,17 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 4550, sortIndex++);
+        }
+        addNewModule(pk2, 4360, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 4610, sortIndex++);
+        }
+
     }
     
     private void buildSlave16(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -339,8 +432,9 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 5300, sortIndex++);
     }
     
     private void buildSlave17(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -348,8 +442,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave18(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -357,8 +451,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave19(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -366,8 +460,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave20(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -375,8 +469,19 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4530, sortIndex++);
+        addNewModule(pk2, 4530, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        addNewModule(pk2, 4530, sortIndex++);
+        addNewModule(pk2, 4530, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
     }
     
     private void buildSlave21(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -384,8 +489,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave22(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -393,8 +498,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave23(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -402,8 +507,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave25(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -411,8 +516,8 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 6, sortIndex++);
     }
     
     private void buildSlave29(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -420,17 +525,17 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.PF009A8.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 1, sortIndex++);
     }
     
     private void buildSlave30(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 30);
 
-        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        pk2.setGSDFile(GSDTestFiles.PF009A8.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 1, sortIndex++);
     }
     
     private void buildSlave31(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -438,8 +543,19 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 5300, sortIndex++);
+        }
+        for (int i = 0; i < 5; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave32(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -447,8 +563,19 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        for (int i = 0; i < 6; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5300, sortIndex++);
+        }
     }
     
     private void buildSlave33(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -456,8 +583,21 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5630, sortIndex++);
+        }
+        for (int i = 0; i < 5; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        for (int i = 0; i < 5; i++) {
+            addNewModule(pk2, 5300, sortIndex++);
+        }
+        
     }
     
     private void buildSlave34(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -465,8 +605,15 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave35(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -474,8 +621,16 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave36(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -483,33 +638,72 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5630, sortIndex++);
+        }
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 5310, sortIndex++);
+            addNewModule(pk2, 5311, sortIndex++);
+        }
+        for (int i = 0; i < 8; i++) {
+            addNewModule(pk2, 4360, sortIndex++);
+        }
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave37(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 37);
 
-        pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
+        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
+        addNewModule(pk2, 4610, sortIndex++);
     }
     
     private void buildSlave38(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 38);
 
-        pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
+        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        for (int i = 0; i < 3; i++) {
+            addNewModule(pk2, 4550, sortIndex++);
+        }
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        for (int i = 0; i < 4; i++) {
+            addNewModule(pk2, 4610, sortIndex++);
+        }
     }
     
     private void buildSlave39(MasterDBO ks2Master) throws PersistenceException, IOException {
         SlaveDBO pk2 = getNewSlave(ks2Master, 39);
-        pk2.setGSDFile(GSDTestFiles.YP0206CA.getFileAsGSDFileDBO());
-        ModuleDBO mo = new ModuleDBO(pk2);
-        mo.setModuleNumber(6);
+        pk2.setGSDFile(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
+        int sortIndex = 0;
+        addNewModule(pk2, 8330, sortIndex++);
+        addNewModule(pk2, 4780, sortIndex++);
+        addNewModule(pk2, 4550, sortIndex++);
+        addNewModule(pk2, 5630, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 5311, sortIndex++);
+        addNewModule(pk2, 5310, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
+        addNewModule(pk2, 4360, sortIndex++);
     }
     
 
@@ -526,5 +720,18 @@ public class KS2ConfigUnitTest {
         
         return slave;
     }
+    
+    private ModuleDBO addNewModule(SlaveDBO pk, int moduleNumber, int sortIndex) throws PersistenceException, IOException {
+        ModuleDBO mo = new ModuleDBO(pk);
+        mo.setSortIndex(sortIndex);
+        mo.setModuleNumber(moduleNumber);
+        try {
+            mo.setConfigurationData(mo.getGsdModuleModel2().getExtUserPrmDataConst());
+        } catch (Exception e) {
+            System.out.println("hier!");
+        }
+        return mo;
+    }
+
     
 }
