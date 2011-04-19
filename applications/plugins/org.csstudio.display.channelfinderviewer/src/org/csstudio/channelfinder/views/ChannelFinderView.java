@@ -77,7 +77,6 @@ public class ChannelFinderView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		createGUI(parent);
-
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);
 		table = tableViewer.getTable();
@@ -87,10 +86,10 @@ public class ChannelFinderView extends ViewPart {
 
 		TableViewerColumn channelNameColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		channelNameColumn.setLabelProvider(new CellLabelProvider() {			
+		channelNameColumn.setLabelProvider(new CellLabelProvider() {
 			@Override
 			public void update(ViewerCell cell) {
-				cell.setText(((Channel)cell.getElement()).getName());
+				cell.setText(((Channel) cell.getElement()).getName());
 			}
 		});
 		new TableViewerColumnSorter(channelNameColumn) {
@@ -106,11 +105,10 @@ public class ChannelFinderView extends ViewPart {
 		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		channelOwnerColumn.setLabelProvider(new CellLabelProvider() {
-			private long count = 0;
+			
 			@Override
 			public void update(ViewerCell cell) {
-				System.out.println(count++);
-				cell.setText(((Channel)cell.getElement()).getOwner());
+				cell.setText(((Channel) cell.getElement()).getOwner());
 			}
 		});
 		new TableViewerColumnSorter(channelOwnerColumn) {
@@ -123,7 +121,10 @@ public class ChannelFinderView extends ViewPart {
 		tblclmnOwner.setWidth(100);
 		tblclmnOwner.setText("Owner");
 		tableViewer.setContentProvider(new ChannelContentProvider());
-//		tableViewer.setLabelProvider(new ChannelLabelProvider());
+		// tableViewer.setLabelProvider(new ChannelLabelProvider());
+
+		// Add this table as a selection provider
+		getSite().setSelectionProvider(tableViewer);
 		hookContextMenu();
 	}
 
@@ -138,6 +139,7 @@ public class ChannelFinderView extends ViewPart {
 		parent.setLayout(layout);
 
 		text = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
+		text.setToolTipText("space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\n");
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
@@ -207,7 +209,7 @@ public class ChannelFinderView extends ViewPart {
 		// Set the MenuManager
 		fillContextMenu(menuManager);
 	}
-	
+
 	private void fillContextMenu(IMenuManager manager) {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -237,7 +239,9 @@ public class ChannelFinderView extends ViewPart {
 			// Property Column
 			TableViewerColumn channelPropertyColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
-			channelPropertyColumn.setLabelProvider(new PropertyCellLabelProvider(propertyName));
+			channelPropertyColumn
+					.setLabelProvider(new PropertyCellLabelProvider(
+							propertyName));
 			new TableViewerChannelPropertySorter(channelPropertyColumn,
 					propertyName);
 			TableColumn tblclmnNumericprop = channelPropertyColumn.getColumn();
@@ -253,7 +257,8 @@ public class ChannelFinderView extends ViewPart {
 			// Tag Column
 			TableViewerColumn channelTagColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
-			channelTagColumn.setLabelProvider(new TagCellLabelProvider(tagName));
+			channelTagColumn
+					.setLabelProvider(new TagCellLabelProvider(tagName));
 			new TableViewerChannelTagSorter(channelTagColumn, tagName);
 			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
 			// tcl_composite.setColumnData(tblclmnNumericprop, new
@@ -262,7 +267,7 @@ public class ChannelFinderView extends ViewPart {
 			tblclmnNumericprop.setText(tagName);
 			tblclmnNumericprop.setWidth(100);
 		}
-		
+
 		tableViewer.refresh();
 	}
 }
