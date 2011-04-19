@@ -13,20 +13,18 @@
     <tstamp>
         <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd hh:mm:ss"/>
     </tstamp>
-	<echo message="'workspaceLocation: ${workspaceLocation}"/>
-	<echo message="'eclipse instance: ${eclipseInstance}"/>
-	<echo message="'eclipse target platform: ${targetPlatformLocation}"/>
-	<echo message="'eclipse target platform additionals: ${targetPlatformLocation_2}"/>
-	<echo message="'buildDirectory: ${buildDirectory}"/>
-	<echo message="'jenkinsbase: ${jenkinsbase}"/>
-	<echo message="'base: ${basedir}"/>
-	<echo message="'timestamp: ${timestamp}"/>
-	<echo message="'jenkinsjob: ${jenkinsjob}"/>
-	<echo message="'CS Studio location:  ${csStudioLocation}"/>
-	<echo message="'DESY Config location:  ${desyConfigLocation}"/>
-    <echo message="'launcher: ${equinoxLauncher}" />
-	
-	
+	<echo message="Workspace location: ${workspaceLocation}"/>
+	<echo message="Eclipse instance: ${eclipseInstance}"/>
+	<echo message="Eclipse target platform: ${targetPlatformLocation}"/>
+	<echo message="Eclipse target platform additionals: ${targetPlatformLocation_2}"/>
+	<echo message="Build directory: ${buildDirectory}"/>
+	<echo message="Jenkins base: ${jenkinsbase}"/>
+	<echo message="Base dir: ${basedir}"/>
+	<echo message="Timestamp: ${timestamp}"/>
+	<echo message="Job name: ${jenkinsjob}"/>
+	<echo message="CS Studio location:  ${csStudioLocation}"/>
+	<echo message="DESY config location:  ${desyConfigLocation}"/>
+    <echo message="Launcher: ${equinoxLauncher}" />
 	
 	
 	<!--
@@ -41,6 +39,11 @@
 		<sync todir="${workspaceLocation}/build">
 		  <fileset dir="${csStudioLocation}/core"/>
 		  <fileset dir="${csStudioLocation}/applications"/>
+	      <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
+	          <filename name="productBuild.xml"/>
+	          <filename name="build.properties"/>
+	          <filename name="build.eclipse.properties"/>
+	      </fileset>			
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
           	<filename name="plugin_customization.ini"/>
           </fileset>
@@ -63,21 +66,24 @@
 	</target>
 
 	<!--
-	    Headless Eclipse Build for Linux
+	    Headless Eclipse Build for Windows
 	-->
-	<target name="pdeBuildWin">
-		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true">			
-			<arg value="-application" />
-			<arg value="org.eclipse.ant.core.antRunner" />
-			<arg value="-buildfile" />
-			<arg value="${basedir}/productBuild.xml" />
-			<arg value="-DbaseLocation=${targetPlatformLocation}" />
-			<arg value="-Dconfigs=win32, win32, x86" />
-			<classpath>
-				<pathelement location="${equinoxLauncher}" />
-			</classpath>
-		</java>
-	</target>
+    <target name="pdeBuildWin">
+        <java classname="org.eclipse.equinox.launcher.Main" 
+              dir="${buildDirectory}"
+              fork="true" 
+              failonerror="true">           
+            <arg value="-application" />
+            <arg value="org.eclipse.ant.core.antRunner" />
+            <arg value="-buildfile" />
+            <arg value="productBuild.xml" />
+            <arg value="-DbaseLocation=." />
+            <arg value="-Dconfigs=win32, win32, x86" />
+            <classpath>
+                <pathelement location="${equinoxLauncher}" />
+            </classpath>
+        </java>
+    </target>	
 
 	<!--
 	    Headless Eclipse Build for Solaris
