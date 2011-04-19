@@ -115,8 +115,8 @@
 		Copy plugincustomization and to win product
 	-->
 	<target name="updateConfigWin">
-		<mkdir dir="${workspaceLocation}build/initmp/${archivePrefix}" />
-		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
+		<mkdir dir="${workspaceLocation}/build/initmp/${archivePrefix}" />
+		<copy todir="${workspaceLocation}/build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}/build/plugin_customization.ini"/>
 		</copy>
 		<zip destfile="${workspaceLocation}/build/${buildId}-win32.win32.x86.zip" 
@@ -140,7 +140,7 @@
 	-->
 	<target name="jenkinsUpdateWin">
 		<copy file="${workspaceLocation}/build/${buildId}-win32.win32.x86.zip" 
-			  todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
+			  todir="${jenkinsbase}/jobs/${jenkinsjob}/workspace/artifacts"/>
 	</target>
 
 	<!--
@@ -148,6 +148,6 @@
 	-->
 	<target name="jenkinsUpdateSolaris">
 		<copy file="${workspaceLocation}/build/${buildId}-solaris.gtk.sparc.zip" 
-			  todir="${jenkinsbase}/home/jobs/${jenkinsjob}/workspace/artefacts"/>
+			  todir="${jenkinsbase}/jobs/${jenkinsjob}/workspace/artifacts"/>
 	</target>
 </project>
