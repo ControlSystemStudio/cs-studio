@@ -32,28 +32,30 @@
 	 directory (avoiding unnecessary copying and deleting as much as possible).
 	-->
 	<target name="syncPlugins">
-		<!--  
-		 overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
-		 deletes files from ${workspaceLocation}/build that are not present in filesets. 
-		-->
-		<sync todir="${buildDirectory}">
-		  <fileset dir="${csStudioLocation}/core"/>
-		  <fileset dir="${csStudioLocation}/applications"/>		
+      <!--  
+         overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
+         deletes files from ${workspaceLocation}/build that are not present in filesets. 
+        -->
+        <sync todir="${buildDirectory}">
+          <fileset dir="${csStudioLocation}/core"/>
+          <fileset dir="${csStudioLocation}/applications">
+            <exclude name="plugins/${projectDir}/build/build.xml"/>
+          </fileset>          
           <fileset dir="${targetPlatformLocation}"/>
           <fileset dir="${targetPlatformLocation_2}"/>
-		</sync>
-		
-		<!-- 
-		 copy the pde build files into the build directory 
-		-->
+        </sync>
+        
+        <!-- 
+         copy the pde build files into the build directory 
+        -->
         <copy todir="${buildDirectory}">
-          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
-          	<filename name="plugin_customization.ini"/>
-          </fileset>
           <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
-            <filename name="productBuild.xml"/>
-            <filename name="build.properties"/>
+            <include name="build.properties"/>
+            <include name="productBuild.xml"/>
           </fileset>          
+          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
+            <include name="plugin_customization.ini"/>
+          </fileset>
         </copy>
 	</target>
 	
