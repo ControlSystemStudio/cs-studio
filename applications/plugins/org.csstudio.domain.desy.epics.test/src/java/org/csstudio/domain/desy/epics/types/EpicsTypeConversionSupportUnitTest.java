@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.epics.types;
 
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -27,22 +27,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * TODO (bknerr) : 
+ * 
  * @author bknerr
- * @since 27.01.2011
+ * @since 19.04.2011
  */
-public class BaseTypeConversionSupportUnitTest {
-
+public class EpicsTypeConversionSupportUnitTest {
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() throws TypeSupportException {
-
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getSimpleName(),
-                                                                                 "java.lang"));
-    }
-    
-    @Test(expected=TypeSupportException.class)
-    public void testTypeSupportException() throws TypeSupportException {
-        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala",
-        "org.csstudio.domain.desy.epics.types"));
-        
+        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(EpicsEnum.class.getSimpleName(),
+                                                                                 "org.csstudio.domain.desy.epics.types"));
     }
 }
+
