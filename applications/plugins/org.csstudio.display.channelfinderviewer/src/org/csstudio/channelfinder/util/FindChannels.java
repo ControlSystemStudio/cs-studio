@@ -36,8 +36,8 @@ public class FindChannels extends Job {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
 		final Collection<Channel> channels = new HashSet<Channel>();
 		try {
-			if(searchPattern.startsWith("sim:"))
-				channels.addAll(GenerateTestChannels.getChannels(Integer.valueOf(searchPattern.split("sim:")[1])));
+			if(searchPattern.startsWith("sim://"))
+				channels.addAll(GenerateTestChannels.getChannels(Integer.valueOf(searchPattern.split("sim://")[1])));
 			else
 				channels.addAll(ChannelFinderClient.getInstance().findChannels(buildSearchMap(searchPattern)));
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
