@@ -35,6 +35,7 @@
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
+      <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -48,6 +49,7 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.platform.workspace"/>
+      <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
