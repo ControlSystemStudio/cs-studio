@@ -41,7 +41,7 @@
 		<sync todir="${workspaceLocation}/build">
 		  <fileset dir="${csStudioLocation}/core"/>
 		  <fileset dir="${csStudioLocation}/applications"/>
-          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectName}" casesensitive="yes">
+          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
           	<filename name="plugin_customization.ini"/>
           </fileset>
           <fileset dir="${targetPlatformLocation}"/>
