@@ -3,7 +3,7 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, buildWindows, buildSolaris"/>
+	<target name="build" depends="syncPlugins, buildWindows, buildSolaris"/>
 
 	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, jenkinsUpdateWin"/>
 	<target name="buildSolaris" depends="cleanup, pdeBuildSolaris, updateConfigSolaris, jenkinsUpdateSolaris"/>
@@ -30,27 +30,19 @@
 	 Delete previous build directory and copy plugins from mercurial in
 	 the empty build directory.
 	-->
-	<target name="copyPlugins">
-		<delete dir="${workspaceLocation}/build" />
-		<mkdir dir="${workspaceLocation}/build" />
-		
-		<copy todir="${workspaceLocation}/build">
-			<fileset dir="${csStudioLocation}/core"/>
-		</copy>
-		<copy todir="${workspaceLocation}/build">
-			<fileset dir="${csStudioLocation}/applications"/>
-		</copy>
-	    <copy todir="${workspaceLocation}/build">
-	        <fileset dir="${desyConfigLocation}/css/sensitivedata/${projectName}/plugin_customization.ini"/>
-	    </copy>
-	    <copy todir="${workspaceLocation}/build">
-	        <fileset dir="targetPlatformLocation"/>
-	    </copy>
-	    <copy todir="${workspaceLocation}/build">
-	        <fileset dir="${desyConfigLocation}/eclipse/tp/362"/>
-	    </copy>
+	<target name="syncPlugins">
+		<!--  
+		 overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
+		 deletes files from ${workspaceLocation}/build that are not present in filesets. 
+		-->
+		<sync todir="${workspaceLocation}/build">
+		  <fileset dir="${csStudioLocation}/core"/>
+		  <fileset dir="${csStudioLocation}/applications"/>
+          <fileset dir="${desyConfigLocation}/css/sensitivedata/${projectName}/plugin_customization.ini"/>
+          <fileset dir="${targetPlatformLocation}"/>
+          <fileset dir="${targetPlatformLocation_2}"/>
+		</sync>
 	</target>
-		
 	
 	
 	<!--
