@@ -1,6 +1,6 @@
 <project name="css.hudson.build" default="build">
-	<property file="build.properties" />
-	<property file="build.eclipse.properties" />
+	<property file="desy.build.properties" />
+	<property file="desy.eclipse.properties" />
 
 	<target name="build" depends="syncPlugins, buildWindows, buildSolaris"/>
 
