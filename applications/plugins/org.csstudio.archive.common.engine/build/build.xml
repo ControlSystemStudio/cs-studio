@@ -1,7 +1,6 @@
 <project name="css.hudson.build" default="build">
 	<property file="build.properties" />
 	<property file="build.eclipse.properties" />
-	
 
 	<target name="build" depends="syncPlugins, buildWindows, buildSolaris"/>
 
@@ -11,6 +10,9 @@
 	<!--
 		Debug output
 	-->
+    <tstamp>
+        <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd hh:mm:ss"/>
+    </tstamp>
 	<echo message="'workspaceLocation: ${workspaceLocation}"/>
 	<echo message="'eclipse instance: ${eclipseInstance}"/>
 	<echo message="'eclipse target platform: ${targetPlatformLocation}"/>
@@ -18,11 +20,13 @@
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'jenkinsbase: ${jenkinsbase}"/>
 	<echo message="'base: ${basedir}"/>
-	<echo message="'tstamp: ${tstamp}"/>
+	<echo message="'timestamp: ${timestamp}"/>
 	<echo message="'jenkinsjob: ${jenkinsjob}"/>
 	<echo message="'CS Studio location:  ${csStudioLocation}"/>
 	<echo message="'DESY Config location:  ${desyConfigLocation}"/>
-    <echo message="launcher: ${equinoxLauncher}" />
+    <echo message="'launcher: ${equinoxLauncher}" />
+	
+	
 	
 	
 	<!--
