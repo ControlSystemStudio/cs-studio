@@ -36,19 +36,23 @@
 		 overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
 		 deletes files from ${workspaceLocation}/build that are not present in filesets. 
 		-->
-		<sync todir="${workspaceLocation}/build">
+		<sync todir="${buildDirectory}">
 		  <fileset dir="${csStudioLocation}/core"/>
-		  <fileset dir="${csStudioLocation}/applications"/>
-	      <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
-	          <filename name="productBuild.xml"/>
-	          <filename name="build.properties"/>
-	      </fileset>			
+		  <fileset dir="${csStudioLocation}/applications"/>		
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
           	<filename name="plugin_customization.ini"/>
           </fileset>
           <fileset dir="${targetPlatformLocation}"/>
           <fileset dir="${targetPlatformLocation_2}"/>
 		</sync>
+		
+		<!-- copy the pde build files into the build directory -->
+        <copy todir="${buildDirectory}">
+            <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
+              <filename name="productBuild.xml"/>
+              <filename name="build.properties"/>
+            </fileset>          
+        </copy>
 	</target>
 	
 	
