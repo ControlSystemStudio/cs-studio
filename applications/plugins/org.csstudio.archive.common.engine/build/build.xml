@@ -32,7 +32,8 @@
 	 directory (avoiding unnecessary copying and deleting as much as possible).
 	-->
 	<target name="syncPlugins">
-        <delete dir="${desyBuildDirectory}/${pdeBuildDirectory}"/>
+        <delete dir="${pdeBuildDirectory}"/>
+		<mkdir dir="${pdeBuildDirectory}"/>
 		<!--  
          overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
          deletes files from ${workspaceLocation}/build that are not present in filesets. 
