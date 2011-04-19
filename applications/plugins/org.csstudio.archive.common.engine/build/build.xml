@@ -27,8 +27,8 @@
 	
 	
 	<!--
-	 Delete previous build directory and copy plugins from mercurial in
-	 the empty build directory.
+	 Synchronizes the plugin contents retrieved by the upstream jenkins jobs with the current build 
+	 directory (avoiding unnecessary copying and deleting as much as possible).
 	-->
 	<target name="syncPlugins">
 		<!--  
@@ -38,7 +38,7 @@
 		<sync todir="${workspaceLocation}/build">
 		  <fileset dir="${csStudioLocation}/core"/>
 		  <fileset dir="${csStudioLocation}/applications"/>
-          <fileset dir="${desyConfigLocation}/css/sensitivedata/${projectName}/plugin_customization.ini"/>
+          <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectName}/plugin_customization.ini"/>
           <fileset dir="${targetPlatformLocation}"/>
           <fileset dir="${targetPlatformLocation_2}"/>
 		</sync>
