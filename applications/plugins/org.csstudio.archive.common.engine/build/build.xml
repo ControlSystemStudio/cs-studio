@@ -66,13 +66,10 @@
 	<!--
     	Headless Eclipse Build.
 	-->
-	<target name="cleanup">
-		<!-- delete file="${workspaceLocation}/build/*.xml"/ -->	
-		<!-- delete file="${workspaceLocation}/build/*.properties"/ -->	
-		<delete file="${workspaceLocation}/build/*.sh"/>	
-		<delete file="${workspaceLocation}/build/secure_storage"/>	
-		<delete dir="${workspaceLocation}/build/I.CSSHead_"/>	
-		<delete dir="${workspaceLocation}/build/initmp"/>	
+	<target name="cleanup">	
+		<delete file="${desyBuildDirectory}/*.sh"/>	
+		<delete file="${desyBuildDirectory}/secure_storage"/>	
+		<delete dir="${desyBuildDirectory}/initmp"/>	
 	</target>
 
 	<!--
@@ -119,29 +116,29 @@
 		Copy plugin customization and zip win product
 	-->
 	<target name="updateConfigWin">
-		<mkdir dir="${workspaceLocation}/build/initmp/${archivePrefix}" />
-		<copy file="${workspaceLocation}/plugin_customization.ini" 
-		      tofile="${workspaceLocation}/build/initmp/${archivePrefix}/plugin_customization.ini"/>
-		<zip destfile="${workspaceLocation}/build/${buildId}-win32.win32.x86.zip" 
-			 basedir="${workspaceLocation}/build/initmp" update="true" />
+		<mkdir dir="${desyBuildDirectory}/initmp/${archivePrefix}" />
+		<copy file="${desyBuildDirectory}/plugin_customization.ini" 
+		      tofile="${desyBuildDirectory}/initmp/${archivePrefix}/plugin_customization.ini"/>
+		<zip destfile="${desyBuildDirectory}/${buildId}-win32.win32.x86.zip" 
+			 basedir="${desyBuildDirectory}/initmp" update="true" />
 	</target>
 
 	<!--
 		Copy solaris plugin customization and zip solaris product
 	-->
 	<target name="updateConfigSolaris">
-		<mkdir dir="${workspaceLocation}/build/initmp/${archivePrefix}" />
-		<copy file="${workspaceLocation}/plugin_customization_solaris.ini" 
-		      tofile="${workspaceLocation}/build/initmp/${archivePrefix}/plugin_customization.ini"/>
-		<zip destfile="${workspaceLocation}/build/${buildId}-solaris.gtk.sparc.zip" 
-			 basedir="${workspaceLocation}/build/initmp" update="true" />
+		<mkdir dir="${desyBuildDirectory}/initmp/${archivePrefix}" />
+		<copy file="${desyBuildDirectory}/plugin_customization_solaris.ini" 
+		      tofile="${desyBuildDirectory}/initmp/${archivePrefix}/plugin_customization.ini"/>
+		<zip destfile="${desyBuildDirectory}/${buildId}-solaris.gtk.sparc.zip" 
+			 basedir="${desyBuildDirectory}initmp" update="true" />
 	</target>
 
 	<!--
 		Copy win product to artifact folder from hudson
 	-->
 	<target name="jenkinsUpdateWin">
-		<copy file="${workspaceLocation}/build/${buildId}-win32.win32.x86.zip" 
+		<copy file="${desyBuildDirectory}/${buildId}-win32.win32.x86.zip" 
 			  todir="${workspaceLocation}/artifacts"/>
 	</target>
 
@@ -149,7 +146,7 @@
 		Copy solaris product to artifact folder from hudson
 	-->
 	<target name="jenkinsUpdateSolaris">
-		<copy file="${workspaceLocation}/build/${buildId}-solaris.gtk.sparc.zip" 
+		<copy file="${desyBuildDirectory}/${buildId}-solaris.gtk.sparc.zip" 
 			  todir="${workspaceLocation}/artifacts"/>
 	</target>
 </project>
