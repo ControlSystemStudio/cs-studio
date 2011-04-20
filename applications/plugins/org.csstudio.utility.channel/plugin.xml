@@ -5,8 +5,9 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="org.csstudio.utility.channel.ICSSChannel"
-            id="org.csstudio.utility.channel.contribution1">
+            adaptable="true"
+            id="org.csstudio.utility.channel.contribution1"
+            objectClass="org.csstudio.utility.channel.ICSSChannel">
          <menu
                icon="icons/cficon.gif"
                id="org.csstudio.utility.channel.menu"
@@ -37,6 +38,33 @@
                menubarPath="org.csstudio.utility.channel.menu/group">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.csstudio.ui.menu.popup.channel"
+               label="Channels">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                  <or>
+                     <iterate>
+                        <adapt
+                              type="gov.bnl.channelfinder.api.Channel">
+                        </adapt>
+                     </iterate>
+                     <iterate>
+                        <adapt
+                              type="org.csstudio.utility.channel.ICSSChannel">
+                        </adapt>
+                     </iterate>
+                  </or>
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
    </extension>
 
 </plugin>
