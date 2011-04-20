@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.ui.internal.properties;
 
-import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
@@ -230,7 +230,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 			if (_processVariable == null) {
 				_fullText.setText("No Process Variable");
 				_controlSystemCombo
-						.setText(CSSPlatformPlugin
+						.setText(SimpleDalPluginActivator
 								.getDefault()
 								.getPluginPreferences()
 								.getString(

@@ -21,15 +21,18 @@
  */
  package org.csstudio.platform.ui.internal.logging;
 
+import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.osgi.framework.Bundle;
 
 public class ControlSystemPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
@@ -69,7 +72,11 @@ public class ControlSystemPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
-		return CSSPlatformUiPlugin.getCorePreferenceStore();
+        InstanceScope context = new InstanceScope();
+        Bundle bundle = SimpleDalPluginActivator.getDefault().getBundle();
+        String symbolicName = bundle
+                .getSymbolicName();
+        return new ScopedPreferenceStore(context, symbolicName);
 	}
 
 	/**
