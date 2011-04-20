@@ -2,10 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension-point id="controlSystemItemFactories" name="controlSystemItemFactories" schema="schema/controlSystemItemFactories.exsd"/>
-   <extension-point id="loginModule" name="Login Module" schema="schema/loginModule.exsd"/>
-   <extension-point id="authorizationProvider" name="Authorization Provider" schema="schema/authorizationProvider.exsd"/>
    <extension-point id="startupListener" name="Startup Listener" schema="schema/startupListener.exsd"/>
-   <extension-point id="authorizationId" name="Authorization Id" schema="schema/authorizationId.exsd"/>
    <extension-point id="managementCommands" name="Management Commands" schema="schema/managementCommands.exsd"/>
    <extension-point id="managementCommandResultReceivers" name="Receivers for Management Command Results" schema="schema/managementCommandResultReceivers.exsd"/>
 <!--

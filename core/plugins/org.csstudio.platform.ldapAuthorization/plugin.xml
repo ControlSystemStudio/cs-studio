@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.csstudio.platform.authorizationProvider">
+         point="org.csstudio.auth.authorizationProvider">
       <provider
             class="org.csstudio.platform.internal.ldapauthorization.LdapAuthorizationReader"
             id="org.csstudio.platform.ldapAuthorization.provider"/>

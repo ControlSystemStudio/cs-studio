@@ -26,7 +26,6 @@ import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -52,7 +51,6 @@ public final class PlatformPreferencesInitializer extends
 				.getNode(CSSPlatformPlugin.ID);
 
 		initializeLoggingPreferences(node);
-		initializeAuthenticationPreferences(node);
 		initializeLocalePreferences(node);
 		initializeSystemPropertyPreferences(node);
 		initializeOnsitePreferences(node);
@@ -160,18 +158,6 @@ public final class PlatformPreferencesInitializer extends
 		initializeConsoleAppenderPreferences(node);
 		initializeFileAppenderPreferences(node);
 		initializeJmsAppenderPreferences(node);
-	}
-
-	/**
-	 * Initializes all preference settings for the authentication mechanism.
-	 *
-	 * @param node
-	 *            the preferences node to use
-	 */
-	private void initializeAuthenticationPreferences(
-			final IEclipsePreferences node) {
-		node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
-		node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
 	}
 
 	/**

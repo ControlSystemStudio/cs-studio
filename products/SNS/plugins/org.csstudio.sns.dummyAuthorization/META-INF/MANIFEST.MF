@@ -5,5 +5,6 @@ Bundle-SymbolicName: org.csstudio.sns.dummyAuthorization;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: SNS
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.auth;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

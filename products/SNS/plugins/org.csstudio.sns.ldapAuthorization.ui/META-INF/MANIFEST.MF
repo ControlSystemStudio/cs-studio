@@ -10,6 +10,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.sns.ldapAuthorization,
  org.csstudio.platform,
- org.csstudio.platform.ui
+ org.csstudio.platform.ui,
+ org.csstudio.auth;bundle-version="1.0.0",
+ org.csstudio.auth.ui;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Import-Package: org.csstudio.sns.ldapauthorization

@@ -17,7 +17,7 @@
       </initializer>
    </extension>
    <extension
-         point="org.csstudio.platform.authorizationId">
+         point="org.csstudio.auth.authorizationId">
       <id
             description="Administration of alarm configuration and database."
             id="alarmAdministration">
@@ -28,7 +28,7 @@
       </id>
    </extension>
    <extension
-         point="org.csstudio.platform.authorizationId">
+         point="org.csstudio.auth.authorizationId">
       <id
             description="Permission for operating/ alarm acknowledge."
             id="operating">

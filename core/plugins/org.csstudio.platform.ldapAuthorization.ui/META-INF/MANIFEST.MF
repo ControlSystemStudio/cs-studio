@@ -9,5 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ldapAuthorization,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.auth;bundle-version="1.0.0"
 Eclipse-LazyStart: true
