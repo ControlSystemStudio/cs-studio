@@ -99,9 +99,9 @@ public class IArchiveRequestTypeUnitTest {
      * @since 01.02.2011
      */
     private static final class ART extends AbstractArchiveRequestType {
-        public ART(final String id,
-                   final String desc,
-                   final IArchiveRequestTypeParameter<?>... params) {
+        public ART(@Nonnull final String id,
+                   @Nonnull final String desc,
+                   @Nonnull final IArchiveRequestTypeParameter<?>... params) {
             super(id, desc, params);
         }
 
