@@ -27,7 +27,6 @@ import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
-import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,9 +72,9 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                       null,
                                                                       new double[]{1.0, 2.0}));
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(2, cssV.getData().getValueData().size());
-            Assert.assertEquals(Double.valueOf(1.0), cssV.getData().getValueData().get(0));
-            Assert.assertEquals(Double.valueOf(2.0), cssV.getData().getValueData().get(1));
+            Assert.assertEquals(2, cssV.getData().size());
+            Assert.assertEquals(Double.valueOf(1.0), cssV.getData().get(0));
+            Assert.assertEquals(Double.valueOf(2.0), cssV.getData().get(1));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -94,9 +93,9 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                     null,
                                                                     new long[]{1L, 2L}));
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(2, cssV.getData().getValueData().size());
-            Assert.assertEquals(Long.valueOf(1L), cssV.getData().getValueData().get(0));
-            Assert.assertEquals(Long.valueOf(2L), cssV.getData().getValueData().get(1));
+            Assert.assertEquals(2, cssV.getData().size());
+            Assert.assertEquals(Long.valueOf(1L), cssV.getData().get(0));
+            Assert.assertEquals(Long.valueOf(2L), cssV.getData().get(1));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -115,9 +114,9 @@ public class EpicsIValueTypeSupportUnitTest {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<EpicsEnum> cssV = (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getValueData().getIndex());
-            Assert.assertEquals("part", cssV.getData().getValueData().getState());
-            Assert.assertEquals(null, cssV.getData().getValueData().getRaw());
+            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getIndex());
+            Assert.assertEquals("part", cssV.getData().getState());
+            Assert.assertEquals(null, cssV.getData().getRaw());
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -134,11 +133,11 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                       "HIHI",
                                                                       null,
                                                                       new String[]{"small", "black"}));
-            final ICssValueType<List<String>> cssV = sysVar.getData();
+            final List<String> cssV = sysVar.getData();
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(2, cssV.getValueData().size());
-            Assert.assertEquals("small", cssV.getValueData().get(0));
-            Assert.assertEquals("black", cssV.getValueData().get(1));
+            Assert.assertEquals(2, cssV.size());
+            Assert.assertEquals("small", cssV.get(0));
+            Assert.assertEquals("black", cssV.get(1));
         } catch (final TypeSupportException e) {
             Assert.fail();
         }

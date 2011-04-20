@@ -27,7 +27,6 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.system.AbstractAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * An EPICS system variable is tightly bound to EpicsAlarms
@@ -36,8 +35,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @since 17.11.2010
  * @param <T> the css variable type
  */
-public class EpicsSystemVariable<T>
-    extends AbstractAlarmSystemVariable<T, EpicsAlarm> {
+public class EpicsSystemVariable<T> extends AbstractAlarmSystemVariable<T, EpicsAlarm> {
 
 
     private static final long serialVersionUID = -65443362121378192L;
@@ -51,7 +49,7 @@ public class EpicsSystemVariable<T>
      * @param alarm
      */
     public EpicsSystemVariable(@Nonnull final String name,
-                               @Nonnull final ICssValueType<T> data,
+                               @Nonnull final T data,
                                @Nonnull final ControlSystem origin,
                                @Nonnull final TimeInstant timestamp,
                                @Nonnull final EpicsAlarm alarm) {

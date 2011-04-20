@@ -35,7 +35,6 @@ import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +62,7 @@ public class EpicsSystemVariableSupportUnitTest {
         final Float input = Float.valueOf(1.0F);
         final IAlarmSystemVariable<Float> cssVal =
             new EpicsSystemVariable<Float>("NONE",
-                                            new CssValueType<Float>(input),
+                                            input,
                                             ControlSystem.EPICS_DEFAULT,
                                             TimeInstantBuilder.fromNow(),
                                             new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -82,7 +81,7 @@ public class EpicsSystemVariableSupportUnitTest {
         final Double input = Double.valueOf(1.0);
         final IAlarmSystemVariable<Double> cssVal =
             new EpicsSystemVariable<Double>("NONE",
-                    new CssValueType<Double>(input),
+                    input,
                     ControlSystem.EPICS_DEFAULT,
                     TimeInstantBuilder.fromNow(),
                     new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -102,7 +101,7 @@ public class EpicsSystemVariableSupportUnitTest {
         final Byte input = Byte.valueOf((byte) 12);
         final IAlarmSystemVariable<Byte> cssVal =
         new EpicsSystemVariable<Byte>("NONE",
-                new CssValueType<Byte>(input),
+                input,
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -121,7 +120,7 @@ public class EpicsSystemVariableSupportUnitTest {
         final Integer input = Integer.valueOf(1);
         final IAlarmSystemVariable<Integer> cssVal =
         new EpicsSystemVariable<Integer>("NONE",
-                new CssValueType<Integer>(input),
+                input,
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -140,7 +139,7 @@ public class EpicsSystemVariableSupportUnitTest {
         final IAlarmSystemVariable<Long> cssVal =
 
         new EpicsSystemVariable<Long>("NONE",
-                new CssValueType<Long>(input),
+                input,
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -158,7 +157,7 @@ public class EpicsSystemVariableSupportUnitTest {
     public void testDoubleCollection() throws TypeSupportException {
         final IAlarmSystemVariable<Collection<Double>> cssVal =
         new EpicsSystemVariable<Collection<Double>>("NONE",
-                new CssValueType<Collection<Double>>(Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0))),
+                Lists.newArrayList(Double.valueOf(1.0), Double.valueOf(2.0)),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -175,9 +174,8 @@ public class EpicsSystemVariableSupportUnitTest {
     public void testEpicsEnumTripleCollection() throws TypeSupportException {
         final IAlarmSystemVariable<Collection<EpicsEnum>> cssVal =
             new EpicsSystemVariable<Collection<EpicsEnum>>("NONE",
-                                                                 new CssValueType<Collection<EpicsEnum>>(
-                                                                         Lists.newArrayList(EpicsEnum.create(Integer.valueOf(1), "ON", null),
-                                                                                            EpicsEnum.create(Integer.valueOf(0), "OFF", null))),
+                                                           Lists.newArrayList(EpicsEnum.create(Integer.valueOf(1), "ON", null),
+                                                                              EpicsEnum.create(Integer.valueOf(0), "OFF", null)),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));

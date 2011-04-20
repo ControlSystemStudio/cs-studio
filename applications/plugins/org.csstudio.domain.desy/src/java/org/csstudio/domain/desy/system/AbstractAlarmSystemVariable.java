@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Replacement for my very own ICssValueStuff
@@ -49,7 +48,7 @@ public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
      * Constructor.
      */
     public AbstractAlarmSystemVariable(@Nonnull final String name,
-                                       @Nonnull final ICssValueType<T> data,
+                                       @Nonnull final T data,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
                                        @Nullable final A alarm) {

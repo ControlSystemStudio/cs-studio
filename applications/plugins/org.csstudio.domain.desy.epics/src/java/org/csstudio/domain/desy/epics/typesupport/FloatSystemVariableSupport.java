@@ -32,7 +32,6 @@ import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -56,7 +55,7 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                               sysVar.getAlarm().getStatus().toString(),
                                               null,
                                               null,
-                                              new double[] {sysVar.getData().getValueData().doubleValue()});
+                                              new double[] {sysVar.getData().doubleValue()});
     }
 
     @Override
@@ -87,7 +86,7 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                                  @Nonnull final Float max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
                                                  (EpicsAlarm) sysVar.getAlarm(),
-                                                 sysVar.getData().getValueData(),
+                                                 sysVar.getData(),
                                                  min,
                                                  max);
     }
@@ -101,7 +100,7 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                                               @Nonnull final Float value,
                                                               @Nonnull final ControlSystem system,
                                                               @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Float>(name, new CssValueType<Float>(value), system, timestamp, EpicsAlarm.UNKNOWN);
+        return new EpicsSystemVariable<Float>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**
@@ -113,7 +112,17 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
                                                                                    final Collection<Float> values,
                                                                                    final ControlSystem system,
                                                                                    final TimeInstant timestamp) throws TypeSupportException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            @SuppressWarnings("unchecked")
+            final Collection<Float> newCollection = (Collection<Float>) typeClass.newInstance();
+            for (final Float v : values) {
+                newCollection.add(v);
+            }
+            return new EpicsSystemVariable<Collection<Float>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+        } catch (final InstantiationException e) {
+            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+        } catch (final IllegalAccessException e) {
+            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+        }
     }
 }

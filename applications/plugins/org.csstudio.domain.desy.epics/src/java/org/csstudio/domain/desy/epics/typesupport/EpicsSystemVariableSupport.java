@@ -111,7 +111,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     IValue toIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
                                 @Nonnull final T min,
                                 @Nonnull final T max) throws TypeSupportException {
-        final T valueData = sysVar.getData().getValueData();
+        final T valueData = sysVar.getData();
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsSystemVariableSupport<T> support =
