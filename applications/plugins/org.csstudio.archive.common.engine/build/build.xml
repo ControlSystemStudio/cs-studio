@@ -2,16 +2,16 @@
 	<property file="desy.build.properties" />
 	<property file="desy.eclipse.properties" />
 
-	<target name="build" depends="syncPlugins, buildWindows, buildSolaris"/>
+	<target name="build" depends="synchronizeBuildSources, buildPackageWin32, buildPackageSolaris"/>
 
-	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, jenkinsUpdateWin"/>
-	<target name="buildSolaris" depends="cleanup, pdeBuildSolaris, updateConfigSolaris, jenkinsUpdateSolaris"/>
+	<target name="buildPackageWin32" depends="cleanup, pdeBuildWin, updateConfigWin, updateJenkinsArtifactsWin32"/>
+	<target name="buildPackageSolaris" depends="cleanup, pdebuildPackageSolaris, updateConfigSolaris, updateJenkinsArtifactsSolaris"/>
 
 	<!--
 		Debug output
 	-->
     <tstamp>
-        <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd hh:mm:ss"/>
+        <format timezone="GMT" property="timestamp" pattern="yyyy-MM-dd_hh:mm:ss"/>
     </tstamp>
 	<echo message="Workspace location: ${workspaceLocation}"/>
 	<echo message="Eclipse instance: ${eclipseInstance}"/>
@@ -31,7 +31,7 @@
 	 Synchronizes the plugin contents retrieved by the upstream jenkins jobs with the current build 
 	 directory (avoiding unnecessary copying and deleting as much as possible).
 	-->
-	<target name="syncPlugins">
+	<target name="synchronizeBuildSources">
         <delete dir="${pdeBuildDirectory}"/>
 		<mkdir dir="${pdeBuildDirectory}"/>
 		<!--  
@@ -95,7 +95,7 @@
 	<!--
 	    Headless Eclipse Build for Solaris
 	-->
-	<target name="pdeBuildSolaris">
+	<target name="pdebuildPackageSolaris">
 		<java classname="org.eclipse.equinox.launcher.Main" 
               dir="${desyBuildDirectory}"
 			  fork="true" 
@@ -131,13 +131,13 @@
 		<copy file="${desyBuildDirectory}/plugin_customization_solaris.ini" 
 		      tofile="${desyBuildDirectory}/initmp/${archivePrefix}/plugin_customization.ini"/>
 		<zip destfile="${desyBuildDirectory}/${buildId}-solaris.gtk.sparc.zip" 
-			 basedir="${desyBuildDirectory}initmp" update="true" />
+			 basedir="${desyBuildDirectory}/initmp" update="true" />
 	</target>
 
 	<!--
 		Copy win product to artifact folder from hudson
 	-->
-	<target name="jenkinsUpdateWin">
+	<target name="updateJenkinsArtifactsWin32">
 		<copy file="${desyBuildDirectory}/${buildId}-win32.win32.x86.zip" 
 			  todir="${workspaceLocation}/artifacts"/>
 	</target>
@@ -145,7 +145,7 @@
 	<!--
 		Copy solaris product to artifact folder from hudson
 	-->
-	<target name="jenkinsUpdateSolaris">
+	<target name="updateJenkinsArtifactsSolaris">
 		<copy file="${desyBuildDirectory}/${buildId}-solaris.gtk.sparc.zip" 
 			  todir="${workspaceLocation}/artifacts"/>
 	</target>
