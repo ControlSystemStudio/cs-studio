@@ -9,6 +9,7 @@ package org.csstudio.archive.common.engine.httpserver;
 
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,44 +21,44 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelListResponse extends AbstractResponse
-{
+class ChannelListResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    ChannelListResponse(final EngineModel model)
-    {
+    ChannelListResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
-                    final HttpServletResponse resp) throws Exception
-    {   // Locate the group
+    protected void fillResponse(@Nonnull final HttpServletRequest req,
+                                @Nonnull final HttpServletResponse resp) throws Exception {
         final String name = req.getParameter("name");
-        if (name == null)
-        {
+        if (name == null) {
             resp.sendError(400, "Missing 'name' parameter for channel name pattern");
             return;
         }
         final Pattern pattern = Pattern.compile(name);
 
         // HTML table similar to group's list of channels
-        final HTMLWriter html =
-            new HTMLWriter(resp, "Archive Channels for pattern '" + name + "'");
+        final HTMLWriter html = new HTMLWriter(resp, "Archive Channels for pattern '" + name + "'");
 
-        html.openTable(1, new String[]
-        {
+        createChannelListTable(pattern, html);
+        html.close();
+    }
+
+    private void createChannelListTable(@Nonnull final Pattern pattern,
+                                        @Nonnull final HTMLWriter html) {
+        html.openTable(1, new String[] {
             Messages.HTTP_Channel,
             Messages.HTTP_Connected,
             Messages.HTTP_InternalState,
-            Messages.HTTP_Mechanism,
-            Messages.HTTP_Enabled,
+            //Messages.HTTP_Mechanism,
+            //Messages.HTTP_Enabled,
             Messages.HTTP_CurrentValue,
             Messages.HTTP_LastArchivedValue,
         });
 
-        for (final ArchiveChannel<?,?> channel : _model.getChannels()) {
+        for (final ArchiveChannel<?,?> channel : getModel().getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches()) {
                 continue;
@@ -72,13 +73,12 @@ class ChannelListResponse extends AbstractResponse
                                        channel.isConnected() ? Messages.HTTP_Connected :
                                                                HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
                                        channel.getInternalState(),
-                                       channel.getMechanism(),
-                                       channel.isEnabled() ? Messages.HTTP_Enabled :
-                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
-                                       channel.getCurrentValueAsString(),
-                                       channel.getLastArchivedValue()});
+                                       //channel.getMechanism(),
+//                                       channel.isEnabled() ? Messages.HTTP_Enabled :
+//                                                             HTMLWriter.makeRedText(Messages.HTTP_Disabled),
+                                       getValueAsString(channel.getMostRecentSample()),
+                                       getValueAsString(channel.getLastArchivedSample())});
         }
         html.closeTable();
-        html.close();
     }
 }

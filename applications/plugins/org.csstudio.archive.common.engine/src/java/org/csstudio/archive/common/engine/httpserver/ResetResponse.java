@@ -25,7 +25,7 @@ class ResetResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -34,8 +34,8 @@ class ResetResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Reset");
 
         html.text("Engine statistics are reset");
-        _model.resetStats();
-        
+        getModel().resetStats();
+
         html.close();
     }
 }

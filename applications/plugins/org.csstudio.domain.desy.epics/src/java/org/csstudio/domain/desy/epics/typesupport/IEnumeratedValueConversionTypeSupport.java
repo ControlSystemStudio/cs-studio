@@ -32,7 +32,6 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -99,7 +98,7 @@ final class IEnumeratedValueConversionTypeSupport extends
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
 
         return new EpicsSystemVariable<EpicsEnum>(name,
-                                                  new CssValueType<EpicsEnum>(enumState),
+                                                  enumState,
                                                   ControlSystem.EPICS_DEFAULT,
                                                   timestamp,
                                                   alarm);

@@ -159,7 +159,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                     sysVar,
                                                     timestamp));
 
-                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getValueData().getClass())) {
+                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
                     writeReducedData(channelId,
                                      sysVar,
                                      timestamp,
@@ -177,14 +177,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                               @Nonnull final TimeInstant timestamp,
                               @Nonnull final List<String> valuesPerMinute,
                               @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
-        Double newValue = null;
-        try {
-            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
-        } catch (final TypeSupportException e) {
-            return; // not convertible. Type support missing.
-        }
-        if (newValue.equals(Double.NaN)) {
-            return; // not convertible, no data reduction possible
+
+        final Double newValue = createDoubleFromValueOrNull(data);
+        if (newValue == null) {
+            return;
         }
 
         final String minuteValueStr = aggregateAndComposeValueString(_reducedDataMapForMinutes,
@@ -200,11 +196,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
         final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get(channelId);
 
+        final Double avg = minuteAgg.getAvg();
+        final Double min = minuteAgg.getMin();
+        final Double max = minuteAgg.getMax();
+
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours,
                                                                    channelId,
-                                                                   minuteAgg.getAvg(),
-                                                                   minuteAgg.getMin(),
-                                                                   minuteAgg.getMax(),
+                                                                   avg == null ? newValue : avg,
+                                                                   min == null ? newValue : min,
+                                                                   max == null ? newValue : max,
                                                                    timestamp,
                                                                    Hours.ONE.toStandardDuration());
         minuteAgg.reset();
@@ -217,6 +217,21 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get(channelId);
         // for days would be here...
         hoursAgg.reset(); // and reset this aggregator
+    }
+
+    @CheckForNull
+    private <T extends ISystemVariable<?>>
+    Double createDoubleFromValueOrNull(@Nonnull final T data) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(data.getData());
+        } catch (final TypeSupportException e) {
+            return null; // not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
+            return null; // not convertible, no data reduction possible
+        }
+        return newValue;
     }
 
     // CHECKSTYLE OFF: ParameterNumber
@@ -301,7 +316,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted() + "'",
                                                   timestamp.getFractalSecondsInNanos(),
-                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData().getValueData()) + "'") +
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData()) + "'") +
                        ")";
             } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
@@ -457,7 +472,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 break;
             }
             default:
-                break;
+                throw new ArchiveDaoException("Archive request type unknown. Sample could not be created from query", null);
         }
         final TimeInstant timeInstant = TimeInstantBuilder.fromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
         final IArchiveControlSystem cs = channel.getControlSystem();

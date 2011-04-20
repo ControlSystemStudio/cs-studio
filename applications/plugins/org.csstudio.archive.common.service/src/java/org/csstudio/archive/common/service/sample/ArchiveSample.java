@@ -81,7 +81,7 @@ public class ArchiveSample<V,
     @Override
     @Nonnull
     public V getValue() {
-        return _sysVar.getData().getValueData();
+        return _sysVar.getData();
     }
 
     @CheckForNull

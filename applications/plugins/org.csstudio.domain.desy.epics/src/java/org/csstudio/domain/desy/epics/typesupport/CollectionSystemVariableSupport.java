@@ -49,7 +49,7 @@ final class CollectionSystemVariableSupport extends EpicsSystemVariableSupport<C
     @Override
     @Nonnull
     protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Collection> sysVar) throws TypeSupportException {
-        final Collection valueData = sysVar.getData().getValueData();
+        final Collection valueData = sysVar.getData();
         if (valueData.isEmpty()) {
             throw new TypeSupportException("Collection of data is empty. Type cannot be determined.", null);
         }

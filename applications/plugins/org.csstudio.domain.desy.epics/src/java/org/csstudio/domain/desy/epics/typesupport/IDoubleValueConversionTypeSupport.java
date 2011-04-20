@@ -32,7 +32,6 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -70,13 +69,13 @@ final class IDoubleValueConversionTypeSupport extends
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
         if (values.length == 1) {
             return new EpicsSystemVariable<Double>(name,
-                                                   new CssValueType<Double>(values[0]),
+                                                   Double.valueOf(values[0]),
                                                    ControlSystem.EPICS_DEFAULT,
                                                    timestamp,
                                                    alarm);
         }
         return new EpicsSystemVariable<List<Double>>(name,
-                                                     new CssValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values))),
+                                                     Lists.newArrayList(Doubles.asList(values)),
                                                      ControlSystem.EPICS_DEFAULT,
                                                      timestamp,
                                                      alarm);

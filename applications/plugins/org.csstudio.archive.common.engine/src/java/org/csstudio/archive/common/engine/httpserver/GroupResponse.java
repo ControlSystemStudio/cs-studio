@@ -17,7 +17,7 @@ import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
-import org.csstudio.domain.desy.time.IHasTimeStamp;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
  * Provide web page with detail for one group.
@@ -45,7 +45,7 @@ class GroupResponse extends AbstractResponse {
             resp.sendError(400, "Missing group name");
             return;
         }
-        final ArchiveGroup group = _model.getGroup(groupName);
+        final ArchiveGroup group = getModel().getGroup(groupName);
         if (group == null) {
             resp.sendError(400, "Unknown group " + groupName);
             return;
@@ -55,7 +55,7 @@ class GroupResponse extends AbstractResponse {
 
         createBasicInfoTable(group, html);
 
-        html.h2(Messages.HTTP_Channels + " (Last write time: " + _model.getLastWriteTime()  + ")");
+        html.h2(Messages.HTTP_Channels + " (Last write time: " + getModel().getLastWriteTime()  + ")");
 
         createChannelsTable(group, html);
 
@@ -80,14 +80,13 @@ class GroupResponse extends AbstractResponse {
         // HTML Table of all channels in the group
         html.openTable(1, new String[] {
             Messages.HTTP_Channel,
-            Messages.HTTP_Connected,
-            Messages.HTTP_Mechanism,
+            Messages.HTTP_COLUMN_CONNECTED,
             Messages.HTTP_CurrentValue,
             Messages.HTTP_TIMESTAMP,
-            Messages.HTTP_ReceivedValues,
+            Messages.HTTP_COLUMN_RECEIVEDVALUES,
             Messages.HTTP_QueueLen,
-            Messages.HTTP_QueueAvg,
-            Messages.HTTP_QueueMax
+            Messages.HTTP_COLUMN_QUEUEAVG,
+            Messages.HTTP_COLUMN_QUEUEMAX
         });
         for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
             try {
@@ -96,29 +95,26 @@ class GroupResponse extends AbstractResponse {
                                                              HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
             final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
+            final ISystemVariable<?> mostRecentSample = channel.getMostRecentSample();
 
-            String curVal = channel.getCurrentValueAsString();
-            if (curVal.length() > MAX_VALUE_DISPLAY) {
-                curVal = curVal.substring(0, MAX_VALUE_DISPLAY);
-            }
-            String lastVal = channel.getLastArchivedValue();
-            if (lastVal.length() > MAX_VALUE_DISPLAY) {
-                lastVal = lastVal.substring(0, MAX_VALUE_DISPLAY);
-            }
-            final IHasTimeStamp curValTimestamp = channel.getMostRecentValue();
+            final String curVal = limitLength(getValueAsString(mostRecentSample), MAX_VALUE_DISPLAY);
+
+            final String curValTimestamp =
+                mostRecentSample != null ? mostRecentSample.getTimestamp().formatted() :
+                                          "null";
+
             html.tableLine(new String[] {
                 HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
                 connected,
-                channel.getMechanism(),
                 curVal,
-                curValTimestamp.getTimestamp().formatted(),
+                curValTimestamp,
                 Long.toString(channel.getReceivedValues()),
                 Integer.toString(buffer.size()),
                 String.format("%.1f", stats.getAverageSize()),
                 Integer.toString(stats.getMaxSize()),
             });
             } catch (final Throwable t) {
-                System.out.println("");
+                System.out.println(channel.getName());
             }
         }
         html.closeTable();

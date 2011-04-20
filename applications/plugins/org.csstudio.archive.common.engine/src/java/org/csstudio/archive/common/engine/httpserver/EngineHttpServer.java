@@ -43,7 +43,7 @@ public class EngineHttpServer {
      *  @throws Exception on error
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
-                        final int port) throws EngineHttpServerException {
+                            final int port) throws EngineHttpServerException {
         this._port = port;
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();

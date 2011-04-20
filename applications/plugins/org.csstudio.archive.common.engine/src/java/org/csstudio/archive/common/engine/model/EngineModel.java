@@ -468,8 +468,10 @@ public final class EngineModel {
 
             buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
             buf.append(channel.getInternalState() + ")");
-            buf.append(", value " + channel.getCurrentValueAsString());
-            buf.append(", last stored " + channel.getLastArchivedValue());
+            final Object mostRecentValue = channel.getMostRecentSample();
+            buf.append(", value " + mostRecentValue == null ? "null" : mostRecentValue);
+            final Object lastArchivedValue = channel.getLastArchivedSample();
+            buf.append(", last stored " + lastArchivedValue == null ? "null" : lastArchivedValue);
             System.out.println(buf.toString());
         }
     }

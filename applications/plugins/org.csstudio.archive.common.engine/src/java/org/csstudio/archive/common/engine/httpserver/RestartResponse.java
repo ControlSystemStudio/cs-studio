@@ -25,7 +25,7 @@ class RestartResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -34,8 +34,8 @@ class RestartResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Restart");
 
         html.text("Engine will restart....");
-        _model.requestRestart();
-        
+        getModel().requestRestart();
+
         html.close();
     }
 }

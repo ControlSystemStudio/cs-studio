@@ -24,7 +24,6 @@
 package org.csstudio.utility.ldap.service.util;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,7 +66,6 @@ public final class LdapFieldsAndAttributes {
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
 
     public static LdapName LDAP_ROOT;
-
     static {
         List<Rdn> rdns;
         try {

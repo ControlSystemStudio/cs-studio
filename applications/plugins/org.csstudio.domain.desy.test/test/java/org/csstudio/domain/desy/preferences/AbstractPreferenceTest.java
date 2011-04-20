@@ -27,9 +27,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import junit.framework.Assert;
 
-import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.junit.Test;
@@ -42,7 +43,9 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
+// CHECKSTYLE:OFF The class to test is abstract, but not its test...
 public class AbstractPreferenceTest {
+// CHECKSTYLE:ON
 
     @Test
     public void testPreferencesDefaults() {
@@ -86,7 +89,7 @@ public class AbstractPreferenceTest {
         final IEclipsePreferences prefs = new DefaultScope().getNode(TestPreference.STRING_PREF.getPluginID());
         prefs.put(TestPreference.STRING_PREF.getKeyAsString(), "Some other string");
         prefs.put(TestPreference.DOUBLE_PREF.getKeyAsString(), "7654.321");
-        prefs.put(TestPreference.BOOLEAN_PREF.getKeyAsString(), "false"); // Except 'true' nearly any string will do, e.g. 'f' or 'flase'
+        prefs.put(TestPreference.BOOLEAN_PREF.getKeyAsString(), "false"); // Except 'true' nearly any string will do, e.g. 'f' or 'false'
 
         assertEquals("Some other string", TestPreference.STRING_PREF.getValue());
         assertEquals("Some string", TestPreference.STRING_PREF.getDefaultValue());
@@ -100,22 +103,52 @@ public class AbstractPreferenceTest {
         assertEquals(true, TestPreference.BOOLEAN_PREF.getDefaultValue());
         assertEquals("true", TestPreference.BOOLEAN_PREF.getDefaultAsString());
     }
+    
+    @Test
+    public void testPreferencesServiceWithValidatedPrefs() {
+        // Here the use of the preferences service is tested.
+        
+        // As an example the string-, double- and boolean-based preferences get different values
+        final IEclipsePreferences prefs = new DefaultScope().getNode(TestPreference.STRING_PREF.getPluginID());
+        prefs.put(TestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "50.0"); // Within bounds
+        assertEquals(Double.valueOf(50.0), TestPreference.DOUBLE_PREF_WITH_VAL.getValue());
+        
+        prefs.put(TestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "0.0"); // within bounds
+        assertEquals(Double.valueOf(0.0), TestPreference.DOUBLE_PREF_WITH_VAL.getValue());
+        
+        prefs.put(TestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "100.0"); // within bounds
+        assertEquals(Double.valueOf(100.0), TestPreference.DOUBLE_PREF_WITH_VAL.getValue());
+        
+        prefs.put(TestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "101.0"); // out of bounds
+        assertEquals(Double.valueOf(12.34), TestPreference.DOUBLE_PREF_WITH_VAL.getValue());
+        
+        prefs.put(TestPreference.DOUBLE_PREF_WITH_VAL.getKeyAsString(), "-1.0"); // out of bounds
+        assertEquals(Double.valueOf(12.34), TestPreference.DOUBLE_PREF_WITH_VAL.getValue());
+    }
+    
 
 
     @Test
     public void testGetAllPreferences() {
         final List<AbstractPreference<?>> prefs = TestPreference.BOOLEAN_PREF.getAllPreferences();
 
-        Assert.assertEquals(6, prefs.size());
+        Assert.assertEquals(7, prefs.size());
     }
 
-    private static class TestPreference<T> extends AbstractPreference<T> {
+    /**
+     * Test Helper class.  
+     * 
+     * @author bknerr
+     * @since 20.04.2011
+     * @param <T> the preference type
+     */
+    private static final class TestPreference<T> extends AbstractPreference<T> {
 
         /**
          * For test purposes
          */
         @SuppressWarnings("unused")
-        public final Integer _notTestPreference_0 = new Integer(0);
+        private final Integer _notTestPreference = Integer.valueOf(0);
 
         public static final TestPreference<String> STRING_PREF =
             new TestPreference<String>("String_Pref", "Some string");
@@ -131,6 +164,10 @@ public class AbstractPreferenceTest {
 
         public static final TestPreference<Double> DOUBLE_PREF =
             new TestPreference<Double>("Double_Pref", 12.34);
+
+        public static final TestPreference<Double> DOUBLE_PREF_WITH_VAL =
+            (TestPreference<Double>) new TestPreference<Double>("Double_Pref", 
+                                   12.34).addValidator(new MinMaxPreferenceValidator<Double>(0.0, 100.0));
 
         public static final TestPreference<Boolean> BOOLEAN_PREF =
             new TestPreference<Boolean>("Boolean_Pref", true);
@@ -150,18 +187,13 @@ public class AbstractPreferenceTest {
          * public final TestPreference<Boolean> NOT_STATIC =
          *     new TestPreference<Boolean>("NOT_STATIC", true);
          */
-
-
-        /**
-         * Constructor.
-         * @param keyAsString
-         * @param defaultValue
-         */
-        private TestPreference(final String keyAsString, final T defaultValue) {
+        private TestPreference(@Nonnull final String keyAsString, 
+                               @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 
         @Override
+        @Nonnull 
         public String getPluginID() {
             return "QualifierForTest";
         }
@@ -171,6 +203,7 @@ public class AbstractPreferenceTest {
          */
         @SuppressWarnings("unchecked")
         @Override
+        @Nonnull 
         protected Class<? extends AbstractPreference<T>> getClassType() {
             return (Class<? extends AbstractPreference<T>>) TestPreference.class;
         }

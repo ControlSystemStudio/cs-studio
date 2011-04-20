@@ -122,7 +122,7 @@ public interface ILdapUpdaterService {
      * @throws ServiceUnavailableException
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException;
 
 }
