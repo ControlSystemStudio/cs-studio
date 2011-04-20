@@ -68,11 +68,11 @@ public class FindChannels extends Job {
 				String key = words[index].split("=")[0];
 				String values = words[index].split("=")[1];
 				if (key.equals("Tags")) {
-					map.put("~tag", values);
+					map.put("~tag", values.replace("||", ","));
 					// for (int i = 0; i < values.length; i++)
 					// map.put("~tag", values[i]);
 				} else {
-					map.put(key, values);
+					map.put(key, values.replace("||", ","));
 				}
 			}
 		}

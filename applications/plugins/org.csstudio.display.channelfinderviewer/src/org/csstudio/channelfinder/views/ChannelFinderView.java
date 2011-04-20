@@ -9,15 +9,15 @@ import java.util.logging.Logger;
 
 import org.csstudio.channelfinder.util.FindChannels;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -30,12 +30,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import com.swtdesigner.TableViewerColumnSorter;
-import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.events.MenuDetectEvent;
 
 /**
  * 
@@ -48,7 +45,7 @@ public class ChannelFinderView extends ViewPart {
 	 */
 	public static final String ID = "org.csstudio.channelfinder.views.ChannelfinderView";
 	private static Logger logger = Logger.getLogger(ID);
-	
+
 	private static int instance;
 	private Text text;
 	private Button search;
@@ -114,7 +111,7 @@ public class ChannelFinderView extends ViewPart {
 		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		channelOwnerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(((Channel) cell.getElement()).getOwner());
@@ -150,7 +147,7 @@ public class ChannelFinderView extends ViewPart {
 		parent.setLayout(layout);
 
 		text = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
-		text.setToolTipText("space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\n");
+		text.setToolTipText("space seperated search criterias, patterns may include * and ? wildcards\r\nchannelNamePatter\r\npropertyName=propertyValuePattern1,propertyValuePattern2\r\nTags=tagNamePattern\r\nEach criteria is logically ANDed and , or || seperated values are logically ORed\r\n");
 		GridData gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
