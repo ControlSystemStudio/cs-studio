@@ -34,6 +34,7 @@
  */
 package org.csstudio.config.ioconfig.editorparts;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -55,6 +56,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -77,7 +79,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -460,11 +461,13 @@ public class MasterEditor extends AbstractNodeEditor {
 		}
 		_autoclearButton.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
 				saveButtonEnb();
 			}
 
-			public void widgetSelected(@Nonnull final SelectionEvent e) {
+			@Override
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
 				saveButtonEnb();
 			}
 
@@ -716,6 +719,9 @@ public class MasterEditor extends AbstractNodeEditor {
 		}
 		GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile
 				.getGSDFile());
+		ParsedGsdFileModel parsedGsdFileModel;
+        try {
+            parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
 
 		// setGSDData
 		_master.setGSDMasterData(masterModel);
@@ -724,7 +730,7 @@ public class MasterEditor extends AbstractNodeEditor {
 				masterModel.getRevisionNumber() + "");
 		_vendorText.setText(masterModel.getVendorName());
 		_pbBoardText.setText(masterModel.getModelName());
-		String hex = Integer.toHexString(masterModel.getIdentNumber())
+		String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber())
 				.toUpperCase();
 		if (hex.length() > 4) {
 			hex = hex.substring(hex.length() - 4, hex.length());
@@ -732,6 +738,10 @@ public class MasterEditor extends AbstractNodeEditor {
 		_idNoText.setText("0x" + hex);
 		_stationTypText.setText(masterModel.getStationType() + "");
 		_gsdFile = gsdFile;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		return true;
 	}
 

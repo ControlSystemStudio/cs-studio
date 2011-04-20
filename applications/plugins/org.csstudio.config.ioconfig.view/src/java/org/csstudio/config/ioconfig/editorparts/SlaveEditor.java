@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.editorparts;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -47,14 +47,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataRef;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
-import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,14 +59,11 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
@@ -78,15 +72,12 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -106,7 +97,7 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.3 $
  * @since 21.05.2010
  */
-public class SlaveEditor extends AbstractNodeEditor {
+public class SlaveEditor extends AbstractGsdNodeEditor {
     
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
     
@@ -155,7 +146,6 @@ public class SlaveEditor extends AbstractNodeEditor {
      * Outputs.
      */
     private Text _outputsText;
-    private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
     /**
      * The Text field for the Revision.
      */
@@ -163,7 +153,7 @@ public class SlaveEditor extends AbstractNodeEditor {
     /**
      * The Slave which displayed.
      */
-    private SlaveDBO _slave;
+    SlaveDBO _slave;
     /**
      * Check Button to de.-/activate Station Address.
      */
@@ -309,6 +299,9 @@ public class SlaveEditor extends AbstractNodeEditor {
         } catch (PersistenceException e1) {
             DeviceDatabaseErrorDialog.open(null, "Can't save Slave. Database error", e1);
             CentralLogger.getInstance().error(this, e1.getLocalizedMessage());
+        } catch (IOException e2) {
+            DeviceDatabaseErrorDialog.open(null, "Can't save Slave.GSD File read error", e2);
+            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
         }
     }
     
@@ -324,42 +317,49 @@ public class SlaveEditor extends AbstractNodeEditor {
         
         _gsdFile = gsdFile;
         GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
-        
-        // setGSDData
-        HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
-        slaveModel.setGsdModuleList(moduleList);
-        _slave.setGSDSlaveData(slaveModel);
-        
-        // Head
-        getHeaderField(HeaderFields.VERSION).setText(slaveModel.getGsdRevision() + "");
-        
-        // Basic - Slave Discription (read only)
-        _vendorText.setText(slaveModel.getVendorName());
-        _iDNo.setText(String.format("0x%04X", slaveModel.getIdentNumber()));
-        _revisionsText.setText(slaveModel.getRevision());
-        
-        // Set all GSD-File Data to Slave.
-        _slave.setMinTsdr(_slave.getMinTsdr());
-        _slave.setModelName(slaveModel.getModelName());
-        if (_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
-            _slave.setPrmUserData(slaveModel.getUserPrmData());
-        }
-        _slave.setProfibusPNoID(slaveModel.getIdentNumber());
-        _slave.setRevision(slaveModel.getRevision());
-        
-        // Modules
-        _maxSize = slaveModel.getMaxModule();
-        setSlots();
-        // Settings - USER PRM MODE
-        ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
-        nodes.add(_slave);
-        nodes.addAll(_slave.getChildrenAsMap().values());
-        _userPrmDataList.setInput(nodes);
-        TableColumn[] columns = _userPrmDataList.getTable().getColumns();
-        for (TableColumn tableColumn : columns) {
-            if (tableColumn != null) {
-                tableColumn.pack();
+        ParsedGsdFileModel parsedGsdFileModel;
+        try {
+            parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
+            
+            // setGSDData
+            HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
+            slaveModel.setGsdModuleList(moduleList);
+            _slave.setGSDSlaveData(slaveModel);
+            
+            // Head
+            getHeaderField(HeaderFields.VERSION).setText(slaveModel.getGsdRevision() + "");
+            
+            // Basic - Slave Discription (read only)
+            _vendorText.setText(slaveModel.getVendorName());
+            _iDNo.setText(String.format("0x%04X", parsedGsdFileModel.getIdentNumber()));
+            _revisionsText.setText(slaveModel.getRevision());
+            
+            // Set all GSD-File Data to Slave.
+            _slave.setMinTsdr(_slave.getMinTsdr());
+            _slave.setModelName(slaveModel.getModelName());
+            if (_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
+                //            _slave.setPrmUserData(slaveModel.getUserPrmData());
+                _slave.setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             }
+            _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
+            _slave.setRevision(slaveModel.getRevision());
+            
+            // Modules
+            _maxSize = slaveModel.getMaxModule();
+            setSlots();
+            // Settings - USER PRM MODE
+            ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
+            nodes.add(_slave);
+            nodes.addAll(_slave.getChildrenAsMap().values());
+            _userPrmDataList.setInput(nodes);
+            TableColumn[] columns = _userPrmDataList.getTable().getColumns();
+            for (TableColumn tableColumn : columns) {
+                if (tableColumn != null) {
+                    tableColumn.pack();
+                }
+            }
+        } catch (IOException e) {
+            throw new PersistenceException(e);
         }
         return true;
     }
@@ -379,86 +379,54 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
     
     @Override
-    public final void setGsdFile(@CheckForNull GSDFileDBO gsdFile) {
-        _slave.setGSDFile(gsdFile);
-    }
-    
-    /**
-     * @param extUserPrmDataRef
-     * @param extUserPrmData
-     * @return
-     */
-    private int getUserPrmDataValue(@Nonnull ExtUserPrmDataRef extUserPrmDataRef,
-                                    @Nonnull ExtUserPrmData extUserPrmData) {
-        List<String> prmUserDataList = _slave.getPrmUserDataList();
-        /* Fix: hrickens (02.02.2011)
-         * Bei dem Fix für das GSD File BIMF5861.GSD hab ich festgestellt das value und Index verwechselt wurden.
-         * TODO: Prüfen ob andere GSD - Files noch ordnungsgemäss funktionieren  
-         */
-//        String value = extUserPrmDataRef.getValue();
-        String value = extUserPrmDataRef.getIndex();
-        int intVal = ProfibusConfigXMLGenerator.getInt(value);
-        String string = prmUserDataList.get(intVal);
-        int val = getValueFromBitMask(extUserPrmData, string);
-        return val;
-    }
-    
-    private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
-                                    @Nonnull final String value) {
-        int val = ProfibusConfigXMLGenerator.getInt(value);
-        int minBit = ranges.getMinBit();
-        int maxBit = ranges.getMaxBit();
-        if (maxBit < minBit) {
-            minBit = ranges.getMaxBit();
-            maxBit = ranges.getMinBit();
-        }
-        int mask = ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
-        val = (val & mask) >> ranges.getMinBit();
-        return val;
-    }
-    
-    /**
-     * @param extUserPrmDataConst
-     * @param byteIndexString
-     * @param prmTextObject
-     */
-    private
-            void
-            handleComboViewer(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-                              @Nonnull final ComboViewer prmTextCV,
-                              @Nonnull final String byteIndexString) {
-        if (!prmTextCV.getCombo().isDisposed()) {
-            int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
-            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-            String newValue = setValue2BitMask(input, bitValue, _slave.getPrmUserDataList()
-                    .get(byteIndex));
-            _slave.setPrmUserDataByte(byteIndex, newValue);
-            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
-            prmTextCV.getCombo().setData(indexOf);
+    public final void setGsdFile(@CheckForNull GSDFileDBO gsdFile) throws PersistenceException {
+        try {
+            _slave.setGSDFile(gsdFile);
+        } catch (IOException e) {
+            throw new PersistenceException(e);
         }
     }
     
-    /**
-     * @param extUserPrmDataConst
-     * @param prmText
-     * @return
-     */
-    @Nonnull
-    private TreeMap<String, ExtUserPrmDataConst>
-            handleText(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-                       @Nonnull final Text prmText) {
-        if (!prmText.isDisposed()) {
-            String value = (String) prmText.getData();
-            if (value != null) {
-                prmText.setText(value);
-//				int val = Integer.parseInt(value);
-                // return new String[] {String.format("%1$#04x", val) };
-            }
-        }
-        return extUserPrmDataConst;
-    }
+    //    /**
+    //     * @param extUserPrmDataConst
+    //     * @param byteIndexString
+    //     * @param prmTextObject
+    //     */
+    //    private void handleComboViewer(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
+    //                                   @Nonnull final ComboViewer prmTextCV,
+    //                                   @Nonnull final String byteIndexString) {
+    //        if (!prmTextCV.getCombo().isDisposed()) {
+    //            int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
+    //            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
+    //            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
+    //            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
+    //            Integer newValue = setValue2BitMask(input,
+    //                                                bitValue,
+    //                                                _slave.getPrmUserDataList().get(byteIndex));
+    //            _slave.setPrmUserDataByte(byteIndex, newValue);
+    //            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
+    //            prmTextCV.getCombo().setData(indexOf);
+    //        }
+    //    }
+    
+    //    /**
+    //     * @param extUserPrmDataConst
+    //     * @param prmText
+    //     * @return
+    //     */
+    //    @Nonnull
+    //    private TreeMap<String, ExtUserPrmDataConst> handleText(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
+    //                                                            @Nonnull final Text prmText) {
+    //        if (!prmText.isDisposed()) {
+    //            String value = (String) prmText.getData();
+    //            if (value != null) {
+    //                prmText.setText(value);
+    //                //				int val = Integer.parseInt(value);
+    //                // return new String[] {String.format("%1$#04x", val) };
+    //            }
+    //        }
+    //        return extUserPrmDataConst;
+    //    }
     
     /**
      * @param head
@@ -650,65 +618,11 @@ public class SlaveEditor extends AbstractNodeEditor {
     
     /**
      * 
-     * @param parent
-     *            the Parent Composite.
-     * @param value
-     *            the Selected currentUserParamData Value.
-     * @param extUserPrmData
-     * @param prmTextMap
-     * @param byteIndex
-     * @return a ComboView for are currentUserParamData Property
-     */
-    @Nonnull
-    private ComboViewer makeComboViewer(@Nonnull final Composite parent,
-                                        @Nullable final Integer value,
-                                        @Nonnull final ExtUserPrmData extUserPrmData,
-                                        @CheckForNull final HashMap<Integer, PrmTextItem> prmTextMap,
-                                        @Nonnull final String byteIndex) {
-        Integer localValue = value;
-        
-        ComboViewer prmTextCV = new ComboViewer(parent);
-        RowData data = new RowData();
-        data.exclude = false;
-        prmTextCV.getCombo().setLayoutData(data);
-        prmTextCV.setLabelProvider(new PrmTextComboLabelProvider(extUserPrmData));
-        prmTextCV.setContentProvider(new ExtUserPrmDataContentProvider());
-        prmTextCV.getCombo().addModifyListener(getMLSB());
-        prmTextCV.setSorter(new PrmTextViewerSorter());
-        
-        if (localValue == null) {
-            localValue = extUserPrmData.getDefault();
-        }
-        prmTextCV.setInput(extUserPrmData);
-        
-        if (prmTextMap != null) {
-            PrmTextItem prmText = prmTextMap.get(localValue);
-            if (prmText != null) {
-                prmTextCV.setSelection(new StructuredSelection(prmTextMap.get(localValue)));
-            } else {
-                prmTextCV.getCombo().select(0);
-            }
-        } else {
-            prmTextCV.getCombo().select(localValue);
-        }
-        prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
-        prmTextCV.addSelectionChangedListener(new ISelectionChangedListener() {
-            
-            @Override
-            public void selectionChanged(@Nonnull SelectionChangedEvent event) {
-                refreshUserPrmDate();
-            }
-            
-        });
-        return prmTextCV;
-    }
-    
-    /**
-     * 
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
+     * @throws IOException 
      */
-    private void makeCurrentUserParamData(@Nonnull final Composite topGroup) {
+    private void makeCurrentUserParamData(@Nonnull final Composite topGroup) throws IOException {
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }
@@ -744,57 +658,10 @@ public class SlaveEditor extends AbstractNodeEditor {
             }
         });
         
-        // Current User Param Data
-        GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
-        if (gsdSlaveModel != null) {
-            List<ExtUserPrmDataRef> extUserPrmDataRefMap = gsdSlaveModel.getExtUserPrmDataRefMap();
-            if (extUserPrmDataRefMap != null) {
-                for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
-                    String byteIndex = extUserPrmDataRef.getIndex();
-                    ExtUserPrmData extUserPrmData = gsdSlaveModel
-                            .getExtUserPrmData(extUserPrmDataRef.getValue());
-                    Integer value = getUserPrmDataValue(extUserPrmDataRef, extUserPrmData); // TODO:
-                                                                                            // Set
-                                                                                            // the
-                                                                                            // saved
-                                                                                            // value!!!
-                    makeCurrentUserParamDataItem(currentUserParamDataComposite, extUserPrmData,
-                                                 value, byteIndex);
-                }
-            }
-        }
+        buildCurrentUserPrmData(currentUserParamDataComposite);
         topGroup.layout();
     }
-    
-    /**
-     * 
-     * @param currentUserParamDataGroup
-     * @param extUserPrmData
-     * @param value
-     * @param byteIndex
-     */
-    @SuppressWarnings("unused")
-    private void makeCurrentUserParamDataItem(@Nonnull final Composite currentUserParamDataGroup,
-                                              @Nullable final ExtUserPrmData extUserPrmData,
-                                              @Nullable final Integer value, @Nonnull final String byteIndex) {
-        HashMap<Integer, PrmTextItem> prmTextMap = null;
-        
-        Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
-        
-        if (extUserPrmData != null) {
-            text.setText(extUserPrmData.getText() + ":");
-            prmTextMap = extUserPrmData.getPrmText();
-            if ( (prmTextMap == null || prmTextMap.isEmpty())
-                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
-                _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
-            } else {
-                _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData,
-                                               prmTextMap, byteIndex));
-            }
-        }
-        new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
-    }
-    
+
     /**
      * @param comp
      */
@@ -808,9 +675,11 @@ public class SlaveEditor extends AbstractNodeEditor {
         operationModeGroup.setLayout(new GridLayout(3, false));
         Label delayLabel = new Label(operationModeGroup, SWT.NONE);
         delayLabel.setText("Min. Station Delay");
-        _minStationDelayText = ProfibusHelper.getTextField(operationModeGroup, true, _slave
-                .getMinTsdr()
-                + "", Ranges.WATCHDOG, ProfibusHelper.VL_TYP_U16);
+        _minStationDelayText = ProfibusHelper.getTextField(operationModeGroup,
+                                                           true,
+                                                           _slave.getMinTsdr() + "",
+                                                           Ranges.WATCHDOG,
+                                                           ProfibusHelper.VL_TYP_U16);
         _minStationDelayText.addModifyListener(getMLSB());
         
         Label bitLabel = new Label(operationModeGroup, SWT.NONE);
@@ -845,9 +714,9 @@ public class SlaveEditor extends AbstractNodeEditor {
         _watchDogButton.setText("Watchdog Time 1");
         _watchDogButton.setSelection(true);
         _watchDogButton.setData(true);
-        _watchDogText1 = ProfibusHelper.getTextField(operationModeGroup, _watchDogButton
-                                                             .getSelection(), Integer
-                                                             .toString(_slave.getWdFact1()),
+        _watchDogText1 = ProfibusHelper.getTextField(operationModeGroup,
+                                                     _watchDogButton.getSelection(),
+                                                     Integer.toString(_slave.getWdFact1()),
                                                      Ranges.TTR,
                                                      ProfibusHelper.VL_TYP_U32);
         _watchDogText1.addModifyListener(getMLSB());
@@ -856,9 +725,9 @@ public class SlaveEditor extends AbstractNodeEditor {
         Label watchdogLabel2 = new Label(operationModeGroup, SWT.NONE);
         watchdogLabel2.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         watchdogLabel2.setText("Watchdog Time 2");
-        _watchDogText2 = ProfibusHelper.getTextField(operationModeGroup, _watchDogButton
-                                                             .getSelection(), Integer
-                                                             .toString(_slave.getWdFact2()),
+        _watchDogText2 = ProfibusHelper.getTextField(operationModeGroup,
+                                                     _watchDogButton.getSelection(),
+                                                     Integer.toString(_slave.getWdFact2()),
                                                      Ranges.TTR,
                                                      ProfibusHelper.VL_TYP_U32);
         _watchDogText2.addModifyListener(getMLSB());
@@ -873,8 +742,7 @@ public class SlaveEditor extends AbstractNodeEditor {
         watchdogTotalEgu.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         watchdogTotalEgu.setText("ms");
         
-        WatchdogTimeCalculaterOnModify listener = new WatchdogTimeCalculaterOnModify(
-                                                                                     _watchDogText1,
+        WatchdogTimeCalculaterOnModify listener = new WatchdogTimeCalculaterOnModify(_watchDogText1,
                                                                                      _watchDogText2,
                                                                                      _watchDogTotal);
         _watchDogText1.addModifyListener(listener);
@@ -905,9 +773,9 @@ public class SlaveEditor extends AbstractNodeEditor {
         Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
         List<TableColumn> columns = new ArrayList<TableColumn>();
-        String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address",
+        String[] headers = new String[] { "Adr", "Adr", "Name", "IO Name", "IO Epics Address",
                 "Desc", "Type", "DB Id" };
-        int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
+        int[] styles = new int[] { SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
                 SWT.LEFT, SWT.LEFT };
         
         TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
@@ -953,8 +821,9 @@ public class SlaveEditor extends AbstractNodeEditor {
     /**
      * @param head
      *            the tabItemName
+     * @throws IOException 
      */
-    private void makeSettings(@Nonnull final String head) {
+    private void makeSettings(@Nonnull final String head) throws IOException {
         Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(3, false));
         
@@ -978,7 +847,7 @@ public class SlaveEditor extends AbstractNodeEditor {
         _groupsRadioButtons.setLayout(new GridLayout(4, true));
         _groupsRadioButtons.setText("Groups");
         _groupIdentStored = _slave.getGroupIdent();
-        if ( (_groupIdentStored < 0) || (_groupIdentStored > 7)) {
+        if ((_groupIdentStored < 0) || (_groupIdentStored > 7)) {
             _groupIdentStored = 0;
         }
         _groupIdent = _groupIdentStored;
@@ -1022,9 +891,13 @@ public class SlaveEditor extends AbstractNodeEditor {
      */
     private void makeSlaveKonfiguration() throws PersistenceException {
         boolean nevv = false;
-        String[] heads = {"Basics", "Settings", "Overview" };
+        String[] heads = { "Basics", "Settings", "Overview" };
         makeOverview(heads[2]);
-        makeSettings(heads[1]);
+        try {
+            makeSettings(heads[1]);
+        } catch (IOException e) {
+            throw new PersistenceException(e);
+        }
         makeBasics(heads[0]);
         if (_slave.getGSDFile() != null) {
             fill(_slave.getGSDFile());
@@ -1034,43 +907,6 @@ public class SlaveEditor extends AbstractNodeEditor {
         if (nevv) {
             selecttTabFolder(4);
         }
-    }
-    
-    /**
-     * 
-     * @param currentUserParamDataGroup
-     * @param value
-     * @param extUserPrmData
-     * @return
-     */
-    @Nonnull
-    private Text makeTextField(@Nonnull final Composite currentUserParamDataGroup,
-                               @CheckForNull final Integer value,
-                               @Nonnull final ExtUserPrmData extUserPrmData) {
-        Integer localValue = value;
-        Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER | SWT.SINGLE | SWT.RIGHT);
-        Formatter f = new Formatter();
-        f.format("Min: %d, Min: %d", extUserPrmData.getMinValue(), extUserPrmData.getMaxValue());
-        prmText.setToolTipText(f.toString());
-        prmText.setTextLimit(Integer.toString(extUserPrmData.getMaxValue()).length());
-        
-        if (localValue == null) {
-            localValue = extUserPrmData.getDefault();
-        }
-        prmText.setText(localValue.toString());
-        prmText.setData(localValue.toString());
-        prmText.addModifyListener(getMLSB());
-        prmText.addVerifyListener(new VerifyListener() {
-            
-            @Override
-            public void verifyText(@Nonnull final VerifyEvent e) {
-                if (e.text.matches("^\\D+$")) {
-                    e.doit = false;
-                }
-            }
-            
-        });
-        return prmText;
     }
     
     /**
@@ -1103,44 +939,6 @@ public class SlaveEditor extends AbstractNodeEditor {
         tc.setWidth(450);
     }
     
-    protected void refreshUserPrmDate() {
-        saveUserPrmData();
-    }
-    
-    /**
-    *
-    */
-    private void saveUserPrmData() {
-        // Check have the Salve a GSD-File
-        if (_slave.getGSDSlaveData() != null) {
-            TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst;
-            extUserPrmDataConst = _slave.getGSDSlaveData().getExtUserPrmDataConst();
-            List<ExtUserPrmDataRef> extUserPrmDataRefMap;
-            extUserPrmDataRefMap = _slave.getGSDSlaveData().getExtUserPrmDataRefMap();
-            
-            if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
-                for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
-                    ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
-                    Object prmTextObject = _prmTextCV.get(i);
-                    if (prmTextObject instanceof ComboViewer) {
-                        ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                        /* Fix: hrickens (02.02.2011)
-                         * Bei dem Fix für das GSD File BIMF5861.GSD hab ich festgestellt das value und Index verwechselt wurden.
-                         * TODO: Prüfen ob andere GSD - Files noch ordnungsgemäss funktionieren  
-                         */
-//                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getValue());
-                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getIndex());
-                    } else if (prmTextObject instanceof Text) {
-                        Text prmText = (Text) prmTextObject;
-                        extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
-                    }
-                }
-                
-            } else {
-                // TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht zusammen
-            }
-        }
-    }
     
     /**
      *
@@ -1174,9 +972,10 @@ public class SlaveEditor extends AbstractNodeEditor {
      * @return the changed value as Hex String.
      */
     @Nonnull
-    private String setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
-                                    @Nonnull final Integer bitValue, @Nonnull final String value) {
-        int val = ProfibusConfigXMLGenerator.getInt(value);
+    private Integer setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
+                                     @Nonnull final Integer bitValue,
+                                     @Nonnull final Integer value) {
+        int val = value;
         int minBit = ranges.getMinBit();
         int maxBit = ranges.getMaxBit();
         if (maxBit < minBit) {
@@ -1186,7 +985,7 @@ public class SlaveEditor extends AbstractNodeEditor {
         int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
         val = val & mask;
         val = val | (bitValue << minBit);
-        return String.format("%1$#04x", val);
+        return val;
     }
     
     @CheckForNull
@@ -1213,8 +1012,8 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
     
     void change(@Nonnull final Button button) {
-        setSavebuttonEnabled("Button:" + button.hashCode(), (Boolean) button.getData() != button
-                .getSelection());
+        setSavebuttonEnabled("Button:" + button.hashCode(),
+                             (Boolean) button.getData() != button.getSelection());
     }
     
     @CheckForNull
@@ -1238,7 +1037,8 @@ public class SlaveEditor extends AbstractNodeEditor {
         /**
          * Constructor.
          */
-        public WatchdogTimeCalculaterOnModify(@Nonnull Text text1, @Nonnull Text text2,
+        public WatchdogTimeCalculaterOnModify(@Nonnull Text text1,
+                                              @Nonnull Text text2,
                                               @Nonnull Text outputText) {
             _text1 = text1;
             _text2 = text2;
@@ -1297,114 +1097,6 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
     
     /**
-     * TODO (hrickens) :
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class ExtUserPrmDataContentProvider implements IStructuredContentProvider {
-        /**
-         * Constructor.
-         */
-        public ExtUserPrmDataContentProvider() {
-            // Constructor.
-        }
-        
-        @Override
-        public void dispose() {
-            // nothing to dispose
-        }
-        
-        @Override
-        public Object[] getElements(@Nullable final Object inputElement) {
-            if (inputElement instanceof ExtUserPrmData) {
-                ExtUserPrmData eUPD = (ExtUserPrmData) inputElement;
-                HashMap<Integer, PrmTextItem> prmText = eUPD.getPrmText();
-                if (prmText == null) {
-                    PrmTextItem[] prmTextArray = new PrmTextItem[eUPD.getMaxValue() - eUPD.getMinValue()
-                            + 1];
-                    for (int i = eUPD.getMinValue(); i <= eUPD.getMaxValue(); i++) {
-                        prmTextArray[i] = new PrmTextItem(Integer.toString(i), i);
-                    }
-                    return prmTextArray;
-                }
-                return prmText.values().toArray();
-            }
-            return null;
-        }
-        
-        @Override
-        public void inputChanged(@Nullable final Viewer viewer, @Nullable final Object oldInput,
-                                 @Nullable final Object newInput) {
-            // nothing to do.
-        }
-    }
-    
-    /**
-     * {@link PrmTextItem} Label provider that mark the default selection with a
-     * '*'. The {@link ExtUserPrmData} give the default.
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 18.10.2010
-     */
-    private final class PrmTextComboLabelProvider extends LabelProvider {
-        
-        private final ExtUserPrmData _extUserPrmData;
-        
-        /**
-         * Constructor.
-         * 
-         * @param extUserPrmData
-         */
-        public PrmTextComboLabelProvider(@Nonnull ExtUserPrmData extUserPrmData) {
-            _extUserPrmData = extUserPrmData;
-        }
-        
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getText(@Nullable Object element) {
-            if (element instanceof PrmTextItem) {
-                PrmTextItem prmText = (PrmTextItem) element;
-                if (prmText.getIndex() == _extUserPrmData.getDefault()) {
-                    return "*" + element.toString();
-                }
-            }
-            return super.getText(element);
-        }
-    }
-    
-    /**
-     * {@link PrmTextItem} Sorter
-     * 
-     * @author hrickens
-     * @author $Author: $
-     * @since 08.10.2010
-     */
-    private final class PrmTextViewerSorter extends ViewerSorter {
-        /**
-         * Constructor.
-         */
-        public PrmTextViewerSorter() {
-            // Constructor.
-        }
-        
-        @Override
-        public int compare(@Nullable final Viewer viewer, @Nullable final Object e1,
-                           @Nullable final Object e2) {
-            if ( (e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
-                PrmTextItem eUPD1 = (PrmTextItem) e1;
-                PrmTextItem eUPD2 = (PrmTextItem) e2;
-                return eUPD1.getIndex() - eUPD2.getIndex();
-            }
-            return super.compare(viewer, e1, e2);
-        }
-    }
-    
-    /**
      * 
      * @author hrickens
      * @author $Author: hrickens $
@@ -1433,8 +1125,7 @@ public class SlaveEditor extends AbstractNodeEditor {
         }
         
         @Override
-        public Image
-                getColumnImage(@Nullable final Object element, @Nullable final int columnIndex) {
+        public Image getColumnImage(@Nullable final Object element, @Nullable final int columnIndex) {
             return null;
         }
         
@@ -1499,5 +1190,29 @@ public class SlaveEditor extends AbstractNodeEditor {
             }
             return null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws IOException 
+     */
+    @Override
+    @CheckForNull
+    ParsedGsdFileModel getGsdPropertyModel() throws IOException {
+        ParsedGsdFileModel parsedGsdFileModel = null;
+        GSDFileDBO gsdFile = _slave.getGSDFile();
+        if(gsdFile!=null) {
+            parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
+        }
+        return parsedGsdFileModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    List<Integer> getPrmUserDataList() {
+        return _slave.getPrmUserDataList();
     }
 }
