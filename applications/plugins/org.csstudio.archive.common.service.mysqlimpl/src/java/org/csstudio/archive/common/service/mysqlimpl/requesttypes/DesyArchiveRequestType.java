@@ -24,10 +24,10 @@ package org.csstudio.archive.common.service.mysqlimpl.requesttypes;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.AbstractArchiveRequestType;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
-import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.AbstractArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
 
 import com.google.common.collect.ImmutableSet;
 

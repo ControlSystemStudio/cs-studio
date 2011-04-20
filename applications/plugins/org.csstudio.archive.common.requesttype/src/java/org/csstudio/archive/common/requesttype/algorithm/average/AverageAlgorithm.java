@@ -26,10 +26,11 @@ package org.csstudio.archive.common.requesttype.algorithm.average;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
+
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
@@ -43,60 +44,9 @@ import com.google.common.collect.ImmutableSet;
  * @author Markus Moeller
  * @since 29.03.2011
  */
-public class AverageAlgorithm implements IArchiveReaderFacade {
+public class AverageAlgorithm {
 	
 	public void readSamples() {
 		System.out.println("Useless");
-	}
-
-	@Override
-	public ImmutableSet<IArchiveRequestType> getRequestTypes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <V, T extends IAlarmSystemVariable<V>> Collection<IArchiveSample<V, T>> readSamples(
-			String channelName, TimeInstant start, TimeInstant end)
-			throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <V, T extends ISystemVariable<V>> Collection<IArchiveSample<V, T>> readSamples(
-			String channelName, TimeInstant start, TimeInstant end,
-			IArchiveRequestType type) throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <V, T extends ISystemVariable<V>> IArchiveSample<V, T> readLastSampleBefore(
-			String channelName, TimeInstant time)
-			throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IArchiveChannel getChannelByName(String name)
-			throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Limits<?> readDisplayLimits(String channelName)
-			throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<String> getChannelsByNamePattern(Pattern pattern)
-			throws ArchiveServiceException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

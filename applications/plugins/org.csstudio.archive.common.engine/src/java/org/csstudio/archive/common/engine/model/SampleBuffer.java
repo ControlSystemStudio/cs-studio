@@ -87,18 +87,9 @@ public class SampleBuffer<V,
     @Override
     @SuppressWarnings("nls")
     public boolean add(@Nonnull final S value) {
-    	synchronized (_samples) {
-    	    if (!super.offer(value)) {
-
-                while (!super.offer(value)) { // TODO (bknerr) : not yet a strategy
-                    if (super.poll() == null) { // drop samples as long appending doesn't work.
-                        throw new IllegalStateException("Sample buffer cannot append value, although queue is empty (poll returns null).");
-                    }
-                }
-            } else { // sample could not be put into sample buffer
-                // FIXME (bknerr) : sample could not be added to buffer - rescue data
-
-            }
+	    if (!super.offer(value)) {
+            // FIXME (bknerr) : data rescue if adding to sample buffer failed.
+	        return false;
         }
     	return true;
     }

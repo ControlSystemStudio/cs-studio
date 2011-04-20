@@ -19,14 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.requesttypes;
+package org.csstudio.archive.common.requesttype;
 
 import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.internal.AbstractArchiveRequestTypeParameter;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;

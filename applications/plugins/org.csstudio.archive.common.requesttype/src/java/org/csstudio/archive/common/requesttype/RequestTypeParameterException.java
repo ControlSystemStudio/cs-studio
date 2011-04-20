@@ -19,35 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
-package org.csstudio.archive.common.service.requesttypes;
+package org.csstudio.archive.common.requesttype;
 
 import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.IDeepCopyable;
-
+import javax.annotation.Nullable;
 
 /**
- * The read-only interface of a parameter specifying an archive request type.
- *
+ * Domain specific exception for archive request types. 
+ * 
  * @author bknerr
- * @since 05.01.2011
- * @param <T> the type of the param's value
+ * @since 26.01.2011
  */
-public interface IArchiveRequestTypeParameter<T> extends IDeepCopyable<IArchiveRequestTypeParameter<T>> {
+public class RequestTypeParameterException extends Exception {
+    
+    private static final long serialVersionUID = -3770678673695779001L;
 
-    @Nonnull
-    String getName();
-
-    @Nonnull
-    T getValue();
-
-    @Nonnull
-    Class<T> getValueType();
-
-    @Nonnull
-    T toValue(@Nonnull final String value) throws RequestTypeParameterException;
-
-    void setValue(@Nonnull final T newValue) throws RequestTypeParameterException;
-
+    /**
+     * Constructor.
+     */
+    public RequestTypeParameterException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }

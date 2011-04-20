@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.requesttypes.internal;
+package org.csstudio.archive.common.requesttype.internal;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
-import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
 
 /**
  * An immutable parameter specifying an archive request type.

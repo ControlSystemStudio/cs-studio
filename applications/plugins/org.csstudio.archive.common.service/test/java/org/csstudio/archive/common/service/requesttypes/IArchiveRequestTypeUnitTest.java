@@ -23,7 +23,11 @@ package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.AbstractArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.internal.AbstractArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
