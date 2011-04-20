@@ -8,34 +8,25 @@
             adaptable="true"
             id="org.csstudio.utility.channel.contribution1"
             objectClass="org.csstudio.utility.channel.ICSSChannel">
-         <menu
-               icon="icons/cficon.gif"
-               id="org.csstudio.utility.channel.menu"
-               label="Channels"
-               path="additions">
-            <separator
-                  name="group">
-            </separator>
-         </menu>
          <action
                class="org.csstudio.utility.channel.actions.AddTagAction"
                icon="icons/add_tag.gif"
                id="org.csstudio.utility.channel.addTag"
                label="Add Tag"
-               menubarPath="org.csstudio.utility.channel.menu/group">
+               menubarPath="org.csstudio.ui.menu.popup.channel">
          </action>
          <action
                class="org.csstudio.utility.channel.actions.RemoveTagAction"
                icon="icons/remove_tag.gif"
                id="org.csstudio.utility.channel.removeTag"
                label="Remove Tag"
-               menubarPath="org.csstudio.utility.channel.menu/group">
+               menubarPath="org.csstudio.ui.menu.popup.channel">
          </action>
          <action
                class="org.csstudio.utility.channel.actions.InfoAction"
                id="org.csstudio.utility.channel.info"
                label="Show Channel Info"
-               menubarPath="org.csstudio.utility.channel.menu/group">
+               menubarPath="org.csstudio.ui.menu.popup.channel">
          </action>
       </objectContribution>
    </extension>
