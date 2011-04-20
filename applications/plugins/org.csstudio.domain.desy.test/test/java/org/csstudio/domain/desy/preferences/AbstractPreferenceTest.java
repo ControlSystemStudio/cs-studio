@@ -31,7 +31,6 @@ import javax.annotation.Nonnull;
 
 import junit.framework.Assert;
 
-import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.junit.Test;
@@ -44,7 +43,9 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
+// CHECKSTYLE:OFF The class to test is abstract, but not its test...
 public class AbstractPreferenceTest {
+// CHECKSTYLE:ON
 
     @Test
     public void testPreferencesDefaults() {
@@ -134,13 +135,20 @@ public class AbstractPreferenceTest {
         Assert.assertEquals(7, prefs.size());
     }
 
-    private static class TestPreference<T> extends AbstractPreference<T> {
+    /**
+     * Test Helper class.  
+     * 
+     * @author bknerr
+     * @since 20.04.2011
+     * @param <T> the preference type
+     */
+    private static final class TestPreference<T> extends AbstractPreference<T> {
 
         /**
          * For test purposes
          */
         @SuppressWarnings("unused")
-        public final Integer _notTestPreference_0 = new Integer(0);
+        private final Integer _notTestPreference = Integer.valueOf(0);
 
         public static final TestPreference<String> STRING_PREF =
             new TestPreference<String>("String_Pref", "Some string");
