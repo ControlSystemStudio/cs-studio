@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.csstudio.channelfinder.views.ChannelFinderView;
-import org.csstudio.utility.channel.ICSSChannel;
-import org.csstudio.utility.channel.ICSSChannelFactory;
-import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -50,6 +47,7 @@ public class FindChannels extends Job {
 			});
 		} catch (Exception e) {
 			logger.severe("Failed to find channels from channelfinder:"+ e.getMessage());
+			
 		}
 		monitor.done();
 		return Status.OK_STATUS;

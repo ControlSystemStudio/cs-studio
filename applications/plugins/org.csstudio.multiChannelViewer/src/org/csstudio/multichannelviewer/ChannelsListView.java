@@ -36,10 +36,6 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 	private GridLayout layout;
 	private TableViewer viewer;
 
-	public String getSomething() {
-		return "something";
-	}
-
 	public ChannelsListView() {
 	}
 

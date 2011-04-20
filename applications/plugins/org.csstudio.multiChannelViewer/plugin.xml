@@ -75,24 +75,7 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any">
-         <menu
-               id="org.csstudio.ui.menu.popup.icsschannel"
-               label="Channel">
-            <visibleWhen>
-               <with
-                     variable="activeMenuSelection">
-                  <iterate>
-                     <adapt
-                           type="org.csstudio.utility.channel.ICSSChannel">
-                     </adapt>
-                  </iterate>
-               </with>
-            </visibleWhen>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="popup:org.csstudio.ui.menu.popup.icsschannel">
+            locationURI="popup:org.csstudio.ui.menu.popup.channel">
          <command
                commandId="org.csstudio.multichannelviewer.openPerspective"
                label="MultiChannel Viewer"

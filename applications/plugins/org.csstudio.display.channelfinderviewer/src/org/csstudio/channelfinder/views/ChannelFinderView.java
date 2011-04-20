@@ -5,6 +5,7 @@ import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import org.csstudio.channelfinder.util.FindChannels;
 import org.eclipse.core.runtime.jobs.Job;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -32,6 +34,8 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import com.swtdesigner.TableViewerColumnSorter;
+import org.eclipse.swt.events.MenuDetectListener;
+import org.eclipse.swt.events.MenuDetectEvent;
 
 /**
  * 
@@ -43,7 +47,8 @@ public class ChannelFinderView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "org.csstudio.channelfinder.views.ChannelfinderView";
-
+	private static Logger logger = Logger.getLogger(ID);
+	
 	private static int instance;
 	private Text text;
 	private Button search;
@@ -80,6 +85,10 @@ public class ChannelFinderView extends ViewPart {
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);
 		table = tableViewer.getTable();
+		table.addMenuDetectListener(new MenuDetectListener() {
+			public void menuDetected(MenuDetectEvent e) {
+			}
+		});
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
@@ -121,11 +130,13 @@ public class ChannelFinderView extends ViewPart {
 		tblclmnOwner.setWidth(100);
 		tblclmnOwner.setText("Owner");
 		tableViewer.setContentProvider(new ChannelContentProvider());
-		// tableViewer.setLabelProvider(new ChannelLabelProvider());
-
 		// Add this table as a selection provider
 		getSite().setSelectionProvider(tableViewer);
-		hookContextMenu();
+		// Add Context menu
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(table);
+		table.setMenu(menu);
+		getSite().registerContextMenu(menuManager, tableViewer);
 	}
 
 	/** @return a new view instance */
@@ -201,18 +212,6 @@ public class ChannelFinderView extends ViewPart {
 
 		Job job = new FindChannels("search", text, this);
 		job.schedule();
-	}
-
-	private void hookContextMenu() {
-		MenuManager menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(true);
-		// Set the MenuManager
-		fillContextMenu(menuManager);
-	}
-
-	private void fillContextMenu(IMenuManager manager) {
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	/**
