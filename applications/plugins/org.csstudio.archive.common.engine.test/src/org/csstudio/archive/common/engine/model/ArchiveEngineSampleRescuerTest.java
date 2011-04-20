@@ -41,7 +41,6 @@ import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -71,7 +70,7 @@ public class ArchiveEngineSampleRescuerTest {
         IArchiveSample<Double, ISystemVariable<Double>> sample1 = 
             new ArchiveSample<Double, ISystemVariable<Double>>(new ArchiveChannelId(1), 
                                                                new EpicsSystemVariable("foo", 
-                                                                                       new CssValueType<Double>(2.0), 
+                                                                                       Double.valueOf(2.0), 
                                                                                        ControlSystem.EPICS_DEFAULT, 
                                                                                        TimeInstantBuilder.fromNow(),
                                                                                        null), 
@@ -79,7 +78,7 @@ public class ArchiveEngineSampleRescuerTest {
         IArchiveSample<Integer, ISystemVariable<Integer>> sample2 = 
             new ArchiveSample<Integer, ISystemVariable<Integer>>(new ArchiveChannelId(3), 
                     new EpicsSystemVariable("bar", 
-                                            new CssValueType<Integer>(Integer.valueOf(26)), 
+                                            Integer.valueOf(26), 
                                             ControlSystem.EPICS_DEFAULT, 
                                             TimeInstantBuilder.fromNow(),
                                             null), 
@@ -87,7 +86,7 @@ public class ArchiveEngineSampleRescuerTest {
         IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 = 
             new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3), 
                     new EpicsSystemVariable("bar", 
-                                            new CssValueType<EpicsEnum>(EpicsEnum.create(1, "foo", 666)), 
+                                            EpicsEnum.create(1, "foo", 666), 
                                             ControlSystem.EPICS_DEFAULT, 
                                             TimeInstantBuilder.fromNow(),
                                             null), 

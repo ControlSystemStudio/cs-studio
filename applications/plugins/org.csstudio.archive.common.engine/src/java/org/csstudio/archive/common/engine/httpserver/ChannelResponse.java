@@ -37,7 +37,7 @@ class ChannelResponse extends AbstractResponse {
             resp.sendError(400, "Missing channel name");
             return;
         }
-        final ArchiveChannel<?, ?> channel = _model.getChannel(channelName);
+        final ArchiveChannel<?, ?> channel = getModel().getChannel(channelName);
         if (channel == null) {
             resp.sendError(400, "Unknown channel " + channelName);
             return;

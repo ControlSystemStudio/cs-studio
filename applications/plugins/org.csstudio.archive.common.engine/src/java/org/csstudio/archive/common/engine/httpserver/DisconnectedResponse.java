@@ -39,7 +39,7 @@ class DisconnectedResponse extends AbstractResponse
 
 
         int disconnected = 0;
-        for (final ArchiveGroup group : _model.getGroups()) {
+        for (final ArchiveGroup group : getModel().getGroups()) {
             for (final ArchiveChannel<?,?> channel : group.getChannels()) {
                 if (channel.isConnected()) {
                     continue;

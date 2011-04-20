@@ -45,7 +45,7 @@ class GroupResponse extends AbstractResponse {
             resp.sendError(400, "Missing group name");
             return;
         }
-        final ArchiveGroup group = _model.getGroup(groupName);
+        final ArchiveGroup group = getModel().getGroup(groupName);
         if (group == null) {
             resp.sendError(400, "Unknown group " + groupName);
             return;
@@ -55,7 +55,7 @@ class GroupResponse extends AbstractResponse {
 
         createBasicInfoTable(group, html);
 
-        html.h2(Messages.HTTP_Channels + " (Last write time: " + _model.getLastWriteTime()  + ")");
+        html.h2(Messages.HTTP_Channels + " (Last write time: " + getModel().getLastWriteTime()  + ")");
 
         createChannelsTable(group, html);
 

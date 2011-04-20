@@ -58,7 +58,7 @@ class ChannelListResponse extends AbstractResponse {
             Messages.HTTP_LastArchivedValue,
         });
 
-        for (final ArchiveChannel<?,?> channel : _model.getChannels()) {
+        for (final ArchiveChannel<?,?> channel : getModel().getChannels()) {
             // Filter by channel name pattern
             if (!pattern.matcher(channel.getName()).matches()) {
                 continue;

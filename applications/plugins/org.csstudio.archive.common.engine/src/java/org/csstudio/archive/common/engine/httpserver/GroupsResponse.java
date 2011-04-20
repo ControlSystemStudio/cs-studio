@@ -61,7 +61,7 @@ class GroupsResponse extends AbstractResponse {
         int totalNumOfConnectedChannels = 0;
         long totalNumOfReceivedSamples = 0;
 
-        for (final ArchiveGroup group : _model.getGroups()) {
+        for (final ArchiveGroup group : getModel().getGroups()) {
             int numOfConnectedChannels = 0;
             double avgQueueLength = 0;
             int maxQueueLength = 0;

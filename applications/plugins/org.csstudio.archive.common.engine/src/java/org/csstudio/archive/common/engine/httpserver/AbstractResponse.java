@@ -28,13 +28,19 @@ abstract class AbstractResponse extends HttpServlet {
     /** Required by Serializable */
     private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
-    protected final EngineModel _model;
+    private final EngineModel _model;
+
 
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+    }
+
+    @Nonnull
+    protected EngineModel getModel() {
+        return _model;
     }
 
     /** {@inheritDoc} */
@@ -68,7 +74,7 @@ abstract class AbstractResponse extends HttpServlet {
         if (var == null) {
             return "null";
         }
-        return var.getData().getValueData().toString();
+        return var.getData().toString();
     }
 
     @Nonnull

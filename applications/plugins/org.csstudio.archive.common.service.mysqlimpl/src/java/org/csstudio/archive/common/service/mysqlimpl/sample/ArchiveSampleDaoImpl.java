@@ -159,7 +159,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                     sysVar,
                                                     timestamp));
 
-                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getValueData().getClass())) {
+                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
                     writeReducedData(channelId,
                                      sysVar,
                                      timestamp,
@@ -224,7 +224,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     Double createDoubleFromValueOrNull(@Nonnull final T data) {
         Double newValue = null;
         try {
-            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
+            newValue = BaseTypeConversionSupport.toDouble(data.getData());
         } catch (final TypeSupportException e) {
             return null; // not convertible. Type support missing.
         }
@@ -316,7 +316,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted() + "'",
                                                   timestamp.getFractalSecondsInNanos(),
-                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData().getValueData()) + "'") +
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData()) + "'") +
                        ")";
             } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
