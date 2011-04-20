@@ -42,3 +42,4 @@ Bundle-ClassPath: .,
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.log4j
+Service-Component: OSGI-INF/remotecommands-component.xml

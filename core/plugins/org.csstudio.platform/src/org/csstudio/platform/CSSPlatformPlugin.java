@@ -74,10 +74,10 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	protected final void doStart(final BundleContext context) throws Exception {
 		applySystemPropertyDefaults();
 		
-		Dictionary<String, Object> dict = new Hashtable<String, Object>();
-		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
-		context.registerService(IManagementCommandService.class.getName(),
-				new ManagementServiceImpl(), dict);
+//		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+//		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
+//		context.registerService(IManagementCommandService.class.getName(),
+//				new ManagementServiceImpl(), dict);
 	}
 
 	/**
