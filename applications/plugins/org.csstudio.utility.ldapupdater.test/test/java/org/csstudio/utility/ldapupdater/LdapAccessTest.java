@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapupdater;
 
 import org.junit.Test;
 

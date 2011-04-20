@@ -348,7 +348,7 @@ public final class LdapAccess {
             final ILdapSearchResult searchResult =
                 LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(iocFromLdapName);
             if (searchResult != null) {
-                final ILdapContentModelBuilder builder =
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
                     LDAP_UPDATER_SERVICE.getLdapContentModelBuilder(model);
                 builder.setSearchResult(searchResult);
                 builder.build();
