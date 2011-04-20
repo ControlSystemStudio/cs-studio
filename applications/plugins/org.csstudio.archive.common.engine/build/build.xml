@@ -57,6 +57,7 @@
           </fileset>          
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
             <include name="plugin_customization.ini"/>
+            <include name="plugin_customization_solaris.ini"/>
           </fileset>
         </copy>
 	</target>
@@ -98,12 +99,15 @@
 	    Headless Eclipse Build for Solaris
 	-->
 	<target name="pdeBuildSolaris">
-		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true">			
+		<java classname="org.eclipse.equinox.launcher.Main" 
+              dir="${desyBuildDirectory}"
+			  fork="true" 
+			  failonerror="true">			
 			<arg value="-application" />
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
-			<arg value="${basedir}/productBuild.xml" />
-			<arg value="-DbaseLocation=${targetPlatformLocation}" />
+			<arg value="productBuild.xml" />
+			<arg value="-DbaseLocation=." />
 			<arg value="-Dconfigs=solaris, gtk, sparc" />
 			<classpath>
 				<pathelement location="${equinoxLauncher}" />
@@ -112,25 +116,23 @@
 	</target>
 
 	<!--
-		Copy plugincustomization and to win product
+		Copy plugin customization and zip win product
 	-->
 	<target name="updateConfigWin">
 		<mkdir dir="${workspaceLocation}/build/initmp/${archivePrefix}" />
-		<copy todir="${workspaceLocation}/build/initmp/${archivePrefix}">
-			<fileset file="${workspaceLocation}/build/plugin_customization.ini"/>
-		</copy>
+		<copy file="${workspaceLocation}/plugin_customization.ini" 
+		      tofile="${workspaceLocation}/build/initmp/${archivePrefix}/plugin_customization.ini"/>
 		<zip destfile="${workspaceLocation}/build/${buildId}-win32.win32.x86.zip" 
 			 basedir="${workspaceLocation}/build/initmp" update="true" />
 	</target>
 
 	<!--
-		Copy plugincustomization and to solaris product
+		Copy solaris plugin customization and zip solaris product
 	-->
 	<target name="updateConfigSolaris">
 		<mkdir dir="${workspaceLocation}/build/initmp/${archivePrefix}" />
-		<copy todir="${workspaceLocation}/build/initmp/${archivePrefix}">
-			<fileset file="${workspaceLocation}/plugin_customization.ini"/>
-		</copy>
+		<copy file="${workspaceLocation}/plugin_customization_solaris.ini" 
+		      tofile="${workspaceLocation}/build/initmp/${archivePrefix}/plugin_customization.ini"/>
 		<zip destfile="${workspaceLocation}/build/${buildId}-solaris.gtk.sparc.zip" 
 			 basedir="${workspaceLocation}/build/initmp" update="true" />
 	</target>
