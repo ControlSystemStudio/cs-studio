@@ -6,3 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.utility.ldapUpdater;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Require-Bundle: org.junit;bundle-version="4.8.1"
