@@ -16,4 +16,5 @@ Require-Bundle: org.junit;bundle-version="4.8.1",
  org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
  org.csstudio.archive.common.service;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager;bundle-version="0.4.0"
+ org.csstudio.utility.pvmanager;bundle-version="0.4.0",
+ org.csstudio.archive.common.requesttype;bundle-version="1.0.0"
