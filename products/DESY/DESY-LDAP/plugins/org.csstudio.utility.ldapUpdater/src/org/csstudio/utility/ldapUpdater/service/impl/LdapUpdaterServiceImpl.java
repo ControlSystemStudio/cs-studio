@@ -188,7 +188,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         final ILdapService service = getLdapService();
         if (recordsSearchResult != null) {
 
-            final ILdapContentModelBuilder builder =
+            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
                 service.getLdapContentModelBuilder(VIRTUAL_ROOT, recordsSearchResult);
 
             try {
@@ -234,7 +234,8 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             if (searchResult != null) {
                 final ILdapService service = getLdapService();
-                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder = 
+                    service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -262,7 +263,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException {
 
         final ILdapService service = getLdapService();

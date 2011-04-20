@@ -83,7 +83,7 @@ public class IocEnumeration implements IDynamicParameterValues {
         }
 
         try {
-            final ILdapContentModelBuilder builder =
+            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
                 service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
 
             builder.build();

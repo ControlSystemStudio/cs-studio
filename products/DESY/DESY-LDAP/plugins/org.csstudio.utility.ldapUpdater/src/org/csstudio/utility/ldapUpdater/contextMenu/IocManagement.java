@@ -54,6 +54,7 @@ public class IocManagement implements IManagementCommand {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     @SuppressWarnings("unchecked")
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
 
