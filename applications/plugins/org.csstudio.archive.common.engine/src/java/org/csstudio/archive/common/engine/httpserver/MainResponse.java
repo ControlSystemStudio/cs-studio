@@ -111,7 +111,7 @@ class MainResponse extends AbstractResponse {
         html.tableLine(new String[]
         { Messages.HTTP_GroupCount, Integer.toString(group_count) });
         html.tableLine(new String[]
-        { Messages.HTTP_ChannelCount, Integer.toString(total_channel_count) });
+        { Messages.HTTP_COLUMN_CHANNEL_COUNT, Integer.toString(total_channel_count) });
         final int disconnect_count = total_channel_count - connect_count;
         if (disconnect_count > 0)
         {

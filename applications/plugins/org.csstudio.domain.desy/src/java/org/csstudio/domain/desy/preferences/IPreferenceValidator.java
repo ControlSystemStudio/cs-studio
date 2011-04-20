@@ -19,27 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.preferences;
 
-import org.csstudio.domain.desy.epics.types.EpicsEnum;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.junit.Assert;
-import org.junit.Test;
+import javax.annotation.Nonnull;
 
 /**
+ * Interface for the preference validator.
+ *
  * @author bknerr
- * @since 27.01.2011
+ * @since 14.04.2011
+ * @param <T> the type of the preference to validate
  */
-public class BaseTypeConversionSupportHeadlessUnitTest {
-
-    @Test
-    public void testCreateTypeClassFromStringFromBuddyPlugin() {
-
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(String.class.getSimpleName(),
-                                                                                 "java.lang"));
-        Assert.assertNotNull(BaseTypeConversionSupport.createTypeClassFromString(EpicsEnum.class.getSimpleName(),
-                                                                                 "org.csstudio.domain.desy.epics.types"));
-        Assert.assertNull(BaseTypeConversionSupport.createTypeClassFromString("Tralala",
-                                                                              "org.csstudio.domain.desy.epics.types"));
-    }
+public interface IPreferenceValidator<T> {
+    boolean validate(@Nonnull final T value);
 }

@@ -34,7 +34,7 @@ class DisconnectedResponse extends AbstractResponse
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_DisconnectedTitle);
-        html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_Group });
+        html.openTable(1, new String[] { "#", Messages.HTTP_Channel, Messages.HTTP_COLUMN_GROUP });
 
 
 

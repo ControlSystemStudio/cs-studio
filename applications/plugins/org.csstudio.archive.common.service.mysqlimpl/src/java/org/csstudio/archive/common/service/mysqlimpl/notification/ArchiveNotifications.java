@@ -39,7 +39,14 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author bknerr
  * @since 11.04.2011
  */
-public class ArchiveNotifications {
+public final class ArchiveNotifications {
+
+    /**
+     * Constructor.
+     */
+    private ArchiveNotifications() {
+        // Don't instantiate
+    }
 
     private static final Logger LOG =
             CentralLogger.getInstance().getLogger(ArchiveNotifications.class);

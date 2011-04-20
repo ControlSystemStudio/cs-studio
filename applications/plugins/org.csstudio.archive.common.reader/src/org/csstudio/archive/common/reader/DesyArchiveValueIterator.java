@@ -51,6 +51,7 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  */
 public class DesyArchiveValueIterator implements ValueIterator {
 
+    @SuppressWarnings("unused")
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
 

@@ -5,4 +5,3 @@ Bundle-SymbolicName: org.csstudio.domain.desy.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.domain.desy;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.csstudio.domain.desy.epics;bundle-version="1.0.0"
