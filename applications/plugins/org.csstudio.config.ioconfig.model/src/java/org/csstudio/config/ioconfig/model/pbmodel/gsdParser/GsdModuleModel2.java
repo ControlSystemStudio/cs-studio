@@ -25,6 +25,7 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -41,6 +42,7 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
     private final List<Integer> _value;
     private Integer _extModulePrmDataLen;
     private int _moduleNo;
+    private ParsedGsdFileModel _parent;
 
     /**
      * Constructor.
@@ -49,7 +51,6 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
     public GsdModuleModel2(@Nonnull String name, @Nonnull List<Integer> value) {
         _name = name;
         _value = value;
-        
     }
 
     @Nonnull
@@ -88,5 +89,19 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
 
     public void setModuleNumber(int moduleNo) {
         _moduleNo = moduleNo;
+    }
+
+    public void setParent(ParsedGsdFileModel parent) {
+        _parent = parent;
+    }
+
+    public ParsedGsdFileModel getParent() {
+        return _parent;
+    }
+
+    @Override
+    @CheckForNull
+    public ExtUserPrmData getExtUserPrmData(@Nonnull Integer index) {
+        return getParent().getExtUserPrmData(index);
     }
 }

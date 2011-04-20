@@ -47,11 +47,11 @@ public final class GsdFileParser {
     
     private static final Logger LOG = CentralLogger.getInstance().getLogger(GsdFileParser.class);
     
-    /**
-     * The actual line of gsd file.
-     */
-    private static String _LINE;
-    private static GsdSlaveModel _SLAVE;
+//    /**
+//     * The actual line of gsd file.
+//     */
+//    private static String _LINE;
+//    private static GsdSlaveModel _SLAVE;
     
     private static List<String> _WARNING_LIST = new ArrayList<String>();
     
@@ -64,11 +64,11 @@ public final class GsdFileParser {
         }
     }
     
-    /**
-     * @param br
-     * @throws IOException
-     */
-    private static void createExtUserPrmData(final BufferedReader br) throws IOException {
+//    /**
+//     * @param br
+//     * @throws IOException
+//     */
+//    private static void createExtUserPrmData(final BufferedReader br) throws IOException {
         //        // 0 | 1 | 2 | 3 | 4
         //        // ExtUserPrmData = 4 "Flow Sensor Error" ; Byte 2, bit 0
         //        // definition.
@@ -179,7 +179,7 @@ public final class GsdFileParser {
         //            }
         //        }
         //        _SLAVE.addExtUserPrmData(extUserPrmData.getIndex(), extUserPrmData);
-    }
+//    }
     
     /**
      * @param line
@@ -216,24 +216,24 @@ public final class GsdFileParser {
         return arrayList;
     }
     
-    /**
-     * @param line
-     * @return
-     */
-    private static boolean getBooleanValue(final String line) {
-        int commendIndex = line.indexOf(';');
-        if (commendIndex < 0) {
-            commendIndex = line.length();
-        }
-        int valueStartIndex = line.indexOf('=');
-        if (valueStartIndex > commendIndex) {
-            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
-                                              "GSD File is wrong in thius line: " + line);
-            return false;
-        }
-        return line.substring(valueStartIndex, commendIndex).trim().equals("1");
-        
-    }
+//    /**
+//     * @param line
+//     * @return
+//     */
+//    private static boolean getBooleanValue(final String line) {
+//        int commendIndex = line.indexOf(';');
+//        if (commendIndex < 0) {
+//            commendIndex = line.length();
+//        }
+//        int valueStartIndex = line.indexOf('=');
+//        if (valueStartIndex > commendIndex) {
+//            CentralLogger.getInstance().error(GsdFileParser.class.getSimpleName(),
+//                                              "GSD File is wrong in thius line: " + line);
+//            return false;
+//        }
+//        return line.substring(valueStartIndex, commendIndex).trim().equals("1");
+//        
+//    }
     
     /**
      * @param line
@@ -725,13 +725,6 @@ public final class GsdFileParser {
         return parsedGsdFileModel;
     }
     
-    /**
-     * @param line
-     * @param lineCounter
-     * @param parsedGsdFileModel
-     * @param br
-     * @throws IOException 
-     */
     private void buildExtUserPrmDataRef(@Nonnull String line,
                                         @Nonnull LineCounter lineCounter,
                                         @Nonnull ParsedGsdFileModel parsedGsdFileModel,
@@ -739,7 +732,9 @@ public final class GsdFileParser {
         KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
         ExtUserPrmData eupd = parsedGsdFileModel.getExtUserPrmData(keyValuePair.getIntValue());
         parsedGsdFileModel.setExtUserPrmDataDefault(eupd, keyValuePair.getIndex());
+        parsedGsdFileModel.setExtUserPrmDataRef(keyValuePair);
     }
+    
     private void buildExtUserPrmDataRef(@Nonnull String line,
                                         @Nonnull LineCounter lineCounter,
                                         @Nonnull ParsedGsdFileModel parsedGsdFileModel,
@@ -748,6 +743,7 @@ public final class GsdFileParser {
         KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
         ExtUserPrmData eupd = parsedGsdFileModel.getExtUserPrmData(keyValuePair.getIntValue());
         abstractGsdPropertyModel.setExtUserPrmDataDefault(eupd, keyValuePair.getIndex());
+        abstractGsdPropertyModel.setExtUserPrmDataRef(keyValuePair);
     }
     
     /**

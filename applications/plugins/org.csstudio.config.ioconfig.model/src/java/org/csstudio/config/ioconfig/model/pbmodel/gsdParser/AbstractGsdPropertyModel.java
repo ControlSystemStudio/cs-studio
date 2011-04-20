@@ -43,10 +43,11 @@ import javax.annotation.Nonnull;
  */
 public abstract class AbstractGsdPropertyModel {
     
-    private final Map<String, String> _stringValueMap;
-    private final Map<String, Integer> _intergerValueMap;
+    private final SortedMap<Integer, Integer> _gsdExtUserPrmDataConstMap;
+    private final SortedMap<Integer, KeyValuePair> _gsdExtUserPrmDataRefMap;
     private final Map<String, List<Integer>> _intArrayValueMap;
-    private final SortedMap<Integer, Integer> _gsdExtUserPrmDataConst;
+    private final Map<String, Integer> _intergerValueMap;
+    private final Map<String, String> _stringValueMap;
     
     /**
      * Constructor.
@@ -55,7 +56,106 @@ public abstract class AbstractGsdPropertyModel {
         _stringValueMap = new HashMap<String, String>();
         _intergerValueMap = new HashMap<String, Integer>();
         _intArrayValueMap = new HashMap<String, List<Integer>>();
-        _gsdExtUserPrmDataConst = new TreeMap<Integer, Integer>();
+        _gsdExtUserPrmDataConstMap = new TreeMap<Integer, Integer>();
+        _gsdExtUserPrmDataRefMap = new TreeMap<Integer, KeyValuePair>();
+    }
+    
+    /**
+     * @param intValue
+     * @return
+     */
+    public abstract ExtUserPrmData getExtUserPrmData(Integer intValue);
+    
+    @Nonnull
+    public List<Integer> getExtUserPrmDataConst() {
+        List<Integer> valueList = new ArrayList<Integer>();
+        if (!_gsdExtUserPrmDataConstMap.isEmpty()) {
+            for (int i = 0; i <= _gsdExtUserPrmDataConstMap.lastKey(); i++) {
+                Integer value = _gsdExtUserPrmDataConstMap.get(i);
+                if (value == null) {
+                    value = 0;
+                }
+                valueList.add(value);
+            }
+        }
+        return valueList;
+    }
+    
+    public SortedMap<Integer, KeyValuePair> getExtUserPrmDataRefMap() {
+        return _gsdExtUserPrmDataRefMap;
+    }
+    
+    @CheckForNull
+    protected List<Integer> getIntListValue(@Nonnull String propertty) {
+        return _intArrayValueMap.get(propertty);
+    }
+    
+    @CheckForNull
+    protected Integer getIntValue(@Nonnull String propertty) {
+        return _intergerValueMap.get(propertty);
+    }
+    
+    @CheckForNull
+    protected String getStringValue(@Nonnull String propertty) {
+        return _stringValueMap.get(propertty);
+    }
+    
+    public void setExtUserPrmDataConst(@Nonnull KeyValuePair extUserPrmDataConst) {
+        String stringValue = extUserPrmDataConst.getValue();
+        Integer index = extUserPrmDataConst.getIndex();
+        if (stringValue.contains(",")) {
+            List<Integer> valueList = new ArrayList<Integer>();
+            GsdFileParser.addValues2IntList(extUserPrmDataConst.getValue(), valueList);
+            index = 0;
+            for (Integer value : valueList) {
+                _gsdExtUserPrmDataConstMap.put(index++, value);
+            }
+        } else {
+            _gsdExtUserPrmDataConstMap.put(index, extUserPrmDataConst.getIntValue());
+        }
+    }
+    
+    public void setExtUserPrmDataDefault(@Nonnull ExtUserPrmData extUserPrmData, int bytePos) {
+        setExtUserPrmDataValue(extUserPrmData, bytePos, extUserPrmData.getDefault());
+    }
+    
+    public void setExtUserPrmDataRef(@Nonnull KeyValuePair extUserPrmDataRef) {
+        _gsdExtUserPrmDataRefMap.put(extUserPrmDataRef.getIntValue(), extUserPrmDataRef);
+    }  
+    
+    private void setExtUserPrmDataValue(@Nonnull ExtUserPrmData extUserPrmData,
+                                        int bytePos,
+                                        int value) {
+        int val = value;
+        int low = extUserPrmData.getMinBit();
+        int high = extUserPrmData.getMaxBit();
+        int mask = ~((int) Math.pow(2, high + 1) - (int) Math.pow(2, low));
+        if ((high > 8) && (high < 16)) {
+            int modifyByteHigh = 0;
+            int modifyByteLow = 0;
+            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos)) {
+                modifyByteHigh = _gsdExtUserPrmDataConstMap.get(bytePos);
+            }
+            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos + 1)) {
+                modifyByteLow = _gsdExtUserPrmDataConstMap.get(bytePos + 1);
+            }
+            
+            int parseInt = modifyByteHigh * 256 + modifyByteLow;
+            val = val << (low);
+            int result = (parseInt & mask) | (val);
+            modifyByteLow = result % 256;
+            modifyByteHigh = (result - modifyByteLow) / 256;
+            _gsdExtUserPrmDataConstMap.put(bytePos + 1, modifyByteHigh);
+            _gsdExtUserPrmDataConstMap.put(bytePos, modifyByteLow);
+        } else {
+            int modifyByte = 0;
+            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos)) {
+                modifyByte = _gsdExtUserPrmDataConstMap.get(bytePos);
+            }
+            val = val << (low);
+            int result = (modifyByte & mask) | (val);
+            _gsdExtUserPrmDataConstMap.put(bytePos, result);
+        }
     }
     
     private void setIntArrayValue(@Nonnull KeyValuePair keyValuePair) {
@@ -68,7 +168,7 @@ public abstract class AbstractGsdPropertyModel {
         Integer inValue = GsdFileParser.gsdValue2Int(keyValuePair.getValue());
         _intergerValueMap.put(keyValuePair.getKey(), inValue);
     }
-    
+
     /**
      * Sets the property according to their type. (type-safe)
      */
@@ -82,93 +182,9 @@ public abstract class AbstractGsdPropertyModel {
             setIntegerValue(keyValuePair);
         }
     }
-    
+
     private void setStringValue(@Nonnull KeyValuePair keyValuePair) {
         _stringValueMap.put(keyValuePair.getKey(), keyValuePair.getValue());
-    }
-    
-    @CheckForNull
-    protected List<Integer> getIntListValue(@Nonnull String propertty) {
-        return _intArrayValueMap.get(propertty);
-    }
-    
-    @CheckForNull
-    protected String getStringValue(@Nonnull String propertty) {
-        return _stringValueMap.get(propertty);
-    }
-    
-    @CheckForNull
-    protected Integer getIntValue(@Nonnull String propertty) {
-        return _intergerValueMap.get(propertty);
-    }
-    
-    public void setExtUserPrmDataConst(@Nonnull KeyValuePair keyValuePair) {
-        String stringValue = keyValuePair.getValue();
-        Integer index = keyValuePair.getIndex();
-        if (stringValue.contains(",")) {
-            List<Integer> valueList = new ArrayList<Integer>();
-            GsdFileParser.addValues2IntList(keyValuePair.getValue(), valueList);
-            index = 0;
-            for (Integer value : valueList) {
-                _gsdExtUserPrmDataConst.put(index++, value);
-            }
-        } else {
-            _gsdExtUserPrmDataConst.put(index, keyValuePair.getIntValue());
-        }
-    }
-    
-    @Nonnull
-    public List<Integer> getExtUserPrmDataConst() {
-        List<Integer> valueList = new ArrayList<Integer>();
-        if (!_gsdExtUserPrmDataConst.isEmpty()) {
-            for (int i = 0; i <= _gsdExtUserPrmDataConst.lastKey(); i++) {
-                Integer value = _gsdExtUserPrmDataConst.get(i);
-                if (value == null) {
-                    value = 0;
-                }
-                valueList.add(value);
-            }
-        }
-        return valueList;
-    }
-    
-    public void setExtUserPrmDataDefault(@Nonnull ExtUserPrmData extUserPrmData, int bytePos) {
-        setExtUserPrmDataValue(extUserPrmData, bytePos, extUserPrmData.getDefault());
-    }
-    
-    private void setExtUserPrmDataValue(@Nonnull ExtUserPrmData extUserPrmData,
-                                        int bytePos,
-                                        int value) {
-        int val = value;
-        int low = extUserPrmData.getMinBit();
-        int high = extUserPrmData.getMaxBit();
-        int mask = ~((int) Math.pow(2, high + 1) - (int) Math.pow(2, low));
-        if ((high > 8) && (high < 16)) {
-            int modifyByteHigh = 0;
-            int modifyByteLow = 0;
-            if (_gsdExtUserPrmDataConst.containsKey(bytePos)) {
-                modifyByteHigh = _gsdExtUserPrmDataConst.get(bytePos);
-            }
-            if (_gsdExtUserPrmDataConst.containsKey(bytePos + 1)) {
-                modifyByteLow = _gsdExtUserPrmDataConst.get(bytePos + 1);
-            }
-            
-            int parseInt = modifyByteHigh * 256 + modifyByteLow;
-            val = val << (low);
-            int result = (parseInt & mask) | (val);
-            modifyByteLow = result % 256;
-            modifyByteHigh = (result - modifyByteLow) / 256;
-            _gsdExtUserPrmDataConst.put(bytePos + 1, modifyByteHigh);
-            _gsdExtUserPrmDataConst.put(bytePos, modifyByteLow);
-        } else {
-            int modifyByte = 0;
-            if (_gsdExtUserPrmDataConst.containsKey(bytePos)) {
-                modifyByte = _gsdExtUserPrmDataConst.get(bytePos);
-            }
-            val = val << (low);
-            int result = (modifyByte & mask) | (val);
-            _gsdExtUserPrmDataConst.put(bytePos, result);
-        }
     }
     
 }

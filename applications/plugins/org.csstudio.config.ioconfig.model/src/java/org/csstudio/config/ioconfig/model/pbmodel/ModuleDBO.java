@@ -25,6 +25,7 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.hibernate.annotations.BatchSize;
@@ -64,7 +66,7 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     private int _moduleNumber = -1;
 
-    private String _configurationData;
+    private List<Integer> _configurationData = new ArrayList<Integer>();
 
     private int _inputSize;
 
@@ -113,22 +115,39 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     @Column(name = "cfg_data", length = 99)
     public String getConfigurationData() {
-        return _configurationData;
-    }
-
-    public void setConfigurationData(final String configurationData) {
-        _configurationData = configurationData;
-    }
-    @Transient
-    public void setConfigurationData(@Nonnull final List<Integer> configurationDataList) {
         StringBuilder sb = new StringBuilder();
-        for (Integer value : configurationDataList) {
+        for (Integer value : _configurationData) {
             sb.append(String.format("0x%02X,", value));
         }
         if(sb.length()>0) {
             sb.deleteCharAt(sb.length()-1);
         }
-        _configurationData = sb.toString();
+        return sb.toString();
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public List<Integer> getConfigurationDataList() {
+        // TODO Auto-generated method stub
+        return _configurationData;
+    }
+
+    
+    public void setConfigurationData(@CheckForNull final String configurationData) {
+        if (configurationData != null) {
+            String[] split = configurationData.split(",");
+            _configurationData = new ArrayList<Integer>();
+            for (String value : split) {
+                _configurationData.add(GsdFileParser.gsdValue2Int(value));
+            }
+        }
+    }
+    
+    @Transient
+    public void setConfigurationData(@Nonnull final List<Integer> configurationDataList) {
+        _configurationData = configurationDataList;
     }
 
     /**
@@ -436,5 +455,4 @@ public class ModuleDBO extends AbstractNodeDBO {
         }
         return sb.toString();
     }
-    
 }

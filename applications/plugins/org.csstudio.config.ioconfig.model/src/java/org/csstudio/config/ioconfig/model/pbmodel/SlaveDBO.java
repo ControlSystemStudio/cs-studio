@@ -148,6 +148,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      * {@link #Slave(MasterDBO)}
      */
     public SlaveDBO() {
+        // only for Hibernate
     }
     
     public SlaveDBO(final MasterDBO master) throws PersistenceException {

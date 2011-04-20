@@ -346,7 +346,12 @@ public class ExtUserPrmData {
      */
     @CheckForNull
     public final PrmText getPrmText() {
-        return _gsdFileModel.getPrmTextMap().get(getPrmTextRef());
+            PrmText prmText = null;
+            Integer prmTextRef = getPrmTextRef();
+            if(prmTextRef!=null) {
+                prmText = _gsdFileModel.getPrmTextMap().get(prmTextRef);
+            }
+            return prmText;
     }
     
     /**

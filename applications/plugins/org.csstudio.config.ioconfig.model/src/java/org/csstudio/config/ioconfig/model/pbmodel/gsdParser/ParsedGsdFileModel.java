@@ -54,6 +54,7 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
     public void setModule(@Nonnull GsdModuleModel2 gsdModuleModel) {
         GsdModuleModel2 put = _gsdModuleModelMap.put(gsdModuleModel.getModuleNumber(),
                                                      gsdModuleModel);
+        gsdModuleModel.setParent(this);
         if (put != null) {
             throw new IllegalArgumentException();
         }

@@ -23,9 +23,11 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -39,7 +41,7 @@ import javax.annotation.Nonnull;
 public class PrmText {
     
     private final int _index;
-    private final Map<Integer, PrmTextItem> _prmTextItemMap = new TreeMap<Integer, PrmTextItem>();
+    private final SortedMap<Integer, PrmTextItem> _prmTextItemMap = new TreeMap<Integer, PrmTextItem>();
     
     /**
      * Constructor.
@@ -58,9 +60,27 @@ public class PrmText {
         }
         
     }
+    
+    @CheckForNull
+    public PrmTextItem getPrmTextItem(@Nonnull Integer index) {
+        return _prmTextItemMap.get(index);
+    }
 
     public int getIndex() {
         return _index;
     }
+    
+    @Nonnull
+    public Collection<PrmTextItem> getPrmTextItems(){
+        return _prmTextItemMap.values();
+    }
+
+    /**
+     * @return
+     */
+    public boolean isEmpty() {
+        return _prmTextItemMap.isEmpty();
+    }
+
     
 }
