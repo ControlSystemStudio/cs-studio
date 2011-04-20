@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.requesttype.algorithm.raw;
+package org.csstudio.archive.common.requesttype.algorithm.average;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -41,9 +41,13 @@ import com.google.common.collect.ImmutableSet;
  * TODO (Markus Moeller) : 
  * 
  * @author Markus Moeller
- * @since 01.04.2011
+ * @since 29.03.2011
  */
-public class NoFilteringAlgorithm implements IArchiveReaderFacade {
+public class AverageAlgorithm implements IArchiveReaderFacade {
+	
+	public void readSamples() {
+		System.out.println("Useless");
+	}
 
 	@Override
 	public ImmutableSet<IArchiveRequestType> getRequestTypes() {

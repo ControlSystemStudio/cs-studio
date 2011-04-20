@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.requesttype.algorithm.average;
+package org.csstudio.archive.common.requesttype.algorithm.average;
 
 import java.util.Collection;
 import java.util.regex.Pattern;

@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.archive.requesttype.algorithm.raw;
+package org.csstudio.archive.common.requesttype.algorithm.raw;
 
 import java.util.Collection;
 import java.util.regex.Pattern;

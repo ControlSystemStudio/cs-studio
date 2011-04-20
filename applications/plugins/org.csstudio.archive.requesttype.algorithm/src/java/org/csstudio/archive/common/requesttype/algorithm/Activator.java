@@ -1,5 +1,5 @@
 
-package org.csstudio.archive.requesttype.algorithm;
+package org.csstudio.archive.common.requesttype.algorithm;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

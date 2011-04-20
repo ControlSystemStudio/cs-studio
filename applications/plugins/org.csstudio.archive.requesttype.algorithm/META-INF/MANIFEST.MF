@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Algorithm
-Bundle-SymbolicName: org.csstudio.archive.requesttype.algorithm
+Bundle-SymbolicName: org.csstudio.archive.common.requesttype
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.archive.requesttype.algorithm.Activator
-Bundle-Vendor: Markus Moeller, MKS-2, DESY Hamburg
+Bundle-Activator: org.csstudio.archive.common.requesttype.algorithm.Activator
+Bundle-Vendor: Desy <css-developer@desy.de>, Markus Moeller
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.guava;bundle-version="0.8.0",
  org.csstudio.archive.common.service;bundle-version="1.0.0"

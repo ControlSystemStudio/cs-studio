@@ -16,7 +16,6 @@
 	<echo message="Workspace location: ${workspaceLocation}"/>
 	<echo message="Eclipse instance: ${eclipseInstance}"/>
 	<echo message="Eclipse target platform: ${targetPlatformLocation}"/>
-	<echo message="Eclipse target platform additionals: ${targetPlatformLocation_2}"/>
 	<echo message="Build directory: ${desyBuildDirectory}"/>
 	<echo message="Jenkins base: ${jenkinsbase}"/>
 	<echo message="Base dir: ${basedir}"/>
@@ -43,8 +42,9 @@
           <fileset dir="${csStudioLocation}/applications">
             <exclude name="plugins/${projectDir}/build/build.xml"/>
           </fileset>          
-          <fileset dir="${targetPlatformLocation}"/>
-          <fileset dir="${targetPlatformLocation_2}"/>
+          <fileset dir="${targetPlatformLocation}">
+          	<include name="plugins/**/*"/>
+          </fileset>
         </sync>
         
         <!-- 
