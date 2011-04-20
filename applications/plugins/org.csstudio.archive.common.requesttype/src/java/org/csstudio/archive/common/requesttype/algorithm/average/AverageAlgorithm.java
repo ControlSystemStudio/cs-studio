@@ -24,19 +24,6 @@
 
 package org.csstudio.archive.common.requesttype.algorithm.average;
 
-import java.util.Collection;
-import java.util.regex.Pattern;
-
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
-import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
-import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.Limits;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * TODO (Markus Moeller) : 
