@@ -37,6 +37,7 @@ org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
+org.csstudio.utility.channel.adapters
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
