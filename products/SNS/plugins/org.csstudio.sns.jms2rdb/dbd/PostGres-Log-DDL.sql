@@ -68,6 +68,16 @@ CREATE TABLE  message_content
   value VARCHAR(100)
 );
 
+
+--adding foreign key
+alter table message_content add constraint message_id_fk foreign key (message_id) references message(id);
+alter table message_content add constraint msg_pptype_id_fk foreign key (msg_property_type_id) references msg_property_type(id);
+
+--add indexes
+
+create index msg_id_idx on message_content (message_id);
+create index msg_pp_type_id_idx on message_content (msg_property_type_id);
+
 -- Example Message with some elements
 INSERT INTO message VALUES(1, NOW(), 'log', '', 'INFO');
 INSERT INTO message_content VALUES(3, 1, 3, NOW());

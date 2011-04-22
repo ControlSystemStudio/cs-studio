@@ -45,19 +45,23 @@ import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -68,6 +72,8 @@ import com.google.common.collect.Sets;
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
     private static final String EXC_MSG = "Channel table access failed.";
+
+    private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
     /**
      * Archive channel configuration cache.
      */
@@ -81,7 +87,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
                     TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
-                "FROM " + getDaoMgr().getDatabaseName() + "." + TAB + ", " + getDaoMgr().getDatabaseName() + "." + CS_TAB;
+                "FROM " + getDatabaseName() + "." + TAB + ", " + getDatabaseName() + "." + CS_TAB;
     private final String _selectChannelSuffix = "AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
@@ -91,13 +97,15 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _selectChannelsByGroupId = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
                                                     " ORDER BY " + TAB + ".name";
     private final String _selectMatchingChannelsStmt = _selectChannelPrefix + " WHERE " + TAB + ".name REGEXP ? " + _selectChannelSuffix;
-    private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDaoMgr().getDatabaseName() + "." + TAB;
+    private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDatabaseName() + "." + TAB;
 
     /**
      * Constructor.
      */
-    public ArchiveChannelDaoImpl() {
-        super();
+    @Inject
+    public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                 @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     @Nonnull
@@ -112,10 +120,15 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
         final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
-        final TimeInstant time = lastSampleTime == null ? null :
-                                                    TimeInstantBuilder.buildFromMillis(lastSampleTime.getTime());
-        final String dispHi = result.getString(TAB + ".display_high");
-        final String dispLo = result.getString(TAB + ".display_low");
+
+        final TimeInstant time = lastSampleTime.after(DEFAULT_ZERO_TIMESTAMP) ?
+                                 TimeInstantBuilder.fromMillis(lastSampleTime.getTime()) :
+                                 null;
+
+        String dispHi = result.getString(TAB + ".display_high");
+        dispHi = StringUtil.isBlank(dispHi) ? null : dispHi;
+        String dispLo = result.getString(TAB + ".display_low");
+        dispLo = StringUtil.isBlank(dispLo) ? null : dispLo;
 
         final ArchiveControlSystemId csId = new ArchiveControlSystemId(result.getLong(CS_TAB + ".id"));
         final String csName = result.getString(CS_TAB + ".name");
@@ -293,10 +306,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                                       @Nonnull final V displayHigh) throws ArchiveDaoException {
         String updateDisplayRangesStmt;
         try {
-            updateDisplayRangesStmt = "UPDATE " + getDaoMgr().getDatabaseName() + "." + TAB +
+            updateDisplayRangesStmt = "UPDATE " + getDatabaseName() + "." + TAB +
             " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
             ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
-            " WHERE " + getDaoMgr().getDatabaseName() + "." + TAB + ".id=" + id.asString();
+            " WHERE " + getDatabaseName() + "." + TAB + ".id=" + id.asString();
 
             getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
         } catch (final TypeSupportException e) {

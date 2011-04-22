@@ -24,7 +24,7 @@ package org.csstudio.alarm.dal2jms.preferences;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.dal2jms.Activator;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for plug-in preferences
@@ -60,7 +60,7 @@ public final class Preference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return Activator.PLUGIN_ID;
     }
 

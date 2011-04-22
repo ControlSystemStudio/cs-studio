@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
 import org.csstudio.archivereader.ArchiveReaderFactory;
@@ -58,6 +58,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
     static final ValueIterator EMPTY_ITER = new ValueIterator() {
         @Override
+        @CheckForNull
         public IValue next() throws Exception {
             return null;
         }

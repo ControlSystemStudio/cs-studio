@@ -29,46 +29,76 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatus;
+import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
+import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
+import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
+import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
+import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 
+import com.google.inject.Inject;
+
 
 /**
- * Example archive service implementation to separate the processing and logic layer from
+ * Archive service implementation to separate the processing and logic layer from
  * the data access layer.
  *
- * Uses DAO design pattern with DaoManager to handle several connections in a pool (later) and
- * facilite CRUD command infrastructure for proper multiple command transactions.
+ * Uses DAO design pattern with Guice Injection.
+ * TODO (bknerr) : CRUD command pattern
  *
  * @author bknerr
  * @since 01.11.2010
  */
-public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
-    INSTANCE;
+public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
 
     static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveEngineServiceImpl.class);
-    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+
+    /**
+     * Injected by GUICE construction.
+     */
+    private final IArchiveEngineStatusDao _mgmtDao;
+    private final IArchiveEngineDao _engineDao;
+    private final IArchiveSampleDao _sampleDao;
+    private final IArchiveChannelDao _channelDao;
+    private final IArchiveChannelGroupDao _channelGroupDao;
+    private final IArchiveChannelStatusDao _channelStatusDao;
 
 
     /**
      * Constructor.
      */
-    private MySQLArchiveEngineServiceImpl() {
+    @Inject
+    public MySQLArchiveEngineServiceImpl(@Nonnull final IArchiveEngineStatusDao mgmtDao,
+                                         @Nonnull final IArchiveEngineDao engineDao,
+                                         @Nonnull final IArchiveSampleDao sampleDao,
+                                         @Nonnull final IArchiveChannelDao channelDao,
+                                         @Nonnull final IArchiveChannelGroupDao channelGroupDao,
+                                         @Nonnull final IArchiveChannelStatusDao channelStatusDao) {
+        _mgmtDao = mgmtDao;
+        _engineDao = engineDao;
+        _sampleDao = sampleDao;
+        _channelDao = channelDao;
+        _channelGroupDao = channelGroupDao;
+        _channelStatusDao = channelStatusDao;
+
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
     }
@@ -78,10 +108,10 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
-            DAO_MGR.getSampleDao().createSamples(samples);
+            _sampleDao.createSamples(samples);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }
@@ -92,12 +122,12 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public void writeChannelConnectionInfo(@Nonnull final ArchiveChannelId id,
+    public void writeChannelStatusInfo(@Nonnull final ArchiveChannelId id,
                                            @Nonnull final boolean connected,
                                            @Nonnull final String info,
                                            @Nonnull final TimeInstant timestamp) throws ArchiveServiceException {
         try {
-            DAO_MGR.getChannelStatusDao().createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
+            _channelStatusDao.createChannelStatus(new ArchiveChannelStatus(id, connected, info, timestamp));
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of channel status entry failed.", e);
         }
@@ -107,13 +137,12 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public void writeMonitorModeInformation(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final ArchiverMonitorStatus status,
-                                            @Nonnull final ArchiveEngineId engineId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final String info) throws ArchiveServiceException {
+    public void writeEngineStatusInformation(@Nonnull final ArchiveEngineId engineId,
+                                             @Nonnull final EngineMonitorStatus status,
+                                             @Nonnull final TimeInstant time,
+                                             @Nonnull final String info) throws ArchiveServiceException {
         try {
-            DAO_MGR.getArchiverMgmtDao().createMgmtEntry(new ArchiverMgmtEntry(id, status, engineId, time, info));
+            _mgmtDao.createMgmtEntry(new ArchiveEngineStatus(engineId, status, time, info));
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }
@@ -126,10 +155,25 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     @CheckForNull
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         try {
-            return DAO_MGR.getEngineDao().retrieveEngineByName(name);
+            return _engineDao.retrieveEngineByName(name);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Engine information for " + name +
                                               " could not be retrieved.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateEngineIsAlive(@Nonnull final ArchiveEngineId id,
+                                    @Nonnull final TimeInstant lastTimeAlive)
+                                    throws ArchiveServiceException {
+        try {
+            _engineDao.updateEngineAlive(id, lastTimeAlive);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Engine alive time could not be updated for id " + id +
+                                              ".", e);
         }
     }
 
@@ -141,7 +185,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     public Collection<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id)
                                                                throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
+            return _channelGroupDao.retrieveGroupsByEngineId(id);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Groups for engine " + id.asString() +
                                               " could not be retrieved.", e);
@@ -156,7 +200,7 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     public Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId)
                                                             throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
+            return _channelDao.retrieveChannelsByGroupId(groupId);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channels for group " + groupId.asString() +
                                               " could not be retrieved.", e);
@@ -173,10 +217,46 @@ public enum MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
                                       @Nonnull final V displayLow,
                                       @Nonnull final V displayHigh) throws ArchiveServiceException {
         try {
-            DAO_MGR.getChannelDao().updateDisplayRanges(id, displayLow, displayHigh);
+            _channelDao.updateDisplayRanges(id, displayLow, displayHigh);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel info for " + id +
                                               " could not be updated.", e);
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
+                                                                 @Nonnull final TimeInstant latestAliveTime)
+                                                                 throws ArchiveServiceException {
+        try {
+            return _mgmtDao.retrieveLastEngineStatus(id, latestAliveTime);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Engine status info for " + id +
+                                              " could not be retrieved.", e);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannelStatus getChannelStatusByChannelName(@Nonnull final String name) throws ArchiveServiceException {
+        try {
+            final IArchiveChannel channel = _channelDao.retrieveChannelBy(name);
+            if (channel != null) {
+                return _channelStatusDao.retrieveLatestStatusByChannelId(channel.getId());
+            }
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel status info for " + name +
+                                              " could not be retrieved.", e);
+        }
+        return null;
     }
 }

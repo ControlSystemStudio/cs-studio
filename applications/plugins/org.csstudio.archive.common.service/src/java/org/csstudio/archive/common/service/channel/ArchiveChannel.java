@@ -101,6 +101,7 @@ public class ArchiveChannel implements IArchiveChannel {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getDataType() {
         return _dataType;
     }

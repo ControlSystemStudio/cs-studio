@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test plugin for adapters and DnD
+Bundle-SymbolicName: org.csstudio.csdata.test; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.csstudio.csdata;bundle-version="0.0.1",
+ org.csstudio.ui.util;bundle-version="0.0.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

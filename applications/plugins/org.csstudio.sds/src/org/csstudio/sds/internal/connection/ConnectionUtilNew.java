@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.security.ActivationService;
-import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
@@ -283,7 +283,8 @@ public final class ConnectionUtilNew {
 				+ responsibleDalPlugId;
 	    }
 		final String property = pv.getProperty();
-		return new RemoteInfo(cs, property, null, null);
+		String characteristic = pv.getCharacteristic();
+		return new RemoteInfo(cs, property, characteristic, null);
 	}
 
 }

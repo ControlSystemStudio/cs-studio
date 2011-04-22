@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.typesupport;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,8 +44,30 @@ import org.epics.pvmanager.TypeSupport;
  *                 This class statically is accessed, hence the name should be short and descriptive!
  *
  */
-public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
+public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
+
+    private static final Pattern COLLECTION_PATTERN =
+        Pattern.compile("^(ArrayList|HashSet|LinkedHashSet|LinkedList|TreeSet|Vector|Stack)<(.+)>$");
+
+    /**
+     * Helper enum to dispatch which group to match for Pattern {@link COLLECTION_PATTERN}.
+     * The index is the parameter that is used in the {@link Matcher#group(int)}.
+     *
+     * @author bknerr
+     * @since Mar 30, 2011
+     */
+    private enum TypeLiteralGroup {
+        COLL(1),
+        COLL_ELEM(2);
+        private int _index;
+        private TypeLiteralGroup(final int i) {
+            _index = i;
+        }
+        public int getIndex() {
+            return _index;
+        }
+    }
 
     private static boolean INSTALLED = false;
     public static void install() {
@@ -65,7 +88,7 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
 
     @Nonnull
     public static TimeInstant toTimeInstant(@Nonnull final ITimestamp ts) {
-        return TimeInstantBuilder.buildFromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
+        return TimeInstantBuilder.fromSeconds(ts.seconds()).plusNanosPerSecond(ts.nanoseconds());
     }
 
     @Nonnull
@@ -89,11 +112,12 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
      * @param datatype the name of the class
      * @param packages the array of package names to try
      * @return a {@link Class} object or <code>null</code>.
+     * @throws TypeSupportException
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @Nonnull
     public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype,
-                                                         @Nonnull final String... packages) {
+                                                         @Nonnull final String... packages) throws TypeSupportException {
         Class<T> typeClass = null;
         for (final String pkg : packages) {
             try {
@@ -104,6 +128,11 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
                 // Ignore
                 // CHECKSTYLE ON: EmptyBlock
             }
+        }
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for datatype " + datatype +
+                                           " could not be created from packages:\n" +
+                                           Arrays.asList(packages), null);
         }
         return typeClass;
     }
@@ -116,19 +145,32 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
      *
      * @param <T>
      * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
-     * @param scalarPackages the packages to try for the element type, e.g. typically "java.lang".
+     * @param packages the packages to try for the element type, e.g. typically "java.lang".
      * @return the class object or <code>null</code>
+     * @throws TypeSupportException
      */
     @CheckForNull
     public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                    @Nonnull final String... scalarPackages) {
-        final Pattern p = Pattern.compile("^(Collection|List|Set|Vector)<(.+)>$");
-        final Matcher m = p.matcher(datatype);
+                                                                    @Nonnull final String... packages) throws TypeSupportException {
+        return createClassFromString(TypeLiteralGroup.COLL_ELEM, datatype, packages);
+    }
+    @CheckForNull
+    public static <T> Class<T> createCollectionClassFromMultiScalarString(@Nonnull final String datatype,
+                                                                          @Nonnull final String... packages) throws TypeSupportException {
+        return createClassFromString(TypeLiteralGroup.COLL, datatype, packages);
+    }
+
+    @CheckForNull
+    private static <T> Class<T> createClassFromString(@Nonnull final TypeLiteralGroup typeGroup,
+                                                      @Nonnull final String datatype,
+                                                      @Nonnull final String... packages) throws TypeSupportException {
+        final Matcher m = COLLECTION_PATTERN.matcher(datatype);
         if (m.matches()) {
-            final String elementType = m.group(2); // e.g. Byte from List<Byte>
-            return createTypeClassFromString(elementType, scalarPackages);
+            final String elementType = m.group(typeGroup.getIndex()); // e.g. Byte from List<Byte>
+            return createTypeClassFromString(elementType, packages);
         }
         return null;
+
     }
 
     /**
@@ -159,7 +201,7 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
      */
     public static <T> boolean isDataTypeConvertibleToDouble(@Nonnull final Class<T> type) throws TypeSupportException {
         final BaseTypeConversionSupport<T> support =
-            (BaseTypeConversionSupport<T>) findTypeSupportFor(BaseTypeConversionSupport.class, type);
+            (BaseTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(BaseTypeConversionSupport.class, type);
 
         return support.isConvertibleToDouble();
 
@@ -185,7 +227,7 @@ public abstract class BaseTypeConversionSupport<T> extends TypeSupport<T> {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
         final BaseTypeConversionSupport<T> support =
-            (BaseTypeConversionSupport<T>) findTypeSupportFor(BaseTypeConversionSupport.class,
+            (BaseTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(BaseTypeConversionSupport.class,
                                                               typeClass);
         return support.convertToDouble(value);
     }

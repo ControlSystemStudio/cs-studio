@@ -308,5 +308,14 @@
                name="Font">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.MaintenanceRule"
+            compatibleProperties="sds.path"
+            name="Maintenance Rule"
+            ruleId="org.csstudio.sds.cosyrules.color.maintenancerule">
+         <parameterDescription
+               name="org.csstudio.sds.settings.desy.parameterDescription1">
+         </parameterDescription>
+      </rule>
    </extension>
 </plugin>

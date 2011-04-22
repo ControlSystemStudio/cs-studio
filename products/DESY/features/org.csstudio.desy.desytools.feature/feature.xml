@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
+   </url>
+
    <plugin
          id="org.csstudio.utility.documentService"
          download-size="0"

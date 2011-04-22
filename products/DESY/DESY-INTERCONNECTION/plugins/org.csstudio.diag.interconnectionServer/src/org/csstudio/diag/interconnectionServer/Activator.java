@@ -1,4 +1,5 @@
 package org.csstudio.diag.interconnectionServer;
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -32,6 +33,9 @@ import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -44,7 +48,9 @@ public class Activator extends AbstractCssPlugin {
 	// The shared instance
 	private static Activator plugin;
 
-    private LdapServiceTracker _ldapServiceTracker;
+	private LdapServiceTracker _ldapServiceTracker;
+
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * The constructor
@@ -55,7 +61,7 @@ public class Activator extends AbstractCssPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
@@ -71,12 +77,16 @@ public class Activator extends AbstractCssPlugin {
 				reporter, props);
 
 		_ldapServiceTracker = new LdapServiceTracker(context);
-		_ldapServiceTracker .open();
+		_ldapServiceTracker.open();
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 	}
 
 	@Override
 	protected void doStop(final BundleContext context) throws Exception {
-	    _ldapServiceTracker .close();
+		_ldapServiceTracker.close();
+		_genericServiceTracker.close();
 	}
 
 	@Override
@@ -85,7 +95,12 @@ public class Activator extends AbstractCssPlugin {
 	}
 
 	@CheckForNull
-    public ILdapService getLdapService() {
-        return (ILdapService) _ldapServiceTracker.getService();
-    }
+	public ILdapService getLdapService() {
+		return (ILdapService) _ldapServiceTracker.getService();
+	}
+
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

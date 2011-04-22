@@ -123,11 +123,13 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
         return SeverityMapping.getSeverityNumber(_messageProperties.get("SEVERITY"));
     }
 
-    public String getName() {
+    @Override
+	public String getName() {
         return this.getProperty("NAME"); //$NON-NLS-1$
     }
 
-    public String getTypeId() {
+    @Override
+	public String getTypeId() {
         return TYPE_ID;
     }
 

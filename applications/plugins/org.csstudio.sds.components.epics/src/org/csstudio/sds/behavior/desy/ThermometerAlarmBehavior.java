@@ -40,6 +40,7 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link ThermometerModel} widget with Connection state and Alarms.
@@ -77,7 +78,8 @@ public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Ther
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange( final ThermometerModel widget,final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final ThermometerModel widget,final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
         widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
 

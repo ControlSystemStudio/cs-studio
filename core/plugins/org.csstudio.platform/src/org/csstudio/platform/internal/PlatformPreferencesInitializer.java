@@ -26,8 +26,6 @@ import org.csstudio.platform.LocaleService;
 import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -56,7 +54,6 @@ public final class PlatformPreferencesInitializer extends
 		initializeLoggingPreferences(node);
 		initializeAuthenticationPreferences(node);
 		initializeLocalePreferences(node);
-		initializeControlSystemPreferences(node);
 		initializeSystemPropertyPreferences(node);
 		initializeOnsitePreferences(node);
 //		initializeWorkspacePreferences();
@@ -187,14 +184,4 @@ public final class PlatformPreferencesInitializer extends
 		node.put(LocaleService.PROP_LOCALE, ""); //$NON-NLS-1$
 	}
 	
-	/**
-	 * Initializes the control system settings.
-	 * @param node
-	 *            the preferences node to use
-	 */
-	private void initializeControlSystemPreferences(final IEclipsePreferences node) {
-		node.put(ProcessVariableAdressFactory.PROP_CONTROL_SYSTEM, ControlSystemEnum.EPICS.name());
-		node.putBoolean(ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM, true);
-	}
-
 }

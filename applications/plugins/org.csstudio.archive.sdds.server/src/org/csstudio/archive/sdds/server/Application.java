@@ -24,8 +24,11 @@
 
 package org.csstudio.archive.sdds.server;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
@@ -219,6 +222,55 @@ public class Application implements IApplication, RemotelyStoppable, Application
             lock.notify();
         }
     }
+
+    /**
+     * Stops the application. Used by JMX. 
+     */
+    @Override
+	public void stopApplication() {
+    	stopApplication(false);
+    }
+
+	@Override
+	public String readVersion() {
+		
+		String workspaceDirectory = Platform.getInstallLocation()
+									.getURL().getPath() + ".eclipseproduct";
+		
+		BufferedReader reader = null;
+		String version = null;
+		
+		try {
+			reader = new BufferedReader(new FileReader(workspaceDirectory));
+			while (reader.ready()) {
+				version = reader.readLine().trim();
+				if (version.startsWith("version=")) {
+					int indexOfEqual = version.indexOf("=") + 1;
+					version = version.substring(indexOfEqual);
+					break;
+				} else {
+					version = null;
+				}
+			}
+		} catch (FileNotFoundException fnfe) {
+			logger.warn("Workspace directory cannot be found: " + workspaceDirectory);
+			version = null;
+		} catch (IOException ioe) {
+			logger.warn("Cannot read version file.");
+			version = null;
+		} finally {
+			if (reader!=null) {
+				try{reader.close();}catch(Exception e){/* Can be ignored */}
+				reader=null;
+			}
+		}
+		
+		if (version == null) {
+			version = "N/A";
+		}
+		
+		return version;
+	}
 
     public void nirvana()
     {

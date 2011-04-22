@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
@@ -102,7 +102,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                         @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
@@ -111,11 +111,11 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     IValue toIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
                                 @Nonnull final T min,
                                 @Nonnull final T max) throws TypeSupportException {
-        final T valueData = sysVar.getData().getValueData();
+        final T valueData = sysVar.getData();
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) valueData.getClass();
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.convertToIMinMaxDoubleValue(sysVar, min, max);
     }
 
@@ -129,7 +129,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.createEpicsVariable(name, value, system, timestamp);
     }
 
@@ -143,7 +143,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                       @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         @SuppressWarnings("unchecked")
         final EpicsSystemVariableSupport<T> support =
-            (EpicsSystemVariableSupport<T>) findTypeSupportFor(EpicsSystemVariableSupport.class, typeClass);
+            (EpicsSystemVariableSupport<T>) findTypeSupportForOrThrowTSE(EpicsSystemVariableSupport.class, typeClass);
         return support.createCollectionEpicsVariable(name, typeClass, data, system, timestamp);
     }
 

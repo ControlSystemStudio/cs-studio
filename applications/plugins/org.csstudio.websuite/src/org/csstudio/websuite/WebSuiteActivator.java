@@ -42,7 +42,9 @@ public class WebSuiteActivator extends Plugin
 	private static BundleContext bundleContext;
 	
 	/** The constructor */
-	public WebSuiteActivator() {}
+	public WebSuiteActivator() {
+		// Nothing to do
+	}
 
 	public static BundleContext getBundleContext() {
 	    return bundleContext;
@@ -51,7 +53,8 @@ public class WebSuiteActivator extends Plugin
 	/** 
      * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
      */
-    public void start(BundleContext context) throws Exception {
+    @Override
+	public void start(BundleContext context) throws Exception {
         
         super.start(context);
         bundleContext = context;
@@ -63,7 +66,8 @@ public class WebSuiteActivator extends Plugin
     /** 
      * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
      */
-    public void stop(BundleContext context) throws Exception {
+    @Override
+	public void stop(BundleContext context) throws Exception {
         
         plugin = null;
         super.stop(context);

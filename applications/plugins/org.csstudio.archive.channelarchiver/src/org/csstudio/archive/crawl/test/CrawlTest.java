@@ -17,7 +17,7 @@ import org.csstudio.archive.crawl.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.test.TestDataProvider;
+import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class CrawlTest
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 
-    private static TestDataProvider PROV;
+    private static org.csstudio.testsuite.util.TestDataProvider PROV;
     private static String URL;
 
     @BeforeClass

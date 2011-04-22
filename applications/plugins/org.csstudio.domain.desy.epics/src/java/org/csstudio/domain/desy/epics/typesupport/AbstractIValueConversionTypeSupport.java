@@ -23,10 +23,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.pvmanager.TypeSupport;
@@ -70,5 +72,6 @@ public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
 
     @Nonnull
     protected abstract EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                                      @Nonnull final T value) throws TypeSupportException;
+                                                                      @Nonnull final T value,
+                                                                      @Nullable final EpicsMetaData metaData) throws TypeSupportException;
 }

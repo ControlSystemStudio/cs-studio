@@ -24,7 +24,7 @@ package org.csstudio.alarm.table.preferences.alarm;
 import java.util.List;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

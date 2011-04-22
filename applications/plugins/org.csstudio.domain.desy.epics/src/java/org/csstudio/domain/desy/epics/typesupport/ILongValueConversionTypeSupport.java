@@ -24,13 +24,14 @@ package org.csstudio.domain.desy.epics.typesupport;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.data.values.ILongValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -59,7 +60,8 @@ final class ILongValueConversionTypeSupport extends
     @Override
     @Nonnull
     protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final ILongValue value) throws TypeSupportException {
+                                                             @Nonnull final ILongValue value,
+                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final long[] values = value.getValues();
         if (values == null || values.length == 0) {
             throw new TypeSupportException("ILongValue doesn't have any values. Conversion failed.", null);
@@ -70,15 +72,15 @@ final class ILongValueConversionTypeSupport extends
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
         if (values.length == 1) {
             return new EpicsSystemVariable<Long>(name,
-                                                   new CssValueType<Long>(values[0]),
+                                                 Long.valueOf(values[0]),
+                                                 ControlSystem.EPICS_DEFAULT,
+                                                 timestamp,
+                                                 alarm);
+        }
+        return new EpicsSystemVariable<List<Long>>(name,
+                                                   Lists.newArrayList(Longs.asList(values)),
                                                    ControlSystem.EPICS_DEFAULT,
                                                    timestamp,
                                                    alarm);
-        }
-        return new EpicsSystemVariable<List<Long>>(name,
-                                                    new CssValueType<List<Long>>(Lists.newArrayList(Longs.asList(values))),
-                                                    ControlSystem.EPICS_DEFAULT,
-                                                    timestamp,
-                                                    alarm);
     }
 }

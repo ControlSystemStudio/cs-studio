@@ -26,11 +26,9 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IMetaData;
-import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.collect.Sets;
 
 /**
  * TODO (bknerr) :
@@ -56,6 +54,6 @@ public class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsE
         final IEnumeratedMetaData enumData = checkAndConvertToEnumerated(data, EpicsEnum.class);
 
         final String[] states = enumData.getStates();
-        return new EpicsMetaData(Sets.newHashSet(states));
+        return new EpicsMetaData(states);
     }
 }

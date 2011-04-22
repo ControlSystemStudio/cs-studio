@@ -26,6 +26,8 @@ import java.net.URL;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
+
 
 /**
  * Archive engine data transfer object.
@@ -37,16 +39,20 @@ public class ArchiveEngine implements IArchiveEngine {
 
     private final ArchiveEngineId _id;
     private final URL _url;
+    private final TimeInstant _lastAliveTime;
 
     /**
      * Constructor.
      * @param archiveEngineId
      * @param url
+     * @param timeInstant
      */
     public ArchiveEngine(@Nonnull final ArchiveEngineId id,
-                            @Nonnull final URL url) {
+                         @Nonnull final URL url,
+                         @Nonnull final TimeInstant lastAliveTime) {
         _id = id;
         _url = url;
+        _lastAliveTime = lastAliveTime;
     }
 
     /**
@@ -62,8 +68,18 @@ public class ArchiveEngine implements IArchiveEngine {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public URL getUrl() throws MalformedURLException {
         return _url;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getLastAliveTime() {
+        return _lastAliveTime;
     }
 
 }

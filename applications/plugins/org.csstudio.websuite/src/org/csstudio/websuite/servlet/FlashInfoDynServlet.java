@@ -76,7 +76,8 @@ public class FlashInfoDynServlet extends HttpServlet {
     /**
      * 
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         
         super.init(config);
         
@@ -92,7 +93,8 @@ public class FlashInfoDynServlet extends HttpServlet {
     /**
      * 
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
         this.createPage(request, response);
@@ -101,7 +103,8 @@ public class FlashInfoDynServlet extends HttpServlet {
     /**
      * 
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
         this.createPage(request, response);

@@ -13,6 +13,7 @@ import java.util.Map;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractLayoutModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -40,6 +41,23 @@ public class WidgetCreateCommand extends Command {
 	 * @param newWidget The new Widget to be added.
 	 * @param container the parent.
 	 * @param bounds the bounds for the new widget
+	 * @param append true if its selection is appended to other selections.
+	 * @param applySchema true if the new widget's properties are applied with schema.
+	 */
+	public WidgetCreateCommand(AbstractWidgetModel newWidget, AbstractContainerModel
+			container, Rectangle bounds, boolean append, boolean applySchema){
+		this(newWidget, container,bounds,append);
+		if(applySchema){
+			SchemaService.getInstance().applySchema(this.newWidget);
+		}		
+	}
+	
+	
+	/**
+	 * @param newWidget The new Widget to be added.
+	 * @param container the parent.
+	 * @param bounds the bounds for the new widget
+	 * @param append true if its selection is appended to other selections.
 	 */
 	public WidgetCreateCommand(AbstractWidgetModel newWidget, AbstractContainerModel
 			container, Rectangle bounds, boolean append) {

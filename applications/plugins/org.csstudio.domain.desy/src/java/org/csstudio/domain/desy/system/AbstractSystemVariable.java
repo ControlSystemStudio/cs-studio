@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.system;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Replacement for my very own ICssValueStuff
@@ -36,8 +35,10 @@ import org.csstudio.domain.desy.types.ICssValueType;
  */
 public abstract class AbstractSystemVariable<T>  implements ISystemVariable<T> {
 
+    private static final long serialVersionUID = 1867661799693271466L;
+
     private final String _name;
-    private final ICssValueType<T> _data;
+    private final T _data;
     private final ControlSystem _origin;
     private final TimeInstant _timestamp;
 
@@ -45,7 +46,7 @@ public abstract class AbstractSystemVariable<T>  implements ISystemVariable<T> {
      * Constructor.
      */
     public AbstractSystemVariable(@Nonnull final String name,
-                                  @Nonnull final ICssValueType<T> data,
+                                  @Nonnull final T data,
                                   @Nonnull final ControlSystem origin,
                                   @Nonnull final TimeInstant time) {
         _name = name;
@@ -59,7 +60,7 @@ public abstract class AbstractSystemVariable<T>  implements ISystemVariable<T> {
      */
     @Override
     @Nonnull
-    public ICssValueType<T> getData() {
+    public T getData() {
         return _data;
     }
 

@@ -31,9 +31,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * Performs a user login on the XMPP server during CSS startup. If no username
@@ -49,12 +48,13 @@ public class StartupXmppLogin implements IStartupServiceListener {
 	/**
 	 * Runnable which performs the actual XMPP login.
 	 */
-	private static final class XmppLoginProcess implements Runnable {
+	private static final class XmppLoginProcess implements Runnable, IGenericServiceListener<ISessionService> {
 		
 		// Keys for the objects in the secure store
 		private static final String SECURE_STORE_USERNAME = "xmpp.username";
 		private static final String SECURE_STORE_PASSWORD = "xmpp.password";
 		
+		private ISessionService _sessionService;
 		private final String _server;
 
 		/**
@@ -64,6 +64,7 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		 *            the server to connect to.
 		 */
 		XmppLoginProcess(String server) {
+			Activator.getDefault().addSessionServiceListener(this);
 			_server = server;
 		}
 		
@@ -109,14 +110,14 @@ public class StartupXmppLogin implements IStartupServiceListener {
 				} else if (credentials == Credentials.ANONYMOUS) {
 					finished = tryAnonymousLogin();
 					if (!finished) {
-						showLoginErrorMessage();
+						showLoginErrorMessage("Anonymous Login failed. Please try again.");
 					}
 				} else {
 					finished = tryLogin(credentials);
 					if (finished) {
 						writeToSecureStore(credentials);
 					} else {
-						showLoginErrorMessage();
+						showLoginErrorMessage("Anonymous Login failed. Please try again.");
 					}
 				}
 			} while (!finished);
@@ -183,12 +184,13 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		/**
 		 * Displays an error message to the user to inform the user that the
 		 * login failed.
+		 * @param message 
 		 */
-		private void showLoginErrorMessage() {
+		private void showLoginErrorMessage(final String message) {
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					MessageDialog.openError(null, "ECF/XMPP Login",
-							"Login failed. Please try again.");
+							message);
 				}
 			});
 		}
@@ -217,13 +219,25 @@ public class StartupXmppLogin implements IStartupServiceListener {
 		 */
 		private boolean tryLogin(String username, String password) {
 			try {
-				HeadlessConnection.connect(username, password, _server,
-						ECFConstants.XMPP);
-				ServiceLauncher.startRemoteServices();
+				if (_sessionService != null) {
+					_sessionService.connect(username, password, _server);
+				} else {
+					showLoginErrorMessage("Session Service not available");
+				}
 				return true;
 			} catch (Exception e) {
 				return false;
 			}
+		}
+
+		@Override
+		public void bindService(ISessionService service) {
+			_sessionService = service;
+		}
+		
+		@Override
+		public void unbindService(ISessionService service) {
+			_sessionService = null;
 		}
 	}
 

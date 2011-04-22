@@ -301,6 +301,12 @@
            id="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
            name="Rule Folders">
      </page>
+     <page
+           category="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
+           class="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.MaintenanceRulePreference"
+           name="Maintenance Rule ">
+     </page>
   </extension>
   <extension
         point="org.eclipse.ui.popupMenus">

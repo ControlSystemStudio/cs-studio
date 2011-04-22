@@ -7,7 +7,8 @@ Bundle-Activator: org.csstudio.utility.tine.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.platform,
  org.csstudio.platform.libs.tine,
- org.csstudio.utility.namespace.utility
+ org.csstudio.utility.namespace.utility,
+ org.csstudio.platform.simpledal;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.utility.tine,
  org.csstudio.utility.tine.preference,

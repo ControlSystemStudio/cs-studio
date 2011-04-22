@@ -29,17 +29,16 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 /**
  * Activator.
- * Registers three service impls:<br/>
- * <li>{@link IArchiveEngineConfigService}
- * <li>{@link IArchiveEngineFacade}
- * <li>{@link IArchiveReaderFacade}
  *
  * @author bknerr
  * @since 22.11.2010
@@ -75,12 +74,19 @@ public class Activator implements BundleActivator {
         return INSTANCE;
     }
 
-	/*
+    /*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
     public void start(@Nonnull final BundleContext context) throws Exception {
+
+	    final Injector injector = Guice.createInjector(new MySQLArchiveServiceImplModule());
+	    final MySQLArchiveEngineServiceImpl engineServiceImpl =
+	        injector.getInstance(MySQLArchiveEngineServiceImpl.class);
+	    final MySQLArchiveReaderServiceImpl readerServiceImpl =
+	        injector.getInstance(MySQLArchiveReaderServiceImpl.class);
+
 
         final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "DESY");
@@ -88,7 +94,7 @@ public class Activator implements BundleActivator {
         LOG.info("Register MySQL archive engine service");
 
         context.registerService(IArchiveEngineFacade.class.getName(),
-                                MySQLArchiveEngineServiceImpl.INSTANCE,
+                                engineServiceImpl,
                                 propsCfg);
 
 
@@ -98,7 +104,7 @@ public class Activator implements BundleActivator {
         LOG.info("Register MySQL archive reader service");
 
         context.registerService(IArchiveReaderFacade.class.getName(),
-                                MySQLArchiveReaderServiceImpl.INSTANCE,
+                                readerServiceImpl,
                                 propsRd);
 	}
 
@@ -111,6 +117,6 @@ public class Activator implements BundleActivator {
 
 	    // Services are automatically unregistered
 
-	    ArchiveDaoManager.INSTANCE.disconnect();
+	    ArchiveConnectionHandler.INSTANCE.disconnect();
 	}
 }

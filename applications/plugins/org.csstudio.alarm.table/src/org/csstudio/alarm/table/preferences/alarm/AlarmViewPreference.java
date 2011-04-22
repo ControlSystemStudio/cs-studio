@@ -24,7 +24,7 @@ package org.csstudio.alarm.table.preferences.alarm;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for alarm view preferences (mimicked enum with inheritance).
@@ -70,7 +70,7 @@ public final class AlarmViewPreference<T> extends AbstractPreference<T> {
     }
     
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return JmsLogsPlugin.PLUGIN_ID;
     }
     

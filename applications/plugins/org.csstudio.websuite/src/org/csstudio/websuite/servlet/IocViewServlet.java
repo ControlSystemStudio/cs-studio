@@ -32,10 +32,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.csstudio.platform.simpledal.ValueType;
 
 /**
  * @author Markus Moeller
@@ -52,7 +52,8 @@ public class IocViewServlet extends HttpServlet
     /** */
     private ProcessVariableAdressFactory pvFactory;
 
-    public void init(ServletConfig config) throws ServletException
+    @Override
+	public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
 
@@ -63,12 +64,14 @@ public class IocViewServlet extends HttpServlet
         pvFactory = ProcessVariableAdressFactory.getInstance();
     }
     
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         this.createPage(request, response);
     }

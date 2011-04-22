@@ -26,7 +26,7 @@ package org.csstudio.archive.sdds.server.sdds;
 
 import java.util.TreeSet;
 import org.csstudio.archive.sdds.server.Activator;
-import org.csstudio.archive.sdds.server.conversion.SampleCtrl;
+import org.csstudio.archive.sdds.server.conversion.SampleParameter;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -41,22 +41,24 @@ public class SddsDataReader implements Runnable {
     
     /** Results */
     // private Vector<EpicsRecordData> result;
-    private TreeSet<EpicsRecordData> result;
+    private TreeSet<EpicsRecordData> data;
     
     /** The SDDSFile object for reading the archive file */
     private SDDSFile sddsFile;
 
     /** Holds the parameter of a PV */
-    private SampleCtrl sampleCtrl;
+    private SampleParameter sampleParameter;
     
     /** Path of SDDS file to read */
     private String filePath;
     
     /** */
-    private long startTime;
+    @SuppressWarnings("unused")
+	private long startTime;
     
     /** */
-    private long endTime;
+    @SuppressWarnings("unused")
+	private long endTime;
 
     /**
      * 
@@ -75,11 +77,11 @@ public class SddsDataReader implements Runnable {
         this.startTime = startTime;
         this.endTime = endTime;
         sddsFile = new SDDSFile();
-        sampleCtrl = new SampleCtrl();
+        sampleParameter = new SampleParameter();
         sddsFile.setFileName(filePath);
         sddsFile.setEndian(littleEndian);
         // result = new Vector<EpicsRecordData>();
-        result = new TreeSet<EpicsRecordData>(new TimeComperator());
+        data = new TreeSet<EpicsRecordData>(new TimeComperator());
     }
     
     /**
@@ -90,9 +92,9 @@ public class SddsDataReader implements Runnable {
         
         EpicsRecordData[] r = null;
         
-        if(result.isEmpty() == false) {
-            r = new EpicsRecordData[result.size()];
-            r = result.toArray(r);
+        if(data.isEmpty() == false) {
+            r = new EpicsRecordData[data.size()];
+            r = data.toArray(r);
         } else {
             r = new EpicsRecordData[0];
         }
@@ -106,7 +108,7 @@ public class SddsDataReader implements Runnable {
      */
     //public Vector<EpicsRecordData> getResult() {
     public TreeSet<EpicsRecordData> getResult() {
-        return result;
+        return data;
     }
 
     /**
@@ -115,7 +117,7 @@ public class SddsDataReader implements Runnable {
      * @return
      */
     public int getResultCount() {
-        return result.size();
+        return data.size();
     }
     
     /**
@@ -123,8 +125,8 @@ public class SddsDataReader implements Runnable {
      * 
      * @return
      */
-    public SampleCtrl getSampleCtrl() {
-        return sampleCtrl;
+    public SampleParameter getSampleCtrl() {
+        return sampleParameter;
     }
     
     /**
@@ -133,8 +135,10 @@ public class SddsDataReader implements Runnable {
     @Override
 	public void run() {
         
-        EpicsRecordData prevData = null;
-        EpicsRecordData lastData = null;
+        @SuppressWarnings("unused")
+		EpicsRecordData prevData = null;
+        @SuppressWarnings("unused")
+		EpicsRecordData lastData = null;
         String[] list = null;
         Object[] time = null;
         Object[] nanoSec = null;
@@ -147,7 +151,7 @@ public class SddsDataReader implements Runnable {
         
         list = sddsFile.getParameterNames();
         // types = sddsFile.getParameterTypes();
-        sampleCtrl = this.getParameters(list);
+        sampleParameter = this.getParameters(list);
         
         time = sddsFile.getColumnValues(0, 1, false);
         nanoSec = sddsFile.getColumnValues(1, 1, false);
@@ -170,7 +174,7 @@ public class SddsDataReader implements Runnable {
 //        }
         
         for(int i = 0;i < count;i++) {
-            result.add(new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
+            data.add(new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
                                          (Long)status[i], value[i]));
         }
         
@@ -191,9 +195,9 @@ public class SddsDataReader implements Runnable {
      * @param list
      * @return
      */
-    private SampleCtrl getParameters(String[] list) {
+    private SampleParameter getParameters(String[] list) {
         
-        SampleCtrl result = new SampleCtrl();
+        SampleParameter result = new SampleParameter();
         String[] name = null;
         String value = null;
         int index;
@@ -241,7 +245,16 @@ public class SddsDataReader implements Runnable {
                             } else if(value.compareToIgnoreCase("EGU") == 0) {
 
                                 index = sddsFile.getParameterIndex(s);
-                                result.setUnits((String)sddsFile.getParameterValue(index, 1, true));
+                                String tmp = (String) sddsFile.getParameterValue(index, 1, true);
+                                if (tmp != null) {
+                                	if (tmp.compareTo("\"\"") == 0) {
+                                		tmp = "N/A";
+                                	}
+                                } else {
+                                	tmp = "N/A";
+                                }
+                                
+                                result.setUnits(tmp);
                             }
                         }
                     }

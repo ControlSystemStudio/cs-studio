@@ -21,13 +21,11 @@
  */
 package org.csstudio.archive.common.engine;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.AbstractPreference;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 
 /**
@@ -39,20 +37,12 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
 
-    private static URL DEFAULT_RESCUE_URL;
-    static {
-        try {
-            DEFAULT_RESCUE_URL = new URL("file://./engineRescue");
-        } catch (final MalformedURLException e) {
-            CentralLogger.getInstance().error(ArchiveEnginePreference.class,
-                                              "Default URL preference for rescue dir not well formed.");
-        }
-    }
-
     public static final ArchiveEnginePreference<Long> WRITE_PERIOD =
         new ArchiveEnginePreference<Long>("writePeriodInS", Long.valueOf(7));
-    public static final ArchiveEnginePreference<URL> DATA_RESCUE_DIR =
-        new ArchiveEnginePreference<URL>("dataRescueDir", DEFAULT_RESCUE_URL);
+    public static final ArchiveEnginePreference<Long> HEARTBEAT_PERIOD =
+        new ArchiveEnginePreference<Long>("heartBeatPeriodInS", Long.valueOf(1));
+    public static final ArchiveEnginePreference<File> DATA_RESCUE_DIR =
+        new ArchiveEnginePreference<File>("dataRescueDir", new File("./engineRescue"));
 
     /**
      * Constructor.
@@ -80,7 +70,7 @@ public class ArchiveEnginePreference<T> extends AbstractPreference<T>{
      */
     @Override
     @Nonnull
-    protected String getPluginID() {
-        return Activator.PLUGIN_ID;
+    public String getPluginID() {
+        return ArchiveEngineActivator.PLUGIN_ID;
     }
 }

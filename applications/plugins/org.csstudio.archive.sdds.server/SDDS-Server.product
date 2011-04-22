@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.8" useFeatures="false" includeLaunchers="true">
+<product name="SDDS-Server" id="org.csstudio.archive.sdds.server.SDDSServerProduct" application="org.csstudio.archive.sdds.server.SddsServerApplication" version="0.9.10" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -23,9 +23,10 @@
    </vm>
 
    <plugins>
+      <plugin id="javax.annotation"/>
       <plugin id="org.csstudio.archive.sdds.server"/>
+      <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>

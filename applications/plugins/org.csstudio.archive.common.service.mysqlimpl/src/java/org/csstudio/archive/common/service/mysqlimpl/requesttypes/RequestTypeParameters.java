@@ -24,8 +24,8 @@ package org.csstudio.archive.common.service.mysqlimpl.requesttypes;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
-import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
 
 /**
  * Parameter available to the archive request types of this service implementation.
@@ -73,6 +73,7 @@ public final class RequestTypeParameters {
          * {@inheritDoc}
          */
         @Override
+        @Nonnull
         public Class<Double> getValueType() {
             return Double.class;
         }
@@ -97,7 +98,7 @@ public final class RequestTypeParameters {
          */
         @Override
         @Nonnull
-        public Object clone() {
+        public PrecisionRequestParameter deepCopy() {
             return new PrecisionRequestParameter();
         }
         /**
@@ -168,6 +169,7 @@ public final class RequestTypeParameters {
          * {@inheritDoc}
          */
         @Override
+        @Nonnull
         public Class<Integer> getValueType() {
             return Integer.class;
         }
@@ -176,6 +178,7 @@ public final class RequestTypeParameters {
          * {@inheritDoc}
          */
         @Override
+        @Nonnull
         public Integer toValue(@Nonnull final String value) throws RequestTypeParameterException {
             try {
                 return Integer.parseInt(value);
@@ -191,17 +194,23 @@ public final class RequestTypeParameters {
          */
         @Override
         @Nonnull
-        public Object clone() {
+        public NumOfBinsRequestParameter deepCopy() {
             return new NumOfBinsRequestParameter();
         }
-
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void setValue(@Nonnull final Integer newValue) throws RequestTypeParameterException {
+            _value = newValue;
+        }
         /**
          * {@inheritDoc}
          */
         @Override
         public boolean equals(@Nullable final Object obj) {
             if (obj instanceof NumOfBinsRequestParameter) {
-             // no non-static fields
+                // no non-static fields
                 return true;
             }
             return false;
@@ -211,16 +220,8 @@ public final class RequestTypeParameters {
          */
         @Override
         public int hashCode() {
-         // no non-static fields
+            // no non-static fields
             return super.hashCode();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void setValue(@Nonnull final Integer newValue) throws RequestTypeParameterException {
-            _value = newValue;
         }
     }
     /**

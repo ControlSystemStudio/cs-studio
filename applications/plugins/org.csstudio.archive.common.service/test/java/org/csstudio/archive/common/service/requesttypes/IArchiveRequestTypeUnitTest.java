@@ -23,12 +23,16 @@ package org.csstudio.archive.common.service.requesttypes;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.requesttypes.internal.AbstractArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.AbstractArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.internal.AbstractArchiveRequestTypeParameter;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test
+ * Tests the request type abstraction and the request type parameter setting and getting.
  *
  * @author bknerr
  * @since 26.01.2011
@@ -56,7 +60,7 @@ public class IArchiveRequestTypeUnitTest {
         }
         @Override
         @Nonnull
-        public Object clone() {
+        public IntegerParam deepCopy() {
             return new IntegerParam(getValue());
         }
 
@@ -84,7 +88,7 @@ public class IArchiveRequestTypeUnitTest {
         }
         @Override
         @Nonnull
-        public Object clone() {
+        public DoubleParam deepCopy() {
             return new DoubleParam(getValue());
         }
     }
@@ -99,9 +103,9 @@ public class IArchiveRequestTypeUnitTest {
      * @since 01.02.2011
      */
     private static final class ART extends AbstractArchiveRequestType {
-        public ART(final String id,
-                   final String desc,
-                   final IArchiveRequestTypeParameter<?>... params) {
+        public ART(@Nonnull final String id,
+                   @Nonnull final String desc,
+                   @Nonnull final IArchiveRequestTypeParameter<?>... params) {
             super(id, desc, params);
         }
 
@@ -113,8 +117,8 @@ public class IArchiveRequestTypeUnitTest {
             final IArchiveRequestType art = new ART("Typ1", "T1", TEST_PARAM_I, TEST_PARAM_D);
             // Type mismatch on getting
             @SuppressWarnings("unused")
-            final
-            IArchiveRequestTypeParameter<Integer> p = art.getParameter(TEST_PARAM_D.getName(), Integer.class);
+            final IArchiveRequestTypeParameter<Integer> p =
+                art.getParameter(TEST_PARAM_D.getName(), Integer.class);
         }
     }
     @Test(expected=RequestTypeParameterException.class)

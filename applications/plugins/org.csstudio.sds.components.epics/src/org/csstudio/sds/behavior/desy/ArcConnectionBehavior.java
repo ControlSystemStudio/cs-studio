@@ -22,6 +22,7 @@ import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.components.model.EllipseModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -74,8 +75,9 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(final ArcModel widget, final ConnectionState connectionState) {
-        super.doProcessConnectionStateChange(widget, connectionState);
+    protected void doProcessConnectionStateChange(final ArcModel widget, final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         if(connectionState != ConnectionState.CONNECTED) {
             widget.setColor(ArcModel.PROP_FILLCOLOR,determineBackgroundColor(connectionState));
         }

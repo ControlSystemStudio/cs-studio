@@ -35,7 +35,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 /**
  * TODO (bknerr) :
@@ -122,7 +121,7 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
         try {
             final Integer i = Integer.parseInt(iStr);
             final Integer raw = ARCHIVE_NULL_ENTRY.equals(rawStr) ? null : Integer.parseInt(rawStr);
-            return EpicsEnum.createInstance(i, state,  raw);
+            return EpicsEnum.create(i, state,  raw);
 
         } catch (final NumberFormatException e) {
             throw new TypeSupportException("1st and 3rd part of EpicsEnumTriple '" + value + "' cannot be parsed into Integer.", e);
@@ -134,7 +133,8 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
      */
     @Override
     @Nonnull
-    public Collection<EpicsEnum> convertFromArchiveStringToMultiScalar(@Nonnull final String values) throws TypeSupportException {
+    public Collection<EpicsEnum> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
+                                                                       @Nonnull final String values) throws TypeSupportException {
         final String collectionRelease = collectionRelease(values);
         if (collectionRelease == null) {
             throw new TypeSupportException("Values from archive do not adhere to collection pattern:\n " +
@@ -144,15 +144,9 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
         final Iterable<EpicsEnum> enums =
             Iterables.filter(Iterables.transform(strings, _archiveString2EpicsEnumFunc),
                              Predicates.<EpicsEnum>notNull());
-        int size;
-        try {
-            size = Iterables.size(enums);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Values representation is not convertible to " + EpicsEnum.class.getName(), e);
-        }
-        if (Iterables.size(strings) != size) {
-            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
-        }
-        return Lists.newArrayList(enums);
+
+        checkInputVsOutputSize(strings, enums);
+
+        return createCollectionFromIterable(collectionClass, enums);
     }
 }

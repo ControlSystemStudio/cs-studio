@@ -29,15 +29,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
-import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
+import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
-import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
@@ -48,22 +49,37 @@ import org.csstudio.domain.desy.types.Limits;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
+import com.google.inject.Inject;
 
 /**
- * TODO (bknerr) :
+ * Archive service implementation to separate the processing and logic layer from
+ * the data access layer.
+ *
+ * Uses DAO design pattern with Guice Injection.
+ * TODO (bknerr) : CRUD command pattern
  *
  * @author bknerr
  * @since Feb 25, 2011
  */
-public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
-    INSTANCE;
+public class MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
 
-    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+    /**
+     * Injected by GUICE construction.
+     */
+    private final IArchiveSampleDao _sampleDao;
+    private final IArchiveChannelDao _channelDao;
+
 
     /**
      * Constructor.
      */
-    private MySQLArchiveReaderServiceImpl() {
+    @Inject
+    public MySQLArchiveReaderServiceImpl(@Nonnull final IArchiveChannelDao channelDao,
+                                         @Nonnull final IArchiveSampleDao sampleDao) {
+
+        _channelDao = channelDao;
+        _sampleDao = sampleDao;
+
         ArchiveTypeConversionSupport.install();
         EpicsSystemVariableSupport.install();
     }
@@ -114,13 +130,13 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
         try {
             final DesyArchiveRequestType desyType = validateRequestType(type);
 
-            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelBy(channelName);
+            final IArchiveChannel channel = _channelDao.retrieveChannelBy(channelName);
             if (channel == null) {
                 throw new ArchiveDaoException("Information for channel " + channelName + " could not be retrieved.", null);
             }
 
             final Collection<IArchiveSample<V, T>> samples =
-                DAO_MGR.getSampleDao().retrieveSamples(desyType, channel, start, end);
+                _sampleDao.retrieveSamples(desyType, channel, start, end);
 
             return samples;
 
@@ -131,7 +147,6 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -141,13 +156,12 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     IArchiveSample<V, T> readLastSampleBefore(@Nonnull final String channelName,
                                               @Nonnull final TimeInstant time) throws ArchiveServiceException {
         try {
-            final IArchiveChannel channel = DAO_MGR.getChannelDao().retrieveChannelBy(channelName);
-            return DAO_MGR.getSampleDao().retrieveLatestSampleBeforeTime(channel, time);
+            final IArchiveChannel channel = _channelDao.retrieveChannelBy(channelName);
+            return _sampleDao.retrieveLatestSampleBeforeTime(channel, time);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Latest sample retrieval failed for channel " + channelName, ade);
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -157,7 +171,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     public IArchiveChannel getChannelByName(@Nonnull final String name)
                                             throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelDao().retrieveChannelBy(name);
+            return _channelDao.retrieveChannelBy(name);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel information for " + name +
                                               " could not be retrieved.", e);
@@ -173,7 +187,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     throws ArchiveServiceException {
         try {
             final Collection<IArchiveChannel> channels =
-                DAO_MGR.getChannelDao().retrieveChannelsByNamePattern(pattern);
+                _channelDao.retrieveChannelsByNamePattern(pattern);
             final Collection<String> names =
                 Collections2.transform(channels,
                                        new Function<IArchiveChannel, String>() {
@@ -190,9 +204,6 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
         }
     }
 
-
-
-
     /**
      * {@inheritDoc}
      */
@@ -200,7 +211,7 @@ public enum MySQLArchiveReaderServiceImpl implements IArchiveReaderFacade {
     @CheckForNull
     public Limits<?> readDisplayLimits(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
-            return DAO_MGR.getChannelDao().retrieveDisplayRanges(channelName);
+            return _channelDao.retrieveDisplayRanges(channelName);
         } catch (final ArchiveDaoException ade) {
             throw new ArchiveServiceException("Channel retrieval failed.", ade);
         }

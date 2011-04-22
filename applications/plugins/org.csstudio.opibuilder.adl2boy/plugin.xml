@@ -32,9 +32,9 @@
       <command
             categoryId="org.csstudio.opibuilder.adl2boy.BOYCategory"
             defaultHandler="org.csstudio.opibuilder.adl2boy.EditADLHandler"
-            description="Open ADL File for editing with BOY"
+            description="Convert ADL to OPI"
             id="org.csstudio.opibuilder.adl2boy.editADLwithBoy"
-            name="Edit ADL File">
+            name="Convert ADL File to OPI">
       </command>
       <command
             categoryId="org.csstudio.opibuilder.adl2boy.BOYCategory"

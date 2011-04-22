@@ -10,10 +10,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.platform.libs.jmock,
  org.csstudio.platform.utility.jms,
  org.csstudio.data;bundle-version="1.0.0";visibility:=reexport,
- org.csstudio.platform.libs.dal,
  org.csstudio.platform.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.annotations,
  org.csstudio.platform.libs.log4j;visibility:=reexport
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
 Bundle-Vendor: Desy
@@ -26,14 +24,11 @@ Export-Package: org.csstudio.platform,
  org.csstudio.platform.logging,
  org.csstudio.platform.management;version="1.0.0",
  org.csstudio.platform.model,
- org.csstudio.platform.model.pvs,
  org.csstudio.platform.securestore,
  org.csstudio.platform.security,
  org.csstudio.platform.service.osgi,
- org.csstudio.platform.simpledal,
  org.csstudio.platform.startupservice,
  org.csstudio.platform.statistic,
- org.csstudio.platform.test,
  org.csstudio.platform.util,
  org.jdom,
  org.jdom.adapters,
@@ -47,3 +42,4 @@ Bundle-ClassPath: .,
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.jms
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.log4j
+Service-Component: OSGI-INF/remotecommands-component.xml

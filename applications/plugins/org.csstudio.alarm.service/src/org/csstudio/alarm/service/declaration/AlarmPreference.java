@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -90,7 +90,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return AlarmServiceActivator.PLUGIN_ID;
     }
 

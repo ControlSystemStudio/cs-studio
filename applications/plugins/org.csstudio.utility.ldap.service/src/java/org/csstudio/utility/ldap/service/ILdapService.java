@@ -30,7 +30,6 @@ import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.LdapName;
 
@@ -66,7 +65,7 @@ public interface ILdapService {
      * @return the content model builder
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                    @Nonnull final ILdapSearchResult searchResult);
 
@@ -77,7 +76,7 @@ public interface ILdapService {
      * @return the content model builder
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model);
 
 

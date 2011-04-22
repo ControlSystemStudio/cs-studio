@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.alarm;
 
-import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 
@@ -44,7 +44,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  *
  * @author Bastian Knerr
  */
-public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm>, Serializable {
+public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
 
     public static final EpicsAlarm UNKNOWN = new EpicsAlarm(EpicsAlarmSeverity.UNKNOWN,
                                                             EpicsAlarmStatus.UNKNOWN);

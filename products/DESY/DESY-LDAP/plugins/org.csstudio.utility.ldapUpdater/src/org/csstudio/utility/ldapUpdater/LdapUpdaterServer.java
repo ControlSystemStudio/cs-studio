@@ -44,9 +44,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * LDAP Updater server.
@@ -95,6 +92,7 @@ public class LdapUpdaterServer implements IApplication {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public final Object start(@Nullable final IApplicationContext context)
     throws Exception {
         final String startSecString = getValueFromPreferences(LDAP_AUTO_START, "0");

@@ -36,7 +36,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.log4j.Logger;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.preference.LdapPreference;

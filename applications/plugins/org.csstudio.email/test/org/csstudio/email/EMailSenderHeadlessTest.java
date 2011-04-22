@@ -9,7 +9,7 @@ package org.csstudio.email;
 
 import junit.framework.Assert;
 
-import org.csstudio.platform.test.TestDataProvider;
+import org.csstudio.testsuite.util.TestDataProvider;
 import org.junit.Test;
 
 /** JUnit test of the Mailer
@@ -21,7 +21,7 @@ import org.junit.Test;
 public class EMailSenderHeadlessTest
 {
     // Get site specific test data provider
-    public static TestDataProvider PROV = createTestDataProvider();
+    public static org.csstudio.testsuite.util.TestDataProvider PROV = createTestDataProvider();
     private static TestDataProvider createTestDataProvider() {
         try {
             return TestDataProvider.getInstance(Activator.ID);

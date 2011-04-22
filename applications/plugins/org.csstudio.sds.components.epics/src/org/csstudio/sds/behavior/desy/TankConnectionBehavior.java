@@ -39,6 +39,7 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TankModel;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link TankModel} widget with Connection state.
@@ -77,7 +78,8 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange( final TankModel widget, final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final TankModel widget, final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);

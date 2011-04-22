@@ -24,7 +24,7 @@ package org.csstudio.alarm.treeView.preferences;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for alarm tree preferences (mimicked enum with inheritance).
@@ -72,7 +72,7 @@ public final class AlarmTreePreference<T> extends AbstractPreference<T> {
      * {@inheritDoc}
      */
     @Override
-    protected String getPluginID() {
+    public String getPluginID() {
         return AlarmTreePlugin.PLUGIN_ID;
     }
 

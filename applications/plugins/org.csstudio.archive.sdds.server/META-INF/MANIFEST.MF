@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SDDS-Server
 Bundle-SymbolicName: org.csstudio.archive.sdds.server;singleton:=true
-Bundle-Version: 0.9.8.qualifier
+Bundle-Version: 0.9.10.qualifier
 Bundle-Activator: org.csstudio.archive.sdds.server.Activator
 Bundle-Vendor: Markus Moeller, DESY Hamburg
 Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.6.1",
  org.csstudio.platform;bundle-version="1.1.1",
  org.remotercp.ecf;bundle-version="1.3.0",
  org.remotercp.common;bundle-version="1.3.0"

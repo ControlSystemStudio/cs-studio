@@ -26,6 +26,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.Severity;
 
 /**
@@ -89,7 +90,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
 
     @Override
     protected void doProcessConnectionStateChange( final W widget,
-                                                  final ConnectionState connectionState) {
+                                                  final AnyDataChannel anyDataChannel) {
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         if ( (connectionState != null) && (connectionState == ConnectionState.CONNECTED)) {
             widget.setPropertyValue(LabelModel.PROP_COLOR_BACKGROUND, _normalBackgroundColor);
         } else {

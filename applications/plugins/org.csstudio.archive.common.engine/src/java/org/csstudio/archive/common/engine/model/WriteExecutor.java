@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +17,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
@@ -33,83 +36,97 @@ import com.google.common.collect.Maps;
  */
 public class WriteExecutor {
 
-    private static final int MAX_AWAIT_TERM_TIME_S = 2;
+    private static final int MAX_AWAIT_TERMINATION_TIME_S = 2;
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteExecutor.class);
 
     /** Minimum write period [seconds] */
     private static final long MIN_WRITE_PERIOD_MS = 5000;
 
-    private final ConcurrentMap<String, AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channelMap =
+    private final ConcurrentMap<String, ArchiveChannel<Object, ISystemVariable<Object>>> _channelMap =
         Maps.newConcurrentMap();
-    private ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
+
+    private final ScheduledExecutorService _heartBeatExecutor =
+        Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService _writeSamplesExecutor =
+        Executors.newSingleThreadScheduledExecutor();
+
     private WriteWorker _writeWorker;
     private long _writePeriodInMS;
 
+    private final IServiceProvider _provider;
+
+    private final ArchiveEngineId _engineId;
+
     /**
      * Construct thread for writing to server
+     * @param provider provider for the service
      */
-    public WriteExecutor() {
-        // EMPTY
+    public WriteExecutor(@Nonnull final IServiceProvider provider,
+                         @Nonnull final ArchiveEngineId engineId) {
+        _provider = provider;
+        _engineId = engineId;
     }
 
-    void enhanceWriterThroughput(@Nonnull final WriteWorker writeWorker) throws InterruptedException {
-        final long currentPeriodInMS = writeWorker.getPeriodInMS();
-        if (currentPeriodInMS > MIN_WRITE_PERIOD_MS) {
-            _executor.shutdown();
-            _executor.awaitTermination(currentPeriodInMS, TimeUnit.MILLISECONDS);
-            _executor.shutdownNow();
 
-            _executor = Executors.newSingleThreadScheduledExecutor();
-
-            _writePeriodInMS = Math.max(currentPeriodInMS>>1, MIN_WRITE_PERIOD_MS);
-            _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
-                                                        0L);
-        } else {
-            LOG.warn("Archive writer duration exceeds minimum period.");
-            LOG.warn("Consider starting another writer.");
-            // TODO (bknerr) : handle writeWorker exhaustion
-        }
-    }
-
-    @Nonnull
-    private WriteWorker submitAndScheduleWriteWorker(final long writePeriodInMS,
-                                                     final long delayInMS) {
-        final WriteWorker writeWorker = new WriteWorker(this,
-                                                        "Periodic Archive Engine Writer",
-                                                        _channelMap.values(),
-                                                        writePeriodInMS);
-        _executor.scheduleAtFixedRate(writeWorker,
-                                      delayInMS,
-                                      writeWorker.getPeriodInMS(),
-                                      TimeUnit.MILLISECONDS);
-        return writeWorker;
-    }
-
-    /** Add a channel's buffer that this thread reads */
-    public void addChannel(@Nonnull final AbstractArchiveChannel<Object, IAlarmSystemVariable<Object>> channel) {
+    public void addChannel(@Nonnull final ArchiveChannel<Object, ISystemVariable<Object>> channel) {
         _channelMap.putIfAbsent(channel.getName(), channel);
     }
 
-    /** Start the write worker.
-     *  @param pWritePeriod Period between writes in seconds
-     */
-    public void start(final long pWritePeriod) {
+    public void start(final long pHeartBeatPeriodInMS, final long pWritePeriodInMS) {
+
         if (_writeWorker != null) {
             LOG.warn("Worker has already been submitted with period (ms): " + _writeWorker.getPeriodInMS());
             return;
         }
+
+        _writePeriodInMS = adjustWritePeriod(pWritePeriodInMS, MIN_WRITE_PERIOD_MS);
+
+
+        _writeWorker = submitAndScheduleWriteWorker(_provider,
+                                                    _writePeriodInMS);
+        submitAndScheduleHeartBeatWorker(_engineId,
+                                         _provider,
+                                         pHeartBeatPeriodInMS);
+
+    }
+
+
+    @Nonnull
+    private HeartBeatWorker submitAndScheduleHeartBeatWorker(@Nonnull final ArchiveEngineId engineId,
+                                                             @Nonnull final IServiceProvider provider,
+                                                             final long period) {
+        final HeartBeatWorker heartBeatWorker = new HeartBeatWorker(engineId,
+                                                                    provider);
+        _heartBeatExecutor.scheduleAtFixedRate(heartBeatWorker,
+                                               0L,
+                                               period,
+                                               TimeUnit.MILLISECONDS);
+        return heartBeatWorker;
+
+    }
+    @Nonnull
+    private WriteWorker submitAndScheduleWriteWorker(@Nonnull final IServiceProvider provider,
+                                                     final long writePeriodInMS) {
+        final WriteWorker writeWorker = new WriteWorker(provider,
+                                                        "Periodic Archive Engine Writer",
+                                                        _channelMap.values(),
+                                                        writePeriodInMS);
+        _writeSamplesExecutor.scheduleAtFixedRate(writeWorker,
+                                                  500L,
+                                                  writePeriodInMS,
+                                                  TimeUnit.MILLISECONDS);
+        return writeWorker;
+    }
+
+    private long adjustWritePeriod(final long pWritePeriod, final long minWritePeriodMs) {
         long writePeriod = pWritePeriod;
-        if (writePeriod < MIN_WRITE_PERIOD_MS) {
+        if (writePeriod < minWritePeriodMs) {
             LOG.warn("Adjusting write period from "
-                    + pWritePeriod + " to " + MIN_WRITE_PERIOD_MS);
-            writePeriod = MIN_WRITE_PERIOD_MS;
+                    + pWritePeriod + " to " + minWritePeriodMs);
+            writePeriod = minWritePeriodMs;
         }
-        _writePeriodInMS = writePeriod;
-
-        _writeWorker = submitAndScheduleWriteWorker(_writePeriodInMS,
-                                                    0L);
-
+        return writePeriod;
     }
 
     /** Reset statistics */
@@ -119,10 +136,9 @@ public class WriteExecutor {
         }
     }
 
-    /** @return Timestamp of end of last write run */
     @CheckForNull
     public TimeInstant getLastWriteTime() {
-        return _writeWorker != null ? _writeWorker.getLastTimeWrite() : null;
+        return _writeWorker != null ? _writeWorker.getLastWriteTime() : null;
     }
 
     /** @return Average number of values per write run */
@@ -139,24 +155,43 @@ public class WriteExecutor {
     }
 
     /**
-     * Stop the write workers, after having submitted a directly executed shutdown worker that
-     * shall empty the channels' sample buffers.
-     * Gracefully shutdown of the executor.
+     * Stop the write and heartbeat worker, after having submitted a directly executed shutdown worker that
+     * shall drain the channels' sample buffers.
+     * Then gracefully shutdown the executor.
      */
     public void shutdown() {
-        if (!_executor.isShutdown()) {
-            _executor.execute(new WriteWorker(this, "Shutdown worker", _channelMap.values(), 0L));
-            _executor.shutdown();
-            // Await termination (either the average duration or the max termination time.
-            Duration dur = getAvgWriteDuration();
-            if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERM_TIME_S).getMillis()) {
-                dur = Duration.standardSeconds(MAX_AWAIT_TERM_TIME_S);
-            }
-            try {
-                _executor.awaitTermination(dur.getMillis(), TimeUnit.MILLISECONDS);
-            } catch (final InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        if (!_writeSamplesExecutor.isShutdown()) {
+            _writeSamplesExecutor.shutdown();
         }
+        if (!_heartBeatExecutor.isShutdown()) {
+            _heartBeatExecutor.shutdown();
+        }
+        performFinalWriteBeforeShutdown();
+    }
+
+    private void performFinalWriteBeforeShutdown() {
+        final ExecutorService finalWriteExecutor = Executors.newSingleThreadExecutor();
+        finalWriteExecutor.execute(new WriteWorker(_provider,
+                                                   "Shutdown worker",
+                                                   _channelMap.values(),
+                                                   0L));
+
+
+        final Duration dur = computeAwaitTerminationTime();
+        // Await termination (either the average duration or the max termination time.
+        try {
+            finalWriteExecutor.awaitTermination(dur.getMillis(), TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    @Nonnull
+    private Duration computeAwaitTerminationTime() {
+        Duration dur = getAvgWriteDuration();
+        if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S).getMillis()) {
+            dur = Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S);
+        }
+        return dur;
     }
 }

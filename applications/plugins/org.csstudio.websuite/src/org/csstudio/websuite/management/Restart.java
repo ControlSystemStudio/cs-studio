@@ -39,7 +39,8 @@ public class Restart implements IManagementCommand
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
+    @Override
+	public CommandResult execute(CommandParameters parameters)
     {
         objectToBeRestarted.setRestart();
         

@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Compatibility for CSS plugins based on before 3.x
+Bundle-SymbolicName: org.csstudio.platform.compatibility;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov> - BNL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.csstudio.platform;bundle-version="1.2.0",
+ org.csstudio.csdata;bundle-version="0.0.1"

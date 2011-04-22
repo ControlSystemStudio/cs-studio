@@ -1,14 +1,12 @@
 package org.csstudio.display.waterfall;
 
-import java.util.Iterator;
-
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -24,29 +22,25 @@ public class OpenWaterfall extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		try
-	    {
+		try {
 			ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event)
-			.getActivePage().getSelection();
+					.getActivePage().getSelection();
+
+			IWorkbench workbench = PlatformUI.getWorkbench();
+			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+			IWorkbenchPage page = window.getActivePage();
+			WaterfallView waterfall = (WaterfallView) page
+					.showView(WaterfallView.ID);
+			ProcessVariableName[] pvs = AdapterUtil.convert(selection, ProcessVariableName.class);
 			
-	        IWorkbench workbench = PlatformUI.getWorkbench();
-	        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	        IWorkbenchPage page = window.getActivePage();
-	        WaterfallView waterfall = (WaterfallView) page.showView(WaterfallView.ID);
-			
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection strucSelection = (IStructuredSelection) selection;
-				if (!strucSelection.isEmpty()) {
-					IProcessVariable variable = (IProcessVariable) strucSelection.iterator().next();
-					waterfall.setPVName(variable.getName());
-				}
+			if (pvs.length > 0) {
+				waterfall.setPVName(pvs[0].getProcessVariableName());
 			}
-	    }
-	    catch (Exception e)
-	    {
-	        e.printStackTrace();
-	    }
-	    return null;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

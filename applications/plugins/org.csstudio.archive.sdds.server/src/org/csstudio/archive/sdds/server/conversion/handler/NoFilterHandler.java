@@ -63,6 +63,12 @@ public class NoFilterHandler extends AlgorithmHandler {
     public Iterable<EpicsRecordData> handle(DataRequestHeader header, EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
+        if (data == null) {
+            return new ArrayList<EpicsRecordData>(0);
+        } else if (data.length == 0){
+            return new ArrayList<EpicsRecordData>(0);
+        }
+
         long intervalStart = header.getFromSec();
         long intervalEnd = header.getToSec();
 

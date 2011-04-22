@@ -6,7 +6,7 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="org.csstudio.archive.common.engine.Application">
+               class="org.csstudio.archive.common.engine.ArchiveEngineApplication">
          </run>
       </application>
    </extension>
@@ -15,10 +15,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.archive.common.engine.application"
-            name="ArchiveEngine2">
+            name="DesyArchiveEngine">
          <property
                name="appName"
-               value="ArchiveEngine2">
+               value="DesyArchiveEngine">
          </property>
       </product>
    </extension>

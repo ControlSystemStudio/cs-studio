@@ -33,9 +33,12 @@ import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -49,14 +52,16 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     private final String _selectChannelGroupByEngineIdStmt =
         "SELECT id, name, engine_id, description FROM " +
-        getDaoMgr().getDatabaseName() + " .channel_group" +
+        getDatabaseName() + " .channel_group" +
         " WHERE engine_id=? ORDER BY name";
 
     /**
      * Constructor.
      */
-    public ArchiveChannelGroupDaoImpl() {
-        super();
+    @Inject
+    public ArchiveChannelGroupDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                      @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     /**

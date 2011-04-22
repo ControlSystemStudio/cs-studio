@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms,
  org.csstudio.nams.service.preferenceservice.ui,
  org.csstudio.platform,
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.nams.service.messaging,
  org.junit4;bundle-version="4.5.0",
  org.csstudio.platform.libs.easymock;bundle-version="1.0.0"

@@ -27,7 +27,7 @@ package org.csstudio.utility.ldap.preference;
 import javax.annotation.Nonnull;
 import javax.naming.Context;
 
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.csstudio.utility.ldap.LdapActivator;
 
 /**
@@ -92,7 +92,7 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
      */
     @Override
     @Nonnull
-    protected String getPluginID() {
+    public String getPluginID() {
         return LdapActivator.PLUGIN_ID;
     }
 }

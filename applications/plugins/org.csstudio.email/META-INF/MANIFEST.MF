@@ -6,6 +6,7 @@ Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.junit4;bundle-version="4.5.0",
  org.eclipse.core.runtime;bundle-version="3.5.0",
- org.csstudio.platform;bundle-version="1.1.0"
+ org.csstudio.platform;bundle-version="1.1.0",
+ org.csstudio.testsuite;bundle-version="1.0.0"
 Export-Package: org.csstudio.email
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

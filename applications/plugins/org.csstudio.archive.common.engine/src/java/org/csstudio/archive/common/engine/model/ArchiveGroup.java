@@ -13,8 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-
 import com.google.common.collect.MapMaker;
 
 /** A group of archived channels.
@@ -30,7 +28,7 @@ public class ArchiveGroup {
      *  Using thread-safe array to allow HTTPD as well as main
      *  thread to traverse
      */
-    private final ConcurrentMap<String, AbstractArchiveChannel<?, ?>> _channelMap;
+    private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Set to <code>true</code> while running. */
     private boolean is_running = false;
@@ -58,7 +56,7 @@ public class ArchiveGroup {
      *  @param channel Channel to add
      */
     @SuppressWarnings("nls")
-    final void add(final AbstractArchiveChannel<?, ?> channel) {
+    final void add(final ArchiveChannel<?, ?> channel) {
         if (is_running) {
             throw new Error("Running"); //$NON-NLS-1$
         }
@@ -77,7 +75,7 @@ public class ArchiveGroup {
     }
 
     /** Remove channel from group */
-    final void remove(final AbstractArchiveChannel<?, ?> channel)
+    final void remove(final ArchiveChannel<?, ?> channel)
     {
         if (is_running)
          {
@@ -103,14 +101,14 @@ public class ArchiveGroup {
 	 *  @return Channel or <code>null</code>s
 	 */
     @CheckForNull
-    public final AbstractArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
+    public final ArchiveChannel<?, ?> findChannel(@Nonnull final String name) {
         return _channelMap.get(name);
 	}
 
 
     /** @return <code>true</code> if group is currently enabled */
-    public boolean isEnabled() {
-        return true ;
+    public final boolean isEnabled() {
+        return true;
     }
 
     /** Start all the channels in group
@@ -119,15 +117,14 @@ public class ArchiveGroup {
      * @throws EngineModelException
      */
     @Nonnull
-    final void start(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws EngineModelException {
+    final void start(@Nonnull final String info) throws EngineModelException {
         if (is_running) {
             return;
         }
         is_running = true;
 
-        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.start(engineId, info);
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            channel.start(info);
         }
     }
 
@@ -135,21 +132,19 @@ public class ArchiveGroup {
      * Stop all the channels in group
      * @throws EngineModelException
      */
-    public void stop(@Nonnull final ArchiveEngineId engineId,
-                     @Nonnull final String info) throws EngineModelException {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         if (!is_running) {
             return;
         }
         is_running = false;
-        for (final AbstractArchiveChannel<?, ?> channel : _channelMap.values()) {
-            channel.stop(engineId, info);
+        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
+            channel.stop(info);
         }
     }
 
-    public void restart(@Nonnull final ArchiveEngineId engineId,
-                        @Nonnull final String info) throws EngineModelException {
-        stop(engineId, info);
-        start(engineId, info);
+    public void restart(@Nonnull final String info) throws EngineModelException {
+        stop(info);
+        start(info);
     }
 
 
@@ -160,7 +155,7 @@ public class ArchiveGroup {
     }
 
     @Nonnull
-    public Collection<AbstractArchiveChannel<?, ?>>getChannels() {
+    public Collection<ArchiveChannel<?, ?>>getChannels() {
         return _channelMap.values();
     }
 }

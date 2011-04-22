@@ -21,8 +21,11 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
@@ -33,6 +36,11 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
  */
 public interface IArchiveChannelStatusDao {
 
-    void createChannelStatus(@Nonnull final ArchiveChannelStatus entry) throws ArchiveDaoException;
+    void createChannelStatus(@Nonnull final IArchiveChannelStatus entry)
+                             throws ArchiveDaoException;
+
+    @CheckForNull
+    IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
+                                                          throws ArchiveDaoException;
 
 }

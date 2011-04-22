@@ -3,7 +3,7 @@
       id="org.csstudio.desy.platform.eclipse.ecf.feature"
       label="Platform Eclipse ECF Feature"
       version="1.0.0.qualifier"
-      provider-name="Desy">
+      provider-name="DESY, Jan Hatje &lt;css-developer@desy.de&gt;">
 
    <description url="http://css.desy.de">
       The Control System Studio defines a platform for control system
@@ -32,7 +32,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
    </license>
 
    <url>
-      <update url="http://eclipse.desy.de/update/"/>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
    </url>
 
    <plugin
