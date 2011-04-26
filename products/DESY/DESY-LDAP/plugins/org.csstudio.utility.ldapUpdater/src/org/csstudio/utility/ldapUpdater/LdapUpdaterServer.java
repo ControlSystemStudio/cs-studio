@@ -44,6 +44,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * LDAP Updater server.
@@ -53,7 +55,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  * @version $Revision$
  * @since 13.04.2010
  */
-public class LdapUpdaterServer implements IApplication {
+public class LdapUpdaterServer implements IApplication, IGenericServiceListener<ISessionService> {
 
     /**
      * The running instance of this server.
@@ -107,14 +109,6 @@ public class LdapUpdaterServer implements IApplication {
 
         final long delaySec = getDelayInSeconds(startTimeSec, now);
         logStartAndPeriod(startTimeSec, intervalSec, timeZone);
-
-        final String username = getValueFromPreferences(XMPP_USER, "anonymous");
-        final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
-        final String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
-
-
-        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-        ServiceLauncher.startRemoteServices();
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
@@ -173,4 +167,21 @@ public class LdapUpdaterServer implements IApplication {
         notifyAll();
     }
 
+
+    public void bindService(ISessionService sessionService) {
+        final String username = getValueFromPreferences(XMPP_USER, "anonymous");
+        final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
+        final String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
+    	
+    	try {
+			sessionService.connect(username, password, server);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
 }

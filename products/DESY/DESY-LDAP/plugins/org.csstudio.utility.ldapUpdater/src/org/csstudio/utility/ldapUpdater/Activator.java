@@ -30,6 +30,9 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -47,6 +50,9 @@ public class Activator extends AbstractCssPlugin {
     private static Activator INSTANCE;
 
     private ServiceTracker _ldapServiceTracker;
+    
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
 
     /**
      * Don't instantiate.
@@ -77,6 +83,9 @@ public class Activator extends AbstractCssPlugin {
 
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
     }
 
 
@@ -105,4 +114,8 @@ public class Activator extends AbstractCssPlugin {
         return (ILdapService) _ldapServiceTracker.getService();
     }
 
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

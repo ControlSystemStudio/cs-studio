@@ -29,12 +29,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
+
 import org.apache.log4j.Logger;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.Server;
@@ -46,15 +48,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * @author Markus Moeller
  *
  */
-public class Application implements IApplication, RemotelyStoppable, ApplicationMBean {
+public class Application implements IApplication, RemotelyStoppable, ApplicationMBean, IGenericServiceListener<ISessionService> {
     
     /** The instance of the server */
     private Server server;
@@ -105,7 +106,8 @@ public class Application implements IApplication, RemotelyStoppable, Application
             server.start();
             
             if (useJmx == false) {
-            	connectToXMPPServer();
+//            	TODO (jhatje) Markus fragen wie der Connection Service behandelt werden könnte.
+//            	connectToXMPPServer();
             } else {
             	connectMBeanServer();
             }
@@ -151,34 +153,6 @@ public class Application implements IApplication, RemotelyStoppable, Application
     	// Nothing to do here
     }
 
-    /**
-     * Creates connection to the XMPP server.
-     * 
-     */
-    public void connectToXMPPServer() {
-        
-        // IPreferencesService pref = Platform.getPreferencesService();
-        IPreferencesService pref = Platform.getPreferencesService();
-        String xmppServer = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
-                                           "krynfs.desy.de", null);
-        String xmppUser = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_USER,
-                                         "sdds-server", null);
-        String xmppPassword = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
-                                             "sdds-server", null);
-
-        logger.info("The server uses XMPP for remote access.");
-        logger.info("Try to connect as " + xmppUser + " to server " + xmppServer);
-        
-        Restart.injectStaticObject(this);
-        Stop.injectStaticObject(this);
-        
-        try {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();
-        } catch(Exception e) {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
-    }
 
     /**
      * 
@@ -272,6 +246,27 @@ public class Application implements IApplication, RemotelyStoppable, Application
 		return version;
 	}
 
+    public void bindService(ISessionService sessionService) {
+        IPreferencesService pref = Platform.getPreferencesService();
+        String xmppServer = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_SERVER,
+                                           "krynfs.desy.de", null);
+        String xmppUser = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_USER,
+                                         "sdds-server", null);
+        String xmppPassword = pref.getString(Activator.PLUGIN_ID, ServerPreferenceKey.P_XMPP_PASSWORD,
+                                             "sdds-server", null);
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
     public void nirvana()
     {
         //sddsReader.readDataPortionSimple("HQCO7L~B", null, -1, startTime, endTime, (short)1, -1, null);

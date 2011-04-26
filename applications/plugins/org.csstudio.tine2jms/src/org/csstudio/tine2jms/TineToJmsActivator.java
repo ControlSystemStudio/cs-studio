@@ -27,6 +27,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -42,6 +45,8 @@ public class TineToJmsActivator extends Plugin
     /** Logger */
     private Logger logger = null;
     
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+    
 	/**
 	 * The constructor
 	 */
@@ -55,6 +60,10 @@ public class TineToJmsActivator extends Plugin
 	{
 		super.start(context);
 		plugin = this;
+		
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 		
         logger = CentralLogger.getInstance().getLogger(this);
         logger.info("Tine2Jms started...");
@@ -78,5 +87,10 @@ public class TineToJmsActivator extends Plugin
 	public static TineToJmsActivator getDefault()
 	{
 		return plugin;
+	}
+	
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }
