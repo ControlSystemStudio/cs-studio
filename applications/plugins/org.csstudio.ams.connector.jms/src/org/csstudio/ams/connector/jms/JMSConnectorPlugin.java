@@ -25,6 +25,9 @@ package org.csstudio.ams.connector.jms;
 
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -37,6 +40,8 @@ public class JMSConnectorPlugin extends AbstractCssPlugin
 	// The shared instance
 	private static JMSConnectorPlugin plugin;
 	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+	
 	/**
 	 * The constructor
 	 */
@@ -48,6 +53,9 @@ public class JMSConnectorPlugin extends AbstractCssPlugin
     @Override
     protected void doStart(BundleContext context) throws Exception
     {
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
     }
 
     @Override
@@ -71,4 +79,9 @@ public class JMSConnectorPlugin extends AbstractCssPlugin
     {
         return PLUGIN_ID;
     }
+    
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }
