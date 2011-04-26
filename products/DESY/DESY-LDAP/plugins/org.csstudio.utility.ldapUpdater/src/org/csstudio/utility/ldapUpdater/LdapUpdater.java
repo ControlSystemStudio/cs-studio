@@ -32,9 +32,9 @@ package org.csstudio.utility.ldapUpdater;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,9 +43,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -182,7 +182,7 @@ public enum LdapUpdater {
         final long startTime = logHeader(TIDYUP_ACTION_NAME);
 
         try {
-            final ILdapService service = Activator.getDefault().getLdapService();
+            final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
             if (service == null) {
                 LOG.warn("NO LDAP service available. Tidying cancelled.");
                 return;
@@ -197,11 +197,8 @@ public enum LdapUpdater {
                 LOG.warn("LDAP search result is empty. No IOCs found for " + query + " and filter " + filter);
                 return;
             }
-            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-            if (dumpPath == null) {
-                LOG.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
-                return;
-            }
+            final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
+            
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
             final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder = 
                 service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
@@ -236,7 +233,7 @@ public enum LdapUpdater {
         final HistoryFileContentModel historyFileModel = histFileReader.readFile(); /* liest das history file */
 
         try {
-            final ILdapService service = Activator.getDefault().getLdapService();
+            final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
             if (service == null) {
                 LOG.error("No LDAP service available. Updating canceled.");
                 return;
@@ -269,7 +266,7 @@ public enum LdapUpdater {
                                           @Nonnull final ILdapSearchResult searchResult)
     throws CreateContentModelException, InterruptedException {
 
-        final ILdapService service = Activator.getDefault().getLdapService();
+        final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
         if (service == null) {
             LOG.error("No LDAP service available.");
             return;
@@ -283,13 +280,8 @@ public enum LdapUpdater {
         if (model != null) {
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
-            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-            if (dumpPath != null) {
-                final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-                LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
-            } else {
-                LOG.warn("No preference for IOC dump path could be found. Update cancelled!");
-            }
+            final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(IOC_DBL_DUMP_PATH.getValue(), 1);
+            LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
         }
     }
 
@@ -346,11 +338,10 @@ public enum LdapUpdater {
     }
 
     private void sendNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
-        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
             NotificationMail.sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
                                       entry.getKey(),
-                                      "\n(in directory " + iocFilePath + ")" +
+                                      "\n(in directory " + IOC_DBL_DUMP_PATH.getValue() + ")" +
                                       "\n\n" + entry.getValue());
         }
     }

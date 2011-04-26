@@ -22,10 +22,10 @@
 
 package org.csstudio.utility.ldapUpdater.files;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_HIST_PATH;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -38,7 +38,6 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldapUpdater.LdapUpdater;
-import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
 
 /**
  * Class to access the dedicated history file that holds the time stamps of the last update times
@@ -50,8 +49,6 @@ import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey;
  * @since 13.04.2010
  */
 public class HistoryFileAccess {
-
-    public static final String HISTORY_DAT_FILE = "history.dat";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(HistoryFileAccess.class.getName());
 
@@ -72,23 +69,23 @@ public class HistoryFileAccess {
         HistoryFileContentModel model = new HistoryFileContentModel();
         BufferedReader fr = null;
 
-        final String path = getValueFromPreferences(LDAP_HIST_PATH);
+        File filePath = HISTORY_DAT_FILEPATH.getValue();
         try {
-            fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
+            fr = new BufferedReader(new FileReader(filePath));
 
             model = processLineByLine(model, fr);
             fr.close();
         } catch (final FileNotFoundException e) {
-            LOG.error ("Error : File not Found(r) : " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
+            LOG.error ("Error : File not Found(r) : " + filePath );
         } catch (final IOException e) {
-            LOG.error ("I/O-Exception while handling " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
+            LOG.error ("I/O-Exception while handling " + filePath );
         } finally {
             try {
                 if (fr != null) {
                     fr.close();
                 }
             } catch (final IOException e) {
-                LOG.error ("I/O-Exception while closing " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
+                LOG.error ("I/O-Exception while closing " + filePath );
             }
         }
         LOG.info("IOC names in history-file : " + model.getEntrySet().size());
@@ -113,7 +110,7 @@ public class HistoryFileAccess {
                 // matches any rows with at least 3 columns separated by spaces
                 final Matcher m = p.matcher(line);
                 if(!m.matches()) {
-                    final String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"";
+                    final String emsg = "Error during file parsing in " + HISTORY_DAT_FILEPATH.getValue() + ", row: " + "\"" + line + "\"";
                     LOG.error(emsg);
                     throw new RuntimeException(emsg);
                 }
@@ -147,10 +144,9 @@ public class HistoryFileAccess {
                                             final int numOfRecordsInFile,
                                             final int numOfRecordsInLDAP) {
 
-        final String histFilePath = getValueFromPreferences(LDAP_HIST_PATH) + HistoryFileAccess.HISTORY_DAT_FILE;
         FileWriter fw;
         try {
-            fw = new FileWriter(histFilePath, true);
+            fw = new FileWriter(HISTORY_DAT_FILEPATH.getValue(), true);
 
             final long now = System.currentTimeMillis();
             final String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
@@ -168,7 +164,7 @@ public class HistoryFileAccess {
             fw.close();
         } catch (final IOException e) {
             LOG.error("I/O-Exception while trying to append a line to "
-                         + getValueFromPreferences(LdapUpdaterPreferenceKey.LDAP_HIST_PATH) + "history.dat");
+                         + HISTORY_DAT_FILEPATH.getValue());
         }
     }
 }

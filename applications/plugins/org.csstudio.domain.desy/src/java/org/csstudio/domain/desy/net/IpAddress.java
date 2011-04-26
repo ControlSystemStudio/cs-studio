@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,48 +19,40 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.utility.ldapUpdater.preferences;
+package org.csstudio.domain.desy.net;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-
 /**
- * Constant definitions for plug-in preferences
+ * TODO (bknerr) :
+ *
+ * @author bknerr
+ * @since 26.04.2011
  */
-public enum LdapUpdaterPreferenceKey {
+public class IpAddress {
 
-	IOC_DBL_DUMP_PATH("iocDblDumpPath"),
-	IOC_LIST_FILE("iocListFile"),
-	LDAP_CONT_ROOT("ldapContRoot"),
-	LDAP_HIST_PATH("ldapHistPath"),
-	XMPP_USER("XMPPUser"),
-	XMPP_PASSWD("XMPPPassWD"),
-	LDAP_AUTO_START("ldapAutoStart"),
-	LDAP_AUTO_INTERVAL("ldapAutoInterval"),
-	XMPP_SERVER("XMPPServer");
+    public static final String IP_ADDRESS_REGEX =
+        "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+
+    private final String _address;
 
 
-	private final String _description;
+    /**
+     * Constructor.
+     */
+    public IpAddress(@Nonnull final String ipAddress) {
+        final Matcher m = Pattern.compile(IP_ADDRESS_REGEX).matcher(ipAddress);
+        if (!m.matches()) {
+            throw new IllegalArgumentException("IP address doesn't match pattern described by: " + IP_ADDRESS_REGEX);
+        }
+        _address = ipAddress;
+    }
 
-	/**
-	 * Constructor.
-	 * Known eclipse bug with annotations in enum constructor:
-     * {@link https://bugs.eclipse.org/bugs/show_bug.cgi?id=285701}
-	 * @param keyDescription description
-	 *
-	 * CHECKSTYLE:Jsr305Annotations:OFF
-	 */
-	LdapUpdaterPreferenceKey (final String keyDescription) {
-		_description = keyDescription;
-	}
-
-	/**
-	 * Getter.
-	 * @return the key description
-	 */
-	@Nonnull
-	public String getDescription() {
-		return _description;
-	}
-
+    @Nonnull
+    public String getAddress() {
+        return _address;
+    }
 }

@@ -37,7 +37,7 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssPlugin {
+public class LdapUpdaterActivator extends AbstractCssPlugin {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
@@ -47,7 +47,7 @@ public class Activator extends AbstractCssPlugin {
     /**
      *  The shared instance
      */
-    private static Activator INSTANCE;
+    private static LdapUpdaterActivator INSTANCE;
 
     private ServiceTracker _ldapServiceTracker;
     
@@ -58,7 +58,7 @@ public class Activator extends AbstractCssPlugin {
      * Don't instantiate.
      * Called by framework.
      */
-    public Activator() {
+    public LdapUpdaterActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
@@ -71,7 +71,7 @@ public class Activator extends AbstractCssPlugin {
      * @return the shared instance
      */
     @Nonnull
-    public static Activator getDefault() {
+    public static LdapUpdaterActivator getDefault() {
         return INSTANCE;
     }
 
@@ -114,8 +114,7 @@ public class Activator extends AbstractCssPlugin {
         return (ILdapService) _ldapServiceTracker.getService();
     }
 
-	public void addSessionServiceListener(
-			IGenericServiceListener<ISessionService> sessionServiceListener) {
+	public void addSessionServiceListener(@Nonnull IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

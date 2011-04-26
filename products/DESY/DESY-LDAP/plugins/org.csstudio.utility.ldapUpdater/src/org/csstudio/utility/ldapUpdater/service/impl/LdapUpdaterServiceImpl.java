@@ -59,7 +59,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldapUpdater.Activator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -83,7 +83,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     @Nonnull
     private ILdapService getLdapService() throws ServiceUnavailableException {
-        final ILdapService service = Activator.getDefault().getLdapService();
+        final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
         if (service == null) {
             throw new ServiceUnavailableException("LDAP service is unavailable.");
         }

@@ -47,7 +47,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldapUpdater.Activator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -66,7 +66,7 @@ public class IocEnumeration implements IDynamicParameterValues {
     @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
 
-        final ILdapService service = Activator.getDefault().getLdapService();
+        final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
 
         if (service == null) {
             LOG.error("LDAP service is not available! Here a service tracker would have made sense.");

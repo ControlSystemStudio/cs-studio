@@ -28,9 +28,9 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
+import java.io.File;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -196,8 +196,8 @@ public final class LdapAccess {
      */
     @Nonnull
     public static Set<Record> getValidRecordsForIOC(@Nonnull final String iocName) {
-        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-        final Set<Record> fileRecords = IOCFilesDirTree.getRecordsFromFile(iocFilePath + iocName);
+        final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
+        final Set<Record> fileRecords = IOCFilesDirTree.getRecordsFromFile(new File(dumpPath, iocName));
         return fileRecords;
     }
 
@@ -208,8 +208,8 @@ public final class LdapAccess {
         final String iocName = iocFromLDAP.getName();
         int numOfRecsWritten = 0;
 
-        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-        final Set<Record> recordsFromFile = IOCFilesDirTree.getRecordsFromFile(iocFilePath + iocName);
+        File dumpPath = IOC_DBL_DUMP_PATH.getValue();
+        final Set<Record> recordsFromFile = IOCFilesDirTree.getRecordsFromFile(new File (dumpPath, iocName));
 
         final StringBuilder forbiddenRecords = new StringBuilder();
 

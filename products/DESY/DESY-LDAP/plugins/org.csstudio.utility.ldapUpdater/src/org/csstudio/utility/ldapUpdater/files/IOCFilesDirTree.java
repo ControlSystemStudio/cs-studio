@@ -7,7 +7,7 @@
  */
 package org.csstudio.utility.ldapUpdater.files;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,7 +30,6 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 
 
 /**
@@ -77,19 +76,19 @@ public final class IOCFilesDirTree {
 
     /**
      * Finds all IOC files under in the directory traversing up to a given tree level depth.
-     * @param iocDblDumpPath the directory under which to look
+     * @param dumpPath the directory under which to look
      * @param recursiveDepth .
      * @return the map of identified files
      */
     @Nonnull
-    public static Map<String, IOC> findIOCFiles(@Nonnull final String iocDblDumpPath, final int recursiveDepth) {
+    public static Map<String, IOC> findIOCFiles(@Nonnull final File dir, final int recursiveDepth) {
         final int currentDepth = 0;
 
         final Map<String, IOC> iocMap = new HashMap<String, IOC>();
 
         final IOCFilesDirTree dt = new IOCFilesDirTree();
 
-        dt.doDir(currentDepth, recursiveDepth, iocDblDumpPath, iocMap);
+        dt.doDir(currentDepth, recursiveDepth, dir, iocMap);
 
         return iocMap;
     }
@@ -97,9 +96,9 @@ public final class IOCFilesDirTree {
     @Nonnull
     private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocFileName) {
         final GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("ETC"));
-        final String prefFileName = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-        final File filePath = new File(prefFileName);
-        dateTime.setTimeInMillis(new File(filePath,iocFileName).lastModified());
+        
+        final File filePath = IOC_DBL_DUMP_PATH.getValue();
+        dateTime.setTimeInMillis(new File(filePath, iocFileName).lastModified());
         return dateTime;
     }
 
@@ -111,12 +110,11 @@ public final class IOCFilesDirTree {
      * */
     private void doDir(final int currentDepth,
                        final int recDepth,
-                       @Nonnull final String s,
+                       @Nonnull final File f,
                        @Nonnull final Map<String, IOC> iocMap) {
 
         int depth = currentDepth;
 
-        final File f = new File(s);
         if (!f.exists()) {
             LOG.warn(f.getName() + " does not exist.");
             return;
@@ -131,7 +129,7 @@ public final class IOCFilesDirTree {
 
             final String[] filePaths = f.list();
             for (final String filePath : filePaths) {
-                doDir(depth, recDepth, s + File.separator + filePath, iocMap);
+                doDir(depth, recDepth, new File (f, filePath), iocMap);
             }
         } else {
             LOG.warn(f.getAbsolutePath() + " is neither file nor directory.");
@@ -143,10 +141,10 @@ public final class IOCFilesDirTree {
      * @param pathToFile the file with records
      */
     @Nonnull
-    public static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
+    public static Set<Record> getRecordsFromFile(@Nonnull final File pathToFile) {
         final Set<Record> records = new HashSet<Record>();
         try {
-            final BufferedReader br = new BufferedReader(new FileReader(pathToFile + RECORDS_FILE_SUFFIX));
+            final BufferedReader br = new BufferedReader(new FileReader(pathToFile.toString() + RECORDS_FILE_SUFFIX));
             String strLine;
             while ((strLine = br.readLine()) != null)   {
                 final String[] fields = strLine.split(",");

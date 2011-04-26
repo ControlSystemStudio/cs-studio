@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -157,6 +158,15 @@ public abstract class AbstractPreference<T> {
                     throw new IllegalArgumentException("URL preference not well-formed. " +
                                                        "That is not supposed to happen, since the defaultValue is by definition of type URL.");
                 }
+            }
+        });
+        TYPE_MAP.put(HostAddress.class,
+                     new PrefStrategy<HostAddress>() {
+            @Override
+            @Nonnull
+            public HostAddress getResult(@Nonnull final String context, @Nonnull final String key, @Nonnull final HostAddress defaultValue) {
+                final IPreferencesService prefs = Platform.getPreferencesService();
+                return new HostAddress(prefs.getString(context, key, defaultValue.getHostAddress(), null));
             }
         });
         TYPE_MAP.put(File.class,
