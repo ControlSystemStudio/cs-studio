@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 public class WaterfallParametersDialog extends Dialog {
 
 	protected WaterfallPlotParameters result;
+	protected WaterfallPlotParameters oldParameters;
 	protected Shell shell;
 	
 	private Button btnMetadata;
@@ -39,6 +40,7 @@ public class WaterfallParametersDialog extends Dialog {
 	 * @return the result
 	 */
 	public WaterfallPlotParameters open(WaterfallPlotParameters oldParameters, int x, int y) {
+		this.oldParameters = oldParameters;
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
 			btnMetadata.setSelection(false);
@@ -63,10 +65,7 @@ public class WaterfallParametersDialog extends Dialog {
 	}
 	
 	private void prepareResult() {
-		result = new WaterfallPlotParameters();
-		if (btnAutoRange.getSelection()) {
-			result = result.withAdaptiveRange(true);
-		}
+		result = oldParameters.with(WaterfallPlotParameters.adaptiveRange(btnAutoRange.getSelection()));
 	}
 
 	/**

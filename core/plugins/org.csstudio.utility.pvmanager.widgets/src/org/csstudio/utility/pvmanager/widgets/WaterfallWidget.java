@@ -6,6 +6,7 @@ import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
 import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
@@ -14,6 +15,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Point;
@@ -31,7 +34,8 @@ import org.eclipse.swt.layout.GridData;
 public class WaterfallWidget extends Composite {
 	
 	private VImageDisplay imageDisplay;
-	private WaterfallPlotParameters parameters = new WaterfallPlotParameters();
+	private WaterfallPlotParameters parameters = WaterfallPlotParameters.defaults();
+	private WaterfallPlot plot;
 	private CLabel errorLabel;
 	private Label errorImage;
 
@@ -56,12 +60,15 @@ public class WaterfallWidget extends Composite {
 					WaterfallPlotParameters newParameters = dialog.open(parameters, position.x, position.y);
 					if (newParameters != null) {
 						parameters = newParameters;
-						reconnect();
+						parametersChanged();
+						if (plot != null) {
+							plot.with(parameters);
+						}
 					}
 				}
 			}
 		});
-		imageDisplay.setStretched(true);
+		imageDisplay.setHStretched(true);
 		GridLayout gl_imageDisplay = new GridLayout(2, false);
 		gl_imageDisplay.marginWidth = 0;
 		gl_imageDisplay.marginHeight = 0;
@@ -72,6 +79,18 @@ public class WaterfallWidget extends Composite {
 		fd_imageDisplay.top = new FormAttachment(0);
 		fd_imageDisplay.left = new FormAttachment(0);
 		imageDisplay.setLayoutData(fd_imageDisplay);
+		imageDisplay.addControlListener(new ControlListener() {
+			
+			@Override
+			public void controlResized(ControlEvent e) {
+				changePlotHeight(imageDisplay.getSize().y);
+			}
+			
+			@Override
+			public void controlMoved(ControlEvent e) {
+				// Nothing to do
+			}
+		});
 		
 		errorImage = new Label(imageDisplay, SWT.NONE);
 		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
@@ -83,6 +102,8 @@ public class WaterfallWidget extends Composite {
 		errorLabel.setLayoutData(gd_errorLabel);
 		errorLabel.setText("");
 		errorLabel.setVisible(false);
+		
+		//parametersChanged();
 	}
 	
 	// The pv name for connection
@@ -129,6 +150,14 @@ public class WaterfallWidget extends Composite {
 		}
 	}
 	
+	private void parametersChanged() {
+		if (parameters.isScrollDown()) {
+			imageDisplay.setHAlignment(SWT.TOP);
+		} else {
+			imageDisplay.setHAlignment(SWT.BOTTOM);
+		}
+	}
+	
 	// Reconnects the pv
 	private void reconnect() {
 		// First de-allocate current pv if any
@@ -141,8 +170,11 @@ public class WaterfallWidget extends Composite {
 		imageDisplay.setVImage(null);
 		
 		if (pvName != null) {
-			pv = PVManager.read(waterfallPlotOf(vDoubleArray(pvName), parameters))
-				.andNotify(SWTUtil.onSWTThread()).atHz(30);
+			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters,
+					WaterfallPlotParameters.height(imageDisplay.getSize().y));
+			parameters = plot.getParameters();
+			pv = PVManager.read(plot)
+				.andNotify(SWTUtil.onSWTThread()).atHz(50);
 			pv.addPVValueChangeListener(new PVValueChangeListener() {
 				
 				@Override
@@ -151,6 +183,13 @@ public class WaterfallWidget extends Composite {
 					imageDisplay.setVImage(pv.getValue());
 				}
 			});
+		}
+	}
+	
+	private void changePlotHeight(int newHeight) {
+		parameters = parameters.with(WaterfallPlotParameters.height(newHeight));
+		if (plot != null) {
+			plot.with(parameters);
 		}
 	}
 
