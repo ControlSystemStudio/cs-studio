@@ -32,4 +32,5 @@ package org.csstudio.archive.common.requesttype.algorithm.raw;
  * @since 01.04.2011
  */
 public class NoFilteringAlgorithm {
+    // EMPTY
 }

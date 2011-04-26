@@ -32,5 +32,5 @@ package org.csstudio.archive.common.requesttype.algorithm.average;
  * @since 01.04.2011
  */
 public class MinMaxAverageAlgorithm {
-
+    // EMPTY
 }
