@@ -21,15 +21,16 @@
  */
  package org.csstudio.platform.ui.dnd.rfc;
 
-import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.dnd.ChooseControlSystemPrefixDialog;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDragSourceAdapter;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDropTargetAdapter;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
@@ -37,6 +38,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class ProcessVariableExchangeUtil {
 
@@ -99,12 +101,10 @@ public class ProcessVariableExchangeUtil {
 
 					boolean askAgain = !dialog.dontAskAgain();
 
-					CSSPlatformUiPlugin
-							.getCorePreferenceStore()
-							.setValue(
-									ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
-									askAgain);
-					CSSPlatformPlugin.getDefault().savePluginPreferences();
+                    getCorePreferenceStore()
+                            .setValue(ProcessVariableAdressFactory.PROP_ASK_FOR_CONTROL_SYSTEM,
+                                      askAgain);
+                    SimpleDalPluginActivator.getDefault().savePluginPreferences();
 
 					ControlSystemEnum controlSystem = dialog
 							.getSelectedControlSystem();
@@ -121,5 +121,11 @@ public class ProcessVariableExchangeUtil {
 
 		return pv;
 	}
+
+    public static IPreferenceStore getCorePreferenceStore() {
+        return new ScopedPreferenceStore(new InstanceScope(), SimpleDalPluginActivator.getDefault()
+                .getBundle().getSymbolicName());
+    }
+
 
 }
