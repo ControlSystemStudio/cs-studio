@@ -174,24 +174,11 @@ public class VImageDisplay extends Canvas {
 
 				gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
 						x, y, width, height);
-//				drawBackground(gc, image.getBounds().width, 0,
-//						Math.max(0, getClientArea().width - image.getBounds().width), image.getBounds().height);
-//				drawBackground(gc, 0, image.getBounds().height,
-//						getClientArea().width, Math.max(0, getClientArea().height - image.getBounds().height));
+				drawBackground(gc, 0, 0, x, getClientArea().height);
+				drawBackground(gc, x + width, 0, getClientArea().width, getClientArea().height);
+				drawBackground(gc, 0, 0, getClientArea().width, y);
+				drawBackground(gc, 0, y + height, getClientArea().width, getClientArea().height);
 				
-//				if (stretched) {
-//					// Stretch the image to the whole client area
-//					gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
-//							0, 0, getClientArea().width, getClientArea().height);
-//				} else {
-//					// Draw the image, then draw the background at the right of the image
-//					// and then below the image
-//					gc.drawImage(image, 0, 0);
-//					drawBackground(gc, image.getBounds().width, 0,
-//							Math.max(0, getClientArea().width - image.getBounds().width), image.getBounds().height);
-//					drawBackground(gc, 0, image.getBounds().height,
-//							getClientArea().width, Math.max(0, getClientArea().height - image.getBounds().height));
-//				}
 				image.dispose();
 			} else {
 				// If image is not set, just paint the background
