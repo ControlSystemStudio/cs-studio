@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.internal.model.pvs.AbstractProcessVariableNameParser;
 import org.csstudio.platform.internal.model.pvs.DalNameParser;

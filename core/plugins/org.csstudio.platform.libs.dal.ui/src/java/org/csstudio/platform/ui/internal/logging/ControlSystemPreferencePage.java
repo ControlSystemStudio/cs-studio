@@ -82,7 +82,9 @@ public class ControlSystemPreferencePage extends FieldEditorPreferencePage
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final IWorkbench workbench) {
+	@Override
+    public void init(final IWorkbench workbench) {
+	    // nothing to do
 	}
 
 }

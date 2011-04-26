@@ -21,13 +21,11 @@
  */
  package org.csstudio.platform.ui.dnd.rfc;
 
-import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.internal.dnd.ChooseControlSystemPrefixDialog;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDragSourceAdapter;
 import org.csstudio.platform.ui.internal.dnd.ProcessVariableAdressDropTargetAdapter;
