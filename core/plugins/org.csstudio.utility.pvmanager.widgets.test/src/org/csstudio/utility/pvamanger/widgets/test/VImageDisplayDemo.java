@@ -1,27 +1,26 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
+import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
+
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.internal.dnd.SwtUtil;
 import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
 import org.epics.pvmanager.data.VImage;
 
-import com.swtdesigner.SWTResourceManager;
-import static org.epics.pvmanager.extra.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import com.swtdesigner.ResourceManager;
+import com.swtdesigner.SWTResourceManager;
 
 public class VImageDisplayDemo extends ViewPart {
 
@@ -203,6 +202,7 @@ public class VImageDisplayDemo extends ViewPart {
 	/**
 	 * Initialize the menu.
 	 */
+	@SuppressWarnings("unused")
 	private void initializeMenu() {
 		IMenuManager menuManager = getViewSite().getActionBars()
 				.getMenuManager();
