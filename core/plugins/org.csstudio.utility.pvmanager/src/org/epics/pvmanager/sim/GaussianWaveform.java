@@ -91,8 +91,10 @@ public class GaussianWaveform extends SimFunction<VDoubleArray> {
 
     @Override
     VDoubleArray nextValue() {
+        if (lastTime == null)
+            lastTime = TimeStamp.now();
         return ValueFactory.newVDoubleArray(generateNewValue(), Collections.singletonList(buffer.length), AlarmSeverity.NONE, AlarmStatus.NONE,
-                TimeStamp.now(), null,
+                lastTime, null,
                 -0.5, -0.35, -0.25, "x", Constants.DOUBLE_FORMAT,
                 1.0, 1.10, 1.25, -0.5, 1.25);
     }

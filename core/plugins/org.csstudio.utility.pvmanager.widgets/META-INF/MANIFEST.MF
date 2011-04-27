@@ -11,5 +11,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pvmanager.ui;bundle-version="[1.0.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.csstudio.utility.pvmanager.widgets
+Export-Package: com.swtdesigner,
+ org.csstudio.utility.pvmanager.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
