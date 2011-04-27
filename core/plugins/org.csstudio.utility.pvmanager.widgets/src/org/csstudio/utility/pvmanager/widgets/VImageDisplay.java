@@ -111,36 +111,39 @@ public class VImageDisplay extends Canvas {
 			if (vImage != null) {
 				Image image = SWTUtil.toImage(gc, vImage);
 				int x;
-				if ((alignment & SWT.LEFT) != 0) {
+				int width;
+				
+				if ((stretched & SWT.HORIZONTAL) != 0) {
+					width = getClientArea().width;
 					x = 0;
-				} else if ((alignment & SWT.RIGHT) != 0) {
-					x = getClientArea().width - image.getBounds().width;
 				} else {
-					x = (getClientArea().width - image.getBounds().width)/2;
+					width = image.getBounds().width;
+					if ((alignment & SWT.LEFT) != 0) {
+						x = 0;
+					} else if ((alignment & SWT.RIGHT) != 0) {
+						x = getClientArea().width - image.getBounds().width;
+					} else {
+						x = (getClientArea().width - image.getBounds().width)/2;
+					}
 				}
 				
 				int y;
-				if ((alignment & SWT.TOP) != 0) {
-					y = 0;
-				} else if ((alignment & SWT.BOTTOM) != 0) {
-					y = getClientArea().height - image.getBounds().height;
-				} else {
-					y = (getClientArea().height - image.getBounds().height)/2;
-				}
-				
-				int width;
-				if ((stretched & SWT.HORIZONTAL) != 0) {
-					width = getClientArea().width;
-				} else {
-					width = image.getBounds().width;
-				}
-				
 				int height;
 				if ((stretched & SWT.VERTICAL) != 0) {
 					height = getClientArea().height;
+					y = 0;
 				} else {
 					height = image.getBounds().height;
+					if ((alignment & SWT.TOP) != 0) {
+						y = 0;
+					} else if ((alignment & SWT.BOTTOM) != 0) {
+						y = getClientArea().height - image.getBounds().height;
+					} else {
+						y = (getClientArea().height - image.getBounds().height)/2;
+					}
 				}
+				
+				
 
 				gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
 						x, y, width, height);

@@ -17,12 +17,30 @@ import org.epics.pvmanager.data.VImage;
 import com.swtdesigner.SWTResourceManager;
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+
+import com.swtdesigner.ResourceManager;
 
 public class VImageDisplayDemo extends ViewPart {
 
 	public static final String ID = "org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"; //$NON-NLS-1$
 
 	private PV<VImage> pv;
+	private Action horizontalStretch;
+	
+	VImageDisplay topLeft;
+	VImageDisplay top;
+	VImageDisplay topRight;
+	VImageDisplay centerLeft;
+	VImageDisplay center;
+	VImageDisplay centerRight;
+	VImageDisplay bottomLeft;
+	VImageDisplay bottom;
+	VImageDisplay bottomRight;
+	private Action verticalStretch;
+
 	
 	public VImageDisplayDemo() {
 	}
@@ -43,15 +61,15 @@ public class VImageDisplayDemo extends ViewPart {
 		fl_composite.spacing = 10;
 		composite.setLayout(fl_composite);
 		
-		final VImageDisplay topLeft = new VImageDisplay(composite);
+		topLeft = new VImageDisplay(composite);
 		topLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		topLeft.setAlignment(SWT.TOP | SWT.LEFT);
 		
-		final VImageDisplay top = new VImageDisplay(composite);
+		top = new VImageDisplay(composite);
 		top.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		top.setAlignment(SWT.TOP);
 		
-		final VImageDisplay topRight = new VImageDisplay(composite);
+		topRight = new VImageDisplay(composite);
 		topRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		topRight.setAlignment(SWT.TOP | SWT.RIGHT);
 		
@@ -60,15 +78,15 @@ public class VImageDisplayDemo extends ViewPart {
 		fl_composite_1.spacing = 10;
 		composite_1.setLayout(fl_composite_1);
 		
-		final VImageDisplay centerLeft = new VImageDisplay(composite_1);
+		centerLeft = new VImageDisplay(composite_1);
 		centerLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		centerLeft.setAlignment(SWT.CENTER | SWT.LEFT);
 		
-		final VImageDisplay center = new VImageDisplay(composite_1);
+		center = new VImageDisplay(composite_1);
 		center.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		center.setAlignment(SWT.CENTER);
 		
-		final VImageDisplay centerRight = new VImageDisplay(composite_1);
+		centerRight = new VImageDisplay(composite_1);
 		centerRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		centerRight.setAlignment(SWT.CENTER | SWT.RIGHT);
 		
@@ -77,15 +95,15 @@ public class VImageDisplayDemo extends ViewPart {
 		fl_composite_2.spacing = 10;
 		composite_2.setLayout(fl_composite_2);
 		
-		final VImageDisplay bottomLeft = new VImageDisplay(composite_2);
+		bottomLeft = new VImageDisplay(composite_2);
 		bottomLeft.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		bottomLeft.setAlignment(SWT.BOTTOM | SWT.LEFT);
 		
-		final VImageDisplay bottom = new VImageDisplay(composite_2);
+		bottom = new VImageDisplay(composite_2);
 		bottom.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		bottom.setAlignment(SWT.BOTTOM);
 		
-		final VImageDisplay bottomRight = new VImageDisplay(composite_2);
+		bottomRight = new VImageDisplay(composite_2);
 		bottomRight.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		bottomRight.setAlignment(SWT.BOTTOM | SWT.RIGHT);
 
@@ -113,7 +131,26 @@ public class VImageDisplayDemo extends ViewPart {
 				bottomRight.setVImage(pv.getValue());
 			}
 		});
-
+		updateStretch();
+	}
+	
+	private void updateStretch() {
+		int stretched = 0;
+		if (horizontalStretch.isChecked()) {
+			stretched |= SWT.HORIZONTAL;
+		}
+		if (verticalStretch.isChecked()) {
+			stretched |= SWT.VERTICAL;
+		}
+		topLeft.setStretched(stretched);
+		top.setStretched(stretched);
+		topRight.setStretched(stretched);
+		centerLeft.setStretched(stretched);
+		center.setStretched(stretched);
+		centerRight.setStretched(stretched);
+		bottomLeft.setStretched(stretched);
+		bottom.setStretched(stretched);
+		bottomRight.setStretched(stretched);
 	}
 
 	/**
@@ -121,6 +158,36 @@ public class VImageDisplayDemo extends ViewPart {
 	 */
 	private void createActions() {
 		// Create the actions
+		{
+			horizontalStretch = new Action("Horizontal Stretch") {
+			};
+			horizontalStretch.setChecked(true);
+			horizontalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchHorizontal.png"));
+			horizontalStretch.addPropertyChangeListener(new IPropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent event) {
+					if ("checked".equals(event.getProperty())) {
+						updateStretch();
+					}
+				}
+			});
+		}
+		{
+			verticalStretch = new Action("Vertical Stretch") {
+			};
+			verticalStretch.setChecked(true);
+			verticalStretch.setImageDescriptor(ResourceManager.getImageDescriptor(VImageDisplayDemo.class, "/org/csstudio/utility/pvamanger/widgets/test/stretchVertical.png"));
+			verticalStretch.addPropertyChangeListener(new IPropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent event) {
+					if ("checked".equals(event.getProperty())) {
+						updateStretch();
+					}
+				}
+			});
+		}
 	}
 
 	/**
@@ -129,6 +196,8 @@ public class VImageDisplayDemo extends ViewPart {
 	private void initializeToolBar() {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
+		toolbarManager.add(horizontalStretch);
+		toolbarManager.add(verticalStretch);
 	}
 
 	/**
