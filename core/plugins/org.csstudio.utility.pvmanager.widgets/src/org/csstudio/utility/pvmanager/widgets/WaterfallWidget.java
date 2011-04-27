@@ -68,7 +68,7 @@ public class WaterfallWidget extends Composite {
 				}
 			}
 		});
-		imageDisplay.setHStretched(true);
+		imageDisplay.setStretched(SWT.HORIZONTAL);
 		GridLayout gl_imageDisplay = new GridLayout(2, false);
 		gl_imageDisplay.marginWidth = 0;
 		gl_imageDisplay.marginHeight = 0;
@@ -152,9 +152,9 @@ public class WaterfallWidget extends Composite {
 	
 	private void parametersChanged() {
 		if (parameters.isScrollDown()) {
-			imageDisplay.setHAlignment(SWT.TOP);
+			imageDisplay.setAlignment(SWT.LEFT | SWT.TOP);
 		} else {
-			imageDisplay.setHAlignment(SWT.BOTTOM);
+			imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
 		}
 	}
 	

@@ -6,7 +6,6 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.data.VImage;
@@ -31,48 +30,32 @@ public class VImageDisplay extends Canvas {
 	
 	// The current image being displayed
 	private VImage vImage;
-	// Whether the image should be horizontally stretched to the full size of the display
-	private boolean hStretched;
-	// Whether the image should be vertically stretched to the full size of the display
-	private boolean vStretched;
 	
-	private int hAlignment = SWT.LEFT;
-	private int vAlignment = SWT.TOP;
+	// Whether the image should be horizontally or vertically stretched to the full size of the display.
+	// Any combination of SWT.HORIZONTAL or SWT.VERTICAL are allowed	
+	private int stretched = SWT.NONE;
+	
+	// How the image should be allowed. Any combination of SWT.LEFT, SWT.RIGHT, SWT.TOP, SWT.BOTTOM
+	// is allowed
+	private int alignment = SWT.LEFT | SWT.TOP;
 
 	/**
-	 * True if the image is horizontally stretched to fit the size of the display.
+	 * In which direction the image should be stretched.
 	 * 
 	 * @return the current property value
 	 */
-	public boolean isHStretched() {
-		return hStretched;
+	public int getStretched() {
+		return stretched;
 	}
 	
 	/**
-	 * Changes whether the image is horizontally stretched to fit the size of the display.
+	 * Changes in which direction the image should be stretched. Possible values are SWT.NONE,
+	 * SWT.HORIZONTAL, SWT.VERTICAL, SWT.HORIZONTAL | SWT.VERTICAL
 	 * 
 	 * @param stretched the new property value
 	 */
-	public void setHStretched(boolean hStretched) {
-		this.hStretched = hStretched;
-	}
-	
-	/**
-	 * True if the image is vertically stretched to fit the size of the display.
-	 * 
-	 * @return the current property value
-	 */
-	public boolean isVStretched() {
-		return vStretched;
-	}
-	
-	/**
-	 * Changes whether the image is vertically stretched to fit the size of the display.
-	 * 
-	 * @param stretched the new property value
-	 */
-	public void setVStretched(boolean vStretched) {
-		this.vStretched = vStretched;
+	public void setStretched(int stretched) {
+		this.stretched = stretched;
 	}
 	
 	/**
@@ -87,24 +70,25 @@ public class VImageDisplay extends Canvas {
 		}
 	}
 	
-	public int getHAlignment() {
-		return hAlignment;
+	/**
+	 * Where the image is positioned in the widget.
+	 * 
+	 * @return current alignment
+	 */
+	public int getAlignment() {
+		return alignment;
 	}
 
-	public void setHAlignment(int hAlignment) {
+	/**
+	 * Changes where the image is position in the widget. Possible values are
+	 * SWT.CENTER,
+	 * SWT.TOP, SWT.BOTTOM, SWT.LEFT, SWT.RIGHT, the four corners (i.e. SWT.TOP | SWT.LEFT).
+	 * 
+	 * @param alignment
+	 */
+	public void setAlignment(int alignment) {
 		if (!isDisposed()) {
-			this.hAlignment = hAlignment;
-			redraw();
-		}
-	}
-
-	public int getVAlignment() {
-		return vAlignment;
-	}
-
-	public void setVAlignment(int vAlignment) {
-		if (!isDisposed()) {
-			this.vAlignment = vAlignment;
+			this.alignment = alignment;
 			redraw();
 		}
 	}
@@ -127,46 +111,32 @@ public class VImageDisplay extends Canvas {
 			if (vImage != null) {
 				Image image = SWTUtil.toImage(gc, vImage);
 				int x;
-				switch (hAlignment) {
-				case SWT.LEFT:
+				if ((alignment & SWT.LEFT) != 0) {
 					x = 0;
-					break;
-				case SWT.CENTER:
-					x = (getClientArea().width - image.getBounds().width)/2;
-					break;
-				case SWT.RIGHT:
+				} else if ((alignment & SWT.RIGHT) != 0) {
 					x = getClientArea().width - image.getBounds().width;
-					break;
-				default:
-					x = 0;
-					break;
+				} else {
+					x = (getClientArea().width - image.getBounds().width)/2;
 				}
 				
 				int y;
-				switch (vAlignment) {
-				case SWT.TOP:
+				if ((alignment & SWT.TOP) != 0) {
 					y = 0;
-					break;
-				case SWT.CENTER:
-					y = (getClientArea().height - image.getBounds().height)/2;
-					break;
-				case SWT.BOTTOM:
+				} else if ((alignment & SWT.BOTTOM) != 0) {
 					y = getClientArea().height - image.getBounds().height;
-					break;
-				default:
-					y = 0;
-					break;
+				} else {
+					y = (getClientArea().height - image.getBounds().height)/2;
 				}
 				
 				int width;
-				if (hStretched) {
+				if ((stretched & SWT.HORIZONTAL) != 0) {
 					width = getClientArea().width;
 				} else {
 					width = image.getBounds().width;
 				}
 				
 				int height;
-				if (vStretched) {
+				if ((stretched & SWT.VERTICAL) != 0) {
 					height = getClientArea().height;
 				} else {
 					height = image.getBounds().height;
