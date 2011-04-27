@@ -30,6 +30,7 @@ import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.remotercp.common.tracker.GenericServiceTracker;
@@ -42,7 +43,7 @@ import com.google.inject.Injector;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class LdapUpdaterActivator extends BundleActivator {
+public class LdapUpdaterActivator implements BundleActivator {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
@@ -55,7 +56,7 @@ public class LdapUpdaterActivator extends BundleActivator {
     private static LdapUpdaterActivator INSTANCE;
 
     private ServiceTracker _ldapServiceTracker;
-    
+
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
     private LdapUpdaterServiceImpl _ldapUpdaterService;
@@ -86,30 +87,31 @@ public class LdapUpdaterActivator extends BundleActivator {
      * {@inheritDoc}
      */
     @Override
-    protected void start(@Nullable final BundleContext context) throws Exception {
-        
-        
-        final ILdapServiceProvider provider = 
+    public void start(@Nullable final BundleContext context) throws Exception {
+
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
+
+        _genericServiceTracker =
+            new GenericServiceTracker<ISessionService>(context, ISessionService.class);
+        _genericServiceTracker.open();
+
+        final ILdapServiceProvider provider =
             new ILdapServiceProvider() {
                 @Override
-                @Nonnull 
+                @Nonnull
                 public ILdapService getLdapService() throws OsgiServiceUnavailableException {
-                    ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
+                    @SuppressWarnings("synthetic-access")
+                    final ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
                     if (service == null) {
                         throw new OsgiServiceUnavailableException("LDAP service could not be retrieved. Please try again later or check LDAP connection.");
                     }
                     return service;
                 }
             };
-        
+
         final Injector injector = Guice.createInjector(new LdapUpdaterModule(provider));
         _ldapUpdaterService = injector.getInstance(LdapUpdaterServiceImpl.class);
-        
-        _ldapServiceTracker = new LdapServiceTracker(context);
-        _ldapServiceTracker.open();
-		_genericServiceTracker = 
-		    new GenericServiceTracker<ISessionService>(context, ISessionService.class);
-		_genericServiceTracker.open();
     }
 
 
@@ -119,7 +121,7 @@ public class LdapUpdaterActivator extends BundleActivator {
      * {@inheritDoc}
      */
     @Override
-    protected void stop(@Nullable final BundleContext context) throws Exception {
+    public void stop(@Nullable final BundleContext context) throws Exception {
         _ldapServiceTracker.close();
     }
 
@@ -129,7 +131,7 @@ public class LdapUpdaterActivator extends BundleActivator {
         return PLUGIN_ID;
     }
 
-	public void addSessionServiceListener(@Nonnull IGenericServiceListener<ISessionService> sessionServiceListener) {
+	public void addSessionServiceListener(@Nonnull final IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 
