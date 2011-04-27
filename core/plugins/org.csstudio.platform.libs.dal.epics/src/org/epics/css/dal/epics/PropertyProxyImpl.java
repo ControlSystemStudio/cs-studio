@@ -475,7 +475,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				return;
 			}
 
-			System.out.println(">>> "+name+" Creating characteristics from DBR");
+//			System.out.println(">>> "+name+" Creating characteristics from DBR");
 
 			if (dbr.isCTRL())
 			{
@@ -586,7 +586,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				setCondition(condition);
 			}
 			
-			System.out.println(">>> "+name+" characteristics from DBR "+getCharacteristics());
+//			System.out.println(">>> "+name+" characteristics from DBR "+getCharacteristics());
 
 			getCharacteristics().notifyAll();
 			initializeCharacteristicsRunning = false;
@@ -609,7 +609,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				return;
 			}
 			
-			System.out.println(">>> "+name+" initialize started");
+//			System.out.println(">>> "+name+" initialize started");
 			
 			if (initializeCharacteristicsRunning) return;
 			initializeCharacteristicsRunning = true;
@@ -681,13 +681,13 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 		synchronized (getCharacteristics())
 		{
-			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before size "+getCharacteristics().size());
+//			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before size "+getCharacteristics().size());
 			// characteristics not iniialized yet... wait
 			if (getCharacteristics().size() == 0)
 			{
 				initializeCharacteristics();
 				long timeToWait = CHARACTERISTICS_TIMEOUT +100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
-				System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait "+timeToWait);
+//				System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait "+timeToWait);
 				if (timeToWait > 0)
 				{
 					try {
@@ -699,7 +699,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				value= getCharacteristics().get(characteristicName);
 			}
 		}
-		System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait done");
+//		System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait done");
 		return value;
 	}
 	
@@ -708,11 +708,11 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			String characteristicName) 
 	{
 		if (value==null && initializeCharacteristicsRunning) {
-			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after");
+//			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after");
 			synchronized (getCharacteristics()) {
 				if (initializeCharacteristicsRunning) {
 					long timeToWait = CHARACTERISTICS_TIMEOUT + 100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
-					System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after wait "+timeToWait);
+//					System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after wait "+timeToWait);
 					if (timeToWait > 0)
 					{
 						try {
@@ -725,7 +725,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				}
 			}
 		}
-		System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after wait done");
+//		System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after wait done");
 		if (value == null && characteristicName.length() <= 4) {
 			value = getCharacteristicFromField(characteristicName);
 			if (value!=null) {
@@ -733,7 +733,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 					updateCharacteristic(characteristicName, value);
 				}
 			}
-			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after from field");
+//			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after from field");
 		}
 		return value;
 	}
