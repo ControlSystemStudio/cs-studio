@@ -23,20 +23,21 @@
  */
 package org.csstudio.utility.ldapUpdater.service;
 
-import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
-import javax.naming.ServiceUnavailableException;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
@@ -47,24 +48,24 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * @version $Revision$
  * @since 05.05.2010
  */
-public interface ILdapUpdaterService {
+public interface ILdapFacade {
 
     /**
      * Creates a new Record in LDAP.
      * @param newLdapName the new complete ldap name of the record
      * @return true if the new record could be created, false otherwise
-     * @throws ServiceUnavailableException if the LDAP service is not available
+     * @throws LdapFacadeException if the LDAP service is not available
      */
-    boolean createLdapRecord(@Nonnull LdapName newLdapName) throws ServiceUnavailableException;
+    boolean createLdapRecord(@Nonnull LdapName newLdapName) throws LdapFacadeException;
 
     /**
      * Creates a new IOC in LDAP
      * @param newLdapName the new complete name of the IOC
      * @param gregorianCalendar
      * @return true if the new ioc could be created, false otherwise
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
-    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable GregorianCalendar gregorianCalendar) throws ServiceUnavailableException;
+    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable TimeInstant timestamp) throws LdapFacadeException;
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -72,25 +73,22 @@ public interface ILdapUpdaterService {
      * @param iocName ioc
      * @return the seach result
      *
-     * @throws InterruptedException
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
     @CheckForNull
-    ILdapSearchResult retrieveRecordsForIOC(@Nonnull String facilityName,
-                                            @Nonnull String iocName)
-            throws InterruptedException, ServiceUnavailableException;
+    ContentModel<LdapEpicsControlsConfiguration> retrieveRecordsForIOC(@Nonnull String facilityName,
+                                                                       @Nonnull String iocName)
+                                                                       throws LdapFacadeException;
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
      * @param fullName the complete LDAP name for this ioc
      *
-     * @throws InterruptedException
-     * @throws InvalidNameException
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
     @CheckForNull
     ILdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName)
-            throws InterruptedException, InvalidNameException, ServiceUnavailableException;
+            throws LdapFacadeException;
 
 
     /**
@@ -98,31 +96,44 @@ public interface ILdapUpdaterService {
      * @param iocName .
      * @param facilityName .
      * @param validRecords .
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
-    void tidyUpIocEntryInLdap(@Nonnull String iocName, @Nonnull String facilityName, @Nonnull Set<Record> validRecords)
-            throws ServiceUnavailableException;
+    void tidyUpIocEntryInLdap(@Nonnull String iocName,
+                              @Nonnull String facilityName,
+                              @Nonnull Set<Record> validRecords)
+                              throws LdapFacadeException;
 
     /**
      * Removes the IOC entry from the LDAP context.
      * @param iocName .
      * @param facilityName .
-     * @throws InvalidNameException
-     * @throws InterruptedException
      * @throws ServiceUnavailableException
      */
     void removeIocEntryFromLdap(@Nonnull String iocName,
-                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException, ServiceUnavailableException;
+                                @Nonnull String facilityName) throws LdapFacadeException;
 
     /**
      * Returns the ldap content model builder for the specified parameters
      * @param model an already existing model which shall be enriched with
      * @param <T> the tree configuration type of the content model
      * @return the content model builder
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
-        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException;
+    <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapFacadeException;
+
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
+                                                           @Nonnull final ILdapSearchResult result) throws LdapFacadeException;
+
+    @Nonnull
+    Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException;
+
+    @Nonnull
+    ISubtreeNodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
+        throws LdapFacadeException;
+
 
 }

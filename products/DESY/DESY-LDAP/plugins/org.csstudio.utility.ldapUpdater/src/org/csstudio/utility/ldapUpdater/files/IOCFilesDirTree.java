@@ -7,7 +7,7 @@
  */
 package org.csstudio.utility.ldapUpdater.files;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.*;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,20 +15,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldapUpdater.LdapAccess;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 
 
 
@@ -66,7 +66,7 @@ public final class IOCFilesDirTree {
         final String fileName = f.getName();
 
         if (fileName.endsWith(RECORDS_FILE_SUFFIX)) {
-            final GregorianCalendar dateTime = findLastModifiedDateForFile(fileName);
+            final TimeInstant dateTime = findTimeOfLastFileModification(fileName);
 
             final String iocName = fileName.replace(RECORDS_FILE_SUFFIX, "");
             iocMap.put(iocName, new IOC(iocName, dateTime));
@@ -94,12 +94,10 @@ public final class IOCFilesDirTree {
     }
 
     @Nonnull
-    private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocFileName) {
-        final GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("ETC"));
-        
+    private static TimeInstant findTimeOfLastFileModification(@Nonnull final String iocFileName) {
         final File filePath = IOC_DBL_DUMP_PATH.getValue();
-        dateTime.setTimeInMillis(new File(filePath, iocFileName).lastModified());
-        return dateTime;
+        final TimeInstant timestamp = TimeInstantBuilder.fromMillis(new File(filePath, iocFileName).lastModified());
+        return timestamp;
     }
 
     /**
@@ -157,9 +155,9 @@ public final class IOCFilesDirTree {
             br.close();
             return records;
         } catch (final FileNotFoundException e) {
-            LdapAccess.LOG.error("Could not find file: " + pathToFile + "\n" + e.getMessage());
+            LdapUpdaterServiceImpl.LOG.error("Could not find file: " + pathToFile + "\n" + e.getMessage());
         } catch (final IOException e) {
-            LdapAccess.LOG.error("Error while reading from file: " + e.getMessage());
+            LdapUpdaterServiceImpl.LOG.error("Error while reading from file: " + e.getMessage());
         }
         return Collections.emptySet();
     }

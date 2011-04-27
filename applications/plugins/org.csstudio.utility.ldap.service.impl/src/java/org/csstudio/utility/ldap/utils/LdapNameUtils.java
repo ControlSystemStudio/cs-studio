@@ -238,4 +238,18 @@ public final class LdapNameUtils {
 
         return result;
     }
+
+    /**
+     * Removes the last or simple name from the ldap name.
+     * Always returning
+     * @param iocLdapName
+     * @return
+     */
+    @Nonnull
+    public static LdapName baseName(@Nonnull final LdapName fullName) {
+        if (fullName.size() > 0) {
+            return (LdapName) fullName.getPrefix(fullName.size()-1);
+        }
+        return fullName;
+    }
 }

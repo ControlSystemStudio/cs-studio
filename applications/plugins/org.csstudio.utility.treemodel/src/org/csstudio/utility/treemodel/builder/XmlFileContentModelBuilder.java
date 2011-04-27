@@ -168,7 +168,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
         }
         final LdapName fullName = new LdapName(rdns);
 
-        if (model.getByTypeAndLdapName(oc, fullName.toString()) == null) {
+        if (model.getByTypeAndLdapName(oc, fullName) == null) {
 
             final Attributes attributes = extractAttributes(element, oc.getAttributes());
 
@@ -186,7 +186,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             model.addChild(ldapParent, newLdapChild);
         }
         final ISubtreeNodeComponent<T> ldapComponent =
-            model.getByTypeAndLdapName(oc, fullName.toString());
+            model.getByTypeAndLdapName(oc, fullName);
 
         final List<Element> children = getChildrenElements(element);
 

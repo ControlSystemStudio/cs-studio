@@ -22,12 +22,42 @@
 
 package org.csstudio.utility.ldapUpdater.action;
 
-import javax.annotation.Nonnull;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+
+import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldapUpdater.LdapUpdater;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+
 
 /**
  * Starts the LDAP update from the context menu.
@@ -39,15 +69,161 @@ import org.csstudio.utility.ldapUpdater.LdapUpdater;
  */
 public class UpdateLdapAction implements IManagementCommand {
 
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(UpdateLdapAction.class);
+
+    private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
+
+    /**
+     * Singleton approach to make the service public to the action, a pain to test...
+     */
+    private static final LdapUpdaterUtil UPDATER = LdapUpdaterUtil.INSTANCE;
+
+    /**
+     * Singleton approach to make the service public to the action, a pain to test...
+     */
+    private ILdapUpdaterService _service;
+
+    /**
+     * Constructor.
+     */
+    public UpdateLdapAction() {
+        try {
+            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error("LDAP service is not available!");
+            throw new RuntimeException("LDAP service is not available!", e);
+        }
+    }
+
     @Override
     @Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-        final LdapUpdater ldapUpdater = LdapUpdater.INSTANCE;
-        if (!ldapUpdater.isBusy()){
-            ldapUpdater.updateLdapFromIOCFiles();
-        }else{
+        if (!UPDATER.isBusy()){
+            UPDATER.setBusy(true);
+            try {
+                updateLdapFromIOCFiles();
+            } catch (final Exception e) {
+                LOG.error("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater", e);
+                return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
+
+            } finally {
+                UPDATER.setBusy(false);
+            }
+        } else{
             return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
         }
         return CommandResult.createSuccessResult();
+    }
+
+    /**
+     * Scans the IOC files on /applic and checks whether contained records are already listed in LDAP.
+     * If not so, these entries are added to LDAP.
+     * @throws OsgiServiceUnavailableException
+     */
+    public void updateLdapFromIOCFiles() throws LdapFacadeException {
+
+
+        final TimeInstant startTime = UPDATER.logHeader(UPDATE_ACTION_NAME);
+
+        try {
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs = _service.retrieveIOCs();
+
+            if (iocs.isEmpty()) {
+                LOG.info("No IOCs found in LDAP.");
+                return;
+            }
+
+            updateIocsInLdap(iocs);
+
+        } finally {
+            UPDATER.setBusy(false);
+            UPDATER.logFooter(UPDATE_ACTION_NAME, startTime);
+        }
+    }
+
+    private void updateIocsInLdap(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs)
+                                  throws LdapFacadeException {
+
+            final HistoryFileAccess histFileReader = new HistoryFileAccess();
+            final HistoryFileContentModel historyFileModel = histFileReader.readFile();
+
+            validateHistoryFileEntriesVsLDAPEntries(iocs, historyFileModel);
+
+            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(IOC_DBL_DUMP_PATH.getValue(), 1);
+            _service.updateLDAPFromIOCList(iocs, iocMapFromFS, historyFileModel);
+    }
+
+
+    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
+                                                         @Nonnull final HistoryFileContentModel historyFileModel) {
+
+        final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
+
+        final Predicate<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> predicate =
+            new Predicate<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>>() {
+                @Override
+                public boolean apply(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
+                    return iocsFromHistFile.contains(iocFromLdap.getName());
+                }
+            };
+
+        final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInHistFile =
+            Collections2.filter(iocsFromLdap.values(), predicate);
+
+
+        handleIocEntriesInLdapNotPresentInHistoryFile(iocsFromLdapNotInHistFile);
+
+
+        final Collection<String> iocNamesFromLdap =
+            Collections2.transform(iocsFromLdap.values(),
+                                   new Function<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>, String>() {
+                                       @Override
+                                       @Nonnull
+                                       public String apply(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> input) {
+                                           return input.getName();
+                                       }
+                                   });
+        iocsFromHistFile.removeAll(iocNamesFromLdap);
+        handleIocEntriesInHistoryFileNotPresentInLdap(iocsFromHistFile);
+
+    }
+
+
+    private void handleIocEntriesInHistoryFileNotPresentInLdap(@Nonnull final Set<String> iocsFromHistFileNotInLdap) {
+        for (final String ioc : iocsFromHistFileNotInLdap) {
+            LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");
+        }
+    }
+
+    private void handleIocEntriesInLdapNotPresentInHistoryFile(@Nonnull final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInFile) {
+        final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
+
+        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
+            LOG.warn("IOC " + ioc.getName() + " from LDAP is not present in history file!");
+            getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
+        }
+
+        UPDATER.sendNotificationMails(missingIOCsPerPerson);
+    }
+
+    @Nonnull
+    private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc,
+                                                                 @Nonnull final Map<String, List<String>> iocsPerPerson) {
+        final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+        String person = LdapUpdaterUtil.DEFAULT_RESPONSIBLE_PERSON;
+        try {
+            if (personAttr != null && personAttr.get() != null) {
+                person = (String) personAttr.get();
+            }
+            if (!iocsPerPerson.containsKey(person)) {
+                iocsPerPerson.put(person, new ArrayList<String>());
+            }
+            iocsPerPerson.get(person).add(ioc.getName());
+        } catch (final NamingException e) {
+            LOG.error("Attribute for " + LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
+                      " in IOC " + ioc.getName() + "could not be retrieved.");
+        }
+        return iocsPerPerson;
     }
 }

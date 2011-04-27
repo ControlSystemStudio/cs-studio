@@ -45,7 +45,6 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author $Author$
  * @version $Revision$
  * @since 08.04.2010
- * @param <T>
  */
 public interface ILdapService {
 
@@ -79,6 +78,10 @@ public interface ILdapService {
     <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model);
 
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
+                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException;
 
     /**
      * Creates a new Record in LDAP.

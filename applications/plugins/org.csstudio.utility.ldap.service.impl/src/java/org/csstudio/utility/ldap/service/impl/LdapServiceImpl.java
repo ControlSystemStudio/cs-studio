@@ -317,7 +317,6 @@ public final class LdapServiceImpl implements ILdapService {
 
     /**
      * {@inheritDoc}
-     * @throws NamingException
      */
     @Override
     public void rename(@Nonnull final LdapName oldLdapName,
@@ -366,10 +365,6 @@ public final class LdapServiceImpl implements ILdapService {
         }
     }
 
-
-
-
-
     /**
      * {@inheritDoc}
      * @throws NamingException
@@ -415,13 +410,30 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
-        getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult) {
+    @Nonnull
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
+                                                           @Nonnull final ILdapSearchResult searchResult) {
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult);
     }
+    
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
+    @Nonnull
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
         return new LdapContentModelBuilder<T>(model);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot, 
+                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException {
+        LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result);
+        builder.build();
+        return builder.getModel();
     }
 }

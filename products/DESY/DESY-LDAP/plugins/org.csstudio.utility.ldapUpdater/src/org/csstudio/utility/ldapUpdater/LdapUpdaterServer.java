@@ -27,10 +27,6 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_USER;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -41,9 +37,12 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.net.HostAddress;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.joda.time.DateTimeFieldType;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
@@ -101,13 +100,12 @@ public class LdapUpdaterServer implements IApplication,
         final long startTimeSec = LDAP_AUTO_START.getValue();
         final long intervalSec = LDAP_AUTO_INTERVAL.getValue();
 
-        final TimeZone timeZone = TimeZone.getTimeZone("ECT");
-        final Calendar now = new GregorianCalendar(timeZone);
+        TimeInstant now = TimeInstantBuilder.fromNow();
 
-        LOG.info(now.getTime());
+        LOG.info(now.formatted());
 
         final long delaySec = getDelayInSeconds(startTimeSec, now);
-        logStartAndPeriod(startTimeSec, intervalSec, timeZone);
+        logStartAndPeriod(startTimeSec, intervalSec);
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
@@ -130,28 +128,24 @@ public class LdapUpdaterServer implements IApplication,
 
 
     private void logStartAndPeriod(final long startTimeSec,
-                                   final long intervalSec,
-                                   @Nonnull final TimeZone timeZone) {
-        final Calendar start = new GregorianCalendar(timeZone);
-        start.set(Calendar.SECOND, (int) (startTimeSec % 60L));
-        start.set(Calendar.MINUTE, (int) (startTimeSec % 60 % 60));
-        start.set(Calendar.HOUR, (int) (startTimeSec / 3600));
-        final String startStr = new SimpleDateFormat("HH:mm:ss").format(start.getTime());
+                                   final long intervalSec) {
+        long minute = startTimeSec % 60L;
+        long second = startTimeSec % 60L % 60L;
+        long hour = startTimeSec / 3600L;
+        String startTime = hour + ":" + minute + ":" + second;
 
-        LOG.info("\nLDAP Updater autostart scheduled at " + startStr +  " (ECT) every " + intervalSec + " seconds");
+        LOG.info("\nLDAP Updater autostart scheduled at " + startTime +  " every " + intervalSec + " seconds");
     }
 
 
-    private long getDelayInSeconds(final long startTimeSec, @Nonnull final Calendar now) {
-        final int s = now.get(Calendar.SECOND);
-        final int m = now.get(Calendar.MINUTE);
-        final int h = now.get(Calendar.HOUR_OF_DAY);
-
-        final long secondsSinceMidnight = s + m*60 + h*3600;
+    private long getDelayInSeconds(final long startTimeSec, 
+                                   @Nonnull final TimeInstant now) {
+        
+        final int secondsSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());
 
         long delaySec = startTimeSec - secondsSinceMidnight;
         if (delaySec < 0) {
-            delaySec = 3600*24 + delaySec; // turn over to new day
+            delaySec = 3600*24 + delaySec; // start at startTimeSec on the next day
         }
         return delaySec;
     }

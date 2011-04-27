@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,33 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapUpdater.service;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.action.UpdateLdapAction;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * LDAP updater task.
- *
+ * Exception for LDAP facade layer. 
+ * 
  * @author bknerr
- * @author $Author: bknerr $
- * @since 28.09.2010
+ * @since 27.04.2011
  */
-public class LdapUpdaterTask implements Runnable {
+public class LdapFacadeException extends Exception {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterTask.class);
-
+    private static final long serialVersionUID = -694433687574838083L;
+    
     /**
-     * {@inheritDoc}
+     * Constructor.
      */
-    @Override
-    public void run() {
-
-        try {
-            new UpdateLdapAction().updateLdapFromIOCFiles();
-        } catch (final Throwable t) {
-            LOG.error("Throwable " + t.getMessage() + " in LDAP Updater.");
-        }
+    public LdapFacadeException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
     }
 }

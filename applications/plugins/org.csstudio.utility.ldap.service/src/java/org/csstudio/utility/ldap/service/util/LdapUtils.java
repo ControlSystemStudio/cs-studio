@@ -68,7 +68,18 @@ public final class LdapUtils {
      */
     @Nonnull
     public static String any(@Nonnull final String fieldName) {
-        return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+        return equ(fieldName, FIELD_WILDCARD);
+    }
+    
+    /**
+     * Returns a filter for a direct match of the field name (e.g. '<fieldName>=<fieldValue>').
+     * @param fieldName the field type
+     * @param fieldValue the value the field type shall match
+     * @return .
+     */
+    @Nonnull
+    public static String equ(@Nonnull final String fieldName, @Nonnull final String fieldValue) {
+        return fieldName + FIELD_ASSIGNMENT + fieldValue;
     }
 
     /**

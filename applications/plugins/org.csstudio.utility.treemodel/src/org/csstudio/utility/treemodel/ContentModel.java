@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -185,9 +186,9 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     }
 
     @CheckForNull
-    public ISubtreeNodeComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
+    public ISubtreeNodeComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final LdapName key) {
         final Map<String, ISubtreeNodeComponent<T>> children = _cacheByTypeAndLdapName.get(type);
-        return children != null ? children.get(key) : null;
+        return children != null ? children.get(key.toString()) : null;
     }
 
 
@@ -226,5 +227,9 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         _cacheByLdapName.clear();
         _cacheByTypeAndLdapName.clear();
         _cacheByTypeAndSimpleName.clear();
+    }
+
+    public boolean isEmpty() {
+        return _cacheByLdapName.isEmpty() && _cacheByTypeAndLdapName.isEmpty() && _cacheByTypeAndSimpleName.isEmpty();
     }
 }

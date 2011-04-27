@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -21,31 +21,40 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.action.UpdateLdapAction;
+import javax.annotation.Nonnull;
+
+import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
+import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapFacadeImpl;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+
+import com.google.inject.AbstractModule;
 
 /**
- * LDAP updater task.
- *
+ * TODO (bknerr) : 
+ * 
  * @author bknerr
- * @author $Author: bknerr $
- * @since 28.09.2010
+ * @since 27.04.2011
  */
-public class LdapUpdaterTask implements Runnable {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterTask.class);
-
+public class LdapUpdaterModule extends AbstractModule {
+    private ILdapServiceProvider _serviceProvider;
+    
+    /**
+     * Constructor.
+     */
+    public LdapUpdaterModule(@Nonnull final ILdapServiceProvider provider) {
+        _serviceProvider = provider;
+    }
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void run() {
-
-        try {
-            new UpdateLdapAction().updateLdapFromIOCFiles();
-        } catch (final Throwable t) {
-            LOG.error("Throwable " + t.getMessage() + " in LDAP Updater.");
-        }
+    protected void configure() {
+        bind(ILdapServiceProvider.class).toInstance(_serviceProvider);
+        bind(ILdapFacade.class).to(LdapFacadeImpl.class);
+        bind(ILdapUpdaterService.class).to(LdapUpdaterServiceImpl.class);
     }
+    
 }

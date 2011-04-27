@@ -21,23 +21,28 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 /**
  * The activator class controls the plug-in life cycle
  */
-public class LdapUpdaterActivator extends AbstractCssPlugin {
+public class LdapUpdaterActivator extends BundleActivator {
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
@@ -52,6 +57,8 @@ public class LdapUpdaterActivator extends AbstractCssPlugin {
     private ServiceTracker _ldapServiceTracker;
     
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
+    private LdapUpdaterServiceImpl _ldapUpdaterService;
 
 
     /**
@@ -79,12 +86,29 @@ public class LdapUpdaterActivator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(@Nullable final BundleContext context) throws Exception {
-
+    protected void start(@Nullable final BundleContext context) throws Exception {
+        
+        
+        final ILdapServiceProvider provider = 
+            new ILdapServiceProvider() {
+                @Override
+                @Nonnull 
+                public ILdapService getLdapService() throws OsgiServiceUnavailableException {
+                    ILdapService service =  (ILdapService) _ldapServiceTracker.getService();
+                    if (service == null) {
+                        throw new OsgiServiceUnavailableException("LDAP service could not be retrieved. Please try again later or check LDAP connection.");
+                    }
+                    return service;
+                }
+            };
+        
+        final Injector injector = Guice.createInjector(new LdapUpdaterModule(provider));
+        _ldapUpdaterService = injector.getInstance(LdapUpdaterServiceImpl.class);
+        
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
-		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
-				context, ISessionService.class);
+		_genericServiceTracker = 
+		    new GenericServiceTracker<ISessionService>(context, ISessionService.class);
 		_genericServiceTracker.open();
     }
 
@@ -95,26 +119,28 @@ public class LdapUpdaterActivator extends AbstractCssPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStop(@Nullable final BundleContext context) throws Exception {
+    protected void stop(@Nullable final BundleContext context) throws Exception {
         _ldapServiceTracker.close();
     }
 
 
-    @Override
     @Nonnull
-    public String getPluginId() {
+    public static String getPluginId() {
         return PLUGIN_ID;
-    }
-
-    /**
-     * @return the LDAP service
-     */
-    @CheckForNull
-    public ILdapService getLdapService() {
-        return (ILdapService) _ldapServiceTracker.getService();
     }
 
 	public void addSessionServiceListener(@Nonnull IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
+
+    /**
+     * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
+     */
+	@Nonnull
+    public ILdapUpdaterService getLdapUpdaterService() throws OsgiServiceUnavailableException {
+	    if (_ldapUpdaterService == null) {
+	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called Activator.start before?");
+	    }
+        return _ldapUpdaterService;
+    }
 }

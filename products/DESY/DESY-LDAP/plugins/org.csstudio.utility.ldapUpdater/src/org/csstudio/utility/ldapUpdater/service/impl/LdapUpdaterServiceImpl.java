@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,276 +18,375 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
 package org.csstudio.utility.ldapUpdater.service.impl;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
-import static org.csstudio.utility.ldap.service.util.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
+import static org.csstudio.utility.ldap.service.util.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
-import java.util.Collection;
-import java.util.GregorianCalendar;
+import java.io.File;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
-import javax.naming.ServiceUnavailableException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
+import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
+import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
+import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
-import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+
+import com.google.inject.Inject;
+
 
 /**
- * Implements access to LDAP Service for LdapUpdater application.
+ * LDAP Updater access class to encapsulate specific updater access.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 05.05.2010
+ * @since 13.04.2010
  */
-public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
+public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
-    INSTANCE;
+    public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
+    /**
+     * Update Result.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 13.04.2010
+     */
+    private static class UpdateIOCResult {
+        private final int _numOfRecsWritten;
+        private final boolean _noError;
+        private final int _numOfRecsInFile;
+        private final int _numOfRecsInLDAP;
+
+
+        public UpdateIOCResult(final int numOfRecsInFile,
+                               final int numOfRecsWritten,
+                               final int numOfRecordsInLDAP,
+                               final boolean noError) {
+            _numOfRecsInFile = numOfRecsInFile;
+            _numOfRecsWritten = numOfRecsWritten;
+            _numOfRecsInLDAP = numOfRecordsInLDAP;
+            _noError = noError;
+        }
+
+        public int getNumOfRecsInFile() {
+            return _numOfRecsInFile;
+        }
+
+        public int getNumOfRecsWritten() {
+            return _numOfRecsWritten;
+        }
+
+        public boolean hasNoError() {
+            return _noError;
+        }
+
+        public int getNumOfRecsInLDAP() {
+            return _numOfRecsInLDAP;
+        }
+    }
+
+    private final ILdapFacade _facade;
+
+    /**
+     * Don't instantiate.
+     */
+    @Inject
+    public LdapUpdaterServiceImpl(@Nonnull final ILdapFacade facade) {
+        _facade = facade;
+    }
+
+
+    private boolean isIOCFileNewerThanHistoryEntry(@Nonnull final IOC ioc,
+                                                  @Nonnull final HistoryFileContentModel historyFileModel) {
+        final TimeInstant lastBootTime = ioc.getLastBootTime();
+        if (lastBootTime != null) {
+            final TimeInstant timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
+            if (timeFromHistoryFile != null) {
+                return lastBootTime.isAfter(timeFromHistoryFile);
+            }
+        }
+        return true;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void tidyUpLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
+                                      @Nonnull final Map<String, IOC> iocMapFromFS) throws LdapFacadeException {
+
+        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : iocsFromLdap.values()) {
+
+            final String iocFromLdapName = iocFromLdap.getName();
+            final String facFromLdapName =
+                LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), FACILITY.getNodeTypeName());
+
+            if (facFromLdapName == null) {
+                LOG.warn("Facility name could not be retrieved for " + iocFromLdap.getLdapName().toString());
+                continue;
+            }
+
+            if (iocMapFromFS.containsKey(iocFromLdapName)) {
+
+                final Set<Record> validRecords = getBootRecordsFromIocFile(iocFromLdapName);
+                _facade.tidyUpIocEntryInLdap(iocFromLdapName,
+                                             facFromLdapName,
+                                             validRecords);
+
+            } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
+                _facade.removeIocEntryFromLdap(iocFromLdapName, facFromLdapName);
+            }
+        }
+    }
+
+    /**
+     * Retrieves valid records for an IOC from the IOC file.
+     * @param iocName the ioc file name
+     * @return a set of contained records
+     */
+    @Override
+    @Nonnull
+    public Set<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) {
+        final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
+        final Set<Record> fileRecords = IOCFilesDirTree.getRecordsFromFile(new File(dumpPath, iocName));
+        return fileRecords;
+    }
 
     @Nonnull
-    private ILdapService getLdapService() throws ServiceUnavailableException {
-        final ILdapService service = LdapUpdaterActivator.getDefault().getLdapService();
-        if (service == null) {
-            throw new ServiceUnavailableException("LDAP service is unavailable.");
+    private UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                                      @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws LdapFacadeException {
+
+        final String iocName = iocFromLDAP.getName();
+
+        final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
+        final Set<Record> recordsFromFile = IOCFilesDirTree.getRecordsFromFile(new File (dumpPath, iocName));
+
+        final StringBuilder forbiddenRecords = new StringBuilder();
+
+        LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
+        int numOfRecsWritten = 0;
+        try {
+            for (final Record record : recordsFromFile) {
+                    numOfRecsWritten = processRecordEntry(model,
+                                                          iocFromLDAP,
+                                                          iocName,
+                                                          numOfRecsWritten,
+                                                          forbiddenRecords,
+                                                          record);
+            }
+            LdapUpdaterUtil.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
+        } catch (final NamingException e) {
+            throw new LdapFacadeException("LDAP name creation failed on updating records for IOC " + iocName, e);
         }
-        return service;
-    }
 
-    /**
-     * {@inheritDoc}
-     * @throws ServiceUnavailableException
-     */
-    @Override
-    public boolean createLdapRecord(@Nonnull final LdapName newLdapName) throws ServiceUnavailableException {
+        // TODO (bknerr) : what to do with success variable ?
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iLdapComponent =
+            model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
 
-        final String recordName =
-            LdapNameUtils.getValueOfRdnType(newLdapName, RECORD.getNodeTypeName());
-
-        final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS,
-                                   RECORD.getNodeTypeName(), recordName);
-
-        final ILdapService service = getLdapService();
-        return service.createComponent(newLdapName, afe);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     * @throws ServiceUnavailableException
-     */
-    @Override
-    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final GregorianCalendar cal) throws ServiceUnavailableException {
-
-//        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
-
-        final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
-        // TODO (bknerr) : modify schema and add new attribute
-//        ,
-//                                   ATTR_FIELD_LAST_UPDATED, time,
-//                                   ATTR_FIELD_LAST_UPDATED_IN_MILLIS, String.valueOf(cal.getTimeInMillis()));
-
-        final ILdapService service = getLdapService();
-        return service.createComponent(newLdapName, afe);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     * @throws ServiceUnavailableException
-     */
-    @Override
-    @CheckForNull
-    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
-        throws InterruptedException, InvalidNameException, ServiceUnavailableException {
-
-        if (fullIocName.size() > 0) {
-            final LdapName query = new LdapName(fullIocName.getRdns());
-            final ILdapService service = getLdapService();
-            return service.retrieveSearchResultSynchronously(query,
-                                                             any(RECORD.getNodeTypeName()),
-                                                             SearchControls.ONELEVEL_SCOPE);
-
+        int numOfChildren = -1;
+        if (iLdapComponent != null) {
+            numOfChildren = iLdapComponent.getDirectChildren().size();
         }
-        return null;
+
+        return new UpdateIOCResult(recordsFromFile.size(),
+                                   numOfRecsWritten,
+                                   numOfChildren, true);
     }
 
+
+    private int processRecordEntry(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                                          @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                          @Nonnull final String iocName,
+                                          final int numOfRecsWritten,
+                                          @Nonnull final StringBuilder forbiddenRecords,
+                                          @Nonnull final Record record) throws InvalidNameException, LdapFacadeException {
+        final String recordName = record.getName();
+        int number = numOfRecsWritten;
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
+            model.getByTypeAndSimpleName(RECORD, recordName);
+
+        if (recordComponent == null) { // does not yet exist
+            LOG.info("New Record: " + iocName + " " + recordName);
+
+            if (!filterLDAPNames(recordName)) {
+
+                final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
+                newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
+
+                if (!_facade.createLdapRecord(newLdapName)) {
+                    LOG.error("Error while updating LDAP record for " + recordName +
+                    "\nProceed with next record.");
+                } else {
+                    number++;
+                }
+            } else {
+                LOG.warn("Record " + recordName + " could not be written. Unallowed characters!");
+                forbiddenRecords.append(recordName + "\n");
+            }
+        }
+        return number;
+    }
+
+
     /**
-     * {@inheritDoc}
-     * @throws ServiceUnavailableException
+     * This method compares the contents of the current LDAP hierarchy with the contents found in
+     * the directory, where the IOC files reside. The contents of the ioc list are firstly checked
+     * whether they are more recent than those stored in the history file, if not so the ioc file
+     * has already been processed. If so, the LDAP is updated with the newer content of the ioc
+     * files conservatively, i.e. by adding references to records, but not removing entries
+     * from the LDAP in case the corresponding file does not exist in the ioc directory.
+
+     * @param iocs the current LDAP content model
+     * @param iocMap
+     *            the list of ioc filenames as found in the ioc directory
+     * @param historyFileModel
+     *            the contents of the history file
+     * @throws LdapFacadeException
      */
     @Override
-    @CheckForNull
-    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
-                                                   @Nonnull final String iocName) throws InterruptedException, ServiceUnavailableException {
+    public void updateLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
+                                      @Nonnull final Map<String, IOC> iocMapFromFS,
+                                      @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException {
 
-        final LdapName query = createLdapName(IOC.getNodeTypeName(), iocName,
-                                               COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                                               FACILITY.getNodeTypeName(), facilityName,
-                                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+        for (final Entry<String, IOC> iocFromFS : iocMapFromFS.entrySet()) {
 
-        final ILdapService service = getLdapService();
-        return service.retrieveSearchResultSynchronously(query,
-                                                         any(RECORD.getNodeTypeName()),
-                                                         SearchControls.ONELEVEL_SCOPE);
+            final String iocFromFSName = iocFromFS.getKey();
+
+            if (historyFileModel.contains(iocFromFSName)) {
+                if (!isIOCFileNewerThanHistoryEntry(iocFromFS.getValue(), historyFileModel)) {
+                    LOG.debug("IOC file for " + iocFromFSName
+                              + " is not newer than history file time stamp.");
+                    continue;
+                }
+            } // else means 'new IOC file in directory'
+
+            createIocAndUpdate(iocMapFromLdap.get(iocFromFSName), iocFromFS, iocFromFSName);
+        }
+    }
+
+    private void createIocAndUpdate(@Nullable ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap,
+                                    @Nonnull final Entry<String, IOC> iocFromFS,
+                                    @Nonnull final String iocName) throws LdapFacadeException {
+        try {
+            if (iocFromLdap == null) {
+                iocFromLdap = createIocFromLdap(iocFromFS, iocName);
+            }
+
+            final LdapName iocFromLdapName = iocFromLdap.getLdapName();
+
+            final ILdapSearchResult searchResult = _facade.retrieveRecordsForIOC(iocFromLdapName);
+            if (searchResult != null) {
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    _facade.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, searchResult);
+                builder.build();
+
+                final UpdateIOCResult updateResult = updateIOC(builder.getModel(), iocFromLdap);
+
+                // TODO (bknerr) : does only make sense when the update process has been stopped
+                if (updateResult.hasNoError()) {
+                    HistoryFileAccess.appendLineToHistfile(iocName,
+                                                           updateResult.getNumOfRecsWritten(),
+                                                           updateResult.getNumOfRecsInFile(),
+                                                           updateResult.getNumOfRecsInLDAP() );
+                }
+            }
+        } catch (final CreateContentModelException e) {
+            throw new LdapFacadeException("Content model creation failed on creating and updating IOC " + iocName, e);
+        }
+    }
+
+    @Nonnull
+    private ISubtreeNodeComponent<LdapEpicsControlsConfiguration>
+        createIocFromLdap(@Nonnull final Entry<String, IOC> iocFromFS,
+                          @Nonnull final String iocName) throws LdapFacadeException {
+
+        LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
+
+        final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
+                                                   FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
+
+        LdapName iocFromLdapName;
+        try {
+            iocFromLdapName = (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(IOC.getNodeTypeName(), iocName));
+
+            final LdapName fullLdapName =
+                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
+
+            _facade.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastBootTime());
+
+            return _facade.retrieveIOC(iocFromLdapName);
+        } catch (final InvalidNameException e) {
+            throw new LdapFacadeException("Invalid name on creating new LDAP IOC.", e);
+        }
     }
 
 
     /**
      * {@inheritDoc}
-     * @throws InvalidNameException
-     * @throws InterruptedException
-     * @throws ServiceUnavailableException
+     */
+    @Override
+    @Nonnull
+    public Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException {
+        return _facade.retrieveIOCs();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void removeIocEntryFromLdap(@Nonnull final String iocName,
-                                       @Nonnull final String facilityName) throws InvalidNameException,
-                                                                                  InterruptedException,
-                                                                                  ServiceUnavailableException {
-
-        final ILdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
-
-        final ILdapService service = getLdapService();
-        if (recordsSearchResult != null) {
-
-            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                service.getLdapContentModelBuilder(VIRTUAL_ROOT, recordsSearchResult);
-
-            try {
-                builder.build();
-            } catch (final CreateContentModelException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
-            if (model == null) {
-                LOG.warn("LDAP Content model could not be filled by search result. Removing cancelled.");
-                return;
-            }
-
-            final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> records =
-                model.getChildrenByTypeAndLdapName(RECORD).values();
-
-            for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : records) {
-                final LdapName ldapName = record.getLdapName();
-
-                service.removeLeafComponent(ldapName);
-
-            }
-        }
-
-        service.removeLeafComponent(createLdapName(IOC.getNodeTypeName(), iocName,
-                                                    COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                                                    FACILITY.getNodeTypeName(), facilityName,
-                                                    UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
+                                       @Nonnull final String facilityName) throws LdapFacadeException {
+        _facade.removeIocEntryFromLdap(iocName, facilityName);
     }
+
 
     /**
      * {@inheritDoc}
-     * @throws ServiceUnavailableException
      */
     @Override
     public void tidyUpIocEntryInLdap(@Nonnull final String iocName,
                                      @Nonnull final String facilityName,
-                                     @Nonnull final Set<Record> validRecords) throws ServiceUnavailableException {
-
-        try {
-            final ILdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
-
-            if (searchResult != null) {
-                final ILdapService service = getLdapService();
-                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder = 
-                    service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
-
-                builder.build();
-                final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
-
-                if (model == null) {
-                    LOG.info("Empty content model for this searchRestult - no tidying possible.");
-                    return;
-                }
-
-                removeLeafComponents(validRecords, model);
-            }
-        } catch (final InterruptedException e) {
-            LOG.error("Interrupted.", e);
-            Thread.currentThread().interrupt();
-        } catch (final CreateContentModelException e) {
-            LOG.error("Error creating content model.");
-        } catch (final InvalidNameException e) {
-            LOG.error("Invalid name exception while adding name suffix on removal query.", e);
-        }
-
+                                     @Nonnull final Set<Record> validRecords) throws LdapFacadeException {
+        _facade.tidyUpIocEntryInLdap(iocName, facilityName, validRecords);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
-        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException {
-
-        final ILdapService service = getLdapService();
-        return service.getLdapContentModelBuilder(model);
-    }
-
-    private void removeLeafComponents(@Nonnull final Set<Record> validRecords,
-                                      @Nonnull final ContentModel<LdapEpicsControlsConfiguration> model)
-            throws InvalidNameException,
-                   ServiceUnavailableException {
-
-        final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
-            model.getChildrenByTypeAndSimpleName(RECORD);
-
-        final ILdapService service = getLdapService();
-
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
-            if (!validRecords.contains(new Record(record.getName()))) {
-
-                final LdapName ldapName = record.getLdapName();
-
-                service.removeLeafComponent(ldapName);
-                LOG.info("Tidying: Record " + record.getName() + " removed.");
-            }
-        }
-    }
 }

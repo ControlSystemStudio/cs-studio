@@ -22,7 +22,6 @@
 package org.csstudio.utility.ldap.model;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +30,8 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.csstudio.domain.desy.time.TimeInstant;
 
 
 /**
@@ -62,7 +63,7 @@ public class IOC implements Serializable {
     /**
      * The date time of last change.
      */
-    private GregorianCalendar _lastUpdated;
+    private TimeInstant _lastUpdated;
     /**
      * The email address of the responsible person for this IOC.
      */
@@ -79,7 +80,7 @@ public class IOC implements Serializable {
      * @param name .
      * @param dateTime time of last record update from file
      */
-    public IOC(@Nonnull final String name, @Nonnull final GregorianCalendar dateTime) {
+    public IOC(@Nonnull final String name, @Nonnull final TimeInstant dateTime) {
         this(name, NO_GROUP, dateTime, DEFAULT_RESPONSIBLE_PERSON);
     }
 
@@ -103,7 +104,7 @@ public class IOC implements Serializable {
      */
     public IOC(@Nonnull final String name,
                @Nullable final String group,
-               @Nullable final GregorianCalendar dateTime,
+               @Nullable final TimeInstant dateTime,
                @Nullable final String resp) {
         _name = name;
         _group = group;
@@ -112,11 +113,11 @@ public class IOC implements Serializable {
     }
 
     @CheckForNull
-    public GregorianCalendar getLastUpdated() {
+    public TimeInstant getLastBootTime() {
         return _lastUpdated;
     }
 
-    public void setLastUpdated(@Nonnull final GregorianCalendar date) {
+    public void setLastUpdated(@Nonnull final TimeInstant date) {
         _lastUpdated = date;
     }
 
@@ -166,6 +167,7 @@ public class IOC implements Serializable {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public final String toString() {
         return "IOC(name=" + _name +
                     ", group=" + _group +

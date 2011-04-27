@@ -21,13 +21,26 @@
  */
 package org.csstudio.utility.ldapUpdater.action;
 
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
+
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldapUpdater.LdapUpdater;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 
 /**
  * Command to start the tidy up mechanism for LDAP.
@@ -38,26 +51,72 @@ import org.csstudio.utility.ldapUpdater.LdapUpdater;
  */
 public class TidyUpLdapAction implements IManagementCommand {
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(TidyUpLdapAction.class);
+
+    private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
+
+    /**
+     * Singleton approach to make the service public to the action, a pain to test...
+     */
+    private static final LdapUpdaterUtil UPDATER = LdapUpdaterUtil.INSTANCE;
+
+    /**
+     * Singleton approach to make the service public to the action, a pain to test...
+     */
+    private ILdapUpdaterService _service;
+
+    /**
+     * Constructor.
+     */
+    public TidyUpLdapAction() {
+        try {
+            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error("LDAP service is not available!");
+            throw new RuntimeException("LDAP service is not available!", e);
+        }
+    }
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
 	 */
 	@Override
 	@Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-
-	      final LdapUpdater ldapUpdater = LdapUpdater.INSTANCE;
 	        try {
-	            if (!ldapUpdater.isBusy()){
-	                ldapUpdater.tidyUpLdapFromIOCFiles();
-	            }else{
-	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 150 s (was probably started by timer). Try later!");
+	            if (!UPDATER.isBusy()){
+	                UPDATER.setBusy(true);
+	                tidyUpLdapFromIOCFiles();
+	            } else{
+	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
 	            }
-
 	        } catch (final Exception e) {
-	            e.printStackTrace();
-	            CentralLogger.getInstance().error (this, "\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater" );
+	            LOG.error("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater", e);
+	            return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
+	        } finally {
+	            UPDATER.setBusy(false);
 	        }
 	        return CommandResult.createSuccessResult();
 	}
+
+
+    private void tidyUpLdapFromIOCFiles() throws Exception {
+
+        final TimeInstant startTime = UPDATER.logHeader(TIDYUP_ACTION_NAME);
+
+        try {
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs = _service.retrieveIOCs();
+            if (iocs.isEmpty()) {
+                LOG.warn("LDAP search result is empty. No IOCs found.");
+                return;
+            }
+
+            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(IOC_DBL_DUMP_PATH.getValue(), 1);
+            _service.tidyUpLDAPFromIOCList(iocs, iocMapFromFS);
+        } finally {
+            UPDATER.setBusy(false);
+            UPDATER.logFooter(TIDYUP_ACTION_NAME, startTime);
+        }
+    }
 
 }

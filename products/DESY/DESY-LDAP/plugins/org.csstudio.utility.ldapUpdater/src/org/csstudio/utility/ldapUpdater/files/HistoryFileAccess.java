@@ -22,7 +22,7 @@
 
 package org.csstudio.utility.ldapUpdater.files;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.*;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.HISTORY_DAT_FILEPATH;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +36,9 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldapUpdater.LdapUpdater;
 
 /**
  * Class to access the dedicated history file that holds the time stamps of the last update times
@@ -69,7 +70,7 @@ public class HistoryFileAccess {
         HistoryFileContentModel model = new HistoryFileContentModel();
         BufferedReader fr = null;
 
-        File filePath = HISTORY_DAT_FILEPATH.getValue();
+        final File filePath = HISTORY_DAT_FILEPATH.getValue();
         try {
             fr = new BufferedReader(new FileReader(filePath));
 
@@ -97,8 +98,8 @@ public class HistoryFileAccess {
     @Nonnull
     private HistoryFileContentModel processLineByLine(@Nonnull final HistoryFileContentModel model,
                                                       @Nonnull final BufferedReader fr) throws IOException {
-        String line;
         HistoryFileContentModel newModel = model;
+        String line;
         while ((line = fr.readLine()) != null) {
             if (line.length() > 0) {
                 final Pattern comment = Pattern.compile("\\s*#.*");
@@ -114,19 +115,21 @@ public class HistoryFileAccess {
                     LOG.error(emsg);
                     throw new RuntimeException(emsg);
                 }
-                newModel = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
+                newModel = updateRecordTimeStampsInModel(m.group(1),
+                                                         TimeInstantBuilder.fromSeconds(Long.parseLong(m.group(3))),
+                                                         model);
             }
         }
         return newModel;
     }
 
     @Nonnull
-    private HistoryFileContentModel storeRecentRecordEntry(@Nonnull final String record,
-                                                           @Nonnull final Long lastUpdated,
-                                                           @Nonnull final HistoryFileContentModel model) {
-        final Long storedLastUpdated = model.getTimeForRecord(record);
-        if ((storedLastUpdated == null) || (storedLastUpdated < lastUpdated)) {
-            model.setEntry(record, lastUpdated);
+    private HistoryFileContentModel updateRecordTimeStampsInModel(@Nonnull final String record,
+                                                                  @Nonnull final TimeInstant timeInstant,
+                                                                  @Nonnull final HistoryFileContentModel model) {
+        final TimeInstant storedLastUpdated = model.getTimeForRecord(record);
+        if (storedLastUpdated == null || storedLastUpdated.isBefore(timeInstant)) {
+            model.setEntry(record, timeInstant);
         }
         return model;
     }
@@ -148,13 +151,12 @@ public class HistoryFileAccess {
         try {
             fw = new FileWriter(HISTORY_DAT_FILEPATH.getValue(), true);
 
-            final long now = System.currentTimeMillis();
-            final String dateTime = LdapUpdater.convertMillisToDateTimeString(now, LdapUpdater.DATETIME_FORMAT);
 
+            final TimeInstant now = TimeInstantBuilder.fromNow();
             final String line = String.format("%1$-20sxxx%2$15s   %3$s   %4$-12s(%5$s)%6$s",
                                               iocName,
-                                              String.valueOf(now / 1000),
-                                              dateTime,
+                                              now.getMillis(),
+                                              now.formatted(),
                                               String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                               String.valueOf(numOfRecordsInLDAP),
                                               System.getProperty("line.separator"));
