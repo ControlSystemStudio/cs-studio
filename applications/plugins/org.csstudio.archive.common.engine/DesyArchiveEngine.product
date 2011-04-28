@@ -30,12 +30,18 @@
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
+      <plugin id="org.csstudio.archive.common.engine.test" fragment="true"/>
+      <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.rdb"/>
       <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
+      <plugin id="org.csstudio.domain.desy.epics.test" fragment="true"/>
+      <plugin id="org.csstudio.domain.desy.test" fragment="true"/>
       <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.test" fragment="true"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -97,6 +103,7 @@
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
