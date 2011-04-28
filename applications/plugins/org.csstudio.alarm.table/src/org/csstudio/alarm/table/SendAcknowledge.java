@@ -176,7 +176,7 @@ public final class SendAcknowledge extends Job {
         	// FIXME (jpenning) cleanup finally block. why no more stopSender? 
         	try {
                 // sender.stopSender();
-                System.out.println("stop sender!!!"); //$NON-NLS-1$
+                // System.out.println("stop sender!!!"); //$NON-NLS-1$
             } catch (final Exception e) {
                 JmsLogsPlugin.logException("JMS Error", e);
             }

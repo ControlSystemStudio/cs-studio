@@ -109,7 +109,6 @@ public class StoredFilters {
             }
             _storedFilters.add(filter);
         }
-        System.out.println();
     }
     
     public void writeToPreferences() {

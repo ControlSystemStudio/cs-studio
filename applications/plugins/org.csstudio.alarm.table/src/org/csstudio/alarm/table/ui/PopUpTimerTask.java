@@ -53,7 +53,7 @@ public class PopUpTimerTask extends TimerTask {
 			public void run() {
 				try {
 					if (_dialog == null && _result == -1) {
-						System.out.println("dialog null, result -1: open dialog");
+						// System.out.println("dialog null, result -1: open dialog");
 						_dialog = new MessageDialog(PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow().getShell(),
 								"Message Table", null,
@@ -62,13 +62,13 @@ public class PopUpTimerTask extends TimerTask {
 						_result = _dialog.open();
 					} else {
 						if (_result == -1) {
-							System.out.println("dialog NOT null, result -1: close dialog, call listener");
+							// System.out.println("dialog NOT null, result -1: close dialog, call listener");
 							_dialog.close();
 							for (IExpirationLisener listener : _listeners) {
 								listener.expired();
 							}
 						} else {
-							System.out.println("dialog NOT null, result != -1: open dialog again");
+							// System.out.println("dialog NOT null, result != -1: open dialog again");
 							_result = -1;
 							_dialog = new MessageDialog(PlatformUI.getWorkbench()
 									.getActiveWorkbenchWindow().getShell(),
@@ -79,8 +79,8 @@ public class PopUpTimerTask extends TimerTask {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					JmsLogsPlugin.logException("", e); //$NON-NLS-1$
+					// e.printStackTrace();
+					JmsLogsPlugin.logException("Error while processing MessageDialog", e); //$NON-NLS-1$
 				}
 			}
 		});
