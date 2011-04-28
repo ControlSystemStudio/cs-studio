@@ -40,7 +40,7 @@ import org.junit.Test;
 /**
  * Test for retrieval of the initial alarm state of not existing pvs.
  */
-public class AlarmServiceJMSImplTest {
+public class AlarmServiceJMSImplUnitTest {
     
 //    private static final String IP_DESY_PRODUCTION = "131.169.115.234 131.169.115.236";
 //    private static final String IP_DESY_KRYKPCGASTA = "131.169.109.56";

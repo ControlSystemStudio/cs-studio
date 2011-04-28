@@ -1,3 +1,4 @@
+package org.csstudio.alarm.service.declaration;
 /*
  * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.service.declaration;
+
 
 import static org.junit.Assert.assertEquals;
 
