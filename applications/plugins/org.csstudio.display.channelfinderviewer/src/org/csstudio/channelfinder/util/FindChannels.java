@@ -53,7 +53,7 @@ public class FindChannels extends Job {
 		return Status.OK_STATUS;
 	}
 
-	private static Map<String, String> buildSearchMap(String searchPattern) {
+	protected static Map<String, String> buildSearchMap(String searchPattern) {
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		String[] words = searchPattern.split("\\s");
 		if (words.length < 0) {
@@ -67,7 +67,7 @@ public class FindChannels extends Job {
 				// this is a property or tag
 				String key = words[index].split("=")[0];
 				String values = words[index].split("=")[1];
-				if (key.equals("Tags")) {
+				if (key.equalsIgnoreCase("Tags")) {
 					map.put("~tag", values.replace("||", ","));
 					// for (int i = 0; i < values.length; i++)
 					// map.put("~tag", values[i]);
