@@ -45,7 +45,7 @@ public class LdapUpdaterTask implements Runnable {
         try {
             new UpdateLdapAction().updateLdapFromIOCFiles();
         } catch (final Throwable t) {
-            LOG.error("Throwable " + t.getMessage() + " in LDAP Updater.");
+            LOG.error("Throwable " + t.getCause() + " in LDAP Updater.", t);
         }
     }
 }

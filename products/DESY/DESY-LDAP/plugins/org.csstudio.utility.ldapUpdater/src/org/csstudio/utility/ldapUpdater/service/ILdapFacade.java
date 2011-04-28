@@ -37,7 +37,7 @@ import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
@@ -83,12 +83,12 @@ public interface ILdapFacade {
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
      * @param fullName the complete LDAP name for this ioc
-     *
+     * @return the map of records for the ioc
      * @throws LdapFacadeException
      */
     @CheckForNull
-    ILdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName)
-            throws LdapFacadeException;
+    Map<String, INodeComponent<LdapEpicsControlsConfiguration>>
+    retrieveRecordsForIOC(@Nonnull final LdapName fullName) throws LdapFacadeException;
 
 
     /**
@@ -129,10 +129,10 @@ public interface ILdapFacade {
                                                            @Nonnull final ILdapSearchResult result) throws LdapFacadeException;
 
     @Nonnull
-    Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException;
+    ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException;
 
     @Nonnull
-    ISubtreeNodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
+    INodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
         throws LdapFacadeException;
 
 

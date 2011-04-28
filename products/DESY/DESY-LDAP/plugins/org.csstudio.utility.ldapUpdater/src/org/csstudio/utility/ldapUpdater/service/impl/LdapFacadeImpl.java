@@ -66,10 +66,9 @@ import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 /**
@@ -150,7 +149,7 @@ public class LdapFacadeImpl implements ILdapFacade {
      */
     @Override
     @CheckForNull
-    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
+    public Map<String, INodeComponent<LdapEpicsControlsConfiguration>> retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
         throws LdapFacadeException {
 
         if (fullIocName.size() > 0) {
@@ -162,15 +161,15 @@ public class LdapFacadeImpl implements ILdapFacade {
                                                                        SearchControls.ONELEVEL_SCOPE);
                 final ContentModel<LdapEpicsControlsConfiguration> model =
                         getLdapService().getLdapContentModelForSearchResult(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
+                return model.getChildrenByTypeAndSimpleName(RECORD);
 
-                model.getByTypeAndLdapName(IOC, fullIocName);
             } catch (final OsgiServiceUnavailableException e) {
                 throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC " + fullIocName, e);
             } catch (final CreateContentModelException e) {
                 throw new LdapFacadeException("Content model could not be created on record retrieval for IOC " + fullIocName, e);
             }
         }
-        return null;
+        return Collections.emptyMap();
     }
 
     /**
@@ -212,9 +211,9 @@ public class LdapFacadeImpl implements ILdapFacade {
 
             final ContentModel<LdapEpicsControlsConfiguration> model = retrieveRecordsForIOC(iocName, facilityName);
 
-            final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> records =
+            final Collection<INodeComponent<LdapEpicsControlsConfiguration>> records =
                 model.getChildrenByTypeAndLdapName(RECORD).values();
-            for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : records) {
+            for (final INodeComponent<LdapEpicsControlsConfiguration> record : records) {
                 final LdapName ldapName = record.getLdapName();
 
                 getLdapService().removeLeafComponent(ldapName);
@@ -289,11 +288,11 @@ public class LdapFacadeImpl implements ILdapFacade {
             throws InvalidNameException,
                    OsgiServiceUnavailableException {
 
-        final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
+        final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
             model.getChildrenByTypeAndSimpleName(RECORD);
 
 
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
+        for (final INodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
             if (!validRecords.contains(new Record(record.getName()))) {
 
                 final LdapName ldapName = record.getLdapName();
@@ -309,7 +308,7 @@ public class LdapFacadeImpl implements ILdapFacade {
      */
     @Override
     @Nonnull
-    public Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException {
+    public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException {
 
         try {
             final ILdapSearchResult result =
@@ -318,16 +317,7 @@ public class LdapFacadeImpl implements ILdapFacade {
                                                                    SearchControls.SUBTREE_SCOPE);
             final ContentModel<LdapEpicsControlsConfiguration> model =
                     getLdapService().getLdapContentModelForSearchResult(VIRTUAL_ROOT, result);
-
-            if (model.isEmpty()) {
-                LOG.error("Search result was empty");
-                return Collections.emptyMap();
-            }
-
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
-                model.getChildrenByTypeAndLdapName(IOC);
-
-            return Maps.newHashMap(iocs);
+            return model;
 
         } catch (final CreateContentModelException e) {
             throw new LdapFacadeException("Content model could not be created to retrieve IOCs.", e);
@@ -340,7 +330,7 @@ public class LdapFacadeImpl implements ILdapFacade {
      */
     @Override
     @CheckForNull
-    public ISubtreeNodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
+    public INodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
         throws LdapFacadeException {
 
             if (iocLdapName.size() > 0) {

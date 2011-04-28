@@ -54,7 +54,7 @@ import org.remotercp.service.connection.session.ISessionService;
  * @version $Revision$
  * @since 13.04.2010
  */
-public class LdapUpdaterServer implements IApplication, 
+public class LdapUpdaterServer implements IApplication,
                                           IGenericServiceListener<ISessionService> {
 
     /**
@@ -100,7 +100,7 @@ public class LdapUpdaterServer implements IApplication,
         final long startTimeSec = LDAP_AUTO_START.getValue();
         final long intervalSec = LDAP_AUTO_INTERVAL.getValue();
 
-        TimeInstant now = TimeInstantBuilder.fromNow();
+        final TimeInstant now = TimeInstantBuilder.fromNow();
 
         LOG.info(now.formatted());
 
@@ -109,7 +109,8 @@ public class LdapUpdaterServer implements IApplication,
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
-                                                 delaySec,
+//                                                 delaySec,
+                                                 0L,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);
         synchronized (this) {
@@ -129,18 +130,18 @@ public class LdapUpdaterServer implements IApplication,
 
     private void logStartAndPeriod(final long startTimeSec,
                                    final long intervalSec) {
-        long minute = startTimeSec % 60L;
-        long second = startTimeSec % 60L % 60L;
-        long hour = startTimeSec / 3600L;
-        String startTime = hour + ":" + minute + ":" + second;
+        final long minute = startTimeSec % 60L;
+        final long second = startTimeSec % 60L % 60L;
+        final long hour = startTimeSec / 3600L;
+        final String startTime = hour + ":" + minute + ":" + second;
 
         LOG.info("\nLDAP Updater autostart scheduled at " + startTime +  " every " + intervalSec + " seconds");
     }
 
 
-    private long getDelayInSeconds(final long startTimeSec, 
+    private long getDelayInSeconds(final long startTimeSec,
                                    @Nonnull final TimeInstant now) {
-        
+
         final int secondsSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());
 
         long delaySec = startTimeSec - secondsSinceMidnight;
@@ -169,15 +170,15 @@ public class LdapUpdaterServer implements IApplication,
         final String username = XMPP_USER.getValue();
         final String password = XMPP_PASSWORD.getValue();
         final HostAddress server = XMPP_SERVER.getValue();
-    	
+
     	try {
 			sessionService.connect(username, password, server.getHostAddress());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			CentralLogger.getInstance().warn(this,
 					"XMPP connection is not available, " + e.toString());
 		}
     }
-    
+
     /**
      * {@inheritDoc}
      */

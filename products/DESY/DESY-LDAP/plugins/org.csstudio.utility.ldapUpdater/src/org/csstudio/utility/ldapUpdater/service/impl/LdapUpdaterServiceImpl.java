@@ -22,7 +22,6 @@
 package org.csstudio.utility.ldapUpdater.service.impl;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
-import static org.csstudio.utility.ldap.service.util.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
@@ -49,8 +48,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
-import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
@@ -63,8 +60,7 @@ import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 import com.google.inject.Inject;
 
@@ -153,10 +149,10 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      */
     @Override
-    public void tidyUpLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
+    public void tidyUpLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                       @Nonnull final Map<String, IOC> iocMapFromFS) throws LdapFacadeException {
 
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : iocsFromLdap.values()) {
+        for (final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : iocsFromLdap.values()) {
 
             final String iocFromLdapName = iocFromLdap.getName();
             final String facFromLdapName =
@@ -180,6 +176,36 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         }
     }
 
+
+    @Nonnull
+    private UpdateIOCResult updateIocInLdapWithRecordsFromBootFile(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordMapFromLdap,
+                                                                   @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws LdapFacadeException {
+
+        final String iocName = iocFromLDAP.getName();
+
+        final Set<Record> recordsFromFile = getBootRecordsFromIocFile(iocName);
+
+        final StringBuilder forbiddenRecords = new StringBuilder();
+        LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
+        int numOfRecsWritten = 0;
+        try {
+            for (final Record recFromFile : recordsFromFile) {
+                numOfRecsWritten += processRecordEntry(recordMapFromLdap.get(recFromFile),
+                                                       iocFromLDAP,
+                                                       forbiddenRecords,
+                                                       recFromFile);
+            }
+            LdapUpdaterUtil.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
+        } catch (final NamingException e) {
+            throw new LdapFacadeException("LDAP name creation failed on updating records for IOC " + iocName, e);
+        }
+
+        return new UpdateIOCResult(recordsFromFile.size(),
+                                   numOfRecsWritten,
+                                   -1,
+                                   true);
+    }
+
     /**
      * Retrieves valid records for an IOC from the IOC file.
      * @param iocName the ioc file name
@@ -193,85 +219,38 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
         final RecordsFileContentParser parser = new RecordsFileContentParser();
         try {
-            parser.parseFile(new File(dumpPath, iocName));
+            parser.parseFile(new File(dumpPath, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
         } catch (final IOException e) {
             throw new LdapFacadeException("Failure on parsing contents of record file " + iocName , e);
         }
         return parser.getRecords();
     }
 
-    @Nonnull
-    private UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
-                                      @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws LdapFacadeException {
+    private int processRecordEntry(@Nullable final INodeComponent<LdapEpicsControlsConfiguration> recFromLdap,
+                                   @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                   @Nonnull final StringBuilder forbiddenRecords,
+                                   @Nonnull final Record recordFromFS) throws InvalidNameException, LdapFacadeException {
+        final String recordFromFSName = recordFromFS.getName();
 
-        final String iocName = iocFromLDAP.getName();
+        if (recFromLdap == null) { // does not yet exist in LDAP
+            LOG.info("New record for LDAP: " + recordFromFSName);
 
-        final Set<Record> recordsFromFile = getBootRecordsFromIocFile(iocName);
-
-        final StringBuilder forbiddenRecords = new StringBuilder();
-
-        LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
-        int numOfRecsWritten = 0;
-        try {
-            for (final Record record : recordsFromFile) {
-                    numOfRecsWritten = processRecordEntry(model,
-                                                          iocFromLDAP,
-                                                          iocName,
-                                                          numOfRecsWritten,
-                                                          forbiddenRecords,
-                                                          record);
-            }
-            LdapUpdaterUtil.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
-        } catch (final NamingException e) {
-            throw new LdapFacadeException("LDAP name creation failed on updating records for IOC " + iocName, e);
-        }
-
-        // TODO (bknerr) : what to do with success variable ?
-        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iLdapComponent =
-            model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
-
-        int numOfChildren = -1;
-        if (iLdapComponent != null) {
-            numOfChildren = iLdapComponent.getDirectChildren().size();
-        }
-
-        return new UpdateIOCResult(recordsFromFile.size(),
-                                   numOfRecsWritten,
-                                   numOfChildren, true);
-    }
-
-
-    private int processRecordEntry(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
-                                          @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
-                                          @Nonnull final String iocName,
-                                          final int numOfRecsWritten,
-                                          @Nonnull final StringBuilder forbiddenRecords,
-                                          @Nonnull final Record record) throws InvalidNameException, LdapFacadeException {
-        final String recordName = record.getName();
-        int number = numOfRecsWritten;
-        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
-            model.getByTypeAndSimpleName(RECORD, recordName);
-
-        if (recordComponent == null) { // does not yet exist
-            LOG.info("New Record: " + iocName + " " + recordName);
-
-            if (!filterLDAPNames(recordName)) {
+            if (!LdapNameUtils.filterName(recordFromFSName)) {
 
                 final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
-                newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
+                newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordFromFSName));
 
                 if (!_facade.createLdapRecord(newLdapName)) {
-                    LOG.error("Error while updating LDAP record for " + recordName +
+                    LOG.error("Error while updating LDAP record for " + recordFromFSName +
                     "\nProceed with next record.");
-                } else {
-                    number++;
                 }
+                return 1;
             } else {
-                LOG.warn("Record " + recordName + " could not be written. Unallowed characters!");
-                forbiddenRecords.append(recordName + "\n");
+                LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
+                forbiddenRecords.append(recordFromFSName + "\n");
             }
         }
-        return number;
+        return 0;
     }
 
 
@@ -291,64 +270,57 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * @throws LdapFacadeException
      */
     @Override
-    public void updateLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
+    public void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
                                       @Nonnull final Map<String, IOC> iocMapFromFS,
                                       @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException {
 
-        for (final Entry<String, IOC> iocFromFS : iocMapFromFS.entrySet()) {
+        for (final Entry<String, IOC> entry : iocMapFromFS.entrySet()) {
 
-            final String iocFromFSName = iocFromFS.getKey();
+            final String iocFromFSName = entry.getKey();
+            final IOC iocFromFS = entry.getValue();
 
             if (historyFileModel.contains(iocFromFSName)) {
-                if (!isIOCFileNewerThanHistoryEntry(iocFromFS.getValue(), historyFileModel)) {
+                if (!isIOCFileNewerThanHistoryEntry(iocFromFS, historyFileModel)) {
                     LOG.debug("IOC file for " + iocFromFSName
                               + " is not newer than history file time stamp.");
                     continue;
                 }
             } // else means 'new IOC file in directory'
 
-            createIocAndUpdate(iocMapFromLdap.get(iocFromFSName), iocFromFS, iocFromFSName);
+            createOrUpdateIocInLdap(iocMapFromLdap.get(iocFromFSName), iocFromFS);
         }
     }
 
-    private void createIocAndUpdate(@Nullable final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> pIocFromLdap,
-                                    @Nonnull final Entry<String, IOC> iocFromFS,
-                                    @Nonnull final String iocName) throws LdapFacadeException {
-        try {
-            ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = pIocFromLdap;
-            if (iocFromLdap == null) {
-                iocFromLdap = createIocFromLdap(iocFromFS, iocName);
-            }
+    private void createOrUpdateIocInLdap(@Nullable final INodeComponent<LdapEpicsControlsConfiguration> pIocFromLdap,
+                                         @Nonnull final IOC iocFromFS) throws LdapFacadeException {
+        INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = pIocFromLdap;
+        if (iocFromLdap == null) {
+            iocFromLdap = createIocInLdap(iocFromFS);
+        }
 
-            final LdapName iocFromLdapName = iocFromLdap.getLdapName();
+        final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
-            final ILdapSearchResult searchResult = _facade.retrieveRecordsForIOC(iocFromLdapName);
-            if (searchResult != null) {
-                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    _facade.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, searchResult);
-                builder.build();
+        final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordMapFromLdap =
+            _facade.retrieveRecordsForIOC(iocFromLdapName);
 
-                final UpdateIOCResult updateResult = updateIOC(builder.getModel(), iocFromLdap);
+        final UpdateIOCResult updateResult = updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
 
-                // TODO (bknerr) : does only make sense when the update process has been stopped
-                if (updateResult.hasNoError()) {
-                    HistoryFileAccess.appendLineToHistfile(iocName,
-                                                           updateResult.getNumOfRecsWritten(),
-                                                           updateResult.getNumOfRecsInFile(),
-                                                           updateResult.getNumOfRecsInLDAP() );
-                }
-            }
-        } catch (final CreateContentModelException e) {
-            throw new LdapFacadeException("Content model creation failed on creating and updating IOC " + iocName, e);
+        // TODO (bknerr) : does only make sense when the update process has been stopped
+        if (updateResult.hasNoError()) {
+            HistoryFileAccess.appendLineToHistfile(iocFromFS.getName(),
+                                                   updateResult.getNumOfRecsWritten(),
+                                                   updateResult.getNumOfRecsInFile(),
+                                                   updateResult.getNumOfRecsInLDAP() );
         }
     }
 
     @Nonnull
-    private ISubtreeNodeComponent<LdapEpicsControlsConfiguration>
-        createIocFromLdap(@Nonnull final Entry<String, IOC> iocFromFS,
-                          @Nonnull final String iocName) throws LdapFacadeException {
+    private INodeComponent<LdapEpicsControlsConfiguration>
+        createIocInLdap(@Nonnull final IOC iocFromFS) throws LdapFacadeException {
 
-        LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
+        final String iocName = iocFromFS.getName();
+        LOG.info("IOC " + iocName +
+                 " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
         final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                    FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
@@ -360,9 +332,9 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             final LdapName fullLdapName =
                 (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
 
-            _facade.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastBootTime());
+            _facade.createLdapIoc(fullLdapName, iocFromFS.getLastBootTime());
 
-            return _facade.retrieveIOC(iocFromLdapName);
+            return _facade.retrieveIOC(fullLdapName);
         } catch (final InvalidNameException e) {
             throw new LdapFacadeException("Invalid name on creating new LDAP IOC.", e);
         }
@@ -374,7 +346,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     @Nonnull
-    public Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException {
+    public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException {
         return _facade.retrieveIOCs();
     }
 

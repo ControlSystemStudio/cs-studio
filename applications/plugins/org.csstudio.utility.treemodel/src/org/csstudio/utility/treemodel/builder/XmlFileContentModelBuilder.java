@@ -40,6 +40,7 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
@@ -185,14 +186,14 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             }
             model.addChild(ldapParent, newLdapChild);
         }
-        final ISubtreeNodeComponent<T> ldapComponent =
+        final INodeComponent<T> ldapComponent =
             model.getByTypeAndLdapName(oc, fullName);
 
         final List<Element> children = getChildrenElements(element);
 
         // cycle through all immediate elements under the rootElement
         for (final Element child : children) {
-            processElement(model, child, ldapComponent);
+            processElement(model, child, (ISubtreeNodeComponent<T>) ldapComponent);
         }
     }
 

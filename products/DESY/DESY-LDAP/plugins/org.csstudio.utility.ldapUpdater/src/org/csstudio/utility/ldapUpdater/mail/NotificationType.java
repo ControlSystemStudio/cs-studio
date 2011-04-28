@@ -36,6 +36,10 @@ public enum NotificationType {
                     "The LDAP entry contains at least one forbidden character\n" +
                     "(not permitted are: " + LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS + ")"),
 
+    RECORD_FILE_MISSING("Boot file for records is missing!",
+                        "There are LDAP entries for which The LDAP entry contains at least one forbidden character\n" +
+                        "(not permitted are: " + LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS + ")"),
+
     UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
                          "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
 

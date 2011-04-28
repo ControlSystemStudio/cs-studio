@@ -22,6 +22,7 @@
 
 package org.csstudio.utility.ldapUpdater.action;
 
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
@@ -54,9 +55,9 @@ import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.INodeComponent;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -129,14 +130,15 @@ public class UpdateLdapAction implements IManagementCommand {
         final TimeInstant startTime = UPDATER.logHeader(UPDATE_ACTION_NAME);
 
         try {
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs = _service.retrieveIOCs();
+            final ContentModel<LdapEpicsControlsConfiguration> model =
+                _service.retrieveIOCs();
 
-            if (iocs.isEmpty()) {
+            if (model.isEmpty()) {
                 LOG.info("No IOCs found in LDAP.");
                 return;
             }
 
-            updateIocsInLdap(iocs);
+            updateIocsInLdap(model.getChildrenByTypeAndSimpleName(IOC));
 
         } finally {
             UPDATER.setBusy(false);
@@ -144,20 +146,20 @@ public class UpdateLdapAction implements IManagementCommand {
         }
     }
 
-    private void updateIocsInLdap(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs)
+    private void updateIocsInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapBySimpleName)
                                   throws LdapFacadeException {
 
             final HistoryFileAccess histFileReader = new HistoryFileAccess();
             final HistoryFileContentModel historyFileModel = histFileReader.readFile();
 
-            validateHistoryFileEntriesVsLDAPEntries(iocs, historyFileModel);
+            validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
             final File value = IOC_DBL_DUMP_PATH.getValue();
             try {
                 final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
-                final Map<String, IOC> iocMapFromFS = parser.getIocFileMap();
+                final Map<String, IOC> iocsFromFS = parser.getIocFileMap();
 
-                _service.updateLDAPFromIOCList(iocs, iocMapFromFS, historyFileModel);
+                _service.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFS, historyFileModel);
 
             } catch (final FileNotFoundException e) {
                 throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
@@ -165,35 +167,28 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
 
-    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
+    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
         final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
-        final Predicate<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> predicate =
-            new Predicate<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>>() {
+        final Predicate<INodeComponent<LdapEpicsControlsConfiguration>> predicate =
+            new Predicate<INodeComponent<LdapEpicsControlsConfiguration>>() {
                 @Override
-                public boolean apply(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
-                    return iocsFromHistFile.contains(iocFromLdap.getName());
+                public boolean apply(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
+                    return !iocsFromHistFile.contains(iocFromLdap.getName());
                 }
             };
 
-        final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInHistFile =
+        final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInHistFile =
             Collections2.filter(iocsFromLdap.values(), predicate);
 
 
         handleIocEntriesInLdapNotPresentInHistoryFile(iocsFromLdapNotInHistFile);
 
 
-        final Collection<String> iocNamesFromLdap =
-            Collections2.transform(iocsFromLdap.values(),
-                                   new Function<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>, String>() {
-                                       @Override
-                                       @Nonnull
-                                       public String apply(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> input) {
-                                           return input.getName();
-                                       }
-                                   });
+        final Collection<String> iocNamesFromLdap = iocsFromLdap.keySet();
+
         iocsFromHistFile.removeAll(iocNamesFromLdap);
         handleIocEntriesInHistoryFileNotPresentInLdap(iocsFromHistFile);
 
@@ -206,10 +201,10 @@ public class UpdateLdapAction implements IManagementCommand {
         }
     }
 
-    private void handleIocEntriesInLdapNotPresentInHistoryFile(@Nonnull final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInFile) {
+    private void handleIocEntriesInLdapNotPresentInHistoryFile(@Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapNotInFile) {
         final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
 
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
+        for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
             LOG.warn("IOC " + ioc.getName() + " from LDAP is not present in history file!");
             getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
         }
@@ -218,7 +213,7 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
     @Nonnull
-    private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc,
+    private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
                                                                  @Nonnull final Map<String, List<String>> iocsPerPerson) {
         final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
         String person = LdapUpdaterUtil.DEFAULT_RESPONSIBLE_PERSON;

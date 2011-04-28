@@ -21,6 +21,7 @@
  */
 package org.csstudio.utility.ldapUpdater.action;
 
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
@@ -43,7 +44,7 @@ import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
 import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ContentModel;
 
 /**
  * Command to start the tidy up mechanism for LDAP.
@@ -109,16 +110,15 @@ public class TidyUpLdapAction implements IManagementCommand {
 
         final File value = IOC_DBL_DUMP_PATH.getValue();
         try {
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
-                _service.retrieveIOCs();
-            if (iocs.isEmpty()) {
+            final ContentModel<LdapEpicsControlsConfiguration> model = _service.retrieveIOCs();
+            if (model.isEmpty()) {
                 LOG.warn("LDAP search result is empty. No IOCs found.");
                 return;
             }
             final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
             final Map<String, IOC> iocMapFromFS = parser.getIocFileMap();
 
-            _service.tidyUpLDAPFromIOCList(iocs, iocMapFromFS);
+            _service.tidyUpLDAPFromIOCList(model.getByType(IOC), iocMapFromFS);
         } catch (final FileNotFoundException e) {
             throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
         } catch (final LdapFacadeException e) {

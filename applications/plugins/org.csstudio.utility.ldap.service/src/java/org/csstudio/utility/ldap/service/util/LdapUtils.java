@@ -133,23 +133,6 @@ public final class LdapUtils {
     }
 
     /**
-     * Filters for forbidden substrings {@link LdapUtils}.
-     * @param recordName the name to filter
-     * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
-     */
-    public static boolean filterLDAPNames(@Nonnull final String recordName) {
-        if (!StringUtil.hasLength(recordName)) {
-            return false;
-        }
-        for (final String s : FORBIDDEN_SUBSTRINGS) {
-            if (recordName.contains(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Converts the given process variable name (<recordName>.<fieldName>) into a
      * record name (<recordName>) which can be
      * looked up in the LDAP directory. If the default control system is EPICS,

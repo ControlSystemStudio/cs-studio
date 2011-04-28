@@ -34,12 +34,13 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 
 import com.google.common.collect.Maps;
 
 /**
  * Traverses a directory recursively, filters for files ending on
- * {@link RecordsFileTimeStampParser#RECORDS_FILE_SUFFIX} and extracts the timestamp info of the
+ * {@link UpdaterLdapConstants#RECORDS_FILE_SUFFIX} and extracts the timestamp info of the
  * files last modification.
  * On traversal a map from the record file name (without suffix) to an {@link IOC} instance is
  * created.
@@ -52,8 +53,6 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
     private static final Logger LOG =
             CentralLogger.getInstance().getLogger(RecordsFileTimeStampParser.class);
 
-    public static final String RECORDS_FILE_SUFFIX = ".records";
-
     private final Map<String, IOC> _iocFileMap = Maps.newHashMap();
 
     /**
@@ -63,7 +62,7 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
      * @throws FileNotFoundException
      */
     public RecordsFileTimeStampParser(@Nonnull final File dir, final int finalDepth) throws FileNotFoundException {
-        super(new SuffixBasedFileFilter(RECORDS_FILE_SUFFIX, finalDepth));
+        super(new SuffixBasedFileFilter(UpdaterLdapConstants.RECORDS_FILE_SUFFIX, finalDepth));
         startTraversal(dir, finalDepth);
     }
 
@@ -76,7 +75,7 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
         final TimeInstant dateTime = TimeInstantBuilder.fromMillis(file.lastModified());
         final String fileName = file.getName();
 
-        final String iocName = fileName.replace(RECORDS_FILE_SUFFIX, "");
+        final String iocName = fileName.replace(UpdaterLdapConstants.RECORDS_FILE_SUFFIX, "");
         _iocFileMap.put(iocName, new IOC(iocName, dateTime));
 
         LOG.debug("File found for IOC: " + iocName);

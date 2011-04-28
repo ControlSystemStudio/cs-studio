@@ -30,10 +30,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -45,7 +43,8 @@ import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 
 /**
@@ -77,15 +76,16 @@ public class IocEnumeration implements IDynamicParameterValues {
     @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
 
-        Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs;
+        ContentModel<LdapEpicsControlsConfiguration> model;
         try {
-            iocs = _service.retrieveIOCs();
+            model = _service.retrieveIOCs();
         } catch (final LdapFacadeException e) {
             LOG.error("IOC retrieval failed.", e);
             return EMPTY_VALUES;
         }
 
-        final List<CommandParameterEnumValue> params = generateCommandParamList(iocs.values());
+        final List<CommandParameterEnumValue> params =
+            generateCommandParamList(model.getByType(IOC).values());
 
         Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
             @Override
@@ -98,21 +98,30 @@ public class IocEnumeration implements IDynamicParameterValues {
     }
 
     @Nonnull
-    private List<CommandParameterEnumValue> generateCommandParamList(@Nonnull final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs) {
+    private List<CommandParameterEnumValue> generateCommandParamList(@Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocs) {
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocs) {
-            final LdapName ldapName = ioc.getLdapName();
-            final String efanName =
-                LdapNameUtils.getValueOfRdnType(ldapName,
-                                                FACILITY.getNodeTypeName());
-
-            final HashMap<String, String> map = new HashMap<String, String>();
-            map.put(IOC.getNodeTypeName(), ioc.getName());
-            map.put(FACILITY.getNodeTypeName(), efanName);
-            params.add(new CommandParameterEnumValue(map, ioc.getName()));
+        for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocs) {
+            final CommandParameterEnumValue commandParam = createCommandParameter(ioc);
+            params.add(commandParam);
         }
         return params;
+    }
+
+    @Nonnull
+    private CommandParameterEnumValue createCommandParameter(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc) {
+        final String iocName = ioc.getName();
+        final String efanName =
+            LdapNameUtils.getValueOfRdnType(ioc.getLdapName(),
+                                            FACILITY.getNodeTypeName());
+
+        // Serializable hash map to transfer two parameters as 'value' over the Management Command framework
+        final HashMap<String, String> value = new HashMap<String, String>();
+        value.put(IOC.getNodeTypeName(), iocName);
+        value.put(FACILITY.getNodeTypeName(), efanName);
+
+        final String label = iocName;
+        return new CommandParameterEnumValue(value, label);
     }
 
 }

@@ -49,7 +49,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 
 /**
@@ -62,14 +62,14 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  */
 public enum LdapUpdaterUtil {
     INSTANCE;
-    
+
     public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterUtil.class);
 
     @GuardedBy("this")
     private boolean _busy;
-    
+
     /**
      * Don't instantiate with constructor.
      */
@@ -89,7 +89,7 @@ public enum LdapUpdaterUtil {
         _busy = busy;
     }
 
-    public void logFooter(@Nonnull final String actionName, 
+    public void logFooter(@Nonnull final String actionName,
                           @Nonnull final TimeInstant startTime) {
         final TimeInstant endTime = TimeInstantBuilder.fromNow();
         final long deltaTime = TimeInstant.deltaInMillis(startTime, endTime);
@@ -101,7 +101,7 @@ public enum LdapUpdaterUtil {
 
     @Nonnull
     public TimeInstant logHeader(@Nonnull final String action) {
-        TimeInstant startTime = TimeInstantBuilder.fromNow();
+        final TimeInstant startTime = TimeInstantBuilder.fromNow();
         LOG.info("\n-------------------------------------------------------------------\n" +
                  action + " starts at " + startTime.formatted() + ".");
         return startTime;
@@ -116,8 +116,8 @@ public enum LdapUpdaterUtil {
                                       "\n\n" + entry.getValue());
         }
     }
-    
-    public static void sendUnallowedCharsNotification(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+
+    public static void sendUnallowedCharsNotification(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {

@@ -26,6 +26,7 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
+import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,8 +45,8 @@ public class RecordsFileTimeStampParserTest {
     
     public File setup() throws IOException {
         File startDir = _tempFolder.newFolder("startDir");
-        new File(startDir, "foo" + RecordsFileTimeStampParser.RECORDS_FILE_SUFFIX).createNewFile();
-        new File(startDir, "bar" + RecordsFileTimeStampParser.RECORDS_FILE_SUFFIX).createNewFile();
+        new File(startDir, "foo" + UpdaterLdapConstants.RECORDS_FILE_SUFFIX).createNewFile();
+        new File(startDir, "bar" + UpdaterLdapConstants.RECORDS_FILE_SUFFIX).createNewFile();
         new File(startDir, "xxx").createNewFile();
         new File(startDir, "yyy").createNewFile();
         return startDir;
@@ -75,7 +76,7 @@ public class RecordsFileTimeStampParserTest {
 
         File dir1 = new File(startDir, "dir1");
         dir1.mkdir();
-        new File(dir1, "foo2" + RecordsFileTimeStampParser.RECORDS_FILE_SUFFIX).createNewFile();
+        new File(dir1, "foo2" + UpdaterLdapConstants.RECORDS_FILE_SUFFIX).createNewFile();
         
         RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(startDir, 2);
         Assert.assertEquals(3, parser.getIocFileMap().size());

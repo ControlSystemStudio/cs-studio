@@ -24,7 +24,8 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 /**
  * TODO (bknerr) :
@@ -34,7 +35,7 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  */
 public interface ILdapUpdaterService {
 
-    void updateLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs,
+    void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocs,
                                @Nonnull final Map<String, IOC> iocMap,
                                @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException;
 
@@ -49,12 +50,12 @@ public interface ILdapUpdaterService {
      * @param iocMapFromFS IOC entries found in the file system
      * @throws LdapFacadeException
      */
-    void tidyUpLDAPFromIOCList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
+    void tidyUpLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                @Nonnull final Map<String, IOC> iocMapFromFS)
                                throws LdapFacadeException;
 
     @Nonnull
-    Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> retrieveIOCs() throws LdapFacadeException;
+    ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException;
 
 
     void removeIocEntryFromLdap(@Nonnull final String iocName,
