@@ -28,6 +28,9 @@
          <adapter
                type="org.csstudio.platform.model.IProcessVariable">
          </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariableName">
+         </adapter>
       </factory>
    </extension>
    <extension

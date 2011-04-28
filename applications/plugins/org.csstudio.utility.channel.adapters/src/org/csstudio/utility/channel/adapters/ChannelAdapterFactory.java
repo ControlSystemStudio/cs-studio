@@ -5,6 +5,7 @@ package org.csstudio.utility.channel.adapters;
 
 import gov.bnl.channelfinder.api.Channel;
 
+import org.csstudio.csdata.ProcessVariableName;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
 import org.csstudio.utility.channel.ICSSChannel;
@@ -33,6 +34,8 @@ public class ChannelAdapterFactory implements IAdapterFactory {
 			return CSSChannelFactory.getInstance().getCSSChannel(channel);
 		} else if (adapterType == IProcessVariable.class) {
 			return CSSChannelFactory.getInstance().getCSSChannel(channel);
+		} else if (adapterType == ProcessVariableName.class) {
+			return new ProcessVariableName(channel.getName());
 		} else if (adapterType == IProcessVariableWithArchive.class) {
 			return null;
 		} else {
@@ -48,7 +51,8 @@ public class ChannelAdapterFactory implements IAdapterFactory {
 	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { String.class, ICSSChannel.class,
-				IProcessVariable.class, IProcessVariableWithArchive.class };
+				IProcessVariable.class, IProcessVariableWithArchive.class,
+				ProcessVariableName.class };
 	}
 
 }
