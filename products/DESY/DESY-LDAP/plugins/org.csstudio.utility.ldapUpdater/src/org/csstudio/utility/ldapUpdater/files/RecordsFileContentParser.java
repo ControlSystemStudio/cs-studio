@@ -42,7 +42,16 @@ public class RecordsFileContentParser extends AbstractLineBasedFileContentParser
         Sets.newTreeSet(new Comparator<Record>() {
                             @Override
                             public int compare(@Nonnull final Record r1, @Nonnull final Record r2) {
-                                return r1.getName().compareToIgnoreCase(r2.getName());
+
+                                final String r1Name = r1.getName();
+                                final String r2Name = r2.getName();
+
+                                final int c1 = r1Name.compareToIgnoreCase(r2Name);
+                                if (c1 != 0) {
+                                    return c1; // completely different strings
+                                }
+                                // strings only differing by case
+                                return r1Name.compareTo(r2Name);
                             }
                         });
 

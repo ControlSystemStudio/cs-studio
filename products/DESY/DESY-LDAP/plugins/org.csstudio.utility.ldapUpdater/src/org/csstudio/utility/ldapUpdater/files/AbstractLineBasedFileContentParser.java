@@ -61,8 +61,13 @@ public abstract class AbstractLineBasedFileContentParser {
      * @throws IllegalArgumentException if filePath is not a file or could not be found
      */
     public void parseFile(@Nonnull final File filePath) throws IOException {
+        if (!filePath.exists()) {
+            throw new FileNotFoundException(filePath + "'s contents cannot be parsed per line, it doesn't exist!");
+
+        }
         if (!filePath.isFile()) {
-            throw new IllegalArgumentException(filePath + "'s contents cannot be parsed per line. It is not a file!");
+            throw new IllegalArgumentException(filePath + "'s contents cannot be parsed per line." +
+                                               " It is not a file!");
         }
         BufferedReader br = null;
         try {
@@ -72,8 +77,6 @@ public abstract class AbstractLineBasedFileContentParser {
                 processLine(line);
             }
 
-        } catch (final FileNotFoundException e) {
-            throw new IllegalArgumentException(filePath + "could not be found for parsing!");
         } finally {
             if (br != null) {
                 try {

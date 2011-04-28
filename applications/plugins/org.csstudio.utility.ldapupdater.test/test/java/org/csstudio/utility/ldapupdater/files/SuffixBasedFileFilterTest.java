@@ -19,66 +19,41 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater.files;
+package org.csstudio.utility.ldapupdater.files;
 
 import java.io.File;
+import java.io.IOException;
 
-import javax.annotation.Nonnull;
+import junit.framework.Assert;
 
-import org.csstudio.domain.desy.file.AbstractFilePathParserFilter;
+import org.csstudio.utility.ldapUpdater.files.SuffixBasedFileFilter;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
- * Filters anything but files ending on the specified suffix.
- *
+ * Test for {@link SuffixBasedFileFilter}. 
+ * 
  * @author bknerr
  * @since 28.04.2011
  */
-public class SuffixBasedFileFilter extends AbstractFilePathParserFilter {
-
-    private final String _suffix;
-    private final int _finalDepth;
-
-    /**
-     * Constructor.
-     */
-    public SuffixBasedFileFilter(@Nonnull final String fileNameSuffix,
-                                          final int depth) {
-        _suffix = fileNameSuffix;
-        _finalDepth = depth;
+public class SuffixBasedFileFilterTest {
+    
+    @Rule
+    public TemporaryFolder _tempFolder = new TemporaryFolder();
+    
+    @Test
+    public void testFilter() throws IOException {
+        File validFileDepth0 = _tempFolder.newFile("a.test");
+        Assert.assertTrue(validFileDepth0.exists());
+        
+        SuffixBasedFileFilter filter = new SuffixBasedFileFilter(".test", 1);
+        Assert.assertFalse(filter.apply(validFileDepth0));
+        Assert.assertFalse(filter.apply(validFileDepth0, 1));
+        Assert.assertTrue(filter.apply(validFileDepth0, 2));
+        
+        File dir = _tempFolder.newFolder("testDir");
+        Assert.assertTrue(filter.apply(dir));
+        Assert.assertTrue(filter.apply(dir, 2));
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Filters directories deeper than final depth and
-     * files ending on the specified suffix.
-     */
-    @Override
-    public boolean apply(@Nonnull final File input,
-                                  final int currentDepth) {
-        if (currentDepth > _finalDepth) {
-            return true;
-        }
-        if (input.isDirectory()) {
-            return true;
-        }
-        return apply(input);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Filters anything but files ending on the specified suffix.
-     */
-    @Override
-    public boolean apply(@Nonnull final File input) {
-        if (!input.isFile()) {
-            return true;
-        }
-        if (input.getName().endsWith(_suffix)) {
-            return false;
-        }
-        return true;
-    }
-
 }

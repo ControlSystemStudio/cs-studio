@@ -52,7 +52,7 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
     private static final Logger LOG =
             CentralLogger.getInstance().getLogger(RecordsFileTimeStampParser.class);
 
-    private static final String RECORDS_FILE_SUFFIX = ".records";
+    public static final String RECORDS_FILE_SUFFIX = ".records";
 
     private final Map<String, IOC> _iocFileMap = Maps.newHashMap();
 
@@ -63,7 +63,7 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
      * @throws FileNotFoundException
      */
     public RecordsFileTimeStampParser(@Nonnull final File dir, final int finalDepth) throws FileNotFoundException {
-        super(new SuffixBasedFileFilter(RECORDS_FILE_SUFFIX, 1));
+        super(new SuffixBasedFileFilter(RECORDS_FILE_SUFFIX, finalDepth));
         startTraversal(dir, finalDepth);
     }
 

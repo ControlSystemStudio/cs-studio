@@ -41,6 +41,8 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
+ *
+ *
  * Class to access the dedicated history file that holds the time stamps of the last update times
  * for any IOC file.
  *
@@ -48,7 +50,11 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author $Author$
  * @version $Revision$
  * @since 13.04.2010
+ *
+ * @deprecated 'Last modification' information shall be replaced by a time stamp per IOC sticky in
+ * the LDAP persistence layer.
  */
+@Deprecated
 public class HistoryFileAccess {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(HistoryFileAccess.class.getName());
