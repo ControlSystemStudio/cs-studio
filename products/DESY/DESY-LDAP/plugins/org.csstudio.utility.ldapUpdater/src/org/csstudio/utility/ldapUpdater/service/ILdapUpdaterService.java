@@ -16,6 +16,7 @@ package org.csstudio.utility.ldapUpdater.service;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 
@@ -38,7 +39,7 @@ public interface ILdapUpdaterService {
                                @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException;
 
     @Nonnull
-    Set<Record> getBootRecordsFromIocFile(@Nonnull final String iocName);
+    SortedSet<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapFacadeException;
 
     /**
      * Tidies LDAP conservatively.

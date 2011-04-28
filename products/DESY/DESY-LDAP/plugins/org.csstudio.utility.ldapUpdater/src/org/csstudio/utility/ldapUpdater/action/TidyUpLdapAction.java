@@ -23,6 +23,8 @@ package org.csstudio.utility.ldapUpdater.action;
 
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -38,8 +40,9 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 
 /**
@@ -100,19 +103,26 @@ public class TidyUpLdapAction implements IManagementCommand {
 	}
 
 
-    private void tidyUpLdapFromIOCFiles() throws Exception {
+    private void tidyUpLdapFromIOCFiles() {
 
         final TimeInstant startTime = UPDATER.logHeader(TIDYUP_ACTION_NAME);
 
+        final File value = IOC_DBL_DUMP_PATH.getValue();
         try {
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs = _service.retrieveIOCs();
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
+                _service.retrieveIOCs();
             if (iocs.isEmpty()) {
                 LOG.warn("LDAP search result is empty. No IOCs found.");
                 return;
             }
+            final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
+            final Map<String, IOC> iocMapFromFS = parser.getIocFileMap();
 
-            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(IOC_DBL_DUMP_PATH.getValue(), 1);
             _service.tidyUpLDAPFromIOCList(iocs, iocMapFromFS);
+        } catch (final FileNotFoundException e) {
+            throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
+        } catch (final LdapFacadeException e) {
+            throw new RuntimeException("Retrieval of IOCs from LDAP failed!", e);
         } finally {
             UPDATER.setBusy(false);
             UPDATER.logFooter(TIDYUP_ACTION_NAME, startTime);

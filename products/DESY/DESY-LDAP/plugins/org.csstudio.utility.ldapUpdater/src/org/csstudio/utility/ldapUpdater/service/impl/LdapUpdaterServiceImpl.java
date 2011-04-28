@@ -31,9 +31,11 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +58,7 @@ import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.files.RecordsFileContentParser;
 import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
@@ -182,13 +184,20 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * Retrieves valid records for an IOC from the IOC file.
      * @param iocName the ioc file name
      * @return a set of contained records
+     * @throws LdapFacadeException
      */
     @Override
     @Nonnull
-    public Set<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) {
+    public SortedSet<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapFacadeException {
         final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
-        final Set<Record> fileRecords = IOCFilesDirTree.getRecordsFromFile(new File(dumpPath, iocName));
-        return fileRecords;
+
+        final RecordsFileContentParser parser = new RecordsFileContentParser();
+        try {
+            parser.parseFile(new File(dumpPath, iocName));
+        } catch (final IOException e) {
+            throw new LdapFacadeException("Failure on parsing contents of record file " + iocName , e);
+        }
+        return parser.getRecords();
     }
 
     @Nonnull
@@ -197,8 +206,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
         final String iocName = iocFromLDAP.getName();
 
-        final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
-        final Set<Record> recordsFromFile = IOCFilesDirTree.getRecordsFromFile(new File (dumpPath, iocName));
+        final Set<Record> recordsFromFile = getBootRecordsFromIocFile(iocName);
 
         final StringBuilder forbiddenRecords = new StringBuilder();
 
@@ -303,10 +311,11 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         }
     }
 
-    private void createIocAndUpdate(@Nullable ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap,
+    private void createIocAndUpdate(@Nullable final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> pIocFromLdap,
                                     @Nonnull final Entry<String, IOC> iocFromFS,
                                     @Nonnull final String iocName) throws LdapFacadeException {
         try {
+            ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = pIocFromLdap;
             if (iocFromLdap == null) {
                 iocFromLdap = createIocFromLdap(iocFromFS, iocName);
             }

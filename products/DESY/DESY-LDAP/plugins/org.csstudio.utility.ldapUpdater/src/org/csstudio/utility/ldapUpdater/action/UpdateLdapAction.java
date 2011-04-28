@@ -24,6 +24,8 @@ package org.csstudio.utility.ldapUpdater.action;
 
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,7 +51,7 @@ import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
+import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -150,8 +152,16 @@ public class UpdateLdapAction implements IManagementCommand {
 
             validateHistoryFileEntriesVsLDAPEntries(iocs, historyFileModel);
 
-            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(IOC_DBL_DUMP_PATH.getValue(), 1);
-            _service.updateLDAPFromIOCList(iocs, iocMapFromFS, historyFileModel);
+            final File value = IOC_DBL_DUMP_PATH.getValue();
+            try {
+                final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
+                final Map<String, IOC> iocMapFromFS = parser.getIocFileMap();
+
+                _service.updateLDAPFromIOCList(iocs, iocMapFromFS, historyFileModel);
+
+            } catch (final FileNotFoundException e) {
+                throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
+            }
     }
 
 
