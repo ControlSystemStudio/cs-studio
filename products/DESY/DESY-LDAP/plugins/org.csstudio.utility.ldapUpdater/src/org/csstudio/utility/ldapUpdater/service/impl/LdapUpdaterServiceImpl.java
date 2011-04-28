@@ -190,10 +190,11 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         int numOfRecsWritten = 0;
         try {
             for (final Record recFromFile : recordsFromFile) {
-                numOfRecsWritten += processRecordEntry(recordMapFromLdap.get(recFromFile),
-                                                       iocFromLDAP,
-                                                       forbiddenRecords,
-                                                       recFromFile);
+                if (!recordMapFromLdap.containsKey(recFromFile.getName())) {
+                    numOfRecsWritten += createNewRecordEntry(iocFromLDAP,
+                                                           forbiddenRecords,
+                                                           recFromFile);
+                }
             }
             LdapUpdaterUtil.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
         } catch (final NamingException e) {
@@ -226,29 +227,27 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         return parser.getRecords();
     }
 
-    private int processRecordEntry(@Nullable final INodeComponent<LdapEpicsControlsConfiguration> recFromLdap,
-                                   @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
-                                   @Nonnull final StringBuilder forbiddenRecords,
-                                   @Nonnull final Record recordFromFS) throws InvalidNameException, LdapFacadeException {
+    private int createNewRecordEntry(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                     @Nonnull final StringBuilder forbiddenRecords,
+                                     @Nonnull final Record recordFromFS) throws InvalidNameException, LdapFacadeException {
+
         final String recordFromFSName = recordFromFS.getName();
 
-        if (recFromLdap == null) { // does not yet exist in LDAP
-            LOG.info("New record for LDAP: " + recordFromFSName);
+        LOG.info("New record for LDAP: " + recordFromFSName);
 
-            if (!LdapNameUtils.filterName(recordFromFSName)) {
+        if (!LdapNameUtils.filterName(recordFromFSName)) {
 
-                final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
-                newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordFromFSName));
+            final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
+            newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordFromFSName));
 
-                if (!_facade.createLdapRecord(newLdapName)) {
-                    LOG.error("Error while updating LDAP record for " + recordFromFSName +
-                    "\nProceed with next record.");
-                }
-                return 1;
-            } else {
-                LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
-                forbiddenRecords.append(recordFromFSName + "\n");
+            if (!_facade.createLdapRecord(newLdapName)) {
+                LOG.error("Error while updating LDAP record for " + recordFromFSName +
+                "\nProceed with next record.");
             }
+            return 1;
+        } else {
+            LOG.warn("Record " + recordFromFSName + " could not be written. Unallowed characters!");
+            forbiddenRecords.append(recordFromFSName + "\n");
         }
         return 0;
     }
