@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.SimpleDalPluginActivator;
 import org.csstudio.platform.internal.model.pvs.AbstractProcessVariableNameParser;
 import org.csstudio.platform.internal.model.pvs.DalNameParser;
 import org.csstudio.platform.internal.model.pvs.SimpleNameParser;
@@ -113,7 +113,7 @@ public class ProcessVariableAdressFactory {
 
         if (prefService != null) {
             final String defaultCs = 
-                Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,
+                Platform.getPreferencesService().getString(SimpleDalPluginActivator.ID,
                                                            PROP_CONTROL_SYSTEM, 
                                                            ControlSystemEnum.LOCAL.name(), //$NON-NLS-1$
                                                            null);
@@ -125,7 +125,7 @@ public class ProcessVariableAdressFactory {
     }
 
     public boolean askForControlSystem() {
-        final boolean result = Platform.getPreferencesService().getBoolean(CSSPlatformPlugin.ID,
+        final boolean result = Platform.getPreferencesService().getBoolean(SimpleDalPluginActivator.ID,
                 PROP_ASK_FOR_CONTROL_SYSTEM, true, //$NON-NLS-1$
                 null);
 

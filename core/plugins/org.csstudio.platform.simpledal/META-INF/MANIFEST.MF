@@ -9,6 +9,8 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.2.0",
  org.junit4;bundle-version="4.8.1",
  org.csstudio.platform.libs.jmock
 Bundle-Activator: org.csstudio.platform.SimpleDalPluginActivator
-Export-Package: org.csstudio.platform.model.pvs,
+Export-Package: org.csstudio.platform,
+ org.csstudio.platform.model.pvs,
  org.csstudio.platform.simpledal
 Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
+Bundle-ActivationPolicy: lazy

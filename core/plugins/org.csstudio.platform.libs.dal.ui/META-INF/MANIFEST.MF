@@ -14,4 +14,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
-Export-Package: org.csstudio.platform.ui.dnd.rfc
+Export-Package: org.csstudio.platform.libs.dal.ui,
+ org.csstudio.platform.ui.dnd.rfc
