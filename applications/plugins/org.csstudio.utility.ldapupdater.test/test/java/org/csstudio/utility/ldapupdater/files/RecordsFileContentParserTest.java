@@ -28,7 +28,6 @@ import java.io.IOException;
 
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldapUpdater.files.RecordsFileContentParser;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
