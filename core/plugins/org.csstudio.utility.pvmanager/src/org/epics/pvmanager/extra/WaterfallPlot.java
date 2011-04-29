@@ -10,6 +10,7 @@ import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VImage;
 
 /**
+ * A waterfall plot.
  *
  * @author carcassi
  */
@@ -25,6 +26,12 @@ public class WaterfallPlot extends DesiredRateExpression<VImage> {
         return (WaterfallPlotFunction) getFunction();
     }
     
+    /**
+     * Changes parameters of the waterfall plot.
+     * 
+     * @param newParameters parameters to change
+     * @return this
+     */
     public WaterfallPlot with(WaterfallPlotParameters... newParameters) {
         parameters = new WaterfallPlotParameters(parameters, newParameters);
         WaterfallPlotParameters.InternalCopy copy = parameters.internalCopy();
@@ -32,6 +39,11 @@ public class WaterfallPlot extends DesiredRateExpression<VImage> {
         return this;
     }
     
+    /**
+     * Returns the full set of parameters currently being used.
+     * 
+     * @return the current parameters
+     */
     public WaterfallPlotParameters getParameters() {
         return parameters;
     }

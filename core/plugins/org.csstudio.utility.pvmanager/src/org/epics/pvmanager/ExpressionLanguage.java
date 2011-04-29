@@ -17,6 +17,12 @@ import java.util.List;
  * @author carcassi
  */
 public class ExpressionLanguage {
+    
+    static {
+        // Install support for basic java types
+        BasicTypeSupport.install();
+    }
+    
     private ExpressionLanguage() {}
 
     /**
