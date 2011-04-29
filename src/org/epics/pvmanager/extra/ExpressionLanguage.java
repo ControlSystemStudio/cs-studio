@@ -7,6 +7,7 @@ package org.epics.pvmanager.extra;
 
 import org.epics.pvmanager.data.*;
 import java.util.List;
+import org.epics.pvmanager.BasicTypeSupport;
 import org.epics.pvmanager.DesiredRateExpression;
 import org.epics.pvmanager.SourceRateExpression;
 import static org.epics.pvmanager.ExpressionLanguage.*;
@@ -22,6 +23,8 @@ public class ExpressionLanguage {
     static {
         // Add support for Epics types.
         DataTypeSupport.install();
+        // Add support for Basic types
+        BasicTypeSupport.install();
     }
 
     /**
@@ -32,6 +35,10 @@ public class ExpressionLanguage {
     public static WaterfallPlot waterfallPlotOf(SourceRateExpression<VDoubleArray> arrayPv) {
         DesiredRateExpression<List<VDoubleArray>> queue = newValuesOf(arrayPv);
         return new WaterfallPlot(queue, "waterfallOf(" + arrayPv.getDefaultName() + ")");
+    }
+    
+    public static DynamicGroup group() {
+        return new DynamicGroup();
     }
 
 }
