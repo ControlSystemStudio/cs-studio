@@ -19,51 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.time;
+package org.csstudio.domain.desy.preferences;
 
 import javax.annotation.Nonnull;
 
 /**
- * The StopWatch factory to measure time in nanoseconds.
+ * Strategy pattern for type safe preference handling.
+ * For any preference type a strategy is registered and put into the type->strategy map.
  *
  * @author bknerr
- * @since Mar 24, 2011
+ * @since 12.04.2011
+ * @param <T> type of the preference value
  */
-public final class StopWatch {
-    private StopWatch() {
-        // EMPTY
-    }
-
+interface IPrefStrategy<T> {
     @Nonnull
-    public static RunningStopWatch start() {
-        return new RunningStopWatch(System.nanoTime());
-    }
-
-    /**
-     * A stopwatch that has been started.
-     *
-     * @author bknerr
-     * @since Mar 24, 2011
-     */
-    public static final class RunningStopWatch {
-        private long _startInNS;
-        /**
-         * Constructor.
-         */
-        RunningStopWatch(final long startInNS) {
-            _startInNS = startInNS;
-        }
-        public long getStartTimeInNS() {
-            return _startInNS;
-        }
-        public long getElapsedTimeInNS() {
-            return System.nanoTime() - _startInNS;
-        }
-        public long getElapsedTimeInMillis() {
-            return (long) ((System.nanoTime() - _startInNS) / 1.0e6);
-        }
-        public void restart() {
-            _startInNS = System.nanoTime();
-        }
-    }
+    T getResult(@Nonnull final String context,
+                @Nonnull final String key,
+                @Nonnull final T defaultValue);
 }
