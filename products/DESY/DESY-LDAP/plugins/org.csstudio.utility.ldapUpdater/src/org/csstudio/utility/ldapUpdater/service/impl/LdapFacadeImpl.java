@@ -24,6 +24,7 @@
 package org.csstudio.utility.ldapUpdater.service.impl;
 
 import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS;
 import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
@@ -43,16 +44,16 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -124,17 +125,17 @@ public class LdapFacadeImpl implements ILdapFacade {
      */
     @Override
     public boolean createLdapIoc(@Nonnull final LdapName newLdapName,
-                                 @Nullable final TimeInstant timestamp)
+                                 @Nonnull final IOC ioc)
                                  throws LdapFacadeException {
 
-//        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
+        final IpAddress ipAddress = ioc.getIpAddress();
+        //TimeInstant lastBootTime = ioc.getLastBootTime();
 
         final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS,
+                                   ATTR_VAL_IOC_IP_ADDRESS, ipAddress.getAddress());
         // TODO (bknerr) : modify schema and add new attribute
-//        ,
 //                                   ATTR_FIELD_LAST_UPDATED, time,
-//                                   ATTR_FIELD_LAST_UPDATED_IN_MILLIS, String.valueOf(cal.getTimeInMillis()));
 
         try {
             return getLdapService().createComponent(newLdapName, afe);

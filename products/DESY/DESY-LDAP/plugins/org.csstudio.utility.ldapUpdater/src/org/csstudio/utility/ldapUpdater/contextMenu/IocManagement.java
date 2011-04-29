@@ -36,8 +36,9 @@ import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 
 
 /**
@@ -49,6 +50,7 @@ public class IocManagement implements IManagementCommand {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(IocManagement.class);
     private ILdapUpdaterService _service;
+    private ILdapUpdaterFileService _fileService;
 
     /**
      * Constructor.
@@ -56,6 +58,7 @@ public class IocManagement implements IManagementCommand {
     public IocManagement() {
         try {
             _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("Service unavailable.");
         }
@@ -74,7 +77,7 @@ public class IocManagement implements IManagementCommand {
 
         try {
             return commandDispatchAndExecute(command, value);
-        } catch (final LdapFacadeException e) {
+        } catch (final LdapUpdaterServiceException e) {
             LOG.error("Command " + command + " failed due to exception.", e);
             return CommandResult.createFailureResult("Internal LDAP Exception: " + command + " failed.\n" + e.getMessage());
         }
@@ -82,7 +85,7 @@ public class IocManagement implements IManagementCommand {
 
     @Nonnull
     private CommandResult commandDispatchAndExecute(@Nonnull final String command,
-                                                    @Nonnull final Map<String, String> value) throws LdapFacadeException {
+                                                    @Nonnull final Map<String, String> value) throws LdapUpdaterServiceException {
 
         final String iocName = value.get(LdapEpicsControlsConfiguration.IOC.getNodeTypeName());
         final String facilityName = value.get(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName());
@@ -93,7 +96,7 @@ public class IocManagement implements IManagementCommand {
                 _service.removeIocEntryFromLdap(iocName, facilityName);
                 return CommandResult.createSuccessResult();
             case TIDY_UP :
-                final Set<Record> validRecords = _service.getBootRecordsFromIocFile(iocName);
+                final Set<Record> validRecords = _fileService.getBootRecordsFromIocFile(iocName);
                 _service.tidyUpIocEntryInLdap(iocName,
                                               facilityName,
                                               validRecords);

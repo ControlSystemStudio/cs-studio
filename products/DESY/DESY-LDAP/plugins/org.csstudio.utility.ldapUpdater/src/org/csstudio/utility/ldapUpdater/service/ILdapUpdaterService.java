@@ -16,7 +16,6 @@ package org.csstudio.utility.ldapUpdater.service;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 
@@ -37,10 +36,7 @@ public interface ILdapUpdaterService {
 
     void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocs,
                                @Nonnull final Map<String, IOC> iocMap,
-                               @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException;
-
-    @Nonnull
-    SortedSet<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapFacadeException;
+                               @Nonnull final HistoryFileContentModel historyFileModel) throws LdapUpdaterServiceException;
 
     /**
      * Tidies LDAP conservatively.
@@ -48,21 +44,21 @@ public interface ILdapUpdaterService {
      *
      * @param iocs IOC entries found in LDAP
      * @param iocMapFromFS IOC entries found in the file system
-     * @throws LdapFacadeException
+     * @throws LdapUpdaterServiceException
      */
     void tidyUpLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                @Nonnull final Map<String, IOC> iocMapFromFS)
-                               throws LdapFacadeException;
+                               throws LdapUpdaterServiceException;
 
     @Nonnull
-    ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException;
+    ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapUpdaterServiceException;
 
 
     void removeIocEntryFromLdap(@Nonnull final String iocName,
-                                @Nonnull final String facilityName) throws LdapFacadeException;
+                                @Nonnull final String facilityName) throws LdapUpdaterServiceException;
 
 
     void tidyUpIocEntryInLdap(@Nonnull final String iocName,
                               @Nonnull final String facilityName,
-                              @Nonnull final Set<Record> validRecords) throws LdapFacadeException;
+                              @Nonnull final Set<Record> validRecords) throws LdapUpdaterServiceException;
 }

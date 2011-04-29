@@ -60,7 +60,7 @@ public final class LdapFieldsAndAttributes {
 
     public static final String ATTR_VAL_REC_OBJECT_CLASS = "epicsRecord";
     public static final String ATTR_VAL_IOC_OBJECT_CLASS = "epicsController";
-    public static final String ATTR_VAL_IOC_IP_ADDRESS = "epicsIpAddress";
+    public static final String ATTR_VAL_IOC_IP_ADDRESS = "epicsIPAddress";
     public static final String ATTR_VAL_COM_OBJECT_CLASS = "epicsComponent";
     public static final String ATTR_VAL_FAC_OBJECT_CLASS = "epicsFacility";
 

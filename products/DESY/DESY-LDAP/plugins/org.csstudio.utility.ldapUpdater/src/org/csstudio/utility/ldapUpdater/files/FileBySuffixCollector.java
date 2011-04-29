@@ -25,45 +25,34 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.file.FilteredRecursiveFilePathParser;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 
 import com.google.common.collect.Maps;
 
 /**
- * Traverses a directory recursively, filters for files ending on
- * {@link UpdaterLdapConstants#RECORDS_FILE_SUFFIX} and extracts the timestamp info of the
- * files last modification.
- * On traversal a map from the record file name (without suffix) to an {@link IOC} instance is
+ * Traverses a directory one level depth and filters all files not ending on
+ * suffix.
+ * On traversal a map from the simple file name (without suffix) to the file instance is
  * created.
  *
  * @author bknerr
  * @since 28.04.2011
  */
-public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser {
+public class FileBySuffixCollector extends FilteredRecursiveFilePathParser {
 
-    private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(RecordsFileTimeStampParser.class);
-
-    private final Map<String, IOC> _iocFileMap = Maps.newHashMap();
+    private final Map<String, File> _fileMap = Maps.newHashMap();
+    private final String _suffix;
 
     /**
      * Constructor.
-     * @param i
-     * @param file
      * @throws FileNotFoundException
      */
-    public RecordsFileTimeStampParser(@Nonnull final File dir, final int finalDepth) throws FileNotFoundException {
-        super(new SuffixBasedFileFilter(UpdaterLdapConstants.RECORDS_FILE_SUFFIX, finalDepth));
-        startTraversal(dir, finalDepth);
+    public FileBySuffixCollector(@Nonnull final File dir, @Nonnull final String suffix) throws FileNotFoundException {
+        super(new SuffixBasedFileFilter(suffix, 1));
+        _suffix = suffix;
+        startTraversal(dir, 1);
     }
 
     /**
@@ -72,23 +61,12 @@ public class RecordsFileTimeStampParser extends FilteredRecursiveFilePathParser 
     @Override
     protected void processFilteredFile(@Nonnull final File file,
                                                 final int currentDepth) {
-        final TimeInstant dateTime = TimeInstantBuilder.fromMillis(file.lastModified());
-        final String fileName = file.getName();
-
-        final String iocName = fileName.replace(UpdaterLdapConstants.RECORDS_FILE_SUFFIX, "");
-        _iocFileMap.put(iocName, new IOC(iocName, dateTime));
-
-        LOG.debug("File found for IOC: " + iocName);
-    }
-
-    @CheckForNull
-    public IOC getIOCByName(@Nonnull final String iocName) {
-        return _iocFileMap.get(iocName);
+        _fileMap.put(file.getName().replace(_suffix, ""), file);
     }
 
     @Nonnull
-    public Map<String, IOC> getIocFileMap() {
-        return _iocFileMap;
+    public Map<String, File> getFileMap() {
+        return _fileMap;
     }
 
 }

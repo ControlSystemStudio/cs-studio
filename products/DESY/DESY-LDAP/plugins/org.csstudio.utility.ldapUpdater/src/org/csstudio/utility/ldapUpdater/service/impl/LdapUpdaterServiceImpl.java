@@ -27,14 +27,10 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,14 +47,15 @@ import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.files.RecordsFileContentParser;
+import org.csstudio.utility.ldapUpdater.mail.NotificationMailer;
 import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 
@@ -121,13 +118,16 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     }
 
     private final ILdapFacade _facade;
+    private final ILdapUpdaterFileService _fileService;
 
     /**
      * Don't instantiate.
      */
     @Inject
-    public LdapUpdaterServiceImpl(@Nonnull final ILdapFacade facade) {
+    public LdapUpdaterServiceImpl(@Nonnull final ILdapFacade facade,
+                                  @Nonnull final ILdapUpdaterFileService fileService) {
         _facade = facade;
+        _fileService = fileService;
     }
 
 
@@ -150,7 +150,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     public void tidyUpLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
-                                      @Nonnull final Map<String, IOC> iocMapFromFS) throws LdapFacadeException {
+                                      @Nonnull final Map<String, IOC> iocMapFromFS) throws LdapUpdaterServiceException {
 
         for (final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : iocsFromLdap.values()) {
 
@@ -163,15 +163,20 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 continue;
             }
 
-            if (iocMapFromFS.containsKey(iocFromLdapName)) {
+            try {
+                if (iocMapFromFS.containsKey(iocFromLdapName)) {
 
-                final Set<Record> validRecords = getBootRecordsFromIocFile(iocFromLdapName);
-                _facade.tidyUpIocEntryInLdap(iocFromLdapName,
-                                             facFromLdapName,
-                                             validRecords);
+                    final Set<Record> validRecords = _fileService.getBootRecordsFromIocFile(iocFromLdapName);
+                    _facade.tidyUpIocEntryInLdap(iocFromLdapName,
+                                                 facFromLdapName,
+                                                 validRecords);
 
-            } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
-                _facade.removeIocEntryFromLdap(iocFromLdapName, facFromLdapName);
+                } else { // LDAP entry is not contained in current IOC directory - is considered obsolete!
+                    _facade.removeIocEntryFromLdap(iocFromLdapName, facFromLdapName);
+                }
+            } catch (final LdapFacadeException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
         }
     }
@@ -179,11 +184,11 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     @Nonnull
     private UpdateIOCResult updateIocInLdapWithRecordsFromBootFile(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordMapFromLdap,
-                                                                   @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws LdapFacadeException {
+                                                                   @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws LdapUpdaterServiceException {
 
         final String iocName = iocFromLDAP.getName();
 
-        final Set<Record> recordsFromFile = getBootRecordsFromIocFile(iocName);
+        final Set<Record> recordsFromFile = _fileService.getBootRecordsFromIocFile(iocName);
 
         final StringBuilder forbiddenRecords = new StringBuilder();
         LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
@@ -196,35 +201,17 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                                                            recFromFile);
                 }
             }
-            LdapUpdaterUtil.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
+            NotificationMailer.sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
         } catch (final NamingException e) {
-            throw new LdapFacadeException("LDAP name creation failed on updating records for IOC " + iocName, e);
+            throw new LdapUpdaterServiceException("LDAP name creation failed on updating records for IOC " + iocName, e);
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Creating new records failed on updating IOC " + iocName, e);
         }
 
         return new UpdateIOCResult(recordsFromFile.size(),
                                    numOfRecsWritten,
                                    -1,
                                    true);
-    }
-
-    /**
-     * Retrieves valid records for an IOC from the IOC file.
-     * @param iocName the ioc file name
-     * @return a set of contained records
-     * @throws LdapFacadeException
-     */
-    @Override
-    @Nonnull
-    public SortedSet<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapFacadeException {
-        final File dumpPath = IOC_DBL_DUMP_PATH.getValue();
-
-        final RecordsFileContentParser parser = new RecordsFileContentParser();
-        try {
-            parser.parseFile(new File(dumpPath, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
-        } catch (final IOException e) {
-            throw new LdapFacadeException("Failure on parsing contents of record file " + iocName , e);
-        }
-        return parser.getRecords();
     }
 
     private int createNewRecordEntry(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
@@ -266,12 +253,12 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      *            the list of ioc filenames as found in the ioc directory
      * @param historyFileModel
      *            the contents of the history file
-     * @throws LdapFacadeException
+     * @throws LdapUpdaterServiceException
      */
     @Override
     public void updateLDAPFromIOCList(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
                                       @Nonnull final Map<String, IOC> iocMapFromFS,
-                                      @Nonnull final HistoryFileContentModel historyFileModel) throws LdapFacadeException {
+                                      @Nonnull final HistoryFileContentModel historyFileModel) throws LdapUpdaterServiceException {
 
         for (final Entry<String, IOC> entry : iocMapFromFS.entrySet()) {
 
@@ -291,7 +278,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     }
 
     private void createOrUpdateIocInLdap(@Nullable final INodeComponent<LdapEpicsControlsConfiguration> pIocFromLdap,
-                                         @Nonnull final IOC iocFromFS) throws LdapFacadeException {
+                                         @Nonnull final IOC iocFromFS) throws LdapUpdaterServiceException {
         INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = pIocFromLdap;
         if (iocFromLdap == null) {
             iocFromLdap = createIocInLdap(iocFromFS);
@@ -299,8 +286,12 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
         final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
-        final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordMapFromLdap =
-            _facade.retrieveRecordsForIOC(iocFromLdapName);
+        Map<String, INodeComponent<LdapEpicsControlsConfiguration>> recordMapFromLdap;
+        try {
+            recordMapFromLdap = _facade.retrieveRecordsForIOC(iocFromLdapName);
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Exception in LDAP facade on creating or updating IOC in LDAP.", e);
+        }
 
         final UpdateIOCResult updateResult = updateIocInLdapWithRecordsFromBootFile(recordMapFromLdap, iocFromLdap);
 
@@ -315,7 +306,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     @Nonnull
     private INodeComponent<LdapEpicsControlsConfiguration>
-        createIocInLdap(@Nonnull final IOC iocFromFS) throws LdapFacadeException {
+        createIocInLdap(@Nonnull final IOC iocFromFS) throws LdapUpdaterServiceException {
 
         final String iocName = iocFromFS.getName();
         LOG.info("IOC " + iocName +
@@ -331,11 +322,13 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             final LdapName fullLdapName =
                 (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
 
-            _facade.createLdapIoc(fullLdapName, iocFromFS.getLastBootTime());
+            _facade.createLdapIoc(fullLdapName, iocFromFS);
 
             return _facade.retrieveIOC(fullLdapName);
         } catch (final InvalidNameException e) {
-            throw new LdapFacadeException("Invalid name on creating new LDAP IOC.", e);
+            throw new LdapUpdaterServiceException("Invalid name on creating new LDAP IOC.", e);
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Exception in LDAP facade on creating IOC in LDAP.", e);
         }
     }
 
@@ -345,8 +338,12 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     @Nonnull
-    public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapFacadeException {
-        return _facade.retrieveIOCs();
+    public ContentModel<LdapEpicsControlsConfiguration> retrieveIOCs() throws LdapUpdaterServiceException {
+        try {
+            return _facade.retrieveIOCs();
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Exception in LDAP facade on retrieval of IOCs.", e);
+        }
     }
 
     /**
@@ -354,8 +351,12 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     public void removeIocEntryFromLdap(@Nonnull final String iocName,
-                                       @Nonnull final String facilityName) throws LdapFacadeException {
-        _facade.removeIocEntryFromLdap(iocName, facilityName);
+                                       @Nonnull final String facilityName) throws LdapUpdaterServiceException {
+        try {
+            _facade.removeIocEntryFromLdap(iocName, facilityName);
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Exception in LDAP facade on removal of IOC in LDAP.", e);
+        }
     }
 
 
@@ -365,8 +366,12 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     @Override
     public void tidyUpIocEntryInLdap(@Nonnull final String iocName,
                                      @Nonnull final String facilityName,
-                                     @Nonnull final Set<Record> validRecords) throws LdapFacadeException {
-        _facade.tidyUpIocEntryInLdap(iocName, facilityName, validRecords);
+                                     @Nonnull final Set<Record> validRecords) throws LdapUpdaterServiceException {
+        try {
+            _facade.tidyUpIocEntryInLdap(iocName, facilityName, validRecords);
+        } catch (final LdapFacadeException e) {
+            throw new LdapUpdaterServiceException("Exception in LDAP facade on tidying LDAP.", e);
+        }
     }
 
 }

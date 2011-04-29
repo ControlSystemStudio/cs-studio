@@ -42,7 +42,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 
@@ -79,7 +79,7 @@ public class IocEnumeration implements IDynamicParameterValues {
         ContentModel<LdapEpicsControlsConfiguration> model;
         try {
             model = _service.retrieveIOCs();
-        } catch (final LdapFacadeException e) {
+        } catch (final LdapUpdaterServiceException e) {
             LOG.error("IOC retrieval failed.", e);
             return EMPTY_VALUES;
         }

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,10 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.file.AbstractLineBasedFileContentParser;
 import org.csstudio.domain.desy.net.IpAddress;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 
@@ -47,7 +51,7 @@ import com.google.common.collect.Maps;
  */
 public class BootFileContentParser extends AbstractLineBasedFileContentParser {
 
-    private IOC _currentIOC;
+    private IpAddress _ipAddress;
     private boolean _ipAddressFound = false;
     private final Map<String, IOC> _iocMap;
 
@@ -58,32 +62,51 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
      * @throws ParseException
      */
     public BootFileContentParser(@Nonnull final File directory,
-                                 @Nonnull final Collection<IOC> iocs) throws IOException, ParseException {
-        _iocMap = Maps.newHashMapWithExpectedSize(iocs.size());
-        for (final IOC ioc : iocs) {
-            _ipAddressFound = false;
+                                 @Nonnull final Collection<String> iocNames) throws IOException, ParseException {
+        _iocMap = Maps.newHashMapWithExpectedSize(iocNames.size());
+        for (final String iocName : iocNames) {
 
-            setFieldsToCurrentlyProcessedIOC(ioc);
-            processIocFile(directory, ioc);
+            final SortedSet<Record> records = getBootRecordsFromFile(directory, iocName);
 
-            if (!_ipAddressFound) {
-                throw new ParseException("No IpAddress could be identified for IOC " + ioc.getName() +
-                                         " in directory " + directory.getAbsolutePath() , 0);
-            }
+            final IpAddress ipAddress = extractIpAddressFromBootFile(directory, iocName);
+
+            final TimeInstant timestamp = extractLastModificationTimeFromBootFile(directory, iocName);
+
+            _iocMap.put(iocName, new IOC(iocName, timestamp, ipAddress, records));
         }
     }
 
-    private void processIocFile(@Nonnull final File directory,
-                                @Nonnull final IOC ioc) throws IOException,
-                                                               ParseException {
-        final File filePath = new File(directory, ioc.getName() + UpdaterLdapConstants.BOOT_FILE_SUFFIX);
-
-        parseFile(filePath);
+    @Nonnull
+    public Map<String, IOC> getIocMap() {
+        return _iocMap;
     }
 
-    private void setFieldsToCurrentlyProcessedIOC(@Nonnull final IOC ioc) {
-        _currentIOC = ioc;
-        _iocMap.put(ioc.getName(), _currentIOC);
+    @Nonnull
+    private TimeInstant extractLastModificationTimeFromBootFile(@Nonnull final File directory,
+                                                                @Nonnull final String iocName) {
+        final File bootFile = new File(directory, iocName + UpdaterLdapConstants.BOOT_FILE_SUFFIX);
+        return TimeInstantBuilder.fromMillis(bootFile.lastModified());
+    }
+
+    @Nonnull
+    private IpAddress extractIpAddressFromBootFile(@Nonnull final File directory,
+                                                   @Nonnull final String iocName) throws IOException, ParseException {
+        _ipAddressFound = false;
+        final File filePath = new File(directory, iocName + UpdaterLdapConstants.BOOT_FILE_SUFFIX);
+        parseFile(filePath);
+        if (!_ipAddressFound) {
+            throw new ParseException("No IpAddress could be identified for IOC " + iocName +
+                                     " in directory " + directory.getAbsolutePath() , 0);
+        }
+        return _ipAddress;
+    }
+
+    @Nonnull
+    private SortedSet<Record> getBootRecordsFromFile(@Nonnull final File directory,
+                                                     @Nonnull final String iocName) throws IOException {
+        final RecordsFileContentParser parser = new RecordsFileContentParser();
+        parser.parseFile(new File(directory, iocName + UpdaterLdapConstants.RECORDS_FILE_SUFFIX));
+        return parser.getRecords();
     }
 
     /**
@@ -98,7 +121,7 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
 
             final Matcher matcher = pattern.matcher(line);
             if (matcher.matches()) {
-                _currentIOC.setIpAddress(new IpAddress(matcher.group(1)));
+                _ipAddress = new IpAddress(matcher.group(1));
                 _ipAddressFound = true;
             }
         }
@@ -108,10 +131,4 @@ public class BootFileContentParser extends AbstractLineBasedFileContentParser {
     private boolean isNotACommment(@Nonnull final String line) {
         return !Pattern.matches("^/s*#.*", line);
     }
-
-    @Nonnull
-    public Map<String, IOC> getIocMap() {
-        return _iocMap;
-    }
-
 }

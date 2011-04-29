@@ -25,7 +25,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -41,9 +40,9 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 
 /**
@@ -68,6 +67,7 @@ public class TidyUpLdapAction implements IManagementCommand {
      * Singleton approach to make the service public to the action, a pain to test...
      */
     private ILdapUpdaterService _service;
+    private ILdapUpdaterFileService _fileService;
 
     /**
      * Constructor.
@@ -75,6 +75,7 @@ public class TidyUpLdapAction implements IManagementCommand {
     public TidyUpLdapAction() {
         try {
             _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("LDAP service is not available!");
             throw new RuntimeException("LDAP service is not available!", e);
@@ -108,20 +109,18 @@ public class TidyUpLdapAction implements IManagementCommand {
 
         final TimeInstant startTime = UPDATER.logHeader(TIDYUP_ACTION_NAME);
 
-        final File value = IOC_DBL_DUMP_PATH.getValue();
+        final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
         try {
             final ContentModel<LdapEpicsControlsConfiguration> model = _service.retrieveIOCs();
             if (model.isEmpty()) {
                 LOG.warn("LDAP search result is empty. No IOCs found.");
                 return;
             }
-            final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
-            final Map<String, IOC> iocMapFromFS = parser.getIocFileMap();
+            final Map<String, IOC> iocMapFromFS = _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
             _service.tidyUpLDAPFromIOCList(model.getByType(IOC), iocMapFromFS);
-        } catch (final FileNotFoundException e) {
-            throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
-        } catch (final LdapFacadeException e) {
+
+        } catch (final LdapUpdaterServiceException e) {
             throw new RuntimeException("Retrieval of IOCs from LDAP failed!", e);
         } finally {
             UPDATER.setBusy(false);

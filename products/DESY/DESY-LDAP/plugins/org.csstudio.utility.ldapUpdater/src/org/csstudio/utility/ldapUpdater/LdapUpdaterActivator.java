@@ -28,7 +28,9 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterFileServiceImpl;
 import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -60,6 +62,7 @@ public class LdapUpdaterActivator implements BundleActivator {
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
     private LdapUpdaterServiceImpl _ldapUpdaterService;
+    private LdapUpdaterFileServiceImpl _ldapUpdaterFileService;
 
 
     /**
@@ -111,6 +114,7 @@ public class LdapUpdaterActivator implements BundleActivator {
             };
 
         final Injector injector = Guice.createInjector(new LdapUpdaterModule(provider));
+        _ldapUpdaterFileService = injector.getInstance(LdapUpdaterFileServiceImpl.class);
         _ldapUpdaterService = injector.getInstance(LdapUpdaterServiceImpl.class);
     }
 
@@ -145,4 +149,14 @@ public class LdapUpdaterActivator implements BundleActivator {
 	    }
         return _ldapUpdaterService;
     }
+	/**
+	 * ANTI-PATTERN due to extension points. Cannot inject services in extension point classes.
+	 */
+	@Nonnull
+	public ILdapUpdaterFileService getLdapUpdaterFileService() throws OsgiServiceUnavailableException {
+	    if (_ldapUpdaterFileService == null) {
+	        throw new OsgiServiceUnavailableException("Service field has not been set. Hasnt' the framework called Activator.start before?");
+	    }
+	    return _ldapUpdaterFileService;
+	}
 }

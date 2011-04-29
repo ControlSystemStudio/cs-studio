@@ -29,27 +29,13 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 
 import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
-import org.csstudio.utility.ldapUpdater.mail.NotificationType;
-import org.csstudio.utility.treemodel.INodeComponent;
 
 
 /**
@@ -62,8 +48,6 @@ import org.csstudio.utility.treemodel.INodeComponent;
  */
 public enum LdapUpdaterUtil {
     INSTANCE;
-
-    public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterUtil.class);
 
@@ -105,33 +89,6 @@ public enum LdapUpdaterUtil {
         LOG.info("\n-------------------------------------------------------------------\n" +
                  action + " starts at " + startTime.formatted() + ".");
         return startTime;
-    }
-
-
-    public void sendNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
-        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
-            NotificationMail.sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
-                                      entry.getKey(),
-                                      "\n(in directory " + IOC_DBL_DUMP_PATH.getValue() + ")" +
-                                      "\n\n" + entry.getValue());
-        }
-    }
-
-    public static void sendUnallowedCharsNotification(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
-                                                       @Nonnull final String iocName,
-                                                       @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
-        if (forbiddenRecords.length() > 0) {
-            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-            String person;
-            if (attr != null && !StringUtil.hasLength((String) attr.get())) {
-                person = (String) attr.get();
-            } else {
-                person = DEFAULT_RESPONSIBLE_PERSON;
-            }
-            NotificationMail.sendMail(NotificationType.UNALLOWED_CHARS,
-                                      person,
-                                      "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
-        }
     }
 }
 

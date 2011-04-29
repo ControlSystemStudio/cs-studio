@@ -26,9 +26,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,12 +49,12 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
-import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
-import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
+import org.csstudio.utility.ldapUpdater.mail.NotificationMailer;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 
@@ -88,14 +85,19 @@ public class UpdateLdapAction implements IManagementCommand {
     /**
      * Singleton approach to make the service public to the action, a pain to test...
      */
-    private ILdapUpdaterService _service;
+    private ILdapUpdaterService _ldapService;
+    /**
+     * Singleton approach to make the service public to the action, a pain to test...
+     */
+    private ILdapUpdaterFileService _fileService;
 
     /**
      * Constructor.
      */
     public UpdateLdapAction() {
         try {
-            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _ldapService = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error("LDAP service is not available!");
             throw new RuntimeException("LDAP service is not available!", e);
@@ -127,14 +129,14 @@ public class UpdateLdapAction implements IManagementCommand {
      * If not so, these entries are added to LDAP.
      * @throws OsgiServiceUnavailableException
      */
-    public void updateLdapFromIOCFiles() throws LdapFacadeException {
+    public void updateLdapFromIOCFiles() throws LdapUpdaterServiceException {
 
 
         final TimeInstant startTime = UPDATER.logHeader(UPDATE_ACTION_NAME);
 
         try {
             final ContentModel<LdapEpicsControlsConfiguration> model =
-                _service.retrieveIOCs();
+                _ldapService.retrieveIOCs();
 
             if (model.isEmpty()) {
                 LOG.info("No IOCs found in LDAP.");
@@ -150,7 +152,7 @@ public class UpdateLdapAction implements IManagementCommand {
     }
 
     private void updateIocsInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdapBySimpleName)
-                                  throws LdapFacadeException {
+                                  throws LdapUpdaterServiceException {
 
             final HistoryFileAccess histFileReader = new HistoryFileAccess();
             final HistoryFileContentModel historyFileModel = histFileReader.readFile();
@@ -158,23 +160,11 @@ public class UpdateLdapAction implements IManagementCommand {
             validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
             final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
-            try {
-                final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(bootDirectory, 1);
-                Map<String, IOC> iocsFromFS = parser.getIocFileMap();
-                final BootFileContentParser bootFile = new BootFileContentParser(bootDirectory, iocsFromFS.values());
-                iocsFromFS = bootFile.getIocMap();
+            final Map<String, IOC> iocsFromFSMap =
+                    _fileService.retrieveIocInformationFromBootDirectory(bootDirectory);
 
-                _service.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFS, historyFileModel);
-
-            } catch (final FileNotFoundException e) {
-                throw new RuntimeException("File dir " + bootDirectory + " could not be parsed for IOC files!", e);
-            } catch (final ParseException e) {
-                throw new RuntimeException("Parsing of contents failed for iocs in  " + bootDirectory + "!", e);
-            } catch (final IOException e) {
-                throw new RuntimeException("File dir " + bootDirectory + " could not be parsed for IOC files!", e);
-            }
+            _ldapService.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFSMap, historyFileModel);
     }
-
 
     private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocsFromLdap,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
@@ -218,14 +208,14 @@ public class UpdateLdapAction implements IManagementCommand {
             getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
         }
 
-        UPDATER.sendNotificationMails(missingIOCsPerPerson);
+        NotificationMailer.sendMissingIOCsNotificationMails(missingIOCsPerPerson);
     }
 
     @Nonnull
     private Map<String, List<String>> getResponsiblePersonForIOC(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc,
                                                                  @Nonnull final Map<String, List<String>> iocsPerPerson) {
         final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-        String person = LdapUpdaterUtil.DEFAULT_RESPONSIBLE_PERSON;
+        String person = NotificationMailer.DEFAULT_RESPONSIBLE_PERSON;
         try {
             if (personAttr != null && personAttr.get() != null) {
                 person = (String) personAttr.get();

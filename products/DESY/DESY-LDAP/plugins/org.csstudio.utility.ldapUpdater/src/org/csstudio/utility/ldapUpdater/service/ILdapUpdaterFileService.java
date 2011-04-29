@@ -19,45 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldapUpdater;
+package org.csstudio.utility.ldapUpdater.service;
+
+import java.io.File;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
-import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
-import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapFacadeImpl;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterFileServiceImpl;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
-
-import com.google.inject.AbstractModule;
+import org.csstudio.utility.ldap.model.IOC;
+import org.csstudio.utility.ldap.model.Record;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 27.04.2011
+ * @since 29.04.2011
  */
-public class LdapUpdaterModule extends AbstractModule {
-    private final ILdapServiceProvider _serviceProvider;
+public interface ILdapUpdaterFileService {
+    @Nonnull
+    Set<Record> getBootRecordsFromIocFile(@Nonnull final String iocName) throws LdapUpdaterServiceException;
 
-    /**
-     * Constructor.
-     */
-    public LdapUpdaterModule(@Nonnull final ILdapServiceProvider provider) {
-        _serviceProvider = provider;
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void configure() {
-        bind(ILdapServiceProvider.class).toInstance(_serviceProvider);
-        bind(ILdapFacade.class).to(LdapFacadeImpl.class);
-        bind(ILdapUpdaterService.class).to(LdapUpdaterServiceImpl.class);
-        bind(ILdapUpdaterFileService.class).to(LdapUpdaterFileServiceImpl.class);
-    }
+    @Nonnull
+    Map<String, IOC> retrieveIocInformationFromBootDirectory(@Nonnull final File bootDirectory)
+                                                             throws LdapUpdaterServiceException;
 
 }

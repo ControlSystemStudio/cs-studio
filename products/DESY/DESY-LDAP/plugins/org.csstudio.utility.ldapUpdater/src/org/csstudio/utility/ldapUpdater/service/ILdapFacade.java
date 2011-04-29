@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -56,7 +56,7 @@ public interface ILdapFacade {
      * @return true if the new record could be created, false otherwise
      * @throws LdapFacadeException if the LDAP service is not available
      */
-    boolean createLdapRecord(@Nonnull LdapName newLdapName) throws LdapFacadeException;
+    boolean createLdapRecord(@Nonnull final LdapName newLdapName) throws LdapFacadeException;
 
     /**
      * Creates a new IOC in LDAP
@@ -65,7 +65,7 @@ public interface ILdapFacade {
      * @return true if the new ioc could be created, false otherwise
      * @throws LdapFacadeException
      */
-    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable TimeInstant timestamp) throws LdapFacadeException;
+    boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final IOC iocFromFS) throws LdapFacadeException;
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -76,8 +76,8 @@ public interface ILdapFacade {
      * @throws LdapFacadeException
      */
     @CheckForNull
-    ContentModel<LdapEpicsControlsConfiguration> retrieveRecordsForIOC(@Nonnull String facilityName,
-                                                                       @Nonnull String iocName)
+    ContentModel<LdapEpicsControlsConfiguration> retrieveRecordsForIOC(@Nonnull final String facilityName,
+                                                                       @Nonnull final String iocName)
                                                                        throws LdapFacadeException;
 
     /**
@@ -98,19 +98,19 @@ public interface ILdapFacade {
      * @param validRecords .
      * @throws LdapFacadeException
      */
-    void tidyUpIocEntryInLdap(@Nonnull String iocName,
-                              @Nonnull String facilityName,
-                              @Nonnull Set<Record> validRecords)
+    void tidyUpIocEntryInLdap(@Nonnull final String iocName,
+                              @Nonnull final String facilityName,
+                              @Nonnull final Set<Record> validRecords)
                               throws LdapFacadeException;
 
     /**
      * Removes the IOC entry from the LDAP context.
      * @param iocName .
      * @param facilityName .
-     * @throws ServiceUnavailableException
+     * @throws LdapFacadeException
      */
-    void removeIocEntryFromLdap(@Nonnull String iocName,
-                                @Nonnull String facilityName) throws LdapFacadeException;
+    void removeIocEntryFromLdap(@Nonnull final String iocName,
+                                @Nonnull final String facilityName) throws LdapFacadeException;
 
     /**
      * Returns the ldap content model builder for the specified parameters

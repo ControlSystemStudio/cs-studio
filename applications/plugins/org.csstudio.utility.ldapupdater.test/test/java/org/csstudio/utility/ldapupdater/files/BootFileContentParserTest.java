@@ -22,6 +22,7 @@
 package org.csstudio.utility.ldapupdater.files;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,12 +36,14 @@ import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Test for {@link BootFileContentParser}. 
@@ -54,47 +57,64 @@ public class BootFileContentParserTest {
     @Rule
     public static TemporaryFolder _tempFolder = new TemporaryFolder();
     
-    private static File DIR;
+    private static File _tempDir;
     
-    @BeforeClass
-    public static void setup() {
-        DIR = _tempFolder.newFolder("dir");
+    @Before
+    public void setup() {
+        _tempDir = _tempFolder.newFolder("dir");
     }
     
     @Test
     public void testValidFile() throws IOException, ParseException {
         
-        createAndWriteFileForIoc(DIR, "bar", " # tallest man on earth\n" +
-                                             LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "=1.1.1.1");
-        createAndWriteFileForIoc(DIR, "foo", "  "  + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "  = 1.2.3.4 ");
-        
-        Map<String, IOC> inMap = Maps.newHashMap();
-        inMap.put("foo", new IOC("foo", "egal"));
-        inMap.put("bar", new IOC("bar", "egal"));
-        
-        BootFileContentParser parser = new BootFileContentParser(DIR, inMap.values());
+        createAndWriteFileForIoc(_tempDir, "foo.boot", "  "  + LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "  = 1.2.3.4 ");
+        createAndWriteFileForIoc(_tempDir, "bar.boot", " # tallest man on earth\n" +
+                                 LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS + "=1.1.1.1");
+
+        createAndWriteFileForIoc(_tempDir, "foo.records", "rec1\nrec2\nrec3");
+        createAndWriteFileForIoc(_tempDir, "bar.records", "");
+                
+        BootFileContentParser parser = new BootFileContentParser(_tempDir, Sets.newHashSet("foo", "bar"));
         Map<String, IOC> outMap = parser.getIocMap();
         
         Assert.assertEquals(2, outMap.size());
         Assert.assertEquals(new IpAddress("1.1.1.1"), outMap.get("bar").getIpAddress());
         Assert.assertEquals(new IpAddress("1.2.3.4"), outMap.get("foo").getIpAddress());
+
+        Assert.assertEquals(3, outMap.get("foo").getRecordSet().size());
+        Assert.assertEquals(0, outMap.get("bar").getRecordSet().size());
     }
     
     @SuppressWarnings("unused")
-    @Test(expected=ParseException.class)
-    public void testInvalidFile() throws IOException, ParseException {
-        createAndWriteFileForIoc(DIR, "xxx", "tralala");
+    @Test(expected=FileNotFoundException.class) // .records file missing
+    public void testMissingRecordsFile() throws IOException, ParseException {
+        createAndWriteFileForIoc(_tempDir, "xxx", "tralala");
         
-        Map<String, IOC> inMap = Maps.newHashMap();
-        inMap.put("xxx", new IOC("xxx", "egal"));
+        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
+    }
+
+    @SuppressWarnings("unused")
+    @Test(expected=FileNotFoundException.class) // .records file missing
+    public void testMissingBootFile() throws IOException, ParseException {
+        createAndWriteFileForIoc(_tempDir, "xxx.records", "tralala");
+        createAndWriteFileForIoc(_tempDir, "xxx", "tralala");
         
-        new BootFileContentParser(DIR, inMap.values());
+        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
+    }
+
+    @SuppressWarnings("unused")
+    @Test(expected=ParseException.class) // .records file missing
+    public void testInvalidBootFile() throws IOException, ParseException {
+        createAndWriteFileForIoc(_tempDir, "xxx.records", "");
+        createAndWriteFileForIoc(_tempDir, "xxx.boot", "tralala");
+        
+        new BootFileContentParser(_tempDir, Sets.newHashSet("xxx"));
     }
     
     private File createAndWriteFileForIoc(@Nonnull final File dir,
-                                          @Nonnull final String iocName, 
+                                          @Nonnull final String fileName, 
                                           @Nonnull final String line) throws IOException {
-        File file = new File(dir, iocName + ".boot");
+        File file = new File(dir, fileName);
         FileWriter writer = new FileWriter(file);
         writer.write(line);
         writer.close();
