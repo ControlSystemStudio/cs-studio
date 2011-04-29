@@ -50,8 +50,12 @@ public class IpAddress {
         _address = ipAddress;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    public String getAddress() {
+    public String toString() {
         return _address;
     }
 
