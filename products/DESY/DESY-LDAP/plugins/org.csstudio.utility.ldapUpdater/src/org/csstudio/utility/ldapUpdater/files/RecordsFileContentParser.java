@@ -26,6 +26,7 @@ import java.util.SortedSet;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.file.AbstractLineBasedFileContentParser;
 import org.csstudio.utility.ldap.model.Record;
 
 import com.google.common.collect.Sets;

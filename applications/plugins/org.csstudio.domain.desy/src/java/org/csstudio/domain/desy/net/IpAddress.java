@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * IP address class with regex validator.
  *
  * @author bknerr
  * @since 26.04.2011
@@ -35,16 +35,15 @@ import javax.annotation.Nonnull;
 public class IpAddress {
 
     public static final String IP_ADDRESS_REGEX =
-        "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+        "(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])";
 
     private final String _address;
-
 
     /**
      * Constructor.
      */
     public IpAddress(@Nonnull final String ipAddress) {
-        final Matcher m = Pattern.compile(IP_ADDRESS_REGEX).matcher(ipAddress);
+        final Matcher m = Pattern.compile("^" + IP_ADDRESS_REGEX + "$").matcher(ipAddress);
         if (!m.matches()) {
             throw new IllegalArgumentException("IP address doesn't match pattern described by: " + IP_ADDRESS_REGEX);
         }
@@ -55,4 +54,29 @@ public class IpAddress {
     public String getAddress() {
         return _address;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return _address.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@Nonnull final Object obj) {
+        if (!(obj instanceof IpAddress)) {
+            return false;
+        }
+        final IpAddress other = (IpAddress) obj;
+        if (!_address.equals(other._address)) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

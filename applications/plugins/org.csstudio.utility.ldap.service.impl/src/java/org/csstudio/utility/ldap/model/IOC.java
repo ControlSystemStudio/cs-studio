@@ -31,6 +31,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 
@@ -54,6 +55,8 @@ public class IOC implements Serializable {
      * The name of this IOC.
      */
     private final String _name;
+    
+    private IpAddress _ipAddress;
 
     /**
      * The group of this IOC.
@@ -189,6 +192,15 @@ public class IOC implements Serializable {
 
     public void setResponsible(@Nonnull final String responsible) {
         _responsible = responsible;
+    }
+
+    public void setIpAddress(@Nonnull final IpAddress ipAddress) {
+        _ipAddress = ipAddress;
+    }
+
+    @CheckForNull
+    public IpAddress getIpAddress() {
+        return _ipAddress;
     }
 
 }

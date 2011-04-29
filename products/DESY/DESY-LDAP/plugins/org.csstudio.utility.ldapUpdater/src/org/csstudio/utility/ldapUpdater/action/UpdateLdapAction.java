@@ -27,6 +27,8 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.RecordsFileTimeStampParser;
@@ -154,15 +157,21 @@ public class UpdateLdapAction implements IManagementCommand {
 
             validateHistoryFileEntriesVsLDAPEntries(iocsFromLdapBySimpleName, historyFileModel);
 
-            final File value = IOC_DBL_DUMP_PATH.getValue();
+            final File bootDirectory = IOC_DBL_DUMP_PATH.getValue();
             try {
-                final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(value, 1);
-                final Map<String, IOC> iocsFromFS = parser.getIocFileMap();
+                final RecordsFileTimeStampParser parser = new RecordsFileTimeStampParser(bootDirectory, 1);
+                Map<String, IOC> iocsFromFS = parser.getIocFileMap();
+                final BootFileContentParser bootFile = new BootFileContentParser(bootDirectory, iocsFromFS.values());
+                iocsFromFS = bootFile.getIocMap();
 
                 _service.updateLDAPFromIOCList(iocsFromLdapBySimpleName, iocsFromFS, historyFileModel);
 
             } catch (final FileNotFoundException e) {
-                throw new RuntimeException("File dir " + value + " could not be parsed for IOC files!", e);
+                throw new RuntimeException("File dir " + bootDirectory + " could not be parsed for IOC files!", e);
+            } catch (final ParseException e) {
+                throw new RuntimeException("Parsing of contents failed for iocs in  " + bootDirectory + "!", e);
+            } catch (final IOException e) {
+                throw new RuntimeException("File dir " + bootDirectory + " could not be parsed for IOC files!", e);
             }
     }
 
