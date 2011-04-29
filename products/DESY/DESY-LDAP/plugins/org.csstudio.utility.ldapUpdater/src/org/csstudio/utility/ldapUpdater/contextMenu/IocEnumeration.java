@@ -21,36 +21,30 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
-import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.naming.directory.SearchControls;
-import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
-import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
-import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapUtils;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldapUpdater.Activator;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 
 /**
@@ -60,76 +54,74 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  */
 public class IocEnumeration implements IDynamicParameterValues {
 
+    private static final CommandParameterEnumValue[] EMPTY_VALUES = new CommandParameterEnumValue[] {};
+
     private static final Logger LOG = CentralLogger.getInstance().getLogger(IocEnumeration.class);
+
+    private ILdapUpdaterService _service;
+
+    /**
+     * Constructor.
+     */
+    public IocEnumeration() {
+        try {
+            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error("LDAP service is not available!");
+            throw new RuntimeException("LDAP service is not available!", e);
+        }
+    }
 
     @Override
     @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
 
-        final ILdapService service = Activator.getDefault().getLdapService();
-
-        if (service == null) {
-            LOG.error("LDAP service is not available! Here a service tracker would have made sense.");
-            return new CommandParameterEnumValue[0];
-        }
-
-        final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-                                                      any(IOC.getNodeTypeName()),
-                                                      SearchControls.SUBTREE_SCOPE);
-        if (result == null) {
-            LOG.error("Search result was empty");
-            return new CommandParameterEnumValue[0];
-        }
-
+        ContentModel<LdapEpicsControlsConfiguration> model;
         try {
-            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
-
-            builder.build();
-            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
-
-            if (model == null) {
-                return new CommandParameterEnumValue[0];
-            }
-
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
-                model.getChildrenByTypeAndLdapName(IOC);
-
-            final List<CommandParameterEnumValue> params = generateCommandParamList(iocs);
-
-            Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
-                @Override
-                public int compare(@Nonnull final CommandParameterEnumValue arg0, @Nonnull final CommandParameterEnumValue arg1) {
-                    return arg0.getLabel().compareToIgnoreCase(arg1.getLabel());
-                }
-            });
-
-            return params.toArray(new CommandParameterEnumValue[params.size()]);
-
-        } catch (final CreateContentModelException e) {
-            LOG.error("Content model could not be constructed. Root element has invalid LDAP name.", e);
-            return new CommandParameterEnumValue[0];
+            model = _service.retrieveIOCs();
+        } catch (final LdapUpdaterServiceException e) {
+            LOG.error("IOC retrieval failed.", e);
+            return EMPTY_VALUES;
         }
 
+        final List<CommandParameterEnumValue> params =
+            generateCommandParamList(model.getByType(IOC).values());
+
+        Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
+            @Override
+            public int compare(@Nonnull final CommandParameterEnumValue arg0, @Nonnull final CommandParameterEnumValue arg1) {
+                return arg0.getLabel().compareToIgnoreCase(arg1.getLabel());
+            }
+        });
+
+        return params.toArray(new CommandParameterEnumValue[params.size()]);
     }
 
     @Nonnull
-    private List<CommandParameterEnumValue> generateCommandParamList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs) {
+    private List<CommandParameterEnumValue> generateCommandParamList(@Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> iocs) {
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocs.values()) {
-            final LdapName ldapName = ioc.getLdapName();
-            final String efanName =
-                LdapNameUtils.getValueOfRdnType(ldapName,
-                                                FACILITY.getNodeTypeName());
-
-            final HashMap<String, String> map = new HashMap<String, String>();
-            map.put(IOC.getNodeTypeName(), ioc.getName());
-            map.put(FACILITY.getNodeTypeName(), efanName);
-            params.add(new CommandParameterEnumValue(map, ioc.getName()));
+        for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocs) {
+            final CommandParameterEnumValue commandParam = createCommandParameter(ioc);
+            params.add(commandParam);
         }
         return params;
+    }
+
+    @Nonnull
+    private CommandParameterEnumValue createCommandParameter(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> ioc) {
+        final String iocName = ioc.getName();
+        final String efanName =
+            LdapNameUtils.getValueOfRdnType(ioc.getLdapName(),
+                                            FACILITY.getNodeTypeName());
+
+        // Serializable hash map to transfer two parameters as 'value' over the Management Command framework
+        final HashMap<String, String> value = new HashMap<String, String>();
+        value.put(IOC.getNodeTypeName(), iocName);
+        value.put(FACILITY.getNodeTypeName(), efanName);
+
+        final String label = iocName;
+        return new CommandParameterEnumValue(value, label);
     }
 
 }

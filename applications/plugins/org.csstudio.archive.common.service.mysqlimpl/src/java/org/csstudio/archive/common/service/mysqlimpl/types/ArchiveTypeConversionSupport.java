@@ -280,7 +280,6 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
             final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
                                                                                            SCALAR_TYPE_PACKAGES);
             return fromArchiveString(typeClass, value);
-
         } catch (final TypeSupportException e) {
             return multiScalarSupport(datatype, value);
         }

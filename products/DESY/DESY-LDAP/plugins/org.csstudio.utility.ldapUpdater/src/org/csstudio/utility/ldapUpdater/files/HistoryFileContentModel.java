@@ -24,21 +24,26 @@ package org.csstudio.utility.ldapUpdater.files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Model for the contents of the file that contains the time spans of the last
  * processing of an IOC file.
  *
  * @author bknerr
+ * @deprecated 'Last modification' information shall be replaced by a time stamp per IOC sticky in
+ * the LDAP persistence layer.
  */
+@Deprecated
 public final class HistoryFileContentModel {
 
-	private final Map<String, Long> _historyMap = new HashMap<String, Long>();
+	private final Map<String, TimeInstant> _historyMap = new HashMap<String, TimeInstant>();
 
 	/**
 	 * Constructor.
@@ -50,10 +55,10 @@ public final class HistoryFileContentModel {
 	/**
 	 * Setter for an entry.
 	 * @param name file name
-	 * @param millis time stamp of last processing
+	 * @param timestamp time stamp of last processing
 	 */
-	public void setEntry(@Nonnull final String name, @Nonnull final Long millis) {
-		_historyMap.put(name, millis);
+	public void setEntry(@Nonnull final String name, @Nonnull final TimeInstant timestamp) {
+		_historyMap.put(name, timestamp);
 	}
 
 	/**
@@ -61,7 +66,7 @@ public final class HistoryFileContentModel {
 	 * @return the entry set
 	 */
 	@Nonnull
-	public Set<Entry<String,Long>> getEntrySet() {
+	public Set<Entry<String, TimeInstant>> getEntrySet() {
 		return _historyMap.entrySet();
 	}
 
@@ -71,7 +76,7 @@ public final class HistoryFileContentModel {
 	 * @return the timestamp
 	 */
 	@CheckForNull
-	public Long getTimeForRecord(@Nonnull final String record) {
+	public TimeInstant getTimeForRecord(@Nonnull final String record) {
 		return _historyMap.get(record);
 	}
 

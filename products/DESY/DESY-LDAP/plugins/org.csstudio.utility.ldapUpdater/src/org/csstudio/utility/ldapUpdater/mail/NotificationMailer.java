@@ -21,28 +21,43 @@
  */
 package org.csstudio.utility.ldapUpdater.mail;
 
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.IOC_DBL_DUMP_PATH;
+
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.email.EMailSender;
 import org.csstudio.email.EmailUtils;
+import org.csstudio.platform.util.StringUtil;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.treemodel.INodeComponent;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
  *
  * @author bknerr 24.03.2010
  */
-public final class NotificationMail {
+public final class NotificationMailer {
+    public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
+
     private static final String HOST = "smtp.desy.de";
     private static final String FROM = "DontReply@LDAPUpdater";
+
 
     /**
      * Don't instantiate.
      */
-    private NotificationMail() {
+    private NotificationMailer() {
         // Empty.
     }
 
@@ -55,9 +70,9 @@ public final class NotificationMail {
      * @param additionalBody additional email body text
      * @return true if all mails could be sent
      */
-    public static boolean sendMail(@Nonnull final NotificationType type,
-                                   @Nonnull final String receiverString,
-                                   @Nullable final String additionalBody) {
+    private static boolean sendMail(@Nonnull final NotificationType type,
+                                    @Nonnull final String receiverString,
+                                    @Nullable final String additionalBody) {
         final Set<String> receivers = EmailUtils.extractEmailAddresses(receiverString);
         try {
             for (final String receiver : receivers) {
@@ -83,4 +98,44 @@ public final class NotificationMail {
         mailer.close();
     }
 
+
+    public static void sendMissingIOCsNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
+        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
+            sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
+                                      entry.getKey(),
+                                      "\n(in directory " + IOC_DBL_DUMP_PATH.getValue() + ")" +
+                                      "\n\n" + entry.getValue());
+        }
+    }
+
+    public static void sendUnallowedCharsNotification(@Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                                      @Nonnull final String iocName,
+                                                      @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
+       if (forbiddenRecords.length() > 0) {
+           final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+           String person;
+           if (attr != null && !StringUtil.hasLength((String) attr.get())) {
+               person = (String) attr.get();
+           } else {
+               person = DEFAULT_RESPONSIBLE_PERSON;
+           }
+           sendMail(NotificationType.UNALLOWED_CHARS,
+                                     person,
+                                     "\nIn IOC " + iocName + ":\n\n" + forbiddenRecords.toString());
+       }
+   }
+
+    public static void sendMissingFilesNotification(@Nonnull final String message) {
+        sendMail(NotificationType.BOOT_DIR_FILE_MISMATCH,
+                 DEFAULT_RESPONSIBLE_PERSON,
+                 message);
+    }
+
+    public static void sendIpAddressNotUniqueNotification(@Nonnull final IpAddress ipAddress,
+                                                          @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
+        sendMail(NotificationType.IP_ADDRESS_NOT_UNIQUE,
+                 DEFAULT_RESPONSIBLE_PERSON,
+                 "IP Address: " + ipAddress.toString() + "\n" +
+                 "Formerly used by (now removed): " + iocFromLdap.getLdapName().toString());
+    }
 }

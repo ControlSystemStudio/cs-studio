@@ -68,7 +68,18 @@ public final class LdapUtils {
      */
     @Nonnull
     public static String any(@Nonnull final String fieldName) {
-        return fieldName + FIELD_ASSIGNMENT + FIELD_WILDCARD;
+        return equ(fieldName, FIELD_WILDCARD);
+    }
+    
+    /**
+     * Returns a filter for a direct match of the field name (e.g. '<fieldName>=<fieldValue>').
+     * @param fieldName the field type
+     * @param fieldValue the value the field type shall match
+     * @return .
+     */
+    @Nonnull
+    public static String equ(@Nonnull final String fieldName, @Nonnull final String fieldValue) {
+        return fieldName + FIELD_ASSIGNMENT + fieldValue;
     }
 
     /**
@@ -119,23 +130,6 @@ public final class LdapUtils {
         Collections.reverse(rdns);
         final LdapName name = new LdapName(rdns);
         return name;
-    }
-
-    /**
-     * Filters for forbidden substrings {@link LdapUtils}.
-     * @param recordName the name to filter
-     * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
-     */
-    public static boolean filterLDAPNames(@Nonnull final String recordName) {
-        if (!StringUtil.hasLength(recordName)) {
-            return false;
-        }
-        for (final String s : FORBIDDEN_SUBSTRINGS) {
-            if (recordName.contains(s)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

@@ -44,6 +44,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,7 +119,7 @@ public class LdapContentModelBuilderHeadlessTest {
     @Test
     public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> childrenByType =
+        Map<String, INodeComponent<LdapEpicsControlsConfiguration>> childrenByType =
             MODEL_ONE.getChildrenByTypeAndLdapName(FACILITY);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(FACILITY).intValue());
 
@@ -144,7 +145,7 @@ public class LdapContentModelBuilderHeadlessTest {
     @Test
     public void testBothNameCaches() {
 
-        ISubtreeNodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "StaticTestEcon1");
+        INodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "StaticTestEcon1");
 
         Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "StaticTestEcon1",
                                            COMPONENT.getNodeTypeName(), "StaticTestEcom1",

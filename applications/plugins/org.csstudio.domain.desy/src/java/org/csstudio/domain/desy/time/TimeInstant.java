@@ -364,4 +364,16 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     public String toString() {
         return formatted() + "." + _fracMillisInNanos;
     }
+
+    /**
+     * Returns the interval between two time instants in millis in absolute numbers.
+     *
+     * @param startTime the first time instant
+     * @param endTime the second time instant
+     * @return the difference in millis, always non-negative
+     */
+    public static long deltaInMillis(@Nonnull final TimeInstant startTime,
+                                     @Nonnull final TimeInstant endTime) {
+        return Math.abs(endTime.getMillis() - startTime.getMillis());
+    }
 }

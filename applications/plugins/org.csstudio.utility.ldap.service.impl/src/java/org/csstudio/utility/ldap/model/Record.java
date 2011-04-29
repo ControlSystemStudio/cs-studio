@@ -50,7 +50,8 @@ public class Record implements Serializable {
      * @param name .
      * @param desc description
      */
-    public Record(@Nonnull final String name, @Nonnull final String desc) {
+    public Record(@Nonnull final String name, 
+                  @Nonnull final String desc) {
         _name = name;
         _description = desc;
     }
@@ -90,24 +91,11 @@ public class Record implements Serializable {
      */
     @Override
     public final boolean equals(@Nullable final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Record)) {
             return false;
         }
         final Record other = (Record) obj;
-        if (_name == null) {
-            if (other._name != null) {
-                return false;
-            }
-        } else if (!_name.equals(other._name)) {
-            return false;
-        }
-        return true;
+        return _name.equals(other._name);
     }
 
 

@@ -30,13 +30,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
-import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 /**
  *
@@ -71,10 +68,9 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
         return _csiResult;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getNew()
-     */
+
     @Override
+    @Nonnull
     public NameSpaceSearchResult getNew() {
         return new LdapSearchResult();
     }

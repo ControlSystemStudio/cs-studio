@@ -24,6 +24,7 @@ package org.csstudio.utility.ldapUpdater.mail;
 import javax.annotation.Nonnull;
 
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 
 /**
  * Mail templates for notification purposes of the LDAP update process.
@@ -36,6 +37,14 @@ public enum NotificationType {
                     "The LDAP entry contains at least one forbidden character\n" +
                     "(not permitted are: " + LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS + ")"),
 
+    BOOT_DIR_FILE_MISMATCH("File mismatch between in boot directory!",
+                           "Existing " + UpdaterLdapConstants.BOOT_FILE_SUFFIX +
+                           " and " + UpdaterLdapConstants.RECORDS_FILE_SUFFIX + " do not match!"),
+
+    IP_ADDRESS_NOT_UNIQUE("IP Address has been in use by another IOC.",
+                          "The newly added IOC will hold this IP address from now on.\n" +
+                          "Older IOCs' IP address attribute is reset to empty string in LDAP."),
+
     UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
                          "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
 
@@ -47,9 +56,8 @@ public enum NotificationType {
     /**
      * Constructor.
      */
-    //CHECKSTYLE:OFF
-    private NotificationType(final String subject, final String text) {
-    //CHECKSTYLE:ON
+    private NotificationType(@Nonnull final String subject,
+                             @Nonnull final String text) {
         _subject = subject;
         _text = text;
     }
