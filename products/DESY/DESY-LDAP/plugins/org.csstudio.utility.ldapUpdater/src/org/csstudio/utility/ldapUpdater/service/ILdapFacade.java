@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
@@ -135,5 +136,9 @@ public interface ILdapFacade {
     INodeComponent<LdapEpicsControlsConfiguration> retrieveIOC(@Nonnull final LdapName iocLdapName)
         throws LdapFacadeException;
 
+
+    void modifyIpAddressAttribute(@Nonnull final LdapName name,
+                                  @CheckForNull final IpAddress address)
+                                  throws LdapFacadeException;
 
 }

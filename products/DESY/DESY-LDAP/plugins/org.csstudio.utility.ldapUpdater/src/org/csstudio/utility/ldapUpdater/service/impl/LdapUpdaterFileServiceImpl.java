@@ -101,10 +101,10 @@ public class LdapUpdaterFileServiceImpl implements ILdapUpdaterFileService {
         final String bootJoin = Joiner.on(", ").join(missingBootFiles);
 
         final StringBuilder builder = new StringBuilder();
-        if (Strings.isNullOrEmpty(recordJoin)) {
+        if (!Strings.isNullOrEmpty(recordJoin)) {
             builder.append("\n\nMissing record files:\n").append(recordJoin);
         }
-        if (Strings.isNullOrEmpty(bootJoin)) {
+        if (!Strings.isNullOrEmpty(bootJoin)) {
             builder.append("\n\nMissing boot files:\n").append(bootJoin);
         }
         NotificationMailer.sendMissingFilesNotification(builder.toString());

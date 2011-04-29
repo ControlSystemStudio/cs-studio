@@ -45,7 +45,11 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
@@ -58,6 +62,7 @@ import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
@@ -133,7 +138,7 @@ public class LdapFacadeImpl implements ILdapFacade {
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS,
-                                   ATTR_VAL_IOC_IP_ADDRESS, ipAddress.getAddress());
+                                   ATTR_VAL_IOC_IP_ADDRESS, ipAddress.toString());
         // TODO (bknerr) : modify schema and add new attribute
 //                                   ATTR_FIELD_LAST_UPDATED, time,
 
@@ -356,6 +361,26 @@ public class LdapFacadeImpl implements ILdapFacade {
                 }
             }
             return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void modifyIpAddressAttribute(@Nonnull final LdapName name,
+                                         @CheckForNull final IpAddress address) throws LdapFacadeException {
+
+        final BasicAttribute attr = new BasicAttribute(LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS,
+                                                       address != null ? address.toString() : null);
+        final ModificationItem mod = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
+        try {
+            getLdapService().modifyAttributes(name, new ModificationItem[] {mod});
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new LdapFacadeException("LDAP service unavailable for modifying IP address attribute.", e);
+        } catch (final NamingException e) {
+            throw new LdapFacadeException("Modification of IP address attribute failed.", e);
+        }
+
     }
 }
 

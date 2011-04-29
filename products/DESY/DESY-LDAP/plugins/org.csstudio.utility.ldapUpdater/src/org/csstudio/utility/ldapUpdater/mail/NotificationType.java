@@ -41,6 +41,10 @@ public enum NotificationType {
                            "Existing " + UpdaterLdapConstants.BOOT_FILE_SUFFIX +
                            " and " + UpdaterLdapConstants.RECORDS_FILE_SUFFIX + " do not match!"),
 
+    IP_ADDRESS_NOT_UNIQUE("IP Address has been in use by another IOC.",
+                          "The newly added IOC will hold this IP address from now on.\n" +
+                          "Older IOCs' IP address attribute is reset to empty string in LDAP."),
+
     UNKNOWN_IOCS_IN_LDAP("IOC file missing!",
                          "The LDAP contains IOC entries, for which a corresponding IOC file could not be identified:");
 

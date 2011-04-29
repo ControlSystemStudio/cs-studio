@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.email.EMailSender;
 import org.csstudio.email.EmailUtils;
 import org.csstudio.platform.util.StringUtil;
@@ -128,5 +129,13 @@ public final class NotificationMailer {
         sendMail(NotificationType.BOOT_DIR_FILE_MISMATCH,
                  DEFAULT_RESPONSIBLE_PERSON,
                  message);
+    }
+
+    public static void sendIpAddressNotUniqueNotification(@Nonnull final IpAddress ipAddress,
+                                                          @Nonnull final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap) {
+        sendMail(NotificationType.IP_ADDRESS_NOT_UNIQUE,
+                 DEFAULT_RESPONSIBLE_PERSON,
+                 "IP Address: " + ipAddress.toString() + "\n" +
+                 "Formerly used by (now removed): " + iocFromLdap.getLdapName().toString());
     }
 }

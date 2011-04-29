@@ -37,12 +37,10 @@ import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**

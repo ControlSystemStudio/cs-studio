@@ -28,22 +28,25 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
@@ -273,15 +276,15 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 }
             } // else means 'new IOC file in directory'
 
-            createOrUpdateIocInLdap(iocMapFromLdap.get(iocFromFSName), iocFromFS);
+            createOrUpdateIocInLdap(iocMapFromLdap, iocFromFS);
         }
     }
 
-    private void createOrUpdateIocInLdap(@Nullable final INodeComponent<LdapEpicsControlsConfiguration> pIocFromLdap,
+    private void createOrUpdateIocInLdap(@Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap,
                                          @Nonnull final IOC iocFromFS) throws LdapUpdaterServiceException {
-        INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = pIocFromLdap;
+        INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = iocMapFromLdap.get(iocFromFS.getName());
         if (iocFromLdap == null) {
-            iocFromLdap = createIocInLdap(iocFromFS);
+            iocFromLdap = createIocInLdap(iocFromFS, iocMapFromLdap);
         }
 
         final LdapName iocFromLdapName = iocFromLdap.getLdapName();
@@ -306,11 +309,14 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     @Nonnull
     private INodeComponent<LdapEpicsControlsConfiguration>
-        createIocInLdap(@Nonnull final IOC iocFromFS) throws LdapUpdaterServiceException {
+        createIocInLdap(@Nonnull final IOC iocFromFS,
+                        @Nonnull final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> iocMapFromLdap) throws LdapUpdaterServiceException {
 
         final String iocName = iocFromFS.getName();
         LOG.info("IOC " + iocName +
                  " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
+
+        validateAndUpdateIpAddressAttribute(iocFromFS.getIpAddress(), iocMapFromLdap.values());
 
         final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                    FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
@@ -330,6 +336,29 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         } catch (final LdapFacadeException e) {
             throw new LdapUpdaterServiceException("Exception in LDAP facade on creating IOC in LDAP.", e);
         }
+    }
+
+
+    private void validateAndUpdateIpAddressAttribute(@Nonnull final IpAddress ipAddress,
+                                                     @Nonnull final Collection<INodeComponent<LdapEpicsControlsConfiguration>> values)
+                                                     throws LdapUpdaterServiceException {
+        for (final INodeComponent<LdapEpicsControlsConfiguration> iocFromLdap : values) {
+            final Attribute attribute = iocFromLdap.getAttribute(LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS);
+            try {
+                final String ipAddressFromLdap = (String) attribute.get();
+                if (ipAddressFromLdap != null) {
+                    if (ipAddress.toString().equals(ipAddressFromLdap)) {
+                        NotificationMailer.sendIpAddressNotUniqueNotification(ipAddress, iocFromLdap);
+                        _facade.modifyIpAddressAttribute(iocFromLdap.getLdapName(), null);
+                    }
+                }
+            } catch (final NamingException e) {
+                throw new LdapUpdaterServiceException("Attribute creation for IP Address modification in LDAP failed.", e);
+            } catch (final LdapFacadeException e) {
+                throw new LdapUpdaterServiceException("IP Address modification in LDAP failed.", e);
+            }
+        }
+
     }
 
 
@@ -373,5 +402,7 @@ public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             throw new LdapUpdaterServiceException("Exception in LDAP facade on tidying LDAP.", e);
         }
     }
+
+
 
 }
