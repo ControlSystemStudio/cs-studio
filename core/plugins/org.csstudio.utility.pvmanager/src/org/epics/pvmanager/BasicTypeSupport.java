@@ -13,23 +13,18 @@ import java.util.List;
  *
  * @author carcassi
  */
-class BasicTypeSupport {
+public class BasicTypeSupport {
 
     private BasicTypeSupport() {
         // Don't instantiate, utility class.
     }
 
-    static {
-        // Add support for basic java types.
-        BasicTypeSupport.install();
-    }
-
-    private static boolean installed = false;
+    private static volatile boolean installed = false;
 
     /**
      * Installs type support.
      */
-    static void install() {
+    public static void install() {
         // Install only once
         if (installed) {
             return;

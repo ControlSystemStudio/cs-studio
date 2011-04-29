@@ -84,6 +84,12 @@ public final class SimulationDataSource extends DataSource {
     public void disconnect(DataRecipe recipe) {
         // Get all the function registered for this recipe and stop them
         Set<Simulation<?>> functions = registeredFunctions.get(recipe);
+        
+        // Recipe is not associated with registered functions.
+        // Nothing to disconnect.
+        if (functions == null)
+            return;
+        
         for (Simulation<?> function : functions) {
             if (function != null)
                 function.stop();

@@ -33,6 +33,15 @@ public class PVManager {
     }
 
     /**
+     * The current data source.
+     * 
+     * @return a data source or null if it was not set
+     */
+    public static DataSource getDefaultDataSource() {
+        return defaultDataSource;
+    }
+
+    /**
      * Reads the given expression. Will return the average of the values collected
      * at the scan rate.
      *
