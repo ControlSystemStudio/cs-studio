@@ -64,7 +64,8 @@ public abstract class AbstractGsdPropertyModel {
      * @param intValue
      * @return
      */
-    public abstract ExtUserPrmData getExtUserPrmData(Integer intValue);
+    @CheckForNull
+    public abstract ExtUserPrmData getExtUserPrmData(@Nonnull Integer intValue);
     
     @Nonnull
     public List<Integer> getExtUserPrmDataConst() {
@@ -81,6 +82,7 @@ public abstract class AbstractGsdPropertyModel {
         return valueList;
     }
     
+    @Nonnull
     public SortedMap<Integer, KeyValuePair> getExtUserPrmDataRefMap() {
         return _gsdExtUserPrmDataRefMap;
     }
@@ -124,37 +126,38 @@ public abstract class AbstractGsdPropertyModel {
     }  
     
     private void setExtUserPrmDataValue(@Nonnull ExtUserPrmData extUserPrmData,
-                                        int bytePos,
+                                        int byteIndex,
                                         int value) {
+     // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in AbstractGsdNodeEditor#setValue2BitMask verwendent wird.
         int val = value;
-        int low = extUserPrmData.getMinBit();
-        int high = extUserPrmData.getMaxBit();
-        int mask = ~((int) Math.pow(2, high + 1) - (int) Math.pow(2, low));
-        if ((high > 8) && (high < 16)) {
+        int minBit = extUserPrmData.getMinBit();
+        int maxBit = extUserPrmData.getMaxBit();
+        int mask = ~((int) Math.pow(2, maxBit + 1) - (int) Math.pow(2, minBit));
+        if ((maxBit > 7) && (maxBit < 16)) {
             int modifyByteHigh = 0;
             int modifyByteLow = 0;
-            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos)) {
-                modifyByteHigh = _gsdExtUserPrmDataConstMap.get(bytePos);
+            if (_gsdExtUserPrmDataConstMap.containsKey(byteIndex)) {
+                modifyByteHigh = _gsdExtUserPrmDataConstMap.get(byteIndex);
             }
-            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos + 1)) {
-                modifyByteLow = _gsdExtUserPrmDataConstMap.get(bytePos + 1);
+            if (_gsdExtUserPrmDataConstMap.containsKey(byteIndex + 1)) {
+                modifyByteLow = _gsdExtUserPrmDataConstMap.get(byteIndex + 1);
             }
             
             int parseInt = modifyByteHigh * 256 + modifyByteLow;
-            val = val << (low);
+            val = val << (minBit);
             int result = (parseInt & mask) | (val);
             modifyByteLow = result % 256;
             modifyByteHigh = (result - modifyByteLow) / 256;
-            _gsdExtUserPrmDataConstMap.put(bytePos + 1, modifyByteHigh);
-            _gsdExtUserPrmDataConstMap.put(bytePos, modifyByteLow);
+            _gsdExtUserPrmDataConstMap.put(byteIndex + 1, modifyByteHigh);
+            _gsdExtUserPrmDataConstMap.put(byteIndex, modifyByteLow);
         } else {
             int modifyByte = 0;
-            if (_gsdExtUserPrmDataConstMap.containsKey(bytePos)) {
-                modifyByte = _gsdExtUserPrmDataConstMap.get(bytePos);
+            if (_gsdExtUserPrmDataConstMap.containsKey(byteIndex)) {
+                modifyByte = _gsdExtUserPrmDataConstMap.get(byteIndex);
             }
-            val = val << (low);
+            val = val << (minBit);
             int result = (modifyByte & mask) | (val);
-            _gsdExtUserPrmDataConstMap.put(bytePos, result);
+            _gsdExtUserPrmDataConstMap.put(byteIndex, result);
         }
     }
     

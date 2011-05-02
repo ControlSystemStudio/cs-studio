@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.List;
-import java.util.TreeMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -40,10 +39,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.KeyValuePair;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -86,6 +83,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         }
         
         @Override
+        @CheckForNull
         public Object[] getElements(@Nullable final Object inputElement) {
             if (inputElement instanceof ExtUserPrmData) {
                 ExtUserPrmData eUPD = (ExtUserPrmData) inputElement;
@@ -136,6 +134,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
          * {@inheritDoc}
          */
         @Override
+        @Nonnull
         public String getText(@Nullable Object element) {
             if (element instanceof PrmTextItem) {
                 PrmTextItem prmText = (PrmTextItem) element;
@@ -181,7 +180,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
      * @param currentUserParamDataComposite
      * @throws IOException
      */
-    protected void buildCurrentUserPrmData(final Composite currentUserParamDataComposite) throws IOException {
+    protected void buildCurrentUserPrmData(@Nonnull final Composite currentUserParamDataComposite) throws IOException {
         AbstractGsdPropertyModel parsedGsdFileModel = getGsdPropertyModel();
         if (parsedGsdFileModel != null) {
             Collection<KeyValuePair> extUserPrmDataRefMap = parsedGsdFileModel
@@ -201,17 +200,37 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     @Nonnull
     abstract List<Integer> getPrmUserDataList();
     
+    abstract void setPrmUserData(@Nonnull Integer index, @Nonnull Integer value);
+    
+    @Nonnull
+    abstract Integer getPrmUserData(@Nonnull Integer index);
+    
     int getUserPrmDataValue(@Nonnull KeyValuePair extUserPrmDataRef,
                             @Nonnull ExtUserPrmData extUserPrmData) {
         List<Integer> prmUserDataList = getPrmUserDataList();
-        Integer value = prmUserDataList.get(extUserPrmDataRef.getIndex());
-        int val = getValueFromBitMask(extUserPrmData, value);
+        List<Integer> values = new ArrayList<Integer>();
+        values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()));
+        int maxBit = extUserPrmData.getMaxBit();
+        if ((maxBit > 7) && (maxBit < 16)) {
+            values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()+1));
+        }
+        int val = getValueFromBitMask(extUserPrmData, values);
         return val;
     }
     
     private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
-                                    @Nonnull final Integer value) {
-        int val = value;
+                                    @Nonnull final List<Integer> values) {
+        // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in setValue2BitMask() verwendent wird.      
+        
+        int lowByte = 0;
+        int highByte = 0;
+        if(values.size()>0) {
+            lowByte = values.get(0);
+        }
+        if(values.size()>1) {
+            highByte = values.get(1);
+        }
+        int val = highByte * 256 + lowByte;
         int minBit = ranges.getMinBit();
         int maxBit = ranges.getMaxBit();
         if (maxBit < minBit) {
@@ -265,29 +284,9 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             prmTextCV.getCombo().select(localValue);
         }
         prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
-        prmTextCV.addSelectionChangedListener(new ISelectionChangedListener() {
-            
-            @Override
-            public void selectionChanged(@Nonnull SelectionChangedEvent event) {
-                try {
-                    saveUserPrmData();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            
-        });
         return prmTextCV;
     }
     
-    /**
-     * 
-     * @param currentUserParamDataGroup
-     * @param extUserPrmData
-     * @param value
-     * @param byteIndex
-     */
     @SuppressWarnings("unused")
     private void makeCurrentUserParamDataItem(@Nonnull final Composite currentUserParamDataGroup,
                                               @Nullable final ExtUserPrmData extUserPrmData,
@@ -338,6 +337,8 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         }
         prmText.setText(localValue.toString());
         prmText.setData(localValue.toString());
+        prmText.setData("ExtUserPrmData", extUserPrmData);
+        
         prmText.addModifyListener(getMLSB());
         prmText.addVerifyListener(new VerifyListener() {
             
@@ -357,8 +358,6 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     *
     */
     protected void saveUserPrmData() throws IOException {
-        
-        //TODO: Save the UserPrmData!!!
         Collection<KeyValuePair> extUserPrmDataRefMap = getGsdPropertyModel()
                 .getExtUserPrmDataRefMap().values();
         
@@ -368,38 +367,93 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                 Object prmTextObject = _prmTextCV.get(i);
                 if (prmTextObject instanceof ComboViewer) {
                     ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                    /* Fix: hrickens (02.02.2011)
-                     * Bei dem Fix für das GSD File BIMF5861.GSD hab ich festgestellt das value und Index verwechselt wurden.
-                     * TODO: Prüfen ob andere GSD - Files noch ordnungsgemäss funktionieren  
-                     */
-                                            handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getValue());
-                    //                        handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getIndex());
+                    handleComboViewer(prmTextCV, ref.getIndex());
                 } else if (prmTextObject instanceof Text) {
                     Text prmText = (Text) prmTextObject;
-                    //                        extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
+                    handleText(prmText, ref.getIndex());
                 }
                 i++;
             }
             
-        } else {
-            // TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht zusammen
         }
     }
     
-        private void handleComboViewer(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-                                       @Nonnull final ComboViewer prmTextCV,
-                                       @Nonnull final Integer byteIndex) {
-            if (!prmTextCV.getCombo().isDisposed()) {
-                ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-                StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-                Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-                Integer newValue = setValue2BitMask(input,
-                                                    bitValue,
-                                                    _slave.getPrmUserDataList().get(byteIndex));
-                _slave.setPrmUserDataByte(byteIndex, newValue);
-                Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
-                prmTextCV.getCombo().setData(indexOf);
+    private void handleComboViewer(@Nonnull final ComboViewer prmTextCV,
+                                   @Nonnull final Integer byteIndex) throws IOException {
+        if (!prmTextCV.getCombo().isDisposed()) {
+            ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
+            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
+            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
+            setValue2BitMask(extUserPrmData, bitValue, byteIndex);
+            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
+            prmTextCV.getCombo().setData(indexOf);
+        }
+    }
+    
+    @Nonnull
+    private void handleText(@Nonnull final Text prmText, @Nonnull Integer byteIndex) {
+        if (!prmText.isDisposed()) {
+            Object data = prmText.getData("ExtUserPrmData");
+            if (data instanceof ExtUserPrmData) {
+                ExtUserPrmData extUserPrmData = (ExtUserPrmData) data;
+                
+                String value = prmText.getText();
+                Integer bitValue;
+                if (value == null || value.isEmpty()) {
+                    bitValue = extUserPrmData.getDefault();
+                } else {
+                    bitValue = Integer.parseInt(value);
+                }
+                setValue2BitMask(extUserPrmData, bitValue, byteIndex);
+                prmText.setData(bitValue);
             }
         }
-
+    }
+    
+    /**
+     * Change the a value on the Bit places, that is given from the input, to
+     * the bitValue.
+     * 
+     * @param ranges
+     *            give the start and end Bit position.
+     * @param bitValue
+     *            the new Value for the given Bit position.
+     * @param value
+     *            the value was changed.
+     * @return the changed value.
+     */
+    @Nonnull
+    private void setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
+                                     @Nonnull final Integer bitValue,
+                                     @Nonnull final Integer byteIndex) {
+        // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in AbstractGsdPropertyModel#setExtUserPrmDataValue verwendent wird.
+        int val = bitValue;
+        int minBit = ranges.getMinBit();
+        int maxBit = ranges.getMaxBit();
+        if (maxBit < minBit) {
+            minBit = ranges.getMaxBit();
+            maxBit = ranges.getMinBit();
+        }
+        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+        if ((maxBit > 7) && (maxBit < 16)) {
+            int modifyByteHigh = 0;
+            int modifyByteLow = 0;
+            modifyByteHigh = getPrmUserData(byteIndex);
+            modifyByteLow = getPrmUserData(byteIndex + 1);
+            
+            int parseInt = modifyByteHigh * 256 + modifyByteLow;
+            val = val << (minBit);
+            int result = (parseInt & mask) | (val);
+            modifyByteLow = result % 256;
+            modifyByteHigh = (result - modifyByteLow) / 256;
+            setPrmUserData(byteIndex + 1, modifyByteHigh);
+            setPrmUserData(byteIndex, modifyByteLow);
+        }else {
+            int modifyByte = getPrmUserData(byteIndex);
+            val = val << (minBit);
+            int result = (modifyByte & mask) | (val);
+            setPrmUserData(byteIndex, result);
+        }
+    }
+    
 }

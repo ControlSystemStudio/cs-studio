@@ -66,7 +66,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
-import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
@@ -100,7 +99,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -393,8 +391,14 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
         topGroup.setLayout(new GridLayout(3, false));
         topGroup.setText("Module selection");
+
         makeDescGroup(comp, 1);
         
+        Text text = new Text(topGroup, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,false,false,3,1));
+        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
+        text.setText(_module.getConfigurationData());
+
         Composite filterComposite = new Composite(topGroup, SWT.NONE);
         filterComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
         GridLayout layout = new GridLayout(2, false);
@@ -592,49 +596,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         
         buildCurrentUserPrmData(currentUserParamDataComposite);
         
-//        // Current User Param Data
-//        GsdModuleModel2 gsdModuleModel = _module.getGsdModuleModel2();
-//        List<Integer> values;
-//        String cfgData = _module.getConfigurationData();
-//        if (gsdModuleModel != null) {
-//            values = gsdModuleModel.getValue();
-//            if (values != null) {
-//                if ((gsdModuleModel.getExtUserPrmDataRefMap().size() * 2 != values.size())
-//                        || (values.size() % 2 != 0)) {
-//                    if ((cfgData != null) && (gsdModuleModel.getExtUserPrmDataConst() != null)) {
-//                        String[] cfgDatas = cfgData.split(",");
-//                        List<Integer> extUserPrmDataConsts = gsdModuleModel
-//                                .getExtUserPrmDataConst();
-//                        if (cfgDatas.length < extUserPrmDataConsts.size()) {
-//                            _module.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
-//                            _module.setDirty(true);
-//                        }
-//                    }
-//                    if (_module.getConfigurationData() != null) {
-//                        String[] configurationDatas = _module.getConfigurationData().split(",");
-//                        for (KeyValuePair extUserPrmDataRef : gsdModuleModel
-//                                .getExtUserPrmDataRefMap().values()) {
-//                            Integer value = null;
-//                            Integer index = extUserPrmDataRef.getIndex();
-////                            ExtUserPrmData extUserPrmData = _module.getGSDFile()
-////                                    .getParsedGsdFileModel().getExtUserPrmData(index);
-////                            if (configurationDatas.length > index) {
-////                                value = getValue2BitMask(extUserPrmData, configurationDatas[index]);
-////                            }
-////                            makecurrentUserParamData(currentUserParamDataComposite,
-////                                                     extUserPrmData,
-////                                                     value);
-//                        }
-//                    }
-//                } else {
-//                    for (Integer val : values) {
-////                        ExtUserPrmData extUserPrmData = gsdModuleModel.getExtUserPrmDataRefMap()
-////                                .get(val);
-////                        makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, val);
-//                    }
-//                }
-//            }
-//        }
         topGroup.layout();
     }
     
@@ -652,27 +613,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         
         try {
             updateChannels();
-            
-            GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection) _moduleTypList
-                    .getSelection()).getFirstElement();
-            // XXX: Save UserPrmData ?!?
-//            if (mod != null) {
-//                _module.setModuleNumber(mod.getModuleNumber());
-//                _moduleTypList.getTable().setData(mod.getModuleNumber());
-//                
-//                List<Integer> extUserPrmDataConst = _module.getGsdModuleModel2().getExtUserPrmDataConst();
-//                for (Object prmTextObject : _prmTextCV) {
-//                    if (prmTextObject instanceof ComboViewer) {
-//                        ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-//                        handleComboViewer(extUserPrmDataConst, prmTextCV);
-//                    } else if (prmTextObject instanceof Text) {
-//                        Text prmText = (Text) prmTextObject;
-//                        extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
-//                    }
-//                }
-//                _module.setConfigurationData(Arrays.toString(extUserPrmDataConst)
-//                        .replaceAll("[\\[\\]]", ""));
-//            }
+            saveUserPrmData();
             // Document
             if (getDocumentationManageView() != null) {
                 _module.setDocuments(getDocumentationManageView().getDocuments());
@@ -681,91 +622,10 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         } catch (PersistenceException e) {
             LOG.error(e);
             DeviceDatabaseErrorDialog.open(null, "Can't save Module! Database error.", e);
+        } catch (IOException e2) {
+            DeviceDatabaseErrorDialog.open(null, "Can't save Slave.GSD File read error", e2);
+            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
         }
-    }
-    
-    /**
-     * @param extUserPrmDataConst
-     * @param prmText
-     * @return
-     */
-    @Nonnull
-    private String[] handleText(@Nonnull final String[] extUserPrmDataConst,
-                                @Nonnull final Text prmText) {
-        if (!prmText.isDisposed()) {
-            String value = (String) prmText.getData();
-            if (value != null) {
-                prmText.setText(value);
-                int val = Integer.parseInt(value);
-                return new String[] { String.format("%1$#04x", val) };
-            }
-        }
-        return extUserPrmDataConst;
-    }
-    
-    /**
-     * @param extUserPrmDataConst
-     * @param prmTextObject
-     */
-    private void handleComboViewer(final String[] extUserPrmDataConst, final ComboViewer prmTextCV) {
-        if (!prmTextCV.getCombo().isDisposed()) {
-            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-//            String extUserPrmDataRef = _module.getGsdModuleModel2()
-//                    .getExtUserPrmDataRef(input.getIndex());
-            
-            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-//            int index = ProfibusConfigXMLGenerator.getInt(extUserPrmDataRef);
-//            extUserPrmDataConst[index] = setValue2BitMask(input,
-//                                                          bitValue,
-//                                                          extUserPrmDataConst[index]);
-            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
-            prmTextCV.getCombo().setData(indexOf);
-        }
-    }
-    
-    /**
-     * Change the a value on the Bit places, that is given from the input, to the bitValue.
-     *
-     * @param ranges
-     *            give the start and end Bit position.
-     * @param bitValue
-     *            the new Value for the given Bit position.
-     * @param value
-     *            the value was changed.
-     * @return the changed value as Hex String.
-     */
-    @Nonnull
-    private String setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
-                                    @Nonnull final Integer bitValue,
-                                    @Nonnull final String value) {
-        int val = ProfibusConfigXMLGenerator.getInt(value);
-        int minBit = ranges.getMinBit();
-        int maxBit = ranges.getMaxBit();
-        if (maxBit < minBit) {
-            minBit = ranges.getMaxBit();
-            maxBit = ranges.getMinBit();
-        }
-        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
-        val = val & mask;
-        val = val | (bitValue << minBit);
-        return String.format("%1$#04x", val);
-    }
-    
-    public static int getValue2BitMask(@Nonnull final ExtUserPrmData ranges,
-                                       @Nonnull final String value) {
-        int val = ProfibusConfigXMLGenerator.getInt(value);
-        
-        int minBit = ranges.getMinBit();
-        int maxBit = ranges.getMaxBit();
-        if (maxBit < minBit) {
-            minBit = ranges.getMaxBit();
-            maxBit = ranges.getMinBit();
-        }
-        int mask = (int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit));
-        val = val & mask;
-        val = val >> minBit;
-        return val;
     }
     
     /**
@@ -836,32 +696,32 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         return _module.getSlave().getGSDFile();
     }
     
-    /**
-     *
-     * @param currentUserParamDataGroup
-     * @param extUserPrmData
-     * @param value
-     * @throws IOException 
-     */
-    private void makecurrentUserParamData(@Nonnull final Composite currentUserParamDataGroup,
-                                          @Nonnull final ExtUserPrmData extUserPrmData,
-                                          @CheckForNull final Integer value) throws IOException {
-        
-        Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
-        
-        if (extUserPrmData != null) {
-            text.setText(extUserPrmData.getText() + ":");
-            //            prmTextMap = extUserPrmData.getPrmText();
-            PrmText prmText = extUserPrmData.getPrmText();
-            if ((prmText == null)
-                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
-                _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
-            } else {
-                _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData));
-            }
-        }
-        new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
-    }
+//    /**
+//     *
+//     * @param currentUserParamDataGroup
+//     * @param extUserPrmData
+//     * @param value
+//     * @throws IOException 
+//     */
+//    private void makecurrentUserParamData(@Nonnull final Composite currentUserParamDataGroup,
+//                                          @Nonnull final ExtUserPrmData extUserPrmData,
+//                                          @CheckForNull final Integer value) throws IOException {
+//        
+//        Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
+//        
+//        if (extUserPrmData != null) {
+//            text.setText(extUserPrmData.getText() + ":");
+//            //            prmTextMap = extUserPrmData.getPrmText();
+//            PrmText prmText = extUserPrmData.getPrmText();
+//            if ((prmText == null)
+//                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
+//                _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
+//            } else {
+//                _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData));
+//            }
+//        }
+//        new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
+//    }
     
     /**
      *
@@ -1088,6 +948,26 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
     @Override
     List<Integer> getPrmUserDataList() {
         return _module.getConfigurationDataList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void setPrmUserData(@Nonnull Integer index, @Nonnull Integer value) {
+        _module.setConfigurationDataByte(index, value);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    Integer getPrmUserData(@Nonnull Integer index) {
+        if(_module.getConfigurationDataList().size()>index) {
+            return _module.getConfigurationDataList().get(index);
+        }
+        return null;
     }
     
 }

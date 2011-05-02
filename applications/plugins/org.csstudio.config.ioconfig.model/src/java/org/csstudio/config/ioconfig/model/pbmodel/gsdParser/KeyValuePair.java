@@ -77,5 +77,15 @@ public class KeyValuePair {
     public Integer getIntValue() {
         return GsdFileParser.gsdValue2Int(getValue()); 
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(_key).append(" = ").append(_value);
+        return sb.toString();
+    }
 
 }

@@ -282,6 +282,9 @@ public final class GsdFileParser {
     @Nonnull
     public static Integer gsdValue2Int(@Nonnull String value) {
         String tmpValue = value.toLowerCase().trim();
+        if(tmpValue.isEmpty()){
+            return 0;
+        }
         Integer val;
         int radix = 10;
         if (tmpValue.startsWith("0x")) {

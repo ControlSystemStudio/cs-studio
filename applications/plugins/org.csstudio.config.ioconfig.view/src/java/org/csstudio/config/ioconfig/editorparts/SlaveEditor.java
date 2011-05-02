@@ -46,7 +46,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
@@ -392,22 +391,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     //     * @param byteIndexString
     //     * @param prmTextObject
     //     */
-    //    private void handleComboViewer(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-    //                                   @Nonnull final ComboViewer prmTextCV,
-    //                                   @Nonnull final String byteIndexString) {
-    //        if (!prmTextCV.getCombo().isDisposed()) {
-    //            int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
-    //            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-    //            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-    //            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-    //            Integer newValue = setValue2BitMask(input,
-    //                                                bitValue,
-    //                                                _slave.getPrmUserDataList().get(byteIndex));
-    //            _slave.setPrmUserDataByte(byteIndex, newValue);
-    //            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
-    //            prmTextCV.getCombo().setData(indexOf);
-    //        }
-    //    }
     
     //    /**
     //     * @param extUserPrmDataConst
@@ -827,6 +810,12 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(3, false));
         
+        
+        Text text = new Text(comp, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,false,false,3,1));
+        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
+        text.setText(_slave.getPrmUserData());
+        
         makeOperationMode(comp);
         
         makeCurrentUserParamData(comp);
@@ -957,35 +946,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             _maxSlots.setBackground(getDefaultBackgroundColor());
         }
         slotFormarter = null;
-    }
-    
-    /**
-     * Change the a value on the Bit places, that is given from the input, to
-     * the bitValue.
-     * 
-     * @param ranges
-     *            give the start and end Bit position.
-     * @param bitValue
-     *            the new Value for the given Bit position.
-     * @param value
-     *            the value was changed.
-     * @return the changed value as Hex String.
-     */
-    @Nonnull
-    private Integer setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
-                                     @Nonnull final Integer bitValue,
-                                     @Nonnull final Integer value) {
-        int val = value;
-        int minBit = ranges.getMinBit();
-        int maxBit = ranges.getMaxBit();
-        if (maxBit < minBit) {
-            minBit = ranges.getMaxBit();
-            maxBit = ranges.getMinBit();
-        }
-        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
-        val = val & mask;
-        val = val | (bitValue << minBit);
-        return val;
     }
     
     @CheckForNull
@@ -1214,5 +1174,25 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     @Nonnull
     List<Integer> getPrmUserDataList() {
         return _slave.getPrmUserDataList();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void setPrmUserData(@Nonnull Integer index, @Nonnull Integer value) {
+        _slave.setPrmUserDataByte(index, value);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    Integer getPrmUserData(@Nonnull Integer index) {
+        if(_slave.getPrmUserDataList().size()>index) {
+            return _slave.getPrmUserDataList().get(index);
+        }
+        return null;
     }
 }

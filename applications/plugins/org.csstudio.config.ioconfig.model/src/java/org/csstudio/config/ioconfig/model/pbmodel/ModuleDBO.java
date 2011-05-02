@@ -136,7 +136,7 @@ public class ModuleDBO extends AbstractNodeDBO {
 
     
     public void setConfigurationData(@CheckForNull final String configurationData) {
-        if (configurationData != null) {
+        if (configurationData != null && !configurationData.trim().isEmpty()) {
             String[] split = configurationData.split(",");
             _configurationData = new ArrayList<Integer>();
             for (String value : split) {
@@ -144,6 +144,12 @@ public class ModuleDBO extends AbstractNodeDBO {
             }
         }
     }
+    
+    @Transient
+    public void setConfigurationDataByte(Integer index, Integer value) {
+        _configurationData.set(index, value);
+    }
+
     
     @Transient
     public void setConfigurationData(@Nonnull final List<Integer> configurationDataList) {
@@ -455,4 +461,5 @@ public class ModuleDBO extends AbstractNodeDBO {
         }
         return sb.toString();
     }
+
 }

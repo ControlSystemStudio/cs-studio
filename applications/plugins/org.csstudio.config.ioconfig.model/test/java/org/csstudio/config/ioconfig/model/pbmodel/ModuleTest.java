@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 
@@ -48,16 +49,21 @@ public class ModuleTest {
     @Test
     public void testConfigurationData() {
         final ModuleDBO out = new ModuleDBO();
-        assertNull(out.getConfigurationData());
+        assertEquals(out.getConfigurationData(), "");
 
         out.setConfigurationData("");
         assertEquals(out.getConfigurationData(), "");
 
         out.setConfigurationData("0x00,0x31,0xAf");
-        assertEquals(out.getConfigurationData(), "0x00,0x31,0xAf");
+        assertEquals(out.getConfigurationData(), "0x00,0x31,0xAF");
 
-        out.setConfigurationData("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
-        assertEquals(out.getConfigurationData(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
+        try {
+            out.setConfigurationData("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
+            fail("NumberFormatException not thowed!");
+        } catch (NumberFormatException e) {
+            
+        }
+//        assertEquals(out.getConfigurationData(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
     }
 
     @Ignore("???")
