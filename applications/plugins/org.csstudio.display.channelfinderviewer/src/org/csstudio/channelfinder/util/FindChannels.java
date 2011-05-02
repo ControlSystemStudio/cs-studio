@@ -56,7 +56,7 @@ public class FindChannels extends Job {
 	protected static Map<String, String> buildSearchMap(String searchPattern) {
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		String[] words = searchPattern.split("\\s");
-		if (words.length < 0) {
+		if (words.length <= 0) {
 			// ERROR
 		}
 		for (int index = 0; index < words.length; index++) {
