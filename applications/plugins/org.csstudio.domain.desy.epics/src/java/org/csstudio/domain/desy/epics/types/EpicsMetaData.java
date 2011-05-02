@@ -65,14 +65,17 @@ public class EpicsMetaData {
     }
 
     private Map<Integer, EpicsEnum> initStateMap(@Nonnull final String[] states) {
-
+        if (states.length == 0) {
+            throw new IllegalArgumentException("States array for enumerated values is empty.");
+        }
         final LinkedHashMap<Integer, EpicsEnum> stateMap = Maps.newLinkedHashMap();
         int i = 0;
         for (final String state : states) {
             // States may contain a lot of empty strings, as EPICS uses them this way
             if (!StringUtil.isBlank(state)) {
-                stateMap.put(Integer.valueOf(i), EpicsEnum.create(i++, state, null));
+                stateMap.put(Integer.valueOf(i), EpicsEnum.create(i, state, null));
             }
+            i++;
         }
         return stateMap;
     }
