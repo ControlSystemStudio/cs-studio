@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
@@ -55,7 +54,7 @@ class GroupResponse extends AbstractResponse {
 
         createBasicInfoTable(group, html);
 
-        html.h2(Messages.HTTP_Channels + " (Last write time: " + getModel().getLastWriteTime()  + ")");
+        html.h2(Messages.HTTP_CHANNELS + " (Last write time: " + getModel().getLastWriteTime()  + ")");
 
         createChannelsTable(group, html);
 
@@ -66,11 +65,11 @@ class GroupResponse extends AbstractResponse {
                                       @Nonnull final HTMLWriter html) {
         // Basic group info
         html.openTable(2, new String[] {
-            Messages.HTTP_Status
+            Messages.HTTP_STATUS
         });
         html.tableLine(new String[] {
-            Messages.HTTP_State,
-            group.isEnabled() ? Messages.HTTP_Enabled : Messages.HTTP_Disabled
+            Messages.HTTP_STATE,
+            group.isEnabled() ? Messages.HTTP_ENABLED : Messages.HTTP_DISABLED
         });
         html.closeTable();
     }
@@ -79,20 +78,20 @@ class GroupResponse extends AbstractResponse {
                                      @Nonnull final HTMLWriter html) {
         // HTML Table of all channels in the group
         html.openTable(1, new String[] {
-            Messages.HTTP_Channel,
+            Messages.HTTP_CHANNEL,
             Messages.HTTP_COLUMN_CONNECTED,
-            Messages.HTTP_CurrentValue,
+            Messages.HTTP_CURRENT_VALUE,
             Messages.HTTP_TIMESTAMP,
             Messages.HTTP_COLUMN_RECEIVEDVALUES,
-            Messages.HTTP_QueueLen,
+            Messages.HTTP_QUEUELEN,
             Messages.HTTP_COLUMN_QUEUEAVG,
             Messages.HTTP_COLUMN_QUEUEMAX
         });
         for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
             try {
 
-            final String connected = channel.isConnected() ? Messages.HTTP_Connected :
-                                                             HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
+            final String connected = channel.isConnected() ? Messages.HTTP_YES :
+                                                             HTMLWriter.makeRedText(Messages.HTTP_NO);
             final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
             final BufferStats stats = buffer.getBufferStats();
             final ISystemVariable<?> mostRecentSample = channel.getMostRecentSample();

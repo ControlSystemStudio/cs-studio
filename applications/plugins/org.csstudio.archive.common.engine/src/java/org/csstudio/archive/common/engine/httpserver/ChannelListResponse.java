@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
@@ -49,13 +48,13 @@ class ChannelListResponse extends AbstractResponse {
     private void createChannelListTable(@Nonnull final Pattern pattern,
                                         @Nonnull final HTMLWriter html) {
         html.openTable(1, new String[] {
-            Messages.HTTP_Channel,
-            Messages.HTTP_Connected,
-            Messages.HTTP_InternalState,
+            Messages.HTTP_CHANNEL,
+            Messages.HTTP_YES,
+            Messages.HTTP_INTERNAL_STATE,
             //Messages.HTTP_Mechanism,
             //Messages.HTTP_Enabled,
-            Messages.HTTP_CurrentValue,
-            Messages.HTTP_LastArchivedValue,
+            Messages.HTTP_CURRENT_VALUE,
+            Messages.HTTP_LAST_ARCHIVED_VALUE,
         });
 
         for (final ArchiveChannel<?,?> channel : getModel().getChannels()) {
@@ -70,8 +69,8 @@ class ChannelListResponse extends AbstractResponse {
             html.tableLine(new String[]
                                       {HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
                                        //Joiner.on(", ").join(groupNamesWithLinks),
-                                       channel.isConnected() ? Messages.HTTP_Connected :
-                                                               HTMLWriter.makeRedText(Messages.HTTP_Disconnected),
+                                       channel.isConnected() ? Messages.HTTP_YES :
+                                                               HTMLWriter.makeRedText(Messages.HTTP_NO),
                                        channel.getInternalState(),
                                        //channel.getMechanism(),
 //                                       channel.isEnabled() ? Messages.HTTP_Enabled :

@@ -109,7 +109,7 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version " + EngineModel.VERSION);
+        LOG.info("DESY Archive Engine Version " + EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
         final EngineHttpServer httpServer = startHttpServer();

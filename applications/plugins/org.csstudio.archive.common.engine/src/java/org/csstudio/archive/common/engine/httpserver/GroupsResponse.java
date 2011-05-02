@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.BufferStats;
@@ -43,14 +42,12 @@ class GroupsResponse extends AbstractResponse {
     }
 
     private void openTableWithHeader(@Nonnull final HTMLWriter html) {
-        html.openTable(1, new String[] {
-                                        Messages.HTTP_COLUMN_GROUP,
+        html.openTable(1, new String[] {Messages.HTTP_COLUMN_GROUP,
                                         Messages.HTTP_COLUMN_CHANNEL_COUNT,
                                         Messages.HTTP_COLUMN_CONNECTED,
                                         Messages.HTTP_COLUMN_RECEIVEDVALUES,
                                         Messages.HTTP_COLUMN_QUEUEAVG,
-                                        Messages.HTTP_COLUMN_QUEUEMAX,
-        });
+                                        Messages.HTTP_COLUMN_QUEUEMAX});
     }
 
     private void createGroupsTable(@Nonnull final HTMLWriter html) {
@@ -62,6 +59,7 @@ class GroupsResponse extends AbstractResponse {
         long totalNumOfReceivedSamples = 0;
 
         for (final ArchiveGroup group : getModel().getGroups()) {
+
             int numOfConnectedChannels = 0;
             double avgQueueLength = 0;
             int maxQueueLength = 0;
@@ -75,9 +73,7 @@ class GroupsResponse extends AbstractResponse {
                 numOfReceivedSamples += channel.getReceivedValues();
                 final BufferStats stats = channel.getSampleBuffer().getBufferStats();
                 avgQueueLength += stats.getAverageSize();
-                if (maxQueueLength < stats.getMaxSize()) {
-                    maxQueueLength = stats.getMaxSize();
-                }
+                maxQueueLength = Math.max(maxQueueLength, stats.getMaxSize());
             }
             final int numOfChannels = channels.size();
             if (numOfChannels > 0) {
@@ -87,18 +83,12 @@ class GroupsResponse extends AbstractResponse {
             totalNumOfConnectedChannels += numOfConnectedChannels;
             totalNumOfReceivedSamples += numOfReceivedSamples;
 
-            final String connected = numOfChannels == numOfConnectedChannels
-                ? Integer.toString(numOfConnectedChannels)
-                : HTMLWriter.makeRedText(Integer.toString(numOfConnectedChannels));
-
-            html.tableLine(new String[] {
-                HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
-                Integer.toString(numOfChannels),
-                connected,
-                Long.toString(numOfReceivedSamples),
-                String.format("%.1f", avgQueueLength),
-                Integer.toString(maxQueueLength),
-            });
+            html.tableLine(new String[] {HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                         Integer.toString(numOfChannels),
+                                         createChannelConnectedTableEntry(numOfConnectedChannels, numOfChannels),
+                                         Long.toString(numOfReceivedSamples),
+                                         String.format("%.1f", avgQueueLength),
+                                         Integer.toString(maxQueueLength)});
         }
 
         closeTableWithSummaryRow(html,
@@ -107,17 +97,23 @@ class GroupsResponse extends AbstractResponse {
                                  totalNumOfReceivedSamples);
     }
 
+    @Nonnull
+    private String createChannelConnectedTableEntry(final int numOfConnectedChannels,
+                                                    final int numOfChannels) {
+        final String connected = numOfChannels == numOfConnectedChannels
+            ? Integer.toString(numOfConnectedChannels)
+            : HTMLWriter.makeRedText(Integer.toString(numOfConnectedChannels));
+        return connected;
+    }
+
     private void closeTableWithSummaryRow(@Nonnull final HTMLWriter html,
                                           final int totalNumOfChannels,
                                           final int totalNumOfConnectedChannels,
                                           final long totalNumOfReceivedSamples) {
-        final String connected = totalNumOfChannels == totalNumOfConnectedChannels
-        	? Integer.toString(totalNumOfConnectedChannels)
-        	: HTMLWriter.makeRedText(Integer.toString(totalNumOfConnectedChannels));
         html.tableLine(new String[] {
             Messages.HTTP_ROW_TOTAL,
             Integer.toString(totalNumOfChannels),
-            connected,
+            createChannelConnectedTableEntry(totalNumOfConnectedChannels, totalNumOfChannels),
             Long.toString(totalNumOfReceivedSamples),
             "",
             "",

@@ -52,8 +52,12 @@ import org.csstudio.utility.pv.PVListener;
  *
  * @author bknerr
  * @since Mar 23, 2011
+ * @param <V> the basic type of the variable's value
+ * @param <T> the generic system variable type
  */
+//CHECKSTYLE OFF: AbstractClassName
 abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements PVListener {
+//CHECKSTYLE ON: AbstractClassName
 
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(DesyArchivePVListener.class);
