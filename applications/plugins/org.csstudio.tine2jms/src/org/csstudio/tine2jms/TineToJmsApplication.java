@@ -25,8 +25,10 @@ package org.csstudio.tine2jms;
 
 import java.util.Observable;
 import java.util.Observer;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.tine2jms.management.Restart;
@@ -38,15 +40,14 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * @author Markus Moeller
  *
  */
-public class TineToJmsApplication implements IApplication, Stoppable, Observer
+public class TineToJmsApplication implements IApplication, Stoppable, Observer, IGenericServiceListener<ISessionService>
 {
     /** Common logger of CSS */
     private Logger logger = null;
@@ -110,8 +111,6 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         Stop.staticInject(this);
         Restart.staticInject(this);
         
-        connectToXMPPServer();
-        
         // Wait until some time for XMPP login
         synchronized(this)
         {
@@ -164,24 +163,6 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
         return result;
     }
 
-    public void connectToXMPPServer()
-    {
-        IPreferencesService preference = Platform.getPreferencesService();
-
-        String xmppUser = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_USER, "", null);
-        String xmppPassword = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_PASSWORD, "", null);
-        String xmppServer = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_SERVER, "", null);
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        }
-        catch(Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
-    }
 
     public synchronized void update(Observable messageCreator, Object obj)
     {
@@ -226,5 +207,24 @@ public class TineToJmsApplication implements IApplication, Stoppable, Observer
     public void stop()
     {
         logger.info("Method stop() was called...");
-    }    
+    } 
+    
+    public void bindService(ISessionService sessionService) {
+        IPreferencesService preference = Platform.getPreferencesService();
+
+        String xmppUser = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_USER, "", null);
+        String xmppPassword = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_PASSWORD, "", null);
+        String xmppServer = preference.getString(TineToJmsActivator.PLUGIN_ID, PreferenceKeys.XMPP_SERVER, "", null);
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
 }

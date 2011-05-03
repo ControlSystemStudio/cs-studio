@@ -50,7 +50,7 @@ public final class StopWatch {
         /**
          * Constructor.
          */
-        private RunningStopWatch(final long startInNS) {
+        RunningStopWatch(final long startInNS) {
             _startInNS = startInNS;
         }
         public long getStartTimeInNS() {

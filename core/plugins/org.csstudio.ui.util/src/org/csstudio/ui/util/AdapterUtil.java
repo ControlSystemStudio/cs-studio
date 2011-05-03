@@ -53,12 +53,12 @@ public class AdapterUtil
 			
 			@SuppressWarnings("unchecked")
 			T[] result = (T[]) convert(strucSelection.toArray(), ReflectUtil.toArrayClass(clazz.getName()));
-			return result;
-		} else {
-			@SuppressWarnings("unchecked")
-			T[] result = (T[]) Array.newInstance(clazz, 0);
-			return result;
+			if (result != null)
+				return result;
 		}
+		@SuppressWarnings("unchecked")
+		T[] result = (T[]) Array.newInstance(clazz, 0);
+		return result;
     }
     
     /** 

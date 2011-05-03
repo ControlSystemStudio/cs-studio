@@ -70,9 +70,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleActivator;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * <p>
@@ -101,7 +101,7 @@ import org.remotercp.login.connection.HeadlessConnection;
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator
-		implements IApplication, RemotelyStoppable {
+		implements IApplication, RemotelyStoppable, IGenericServiceListener<ISessionService> {
 
 	class AusgangsKorbBearbeiter extends StepByStepProcessor {
 
@@ -187,6 +187,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
 	private static String managementPassword;
+	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 
 	/**
 	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
@@ -336,6 +338,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	{
         Stop.staticInject(this);
 
+//		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+//				this.start(context), ISessionService.class);
+		_genericServiceTracker.open();
+        
         ackMessages = new Collector();
         ackMessages.setApplication("AmsDecisionDepartment");
         ackMessages.setDescriptor("NOT acknowleged messages");
@@ -356,7 +362,6 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
 
-		connectToXMPPServer();
 
 		configureExecutionService();
 
@@ -444,34 +449,52 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		return IApplication.EXIT_OK;
 	}
 
-	/**
-	 * Connects the application to the XMPP server.
-	 *
-	 * ATTENTION: It does not use the preference service of NAMS, because the service
-	 *            uses the qualifier org.csstudio.ams.
-	 *
-	 *            Have to be changed in the future!!!
-	 */
-    public void connectToXMPPServer()
-    {
+//	/**
+//	 * Connects the application to the XMPP server.
+//	 *
+//	 * ATTENTION: It does not use the preference service of NAMS, because the service
+//	 *            uses the qualifier org.csstudio.ams.
+//	 *
+//	 *            Have to be changed in the future!!!
+//	 */
+//    public void connectToXMPPServer()
+//    {
+//        final IPreferencesService pref = Platform.getPreferencesService();
+//        final String xmppServer = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppServer", "krynfs.desy.de", null);
+//        final String xmppUser = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppUser", "anonymous", null);
+//        final String xmppPassword = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppPassword", "anonymous", null);
+//
+////        String xmppUser = "ams-department-decision";
+////        String xmppPassword = "ams";
+////        String xmppServer = "krynfs.desy.de";
+//
+//        try
+//        {
+//            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
+//            ServiceLauncher.startRemoteServices();
+//        }
+//        catch(final Exception e)
+//        {
+//            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
+//        }
+//    }
+    
+    public void bindService(ISessionService sessionService) {
         final IPreferencesService pref = Platform.getPreferencesService();
         final String xmppServer = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppServer", "krynfs.desy.de", null);
         final String xmppUser = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppUser", "anonymous", null);
         final String xmppPassword = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppPassword", "anonymous", null);
-
-//        String xmppUser = "ams-department-decision";
-//        String xmppPassword = "ams";
-//        String xmppServer = "krynfs.desy.de";
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();
-        }
-        catch(final Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
     }
 
 	private void closeMessagingConnections() {

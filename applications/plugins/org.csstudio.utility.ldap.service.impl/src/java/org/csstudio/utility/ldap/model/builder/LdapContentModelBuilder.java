@@ -44,6 +44,7 @@ import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
@@ -163,10 +164,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             currentPartialName.add(rdn);
 
             // Check whether this component exists already
-            final ISubtreeNodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
+            final INodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
             if (childByLdapName != null) {
                 if (i < fullName.size() - 1) { // another name component follows => has children
-                    parent = childByLdapName;
+                    parent = (ISubtreeNodeComponent<T>) childByLdapName;
                 }
                 continue; // YES
             }

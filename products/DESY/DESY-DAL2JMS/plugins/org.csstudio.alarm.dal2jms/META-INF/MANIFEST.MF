@@ -12,8 +12,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.dal.tine;bundle-version="1.1.0",
  javax.annotation;bundle-version="1.0.0",
  org.remotercp.common;bundle-version="1.0.0",
- org.remotercp.ecf;bundle-version="1.2.7",
- org.csstudio.domain.desy;bundle-version="1.0.0"
+ org.csstudio.domain.desy;bundle-version="1.0.0",
+ org.remotercp.service.connection;bundle-version="1.0.0",
+ org.eclipse.ecf.identity;bundle-version="3.1.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.jms,

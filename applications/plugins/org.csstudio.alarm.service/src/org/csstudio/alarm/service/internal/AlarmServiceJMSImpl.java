@@ -239,7 +239,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         @Override
         public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
             ConnectionState state = channel.getProperty().getConnectionState();
-            System.out.println("+++++ STATE: " + state);
             if (state == ConnectionState.CONNECTION_FAILED) {
                 processErroneousMessage(channel);
                 _queue.offer(channel.getUniqueName());

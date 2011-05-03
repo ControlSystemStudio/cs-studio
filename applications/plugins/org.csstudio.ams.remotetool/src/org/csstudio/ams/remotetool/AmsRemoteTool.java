@@ -52,7 +52,7 @@ import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
  * @author Markus Moeller
  *
  */
-public class AmsRemoteTool implements IApplication
+public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISessionService>
 {
     /** Command line helper */
     private CommandLine cl;
@@ -304,4 +304,23 @@ public class AmsRemoteTool implements IApplication
     {
 
     }
+    
+
+    public void bindService(ISessionService sessionService) {
+    	final String username = getValueFromPreferences(XMPP_USER, "anonymous");
+    	final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
+    	final String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
+    	
+    	try {
+			sessionService.connect(username, password, server);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
 }

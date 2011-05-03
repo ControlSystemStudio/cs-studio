@@ -40,9 +40,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.Bundle;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The alarm handler is connected and the application waits for the stop command being sent via remote command.
@@ -52,7 +51,7 @@ import org.remotercp.login.connection.HeadlessConnection;
  * @version $Revision$
  * @since 02.06.2010
  */
-public class Dal2JmsApplication implements IApplication {
+public class Dal2JmsApplication implements IApplication, IGenericServiceListener<ISessionService> {
 
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(Dal2JmsApplication.class);
@@ -84,7 +83,6 @@ public class Dal2JmsApplication implements IApplication {
         // TODO (jpenning) Singleton defined in start?!
         INSTANCE = this;
 
-        connectToXmppServer();
 
         final IAlarmService alarmService = Activator.getDefault().getAlarmService();
         if (alarmService != null) {
@@ -148,15 +146,21 @@ public class Dal2JmsApplication implements IApplication {
         return result;
     }
 
-    /**
-     * Connects to the XMPP server for remote management (ECF-based).
-     */
-    private void connectToXmppServer() throws Exception {
+    
+    public void bindService(ISessionService sessionService) {
         String username = Preference.XMPP_DAL2JMS_USER_NAME.getValue();
         String password = Preference.XMPP_DAL2JMS_PASSWORD.getValue();
         String server = Preference.XMPP_DAL2JMS_SERVER_NAME.getValue();
-
-        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-        ServiceLauncher.startRemoteServices();
+    	
+    	try {
+			sessionService.connect(username, password, server);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
     }
 }

@@ -26,6 +26,9 @@ package org.csstudio.websuite;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -40,6 +43,8 @@ public class WebSuiteActivator extends Plugin
 	
 	/** The bundle context */
 	private static BundleContext bundleContext;
+	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 	
 	/** The constructor */
 	public WebSuiteActivator() {
@@ -59,6 +64,9 @@ public class WebSuiteActivator extends Plugin
         super.start(context);
         bundleContext = context;
         plugin = this;
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
         
         CentralLogger.getInstance().info(this, PLUGIN_ID + " started.");
     }
@@ -81,5 +89,10 @@ public class WebSuiteActivator extends Plugin
 	 */
 	public static WebSuiteActivator getDefault() {
 		return plugin;
+	}
+	
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 }

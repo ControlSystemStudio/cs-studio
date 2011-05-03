@@ -35,9 +35,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * @author hrickens
@@ -45,7 +44,7 @@ import org.remotercp.login.connection.HeadlessConnection;
  * @version $Revision: 1.11 $
  * @since 01.11.2007
  */
-public final class MessageMinderStart implements IApplication {
+public final class MessageMinderStart implements IApplication, IGenericServiceListener<ISessionService> {
 
     private boolean _restart = false;
     // private boolean _run = true;
@@ -71,8 +70,6 @@ public final class MessageMinderStart implements IApplication {
         
         MessageMinderPreferenceKey.showPreferences();
         
-        connectToXMPPServer();
-
         CentralLogger.getInstance().info(this, "MessageMinder started...");
 
         _commander = new MessageGuardCommander("MessageMinder");
@@ -87,24 +84,6 @@ public final class MessageMinderStart implements IApplication {
             return EXIT_RESTART;
         }else{
             return EXIT_OK;
-        }
-    }
-
-    public void connectToXMPPServer()
-    {
-    	IPreferencesService pref = Platform.getPreferencesService();
-    	String xmppServer = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_SERVER, "krynfs.desy.de", null);
-        String xmppUser = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME, "anonymous", null);
-        String xmppPassword = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "anonymous", null);
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        }
-        catch(Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
         }
     }
 
@@ -143,4 +122,24 @@ public final class MessageMinderStart implements IApplication {
     public static MessageMinderStart getInstance() {
         return _instance;
     }
+    
+
+    public void bindService(ISessionService sessionService) {
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_USER_NAME, "anonymous", null);
+        String xmppPassword = pref.getString(MessageMinderActivator.PLUGIN_ID, MessageMinderPreferenceKey.P_STRING_XMPP_PASSWORD, "anonymous", null);
+
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
 }

@@ -21,14 +21,10 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archive.common.service.util.DataRescueException;
@@ -41,8 +37,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -56,13 +50,14 @@ public class PersistDataToFileRescuerTest {
 
     private static List<String> STATEMENTS;
 
+    // CHECKSTYLE:OFF
     @Rule
     public TemporaryFolder _folder = new TemporaryFolder();
+    // CHECKSTYLE:ON
 
     @Before
     public void setup() throws IOException {
-        //RESCUE_DIR = _folder.newFolder("test");
-        RESCUE_DIR = new File("C:\\temp");
+        RESCUE_DIR = _folder.newFolder("test");
 
         STATEMENTS = Lists.newArrayList("FIRST",
                                         "SECOND",

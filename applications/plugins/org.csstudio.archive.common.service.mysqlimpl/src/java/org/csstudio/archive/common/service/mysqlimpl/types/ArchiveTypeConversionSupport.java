@@ -276,13 +276,13 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
     @Nonnull
     public static <T> T fromArchiveString(@Nonnull final String datatype,
                                           @Nonnull final String value) throws TypeSupportException {
-        final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
-                                                                         SCALAR_TYPE_PACKAGES);
-        if (typeClass != null) {
+        try {
+            final Class<T> typeClass = BaseTypeConversionSupport.createTypeClassFromString(datatype,
+                                                                                           SCALAR_TYPE_PACKAGES);
             return fromArchiveString(typeClass, value);
+        } catch (final TypeSupportException e) {
+            return multiScalarSupport(datatype, value);
         }
-
-        return multiScalarSupport(datatype, value);
     }
 
     // CHECKSTYLE OFF : ParameterNumber

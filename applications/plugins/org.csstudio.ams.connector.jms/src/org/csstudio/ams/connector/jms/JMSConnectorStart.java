@@ -25,16 +25,17 @@ package org.csstudio.ams.connector.jms;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-// import javax.jms.Topic;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -48,11 +49,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
-public class JMSConnectorStart implements IApplication
+public class JMSConnectorStart implements IApplication, IGenericServiceListener<ISessionService>
 {
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
@@ -135,8 +135,6 @@ public class JMSConnectorStart implements IApplication
         boolean bInitedJms = false;
         lastStatus = getStatus(); // use synchronized method
 
-        connectToXMPPServer();
-        
         bStop = false;
         restart = false;
         
@@ -236,24 +234,6 @@ public class JMSConnectorStart implements IApplication
             return EXIT_OK;
     }
     
-    public void connectToXMPPServer()
-    {
-    	IPreferencesService pref = Platform.getPreferencesService();
-    	String xmppServer = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
-        String xmppUser = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
-        String xmppPassword = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
-
-        try
-        {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        }
-        catch(Exception e)
-        {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
-    }
-
     public int getStatus()
     {
         return sObj.getSynchStatus();
@@ -365,5 +345,23 @@ public class JMSConnectorStart implements IApplication
         Log.log(this, Log.INFO, "send external jms message done");
 
         return true;
+    }
+    
+    public void bindService(ISessionService sessionService) {
+    	IPreferencesService pref = Platform.getPreferencesService();
+    	String xmppServer = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
+        String xmppUser = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
+        String xmppPassword = pref.getString(JMSConnectorPlugin.PLUGIN_ID, JmsConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
     }
 }

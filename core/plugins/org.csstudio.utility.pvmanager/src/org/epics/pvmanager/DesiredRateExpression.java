@@ -48,7 +48,12 @@ public class DesiredRateExpression<T> {
      * @param defaultName the name of the expression
      */
     public DesiredRateExpression(DesiredRateExpression<?> expression, Function<T> function, String defaultName) {
-        this.recipe = expression.recipe;
+        // TODO: maybe another constructor for no parent expression?
+        if (expression == null) {
+            this.recipe = new DataRecipeBuilder();
+        } else {
+            this.recipe = expression.recipe;
+        }
         this.function = function;
         this.defaultName = defaultName;
     }
