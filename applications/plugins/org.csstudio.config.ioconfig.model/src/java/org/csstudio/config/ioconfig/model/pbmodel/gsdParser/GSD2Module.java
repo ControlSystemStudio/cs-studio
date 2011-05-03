@@ -24,12 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.HashMap;
-
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 
 
 /**
@@ -49,94 +43,94 @@ public final class GSD2Module {
         
     }
 
-    /**
-     * @param file The GSD-File from which you get the Modules. 
-     * @param slaveModel The parent SlaveModel of the Modules. 
-     * @return A List of all Modules from this GSD-File.
-     */
-    public static HashMap<Integer, GsdModuleModel> parse(final GSDFileDBO gsdFile, final GsdSlaveModel slaveModel) {
-        _generatedModule = 0;
-        String file = gsdFile.getGSDFile(); 
-        HashMap<Integer, GsdModuleModel> gsdPartModules = new HashMap<Integer, GsdModuleModel>();
-        StringReader sr = new StringReader(file);
-        BufferedReader bf = new BufferedReader(sr);
-        boolean foundModule = false;
-        boolean followModule = false;
-        boolean followExtUserPrmDataConst = false;
-        GsdModuleModel gSDModule = null;
-        String line;
-        try {
-            while((line = bf.readLine()) != null){
-//                long time = new Date().getTime();
-//                long l = time-NamedDBClass._oldTime;
-//                NamedDBClass._diagString.append("p1: \t\t"+time+"\t"+l+"\t"+slaveModel.getModelName()+"\tGSD2Module\r\n");
-//                NamedDBClass._oldTime = time;
-
-                line = line.trim();
-                if(line.length()<1||line.startsWith(";")) {
-                    continue;
-                }else if(followExtUserPrmDataConst){
-                    gSDModule.addtExtUserPrmDataConst(line);
-                    if(!line.endsWith("\\")){
-                        followExtUserPrmDataConst = false;
-                    }
-                }else if(followModule){
-                    gSDModule.addValue(line);
-                    if(!line.endsWith("\\")){
-                        followModule=false;
-                    }
-                }else if(line.startsWith("Module")){
-                    foundModule=true;
-                    followModule = false;
-                    gSDModule = new GsdModuleModel(line, slaveModel);
-                    if(line.endsWith("\\")){
-                        followModule=true;
-                    }
-                }else if(line.trim().compareToIgnoreCase("EndModule")==0){
-                    foundModule=false;
-                    int moduleNumber = gSDModule.getModuleNumber();
-                    if(moduleNumber<0) {
-                        moduleNumber = getGeneratedModuleNr();
-                        gSDModule.setModuleNumber(moduleNumber);
-                    }
-                    gsdPartModules.put(moduleNumber,gSDModule);
-                    updateGeneratedModuleNr(moduleNumber);
-                // Auswertung weiterer Parameter
-                }else if(foundModule){
-//                  Don't needed.                
-//                if(line.startsWith("Ext_Module_Prm_Data_Len")){
-//                }else
-                    if(line.startsWith("Ext_User_Prm_Data_Const")){
-                        String[] parts = line.split("=");
-                        if(parts.length>1){
-                            String value = parts[1].trim();
-                            gSDModule.setExtUserPrmDataConst(value);
-                        }
-                        if(line.endsWith("\\")){
-                            followExtUserPrmDataConst = true;
-                        }
-                    }else if(line.startsWith("Ext_User_Prm_Data_Ref")){
-                        String[] parts = line.split("[\\(,\\)]");
-                        String index = "0";
-                        if(parts.length>1){
-                            index = parts[1];
-                        }
-                        parts = line.split("=");
-                        if(parts.length>1){
-                            String value = parts[1].trim();
-                            gSDModule.addExtUserPrmDataRef(index, value);
-                        }
-                    }else{ // Module Number
-                        gSDModule.setModuleNumber(line);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return gsdPartModules;
-    }
+//    /**
+//     * @param file The GSD-File from which you get the Modules. 
+//     * @param slaveModel The parent SlaveModel of the Modules. 
+//     * @return A List of all Modules from this GSD-File.
+//     */
+//    public static HashMap<Integer, GsdModuleModel> parse(final GSDFileDBO gsdFile, final GsdSlaveModel slaveModel) {
+//        _generatedModule = 0;
+//        String file = gsdFile.getGSDFile(); 
+//        HashMap<Integer, GsdModuleModel> gsdPartModules = new HashMap<Integer, GsdModuleModel>();
+//        StringReader sr = new StringReader(file);
+//        BufferedReader bf = new BufferedReader(sr);
+//        boolean foundModule = false;
+//        boolean followModule = false;
+//        boolean followExtUserPrmDataConst = false;
+//        GsdModuleModel gSDModule = null;
+//        String line;
+//        try {
+//            while((line = bf.readLine()) != null){
+////                long time = new Date().getTime();
+////                long l = time-NamedDBClass._oldTime;
+////                NamedDBClass._diagString.append("p1: \t\t"+time+"\t"+l+"\t"+slaveModel.getModelName()+"\tGSD2Module\r\n");
+////                NamedDBClass._oldTime = time;
+//
+//                line = line.trim();
+//                if(line.length()<1||line.startsWith(";")) {
+//                    continue;
+//                }else if(followExtUserPrmDataConst){
+//                    gSDModule.addtExtUserPrmDataConst(line);
+//                    if(!line.endsWith("\\")){
+//                        followExtUserPrmDataConst = false;
+//                    }
+//                }else if(followModule){
+//                    gSDModule.addValue(line);
+//                    if(!line.endsWith("\\")){
+//                        followModule=false;
+//                    }
+//                }else if(line.startsWith("Module")){
+//                    foundModule=true;
+//                    followModule = false;
+//                    gSDModule = new GsdModuleModel(line, slaveModel);
+//                    if(line.endsWith("\\")){
+//                        followModule=true;
+//                    }
+//                }else if(line.trim().compareToIgnoreCase("EndModule")==0){
+//                    foundModule=false;
+//                    int moduleNumber = gSDModule.getModuleNumber();
+//                    if(moduleNumber<0) {
+//                        moduleNumber = getGeneratedModuleNr();
+//                        gSDModule.setModuleNumber(moduleNumber);
+//                    }
+//                    gsdPartModules.put(moduleNumber,gSDModule);
+//                    updateGeneratedModuleNr(moduleNumber);
+//                // Auswertung weiterer Parameter
+//                }else if(foundModule){
+////                  Don't needed.                
+////                if(line.startsWith("Ext_Module_Prm_Data_Len")){
+////                }else
+//                    if(line.startsWith("Ext_User_Prm_Data_Const")){
+//                        String[] parts = line.split("=");
+//                        if(parts.length>1){
+//                            String value = parts[1].trim();
+//                            gSDModule.setExtUserPrmDataConst(value);
+//                        }
+//                        if(line.endsWith("\\")){
+//                            followExtUserPrmDataConst = true;
+//                        }
+//                    }else if(line.startsWith("Ext_User_Prm_Data_Ref")){
+//                        String[] parts = line.split("[\\(,\\)]");
+//                        String index = "0";
+//                        if(parts.length>1){
+//                            index = parts[1];
+//                        }
+//                        parts = line.split("=");
+//                        if(parts.length>1){
+//                            String value = parts[1].trim();
+//                            gSDModule.addExtUserPrmDataRef(index, value);
+//                        }
+//                    }else{ // Module Number
+//                        gSDModule.setModuleNumber(line);
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        return gsdPartModules;
+//    }
 
     /**
      * @param moduleNumber

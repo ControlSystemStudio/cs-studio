@@ -26,9 +26,10 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -46,7 +47,6 @@ import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.hibernate.annotations.BatchSize;
@@ -316,20 +316,25 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param minTsdr
      *            set Min. station delay time.
      */
-    public void setMinTsdr(final int minTsdr) {
-        int subNetMinTsdr = -1;
-        if ((getProfibusDPMaster() != null) && (getProfibusDPMaster().getProfibusSubnet() != null)) {
-            subNetMinTsdr = getProfibusDPMaster().getProfibusSubnet().getMinTsdr();
+    public void setMinTsdr(@Nonnull final Integer minTsdr) {
+        SortedSet<Integer> minTsdrSet = new TreeSet<Integer>();
+        minTsdrSet.add(minTsdr);
+        Integer minSlaveIntervall;
+        try {
+            GSDFileDBO gsdFile = getGSDFile();
+            if (gsdFile != null) {
+                ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
+                if (parsedGsdFileModel != null) {
+                    minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
+                    if (minSlaveIntervall != null) {
+                        minTsdrSet.add(minSlaveIntervall);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // no min Slave Intervall!
         }
-        if (getGSDSlaveData() == null) {
-            _minTsdr = (short) minTsdr;
-            return;
-        }
-        int[] minTsdrs = new int[] { getGSDSlaveData().getMinSlaveIntervall(), subNetMinTsdr,
-                minTsdr };
-        Arrays.sort(minTsdrs);
-        
-        _minTsdr = (short) minTsdrs[2];
+        _minTsdr = minTsdrSet.last().shortValue();
     }
     
     public int getGroupIdent() {
@@ -339,7 +344,7 @@ public class SlaveDBO extends AbstractNodeDBO {
     public void setGroupIdent(final int groupIdent) {
         _groupIdent = (short) groupIdent;
     }
-
+    
     @Nonnull
     public String getPrmUserData() {
         return GsdFileParser.intList2HexString(_prmUserDataList);
@@ -385,7 +390,7 @@ public class SlaveDBO extends AbstractNodeDBO {
             return false;
         }
         
-//        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
+        //        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
         ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         
         /*
@@ -419,12 +424,12 @@ public class SlaveDBO extends AbstractNodeDBO {
             /*
              * Basic - DP / FDL Access
              */
-//            /*
-//             * Modules
-//             */
-//            if (!parsedGsdFileModel.hasModule()) {
-//                parsedGsdFileModel.setGsdModuleList(GSD2Module.parse(gsdFile, parsedGsdFileModel));
-//            }
+            //            /*
+            //             * Modules
+            //             */
+            //            if (!parsedGsdFileModel.hasModule()) {
+            //                parsedGsdFileModel.setGsdModuleList(GSD2Module.parse(gsdFile, parsedGsdFileModel));
+            //            }
             
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
             if (_maxSize < 1) {
@@ -460,20 +465,6 @@ public class SlaveDBO extends AbstractNodeDBO {
         return _iDNo;
     }
     
-    @Transient
-    public GsdSlaveModel getGSDSlaveData() {
-        if ((_gsdSlaveModel == null) && (getGSDFile() != null)) {
-            try {
-                fill();
-            } catch (IOException e) {
-                // TODO Die Methode wird später überflüssig. 
-                e.printStackTrace();
-            }
-        }
-//        return _gsdSlaveModel;
-        return null;
-    }
-    
     /**
      * @param slaveKeywords
      */
@@ -500,7 +491,7 @@ public class SlaveDBO extends AbstractNodeDBO {
                 throw new PersistenceException(e);
             }
             //TODO: MUss das wieder gesetzt werden?
-//            copy.setGSDSlaveData(getGSDSlaveData());
+            //            copy.setGSDSlaveData(getGSDSlaveData());
             copy.setMinTsdr(getMinTsdr());
             copy.setModelName(getModelName());
             copy.setPrmUserData(getPrmUserData());

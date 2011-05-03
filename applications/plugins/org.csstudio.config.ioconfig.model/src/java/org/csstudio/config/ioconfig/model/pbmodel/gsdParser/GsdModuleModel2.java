@@ -97,4 +97,9 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
     public ExtUserPrmData getExtUserPrmData(@Nonnull Integer index) {
         return getParent().getExtUserPrmData(index);
     }
+    
+    @Override
+    public final String toString() {
+        return getName();
+    }
 }

@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -89,8 +88,8 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      */
     @Override
     public final String getText(@Nonnull final Object element) {
-        if (element instanceof GsdModuleModel) {
-            return ((GsdModuleModel) element).getModuleNumber() + " : " + element.toString();
+        if (element instanceof GsdModuleModel2) {
+            return ((GsdModuleModel2) element).getModuleNumber() + " : " + element.toString();
         }
         return element.toString();
     }
@@ -122,8 +121,8 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      */
     @Override
     public final Color getBackground(@Nullable final Object element) {
-        if (element instanceof GsdModuleModel) {
-            GsdModuleModel gmm = (GsdModuleModel) element;
+        if (element instanceof GsdModuleModel2) {
+            GsdModuleModel2 gmm = (GsdModuleModel2) element;
             int selectedModuleNo = gmm.getModuleNumber();
             GSDModuleDBO module = _file.getGSDModule(selectedModuleNo);
             if (module != null) {

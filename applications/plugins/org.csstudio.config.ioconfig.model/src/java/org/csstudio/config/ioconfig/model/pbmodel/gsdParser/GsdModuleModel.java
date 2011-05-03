@@ -24,16 +24,7 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Formatter;
 import java.util.HashMap;
-
-import javax.annotation.Nonnull;
-
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * The Model for a Profibus Module created from a GSD File.
@@ -53,7 +44,7 @@ public class GsdModuleModel {
     /**
      * The SLAVE_CFG_DATA value.
      */
-    private String _value = "";
+    private final String _value = "";
 
     /**
      * The UserPrmDataConst Value.<br>
@@ -64,12 +55,12 @@ public class GsdModuleModel {
     /**
      * The number of the Module.
      */
-    private int _moduleNumber = -1;
+    private final int _moduleNumber = -1;
 
     /**
      * The parent gsd Slave Model.
      */
-    private final GsdSlaveModel _gsdSlaveModel;
+//    private final GsdSlaveModel _gsdSlaveModel;
     
     /**
      * The map of all ext User Prm Data Ref.<br>
@@ -93,171 +84,171 @@ public class GsdModuleModel {
      * EndModule<br>
      */
 
-    /**
-     * Default Constructor.
-     * Set the Name and Value from the line.
-     * 
-     * @param line
-     *            the first gsd file line for a module, contain the name and value. 
-     * @param slaveModel the parent {@link GsdSlaveModel}.
-     */
-    public GsdModuleModel(final String line, final GsdSlaveModel slaveModel) {
-        _gsdSlaveModel = slaveModel;
-        String[] lineParts = line.split("[\";]");
-        if (lineParts.length > 2) {
-            setName(lineParts[1].trim());
-            setValue(lineParts[2]);
-        }
+//    /**
+//     * Default Constructor.
+//     * Set the Name and Value from the line.
+//     * 
+//     * @param line
+//     *            the first gsd file line for a module, contain the name and value. 
+//     * @param slaveModel the parent {@link GsdSlaveModel}.
+//     */
+//    public GsdModuleModel(final String line, final GsdSlaveModel slaveModel) {
+//        _gsdSlaveModel = slaveModel;
+////        String[] lineParts = line.split("[\";]");
+////        if (lineParts.length > 2) {
+////            setName(lineParts[1].trim());
+////            setValue(lineParts[2]);
+////        }
+//
+//    }
 
-    }
-
-    /**
-     * 
-     * @return the Name of this Module.
-     */
-    public final String getName() {
-        return _name;
-    }
+//    /**
+//     * 
+//     * @return the Name of this Module.
+//     */
+//    public final String getName() {
+//        return _name;
+//    }
     
-    /**
-     * @param name The name of the Module.
-     */
-    public final void setName(final String name) {
-        _name = name;
-    }
+//    /**
+//     * @param name The name of the Module.
+//     */
+//    public final void setName(final String name) {
+//        _name = name;
+//    }
 
-    /**
-     * @return the Value for the SLAVE_CFG_DATA.
-     */
-    public final String getValue() {
-        return _value;
-    }
+//    /**
+//     * @return the Value for the SLAVE_CFG_DATA.
+//     */
+//    public final String getValue() {
+//        return _value;
+//    }
     
-    /**
-     * @param value set the Value for the SLAVE_CFG_DATA.
-     */
-    public final void setValue(final String value) {
-        _value = value.replaceAll("\\\\", "").trim();
-    }
+//    /**
+//     * @param value set the Value for the SLAVE_CFG_DATA.
+//     */
+//    public final void setValue(final String value) {
+//        _value = value.replaceAll("\\\\", "").trim();
+//    }
+//
+//    /**
+//     * 
+//     * @param value the Value for the SLAVE_CFG_DATA.
+//     */
+//    public final void addValue(final String value) {
+//        _value = _value.concat(value.replaceAll("\\\\", "").trim());
+//    }
+//
+//    /**
+//     * 
+//     * @return the number of this Module.
+//     */
+//    public final int getModuleNumber() {
+//        return _moduleNumber;
+//    }
+//    
+//    /**
+//     * @param moduleNumber
+//     *            the number of this Module.
+//     */
+//    public final void setModuleNumber(final int moduleNumber) {
+//        _moduleNumber = moduleNumber;
+//    }
+//    
+//    public final void setModuleNumber(final String moduleNumber) {
+//        try {
+//            _moduleNumber = Integer.parseInt(moduleNumber);
+//        } catch (NumberFormatException nfe) {
+//        }
+//
+//    }
 
-    /**
-     * 
-     * @param value the Value for the SLAVE_CFG_DATA.
-     */
-    public final void addValue(final String value) {
-        _value = _value.concat(value.replaceAll("\\\\", "").trim());
-    }
+//    /**
+//     * 
+//     * @return the ExtUserPrmDataConst exclusive the modification.
+//     */
+//    public final String getExtUserPrmDataConst() {
+//        if(_extUserPrmDataConst==null) {
+//            return "";
+//        }
+//        return _extUserPrmDataConst;
+//    }
 
-    /**
-     * 
-     * @return the number of this Module.
-     */
-    public final int getModuleNumber() {
-        return _moduleNumber;
-    }
+//    /**
+//     * @return the ExtUserPrmDataConst inclusive the modification.
+//     */
+//    public final String getModiExtUserPrmDataConst() {
+//        if (getExtUserPrmDataConst() != null) {
+//            String[] split = getExtUserPrmDataConst().split(",");
+//            for (int bytePosAbs : _modifications.keySet()) {
+//                Integer[] modis = _modifications.get(bytePosAbs);
+//                int value = modis[3];
+//                int bytePos = modis[0];
+//                int low = modis[1];
+//                int high = modis[2];
+//                int mask = ~((int)Math.pow(2, high+1) - (int)Math.pow(2, low));
+//                int radix = 10;
+//                if(high>8&&high<16){
+//                    if (bytePos+1 < split.length) {
+//                        String byteValue = split[bytePos+1];
+//                        byteValue = byteValue.concat(split[bytePos]);
+//                        if (byteValue.startsWith("0x")) {
+//                            byteValue = byteValue.replaceAll("0x", "");
+//                            radix = 16;
+//                        }
+//                        int parseInt = Integer.parseInt(byteValue, radix);
+//                        value = value << (low);
+//                        int result = (parseInt & mask) | (value);
+//                        Formatter f = new Formatter();
+//                        f.format("%04x", result);
+//                        String tmp = f.toString();
+//                        split[bytePos+1] = "0x"+tmp.substring(0,1);
+//                        split[bytePos]   = "0x"+tmp.substring(2,3);
+//                    }
+//                }else{
+//                    if (bytePos < split.length) {
+//                        String byteValue = split[bytePos];
+//                        if (byteValue.startsWith("0x")) {
+//                            byteValue = byteValue.substring(2);
+//                            radix = 16;
+//                        }
+//                        int parseInt = Integer.parseInt(byteValue, radix);
+//                        value = value << (low);
+//                        int result = (parseInt & mask) | (value);
+//                        Formatter f = new Formatter();
+//                        f.format("%#04x", result);
+//                        split[bytePos] = f.toString();
+//                    }
+//                }
+//            }
+//            String string = Arrays.toString(split);
+//            string = string.substring(1, string.length() - 1);
+//            return string;
+//        }
+//        return "";
+//    }
     
-    /**
-     * @param moduleNumber
-     *            the number of this Module.
-     */
-    public final void setModuleNumber(final int moduleNumber) {
-        _moduleNumber = moduleNumber;
-    }
-    
-    public final void setModuleNumber(final String moduleNumber) {
-        try {
-            _moduleNumber = Integer.parseInt(moduleNumber);
-        } catch (NumberFormatException nfe) {
-        }
+//    /**
+//     * @param extUserPrmDataConst
+//     *            the ExtUserPrmDataConst value.
+//     */
+//    public final void setExtUserPrmDataConst(final String extUserPrmDataConst) {
+//        _extUserPrmDataConst = extUserPrmDataConst.replaceAll("\\\\", "").trim();
+//    }
+//
+//    /**
+//     * Extend the extUserPrmDataConst.
+//     * @param extUserPrmDataConst
+//     *            the attachment ExtUserPrmDataConst value.
+//     */
+//    public final void addtExtUserPrmDataConst(final String extUserPrmDataConst) {
+//        _extUserPrmDataConst = _extUserPrmDataConst.concat(extUserPrmDataConst.replaceAll("\\\\",
+//                "").trim());
+//    }
 
-    }
-
-    /**
-     * 
-     * @return the ExtUserPrmDataConst exclusive the modification.
-     */
-    public final String getExtUserPrmDataConst() {
-        if(_extUserPrmDataConst==null) {
-            return "";
-        }
-        return _extUserPrmDataConst;
-    }
-
-    /**
-     * @return the ExtUserPrmDataConst inclusive the modification.
-     */
-    public final String getModiExtUserPrmDataConst() {
-        if (getExtUserPrmDataConst() != null) {
-            String[] split = getExtUserPrmDataConst().split(",");
-            for (int bytePosAbs : _modifications.keySet()) {
-                Integer[] modis = _modifications.get(bytePosAbs);
-                int value = modis[3];
-                int bytePos = modis[0];
-                int low = modis[1];
-                int high = modis[2];
-                int mask = ~((int)Math.pow(2, high+1) - (int)Math.pow(2, low));
-                int radix = 10;
-                if(high>8&&high<16){
-                    if (bytePos+1 < split.length) {
-                        String byteValue = split[bytePos+1];
-                        byteValue = byteValue.concat(split[bytePos]);
-                        if (byteValue.startsWith("0x")) {
-                            byteValue = byteValue.replaceAll("0x", "");
-                            radix = 16;
-                        }
-                        int parseInt = Integer.parseInt(byteValue, radix);
-                        value = value << (low);
-                        int result = (parseInt & mask) | (value);
-                        Formatter f = new Formatter();
-                        f.format("%04x", result);
-                        String tmp = f.toString();
-                        split[bytePos+1] = "0x"+tmp.substring(0,1);
-                        split[bytePos]   = "0x"+tmp.substring(2,3);
-                    }
-                }else{
-                    if (bytePos < split.length) {
-                        String byteValue = split[bytePos];
-                        if (byteValue.startsWith("0x")) {
-                            byteValue = byteValue.substring(2);
-                            radix = 16;
-                        }
-                        int parseInt = Integer.parseInt(byteValue, radix);
-                        value = value << (low);
-                        int result = (parseInt & mask) | (value);
-                        Formatter f = new Formatter();
-                        f.format("%#04x", result);
-                        split[bytePos] = f.toString();
-                    }
-                }
-            }
-            String string = Arrays.toString(split);
-            string = string.substring(1, string.length() - 1);
-            return string;
-        }
-        return "";
-    }
-    
-    /**
-     * @param extUserPrmDataConst
-     *            the ExtUserPrmDataConst value.
-     */
-    public final void setExtUserPrmDataConst(final String extUserPrmDataConst) {
-        _extUserPrmDataConst = extUserPrmDataConst.replaceAll("\\\\", "").trim();
-    }
-
-    /**
-     * Extend the extUserPrmDataConst.
-     * @param extUserPrmDataConst
-     *            the attachment ExtUserPrmDataConst value.
-     */
-    public final void addtExtUserPrmDataConst(final String extUserPrmDataConst) {
-        _extUserPrmDataConst = _extUserPrmDataConst.concat(extUserPrmDataConst.replaceAll("\\\\",
-                "").trim());
-    }
-
-    public ExtUserPrmData getExtUserPrmData(String value) {
-        return _gsdSlaveModel.getExtUserPrmData(value);
-    }
+//    public ExtUserPrmData getExtUserPrmData(String value) {
+//        return _gsdSlaveModel.getExtUserPrmData(value);
+//    }
 
     /**
      * @param bytePos
@@ -265,102 +256,102 @@ public class GsdModuleModel {
      * @param reference
      *            the reference number to the extended user parameter data.
      */
-    public void addExtUserPrmDataRef(final String bytePos, final String reference) {
-        _extUserPrmDataRefMap.put(reference, bytePos);
-    }
+//    public void addExtUserPrmDataRef(final String bytePos, final String reference) {
+//        _extUserPrmDataRefMap.put(reference, bytePos);
+//    }
+//    
+//    public final String getExtUserPrmDataRef(String reference) {
+//        return _extUserPrmDataRefMap.get(reference);
+//    }
     
-    public final String getExtUserPrmDataRef(String reference) {
-        return _extUserPrmDataRefMap.get(reference);
-    }
+//    @Nonnull
+//    public ArrayList<ExtUserPrmData> getAllExtUserPrmDataRef() {
+//        ArrayList<ExtUserPrmData> arrayList = new ArrayList<ExtUserPrmData>();
+//        for (String key : _extUserPrmDataRefMap.keySet()) {
+//            arrayList.add(_gsdSlaveModel.getExtUserPrmDataMap().get(key));
+//        }
+//        Collections.sort(arrayList, new Comparator<ExtUserPrmData>() {
+//
+//            @Override
+//            public int compare(ExtUserPrmData arg0, ExtUserPrmData arg1) {
+//                try {
+//                return arg0.getIndex() - arg1.getIndex();
+//                }catch (ArrayIndexOutOfBoundsException e) {
+//                    CentralLogger.getInstance().warn(this, "arg0: +"+arg0+"\t"+arg0.getIndex());
+//                    CentralLogger.getInstance().warn(this, "arg1: +"+arg1+"\t"+arg1.getIndex());
+//                    e.printStackTrace();
+//                    throw e;
+//                }
+//            }
+//
+//        });
+//        return arrayList;
+//    }
+//
+//    public final HashMap<Integer, PrmTextItem> getPrmText(String prmTextRef) {
+//        return _gsdSlaveModel.getPrmText(prmTextRef);
+//    }
+//
+//    /**
+//     * Add a modification for the ExtUserPrmDataConst. 
+//     * @param bytePos The byte which a modified. 
+//     * @param bitMin  The lowest bits of the byte that are modified.
+//     * @param bitMax  The highest bits of the byte that are modified.
+//     * @param value the new value of the bits that are modified.
+//     */
+//    public final void addModify(final int bytePos, final int bitMin, final int bitMax,
+//            final int value) {
+//        int startBit = bytePos * 8 + bitMin;
+//        _modifications.put(startBit, new Integer[] { bytePos, bitMin, bitMax, value });
+//    }
     
-    @Nonnull
-    public ArrayList<ExtUserPrmData> getAllExtUserPrmDataRef() {
-        ArrayList<ExtUserPrmData> arrayList = new ArrayList<ExtUserPrmData>();
-        for (String key : _extUserPrmDataRefMap.keySet()) {
-            arrayList.add(_gsdSlaveModel.getExtUserPrmDataMap().get(key));
-        }
-        Collections.sort(arrayList, new Comparator<ExtUserPrmData>() {
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public final String toString() {
+//        return getName();
+//    }
 
-            @Override
-            public int compare(ExtUserPrmData arg0, ExtUserPrmData arg1) {
-                try {
-                return arg0.getIndex() - arg1.getIndex();
-                }catch (ArrayIndexOutOfBoundsException e) {
-                    CentralLogger.getInstance().warn(this, "arg0: +"+arg0+"\t"+arg0.getIndex());
-                    CentralLogger.getInstance().warn(this, "arg1: +"+arg1+"\t"+arg1.getIndex());
-                    e.printStackTrace();
-                    throw e;
-                }
-            }
-
-        });
-        return arrayList;
-    }
-
-    public final HashMap<Integer, PrmTextItem> getPrmText(String prmTextRef) {
-        return _gsdSlaveModel.getPrmText(prmTextRef);
-    }
-
-    /**
-     * Add a modification for the ExtUserPrmDataConst. 
-     * @param bytePos The byte which a modified. 
-     * @param bitMin  The lowest bits of the byte that are modified.
-     * @param bitMax  The highest bits of the byte that are modified.
-     * @param value the new value of the bits that are modified.
-     */
-    public final void addModify(final int bytePos, final int bitMin, final int bitMax,
-            final int value) {
-        int startBit = bytePos * 8 + bitMin;
-        _modifications.put(startBit, new Integer[] { bytePos, bitMin, bitMax, value });
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final String toString() {
-        return getName();
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((_gsdSlaveModel == null) ? 0 : _gsdSlaveModel.hashCode());
-        result = prime * result + _moduleNumber;
-        return result;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof GsdModuleModel)) {
-            return false;
-        }
-        GsdModuleModel other = (GsdModuleModel) obj;
-        if (_gsdSlaveModel == null) {
-            if (other._gsdSlaveModel != null) {
-                return false;
-            }
-        } else if (!_gsdSlaveModel.equals(other._gsdSlaveModel)) {
-            return false;
-        }
-        if (_moduleNumber != other._moduleNumber) {
-            return false;
-        }
-        return true;
-    }
+//    /* (non-Javadoc)
+//     * @see java.lang.Object#hashCode()
+//     */
+//    @Override
+//    public int hashCode() {
+//        final int prime = 31;
+//        int result = 1;
+//        result = prime * result + ((_gsdSlaveModel == null) ? 0 : _gsdSlaveModel.hashCode());
+//        result = prime * result + _moduleNumber;
+//        return result;
+//    }
+//
+//    /* (non-Javadoc)
+//     * @see java.lang.Object#equals(java.lang.Object)
+//     */
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (obj == null) {
+//            return false;
+//        }
+//        if (!(obj instanceof GsdModuleModel)) {
+//            return false;
+//        }
+//        GsdModuleModel other = (GsdModuleModel) obj;
+//        if (_gsdSlaveModel == null) {
+//            if (other._gsdSlaveModel != null) {
+//                return false;
+//            }
+//        } else if (!_gsdSlaveModel.equals(other._gsdSlaveModel)) {
+//            return false;
+//        }
+//        if (_moduleNumber != other._moduleNumber) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     
 }

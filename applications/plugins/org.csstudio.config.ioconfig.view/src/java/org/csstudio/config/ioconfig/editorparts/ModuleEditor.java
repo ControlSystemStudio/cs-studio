@@ -37,7 +37,6 @@ package org.csstudio.config.ioconfig.editorparts;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -290,8 +289,8 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         @SuppressWarnings("unchecked")
         @CheckForNull
         public final Object[] getElements(@Nullable final Object arg0) {
-            if (arg0 instanceof HashMap) {
-                HashMap<Integer, GsdModuleModel2> map = (HashMap<Integer, GsdModuleModel2>) arg0;
+            if (arg0 instanceof Map) {
+                Map<Integer, GsdModuleModel2> map = (Map<Integer, GsdModuleModel2>) arg0;
                 return map.values().toArray(new GsdModuleModel2[0]);
             }
             return null;

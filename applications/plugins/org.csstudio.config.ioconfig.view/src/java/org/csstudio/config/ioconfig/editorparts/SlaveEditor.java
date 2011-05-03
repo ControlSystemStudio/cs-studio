@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -46,10 +45,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -265,9 +260,9 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             _slave.setSortIndexNonHibernate(stationAddress);
             _slave.setFdlAddress(stationAddress);
             _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
-            short minTsdr = 0;
+            int minTsdr = 0;
             try {
-                minTsdr = Short.parseShort(_minStationDelayText.getText());
+                minTsdr = Integer.parseInt(_minStationDelayText.getText());
                 short wdFact1 = Short.parseShort(_watchDogText1.getText());
                 short wdFact2 = Short.parseShort(_watchDogText2.getText());
                 _watchDogText1.setData(_watchDogText1.getText());
@@ -315,37 +310,37 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         }
         
         _gsdFile = gsdFile;
-        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
+//        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
         ParsedGsdFileModel parsedGsdFileModel;
         try {
             parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
             
             // setGSDData
-            HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
-            slaveModel.setGsdModuleList(moduleList);
+//            HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
+//            slaveModel.setGsdModuleList(moduleList);
 //            _slave.setGSDSlaveData(slaveModel);
             _slave.setGSDSlaveData(parsedGsdFileModel);
             
             // Head
-            getHeaderField(HeaderFields.VERSION).setText(slaveModel.getGsdRevision() + "");
+            getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getGsdRevision() + "");
             
             // Basic - Slave Discription (read only)
-            _vendorText.setText(slaveModel.getVendorName());
+            _vendorText.setText(parsedGsdFileModel.getVendorName());
             _iDNo.setText(String.format("0x%04X", parsedGsdFileModel.getIdentNumber()));
-            _revisionsText.setText(slaveModel.getRevision());
+            _revisionsText.setText(parsedGsdFileModel.getRevision());
             
             // Set all GSD-File Data to Slave.
             _slave.setMinTsdr(_slave.getMinTsdr());
-            _slave.setModelName(slaveModel.getModelName());
+            _slave.setModelName(parsedGsdFileModel.getModelName());
             if (_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
                 //            _slave.setPrmUserData(slaveModel.getUserPrmData());
                 _slave.setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             }
             _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
-            _slave.setRevision(slaveModel.getRevision());
+            _slave.setRevision(parsedGsdFileModel.getRevision());
             
             // Modules
-            _maxSize = slaveModel.getMaxModule();
+            _maxSize = parsedGsdFileModel.getMaxModule();
             setSlots();
             // Settings - USER PRM MODE
             ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();

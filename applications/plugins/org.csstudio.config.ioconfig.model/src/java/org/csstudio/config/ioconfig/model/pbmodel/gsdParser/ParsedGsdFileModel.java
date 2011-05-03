@@ -107,4 +107,12 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         }
         return maxModule;
     }
+
+    /**
+     * @return
+     */
+    public boolean isSalve() {
+        //TODO: is Slave auswerten!
+        return false;
+    }
 }

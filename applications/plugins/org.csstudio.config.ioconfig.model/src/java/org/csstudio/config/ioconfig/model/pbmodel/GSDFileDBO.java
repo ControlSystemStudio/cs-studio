@@ -50,7 +50,6 @@ import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -102,7 +101,7 @@ public class GSDFileDBO {
 
 	@Column(nullable = true)
 	public Boolean isSlave() {
-		return _slave;
+	    return _parsedGsdFileModel!=null && _parsedGsdFileModel.isSalve();
 	}
 
 	@Transient
@@ -236,9 +235,6 @@ public class GSDFileDBO {
 	 */
 	@Transient
 	private void paresFile() {
-		GsdSlaveModel slave = GsdFactory.makeGsdSlave(this);
-		setSlave((slave != null) && (slave.getType() == GSDFileTypes.Slave));
-		slave = null;
 		GsdMasterModel master = GsdFactory.makeGsdMaster(this.getGSDFile());
 		setMaster((master != null)
 				&& (master.getType() == GSDFileTypes.Master));
