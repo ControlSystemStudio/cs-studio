@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="PVTable Editor"
+            extensions="css-pvtable"
+            icon="icons/sample.gif"
+            class="org.csstudio.display.pvmanager.pvtable.editors.PVTableEditor"
+            id="org.csstudio.display.pvmanager.pvtable.editors.PVTableEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.display.pvmanager.open.empty.pvtable"
+               label="Open Empty PVTable"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.display.pvmanager.open.new.pvtable"
+               label="Open New PVTable"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.display.pvmanager.pvtable.handlers.OpenEmptyPVTable"
+            id="org.csstudio.display.pvmanager.open.empty.pvtable"
+            name="Open Empty PVTable">
+      </command>
+      <command
+            defaultHandler="org.csstudio.display.pvmanager.pvtable.handlers.OpenNewPVTable"
+            id="org.csstudio.display.pvmanager.open.new.pvtable"
+            name="Open New PVTable">
+      </command>
+   </extension>
+
+</plugin>
