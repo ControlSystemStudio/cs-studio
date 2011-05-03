@@ -138,9 +138,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         setKeywords(keywords);
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getId()
-     */
     @Override
     @Id
     @Column(length = 100)
@@ -213,11 +210,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _image = Hibernate.createBlob(imageAsByteArray);
     }
     
-    
-
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getCreatedDate()
-     */
     @Override
     @Column(name = "CREATED_DATE")
     @CheckForNull
@@ -233,9 +225,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _createdDate = createdDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getAccountname()
-     */
     @Override
     @CheckForNull
     @Column(length = 30)
@@ -247,9 +236,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _accountname = accountname;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getEntrydate()
-     */
     @Override
     @CheckForNull
     public Date getEntrydate() {
@@ -260,9 +246,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _entrydate = entrydate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLogseverity()
-     */
     @Override
     @CheckForNull
     @Column(length = 16)
@@ -274,9 +257,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _logseverity = logseverity;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkId()
-     */
     @Override
     @Column(name = "LINK_ID", length = 100)
     @CheckForNull
@@ -288,9 +268,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _linkId = linkId;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getSubject()
-     */
     @Override
     @Column(length = 200)
     @CheckForNull
@@ -303,9 +280,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getDesclong()
-     */
     @Override
     @Column(length = 4000)
     public String getDesclong() {
@@ -316,9 +290,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _desclong = desclong;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLinkForward()
-     */
     @Override
     @Column(name = "Link_Forward", length = 200)
     public String getLinkForward() {
@@ -329,9 +300,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _linkForward = linkForward;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getErroridentifyer()
-     */
     @Override
     @CheckForNull
     @Column(length = 30)
@@ -343,9 +311,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _erroridentifyer = erroridentifyer;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getDeleteDate()
-     */
     @Override
     @Column(name = "DELETE_DATE")
     @CheckForNull
@@ -357,9 +322,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _deleteDate = deleteDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getUpdateDate()
-     */
     @Override
     @Column(name = "UPDATE_DATE")
     public Date getUpdateDate() {
@@ -370,9 +332,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _updateDate = updateDate;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getLocation()
-     */
     @Override
     @Column(length = 30)
     public String getLocation() {
@@ -383,9 +342,6 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         _location = location;
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.model.IDocument#getKeywords()
-     */
     @Override
     @Column(length = 200)
     public String getKeywords() {

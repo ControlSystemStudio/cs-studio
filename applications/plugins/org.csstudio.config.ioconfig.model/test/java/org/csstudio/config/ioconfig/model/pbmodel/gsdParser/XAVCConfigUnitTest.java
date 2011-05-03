@@ -44,8 +44,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
@@ -230,26 +228,8 @@ public class XAVCConfigUnitTest {
     public void setUp() throws Exception {
         _expected = new BufferedReader(new FileReader("./res-test/ConfigFiles/XAVC.xml"));
         _B756_P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        setProtoTypesAtB756_P33(_B756_P33);
         _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
-        setProtoTypesAtBIMF5861(_BIMF5861);
         _SiPart = GSDTestFiles.SiPart.getFileAsGSDFileDBO();
-    }
-    
-    /**
-     * @param bIMF5861
-     */
-    private void setProtoTypesAtBIMF5861(GSDFileDBO bIMF5861) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    /**
-     * @param b756_P33
-     */
-    private void setProtoTypesAtB756_P33(GSDFileDBO b756_P33) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Test

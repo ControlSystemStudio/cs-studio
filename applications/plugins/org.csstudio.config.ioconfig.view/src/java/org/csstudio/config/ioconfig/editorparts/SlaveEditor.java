@@ -84,8 +84,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.3 $
@@ -365,14 +363,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         return _slave.getGSDFile();
     }
     
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-    }
-    
     @Override
     public final void setGsdFile(@CheckForNull GSDFileDBO gsdFile) throws PersistenceException {
         try {
@@ -381,31 +371,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             throw new PersistenceException(e);
         }
     }
-    
-    //    /**
-    //     * @param extUserPrmDataConst
-    //     * @param byteIndexString
-    //     * @param prmTextObject
-    //     */
-    
-    //    /**
-    //     * @param extUserPrmDataConst
-    //     * @param prmText
-    //     * @return
-    //     */
-    //    @Nonnull
-    //    private TreeMap<String, ExtUserPrmDataConst> handleText(@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-    //                                                            @Nonnull final Text prmText) {
-    //        if (!prmText.isDisposed()) {
-    //            String value = (String) prmText.getData();
-    //            if (value != null) {
-    //                prmText.setText(value);
-    //                //				int val = Integer.parseInt(value);
-    //                // return new String[] {String.format("%1$#04x", val) };
-    //            }
-    //        }
-    //        return extUserPrmDataConst;
-    //    }
     
     /**
      * @param head
@@ -1023,8 +988,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     }
     
     /**
-     * TODO (hrickens) :
-     * 
      * @author hrickens
      * @author $Author: $
      * @since 19.10.2010

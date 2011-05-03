@@ -61,7 +61,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
@@ -101,8 +100,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -237,13 +234,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             channelStructure.setCreatedBy(createdBy);
             channelStructure.setUpdatedBy(createdBy);
             channelStructure.moveSortIndex((short) sortIndex);
-            try {
-                channelPrototype.save();
-            } catch (PersistenceException e) {
-                // TODO Bessers vorghehen beim Speichern suchen. Oder ist das
-                // überhaupt noch nötig?
-                e.printStackTrace();
-            }
+            channelPrototype.save();
         }
         
         private void makeNewPureChannel(@Nonnull final ModuleChannelPrototypeDBO channelPrototype,
@@ -395,7 +386,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         
         Text text = new Text(topGroup, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
-        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
+        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nicht nur beim Speichern)
         text.setText(_module.getConfigurationData());
         
         Composite filterComposite = new Composite(topGroup, SWT.NONE);
@@ -910,12 +901,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         try {
             if ((getNode() instanceof FacilityDBO) || (obj == null)) {
                 getProfiBusTreeView().getTreeViewer().setInput(getNode());
-            } else if (obj instanceof ModuleDBO) {
-                AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
-                getNode()
-                        .moveSortIndex(nodeParent.getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS));
-                // TODO Auto-generated catch block
-                nodeParent.addChild(getNode());
             } else if (obj instanceof AbstractNodeDBO) {
                 AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
                 getNode()
@@ -927,15 +912,6 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             DeviceDatabaseErrorDialog.open(null, "Can't create new Module! Database error.", e);
         }
         return true;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-        
     }
     
     /**

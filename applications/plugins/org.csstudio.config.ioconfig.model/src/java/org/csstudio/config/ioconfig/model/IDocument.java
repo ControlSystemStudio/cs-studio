@@ -1,7 +1,6 @@
 package org.csstudio.config.ioconfig.model;
 
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.Date;
 
 public interface IDocument {

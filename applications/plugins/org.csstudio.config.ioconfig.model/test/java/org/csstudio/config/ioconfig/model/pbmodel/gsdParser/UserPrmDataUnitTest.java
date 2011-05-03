@@ -35,8 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $

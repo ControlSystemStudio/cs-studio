@@ -46,6 +46,7 @@ public final class GsdFactory {
      * @param gsdMasterFile The Master GSF File.
      * @return The {@link GsdMasterModel} from GSD File.
      */
+ // TODO (hrickens) [03.05.2011]: Raus damit!
     public static GsdMasterModel makeGsdMaster(final String gsdMasterFile){
         GSD2OBJ dataInstanz = new GSD2OBJ();
         

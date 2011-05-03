@@ -166,14 +166,7 @@ public class ProfibusConfigXMLGenerator {
         if (master.isAutoclear()) {
             autoClear = "1";
         }
-        short fdl;
-		// XXX: Es wird immer der Index des Masters benötigt.
-            fdl = master.getSortIndex();
-		// if(master.getRedundant()<0) {
-		// fdl = master.getSortIndex();
-		// }else {
-		// fdl = master.getRedundant();
-		// }
+        short fdl = master.getSortIndex();
         String[] masterValues = new String[] {
                 /* bus_para_len */"66"/*
                                        * TODO:busParaLen is Default=66? und muss das geändert werden

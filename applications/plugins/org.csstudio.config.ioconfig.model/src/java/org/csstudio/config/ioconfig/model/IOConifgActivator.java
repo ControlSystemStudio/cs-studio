@@ -93,6 +93,7 @@ public class IOConifgActivator extends AbstractCssPlugin{
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }

@@ -121,7 +121,6 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     @Transient
     public List<Integer> getConfigurationDataList() {
-        // TODO Auto-generated method stub
         return _configurationData;
     }
 

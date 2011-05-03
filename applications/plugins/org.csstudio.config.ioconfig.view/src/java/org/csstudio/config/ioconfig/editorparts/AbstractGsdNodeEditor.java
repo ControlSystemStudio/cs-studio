@@ -212,7 +212,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()));
         int maxBit = extUserPrmData.getMaxBit();
         if ((maxBit > 7) && (maxBit < 16)) {
-            values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()+1));
+            values.add(prmUserDataList.get(extUserPrmDataRef.getIndex() + 1));
         }
         int val = getValueFromBitMask(extUserPrmData, values);
         return val;
@@ -224,10 +224,10 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         
         int lowByte = 0;
         int highByte = 0;
-        if(values.size()>0) {
+        if (values.size() > 0) {
             lowByte = values.get(0);
         }
-        if(values.size()>1) {
+        if (values.size() > 1) {
             highByte = values.get(1);
         }
         int val = highByte * 256 + lowByte;
@@ -384,7 +384,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
             StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
             Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-            setValue2BitMask(extUserPrmData, bitValue, byteIndex);
+            setValue2BitMask(extUserPrmData, byteIndex, bitValue);
             Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
             prmTextCV.getCombo().setData(indexOf);
         }
@@ -404,7 +404,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                 } else {
                     bitValue = Integer.parseInt(value);
                 }
-                setValue2BitMask(extUserPrmData, bitValue, byteIndex);
+                setValue2BitMask(extUserPrmData, byteIndex, bitValue);
                 prmText.setData(bitValue);
             }
         }
@@ -414,7 +414,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
      * Change the a value on the Bit places, that is given from the input, to
      * the bitValue.
      * 
-     * @param ranges
+     * @param extUserPrmData
      *            give the start and end Bit position.
      * @param bitValue
      *            the new Value for the given Bit position.
@@ -423,16 +423,16 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
      * @return the changed value.
      */
     @Nonnull
-    private void setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
-                                     @Nonnull final Integer bitValue,
-                                     @Nonnull final Integer byteIndex) {
+    private void setValue2BitMask(@Nonnull final ExtUserPrmData extUserPrmData,
+                                  @Nonnull final Integer byteIndex,
+                                  @Nonnull final Integer bitValue) {
         // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in AbstractGsdPropertyModel#setExtUserPrmDataValue verwendent wird.
         int val = bitValue;
-        int minBit = ranges.getMinBit();
-        int maxBit = ranges.getMaxBit();
+        int minBit = extUserPrmData.getMinBit();
+        int maxBit = extUserPrmData.getMaxBit();
         if (maxBit < minBit) {
-            minBit = ranges.getMaxBit();
-            maxBit = ranges.getMinBit();
+            minBit = extUserPrmData.getMaxBit();
+            maxBit = extUserPrmData.getMinBit();
         }
         int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
         if ((maxBit > 7) && (maxBit < 16)) {
@@ -448,7 +448,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             modifyByteHigh = (result - modifyByteLow) / 256;
             setPrmUserData(byteIndex + 1, modifyByteHigh);
             setPrmUserData(byteIndex, modifyByteLow);
-        }else {
+        } else {
             int modifyByte = getPrmUserData(byteIndex);
             val = val << (minBit);
             int result = (modifyByte & mask) | (val);

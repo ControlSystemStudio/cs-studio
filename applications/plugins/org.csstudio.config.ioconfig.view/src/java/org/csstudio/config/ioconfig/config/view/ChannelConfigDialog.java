@@ -603,7 +603,7 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
          * Constructor.
          */
         public RemoveSelectionListener() {
-            // TODO Auto-generated constructor stub
+            // constructor 
         }
 
         @Override

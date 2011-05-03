@@ -26,6 +26,7 @@ package org.csstudio.config.ioconfig.model;
 
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -105,7 +106,8 @@ public class IocDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
+    @CheckForNull
+    public IocDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof FacilityDBO) {
             final FacilityDBO facility = (FacilityDBO) parentNode;
             final IocDBO copy = new IocDBO(facility);
@@ -120,8 +122,9 @@ public class IocDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
-        final AbstractNodeDBO copy = super.copyThisTo(parentNode);
+    @Nonnull
+    public IocDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
+        final IocDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
@@ -134,6 +137,7 @@ public class IocDBO extends AbstractNodeDBO {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.IOC;
     }

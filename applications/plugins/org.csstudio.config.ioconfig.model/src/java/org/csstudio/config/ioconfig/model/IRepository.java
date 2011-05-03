@@ -107,6 +107,7 @@ public interface IRepository {
      *            the document that update to DB.
      * @return the update document.
      */
+    @Nonnull
     DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException;
 
     /**

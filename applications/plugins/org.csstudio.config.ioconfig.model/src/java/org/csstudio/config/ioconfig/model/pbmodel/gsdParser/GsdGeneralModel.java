@@ -39,6 +39,7 @@ import org.csstudio.config.ioconfig.model.Keywords;
  * @version $Revision: 1.1 $
  * @since 18.07.2008
  */
+// TODO (hrickens) [03.05.2011]: Raus damit!
 abstract class GsdGeneralModel implements Keywords{
 
     /**

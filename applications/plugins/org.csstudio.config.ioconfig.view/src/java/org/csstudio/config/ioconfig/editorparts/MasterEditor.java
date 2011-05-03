@@ -82,8 +82,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -710,39 +708,36 @@ public class MasterEditor extends AbstractNodeEditor {
             DeviceDatabaseErrorDialog.open(null, "Can't save Master! Database error.", e);
         }
     }
-
-	/** {@inheritDoc} */
-	@Override
-	public final boolean fill(@CheckForNull final GSDFileDBO gsdFile) {
-		if (gsdFile == null) {
-			return false;
-		}
-		GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile
-				.getGSDFile());
-		ParsedGsdFileModel parsedGsdFileModel;
+    
+    /** {@inheritDoc} */
+    @Override
+    public final boolean fill(@CheckForNull final GSDFileDBO gsdFile) {
+        if (gsdFile == null) {
+            return false;
+        }
+        GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
+        ParsedGsdFileModel parsedGsdFileModel;
         try {
             parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-
-		// setGSDData
-		_master.setGSDMasterData(masterModel);
-
-		getHeaderField(HeaderFields.VERSION).setText(
-				masterModel.getRevisionNumber() + "");
-		_vendorText.setText(masterModel.getVendorName());
-		_pbBoardText.setText(masterModel.getModelName());
-		String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber())
-				.toUpperCase();
-		if (hex.length() > 4) {
-			hex = hex.substring(hex.length() - 4, hex.length());
-		}
-		_idNoText.setText("0x" + hex);
-		_stationTypText.setText(masterModel.getStationType() + "");
-		_gsdFile = gsdFile;
+            
+            // setGSDData
+            _master.setGSDMasterData(masterModel);
+            
+            getHeaderField(HeaderFields.VERSION).setText(masterModel.getRevisionNumber() + "");
+            _vendorText.setText(masterModel.getVendorName());
+            _pbBoardText.setText(masterModel.getModelName());
+            String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber()).toUpperCase();
+            if (hex.length() > 4) {
+                hex = hex.substring(hex.length() - 4, hex.length());
+            }
+            _idNoText.setText("0x" + hex);
+            _stationTypText.setText(masterModel.getStationType() + "");
+            _gsdFile = gsdFile;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-		return true;
+        return true;
 	}
 
 	/** {@inheritDoc} */
@@ -795,14 +790,4 @@ public class MasterEditor extends AbstractNodeEditor {
 			}
 		}
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -24,6 +24,7 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,15 +83,18 @@ public class GSDFileAddListener implements SelectionListener {
 			final File path = new File(fd.getFilterPath());
 			for (final String fileName : fd.getFileNames()) {
 				if (fileNotContain(fileName)) {
+				    try {
 					final String text = ConfigHelper.file2String(new File(path, fileName));
 					final File file = new File(path, fileName);
 					final GSDFileDBO gsdFile = new GSDFileDBO(file.getName(), text.toString());
 					_abstractNodeEditor.getGsdFiles().add(gsdFile);
 					_tableViewer.setInput(_abstractNodeEditor.getGsdFiles());
-					try {
                         Repository.save(gsdFile);
                     } catch (PersistenceException e) {
                         DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! Database error", e);
+                        CentralLogger.getInstance().error(this, e);
+                    } catch (IOException e) {
+                        DeviceDatabaseErrorDialog.open(null, "Can't safe GSD File! File read error", e);
                         CentralLogger.getInstance().error(this, e);
                     }
 				} else {

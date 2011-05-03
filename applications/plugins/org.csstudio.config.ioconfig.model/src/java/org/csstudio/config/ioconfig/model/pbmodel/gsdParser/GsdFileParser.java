@@ -511,7 +511,6 @@ public final class GsdFileParser {
                                      @Nonnull LineCounter lineCounter,
                                      @Nonnull ParsedGsdFileModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
-        // TODO (hrickens) [28.03.2011]: buildExtUserPrmData
         String[] lineParts = line.split("[\"]");
         assert lineParts.length > 2;
         Integer index = GsdFileParser.gsdValue2Int(lineParts[0].split("=")[1]);

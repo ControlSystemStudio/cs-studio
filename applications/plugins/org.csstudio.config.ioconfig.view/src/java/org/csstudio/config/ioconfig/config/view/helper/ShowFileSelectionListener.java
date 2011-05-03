@@ -89,30 +89,32 @@ public class ShowFileSelectionListener implements SelectionListener {
         private final Color WHITE = new Color(null, 255, 255, 255);
         private final GSDFileDBO _gsdFile;
         private StyledText _text;
-
+        
         /**
          * Constructor.
          * @param parentShell
          */
-        private GSDFileEditDialog(final Shell parentShell, @Nonnull final GSDFileDBO gsdFile) {
+        private GSDFileEditDialog(@Nullable final Shell parentShell,
+                                  @Nonnull final GSDFileDBO gsdFile) {
             super(parentShell);
             _gsdFile = gsdFile;
         }
-
+        
         /**
          * {@inheritDoc}
          */
         @Override
-        protected void configureShell(final Shell newShell) {
+        protected void configureShell(@Nullable final Shell newShell) {
             super.configureShell(newShell);
             newShell.setText(_gsdFile.getName());
         }
-
+        
         /**
          * {@inheritDoc}
          */
         @Override
-        protected Control createDialogArea(final Composite parent) {
+        @Nonnull
+        protected Control createDialogArea(@Nonnull final Composite parent) {
             Control createDialogArea = super.createDialogArea(parent);
             _text = new StyledText(parent, SWT.MULTI | SWT.LEAD | SWT.BORDER | SWT.H_SCROLL
                     | SWT.V_SCROLL);
@@ -127,12 +129,13 @@ public class ShowFileSelectionListener implements SelectionListener {
             createDialogArea.pack();
             return createDialogArea;
         }
-
+        
         /**
          * @param gsdFile
          * @return
          */
-        private StyleRange[] makeStyleRanges(final String gsdFile) {
+        @Nonnull
+        private StyleRange[] makeStyleRanges(@Nonnull final String gsdFile) {
             List<StyleRange> styleRangeList = new ArrayList<StyleRange>();
             int start = 0;
             do {
@@ -146,70 +149,66 @@ public class ShowFileSelectionListener implements SelectionListener {
             } while (start >= 0);
             return styleRangeList.toArray(new StyleRange[0]);
         }
-
+        
         /**
          * {@inheritDoc}
          */
         @Override
-        protected void createButtonsForButtonBar(final Composite parent) {
+        protected void createButtonsForButtonBar(@Nonnull final Composite parent) {
             createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         }
-
+        
     }
-
+    
     private final TableViewer _parentViewer;
-
-    public ShowFileSelectionListener(final TableViewer parentViewer) {
+    
+    public ShowFileSelectionListener(@Nonnull final TableViewer parentViewer) {
         _parentViewer = parentViewer;
     }
-
-    public void widgetSelected(final SelectionEvent e) {
+    
+    @Override
+    public void widgetSelected(@Nullable final SelectionEvent e) {
         openFileInBrowser();
     }
-
-    public void widgetDefaultSelected(final SelectionEvent e) {
+    
+    @Override
+    public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
         openFileInBrowser();
     }
-
+    
     private void openFileInBrowser() {
         final StructuredSelection selection = (StructuredSelection) _parentViewer.getSelection();
         Object object = selection.getFirstElement();
         File createTempFile = null;
-        if (object instanceof GSDFileDBO) {
-
-            final GSDFileDBO firstElement = (GSDFileDBO) object;
-            GSDFileEditDialog gsdEditDialog = new GSDFileEditDialog(Display.getDefault()
-                    .getActiveShell(), firstElement);
-            gsdEditDialog.open();
-        } else if (object instanceof DocumentDBO) {
-            final DocumentDBO firstElement = (DocumentDBO) object;
-            try {
+        try {
+            if (object instanceof GSDFileDBO) {
+                final GSDFileDBO firstElement = (GSDFileDBO) object;
+                GSDFileEditDialog gsdEditDialog = new GSDFileEditDialog(Display.getDefault()
+                        .getActiveShell(), firstElement);
+                gsdEditDialog.open();
+            } else if (object instanceof DocumentDBO) {
+                final DocumentDBO firstElement = (DocumentDBO) object;
                 String filename = firstElement.getSubject();
-                if ( (filename == null) || (filename.length() < 1)) {
+                if ((filename == null) || (filename.length() < 1)) {
                     filename = "showTmp";
                 }
                 createTempFile = File.createTempFile(filename, "." + firstElement.getMimeType());
                 Helper.writeDocumentFile(createTempFile, firstElement);
-            } catch (final IOException e) {
-                MessageDialog.openError(null, "Can't File create!", e.getMessage());
-                CentralLogger.getInstance().error(this, e);
-            } catch (final PersistenceException e) {
-                DeviceDatabaseErrorDialog.open(null, "Can't read document from database!", e);
-                CentralLogger.getInstance().error(this, e);
             }
-        }
-        if ((createTempFile != null) && createTempFile.isFile()) {
-            if (Desktop.isDesktopSupported()) {
-                if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                    try {
+            if ((createTempFile != null) && createTempFile.isFile()) {
+                if (Desktop.isDesktopSupported()) {
+                    if (Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                         Desktop.getDesktop().open(createTempFile);
-                    } catch (IOException e) {
-                        MessageDialog.openError(null, "Can't File create!", e.getMessage());
-                        CentralLogger.getInstance().error(this, e);
                     }
                 }
             }
+        } catch (final IOException e) {
+            MessageDialog.openError(null, "Can't File create!", e.getMessage());
+            CentralLogger.getInstance().error(this, e);
+        } catch (final PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't read document from database!", e);
+            CentralLogger.getInstance().error(this, e);
         }
     }
-
+    
 }

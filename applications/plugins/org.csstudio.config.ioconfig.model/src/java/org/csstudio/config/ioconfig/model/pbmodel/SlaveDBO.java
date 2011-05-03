@@ -479,7 +479,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      */
     @Override
     @CheckForNull
-    public AbstractNodeDBO copyParameter(@Nullable final NamedDBClass parentNode) throws PersistenceException {
+    public SlaveDBO copyParameter(@Nullable final NamedDBClass parentNode) throws PersistenceException {
         if (parentNode instanceof MasterDBO) {
             MasterDBO master = (MasterDBO) parentNode;
             SlaveDBO copy = new SlaveDBO(master);
@@ -490,8 +490,6 @@ public class SlaveDBO extends AbstractNodeDBO {
             } catch (IOException e) {
                 throw new PersistenceException(e);
             }
-            //TODO: MUss das wieder gesetzt werden?
-            //            copy.setGSDSlaveData(getGSDSlaveData());
             copy.setMinTsdr(getMinTsdr());
             copy.setModelName(getModelName());
             copy.setPrmUserData(getPrmUserData());

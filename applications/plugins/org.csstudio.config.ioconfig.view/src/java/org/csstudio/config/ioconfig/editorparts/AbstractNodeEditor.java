@@ -171,8 +171,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     }
     
     /**
-     * TODO (hrickens) :
-     * 
      * @author hrickens
      * @author $Author: hrickens $
      * @since 14.06.2010
@@ -203,8 +201,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     }
     
     /**
-     * TODO (hrickens) :
-     * 
      * @author hrickens
      * @author $Author: hrickens $
      * @since 14.06.2010
@@ -255,8 +251,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     }
     
     /**
-     * TODO (hrickens) :
-     * 
      * @author hrickens
      * @author $Author: hrickens $
      * @since 14.06.2010
@@ -555,7 +549,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     private TabFolder _tabFolder;
     
     public AbstractNodeEditor() {
-        // TODO Auto-generated constructor stub
+        // constructor
     }
     
     public AbstractNodeEditor(final boolean nevv) {
@@ -1084,7 +1078,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                 
                 if (getNode() instanceof FacilityDBO || obj == null) {
                     getProfiBusTreeView().getTreeViewer().setInput(getNode());
-                    // TODO neue facility erstellen und speichern..
                 } else if (obj instanceof AbstractNodeDBO) {
                     if (getNode().getParent() == null) {
                         final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
@@ -1589,4 +1582,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return _new;
     }
     
+    @Override
+    public void setFocus() {
+        // nothing to do;
+    }
 }

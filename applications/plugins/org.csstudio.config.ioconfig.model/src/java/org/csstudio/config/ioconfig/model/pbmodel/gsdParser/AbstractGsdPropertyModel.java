@@ -34,7 +34,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (hrickens) : 
+ * ModelClass that use GSD Files Properties. 
  * 
  * @author hrickens
  * @author $Author: bknerr $
@@ -127,11 +127,15 @@ public abstract class AbstractGsdPropertyModel {
     
     private void setExtUserPrmDataValue(@Nonnull ExtUserPrmData extUserPrmData,
                                         int byteIndex,
-                                        int value) {
+                                        int bitValue) {
      // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in AbstractGsdNodeEditor#setValue2BitMask verwendent wird.
-        int val = value;
+        int val = bitValue;
         int minBit = extUserPrmData.getMinBit();
         int maxBit = extUserPrmData.getMaxBit();
+        
+        
+        
+        
         int mask = ~((int) Math.pow(2, maxBit + 1) - (int) Math.pow(2, minBit));
         if ((maxBit > 7) && (maxBit < 16)) {
             int modifyByteHigh = 0;

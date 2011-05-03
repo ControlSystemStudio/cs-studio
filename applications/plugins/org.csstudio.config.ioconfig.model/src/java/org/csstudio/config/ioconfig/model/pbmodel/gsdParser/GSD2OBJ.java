@@ -12,7 +12,7 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
  * beckhoff.gsd * bimf5801.gsd * rmt3051.gsd * Sipart.gsd * wagob750.gsd *
  * softb203.gsd * Siem80A6.gsd * YP0004C2 * * Precondition: * Postcondition: * *
  ******************************************************************************/
-
+//TODO (hrickens) [03.05.2011]: Raus damit!
 public class GSD2OBJ {
 
     /**

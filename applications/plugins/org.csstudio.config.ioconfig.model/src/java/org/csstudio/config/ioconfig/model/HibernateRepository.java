@@ -37,9 +37,6 @@ public class HibernateRepository implements IRepository {
             .getLogger(HibernateRepository.class);
     
     /**
-     *
-     * TODO (hrickens) :
-     *
      * @author hrickens
      * @author $Author: hrickens $
      * @version $Revision: 1.9 $
@@ -87,28 +84,26 @@ public class HibernateRepository implements IRepository {
      * {@inheritDoc}
      */
     @Nonnull
-    public GSDModuleDBO
-            saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
+    public final GSDModuleDBO saveWithChildren(@Nonnull final GSDModuleDBO gsdModule) throws PersistenceException {
         try {
             HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
                 private Session _session;
                 
                 @SuppressWarnings("unchecked")
                 @Override
+                @Nonnull
                 public GSDModuleDBO execute(@Nonnull final Session session) {
                     _session = session;
                     Set<ModuleChannelPrototypeDBO> values = gsdModule.getModuleChannelPrototypeNH();
                     _session.saveOrUpdate(gsdModule);
-                    if ( (values != null) && (values.size() > 0)) {
+                    if ((values != null) && (values.size() > 0)) {
                         saveChildren(values);
                     }
                     _session.flush();
                     return gsdModule;
                 }
                 
-                private
-                        void
-                        saveChildren(@Nonnull final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
+                private void saveChildren(@Nonnull final Set<ModuleChannelPrototypeDBO> moduleChannelPrototypes) {
                     for (ModuleChannelPrototypeDBO prototype : moduleChannelPrototypes) {
                         _session.saveOrUpdate(prototype);
                     }
@@ -126,12 +121,14 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
+    @Nonnull
+    public final <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException {
         try {
             HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
                 
                 @SuppressWarnings("unchecked")
                 @Override
+                @Nonnull
                 public T execute(@Nonnull final Session session) {
                     session.saveOrUpdate(dbClass);
                     return dbClass;
@@ -151,12 +148,14 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
+    @Nonnull
+    public final <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
         
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
+            @Nonnull
             public T execute(@Nonnull final Session session) {
                 dbClass.setUpdatedOn(new Date());
                 session.update(dbClass);
@@ -173,10 +172,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException {
+    @CheckForNull
+    public final <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @CheckForNull
             public List<T> execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("from " + clazz.getName());
                 final List<T> nodes = query.list();
@@ -195,17 +196,15 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public
-            <T>
-            T
-            load(@Nonnull final Class<T> clazz, @Nonnull final Serializable id)
-                                                                               throws PersistenceException {
+    @CheckForNull
+    public final <T> T load(@Nonnull final Class<T> clazz, @Nonnull final Serializable id) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @CheckForNull
             public T execute(@Nonnull final Session session) {
-                final List<T> nodes = session.createQuery("select c from " + clazz.getName()
-                                                                  + " c where c.id = :id")
+                final List<T> nodes = session
+                        .createQuery("select c from " + clazz.getName() + " c where c.id = :id")
                         .setString("id", id.toString()).list();
                 
                 if (nodes.isEmpty()) {
@@ -223,12 +222,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public <T extends DBClass> void removeNode(@Nonnull final T dbClass)
-                                                                        throws PersistenceException {
+    public final <T extends DBClass> void removeNode(@Nonnull final T dbClass) throws PersistenceException {
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @Override
             @SuppressWarnings("unchecked")
+            @CheckForNull
             public Object execute(@Nonnull final Session session) {
                 session.delete(dbClass);
                 return null;
@@ -242,12 +241,14 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
+    @Nonnull
+    public final GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
+            @Nonnull
             public GSDFileDBO execute(@Nonnull final Session session) {
                 session.saveOrUpdate(gsdFile);
                 return gsdFile;
@@ -262,11 +263,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
+    public final void removeGSDFiles(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException {
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
+            @CheckForNull
             public Object execute(@Nonnull final Session session) {
                 session.delete(gsdFile);
                 return null;
@@ -280,10 +282,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public List<DocumentDBO> loadDocument() throws PersistenceException {
+    @CheckForNull
+    public final List<DocumentDBO> loadDocument() throws PersistenceException {
         return HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @CheckForNull
             public List<DocumentDBO> execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("from " + DocumentDBO.class.getName()
                         + " where length(image) > 0");
@@ -302,12 +306,14 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
+    @Nonnull
+    public final DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException {
         
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
+            @Nonnull
             public DocumentDBO execute(@Nonnull final Session session) {
                 session.saveOrUpdate(document);
                 session.flush();
@@ -323,12 +329,14 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
+    @Nonnull
+    public final DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException {
         
         HibernateManager.getInstance().doInDevDBHibernateLazy(new HibernateCallback() {
             
             @SuppressWarnings("unchecked")
             @Override
+            @Nonnull
             public DocumentDBO execute(@Nonnull final Session session) {
                 document.setUpdateDate(new Date());
                 session.update(document);
@@ -350,7 +358,7 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
+    public final String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
         return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
     }
@@ -360,7 +368,7 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public List<String> getIoNames() throws PersistenceException {
+    public final List<String> getIoNames() throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -379,7 +387,7 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
-    public List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
+    public final List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -395,7 +403,7 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
-    public String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
+    public final String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -405,11 +413,11 @@ public class HibernateRepository implements IRepository {
                 query.setString(0, ioName); // Zero-Based!
                 
                 final List<String> descList = query.list();
-                if ( (descList == null) || descList.isEmpty()) {
+                if ((descList == null) || descList.isEmpty()) {
                     return "";
                 }
                 String string = descList.get(0);
-                if ( (string == null) || string.isEmpty()) {
+                if ((string == null) || string.isEmpty()) {
                     return "";
                 }
                 String[] split = string.split("[\r\n]");
@@ -423,7 +431,7 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
-    public List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
+    public final List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -440,10 +448,7 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
-    public
-            SensorsDBO
-            loadSensor(@Nonnull final String ioName, @Nonnull final String selection)
-                                                                                     throws PersistenceException {
+    public final SensorsDBO loadSensor(@Nonnull final String ioName, @Nonnull final String selection) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -453,7 +458,7 @@ public class HibernateRepository implements IRepository {
                         + " where c.currentValue like s.id" + " and c.ioName like '" + ioName + "'";
                 final Query query = session.createQuery(statment);
                 final List<SensorsDBO> sensors = query.list();
-                if ( (sensors == null) || (sensors.size() < 1)) {
+                if ((sensors == null) || (sensors.size() < 1)) {
                     return null;
                 }
                 return sensors.get(0);
@@ -463,7 +468,7 @@ public class HibernateRepository implements IRepository {
     }
     
     @CheckForNull
-    public List<Integer> getRootPath(final int id) throws PersistenceException {
+    public final List<Integer> getRootPath(final int id) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
@@ -477,7 +482,7 @@ public class HibernateRepository implements IRepository {
                 while (searchId > 0) {
                     query.setInteger(0, searchId); // Zero-Based!
                     BigDecimal uniqueResult = (BigDecimal) query.uniqueResult();
-                    if ( (uniqueResult == null) || (level++ > 10)) {
+                    if ((uniqueResult == null) || (level++ > 10)) {
                         break;
                     }
                     searchId = uniqueResult.intValue();
@@ -491,7 +496,7 @@ public class HibernateRepository implements IRepository {
     
     @Override
     @CheckForNull
-    public ChannelDBO loadChannel(@Nullable final String ioName) throws PersistenceException {
+    public final ChannelDBO loadChannel(@Nullable final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
@@ -515,15 +520,12 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     @CheckForNull
-    public
-            List<PV2IONameMatcherModelDBO>
-            loadPV2IONameMatcher(@Nullable final Collection<String> pvName)
-                                                                           throws PersistenceException {
+    public final List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
-                if ( (pvName == null) || (pvName.size() == 0)) {
+                if ((pvName == null) || (pvName.size() == 0)) {
                     return null;
                 }
                 StringBuilder statement = new StringBuilder("select pv from ")
@@ -533,7 +535,7 @@ public class HibernateRepository implements IRepository {
                     if (notFirst) {
                         statement.append(" OR ");
                     }
-                    statement.append(String.format("pv.epicsName = '%s'",string));
+                    statement.append(String.format("pv.epicsName = '%s'", string));
                     notFirst = true;
                 }
                 try {
@@ -548,7 +550,7 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
-    public void close() {
+    public final void close() {
         HibernateManager.getInstance().closeSession();
     }
     
@@ -556,7 +558,7 @@ public class HibernateRepository implements IRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean isConnected() {
+    public final boolean isConnected() {
         return HibernateManager.getInstance().isConnected();
     }
     

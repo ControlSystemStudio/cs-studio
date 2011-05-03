@@ -24,14 +24,12 @@
 package org.csstudio.config.ioconfig.model.statistic;
 
 import java.util.Collection;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 
 /**
@@ -54,7 +52,7 @@ public class ModuleStatistcCounter {
      * @param gsdModule
      */
     public ModuleStatistcCounter() {
-        // TODO Auto-generated constructor stub
+        // constructor 
     }
     
     @Nonnull

@@ -130,18 +130,6 @@ public class FacilityEditor extends AbstractNodeEditor{
         getProfiBusTreeView().refresh();
     }
 
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-
-    }
-
-
-
-
-    //----------------------------------
-    // Facility EditView
-
     private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
