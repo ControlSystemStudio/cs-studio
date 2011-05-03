@@ -79,9 +79,9 @@ public class XmlSlave {
         Element e2;
         try {
             e2 = setSlavePrmData(slave);
-            Element e3 = setSlaveCfgData(slave);
-            Element e4 = setSlaveAatData(slave);
-            Element e5 = setSlaveUserData(slave);
+            Element e3 = setSlaveCfgData();
+            Element e4 = setSlaveAatData();
+            Element e5 = setSlaveUserData();
             int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
             int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
             Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
@@ -110,7 +110,8 @@ public class XmlSlave {
      *            The user data length.
      * @return The XML Slave Para Set Element.
      */
-    private Element setSlaveParaSet(final SlaveDBO slave,
+    @Nonnull
+    private Element setSlaveParaSet(@Nonnull final SlaveDBO slave,
                                     final int prmDataLen,
                                     final int cfgDataLen,
                                     final int slaveAatLen,
@@ -133,50 +134,26 @@ public class XmlSlave {
      * @throws IOException 
      */
     @Nonnull
-    public final Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
+    private Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
         Element slavePrmData = new Element("SLAVE_PRM_DATA");
-        //        GsdSlaveModel slaveData = slave.getGSDSlaveData();
         ParsedGsdFileModel slaveData = slave.getGSDFile().getParsedGsdFileModel();
         StringBuilder prmDataSB = new StringBuilder();
-        {
-            //        if ((slave.getGSDSlaveData() != null)
-            //                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
-            
-            //            prmDataSB.append(slave.getGSDSlaveData().getModiExtUserPrmDataConst());
-            //            prmDataSB.append(slave.getGSDSlaveData().getUserPrmData());
-            prmDataSB.append(slave.getPrmUserData());
-            /*
-            TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = slave.getGSDSlaveData().getExtUserPrmDataConst();
-            Set<String> keySet = extUserPrmDataConst.keySet();
-            for (String key : keySet) {
-                prmDataSB.append(extUserPrmDataConst.get(key).toString().replaceAll("[\\[\\]]", ""));
+        prmDataSB.append(slave.getPrmUserData());
+        for (ModuleDBO module : _modules) {
+            String modiExtUserPrmDataConst = module.getConfigurationData();
+            String modiExtUserPrmDataConstDef = module.getGsdModuleModel()
+                    .getModiExtUserPrmDataConst();
+            if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
+                continue; // Do Nothing
+            } else if ((modiExtUserPrmDataConstDef != null)
+                    && (modiExtUserPrmDataConstDef.split(",").length > modiExtUserPrmDataConst
+                            .split(",").length)) {
+                modiExtUserPrmDataConst = modiExtUserPrmDataConstDef;
                 prmDataSB.append(',');
-            }
-            if(prmDataSB.length()>0) {
-                prmDataSB.deleteCharAt(prmDataSB.length()-1);
-            }
-            */
-
-            //            prmData = slave.getGSDSlaveData().getExtUserPrmDataConst().values().toString()
-            //                    .replaceAll("[\\[\\]]", "");
-            
-            // XXX: Die ExtUserPrmData von den Modulen gehören hier wohl nicht hin!
-            for (ModuleDBO module : _modules) {
-                String modiExtUserPrmDataConst = module.getConfigurationData();
-                String modiExtUserPrmDataConstDef = module.getGsdModuleModel()
-                        .getModiExtUserPrmDataConst();
-                if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
-                    // Do Nothing
-                } else if ((modiExtUserPrmDataConstDef != null)
-                        && (modiExtUserPrmDataConstDef.split(",").length > modiExtUserPrmDataConst
-                                .split(",").length)) {
-                    modiExtUserPrmDataConst = modiExtUserPrmDataConstDef;
-                    prmDataSB.append(',');
-                    prmDataSB.append(modiExtUserPrmDataConst);
-                } else {
-                    prmDataSB.append(',');
-                    prmDataSB.append(modiExtUserPrmDataConst);
-                }
+                prmDataSB.append(modiExtUserPrmDataConst);
+            } else {
+                prmDataSB.append(',');
+                prmDataSB.append(modiExtUserPrmDataConst);
             }
         }
         int prmDataLen = 9 + prmDataSB.toString().split(",").length;
@@ -211,12 +188,12 @@ public class XmlSlave {
      * @throws IOException 
      */
     @Nonnull
-    public final Element setSlaveCfgData(@Nonnull final SlaveDBO slave) throws IOException {
+    private Element setSlaveCfgData() throws IOException {
         Element slaveCfgData = new Element("SLAVE_CFG_DATA");
         String cfgData = "";
         for (ModuleDBO module : _modules) {
             GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if(gsdModuleModel2!=null) {
+            if (gsdModuleModel2 != null) {
                 cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
             }
         }
@@ -236,7 +213,8 @@ public class XmlSlave {
      *            The Profibus Slave.
      * @return The XML Slave aat Data Element.
      */
-    public final Element setSlaveAatData(final SlaveDBO slave) {
+    @Nonnull
+    private Element setSlaveAatData() {
         Element slaveAatData = new Element("SLAVE_AAT_DATA");
         String aat = "0,8";
         int offset = 0;
@@ -267,7 +245,8 @@ public class XmlSlave {
      *            The Profibus Slave.
      * @return The XML Slave User Data Element.
      */
-    public final Element setSlaveUserData(final SlaveDBO slave) {
+    @Nonnull
+    private Element setSlaveUserData() {
         Element slaveUserData = new Element("SLAVE_USER_DATA");
         int slaveUserDataLen = 2;
         slaveUserData.setAttribute("slave_user_data_len", Integer.toString(slaveUserDataLen));
@@ -280,6 +259,7 @@ public class XmlSlave {
      *
      * @return the Slave {@link Element}
      */
+    @Nonnull
     public final Element getSlave() {
         return _slaveElement;
     }

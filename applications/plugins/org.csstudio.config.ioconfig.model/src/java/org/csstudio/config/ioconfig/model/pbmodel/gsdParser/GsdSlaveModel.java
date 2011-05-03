@@ -178,7 +178,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
      */
     private final HashMap<Integer, Integer[]> _modifications = new HashMap<Integer, Integer[]>();
 
-    private HashMap<String, UnitDiagBit> _unitDiagBit;
+//    private HashMap<String, UnitDiagBit> _unitDiagBit;
 
     private HashMap<Integer,GsdModuleModel> _gsdModuleMap;
 
@@ -547,16 +547,16 @@ public class GsdSlaveModel extends GsdGeneralModel {
 //        }
 //        return _extUserPrmDataRefMap;
 //    }
-    /**
-     * @param index
-     * @param unitDiagBit
-     */
-    public void addUnitDiagBit(final String index, final UnitDiagBit unitDiagBit) {
-        if(_unitDiagBit==null){
-            _unitDiagBit = new HashMap<String, UnitDiagBit>();
-        }
-        _unitDiagBit.put(index, unitDiagBit);
-    }
+//    /**
+//     * @param index
+//     * @param unitDiagBit
+//     */
+//    public void addUnitDiagBit(final String index, final UnitDiagBit unitDiagBit) {
+//        if(_unitDiagBit==null){
+//            _unitDiagBit = new HashMap<String, UnitDiagBit>();
+//        }
+//        _unitDiagBit.put(index, unitDiagBit);
+//    }
 
     /**
      *
