@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -40,7 +42,7 @@ public class AddTagsJobUnitTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@Before
+	@BeforeClass
 	public void setUp() throws Exception {
 		final TestProperties settings = new TestProperties();
 		try {
@@ -53,6 +55,7 @@ public class AddTagsJobUnitTest {
 		} catch (Exception e) {
 			logger.info("Failed to create the channelfinder client"
 					+ e.getMessage());
+			assertTrue(false);
 		}
 	}
 
@@ -65,15 +68,18 @@ public class AddTagsJobUnitTest {
 				"tagOwner"));
 		job.schedule();
 		try {
-			job.join();
+			// TODO not have a static def for the amount of time needed to
+			// complete the update
+			job.getThread().join(30000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			assertTrue("The Job is taking too long.", false);
 		}
-		if(job.getResult() == Status.OK_STATUS){
+		if (job.getResult() == Status.OK_STATUS) {
 			Collection<Channel> chs = new ArrayList<Channel>();
 			chs.add(ch1.build());
 			chs.add(ch2.build());
-			assertTrue("Failed to Add tags: ", 
+			assertTrue("Failed to Add tags: ",
 					client.findChannelsByTag("cssUnitTestTag").containsAll(chs));
 		}
 	}
@@ -81,7 +87,7 @@ public class AddTagsJobUnitTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@After
+	@AfterClass
 	public void tearDown() throws Exception {
 		client.remove(channel("cssUnitTestChannel1").owner("css"));
 		client.remove(channel("cssUnitTestChannel1").owner("css"));
