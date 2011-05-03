@@ -19,6 +19,13 @@ public class AddTagsJob extends Job {
 	private Tag.Builder tag;
 	private Collection<ICSSChannel> channels;
 	
+	/**
+	 * create a job to add a tag _tag_ to a group of channels
+	 * 
+	 * @param name - job name
+	 * @param channels - collection of channels to which the tag is to be added
+	 * @param tag - builder of the the tag to be added
+	 */
 	public AddTagsJob(String name, Collection<ICSSChannel> channels, Tag.Builder tag) {
 		super(name);
 		this.channels = channels;

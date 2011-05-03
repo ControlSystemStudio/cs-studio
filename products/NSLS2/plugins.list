@@ -33,6 +33,7 @@ org.csstudio.opi.intro
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
+org.csstudio.testsuite
 org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
