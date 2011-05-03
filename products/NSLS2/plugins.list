@@ -1,4 +1,3 @@
-javax.annotation
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive
@@ -37,6 +36,7 @@ org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
+org.csstudio.ui.util
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
