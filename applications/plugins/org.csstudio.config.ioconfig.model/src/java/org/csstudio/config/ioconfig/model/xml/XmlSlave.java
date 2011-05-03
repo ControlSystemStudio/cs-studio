@@ -26,6 +26,7 @@ package org.csstudio.config.ioconfig.model.xml;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
@@ -34,6 +35,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.jdom.Element;
@@ -141,14 +143,14 @@ public class XmlSlave {
         prmDataSB.append(slave.getPrmUserData());
         for (ModuleDBO module : _modules) {
             String modiExtUserPrmDataConst = module.getConfigurationData();
-            String modiExtUserPrmDataConstDef = module.getGsdModuleModel()
-                    .getModiExtUserPrmDataConst();
+            List<Integer> modiExtUserPrmDataConstDef = module.getGsdModuleModel2()
+                    .getExtUserPrmDataConst();
             if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
                 continue; // Do Nothing
             } else if ((modiExtUserPrmDataConstDef != null)
-                    && (modiExtUserPrmDataConstDef.split(",").length > modiExtUserPrmDataConst
+                    && (modiExtUserPrmDataConstDef.size() > modiExtUserPrmDataConst
                             .split(",").length)) {
-                modiExtUserPrmDataConst = modiExtUserPrmDataConstDef;
+                modiExtUserPrmDataConst = GsdFileParser.intList2HexString(modiExtUserPrmDataConstDef);
                 prmDataSB.append(',');
                 prmDataSB.append(modiExtUserPrmDataConst);
             } else {
@@ -212,14 +214,15 @@ public class XmlSlave {
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave aat Data Element.
+     * @throws IOException 
      */
     @Nonnull
-    private Element setSlaveAatData() {
+    private Element setSlaveAatData() throws IOException {
         Element slaveAatData = new Element("SLAVE_AAT_DATA");
         String aat = "0,8";
         int offset = 0;
         for (ModuleDBO module : _modules) {
-            SlaveCfgData slaveCfgData = new SlaveCfgData(module.getGsdModuleModel().getValue());
+            SlaveCfgData slaveCfgData = new SlaveCfgData(module.getGsdModuleModel2().getValue());
             int leng = 0;
             if (slaveCfgData.isInput()) {
                 leng = slaveCfgData.getWordSize() * slaveCfgData.getSize();

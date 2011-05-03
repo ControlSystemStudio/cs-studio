@@ -60,10 +60,15 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         }
     }
     
+    public boolean hasModule() {
+        return _gsdModuleModelMap!=null&&!_gsdModuleModelMap.isEmpty();
+    }
+    
     public void setExtUserPrmData(@Nonnull ExtUserPrmData extUserPrmData) {
         _gsdExtUserPrmData.put(extUserPrmData.getIndex(), extUserPrmData);
     }
     
+    @Override
     @CheckForNull
     public ExtUserPrmData getExtUserPrmData(@Nonnull Integer index) {
         return _gsdExtUserPrmData.get(index);
@@ -72,6 +77,11 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
     @CheckForNull
     public GsdModuleModel2 getModule(@Nonnull Integer moduleNumber) {
         return _gsdModuleModelMap.get(moduleNumber);
+    }
+
+    @Nonnull
+    public Map<Integer, GsdModuleModel2> getModuleMap() {
+        return _gsdModuleModelMap;
     }
     
     /**
@@ -85,5 +95,16 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         }
         return identNumber;
     }
-    
+
+    /**
+     * @return
+     */
+    @Nonnull
+    public Integer getMaxModule() {
+        Integer maxModule = getIntValue("Max_Module");
+        if(maxModule==null) {
+            maxModule=0;
+        }
+        return maxModule;
+    }
 }

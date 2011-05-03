@@ -64,11 +64,11 @@ public final class GsdFactory {
 
     }
 
-    /**
-     * Generate a GSD Slave Model from Slave GFSD File. 
-     * @param gsdFile The Slave GSF File.
-     * @return The {@link GsdSlaveModel} from GSD File.
-     */
+//    /**
+//     * Generate a GSD Slave Model from Slave GFSD File. 
+//     * @param gsdFile The Slave GSF File.
+//     * @return The {@link GsdSlaveModel} from GSD File.
+//     */
     public static GsdSlaveModel makeGsdSlave(final GSDFileDBO gsdFile){
         
 //        ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();

@@ -190,4 +190,56 @@ public abstract class AbstractGsdPropertyModel {
         _stringValueMap.put(keyValuePair.getKey(), keyValuePair.getValue());
     }
     
+    @CheckForNull
+    public Integer getIntProperty(@Nonnull String key) {
+        return _intergerValueMap.get(key);
+    }
+    
+    @CheckForNull
+    public String getStringProperty(@Nonnull String key) {
+        return _stringValueMap.get(key);
+    }
+    
+    @CheckForNull
+    public List<Integer> getIntArrayProperty(@Nonnull String key) {
+        return _intArrayValueMap.get(key);
+    }
+    
+    @Nonnull
+    public Integer getGsdRevision() {
+        Integer gsdRevision = getIntProperty("GSD_Revision");
+        if(gsdRevision==null) {
+            gsdRevision=-1;
+        }
+        return gsdRevision;
+    }
+
+    @Nonnull
+    public String getVendorName() {
+        String vendorName = getStringProperty("Vendor_Name");
+        if(vendorName==null) {
+            vendorName="Unkwon";
+        }
+        return vendorName;
+    }
+
+    @Nonnull
+    public String getModelName() {
+        String modelName = getStringProperty("Model_Name");
+        if(modelName==null) {
+            modelName="Unkwon";
+        }
+        return modelName;
+    }
+    
+    @Nonnull
+    public String getRevision() {
+        String revision = getStringProperty("Revision");
+        if(revision==null) {
+            revision="Unkwon";
+        }
+        return revision;
+    }
+    
+    
 }

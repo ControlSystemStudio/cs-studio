@@ -323,7 +323,8 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             // setGSDData
             HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
             slaveModel.setGsdModuleList(moduleList);
-            _slave.setGSDSlaveData(slaveModel);
+//            _slave.setGSDSlaveData(slaveModel);
+            _slave.setGSDSlaveData(parsedGsdFileModel);
             
             // Head
             getHeaderField(HeaderFields.VERSION).setText(slaveModel.getGsdRevision() + "");

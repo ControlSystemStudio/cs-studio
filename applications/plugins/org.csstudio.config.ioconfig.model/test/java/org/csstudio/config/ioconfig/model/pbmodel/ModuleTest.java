@@ -3,18 +3,13 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.HashMap;
 
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -270,73 +265,6 @@ public class ModuleTest {
         assertNotNull(out.getEpicsAddressString());
         assertEquals(out.getEpicsAddressString(), "@Name:12");
     }
-
-    @Test
-    public void testGetGsdModuleModel() throws PersistenceException {
-
-        final ModuleDBO out = new ModuleDBO(_slave);
-        assertNull(out.getGsdModuleModel());
-
-        out.setModuleNumber(4711);
-
-        final GsdModuleModel gsdModuleModel = new GsdModuleModel("1\"Name\"Value", null);
-
-        final HashMap<Integer, GsdModuleModel> moduleMap = new HashMap<Integer, GsdModuleModel>();
-        moduleMap.put(4711, gsdModuleModel);
-
-        final GsdSlaveModel gsdSlaveModel = new GsdSlaveModel();
-        gsdSlaveModel.setGsdModuleList(moduleMap);
-
-        _slave.setGSDSlaveData(gsdSlaveModel);
-        _slave.addChild(out);
-
-        assertEquals(out.getGsdModuleModel(), gsdModuleModel);
-
-    }
-
-    @Test
-    public void testGetGsdModuleModel2() throws PersistenceException {
-
-        final ModuleDBO out = new ModuleDBO(_slave);
-        assertNull(out.getGsdModuleModel());
-
-        final GsdModuleModel gsdModuleModel = new GsdModuleModel("1\"Name\"Value", null);
-
-        final HashMap<Integer, GsdModuleModel> moduleMap = new HashMap<Integer, GsdModuleModel>();
-        moduleMap.put(4711, gsdModuleModel);
-
-        final GsdSlaveModel gsdSlaveModel = new GsdSlaveModel();
-        gsdSlaveModel.setGsdModuleList(moduleMap);
-
-        _slave.setGSDSlaveData(gsdSlaveModel);
-        _slave.addChild(out);
-
-        assertEquals(out.getGsdModuleModel(), gsdModuleModel);
-    }
-
-
-    @Test
-    public void testGetMaxOffset() throws PersistenceException {
-
-        final ModuleDBO out = new ModuleDBO(_slave);
-        assertTrue(out.getMaxOffset()==-1);
-
-        out.moveSortIndex((short) 7);
-
-        final GsdModuleModel gsdModuleModel = new GsdModuleModel("1\"Name\"123", null);
-
-        final HashMap<Integer, GsdModuleModel> moduleMap = new HashMap<Integer, GsdModuleModel>();
-        moduleMap.put(4711, gsdModuleModel);
-
-        final GsdSlaveModel gsdSlaveModel = new GsdSlaveModel();
-        gsdSlaveModel.setGsdModuleList(moduleMap);
-
-        _slave.setGSDSlaveData(gsdSlaveModel);
-        _slave.addChild(out);
-
-        assertSame(out.getMaxOffset(),(short)55);
-    }
-
 
     @Before
     public void setUp() throws PersistenceException {

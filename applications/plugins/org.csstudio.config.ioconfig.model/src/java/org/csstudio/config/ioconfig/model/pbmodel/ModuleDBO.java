@@ -26,7 +26,6 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,6 @@ import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.hibernate.annotations.BatchSize;
 
@@ -115,14 +113,7 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     @Column(name = "cfg_data", length = 99)
     public String getConfigurationData() {
-        StringBuilder sb = new StringBuilder();
-        for (Integer value : _configurationData) {
-            sb.append(String.format("0x%02X,", value));
-        }
-        if(sb.length()>0) {
-            sb.deleteCharAt(sb.length()-1);
-        }
-        return sb.toString();
+        return GsdFileParser.intList2HexString(_configurationData);
     }
 
     /**
@@ -318,24 +309,25 @@ public class ModuleDBO extends AbstractNodeDBO {
         }
     }
 
-    @Transient
-    public GsdModuleModel getGsdModuleModel() {
-        try {
-            HashMap<Integer, GsdModuleModel> gsdModuleList = getSlave().getGSDSlaveData().getGsdModuleList();
-            if (gsdModuleList.containsKey(getModuleNumber())) {
-                return gsdModuleList.get(getModuleNumber());
-            }
-            return gsdModuleList.values().iterator().next();
-        } catch (NullPointerException e) {
-            return null;
-        }
-    }
+//    @Transient
+//    public GsdModuleModel getGsdModuleModel() {
+//        try {
+//            HashMap<Integer, GsdModuleModel> gsdModuleList = getSlave().getGSDSlaveData().getGsdModuleList();
+//            if (gsdModuleList.containsKey(getModuleNumber())) {
+//                return gsdModuleList.get(getModuleNumber());
+//            }
+//            return gsdModuleList.values().iterator().next();
+//        } catch (NullPointerException e) {
+//            return null;
+//        }
+//    }
     
     @Transient
-    public short getMaxOffset() {
-        if (getGsdModuleModel() != null) {
+    public short getMaxOffset() throws IOException {
+        GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
+        if (gsdModuleModel2 != null) {
             short offset = getSortIndex();
-            SlaveCfgData slaveCfgData = new SlaveCfgData(getGsdModuleModel().getValue());
+            SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
             int byteMulti = 1;
             if (slaveCfgData.isWordSize()) {
                 byteMulti = 2;
@@ -427,9 +419,18 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Transient
+    @Nonnull
     public String getExtUserPrmDataConst() {
         if(getConfigurationData()==null) {
-            return getGsdModuleModel().getModiExtUserPrmDataConst().trim();
+            List<Integer> extUserPrmDataConst;
+            String defaultUserPrmDataConst;
+            try {
+                extUserPrmDataConst = getGsdModuleModel2().getExtUserPrmDataConst();
+                defaultUserPrmDataConst = GsdFileParser.intList2HexString(extUserPrmDataConst);
+            } catch (IOException e) {
+                defaultUserPrmDataConst = "";
+            }
+            return defaultUserPrmDataConst;
         }
         return getConfigurationData();
     }

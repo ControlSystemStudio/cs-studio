@@ -70,14 +70,7 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
 
     @Nonnull
     public String getValueAsString() {
-        StringBuilder sb = new StringBuilder();
-        for (Integer value : _value) {
-            sb.append(String.format("0x%02X,", value));
-        }
-        if(sb.length()>0) {
-            sb.deleteCharAt(sb.length()-1);
-        }
-        return sb.toString();
+        return GsdFileParser.intList2HexString(_value);
     }
     
     /**

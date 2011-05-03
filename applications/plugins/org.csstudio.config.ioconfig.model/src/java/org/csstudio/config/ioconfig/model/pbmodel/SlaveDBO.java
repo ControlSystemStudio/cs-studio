@@ -45,8 +45,6 @@ import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
@@ -141,7 +139,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      * The GSD Slave Model.
      */
     @Transient
-    private GsdSlaveModel _gsdSlaveModel;
+    private ParsedGsdFileModel _gsdSlaveModel;
     
     /**
      * This Constructor is only used by Hibernate. To create an new {@link SlaveDBO}
@@ -341,16 +339,10 @@ public class SlaveDBO extends AbstractNodeDBO {
     public void setGroupIdent(final int groupIdent) {
         _groupIdent = (short) groupIdent;
     }
-    
+
+    @Nonnull
     public String getPrmUserData() {
-        StringBuilder sb = new StringBuilder();
-        for (Integer value : _prmUserDataList) {
-            sb.append(String.format("0x%02X,", value));
-        }
-        if(sb.length()>0) {
-            sb.deleteCharAt(sb.length()-1);
-        }
-        return sb.toString();
+        return GsdFileParser.intList2HexString(_prmUserDataList);
     }
     
     @Transient
@@ -393,23 +385,23 @@ public class SlaveDBO extends AbstractNodeDBO {
             return false;
         }
         
-        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
+//        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
         ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         
         /*
          * Head
          */
-        if (slaveModel != null) {
-            setVersion(slaveModel.getGsdRevision());
+        if (parsedGsdFileModel != null) {
+            setVersion(parsedGsdFileModel.getGsdRevision());
             
             /*
              * Basic - Slave Discription (read only)
              */
-            setVendorName(slaveModel.getVendorName());
-            setModelName(slaveModel.getModelName());
+            setVendorName(parsedGsdFileModel.getVendorName());
+            setModelName(parsedGsdFileModel.getModelName());
             //            _iDNo = String.format("0x%04X", slaveModel.getIdentNumber());
             _iDNo = String.format("0x%04X", parsedGsdFileModel.getIdentNumber());
-            setRevision(slaveModel.getRevision());
+            setRevision(parsedGsdFileModel.getRevision());
             
             /*
              * Basic - Inputs / Outputs (read only)
@@ -417,24 +409,24 @@ public class SlaveDBO extends AbstractNodeDBO {
             /*
              * Set all GSD-File Data to Slave.
              */
-            setModelName(slaveModel.getModelName());
+            setModelName(parsedGsdFileModel.getModelName());
             //            setPrmUserData(slaveModel.getUserPrmData());
             setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             //            setProfibusPNoID(slaveModel.getIdentNumber());
             setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
-            setRevision(slaveModel.getRevision());
+            setRevision(parsedGsdFileModel.getRevision());
             
             /*
              * Basic - DP / FDL Access
              */
-            /*
-             * Modules
-             */
-            if ((slaveModel.getGsdModuleList() == null) || slaveModel.getGsdModuleList().isEmpty()) {
-                slaveModel.setGsdModuleList(GSD2Module.parse(gsdFile, slaveModel));
-            }
+//            /*
+//             * Modules
+//             */
+//            if (!parsedGsdFileModel.hasModule()) {
+//                parsedGsdFileModel.setGsdModuleList(GSD2Module.parse(gsdFile, parsedGsdFileModel));
+//            }
             
-            _maxSize = slaveModel.getMaxModule();
+            _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
             if (_maxSize < 1) {
                 return false;
             }
@@ -447,7 +439,7 @@ public class SlaveDBO extends AbstractNodeDBO {
              */
 
             // setGSDData
-            setGSDSlaveData(slaveModel);
+            setGSDSlaveData(parsedGsdFileModel);
         }
         return true;
     }
@@ -478,15 +470,16 @@ public class SlaveDBO extends AbstractNodeDBO {
                 e.printStackTrace();
             }
         }
-        return _gsdSlaveModel;
+//        return _gsdSlaveModel;
+        return null;
     }
     
     /**
      * @param slaveKeywords
      */
     @Transient
-    public void setGSDSlaveData(final GsdSlaveModel gsdSlaveModel) {
-        _gsdSlaveModel = gsdSlaveModel;
+    public void setGSDSlaveData(final ParsedGsdFileModel parsedGsdFileModel) {
+        _gsdSlaveModel = parsedGsdFileModel;
     }
     
     /**
@@ -506,7 +499,8 @@ public class SlaveDBO extends AbstractNodeDBO {
             } catch (IOException e) {
                 throw new PersistenceException(e);
             }
-            copy.setGSDSlaveData(getGSDSlaveData());
+            //TODO: MUss das wieder gesetzt werden?
+//            copy.setGSDSlaveData(getGSDSlaveData());
             copy.setMinTsdr(getMinTsdr());
             copy.setModelName(getModelName());
             copy.setPrmUserData(getPrmUserData());

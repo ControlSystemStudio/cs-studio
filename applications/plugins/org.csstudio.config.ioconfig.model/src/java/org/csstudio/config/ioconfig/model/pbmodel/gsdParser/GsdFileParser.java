@@ -787,4 +787,16 @@ public final class GsdFileParser {
             }
         }
     }
+
+    @Nonnull
+    public static String intList2HexString(@Nonnull List<Integer> intList) {
+        StringBuilder sb = new StringBuilder();
+        for (Integer value : intList) {
+            sb.append(String.format("0x%02X,", value));
+        }
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        return sb.toString();
+    }
 }
