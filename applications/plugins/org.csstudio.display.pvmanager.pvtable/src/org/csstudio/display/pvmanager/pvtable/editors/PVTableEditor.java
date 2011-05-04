@@ -42,22 +42,30 @@ import org.epics.pvmanager.extra.DynamicGroup;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.CellEditor;
 
 /**
  * @author shroffk
  * 
  */
 public class PVTableEditor extends EditorPart {
+	
+	private boolean editingDone = false;
+	
 	private class ContentProvider implements IStructuredContentProvider {
 		
 		private PVTableModelListener listener = new PVTableModelListener() {
 			
 			@Override
 			public void dataChanged() {
-				tableViewer.refresh();
+				if (!tableViewer.isCellEditorActive() || editingDone) {
+					tableViewer.refresh();
+				}
 			}
 		};
 		
@@ -202,6 +210,51 @@ public class PVTableEditor extends EditorPart {
 
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
+		tableViewerColumn.setEditingSupport(new EditingSupport(tableViewer) {
+			protected boolean canEdit(Object element) {
+				return true;
+			}
+			protected CellEditor getCellEditor(Object element) {
+				return new TextCellEditor(table);
+			}
+			protected Object getValue(Object element) {
+				Item item = (Item) element;
+				if (item == null || item.getProcessVariableName() == null)
+					return "";
+				return item.getProcessVariableName().getProcessVariableName();
+			}
+			protected void setValue(Object element, Object value) {
+				try {
+					editingDone = true;
+					Item item = (Item) element;
+					PVTableModel model = (PVTableModel) tableViewer.getInput();
+					if (item != null && model != null) {
+						int oldSize = model.getItems().length - 1;
+						if (value == null || value.toString().trim().isEmpty()) {
+							// We are removing the row
+							if (item.getRow() == oldSize) {
+								// Do nothing: the row was the empty one anyway
+							} else {
+								group.remove(item.getRow());
+							}
+							model.removeItem(item);
+							model.updateValues(group.lastExceptions());
+						} else {
+							// We are updating the row
+							model.updatePVName(item, new ProcessVariableName(value.toString()));
+							if (item.getRow() == oldSize) {
+								group.add(latestValueOf(channel(value.toString())));
+							} else {
+								group.set(item.getRow(), latestValueOf(channel(value.toString())));
+							}
+							model.updateValues(group.lastExceptions());
+						}
+					}
+				} finally {
+					editingDone = false;
+				}
+			}
+		});
 		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
 			public Image getImage(Object element) {
 				return null;

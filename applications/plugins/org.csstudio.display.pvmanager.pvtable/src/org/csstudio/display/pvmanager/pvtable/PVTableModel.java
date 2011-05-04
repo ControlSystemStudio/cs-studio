@@ -1,5 +1,6 @@
 package org.csstudio.display.pvmanager.pvtable;
 
+import java.io.ObjectStreamClass;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -31,21 +32,32 @@ public class PVTableModel {
 		fireDataChanged();
 	}
 	
+	public void updateValues(List<Exception> lastExceptions) {
+		this.lastExceptions = lastExceptions;
+		fireDataChanged();
+	}
+	
 	public void addPVName(ProcessVariableName pvName) {
 		pvNames.add(pvName);
 		fireDataChanged();
 	}
 	
 	public void updatePVName(Item item, ProcessVariableName pvName) {
-		pvNames.set(item.row, pvName);
+		if (item.row < pvNames.size()) {
+			pvNames.set(item.row, pvName);
+		} else {
+			pvNames.add(pvName);
+		}
 		fireDataChanged();
 	}
 	
 	public void removeItem(Item item) {
-		pvNames.remove(item.row);
-		values.remove(item.row);
-		lastExceptions.remove(item.row);
-		fireDataChanged();
+		if (item.row < pvNames.size()) {
+			pvNames.remove(item.row);
+			values.remove(item.row);
+			lastExceptions.remove(item.row);
+			fireDataChanged();
+		}
 	}
 	
 	public void removeItems(Item[] items) {
@@ -77,6 +89,10 @@ public class PVTableModel {
 			this.row = row;
 		}
 		
+		public int getRow() {
+			return row;
+		}
+		
 		public ProcessVariableName getProcessVariableName() {
 			if (row < pvNames.size())
 				return pvNames.get(row);
@@ -97,6 +113,19 @@ public class PVTableModel {
 			else
 				return null;
 		}
+		
+		@Override
+		public int hashCode() {
+			return new Integer(row).hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof Item) {
+				return row == ((Item) obj).row;
+			}
+			return false;
+		}
 	}
 	
 	public Item[] getItems() {
@@ -106,4 +135,5 @@ public class PVTableModel {
 		}
 		return result;
 	}
+	
 }
