@@ -86,6 +86,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
@@ -98,6 +99,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         // precision
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
@@ -110,6 +112,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         // aliases
         IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
@@ -121,6 +124,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         setPropertyChangeHandler(PROP_ALIASES, aliasHandler);
         // primary pv
         IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
@@ -289,9 +293,13 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                 double d = Double.parseDouble(text);
                 int indexOf = text.indexOf('.');
                 int min = model.getPrecision();
-                if(indexOf>=0) {
-                    min = text.length()-indexOf-1;
-                }
+                // (hrickens) [04.05.2011]: show precision number of zeros
+//                if(indexOf>=0) {
+//                    int i = text.length()-indexOf-1;
+//                    if(i<min) {
+//                        min = i;
+//                    }
+//                }
                 numberFormat.setMinimumFractionDigits(min);
                 numberFormat.setMaximumFractionDigits(model.getPrecision());
                 return numberFormat.format(d);
