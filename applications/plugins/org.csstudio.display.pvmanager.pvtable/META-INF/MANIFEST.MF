@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.csstudio.utility.pvmanager;bundle-version="0.4.0",
  org.csstudio.csdata;bundle-version="0.0.1",
- org.csstudio.ui.menu;bundle-version="3.0.0"
+ org.csstudio.ui.menu;bundle-version="3.0.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
