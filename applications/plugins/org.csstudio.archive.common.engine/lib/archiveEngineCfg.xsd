@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- ############################## Elements ######################### -->
+    <xs:element name="engine">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="system" />
+				<xs:element ref="httpViewer" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" />
+		</xs:complexType>
+      
+        <xs:keyref name="channelKeyRef" refer="channelKey">
+            <xs:selector xpath="*/channelRef" />
+            <xs:field xpath="@key" />
+        </xs:keyref>          
+        
+        <xs:key name="channelKey">
+          <xs:selector xpath=".//channel"/>
+          <xs:field xpath="@id"/>
+        </xs:key>
+	</xs:element>
+
+
+	<xs:element name="system">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="channels" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+
+		<xs:unique name="channelId">
+			<xs:selector xpath="channels/channel" />
+			<xs:field xpath="@controlSystem" />
+			<xs:field xpath="@name" />
+		</xs:unique>
+	</xs:element>
+
+
+	<xs:element name="httpViewer">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="groups" />
+			</xs:sequence>
+			<xs:attribute name="url" type="xs:anyURI" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="groups">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="group" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="group">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="channelRef" maxOccurs="unbounded" />
+			</xs:sequence>
+            <xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+      
+        <xs:unique name="channelRefUniqueInGroup">
+          <xs:selector xpath="channelRef"/>
+          <xs:field xpath="@key"/>
+        </xs:unique>
+	</xs:element>
+
+	<xs:element name="channelRef">
+		<xs:complexType>
+			<xs:attribute name="key" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

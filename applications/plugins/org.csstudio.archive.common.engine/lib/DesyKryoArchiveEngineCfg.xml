@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<engine name="KryoEngine" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\lib\archiveEngineCfg.xsd">
+	<!-- <xs:include schemaLocation="channels.xsd"/> -->
+	<!-- ... -->
+	<system>
+		<xi:include href="amtfChannels.xml" />
+		<xi:include href="cmtbChannels.xml" />
+		<xi:include href="xfelChannels.xml" />
+
+	</system>
+	<httpViewer url="http://krynfs.desy.de:4811/index.html">
+		<groups>
+			<group name="CMTB.prod">
+				<channelRef key="ID20398390" />
+				<channelRef key="ID9825788927" />
+				<channelRef key="foo" /> <- No error?! id doesnt exist 
+				<!-- ... -->
+			</group>
+			<group name="CMTB.cfg">
+				<channelRef key="ID98234098" />
+				<!-- ... -->
+			</group>
+			<group name="XFEL.all">
+				<channelRef key="ID7667888" />
+				<!-- ... -->
+			</group>
+			<group name="XFEL.specific">
+				<channelRef key="ID7667888" />
+			</group>
+
+			<group name="Kaltfahren">
+				<channelRef key="ID7667888" />
+				<channelRef key="ID20398390" />
+			</group>
+
+			<!-- ... -->
+		</groups>
+	</httpViewer>
+</engine>
