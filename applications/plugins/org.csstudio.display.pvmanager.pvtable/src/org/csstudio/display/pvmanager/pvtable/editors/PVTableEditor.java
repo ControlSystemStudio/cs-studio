@@ -3,8 +3,10 @@
  */
 package org.csstudio.display.pvmanager.pvtable.editors;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.extra.ExpressionLanguage.group;
+
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,7 +17,21 @@ import org.csstudio.display.pvmanager.pvtable.PVTableModel.Item;
 import org.csstudio.display.pvmanager.pvtable.PVTableModelListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbench;
@@ -24,30 +40,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
-import org.epics.pvmanager.ThreadSwitch;
-import org.epics.pvmanager.data.MultiScalar;
 import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.extra.DynamicGroup;
-
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.extra.ExpressionLanguage.*;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.CellEditor;
 
 /**
  * @author shroffk
@@ -255,7 +254,8 @@ public class PVTableEditor extends EditorPart {
 				}
 			}
 		});
-		tableViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+		tableViewerColumn.setLabelProvider(new PVColumnLabelProvider() {
+			
 			public Image getImage(Object element) {
 				return null;
 			}
@@ -272,7 +272,7 @@ public class PVTableEditor extends EditorPart {
 
 		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		tableViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+		tableViewerColumn_1.setLabelProvider(new PVColumnLabelProvider() {
 		    private ValueFormat format = new SimpleValueFormat(3);
 			public Image getImage(Object element) {
 				return null;
@@ -290,7 +290,7 @@ public class PVTableEditor extends EditorPart {
 
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		tableViewerColumn_2.setLabelProvider(new ColumnLabelProvider() {
+		tableViewerColumn_2.setLabelProvider(new PVColumnLabelProvider() {
 			public Image getImage(Object element) {
 				return null;
 			}
@@ -307,7 +307,7 @@ public class PVTableEditor extends EditorPart {
 
 		TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
-		tableViewerColumn_3.setLabelProvider(new ColumnLabelProvider() {
+		tableViewerColumn_3.setLabelProvider(new PVColumnLabelProvider() {
 			public Image getImage(Object element) {
 				return null;
 			}
