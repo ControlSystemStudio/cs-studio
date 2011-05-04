@@ -25,9 +25,13 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
@@ -53,13 +57,13 @@ import org.epics.pvmanager.extra.DynamicGroup;
  * 
  */
 public class PVTableEditor extends EditorPart {
-	
+
 	private boolean editingDone = false;
-	
+
 	private class ContentProvider implements IStructuredContentProvider {
-		
+
 		private PVTableModelListener listener = new PVTableModelListener() {
-			
+
 			@Override
 			public void dataChanged() {
 				if (!tableViewer.isCellEditorActive() || editingDone) {
@@ -67,12 +71,14 @@ public class PVTableEditor extends EditorPart {
 				}
 			}
 		};
-		
+
 		public Object[] getElements(Object inputElement) {
 			return ((PVTableModel) inputElement).getItems();
 		}
+
 		public void dispose() {
 		}
+
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			if (oldInput != null) {
 				((PVTableModel) oldInput).removePVTableModelListener(listener);
@@ -82,7 +88,7 @@ public class PVTableEditor extends EditorPart {
 			}
 		}
 	}
-	
+
 	public static final String ID = PVTableEditor.class.getName();
 	private static Logger logger = Logger.getLogger(ID);
 
@@ -93,7 +99,7 @@ public class PVTableEditor extends EditorPart {
 	private PV<List<Object>> pv = PVManager.read(group)
 			.andNotify(SWTUtil.onSWTThread()).atHz(2);
 	private final PVValueChangeListener pvListener = new PVValueChangeListener() {
-		
+
 		@Override
 		public void pvValueChanged() {
 			// TODO Auto-generated method stub
@@ -183,7 +189,7 @@ public class PVTableEditor extends EditorPart {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -201,8 +207,8 @@ public class PVTableEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 
-		tableViewer = new TableViewer(parent, SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.MULTI | SWT.VIRTUAL);
+		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION
+				| SWT.MULTI | SWT.VIRTUAL);
 		table = tableViewer.getTable();
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -213,15 +219,18 @@ public class PVTableEditor extends EditorPart {
 			protected boolean canEdit(Object element) {
 				return true;
 			}
+
 			protected CellEditor getCellEditor(Object element) {
 				return new TextCellEditor(table);
 			}
+
 			protected Object getValue(Object element) {
 				Item item = (Item) element;
 				if (item == null || item.getProcessVariableName() == null)
 					return "";
 				return item.getProcessVariableName().getProcessVariableName();
 			}
+
 			protected void setValue(Object element, Object value) {
 				try {
 					editingDone = true;
@@ -240,11 +249,15 @@ public class PVTableEditor extends EditorPart {
 							model.updateValues(group.lastExceptions());
 						} else {
 							// We are updating the row
-							model.updatePVName(item, new ProcessVariableName(value.toString()));
+							model.updatePVName(item, new ProcessVariableName(
+									value.toString()));
 							if (item.getRow() == oldSize) {
-								group.add(latestValueOf(channel(value.toString())));
+								group.add(latestValueOf(channel(value
+										.toString())));
 							} else {
-								group.set(item.getRow(), latestValueOf(channel(value.toString())));
+								group.set(
+										item.getRow(),
+										latestValueOf(channel(value.toString())));
 							}
 							model.updateValues(group.lastExceptions());
 						}
@@ -255,10 +268,11 @@ public class PVTableEditor extends EditorPart {
 			}
 		});
 		tableViewerColumn.setLabelProvider(new PVColumnLabelProvider() {
-			
+
 			public Image getImage(Object element) {
 				return null;
 			}
+
 			public String getText(Object element) {
 				Item item = (Item) element;
 				if (item == null || item.getProcessVariableName() == null)
@@ -273,10 +287,12 @@ public class PVTableEditor extends EditorPart {
 		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		tableViewerColumn_1.setLabelProvider(new PVColumnLabelProvider() {
-		    private ValueFormat format = new SimpleValueFormat(3);
+			private ValueFormat format = new SimpleValueFormat(3);
+
 			public Image getImage(Object element) {
 				return null;
 			}
+
 			public String getText(Object element) {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
@@ -294,11 +310,13 @@ public class PVTableEditor extends EditorPart {
 			public Image getImage(Object element) {
 				return null;
 			}
+
 			public String getText(Object element) {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
 					return null;
-				return Util.alarmOf(item.getValue()).getAlarmSeverity().toString();
+				return Util.alarmOf(item.getValue()).getAlarmSeverity()
+						.toString();
 			}
 		});
 		TableColumn tblclmnAlarm = tableViewerColumn_2.getColumn();
@@ -311,6 +329,7 @@ public class PVTableEditor extends EditorPart {
 			public Image getImage(Object element) {
 				return null;
 			}
+
 			public String getText(Object element) {
 				Item item = (Item) element;
 				if (item == null || item.getValue() == null)
@@ -323,6 +342,21 @@ public class PVTableEditor extends EditorPart {
 		tblclmnTime.setText("Time");
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(new PVTableModel());
+
+		table.addMouseMoveListener(new MouseMoveListener() {
+
+			@Override
+			public void mouseMove(MouseEvent e) {
+				ViewerCell cell = tableViewer.getCell(new Point(e.x, e.y));
+				if (cell != null) {
+					Item item = (Item) cell.getElement();
+					if (item != null && item.getException() != null)
+						table.setToolTipText(item.getException().getMessage());
+					else
+						table.setToolTipText(null);
+				}
+			}
+		});
 
 		pv.addPVValueChangeListener(pvListener);
 	}
