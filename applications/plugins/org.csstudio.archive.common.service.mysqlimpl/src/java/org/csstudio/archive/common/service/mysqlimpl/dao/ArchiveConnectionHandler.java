@@ -24,6 +24,7 @@ package org.csstudio.archive.common.service.mysqlimpl.dao;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.DATABASE_NAME;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.FAILOVER_HOST;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.HOST;
+import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.MAX_ALLOWED_PACKET_IN_KB;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PORT;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
@@ -37,6 +38,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
+import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 
@@ -51,7 +53,6 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
  * @since 11.11.2010
  */
 public enum ArchiveConnectionHandler {
-
     INSTANCE;
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
@@ -63,7 +64,7 @@ public enum ArchiveConnectionHandler {
     /**
      * The datasource that specifies the connections.
      */
-    private MysqlDataSource _dataSource;
+    private final MysqlDataSource _dataSource;
 
     /**
      * Any thread owns a connection.
@@ -80,6 +81,7 @@ public enum ArchiveConnectionHandler {
     private String _prefPassword;
     private Integer _prefPort;
     private String _prefDatabaseName;
+    private Integer _prefMaxAllowedPacketSizeInKB;
 
 
     /**
@@ -99,6 +101,7 @@ public enum ArchiveConnectionHandler {
         _prefDatabaseName = DATABASE_NAME.getValue();
         _prefUser = USER.getValue();
         _prefPassword = PASSWORD.getValue();
+        _prefMaxAllowedPacketSizeInKB = MAX_ALLOWED_PACKET_IN_KB.getValue();
 
     }
 
@@ -116,7 +119,9 @@ public enum ArchiveConnectionHandler {
         ds.setUser(_prefUser);
         ds.setPassword(_prefPassword);
         ds.setFailOverReadOnly(false);
-        ds.setMaxAllowedPacket(64*1024); // up tp 64MB TODO (bknerr): same pref as in the engine mgr
+        ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
+
+        ds.setUseTimezone(true);
 
         return ds;
     }
@@ -160,35 +165,12 @@ public enum ArchiveConnectionHandler {
                 _archiveConnection.set(connection);
             }
         } catch (final Exception e) {
-            handleExceptions(e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
         if (connection == null || StringUtil.isBlank(_prefDatabaseName)) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;
-    }
-
-    /**
-     * To reduce the readability of the invoking method. Catches checked exceptions, wraps them in
-     * dedicated abstraction level exception. Rethrows any other exception as new RuntimeException.
-     *
-     * @param e Exception to handle
-     * @throws RuntimeException wrapper for unhandled exception
-     */
-    private void handleExceptions(@Nonnull final Exception e) throws ArchiveConnectionException {
-        try {
-            throw e;
-        } catch (final InstantiationException ie) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, ie);
-        } catch (final IllegalAccessException iae) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, iae);
-        } catch (final ClassNotFoundException cfe) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, cfe);
-        } catch (final SQLException se) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, se);
-        } catch (final Exception re) {
-            throw new RuntimeException(re);
-        }
     }
 
     /**

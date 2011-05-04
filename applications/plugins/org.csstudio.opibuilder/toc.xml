@@ -14,12 +14,17 @@
     <topic href="html/OPI Runtime.html" label="OPI Runtime">
     </topic>
       <topic href="html/PreferencePage.html" label="Setting Preferences">
+         <topic href="html/Schema.html" label="Schema">
+         </topic>
+         <topic href="html/OPI Probe.html" label="OPI Probe">
+         </topic>
       </topic>
   <topic label="Widgets Overview" href="html/Widgets_Overview.html"/>
   <topic label="Widget Properties" href="html/Widget Properties.html"/>
   <topic label="PV Connectivity" href="html/PV Connectivity.html"/>
   <topic href="html/Actions.html" label="Action">
   </topic>
+  <topic label="Macro" href="html/Macro.html"/>
   <topic href="html/Rules.html" label="Rules">
   </topic>
   <topic href="html/Script.html" label="Script">
@@ -40,7 +45,6 @@
         </topic>
      </topic>
   </topic>
-  <topic label="Macro" href="html/Macro.html"/>
     <topic label="Color and Font Macro" href="html/Color_Font_Macro.html"/>
     <topic href="html/CreateWidgets.html" label="Creating Customized Widget">
     </topic>

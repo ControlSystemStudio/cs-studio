@@ -45,6 +45,7 @@
       <plugin id="org.csstudio.archivereader"/>
       <plugin id="org.csstudio.archivereader.channelarchiver"/>
       <plugin id="org.csstudio.common.product"/>
+      <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
@@ -62,6 +63,7 @@
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
+      <plugin id="org.csstudio.platform.libs.dal.ui"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.glazedlists"/>
@@ -73,6 +75,7 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
+      <plugin id="org.csstudio.platform.simpledal"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
@@ -83,6 +86,7 @@
       <plugin id="org.csstudio.swt.chart"/>
       <plugin id="org.csstudio.swt.widgets"/>
       <plugin id="org.csstudio.swt.xygraph"/>
+      <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
       <plugin id="org.csstudio.ui.menu"/>
@@ -182,6 +186,7 @@
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>

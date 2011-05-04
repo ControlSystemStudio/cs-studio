@@ -25,7 +25,7 @@ package org.csstudio.alarm.dal2jms.preferences;
 import java.util.List;
 
 import org.csstudio.alarm.dal2jms.Activator;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

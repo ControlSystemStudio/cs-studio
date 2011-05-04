@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.service;
 
-import javax.annotation.Nonnull;
 
 /**
  * Service unavailable exception is thrown whenever a (data acess/resource) service is not
@@ -38,7 +37,7 @@ public class ServiceUnavailableException extends Exception {
      * Constructor.
      * @param message the describing message
      */
-    public ServiceUnavailableException(@Nonnull final String message) {
+    public ServiceUnavailableException(final String message) {
         super(message);
     }
 }

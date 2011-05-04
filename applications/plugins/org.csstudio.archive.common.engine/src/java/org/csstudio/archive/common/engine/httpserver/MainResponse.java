@@ -64,12 +64,12 @@ class MainResponse extends AbstractResponse {
 
         html.tableLine(new String[] { Messages.HTTP_Version, EngineModel.VERSION });
 
-        html.tableLine(new String[] { Messages.HTTP_Description, _model.getName() });
+        html.tableLine(new String[] { Messages.HTTP_Description, getModel().getName() });
 
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
 
-        html.tableLine(new String[] { Messages.HTTP_State, _model.getState().name() });
-        final TimeInstant start = _model.getStartTime();
+        html.tableLine(new String[] { Messages.HTTP_State, getModel().getState().name() });
+        final TimeInstant start = getModel().getStartTime();
         if (start != null)
         {
             html.tableLine(new String[]
@@ -79,7 +79,7 @@ class MainResponse extends AbstractResponse {
             });
 
             final Duration dur = new Duration(start.getInstant(),
-                                              TimeInstantBuilder.buildFromNow().getInstant());
+                                              TimeInstantBuilder.fromNow().getInstant());
 
             html.tableLine(new String[]
             {
@@ -94,10 +94,10 @@ class MainResponse extends AbstractResponse {
             Platform.getInstanceLocation().getURL().getFile().toString()
         });
 
-        final int group_count = _model.getGroups().size();
+        final int group_count = getModel().getGroups().size();
         int total_channel_count = 0;
         int connect_count = 0;
-        for (final ArchiveGroup group : _model.getGroups()) {
+        for (final ArchiveGroup group : getModel().getGroups()) {
 
             final int channel_count = group.getChannels().size();
             for (final ArchiveChannel<?, ?> channel : group.getChannels()) {
@@ -111,7 +111,7 @@ class MainResponse extends AbstractResponse {
         html.tableLine(new String[]
         { Messages.HTTP_GroupCount, Integer.toString(group_count) });
         html.tableLine(new String[]
-        { Messages.HTTP_ChannelCount, Integer.toString(total_channel_count) });
+        { Messages.HTTP_COLUMN_CHANNEL_COUNT, Integer.toString(total_channel_count) });
         final int disconnect_count = total_channel_count - connect_count;
         if (disconnect_count > 0)
         {
@@ -124,7 +124,7 @@ class MainResponse extends AbstractResponse {
         html.tableLine(new String[]
         {
             Messages.HTTP_WritePeriod,
-            _model.getWritePeriodInMS() + " ms"
+            getModel().getWritePeriodInMS() + " ms"
         });
 
         // Currently in 'Write Error' state?
@@ -136,21 +136,21 @@ class MainResponse extends AbstractResponse {
              : "OK")
         });
 
-        final TimeInstant lastWriteTime = _model.getLastWriteTime();
+        final TimeInstant lastWriteTime = getModel().getLastWriteTime();
         html.tableLine(new String[]
         {
             Messages.HTTP_LAST_WRITETIME,
            (lastWriteTime == null ? Messages.HTTP_Never :
                                     lastWriteTime.formatted())
         });
-        final Double avgWriteCount = _model.getAvgWriteCount();
+        final Double avgWriteCount = getModel().getAvgWriteCount();
         html.tableLine(new String[]
         {
             Messages.HTTP_WriteCount,
             (avgWriteCount != null ? String.format("%.1f", avgWriteCount):
                                      "NO") + " samples"
         });
-        final Duration avgWriteDuration = _model.getAvgWriteDuration();
+        final Duration avgWriteDuration = getModel().getAvgWriteDuration();
         String printDur = "NONE";
         if (avgWriteDuration != null) {
             printDur = TimeInstant.STD_DURATION_FMT.print(avgWriteDuration.toPeriod());

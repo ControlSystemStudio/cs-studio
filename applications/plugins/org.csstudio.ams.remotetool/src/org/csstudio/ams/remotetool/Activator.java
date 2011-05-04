@@ -2,6 +2,9 @@ package org.csstudio.ams.remotetool;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -14,6 +17,8 @@ public class Activator extends Plugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
 	/**
 	 * The constructor
 	 */
@@ -27,6 +32,9 @@ public class Activator extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 	}
 
 	/*
@@ -47,4 +55,8 @@ public class Activator extends Plugin {
 		return plugin;
 	}
 
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

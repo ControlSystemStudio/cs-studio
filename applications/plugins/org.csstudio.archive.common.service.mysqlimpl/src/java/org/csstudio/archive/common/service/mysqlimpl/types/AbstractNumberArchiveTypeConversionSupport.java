@@ -32,7 +32,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 /**
  * Common type conversions for {@link Number} subtypes.
@@ -91,6 +90,7 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Boolean isOptimizableByAveraging() {
         return Boolean.TRUE;
     }
@@ -100,7 +100,8 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
      */
     @Override
     @Nonnull
-    public Collection<N> convertFromArchiveStringToMultiScalar(@Nonnull final String archiveValues) throws TypeSupportException {
+    public Collection<N> convertFromArchiveStringToMultiScalar(@Nonnull final Class<?> collectionClass,
+                                                               @Nonnull final String archiveValues) throws TypeSupportException {
 
         final String releasedStr = collectionRelease(archiveValues);
         if (releasedStr == null) {
@@ -110,16 +111,8 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
 
         final Iterable<N> typedValues = Iterables.filter(Iterables.transform(strings, _string2NumberFunc),
                                                          Predicates.<N>notNull());
-        int size;
-        try {
-            size = Iterables.size(typedValues);
-        } catch (final NumberFormatException e) {
-            throw new TypeSupportException("Values representation is not convertible to subtype of Number.", e);
-        }
-        if (Iterables.size(strings) != size) {
-            throw new TypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
-        }
-        return Lists.newArrayList(typedValues);
-    }
+        checkInputVsOutputSize(strings, typedValues);
 
+        return createCollectionFromIterable(collectionClass, typedValues);
+    }
 }

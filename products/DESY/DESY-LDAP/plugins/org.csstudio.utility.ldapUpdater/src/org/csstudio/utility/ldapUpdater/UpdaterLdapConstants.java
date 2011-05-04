@@ -34,6 +34,8 @@ package org.csstudio.utility.ldapUpdater;
 public final class UpdaterLdapConstants {
 
     public static final String FACILITY_MISC_FIELD_VALUE = "MISC";
+    public static final String RECORDS_FILE_SUFFIX = ".records";
+    public static final String BOOT_FILE_SUFFIX = ".boot";
 
     /**
      * Don't instantiate.

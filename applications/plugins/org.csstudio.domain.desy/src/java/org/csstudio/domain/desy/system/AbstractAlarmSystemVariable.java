@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Replacement for my very own ICssValueStuff
@@ -41,20 +40,22 @@ import org.csstudio.domain.desy.types.ICssValueType;
 public abstract class AbstractAlarmSystemVariable<T, A extends IAlarm>
     extends AbstractSystemVariable<T> implements IAlarmSystemVariable<T> {
 
+    private static final long serialVersionUID = -7349013176888329772L;
+
     private final A _alarm;
 
     /**
      * Constructor.
      */
     public AbstractAlarmSystemVariable(@Nonnull final String name,
-                                       @Nonnull final ICssValueType<T> data,
+                                       @Nonnull final T data,
                                        @Nonnull final ControlSystem origin,
                                        @Nonnull final TimeInstant time,
                                        @Nullable final A alarm) {
         super(name, data, origin, time);
         _alarm = alarm;
         // plausibility check
-        if (!origin.getType().equals(alarm.getControlSystemType())) {
+        if (alarm != null && !origin.getType().equals(alarm.getControlSystemType())) {
             throw new IllegalArgumentException("Control system type and alarm type do not match.");
         }
     }

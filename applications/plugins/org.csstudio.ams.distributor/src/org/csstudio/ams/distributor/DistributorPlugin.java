@@ -24,6 +24,9 @@ package org.csstudio.ams.distributor;
 
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -35,6 +38,8 @@ public class DistributorPlugin extends AbstractCssPlugin
 
 	// The shared instance
 	private static DistributorPlugin plugin;
+	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
 	
 	/**
 	 * The constructor
@@ -49,6 +54,9 @@ public class DistributorPlugin extends AbstractCssPlugin
 	 */
 	public void doStart(BundleContext context) throws Exception
 	{
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 	}
 
 	/*
@@ -74,4 +82,9 @@ public class DistributorPlugin extends AbstractCssPlugin
     {
         return PLUGIN_ID;
     }
+    
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

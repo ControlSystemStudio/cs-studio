@@ -5,20 +5,22 @@ Bundle-SymbolicName: org.csstudio.archive.common.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
- javax.annotation,
+Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reexport,
+ org.csstudio.domain.desy.epics;bundle-version="1.0.0",
+ org.csstudio.archive.common.requesttype;bundle-version="1.0.0",
+ org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
  org.csstudio.platform.libs.guava;bundle-version="0.6.0",
- org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reexport,
- org.csstudio.domain.desy.epics;bundle-version="1.0.0",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
+ javax.annotation,
  org.junit
 Export-Package: org.csstudio.archive.common.service,
- org.csstudio.archive.common.service.archivermgmt,
  org.csstudio.archive.common.service.channel,
  org.csstudio.archive.common.service.channelgroup,
+ org.csstudio.archive.common.service.channelstatus,
  org.csstudio.archive.common.service.controlsystem,
  org.csstudio.archive.common.service.engine,
+ org.csstudio.archive.common.service.enginestatus,
  org.csstudio.archive.common.service.requesttypes,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.util

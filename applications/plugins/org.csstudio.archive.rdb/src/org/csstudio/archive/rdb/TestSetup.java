@@ -8,9 +8,8 @@
 package org.csstudio.archive.rdb;
 
 import java.util.logging.Level;
-
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.platform.test.TestProviderException;
+import org.csstudio.testsuite.util.TestDataProvider;
+import org.csstudio.testsuite.util.TestProviderException;
 
 /** My test setup(s).
  *  @author Kay Kasemir

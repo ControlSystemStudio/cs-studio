@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 
 import com.google.common.util.concurrent.ForwardingBlockingQueue;
 
@@ -35,7 +35,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  *  @param <S> the archive sample type atop the channel and the css value type
  */
 public class SampleBuffer<V,
-                          T extends IAlarmSystemVariable<V>,
+                          T extends ISystemVariable<V>,
                           S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
 {
     /** Name of channel that writes to this buffer.
@@ -87,18 +87,9 @@ public class SampleBuffer<V,
     @Override
     @SuppressWarnings("nls")
     public boolean add(@Nonnull final S value) {
-    	synchronized (_samples) {
-    	    if (!super.offer(value)) {
-
-                while (!super.offer(value)) { // TODO (bknerr) : not yet a strategy
-                    if (super.poll() == null) { // drop samples as long appending doesn't work.
-                        throw new IllegalStateException("Sample buffer cannot append value, although queue is empty (poll returns null).");
-                    }
-                }
-            } else { // sample could not be put into sample buffer
-                // FIXME (bknerr) : sample could not be added to buffer - rescue data
-
-            }
+	    if (!super.offer(value)) {
+            // FIXME (bknerr) : data rescue if adding to sample buffer failed.
+	        return false;
         }
     	return true;
     }

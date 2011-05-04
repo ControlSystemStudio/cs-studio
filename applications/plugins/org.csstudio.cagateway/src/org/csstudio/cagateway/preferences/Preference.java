@@ -25,7 +25,7 @@ package org.csstudio.cagateway.preferences;
 import javax.annotation.Nonnull;
 
 import org.csstudio.cagateway.Activator;
-import org.csstudio.platform.AbstractPreference;
+import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**
  * Constant definitions for plug-in preferences

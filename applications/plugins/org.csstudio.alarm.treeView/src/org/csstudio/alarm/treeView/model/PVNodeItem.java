@@ -77,7 +77,7 @@ public class PVNodeItem implements IAlarmInitItem {
     @Override
     public void notFound(@Nonnull final String pvName) {
         final Alarm alarm = new Alarm(pvName,
-                                      EpicsAlarmSeverity.INVALID,
+                                      EpicsAlarmSeverity.UNKNOWN,
                                       new Date(System.currentTimeMillis()));
         _pvNode.updateAlarm(alarm);
     }

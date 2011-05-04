@@ -21,12 +21,26 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelstatus;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
+import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatusId;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 
 /**
  *
@@ -35,28 +49,75 @@ import com.google.common.base.Joiner;
  */
 public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements IArchiveChannelStatusDao {
 
+    private static final String EXC_MSG = "Retrieval of channel status from archive failed.";
 
     public static final String TAB = "channel_status";
 
-    private static final String INSERT_ENTRY_STMT_PREFIX =
+    private final String _insertChannelStatusStmtPrefix =
         "INSERT INTO " + getDatabaseName() + "." + TAB +
                      " (channel_id, connected, info, timestamp) " +
                      "VALUES ";
 
-    public ArchiveChannelStatusDaoImpl() {
-        super();
+    private final String _selectLatestChannelStatusStmt =
+        "SELECT id, channel_id, connected, info, timestamp FROM " +
+        getDatabaseName() + "." + TAB +
+        " WHERE channel_id=? ORDER BY timestamp DESC LIMIT 1";
+
+    @Inject
+    public ArchiveChannelStatusDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                       @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
 
     @Override
-    public void createChannelStatus(@Nonnull final ArchiveChannelStatus entry) throws ArchiveDaoException {
+    public void createChannelStatus(@Nonnull final IArchiveChannelStatus entry) throws ArchiveDaoException {
         final String stmtStr = Joiner.on(",").join(entry.getChannelId().intValue(),
                                                    (entry.isConnected() ? "'TRUE'" : "'FALSE'"),
                                                    "'" + entry.getInfo() + "'",
                                                    "'" + entry.getTime().formatted() + "'");
 
 
-        getEngineMgr().submitStatementToBatch(INSERT_ENTRY_STMT_PREFIX + "("  + stmtStr + ")");
+        getEngineMgr().submitStatementToBatch(_insertChannelStatusStmtPrefix + "("  + stmtStr + ")");
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannelStatus retrieveLatestStatusByChannelId(@Nonnull final ArchiveChannelId id)
+                                                                 throws ArchiveDaoException {
+        try {
+            final PreparedStatement stmt = getConnection().prepareStatement(_selectLatestChannelStatusStmt);
+            // channel_id=?
+            stmt.setInt(1, id.intValue());
+            final ResultSet resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                return createChannelStatusFromResult(resultSet);
+            }
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG, e);
+        }
+        return null;
+    }
+
+    @Nonnull
+    private IArchiveChannelStatus createChannelStatusFromResult(@Nonnull final ResultSet resultSet)
+                                                                throws SQLException {
+        // id, channel_id, connected, info, timestamp
+        final int id = resultSet.getInt(1);
+        final int channelId = resultSet.getInt(2);
+        final boolean connected = resultSet.getBoolean(3);
+        final String info = resultSet.getString(4);
+        final Timestamp timestamp = resultSet.getTimestamp(5);
+
+        return new ArchiveChannelStatus(new ArchiveChannelStatusId(id),
+                                        new ArchiveChannelId(channelId),
+                                        connected,
+                                        info,
+                                        TimeInstantBuilder.fromMillis(timestamp.getTime()));
     }
 
 }

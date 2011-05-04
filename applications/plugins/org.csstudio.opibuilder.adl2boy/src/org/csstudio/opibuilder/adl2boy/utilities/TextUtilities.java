@@ -22,8 +22,9 @@ public class TextUtilities {
 	 */
 	public static void setWidgetFont(LabelModel textModel) {
 		OPIFont font = textModel.getFont();
-		int fontSize = TranslatorUtils.convertTextHeightToFontSize(textModel
-				.getHeight());
+		int borderWidth= textModel.getBorderWidth();
+		int fontSize = convertTextHeightToFontSize(textModel
+				.getHeight() - 2*borderWidth);
 		FontData fontData = font.getFontData();
 		FontData newFontData = new FontData(fontData.getName(),
 				fontData.getHeight(), fontData.getStyle());
@@ -108,5 +109,51 @@ public class TextUtilities {
 		}
 
 	}
+
+	public static int convertTextHeightToFontSize(int h){
+		if (h < 9) {
+			return 6;
+		}
+		else if (h < 10 ){
+			return 6;
+		}
+		else if (h < 13) {
+			return 8;
+		}
+		else if (h < 14) {
+			return 9;
+		}
+		else if (h < 15) {
+			return 10;
+		}
+		else if (h < 16) {
+			return 12;
+		}
+		else if (h < 20) {
+			return 14;
+		}
+		else if (h < 21) {
+			return 16;
+		}
+		else if (h < 24) {
+			return 18;
+		}
+		else if (h < 26) {
+			return 18;
+		}
+		else if (h < 27) {
+			return 20;
+		}
+		else if (h < 35) {
+			return 24;
+		}
+		else if (h < 36) {
+			return 26;
+		}
+		else {
+			return 30;
+		}
+	}
+
 
 }

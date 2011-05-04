@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine.httpserver;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,78 +21,66 @@ import org.csstudio.archive.common.engine.model.SampleBuffer;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class ChannelResponse extends AbstractResponse
-{
+class ChannelResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    ChannelResponse(final EngineModel model)
-    {
+    ChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
     @Override
-    protected void fillResponse(final HttpServletRequest req,
-                    final HttpServletResponse resp) throws Exception
-    {   // Locate the group
-        final String channel_name = req.getParameter("name");
-        if (channel_name == null) {
+    protected void fillResponse(@Nonnull final HttpServletRequest req,
+                                @Nonnull final HttpServletResponse resp) throws Exception {
+        final String channelName = req.getParameter("name");
+        if (channelName == null) {
             resp.sendError(400, "Missing channel name");
             return;
         }
-        final ArchiveChannel<?, ?> channel = _model.getChannel(channel_name);
+        final ArchiveChannel<?, ?> channel = getModel().getChannel(channelName);
         if (channel == null) {
-            resp.sendError(400, "Unknown channel " + channel_name);
+            resp.sendError(400, "Unknown channel " + channelName);
             return;
         }
 
         // HTML table similar to group's list of channels
-        final HTMLWriter html =
-            new HTMLWriter(resp, "Archive Engine Channel");
-        html.openTable(2, new String[]
-        { Messages.HTTP_ChannelInfo });
+        final HTMLWriter html = new HTMLWriter(resp, "Archive Engine Channel");
 
-        html.tableLine(new String[]
-        { Messages.HTTP_Channel, channel_name });
+        createChannelTable(channelName, channel, html);
+
+        html.close();
+    }
+
+
+    private void createChannelTable(@Nonnull final String channelName,
+                                    @Nonnull final ArchiveChannel<?, ?> channel,
+                                    @Nonnull final HTMLWriter html) {
+        html.openTable(2, new String[] {Messages.HTTP_ChannelInfo});
+
+        html.tableLine(new String[] {Messages.HTTP_Channel, channelName});
 
         final String connected = channel.isConnected()
                         ? Messages.HTTP_Connected
                         : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
-        html.tableLine(new String[]
-        { Messages.HTTP_Connected, connected });
+        html.tableLine(new String[] {Messages.HTTP_Connected, connected});
 
-        html.tableLine(new String[]
-        { Messages.HTTP_InternalState, channel.getInternalState() });
+        html.tableLine(new String[] {Messages.HTTP_InternalState, channel.getInternalState()});
 
-        html.tableLine(new String[]
-        { Messages.HTTP_Mechanism, channel.getMechanism() });
+        //html.tableLine(new String[] {Messages.HTTP_Mechanism, channel.getMechanism()});
 
-        html.tableLine(new String[]
-        { Messages.HTTP_CurrentValue, channel.getCurrentValueAsString() });
+        html.tableLine(new String[] {Messages.HTTP_CurrentValue, getValueAsString(channel.getMostRecentSample())});
 
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_State,
-            channel.isEnabled() ? Messages.HTTP_Enabled
-                                : HTMLWriter.makeRedText(Messages.HTTP_Disabled)
-        });
+//        html.tableLine(new String[] {Messages.HTTP_State, channel.isEnabled() ? Messages.HTTP_Enabled :
+//                                                                                HTMLWriter.makeRedText(Messages.HTTP_Disabled)});
 
         final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
-        html.tableLine(new String[]
-        { Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
+        html.tableLine(new String[] {Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
 
         final BufferStats stats = buffer.getBufferStats();
-        html.tableLine(new String[]
-        {
-            Messages.HTTP_QueueAvg,
-            String.format("%.1f", stats.getAverageSize())
-        });
+        html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEAVG, String.format("%.1f", stats.getAverageSize())});
 
-        html.tableLine(new String[]
-        { Messages.HTTP_QueueMax, Integer.toString(stats.getMaxSize()) });
+        html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});
 
         html.closeTable();
-
-        html.close();
     }
 }

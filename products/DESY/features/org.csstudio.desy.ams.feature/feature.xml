@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.desy.ams.feature"
-      label="Feature"
+      label="AMS Feature"
       version="1.0.0.qualifier"
       provider-name="Desy, Jan Hatje &lt;jan.hatje@desy.de&gt;">
 
@@ -16,6 +16,10 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update label="Desy Update Site" url="http://eclipse.desy.de/css/update/"/>
+   </url>
 
    <plugin
          id="org.csstudio.ams.alarmchainmanager"

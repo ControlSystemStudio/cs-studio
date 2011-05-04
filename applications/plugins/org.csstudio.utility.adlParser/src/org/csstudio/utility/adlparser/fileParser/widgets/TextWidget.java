@@ -52,7 +52,7 @@ public class TextWidget extends ADLAbstractWidget implements ITextWidget{
 	        }
 			for (FileLine fileLine : adlWidget.getBody()){
 				String bodyPart = fileLine.getLine();
-				String[] row = bodyPart.trim().split("=");
+				String[] row = bodyPart.trim().split("=", 2);
 				if (row.length < 2){
 					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
 				}

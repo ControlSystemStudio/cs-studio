@@ -21,7 +21,6 @@
  */
 package org.csstudio.platform.service.osgi;
 
-import javax.annotation.Nonnull;
 import javax.naming.ServiceUnavailableException;
 
 /**
@@ -38,7 +37,7 @@ public class OsgiServiceUnavailableException extends ServiceUnavailableException
     /**
      * Constructor.
      */
-    public OsgiServiceUnavailableException(@Nonnull final String message) {
+    public OsgiServiceUnavailableException(final String message) {
         super(message);
     }
 

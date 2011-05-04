@@ -2,3 +2,10 @@ org.csstudio.logging
 org.csstudio.logging.ui
 org.csstudio.logging.test
 org.csstudio.platform.libs.jms
+org.csstudio.utility.pvmanager
+org.csstudio.utility.pvmanager.epics
+org.csstudio.utility.pvmanager.sim
+org.csstudio.utility.pvmanager.ui
+org.csstudio.utility.pvmanager.widgets
+org.csstudio.platform.libs.epics
+

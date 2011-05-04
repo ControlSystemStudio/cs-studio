@@ -9,47 +9,49 @@ package org.csstudio.archive.common.engine.httpserver;
 
 import java.io.IOException;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.platform.logging.CentralLogger;
 
 /** Helper for creating web pages with consistent look (header, footer, ...)
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract class AbstractResponse extends HttpServlet
-{
+abstract class AbstractResponse extends HttpServlet {
     /** Required by Serializable */
     private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
-    final protected EngineModel _model;
+    private final EngineModel _model;
+
 
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
-    protected AbstractResponse(final EngineModel model)
-    {
+    protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+    }
+
+    @Nonnull
+    protected EngineModel getModel() {
+        return _model;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void doGet(final HttpServletRequest req,
-                    final HttpServletResponse resp)
-                    throws ServletException, IOException
-    {
-        try
-        {
+    protected void doGet(@Nonnull final HttpServletRequest req,
+                         @Nonnull final HttpServletResponse resp)
+                         throws ServletException, IOException {
+        try {
             fillResponse(req, resp);
-        }
-        catch (final Exception ex)
-        {
-            if (resp.isCommitted())
-            {
+        } catch (final Exception ex) {
+            if (resp.isCommitted()) {
                 CentralLogger.getInstance().getLogger(this).warn("HTTP Server exception", ex);
                 return;
             }
@@ -63,7 +65,21 @@ abstract class AbstractResponse extends HttpServlet
      *  @param req The request
      *  @param resp The response
      */
-    abstract protected void fillResponse(final HttpServletRequest req,
-                    final HttpServletResponse resp)
+    protected abstract void fillResponse(@Nonnull final HttpServletRequest req,
+                                         @Nonnull final HttpServletResponse resp)
        throws Exception;
+
+    @Nonnull
+    protected String getValueAsString(@CheckForNull final ISystemVariable<?> var) {
+        if (var == null) {
+            return "null";
+        }
+        return var.getData().toString();
+    }
+
+    @Nonnull
+    protected String limitLength(@Nonnull final String valueAsString, final int maxValueDisplay) {
+        return valueAsString.substring(0, Math.min(valueAsString.length(), maxValueDisplay));
+    }
+
 }

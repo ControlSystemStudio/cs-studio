@@ -29,26 +29,28 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMgmtEntry;
-import org.csstudio.archive.common.service.archivermgmt.ArchiverMonitorStatus;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.common.service.channelstatus.ArchiveChannelStatus;
+import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
-import org.csstudio.archive.common.service.mysqlimpl.archivermgmt.IArchiverMgmtDao;
+import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
+import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
+import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
-import org.csstudio.archive.common.service.mysqlimpl.channelstatus.ArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.channelstatus.IArchiveChannelStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.archive.common.service.mysqlimpl.enginestatus.IArchiveEngineStatusDao;
 import org.csstudio.archive.common.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -72,7 +74,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
     /**
      * Injected by GUICE construction.
      */
-    private final IArchiverMgmtDao _mgmtDao;
+    private final IArchiveEngineStatusDao _mgmtDao;
     private final IArchiveEngineDao _engineDao;
     private final IArchiveSampleDao _sampleDao;
     private final IArchiveChannelDao _channelDao;
@@ -84,7 +86,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * Constructor.
      */
     @Inject
-    public MySQLArchiveEngineServiceImpl(@Nonnull final IArchiverMgmtDao mgmtDao,
+    public MySQLArchiveEngineServiceImpl(@Nonnull final IArchiveEngineStatusDao mgmtDao,
                                          @Nonnull final IArchiveEngineDao engineDao,
                                          @Nonnull final IArchiveSampleDao sampleDao,
                                          @Nonnull final IArchiveChannelDao channelDao,
@@ -106,7 +108,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends IAlarmSystemVariable<V>>
+    public <V, T extends ISystemVariable<V>>
     boolean writeSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveServiceException {
         try {
             _sampleDao.createSamples(samples);
@@ -120,7 +122,7 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public void writeChannelConnectionInfo(@Nonnull final ArchiveChannelId id,
+    public void writeChannelStatusInfo(@Nonnull final ArchiveChannelId id,
                                            @Nonnull final boolean connected,
                                            @Nonnull final String info,
                                            @Nonnull final TimeInstant timestamp) throws ArchiveServiceException {
@@ -135,13 +137,12 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
      * {@inheritDoc}
      */
     @Override
-    public void writeMonitorModeInformation(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final ArchiverMonitorStatus status,
-                                            @Nonnull final ArchiveEngineId engineId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final String info) throws ArchiveServiceException {
+    public void writeEngineStatusInformation(@Nonnull final ArchiveEngineId engineId,
+                                             @Nonnull final EngineMonitorStatus status,
+                                             @Nonnull final TimeInstant time,
+                                             @Nonnull final String info) throws ArchiveServiceException {
         try {
-            _mgmtDao.createMgmtEntry(new ArchiverMgmtEntry(id, status, engineId, time, info));
+            _mgmtDao.createMgmtEntry(new ArchiveEngineStatus(engineId, status, time, info));
       } catch (final ArchiveDaoException e) {
           throw new ArchiveServiceException("Creation of archiver management entry failed.", e);
       }
@@ -158,6 +159,21 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Engine information for " + name +
                                               " could not be retrieved.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateEngineIsAlive(@Nonnull final ArchiveEngineId id,
+                                    @Nonnull final TimeInstant lastTimeAlive)
+                                    throws ArchiveServiceException {
+        try {
+            _engineDao.updateEngineAlive(id, lastTimeAlive);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Engine alive time could not be updated for id " + id +
+                                              ".", e);
         }
     }
 
@@ -206,5 +222,41 @@ public class MySQLArchiveEngineServiceImpl implements IArchiveEngineFacade {
             throw new ArchiveServiceException("Channel info for " + id +
                                               " could not be updated.", e);
         }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveEngineStatus getLatestEngineStatusInformation(@Nonnull final ArchiveEngineId id,
+                                                                 @Nonnull final TimeInstant latestAliveTime)
+                                                                 throws ArchiveServiceException {
+        try {
+            return _mgmtDao.retrieveLastEngineStatus(id, latestAliveTime);
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Engine status info for " + id +
+                                              " could not be retrieved.", e);
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveChannelStatus getChannelStatusByChannelName(@Nonnull final String name) throws ArchiveServiceException {
+        try {
+            final IArchiveChannel channel = _channelDao.retrieveChannelBy(name);
+            if (channel != null) {
+                return _channelStatusDao.retrieveLatestStatusByChannelId(channel.getId());
+            }
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel status info for " + name +
+                                              " could not be retrieved.", e);
+        }
+        return null;
     }
 }

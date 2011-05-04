@@ -22,6 +22,8 @@
 package org.csstudio.domain.desy.alarm;
 
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.system.ControlSystemType;
@@ -48,7 +50,7 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  * @author bknerr
  * @since 04.11.2010
  */
-public interface IAlarm /* extends Alarm */ {
+public interface IAlarm extends /* Alarm, */ Serializable {
 
     @Nonnull
     ControlSystemType getControlSystemType();

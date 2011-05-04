@@ -21,20 +21,29 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Abstract base class for any kind of triple.
+ * Abstract base class for any kind of immutable triple.
+ *
+ * Implements {@link java.io.Serializable}, i.e. for any implementation to be serializable any
+ * member should be serializable. But that's not forced (cmp to Collections, which are also
+ * themselves serializable without ensuring any collection element to be serializable.)
  *
  * @author bknerr
  * @since 15.12.2010
+ *
  * @param <A> type of the 1st member
  * @param <B> type of the 2nd member
  * @param <C> type of the 3rd member
  */
-public abstract class AbstractTriple<A, B, C> {
+public abstract class AbstractTriple<A, B, C> implements Serializable {
+
+    private static final long serialVersionUID = 2488846834958701429L;
 
     private final A _first;
     private final B _second;

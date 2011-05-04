@@ -22,21 +22,23 @@
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
-import javax.naming.ServiceUnavailableException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldapUpdater.LdapAccess;
+import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
+import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
-import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 
 
 /**
@@ -47,50 +49,60 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 public class IocManagement implements IManagementCommand {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(IocManagement.class);
+    private ILdapUpdaterService _service;
+    private ILdapUpdaterFileService _fileService;
 
-    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = LdapUpdaterServiceImpl.INSTANCE;
+    /**
+     * Constructor.
+     */
+    public IocManagement() {
+        try {
+            _service = LdapUpdaterActivator.getDefault().getLdapUpdaterService();
+            _fileService = LdapUpdaterActivator.getDefault().getLdapUpdaterFileService();
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error("Service unavailable.");
+        }
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     @SuppressWarnings("unchecked")
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
 
-        final Map<String, String> map = (Map<String, String>) parameters.get("ioc");
+        final Map<String, String> value = (Map<String, String>) parameters.get("ioc");
         final String command = (String) parameters.get("command");
 
-        commandDispatchAndExecute(command, map);
-
-        return CommandResult.createSuccessResult();
+        try {
+            return commandDispatchAndExecute(command, value);
+        } catch (final LdapUpdaterServiceException e) {
+            LOG.error("Command " + command + " failed due to exception.", e);
+            return CommandResult.createFailureResult("Internal LDAP Exception: " + command + " failed.\n" + e.getMessage());
+        }
     }
 
+    @Nonnull
+    private CommandResult commandDispatchAndExecute(@Nonnull final String command,
+                                                    @Nonnull final Map<String, String> value) throws LdapUpdaterServiceException {
 
-    private void commandDispatchAndExecute(@Nonnull final String command, @Nonnull final Map<String, String> map) {
-
-        final String iocName = map.get(LdapEpicsControlsConfiguration.IOC.getNodeTypeName());
-        final String facilityName = map.get(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName());
+        final String iocName = value.get(LdapEpicsControlsConfiguration.IOC.getNodeTypeName());
+        final String facilityName = value.get(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName());
 
 
-        try {
-            switch (IocModificationCommand.valueOf(command)) {
-                case DELETE :
-                    LDAP_UPDATER_SERVICE.removeIocEntryFromLdap(iocName,
-                                                                facilityName);
-                    break;
-                case TIDY_UP : LDAP_UPDATER_SERVICE.tidyUpIocEntryInLdap(iocName,
-                                                                         facilityName,
-                                                                         LdapAccess.getValidRecordsForIOC(iocName));
-                break;
-                default : throw new AssertionError("Unknown Ioc Modification Command: " + command);
-            }
-        } catch (final InvalidNameException e) {
-            LOG.error("Invalid name composition while accessing LDAP.", e);
-        } catch (final InterruptedException e) {
-            LOG.error("Interrupted.", e);
-            Thread.currentThread().interrupt();
-        } catch (final ServiceUnavailableException e) {
-            LOG.error("LDAP service not available.", e);
+        switch (IocModificationCommand.valueOf(command)) {
+            case DELETE :
+                _service.removeIocEntryFromLdap(iocName, facilityName);
+                return CommandResult.createSuccessResult();
+            case TIDY_UP :
+                final Set<Record> validRecords = _fileService.getBootRecordsFromIocFile(iocName);
+                _service.tidyUpIocEntryInLdap(iocName,
+                                              facilityName,
+                                              validRecords);
+                return CommandResult.createSuccessResult();
+            default :
+                throw new AssertionError("Unknown Ioc Modification Command: " + command);
         }
     }
 

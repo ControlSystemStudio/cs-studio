@@ -25,6 +25,9 @@ package org.csstudio.archive.sdds.server;
 
 import org.csstudio.platform.AbstractCssPlugin;
 import org.osgi.framework.BundleContext;
+import org.remotercp.service.connection.session.ISessionService;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -37,6 +40,8 @@ public class Activator extends AbstractCssPlugin {
 	/** The shared instance */
 	private static Activator plugin;
 	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
 	/**
 	 * The constructor
 	 */
@@ -55,7 +60,9 @@ public class Activator extends AbstractCssPlugin {
 
     @Override
     protected void doStart(BundleContext context) throws Exception {
-        // Nothing to do
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
     }
 
     @Override
@@ -67,4 +74,9 @@ public class Activator extends AbstractCssPlugin {
     public String getPluginId() {
         return PLUGIN_ID;
     }
+    
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

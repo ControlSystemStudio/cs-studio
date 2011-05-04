@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
@@ -18,7 +17,7 @@ import org.epics.pvmanager.DataRecipe;
 import org.epics.pvmanager.ExceptionHandler;
 import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.ValueCache;
-import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.data.DataTypeSupport;
 
 /**
  * Data source to produce simulated signals that can be using during development
@@ -27,6 +26,11 @@ import org.epics.pvmanager.data.VDouble;
  * @author carcassi
  */
 public final class SimulationDataSource extends DataSource {
+
+    static {
+        // Install type support for the types it generates.
+        DataTypeSupport.install();
+    }
 
     /**
      * Data source instance.
@@ -80,6 +84,12 @@ public final class SimulationDataSource extends DataSource {
     public void disconnect(DataRecipe recipe) {
         // Get all the function registered for this recipe and stop them
         Set<Simulation<?>> functions = registeredFunctions.get(recipe);
+        
+        // Recipe is not associated with registered functions.
+        // Nothing to disconnect.
+        if (functions == null)
+            return;
+        
         for (Simulation<?> function : functions) {
             if (function != null)
                 function.stop();

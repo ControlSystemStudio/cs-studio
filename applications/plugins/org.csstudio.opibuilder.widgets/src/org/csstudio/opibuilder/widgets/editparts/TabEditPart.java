@@ -110,7 +110,7 @@ public class TabEditPart extends AbstractContainerEditpart {
 
 	public synchronized void addTab(){
 		int tabIndex = getWidgetModel().getChildren().size();
-		addTab(tabIndex, new TabItem(tabIndex));
+		addTab(tabIndex, new TabItem(getWidgetModel(), tabIndex));
 	}
 
 	/**Add a TabItem to the index;

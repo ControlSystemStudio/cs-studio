@@ -3,7 +3,9 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import java.util.Map;
+import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.MAINTENANCE_DISPLAY_PATH;
+import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.MAINTENANCE_PRE_FILE_NAME;
+import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.MAINTENANCE_UNKNOWN_DISPLAY_PATH;
 
 import org.csstudio.sds.model.IRule;
 import org.eclipse.core.runtime.IPath;
@@ -13,10 +15,13 @@ import org.eclipse.core.runtime.IPath;
  *
  */
 public class MaintenanceRule implements IRule {
-
-    private static final IPath DEFAULT_PATH = null;
-    private Map<String, IPath> _rTypUrlMap;
-
+    
+    private IPath _defaultPath;
+    private IPath _dispayPath = null;
+    private String _preFileName = null;
+    
+    //    private Map<String, IPath> _rTypUrlMap;
+    
     /**
      * 
      */
@@ -25,22 +30,38 @@ public class MaintenanceRule implements IRule {
     }
     
     /**
-     * 
-     */
+    * 
+    */
     private void init() {
-        _rTypUrlMap = MaintenanceRulePreference.getRTypUrlMap();
+        _defaultPath = MAINTENANCE_UNKNOWN_DISPLAY_PATH.getValue();
+        _dispayPath = MAINTENANCE_DISPLAY_PATH.getValue();
+        _preFileName = MAINTENANCE_PRE_FILE_NAME.getValue();
     }
-
+    
     /* (non-Javadoc)
      * @see org.csstudio.sds.model.IRule#evaluate(java.lang.Object[])
      */
     @Override
     public Object evaluate(Object[] arguments) {
-        IPath iPath =  DEFAULT_PATH;
-        if(arguments.length>0) {
-            Object key = arguments[0];
-            if(_rTypUrlMap.containsKey(key)) {
-                iPath = _rTypUrlMap.get(key);
+        init();
+        IPath iPath = _defaultPath;
+        if (arguments.length > 0) {
+            Object obj = arguments[0];
+            if (obj instanceof String) {
+                String rtyp = (String) obj;
+                int indexOf = _preFileName.toLowerCase().indexOf("{rtyp}");
+                if (indexOf >= 0) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(_preFileName.substring(0, indexOf));
+                    sb.append(rtyp);
+                    sb.append(_preFileName.substring(indexOf + 6));
+                    if (!sb.toString().toLowerCase().endsWith(".css-sds")) {
+                        sb.append(".css-sds");
+                    }
+                    iPath = _dispayPath.append(sb.toString());
+                } else {
+                    iPath = _dispayPath.append(_preFileName + rtyp + ".css-sds");
+                }
             }
         }
         return iPath;

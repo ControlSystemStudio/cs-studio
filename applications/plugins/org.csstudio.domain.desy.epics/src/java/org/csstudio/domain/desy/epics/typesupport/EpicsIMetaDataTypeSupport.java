@@ -27,7 +27,8 @@ import javax.annotation.Nonnull;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
-import org.csstudio.domain.desy.epics.alarm.EpicsMetaData;
+import org.csstudio.domain.desy.epics.types.EpicsMetaData;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
 
@@ -40,7 +41,7 @@ import org.epics.pvmanager.TypeSupport;
  *                 This class statically is accessed, hence the name should be short and descriptive!
 
  */
-public abstract class EpicsIMetaDataTypeSupport<T> extends TypeSupport<T> {
+public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T> {
  // CHECKSTYLE ON : AbstractClassName
     /**
      * Constructor for a new EpicsIMetaData support.
@@ -63,6 +64,7 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends TypeSupport<T> {
         TypeSupport.addTypeSupport(new ByteConversionSupport());
         TypeSupport.addTypeSupport(new DoubleConversionSupport());
         TypeSupport.addTypeSupport(new FloatConversionSupport());
+        TypeSupport.addTypeSupport(new EpicsEnumConversionSupport());
 
         INSTALLED = true;
     }
@@ -75,8 +77,8 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends TypeSupport<T> {
                              @Nonnull final Class<?> valueClazz) throws TypeSupportException {
 
         final EpicsIMetaDataTypeSupport<T> support =
-            (EpicsIMetaDataTypeSupport<T>) findTypeSupportFor(EpicsIMetaDataTypeSupport.class,
-                                                              valueClazz);
+            (EpicsIMetaDataTypeSupport<T>) findTypeSupportForOrThrowTSE(EpicsIMetaDataTypeSupport.class,
+                                                                        valueClazz);
         return support.convertToMetaData(meta);
     }
 

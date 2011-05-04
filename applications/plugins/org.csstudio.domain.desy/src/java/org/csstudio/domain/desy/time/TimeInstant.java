@@ -30,6 +30,7 @@ import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -54,10 +55,38 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
 
     private static final long serialVersionUID = 3157468437971986526L;
 
+    public static final DateTimeFormatter STD_DATE_FMT =
+        DateTimeFormat.forPattern("yyyy-MM-dd");
     public static final DateTimeFormatter STD_TIME_FMT =
-        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    public static final DateTimeFormatter STD_TIME_FMT_WITH_MILLIS =
-        DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateTimeFormat.forPattern("HH:mm:ss");
+    public static final DateTimeFormatter STD_TIME_FMT_FOR_FS =
+        new DateTimeFormatterBuilder().appendHourOfDay(2)
+                                      .appendLiteral("_")
+                                      .appendMinuteOfHour(2)
+                                      .appendLiteral("_")
+                                      .appendSecondOfMinute(2)
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT_FOR_FS =
+        new DateTimeFormatterBuilder().append(STD_DATE_FMT)
+                                      .appendLiteral("_")
+                                      .appendHourOfDay(2)
+                                      .appendLiteral("h")
+                                      .appendMinuteOfHour(2)
+                                      .appendLiteral("m")
+                                      .appendSecondOfMinute(2)
+                                      .appendLiteral("s")
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT =
+        new DateTimeFormatterBuilder().append(STD_DATE_FMT)
+                                      .appendLiteral(" ")
+                                      .append(STD_TIME_FMT)
+                                      .toFormatter();
+    public static final DateTimeFormatter STD_DATETIME_FMT_WITH_MILLIS =
+        new DateTimeFormatterBuilder().append(STD_DATETIME_FMT)
+                                      .appendLiteral(".")
+                                      .appendMillisOfSecond(3)
+                                      .toFormatter();
+
     public static final PeriodFormatter STD_DURATION_FMT =
         new PeriodFormatterBuilder().appendHours()
                                     .appendSuffix(":")
@@ -71,6 +100,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     private static final int MILLIS_PER_SECOND = 1000;
 
     public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
+
 
     /**
      * The wrapped immutable joda time instant.
@@ -102,8 +132,8 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @return the 'now' time instant
          */
         @Nonnull
-        public static TimeInstant buildFromNow() {
-            return buildFromMillis(System.currentTimeMillis());
+        public static TimeInstant fromNow() {
+            return fromMillis(System.currentTimeMillis());
         }
 
         /**
@@ -113,7 +143,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if seconds is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromSeconds(final long seconds) {
+        public static TimeInstant fromSeconds(final long seconds) {
             if (seconds < 0 || seconds > MAX_SECONDS) {
                 throw new IllegalArgumentException("Number of seconds for TimeInstant must be non-negative and smaller " + MAX_SECONDS);
             }
@@ -126,7 +156,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if millis is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromMillis(final long millis) {
+        public static TimeInstant fromMillis(final long millis) {
             if (millis < 0) {
                 throw new IllegalArgumentException("Number of milliseconds for TimeInstant must be non-negative.");
             }
@@ -139,7 +169,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
          * @throws IllegalArgumentException if nanos is smaller 0
          */
         @Nonnull
-        public static TimeInstant buildFromNanos(final long nanos) {
+        public static TimeInstant fromNanos(final long nanos) {
             if (nanos < 0) {
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }
@@ -323,7 +353,7 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
      */
     @Nonnull
     public String formatted() {
-        return formatted(STD_TIME_FMT);
+        return formatted(STD_DATETIME_FMT);
     }
 
     /**
@@ -333,5 +363,17 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     @Nonnull
     public String toString() {
         return formatted() + "." + _fracMillisInNanos;
+    }
+
+    /**
+     * Returns the interval between two time instants in millis in absolute numbers.
+     *
+     * @param startTime the first time instant
+     * @param endTime the second time instant
+     * @return the difference in millis, always non-negative
+     */
+    public static long deltaInMillis(@Nonnull final TimeInstant startTime,
+                                     @Nonnull final TimeInstant endTime) {
+        return Math.abs(endTime.getMillis() - startTime.getMillis());
     }
 }

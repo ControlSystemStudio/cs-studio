@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui
+Bundle-SymbolicName: org.csstudio.platform.libs.dal.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Localization: plugin
+Bundle-Activator: org.csstudio.platform.libs.dal.ui.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.libs.dal;bundle-version="1.3.0",
+ org.csstudio.platform.simpledal;bundle-version="1.0.0",
+ org.csstudio.platform.ui;bundle-version="1.2.0"
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
+Export-Package: org.csstudio.platform.libs.dal.ui,
+ org.csstudio.platform.ui.dnd.rfc

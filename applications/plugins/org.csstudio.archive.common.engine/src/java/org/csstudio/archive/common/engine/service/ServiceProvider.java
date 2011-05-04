@@ -23,7 +23,7 @@ package org.csstudio.archive.common.engine.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.engine.Activator;
+import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
@@ -43,6 +43,6 @@ public class ServiceProvider implements IServiceProvider {
     @Override
     @Nonnull
     public IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException {
-        return Activator.getDefault().getArchiveEngineService();
+        return ArchiveEngineActivator.getDefault().getArchiveEngineService();
     }
 }

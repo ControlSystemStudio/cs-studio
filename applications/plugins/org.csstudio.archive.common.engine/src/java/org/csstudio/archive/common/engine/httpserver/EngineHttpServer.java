@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.engine.Activator;
+import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
 import org.csstudio.platform.logging.CentralLogger;
@@ -43,10 +43,10 @@ public class EngineHttpServer {
      *  @throws Exception on error
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
-                        final int port) throws EngineHttpServerException {
+                            final int port) throws EngineHttpServerException {
         this._port = port;
         final BundleContext context =
-            Activator.getDefault().getBundle().getBundleContext();
+            ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
         HttpService http;
         try {
             http = HttpServiceHelper.createHttpService(context, port);

@@ -29,7 +29,7 @@ import javax.naming.Context;
 
 import junit.framework.Assert;
 
-import org.csstudio.platform.test.TestDataProvider;
+import org.csstudio.testsuite.util.TestDataProvider;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**

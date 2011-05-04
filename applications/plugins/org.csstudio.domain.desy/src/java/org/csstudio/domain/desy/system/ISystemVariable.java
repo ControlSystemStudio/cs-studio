@@ -21,10 +21,11 @@
  */
 package org.csstudio.domain.desy.system;
 
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.IHasTimeStamp;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * System variables are the fundamental atomic components of any system.
@@ -42,7 +43,7 @@ import org.csstudio.domain.desy.types.ICssValueType;
  *
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<T> extends IHasTimeStamp {
+public interface ISystemVariable<T> extends IHasTimeStamp, Serializable {
 
     /**
      * The descriptive (and usually but not necessarily) unique name for this variable in the
@@ -57,7 +58,7 @@ public interface ISystemVariable<T> extends IHasTimeStamp {
      * @return the variable
      */
     @Nonnull
-    ICssValueType<T> getData();
+    T getData();
 
     /**
      * The control system in whose context this variable exists.

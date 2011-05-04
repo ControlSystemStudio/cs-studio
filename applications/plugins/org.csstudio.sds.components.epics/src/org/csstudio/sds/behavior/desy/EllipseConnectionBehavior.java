@@ -22,6 +22,7 @@ import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.Severity;
 
@@ -82,8 +83,9 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
      */
     @Override
     protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
-                                                  final ConnectionState connectionState) {
-        super.doProcessConnectionStateChange(widget, connectionState);
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         if (connectionState!=ConnectionState.CONNECTED) {
             widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor(connectionState));
         } else {

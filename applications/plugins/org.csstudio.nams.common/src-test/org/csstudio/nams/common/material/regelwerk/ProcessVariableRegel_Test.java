@@ -8,9 +8,9 @@ import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.csstudio.nams.service.logging.declaration.Logger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
-import org.csstudio.platform.simpledal.ValueType;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.junit.Test;
 

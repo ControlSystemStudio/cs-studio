@@ -1,7 +1,7 @@
 package org.csstudio.sds.internal.connection;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.simpledal.ValueType;
+import org.csstudio.platform.model.pvs.ValueType;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.simple.AnyData;

@@ -36,16 +36,16 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
+
 
 /**
  * Server application for the save value services.
  *
  * @author Joerg Rathlev
  */
-public class SaveValueServer implements IApplication {
+public class SaveValueServer implements IApplication, IGenericServiceListener<ISessionService> {
 
 	/**
 	 * Whether this application should stop.
@@ -79,7 +79,6 @@ public class SaveValueServer implements IApplication {
 
 		INSTANCE = this;
 
-	    connectToXmppServer();
 
         for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
             _log.debug(this, "Running startup service: " + s.toString());
@@ -126,10 +125,7 @@ public class SaveValueServer implements IApplication {
 		return IApplication.EXIT_OK;
 	}
 
-	   /**
-     * Connects to the XMPP server for remote management (ECF-based).
-     */
-    private void connectToXmppServer() throws Exception {
+    public void bindService(ISessionService sessionService) {
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String username = prefs.getString(Activator.PLUGIN_ID,
                 PreferenceConstants.XMPP_USERNAME, "anonymous", null);
@@ -137,12 +133,19 @@ public class SaveValueServer implements IApplication {
                 PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
         final String server = prefs.getString(Activator.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
-
-        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-        ServiceLauncher.startRemoteServices();
+    	
+    	try {
+			sessionService.connect(username, password, server);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
     }
-
-
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
 	/**
 	 * {@inheritDoc}
 	 */

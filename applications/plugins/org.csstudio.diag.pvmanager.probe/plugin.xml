@@ -10,7 +10,7 @@
       </category>
       <view
             allowMultiple="true"
-            class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
+            class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
             icon="icons/probe.png"
             id="org.csstudio.diag.pvmanager.probe.MultipleView"
             name="Probe - New instance (PVManager)">
@@ -18,7 +18,7 @@
       <view
             allowMultiple="false"
             category="org.csstudio"
-            class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
+            class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
             icon="icons/probe.png"
             id="org.csstudio.diag.pvmanager.probe.SingleView"
             name="Probe (PVManager)">

@@ -32,10 +32,13 @@ import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * Dao implementation for archive control system.
@@ -59,8 +62,10 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
     /**
      * Constructor.
      */
-    public ArchiveControlSystemDaoImpl() {
-        super();
+    @Inject
+    public ArchiveControlSystemDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
+                                       @Nonnull final PersistEngineDataManager persister) {
+        super(handler, persister);
     }
 
     /**

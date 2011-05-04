@@ -21,29 +21,25 @@
  */
 package org.csstudio.archive.common.engine.model;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.StopWatch;
+import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
@@ -62,40 +58,33 @@ final class WriteWorker implements Runnable {
     private static final Logger WORKER_LOG =
             CentralLogger.getInstance().getLogger(WriteWorker.class);
 
-    //private final WriteExecutor _writeExec;
     private final String _name;
-    private final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> _channels;
-    private final long _periodInMS;
+    private final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> _channels;
 
+    private final long _periodInMS;
     /** Average number of values per write run */
     private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
-
-
     /** Average duration of write run */
     private final CumulativeAverageCache _avgWriteDurationInMS = new CumulativeAverageCache();
 
-    private TimeInstant _lastTimeWrite;
 
     private final IServiceProvider _provider;
 
+    private TimeInstant _lastWriteTime;
+
     /**
      * Constructor.
-     * @param exec
-     * @param name
-     * @param channels
-     * @param periodInMS
      */
     public WriteWorker(@Nonnull final IServiceProvider provider,
-                       //@Nonnull final WriteExecutor exec,
                        @Nonnull final String name,
-                       @Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels,
+                       @Nonnull final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> channels,
                        final long periodInMS) {
         _provider = provider;
-        //_writeExec = exec;
         _name = name;
-        WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
         _channels = channels;
         _periodInMS = periodInMS;
+
+        WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
     }
 
     /**
@@ -103,17 +92,19 @@ final class WriteWorker implements Runnable {
      */
     @Override
     public void run() {
-        WORKER_LOG.info("RUN: " + TimeInstantBuilder.buildFromNow().formatted());
-        final BenchmarkTimer timer = new BenchmarkTimer();
         try {
-            timer.start();
+            //WORKER_LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
-            final long written = write();
+            List<IArchiveSample<Object, ISystemVariable<Object>>> samples = Collections.emptyList();
 
-            timer.stop();
-            _lastTimeWrite = TimeInstantBuilder.buildFromNow();
+            final RunningStopWatch watch = StopWatch.start();
 
-            final long durationInMS = timer.getMilliseconds();
+            samples = collectSamplesFromBuffers(_channels);
+
+            final long written = writeSamples(_provider,  samples);
+            _lastWriteTime = TimeInstantBuilder.fromNow();
+
+            final long durationInMS = watch.getElapsedTimeInMillis();
             if (durationInMS >= _periodInMS) {
                 // FIXME (bknerr) : this won't work, stupid
                 //_writeExec.enhanceWriterThroughput(this);
@@ -121,89 +112,42 @@ final class WriteWorker implements Runnable {
 
             _avgWriteCount.accumulate(Double.valueOf(written));
             _avgWriteDurationInMS.accumulate(Double.valueOf(durationInMS));
-        } catch (final OsgiServiceUnavailableException e) {
-            WORKER_LOG.error("Archive service unavailable - rescue data.", e);
-            rescueData();
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
+        } catch (final Throwable t) {
+            WORKER_LOG.error("Unknown throwable. Thread " + _name + " is terminated");
+            t.printStackTrace();
         }
-//        catch (final InterruptedException e) {
-//            Thread.currentThread().interrupt();
-//        }
     }
 
-    private void rescueData() {
-        final URL rescueDir = ArchiveEnginePreference.DATA_RESCUE_DIR.getValue();
-        final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> samples =
-                collectSamplesFromBuffers(_channels);
+    private long writeSamples(@Nonnull final IServiceProvider provider,
+                              @Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples)
+                              throws ArchiveServiceException {
 
-        final String fileName = "rescue_" + TimeInstantBuilder.buildFromNow() + "_S" + samples.size()+ ".ser";
-        final File file = new File(rescueDir.getFile(), fileName);
-
-        ObjectOutput output = null;
         try {
-            final OutputStream ostream = new FileOutputStream(file);
-            final OutputStream buffer = new BufferedOutputStream(ostream);
-            output = new ObjectOutputStream(buffer);
-            output.writeObject(samples);
-        } catch (final IOException e) {
-            WORKER_LOG.error("Rescue of data failed.", e);
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (final IOException e) {
-                    WORKER_LOG.warn("Closing of output stream for data rescue file failed.", e);
-                }
+            final IArchiveEngineFacade service = provider.getEngineFacade();
+            service.writeSamples(samples);
+        } catch (final OsgiServiceUnavailableException e) {
+            try {
+                ArchiveEngineSampleRescuer.with(samples).to(ArchiveEnginePreference.DATA_RESCUE_DIR.getValue()).rescue();
+            } catch (final DataRescueException e1) {
+                WORKER_LOG.error("Data rescue to file system failed!:" + e1.getMessage());
+                throw new ArchiveServiceException("Data rescue failed.", e1);
             }
         }
-        // READ IN FROM FILE
-//        ObjectInputStream objectIn = null;
-//        int objectCount = 0;
-//        Junk object = null;
-//
-//        objectIn = new ObjectInputStream(new BufferedInputStream(new FileInputStream(
-//            "C:/JunkObjects.bin")));
-//
-//        // Read from the stream until we hit the end
-//        while (objectCount < 3) {
-//          object = (Junk) objectIn.readObject();
-//          objectCount++;
-//          System.out.println(object);
-//        }
-//
-//        objectIn.close();
 
-
-    }
-
-    /**
-     * Drain all data from the buffers to the service interface.
-     *  @return number of samples drained/written to the service
-     * @throws OsgiServiceUnavailableException
-     * @throws ArchiveServiceException
-     */
-    private long write() throws OsgiServiceUnavailableException, ArchiveServiceException {
-
-        final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples =
-                collectSamplesFromBuffers(_channels);
-
-        final IArchiveEngineFacade service = _provider.getEngineFacade();
-        service.writeSamples(allSamples);
-
-        return allSamples.size();
+        return samples.size();
     }
 
     @Nonnull
-    private LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Object, IAlarmSystemVariable<Object>>> channels) {
+    private LinkedList<IArchiveSample<Object, ISystemVariable<Object>>>
+    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> channels) {
 
-        final LinkedList<IArchiveSample<Object, IAlarmSystemVariable<Object>>> allSamples = Lists.newLinkedList();
+        final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> allSamples = Lists.newLinkedList();
 
-        for (final ArchiveChannel<Object, IAlarmSystemVariable<Object>> channel : channels) {
-            final SampleBuffer<Object,
-            IAlarmSystemVariable<Object>,
-                               IArchiveSample<Object, IAlarmSystemVariable<Object>>> buffer = channel.getSampleBuffer();
+        for (final ArchiveChannel<Object, ISystemVariable<Object>> channel : channels) {
+            final SampleBuffer<Object, ISystemVariable<Object>, IArchiveSample<Object, ISystemVariable<Object>>> buffer =
+                channel.getSampleBuffer();
 
             buffer.updateStats();
             buffer.drainTo(allSamples);
@@ -226,13 +170,13 @@ final class WriteWorker implements Runnable {
     }
 
     @CheckForNull
-    protected TimeInstant getLastTimeWrite() {
-        return _lastTimeWrite;
+    protected TimeInstant getLastWriteTime() {
+        return _lastWriteTime;
     }
 
     public void clear() {
         _avgWriteCount.clear();
         _avgWriteDurationInMS.clear();
-        _lastTimeWrite = null;
+        _lastWriteTime = null;
     }
 }

@@ -127,8 +127,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	                    @Nonnull final TreeNodeSource source) {
 	    super(name, configurationType, source);
 
-		_childrenPVMap = Maps.newLinkedHashMap();
-		_childrenSubtreeMap = Maps.newLinkedHashMap();
+		_childrenPVMap = Maps.newTreeMap();
+		_childrenSubtreeMap = Maps.newTreeMap();
 		_highestChildSeverity = EpicsAlarmSeverity.UNKNOWN;
 		_highestUnacknowledgedChildSeverity = EpicsAlarmSeverity.UNKNOWN;
 	}

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.csstudio.platform">
+   <implementation class="org.csstudio.platform.internal.management.ManagementServiceImpl"/>
+   <service>
+      <provide interface="org.csstudio.platform.management.IManagementCommandService"/>
+   </service>
+   <property name="osgi.remote.interfaces" type="String" value="*"/>
+</scr:component>

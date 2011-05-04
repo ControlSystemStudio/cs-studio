@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.csstudio.opibuilder.widgets.model.TabModel.TabProperty;
+import org.eclipse.osgi.util.NLS;
 
 /**The tab item, which host all the properties data for a tab item.
  * @author Xihui Chen
@@ -38,10 +39,11 @@ public class TabItem {
 		injectPropertiesValue(tabModel, index);
 	}
 	
-	public TabItem(int index){
+	public TabItem(TabModel tabModel, int tabIndex){
 		this.groupingContainerModel = TabEditPart.createGroupingContainer();
 		propertyMap = new HashMap<TabProperty, Object>();
-		injectDefaultPropertiesValue(index);
+		injectPropertiesValue(tabModel, 0);
+		setPropertyValue(TabProperty.TITLE, NLS.bind("Tab {0}",tabIndex));
 	}
 	
 	private TabItem(GroupingContainerModel groupingContainerModel, 

@@ -31,7 +31,8 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
-import org.csstudio.domain.desy.system.IAlarmSystemVariable;
+import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
@@ -47,7 +48,7 @@ import org.epics.pvmanager.TypeSupport;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class is accessed statically, hence the name should be short and descriptive!
  */
-public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
+public abstract class ArchiveEngineTypeSupport<V> extends AbstractTypeSupport<V> {
     // CHECKSTYLE ON : AbstractClassName
 
     /**
@@ -86,14 +87,14 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          */
         @Override
         @Nonnull
-        protected ArchiveChannel<V, IAlarmSystemVariable<V>>
+        protected ArchiveChannel<V, ISystemVariable<V>>
             createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
-            ArchiveChannel<V, IAlarmSystemVariable<V>> channel;
+            ArchiveChannel<V, ISystemVariable<V>> channel;
             try {
-                channel = new ArchiveChannel<V, IAlarmSystemVariable<V>>(cfg.getName(),
-                                                                                  cfg.getId(),
-                                                                                  _typeClass);
+                channel = new ArchiveChannel<V, ISystemVariable<V>>(cfg.getName(),
+                                                                         cfg.getId(),
+                                                                         _typeClass);
             } catch (final EngineModelException e) {
                 throw new TypeSupportException("Channel could not be instantiated.", e);
             }
@@ -104,13 +105,13 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
          */
         @Override
         @Nonnull
-        protected ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
+        protected ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
             createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
-            ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>> channel;
+            ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>> channel;
             try {
                 // FIXME (bknerr) : find solution for collection values - multiscalar wrapper?
-                channel = new ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>(cfg.getName(),
+                channel = new ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>(cfg.getName(),
                                                                                                  cfg.getId(),
                                                                                                  null);
             } catch (final EngineModelException e) {
@@ -150,7 +151,7 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public static <V>
-    ArchiveChannel<V, IAlarmSystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
+    ArchiveChannel<V, ISystemVariable<V>> toArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException {
 
         final String dataType = cfg.getDataType();
         Class<V> typeClass = BaseTypeConversionSupport.createTypeClassFromString(dataType,
@@ -166,7 +167,8 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
             scalar = false;
         }
         final ArchiveEngineTypeSupport<V> support =
-            (ArchiveEngineTypeSupport<V>) findTypeSupportFor(ArchiveEngineTypeSupport.class, typeClass);
+            (ArchiveEngineTypeSupport<V>) findTypeSupportForOrThrowTSE(ArchiveEngineTypeSupport.class,
+                                                                       typeClass);
 
         if (scalar) {
             return support.createArchiveChannel(cfg);
@@ -178,10 +180,10 @@ public abstract class ArchiveEngineTypeSupport<V> extends TypeSupport<V> {
     }
 
     @Nonnull
-    protected abstract ArchiveChannel<V, IAlarmSystemVariable<V>>
+    protected abstract ArchiveChannel<V, ISystemVariable<V>>
     createArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 
     @Nonnull
-    protected abstract ArchiveChannel<Collection<V>, IAlarmSystemVariable<Collection<V>>>
+    protected abstract ArchiveChannel<Collection<V>, ISystemVariable<Collection<V>>>
     createMultiScalarArchiveChannel(@Nonnull final IArchiveChannel cfg) throws TypeSupportException;
 }

@@ -28,8 +28,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Maps;
 
@@ -42,7 +42,7 @@ import com.google.common.collect.Maps;
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class is accessed statically, hence the name should be short and descriptive!
  */
-public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
+public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
     /**
@@ -84,7 +84,7 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
         if (familyClass != null) {
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =
-                (SystemVariableSupport<T>) findTypeSupportFor(familyClass, typeClass);
+                (SystemVariableSupport<T>) findTypeSupportForOrThrowTSE(familyClass, typeClass);
             return support.createVariable(name, value, system, time);
         }
         throw new TypeSupportException("System variable support for system " + system.getType() + " unknown.", null);
@@ -106,11 +106,11 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
 
         final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(sysVar.getOrigin().getType());
         if (familyClass != null) {
-            final T value = sysVar.getData().getValueData();
+            final T value = sysVar.getData();
             @SuppressWarnings("unchecked")
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =
-                (SystemVariableSupport<T>) findTypeSupportFor(familyClass, typeClass);
+                (SystemVariableSupport<T>) findTypeSupportForOrThrowTSE(familyClass, typeClass);
             return support.convertToIMinMaxDoubleValue(sysVar, min, max);
         }
         throw new TypeSupportException("System variable support for system " + sysVar.getOrigin().getType() + " unknown.", null);
@@ -127,7 +127,7 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
     protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
                                                  @SuppressWarnings("unused") @Nonnull final T min,
                                                  @SuppressWarnings("unused") @Nonnull final T max) throws TypeSupportException {
-        throw new TypeSupportException("Type " + sysVar.getData().getValueData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
+        throw new TypeSupportException("Type " + sysVar.getData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
     }
 
 
@@ -135,11 +135,11 @@ public abstract class SystemVariableSupport<T> extends TypeSupport<T> {
     public static <T> IValue toIValue(@Nonnull final IAlarmSystemVariable<T> sysVar) throws TypeSupportException {
         final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(sysVar.getOrigin().getType());
         if (familyClass != null) {
-            final T value = sysVar.getData().getValueData();
+            final T value = sysVar.getData();
             @SuppressWarnings("unchecked")
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =
-                (SystemVariableSupport<T>) findTypeSupportFor(familyClass, typeClass);
+                (SystemVariableSupport<T>) findTypeSupportForOrThrowTSE(familyClass, typeClass);
             return support.convertToIValue(sysVar);
         }
         throw new TypeSupportException("System variable support for system " + sysVar.getOrigin().getType() + " unknown.", null);

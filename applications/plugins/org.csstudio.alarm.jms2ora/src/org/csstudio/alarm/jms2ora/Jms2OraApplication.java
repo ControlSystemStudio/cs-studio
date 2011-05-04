@@ -36,9 +36,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The starting class.
@@ -47,7 +46,7 @@ import org.remotercp.login.connection.HeadlessConnection;
  *
  */
 
-public class Jms2OraApplication implements IApplication, Stoppable {
+public class Jms2OraApplication implements IApplication, Stoppable, IGenericServiceListener<ISessionService> {
     
     private static Jms2OraApplication instance = null;
     
@@ -141,7 +140,6 @@ public class Jms2OraApplication implements IApplication, Stoppable {
             return IApplication.EXIT_OK;
         }
         
-        connectToXMPPServer();
         context.applicationRunning();
         
         // Create an object from this class
@@ -242,8 +240,7 @@ public class Jms2OraApplication implements IApplication, Stoppable {
         }
     }
     
-    public void connectToXMPPServer() {
-        
+    public void bindService(ISessionService sessionService) {
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
                 PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
@@ -251,18 +248,19 @@ public class Jms2OraApplication implements IApplication, Stoppable {
                 PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
         String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
-
-        // Stop.staticInject(this);
-        // Restart.staticInject(this);
-
-        try {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();
-        } catch(Exception e) {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
     }
     
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+        
     public int getState() {
         return sync.getSynchStatus();
     }

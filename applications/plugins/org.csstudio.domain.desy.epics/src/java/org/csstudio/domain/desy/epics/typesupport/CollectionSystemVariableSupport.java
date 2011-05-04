@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -49,7 +49,7 @@ final class CollectionSystemVariableSupport extends EpicsSystemVariableSupport<C
     @Override
     @Nonnull
     protected IValue convertEpicsSystemVariableToIValue(@Nonnull final EpicsSystemVariable<Collection> sysVar) throws TypeSupportException {
-        final Collection valueData = sysVar.getData().getValueData();
+        final Collection valueData = sysVar.getData();
         if (valueData.isEmpty()) {
             throw new TypeSupportException("Collection of data is empty. Type cannot be determined.", null);
         }

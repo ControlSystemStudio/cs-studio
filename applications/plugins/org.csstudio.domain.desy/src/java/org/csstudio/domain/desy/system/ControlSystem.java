@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.system;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,9 @@ import com.google.common.collect.MapMaker;
  * @author bknerr
  * @since 09.02.2011
  */
-public final class ControlSystem {
+public final class ControlSystem implements Serializable {
+
+    private static final long serialVersionUID = 3883445164802010609L;
 
     public static final ControlSystem EPICS_DEFAULT =
         new ControlSystem("EpicsDefault",

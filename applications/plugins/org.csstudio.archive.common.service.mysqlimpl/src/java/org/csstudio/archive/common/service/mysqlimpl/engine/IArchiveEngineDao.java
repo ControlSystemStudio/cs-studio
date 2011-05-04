@@ -24,8 +24,10 @@ package org.csstudio.archive.common.service.mysqlimpl.engine;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Dao for archive engine configurations.
@@ -42,5 +44,21 @@ public interface IArchiveEngineDao {
      */
     @CheckForNull
     IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveDaoException;
+
+    /**
+     * @param id the id of the engine
+     * @return the archive engine
+     * @throws ArchiveEngineDaoException
+     */
+    @CheckForNull
+    IArchiveEngine retrieveEngineById(@Nonnull final ArchiveEngineId id) throws ArchiveDaoException;
+
+    /**
+     * @param id the engines id
+     * @param lastTimeAlive
+     * @return
+     */
+    void updateEngineAlive(@Nonnull final ArchiveEngineId id, @Nonnull final TimeInstant lastTimeAlive) throws ArchiveDaoException;
+
 
 }

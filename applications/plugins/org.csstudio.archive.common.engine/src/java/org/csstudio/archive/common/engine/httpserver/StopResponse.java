@@ -34,7 +34,7 @@ class StopResponse extends AbstractResponse
             new HTMLWriter(resp, "Archive Engine Shutdown");
 
         html.text("Engine will shut down....");
-        _model.requestStop();
+        getModel().requestStop();
 
         html.close();
     }

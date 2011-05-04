@@ -7,11 +7,10 @@ import javax.annotation.Nonnull;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -39,7 +38,7 @@ final class IntegerSystemVariableSupport extends EpicsSystemVariableSupport<Inte
                                             sysVar.getAlarm().getStatus().toString(),
                                             null,
                                             null,
-                                            new long[] {sysVar.getData().getValueData().longValue()});
+                                            new long[] {sysVar.getData().longValue()});
     }
 
     @Override
@@ -70,7 +69,7 @@ final class IntegerSystemVariableSupport extends EpicsSystemVariableSupport<Inte
                                                  @Nonnull final Integer max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
                                                  (EpicsAlarm) sysVar.getAlarm(),
-                                                 sysVar.getData().getValueData(),
+                                                 sysVar.getData(),
                                                  min,
                                                  max);
     }
@@ -81,22 +80,32 @@ final class IntegerSystemVariableSupport extends EpicsSystemVariableSupport<Inte
     @Override
     @Nonnull
     protected EpicsSystemVariable<Integer> createEpicsVariable(@Nonnull final String name,
-                                                              @Nonnull final Integer value,
-                                                              @Nonnull final ControlSystem system,
-                                                              @Nonnull final TimeInstant timestamp) {
-        return new EpicsSystemVariable<Integer>(name, new CssValueType<Integer>(value), system, timestamp, EpicsAlarm.UNKNOWN);
+                                                               @Nonnull final Integer value,
+                                                               @Nonnull final ControlSystem system,
+                                                               @Nonnull final TimeInstant timestamp) {
+        return new EpicsSystemVariable<Integer>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected EpicsSystemVariable<Collection<Integer>> createCollectionEpicsVariable(final String name,
-                                                                                     final Class<?> typeClass,
-                                                                                     final Collection<Integer> values,
-                                                                                     final ControlSystem system,
-                                                                                     final TimeInstant timestamp) throws TypeSupportException {
-        // TODO Auto-generated method stub
-        return null;
+    protected EpicsSystemVariable<Collection<Integer>> createCollectionEpicsVariable(@Nonnull final String name,
+                                                                                     @Nonnull final Class<?> typeClass,
+                                                                                     @Nonnull final Collection<Integer> values,
+                                                                                     @Nonnull final ControlSystem system,
+                                                                                     @Nonnull final TimeInstant timestamp) throws TypeSupportException {
+        try {
+            @SuppressWarnings("unchecked")
+            final Collection<Integer> newCollection = (Collection<Integer>) typeClass.newInstance();
+            for (final Integer v : values) {
+                newCollection.add(v);
+            }
+            return new EpicsSystemVariable<Collection<Integer>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
+        } catch (final InstantiationException e) {
+            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+        } catch (final IllegalAccessException e) {
+            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
+        }
     }
 }

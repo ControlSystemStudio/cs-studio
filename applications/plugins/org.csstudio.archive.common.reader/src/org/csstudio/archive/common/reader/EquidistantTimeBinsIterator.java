@@ -29,10 +29,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
@@ -230,7 +230,7 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
                                         @Nonnull final ReadableDuration windowLength) {
         int i = 1;
         TimeInstant nextWindowEnd =
-            TimeInstantBuilder.buildFromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
+            TimeInstantBuilder.fromMillis(startTime.getMillis()).plusMillis(windowLength.getMillis());
         while (sampleTime.isAfter(nextWindowEnd)) {
             nextWindowEnd = nextWindowEnd.plusMillis(windowLength.getMillis());
             i++;

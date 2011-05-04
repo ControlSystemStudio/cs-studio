@@ -19,8 +19,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.BooleanSwitchModel;
-import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 public class BooleanSwitchBehavior extends
@@ -37,7 +37,7 @@ public class BooleanSwitchBehavior extends
 
 	@Override
 	protected void doProcessConnectionStateChange(final BooleanSwitchModel widget,
-			final ConnectionState connectionState) {
+			final AnyDataChannel anyDataChannel) {
 	}
 
 	@Override

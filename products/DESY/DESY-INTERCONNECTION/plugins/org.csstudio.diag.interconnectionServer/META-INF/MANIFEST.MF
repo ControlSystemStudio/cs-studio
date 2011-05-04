@@ -6,14 +6,15 @@ Bundle-Version: 1.3.0
 Bundle-Activator: org.csstudio.diag.interconnectionServer.Activator
 Require-Bundle: org.csstudio.platform,
  org.csstudio.platform.libs.jms,
- org.junit4,
  org.remotercp.common;bundle-version="1.0.0",
- org.remotercp.ecf;bundle-version="1.0.0",
- org.remotercp.provisioning;bundle-version="1.0.0",
- javax.annotation;bundle-version="1.0.0",
  org.csstudio.platform.libs.mockito;bundle-version="1.0.0",
  org.csstudio.utility.ldap.service;bundle-version="1.0.0",
- org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0"
+ org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0",
+ org.remotercp.service.connection;bundle-version="1.0.0",
+ org.remotercp.service.provisioning;bundle-version="1.0.0",
+ org.eclipse.ecf.identity;bundle-version="3.1.100",
+ org.junit;bundle-version="4.8.1",
+ javax.annotation;bundle-version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: DESY
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
