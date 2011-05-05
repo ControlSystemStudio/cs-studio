@@ -5,8 +5,7 @@
           xsi:noNamespaceSchemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\lib\channels.xsd">          
     <!-- List of channel configurations (unique in any controlsystem+name combination)  -->
     <channel controlSystem="DOOCS"
-             name="xfel:1stChannel_ao"
-             id="ID7667888">
+             name="xfel:1stChannel_ao">
         <mode><scan intervalMS="1000"/></mode>
         <!-- specific record field properties only permitted for DOOCS channels -->
         <property name="wtfPerMin">10</property>

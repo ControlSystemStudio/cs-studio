@@ -6,8 +6,7 @@
           
     <!-- List of channel configurations (unique in any controlsystem+name combination)  -->
     <channel controlSystem="EPICS_V3"
-             name="tralalaChannel_ai"
-             id="ID9825788927">
+             name="tralalaChannel_ai">
         <mode>
             <!-- monitor with optional attr for minimimum scan rate -->
             <monitor maxIntervalMS="10000"/> 
@@ -20,8 +19,7 @@
     </channel>      
 
     <channel controlSystem="EPICS_V3"
-             name="fululuChannel_mbbi"
-             id="ID483265">
+             name="fululuChannel_mbbi">
         <mode>
 	        <monitor/>
         </mode>

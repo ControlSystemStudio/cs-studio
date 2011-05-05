@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-	<!-- ############################## Elements ######################### -->
+<xs:include schemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\lib\channels.xsd"/>
+    <!-- ############################## Elements ######################### -->
     <xs:element name="engine">
 		<xs:complexType>
 			<xs:sequence>
@@ -11,15 +11,11 @@
 			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
       
-        <xs:keyref name="channelKeyRef" refer="channelKey">
+        <xs:keyref name="channelKeyRef" refer="channelUniqueInSystem">
             <xs:selector xpath="*/channelRef" />
-            <xs:field xpath="@key" />
-        </xs:keyref>          
-        
-        <xs:key name="channelKey">
-          <xs:selector xpath=".//channel"/>
-          <xs:field xpath="@id"/>
-        </xs:key>
+            <xs:field xpath="@controlSystem"/>
+            <xs:field xpath="@name"/>
+        </xs:keyref>
 	</xs:element>
 
 
@@ -30,7 +26,7 @@
 			</xs:sequence>
 		</xs:complexType>
 
-		<xs:unique name="channelId">
+		<xs:unique name="channelUniqueInSystem">
 			<xs:selector xpath="channels/channel" />
 			<xs:field xpath="@controlSystem" />
 			<xs:field xpath="@name" />
@@ -67,14 +63,16 @@
 		</xs:complexType>
       
         <xs:unique name="channelRefUniqueInGroup">
-          <xs:selector xpath="channelRef"/>
-          <xs:field xpath="@key"/>
+            <xs:selector xpath="channelRef" />
+            <xs:field xpath="@controlSystem" />
+            <xs:field xpath="@name" />
         </xs:unique>
 	</xs:element>
 
 	<xs:element name="channelRef">
 		<xs:complexType>
-			<xs:attribute name="key" type="xs:string" />
+			<xs:attribute name="controlSystem" type="xs:string" />
+			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 

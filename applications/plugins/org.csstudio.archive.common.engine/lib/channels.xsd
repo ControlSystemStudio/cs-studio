@@ -29,7 +29,6 @@
             </xs:sequence>
 	        <xs:attribute name="controlSystem" type="xs:string"/>
 	        <xs:attribute name="name" type="xs:string"/>
-	        <xs:attribute name="id" type="xs:string"/>
 	    </xs:complexType>
 	</xs:element>    
     
