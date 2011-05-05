@@ -2,6 +2,8 @@ package org.csstudio.ui.util.widgets;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
@@ -17,6 +19,21 @@ public class RangeWidget extends Canvas {
 	private double distancePerPx = 0.5;
 	private double pxPerTick = 2.0;
 	private int[] sizes = new int[] {20, 10, 10, 10, 10, 15, 10, 10, 10, 10};
+	private Set<RangeListener> listeners = new HashSet<RangeListener>();
+	
+	public void addRangeListener(RangeListener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeRangeListener(RangeListener listener) {
+		listeners.remove(listener);
+	}
+	
+	private void fireRangeChanged() {
+		for (RangeListener listener : listeners) {
+			listener.rangeChanged();
+		}
+	}
 
 	public RangeWidget(Composite parent, int style) {
 		super(parent, style);
@@ -76,6 +93,11 @@ public class RangeWidget extends Canvas {
 			}
 		}
 		redraw();
+		fireRangeChanged();
+	}
+	
+	public double getDistancePerPx() {
+		return distancePerPx;
 	}
 	
 	private PaintListener paintListener = new PaintListener() {

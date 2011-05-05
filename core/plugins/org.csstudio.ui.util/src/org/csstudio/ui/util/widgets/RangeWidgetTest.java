@@ -55,7 +55,7 @@ public class RangeWidgetTest extends ApplicationWindow {
 		fd_spinner.top = new FormAttachment(0);
 		fd_spinner.left = new FormAttachment(0, 70);
 		spinner.setLayoutData(fd_spinner);
-		spinner.setMaximum(500);
+		spinner.setMaximum(1000000);
 		spinner.setDigits(1);
 		
 		Button button = new Button(container, SWT.NONE);
@@ -69,6 +69,16 @@ public class RangeWidgetTest extends ApplicationWindow {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				composite.setDistancePerPx(spinner.getSelection() / 10.0);
+			}
+		});
+		
+		composite.addRangeListener(new RangeListener() {
+			
+			@Override
+			public void rangeChanged() {
+				if (spinner.getSelection() != (int) (composite.getDistancePerPx() * 10)) {
+					spinner.setSelection((int) (composite.getDistancePerPx() * 10));
+				}
 			}
 		});
 
