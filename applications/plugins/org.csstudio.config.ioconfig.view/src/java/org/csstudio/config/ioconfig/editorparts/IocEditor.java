@@ -129,23 +129,6 @@ public class IocEditor extends AbstractNodeEditor {
 		}
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio
-     * .config.ioconfig.model .pbmodel.GSDFile)
-     */
-    @Override
-    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
-     */
     @Override
     public GSDFileDBO getGsdFile() {
         return null;

@@ -77,13 +77,16 @@ public final class Diagnose {
 
     public static void print() {
         Date date = new Date();
+        FileWriter fw = null;
         try {
             File createTempFile = File.createTempFile("Diag", "DDB.log");
-            createTempFile.createNewFile();
-            FileWriter fw = new FileWriter(createTempFile);
-            fw.write(_DIAG_STRING.toString());
-            fw.flush();
-            _DIAG_STRING.append(createTempFile.getAbsolutePath()+"\r\n");
+            if(createTempFile.createNewFile()) {
+                fw = new FileWriter(createTempFile);
+                fw.write(_DIAG_STRING.toString());
+                fw.flush();
+                _DIAG_STRING.append(createTempFile.getAbsolutePath()+"\r\n");
+                fw.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             _DIAG_STRING.append(e.getLocalizedMessage());

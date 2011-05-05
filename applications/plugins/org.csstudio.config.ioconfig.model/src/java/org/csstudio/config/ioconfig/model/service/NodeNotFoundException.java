@@ -68,6 +68,7 @@ public class NodeNotFoundException extends Exception {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getMessage() {
         String msg;
         switch (getState()) {
@@ -88,6 +89,7 @@ public class NodeNotFoundException extends Exception {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getLocalizedMessage() {
         return getMessage();
     }

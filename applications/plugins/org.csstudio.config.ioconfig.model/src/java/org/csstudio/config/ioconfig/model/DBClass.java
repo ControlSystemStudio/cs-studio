@@ -21,9 +21,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.net.ConnectException;
 import java.util.Date;
 
+import javax.annotation.Nonnull;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -91,6 +91,7 @@ public class DBClass {
      *
      * @return the Name of the creator of this Node.
      */
+    @Nonnull 
     public String getCreatedBy() {
         return _createdBy;
     }
@@ -100,7 +101,7 @@ public class DBClass {
      * @param createdBy
      *            set the Name of the creator of this Node.
      */
-    public void setCreatedBy(final String createdBy) {
+    public void setCreatedBy(@Nonnull final String createdBy) {
         this._createdBy = createdBy;
     }
 
@@ -108,6 +109,7 @@ public class DBClass {
      *
      * @return Created-Date of this node.
      */
+    @Nonnull 
     public Date getCreatedOn() {
         return _createdOn;
     }
@@ -117,7 +119,7 @@ public class DBClass {
      * @param createdOn
      *            set Created-Date of this node. Normally only use by create.
      */
-    public void setCreatedOn(final Date createdOn) {
+    public void setCreatedOn(@Nonnull final Date createdOn) {
         this._createdOn = createdOn;
     }
 
@@ -125,6 +127,7 @@ public class DBClass {
      *
      * @return Give the user that have make the last update.
      */
+    @Nonnull 
     public String getUpdatedBy() {
         return _updatedBy;
     }
@@ -134,7 +137,7 @@ public class DBClass {
      * @param updatedBy
      *            set the User that make a update.
      */
-    public void setUpdatedBy(final String updatedBy) {
+    public void setUpdatedBy(@Nonnull final String updatedBy) {
         this._updatedBy = updatedBy;
     }
 
@@ -142,6 +145,7 @@ public class DBClass {
      *
      * @return get the date of last update.
      */
+    @Nonnull 
     public Date getUpdatedOn() {
         return _updatedOn;
     }
@@ -152,14 +156,13 @@ public class DBClass {
      * @param updatedOn
      *            The date of last update.
      */
-    public void setUpdatedOn(final Date updatedOn) {
+    public void setUpdatedOn(@Nonnull final Date updatedOn) {
         this._updatedOn = updatedOn;
     }
 
     /**
      * Save or Update the Class to the Repository.
-     * @throws PersistenceException was thrown when the class can not be persistence.
-     * @throws ConnectException 
+     * @throws PersistenceException wa
      */
     public void save() throws PersistenceException{
         Repository.saveOrUpdate(this);

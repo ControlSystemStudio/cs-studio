@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -44,32 +46,35 @@ public class SearchNodeDBO extends DBClass {
     private Integer _parentId;
 
     @Column(name = "parent_id", nullable=true)
+    @CheckForNull
     public Integer getParentId() {
         return _parentId;
     }
-    public void setParentId(Integer parentId) {
+    public void setParentId(@Nonnull Integer parentId) {
         _parentId = parentId;
     }
+    @CheckForNull
     public String getName() {
         return _name;
     }
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         _name = name;
     }
-    public void setEpicsAddressString(String epicsAddressString) {
+    public void setEpicsAddressString(@Nonnull String epicsAddressString) {
         _epicsAddressString = epicsAddressString;
     }
-    
+    @CheckForNull
     public String getEpicsAddressString() {
         return _epicsAddressString;
     }
-    public void setEpicsaddressstring(String epicsAddressString) {
+    public void setEpicsaddressstring(@Nonnull String epicsAddressString) {
         _epicsAddressString = epicsAddressString;
     }
+    @CheckForNull
     public String getIoName() {
         return _ioName;
     }
-    public void setIoName(String ioName) {
+    public void setIoName(@Nonnull String ioName) {
         _ioName = ioName;
     }
     

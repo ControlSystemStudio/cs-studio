@@ -33,24 +33,52 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
+import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
+import org.csstudio.config.ioconfig.config.view.helper.GSDLabelProvider;
+import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener;
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
+import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.KeyValuePair;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
+import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * TODO (hrickens) : 
@@ -63,8 +91,6 @@ import org.eclipse.swt.widgets.Text;
 public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     
     /**
-     * TODO (hrickens) :
-     * 
      * @author hrickens
      * @author $Author: $
      * @since 08.10.2010
@@ -106,6 +132,134 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
                                  @Nullable final Object oldInput,
                                  @Nullable final Object newInput) {
             // nothing to do.
+        }
+    }
+    
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @since 14.06.2010
+     */
+    private final class GSDFileChangeListener implements ISelectionChangedListener {
+        private final Button _fileSelect;
+        
+        /**
+         * Constructor.
+         * 
+         * @param fileSelect
+         */
+        protected GSDFileChangeListener(@Nonnull final Button fileSelect) {
+            _fileSelect = fileSelect;
+        }
+        
+        @Override
+        public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+            final StructuredSelection selection = (StructuredSelection) event.getSelection();
+            if (selection == null || selection.isEmpty()) {
+                _fileSelect.setEnabled(false);
+                return;
+            }
+            final GSDFileDBO file = (GSDFileDBO) selection.getFirstElement();
+            _fileSelect.setEnabled(getNode().needGSDFile() == GSDFileTypes.Master == file
+                    .isMasterNonHN());
+        }
+    }
+    
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @since 14.06.2010
+     */
+    private final class GSDFileRemoveListener implements SelectionListener {
+        private final TableViewer _tableViewer;
+        
+        /**
+         * Constructor.
+         * 
+         * @param tableViewer
+         */
+        protected GSDFileRemoveListener(@Nonnull final TableViewer tableViewer) {
+            _tableViewer = tableViewer;
+        }
+        
+        @Override
+        public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            // TODO:
+        }
+        
+        @Override
+        public void widgetSelected(@Nonnull final SelectionEvent e) {
+            final StructuredSelection selection = (StructuredSelection) _tableViewer.getSelection();
+            final GSDFileDBO removeFile = (GSDFileDBO) selection.getFirstElement();
+            
+            if (removeFile != null) {
+                if (MessageDialog.openQuestion(getShell(),
+                                               "Lösche Datei aus der Datenbank",
+                                               "Sind sie sicher das sie die Datei "
+                                                       + removeFile.getName() + " löschen möchten")) {
+                    try {
+                        Repository.removeGSDFiles(removeFile);
+                        List<GSDFileDBO> gsdFiles = getGsdFiles();
+                        if (gsdFiles != null) {
+                            gsdFiles.remove(removeFile);
+                        }
+                        _tableViewer.setInput(gsdFiles);
+                    } catch (PersistenceException pE) {
+                        DeviceDatabaseErrorDialog
+                                .open(null, "Can't remove file from Database!", pE);
+                        CentralLogger.getInstance().error(this, pE);
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    /**
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @since 14.06.2010
+     */
+    private final class GSDFileSelectionListener implements SelectionListener {
+        private final TableViewer _tableViewer;
+        private final Text _tSelected;
+        
+        /**
+         * Constructor.
+         * 
+         * @param tableViewer
+         * @param tSelected
+         */
+        protected GSDFileSelectionListener(@Nonnull final TableViewer tableViewer,
+                                           @Nonnull final Text tSelected) {
+            _tableViewer = tableViewer;
+            _tSelected = tSelected;
+        }
+        
+        private void doFileAdd() {
+            try {
+                setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer.getSelection())
+                        .getFirstElement());
+                GSDFileDBO gsdFile = getGsdFile();
+                if (gsdFile != null) {
+                    fill(gsdFile);
+                    _tSelected.setText(gsdFile.getName());
+                    setSavebuttonEnabled("GSDFile", true);
+                }
+            } catch (PersistenceException e) {
+                LOG.error(e);
+                DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
+            }
+        }
+        
+        @Override
+        public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
+            doFileAdd();
+        }
+        
+        @Override
+        public void widgetSelected(@Nullable final SelectionEvent e) {
+            doFileAdd();
         }
     }
     
@@ -165,13 +319,80 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         public int compare(@Nullable final Viewer viewer,
                            @Nullable final Object e1,
                            @Nullable final Object e2) {
-            if ((e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
+            if ( (e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
                 PrmTextItem eUPD1 = (PrmTextItem) e1;
                 PrmTextItem eUPD2 = (PrmTextItem) e2;
                 return eUPD1.getIndex() - eUPD2.getIndex();
             }
             return super.compare(viewer, e1, e2);
         }
+    }
+    
+    /**
+    * @author hrickens
+    * @author $Author: hrickens $
+    * @since 14.06.2010
+    */
+    private final class ViewerSorterExtension extends ViewerSorter {
+        
+        public ViewerSorterExtension() {
+            // default constructor
+        }
+        
+        @Override
+        public int compare(@Nullable final Viewer viewer,
+                           @Nullable final Object e1,
+                           @Nullable final Object e2) {
+            if (e1 instanceof GSDFileDBO && e2 instanceof GSDFileDBO) {
+                final GSDFileDBO file1 = (GSDFileDBO) e1;
+                final GSDFileDBO file2 = (GSDFileDBO) e2;
+                
+                // sort wrong files to back.
+                if (! (file1.isMasterNonHN() || file1.isSlaveNonHN())
+                        && (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
+                    return -1;
+                } else if ( (file1.isMasterNonHN() || file1.isSlaveNonHN())
+                        && ! (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
+                    return 1;
+                }
+                
+                // if master -> master file to top
+                switch (getNode().needGSDFile()) {
+                    case Master:
+                        if (file1.isMasterNonHN() && !file2.isMasterNonHN()) {
+                            return -1;
+                        } else if (!file1.isMasterNonHN() && file2.isMasterNonHN()) {
+                            return 1;
+                        }
+                        break;
+                    case Slave:
+                        // if slave -> slave file to top
+                        if (file1.isSlaveNonHN() && !file2.isSlaveNonHN()) {
+                            return -1;
+                        } else if (!file1.isSlaveNonHN() && file2.isSlaveNonHN()) {
+                            return 1;
+                        }
+                        break;
+                    default:
+                        // do nothing
+                }
+                return file1.getName().compareToIgnoreCase(file2.getName());
+            }
+            return super.compare(viewer, e1, e2);
+        }
+    }
+    
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AbstractGsdNodeEditor.class);
+    
+    private static void createGSDFileActions(@Nonnull final TableViewer viewer) {
+        final Menu menu = new Menu(viewer.getControl());
+        final MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new ShowFileSelectionListener(viewer));
+        showItem.setText("&Show");
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
+                .getImage(ISharedImages.IMG_OBJ_FOLDER));
+        viewer.getTable().setMenu(menu);
     }
     
     private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
@@ -194,16 +415,131 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         }
     }
     
+    @SuppressWarnings("unused")
+    private void createButtonArea(@Nonnull final TabFolder tabFolder,
+                                  @Nonnull final Composite comp,
+                                  @Nonnull final Text selectedText,
+                                  @Nonnull final TableViewer gsdFileTableViewer) {
+        new Label(comp, SWT.NONE);
+        final Button fileSelect = new Button(comp, SWT.PUSH);
+        fileSelect.setText("Select");
+        fileSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+        fileSelect.addSelectionListener(new GSDFileSelectionListener(gsdFileTableViewer,
+                                                                     selectedText));
+        new Label(comp, SWT.NONE);
+        new Label(comp, SWT.NONE);
+        final Button fileAdd = new Button(comp, SWT.PUSH);
+        fileAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+        fileAdd.setText("Add File");
+        fileAdd.addSelectionListener(new GSDFileAddListener(this,
+                                                            tabFolder,
+                                                            gsdFileTableViewer,
+                                                            comp));
+        final Button fileRemove = new Button(comp, SWT.PUSH);
+        fileRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+        fileRemove.setText("Remove File");
+        fileRemove.addSelectionListener(new GSDFileRemoveListener(gsdFileTableViewer));
+        
+        gsdFileTableViewer.addSelectionChangedListener(new GSDFileChangeListener(fileSelect));
+        
+        new Label(comp, SWT.NONE);
+    }
+    
+    /**
+     * @param columnNum
+     * @param comp
+     * @return
+     */
+    @Nonnull
+    private TableViewer createChooserArea(final int columnNum, @Nonnull final Composite comp) {
+        final Group gAvailable = new Group(comp, SWT.NONE);
+        gAvailable.setText("Available GSD File:");
+        gAvailable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, columnNum, 1));
+        gAvailable.setLayout(new GridLayout(1, false));
+        
+        final TableColumnLayout tableColumnLayout = new TableColumnLayout();
+        final Composite tableComposite = new Composite(gAvailable, SWT.BORDER);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
+        tableComposite.setLayout(tableColumnLayout);
+        
+        final TableViewer gsdFileTableViewer = new TableViewer(tableComposite, SWT.H_SCROLL
+                | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+        gsdFileTableViewer.setContentProvider(new ArrayContentProvider());
+        gsdFileTableViewer.setSorter(new ViewerSorterExtension());
+        gsdFileTableViewer.setLabelProvider(new GSDLabelProvider(getNode().needGSDFile()));
+        gsdFileTableViewer.getTable().setHeaderVisible(false);
+        gsdFileTableViewer.getTable().setLinesVisible(false);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(gsdFileTableViewer.getTable());
+        
+        try {
+            List<GSDFileDBO> load = Repository.load(GSDFileDBO.class);
+            setGsdFiles(load);
+        } catch (PersistenceException e) {
+            DeviceDatabaseErrorDialog.open(null, "Can't read GSDFiles from Database!", e);
+            CentralLogger.getInstance().error(this, e);
+        }
+        List<GSDFileDBO> gsdFiles = getGsdFiles();
+        if (gsdFiles == null) {
+            setGsdFiles(new ArrayList<GSDFileDBO>());
+        } else if (!gsdFiles.isEmpty()) {
+            gsdFileTableViewer.setInput(gsdFiles.toArray(new GSDFileDBO[gsdFiles.size()]));
+        }
+        return gsdFileTableViewer;
+    }
+    
+    /**
+     * (@inheritDoc)
+     */
+    @Override
+    public void createPartControl(@Nonnull final Composite parent) {
+        setParent(parent);
+        setBackgroundComposite();
+        if (getNode().needGSDFile() != GSDFileTypes.NONE) {
+            makeGSDFileChooser(getTabFolder(), "GSD File List");
+        }
+        documents();
+    }
+    
+    @Nonnull
+    private Text createSelectionArea(final int columnNum, @Nonnull final Composite comp) {
+        final Text tSelected;
+        final Group gSelected = new Group(comp, SWT.NONE);
+        gSelected.setText("Selected GSD File:");
+        gSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, columnNum, 1));
+        gSelected.setLayout(new GridLayout(1, false));
+        
+        tSelected = new Text(gSelected, SWT.SINGLE | SWT.BORDER);
+        tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+        GSDFileDBO gsdFile = getGsdFile();
+        if (gsdFile != null) {
+            try {
+                setGsdFile(gsdFile);
+            } catch (PersistenceException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            tSelected.setText(gsdFile.getName());
+        }
+        return tSelected;
+    }
+    
+    /**
+     * Fill the View whit data from GSDFile.
+     * 
+     * @param gsdFile
+     *            the GSDFile whit the data.
+     * @throws PersistenceException 
+     */
+    public abstract void fill(@Nullable GSDFileDBO gsdFile) throws PersistenceException;
+    
     @CheckForNull
     abstract AbstractGsdPropertyModel getGsdPropertyModel() throws IOException;
     
     @Nonnull
-    abstract List<Integer> getPrmUserDataList();
-    
-    abstract void setPrmUserData(@Nonnull Integer index, @Nonnull Integer value);
+    abstract Integer getPrmUserData(@Nonnull Integer index);
     
     @Nonnull
-    abstract Integer getPrmUserData(@Nonnull Integer index);
+    abstract List<Integer> getPrmUserDataList();
     
     int getUserPrmDataValue(@Nonnull KeyValuePair extUserPrmDataRef,
                             @Nonnull ExtUserPrmData extUserPrmData) {
@@ -211,7 +547,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         List<Integer> values = new ArrayList<Integer>();
         values.add(prmUserDataList.get(extUserPrmDataRef.getIndex()));
         int maxBit = extUserPrmData.getMaxBit();
-        if ((maxBit > 7) && (maxBit < 16)) {
+        if ( (maxBit > 7) && (maxBit < 16)) {
             values.add(prmUserDataList.get(extUserPrmDataRef.getIndex() + 1));
         }
         int val = getValueFromBitMask(extUserPrmData, values);
@@ -221,7 +557,6 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
                                     @Nonnull final List<Integer> values) {
         // TODO (hrickens) [21.04.2011]: Muss refactort werde da der gleiche code auch in setValue2BitMask() verwendent wird.      
-        
         int lowByte = 0;
         int highByte = 0;
         if (values.size() > 0) {
@@ -240,6 +575,38 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         int mask = ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
         val = (val & mask) >> ranges.getMinBit();
         return val;
+    }
+    
+    private void handleComboViewer(@Nonnull final ComboViewer prmTextCV,
+                                   @Nonnull final Integer byteIndex) throws IOException {
+        if (!prmTextCV.getCombo().isDisposed()) {
+            ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
+            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
+            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
+            setValue2BitMask(extUserPrmData, byteIndex, bitValue);
+            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
+            prmTextCV.getCombo().setData(indexOf);
+        }
+    }
+    
+    @Nonnull
+    private void handleText(@Nonnull final Text prmText, @Nonnull Integer byteIndex) {
+        if (!prmText.isDisposed()) {
+            Object data = prmText.getData("ExtUserPrmData");
+            if (data instanceof ExtUserPrmData) {
+                ExtUserPrmData extUserPrmData = (ExtUserPrmData) data;
+                
+                String value = prmText.getText();
+                Integer bitValue;
+                if (value == null || value.isEmpty()) {
+                    bitValue = extUserPrmData.getDefault();
+                } else {
+                    bitValue = Integer.parseInt(value);
+                }
+                setValue2BitMask(extUserPrmData, byteIndex, bitValue);
+                prmText.setData(bitValue);
+            }
+        }
     }
     
     /**
@@ -298,7 +665,7 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         if (extUserPrmData != null) {
             text.setText(extUserPrmData.getText() + ":");
             prmText = extUserPrmData.getPrmText();
-            if ((prmText == null || prmText.isEmpty())
+            if ( (prmText == null || prmText.isEmpty())
                     && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
                 _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
             } else {
@@ -309,6 +676,32 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             }
         }
         new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
+    }
+    
+    /**
+     * 
+     * @param tabFolder
+     *            The Tab Folder to add the Tab Item.
+     * @param head
+     *            Headline for the Tab.
+     * @return Tab Item Composite.
+     */
+    @Nonnull
+    private Composite makeGSDFileChooser(@Nonnull final TabFolder tabFolder,
+                                         @Nonnull final String head) {
+        final int columnNum = 7;
+        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum, 520, 200);
+        
+        final Text selectedText = createSelectionArea(columnNum, comp);
+        
+        final TableViewer gsdFileTableViewer = createChooserArea(columnNum, comp);
+        
+        createButtonArea(tabFolder, comp, selectedText, gsdFileTableViewer);
+        
+        createGSDFileActions(gsdFileTableViewer);
+        
+        return comp;
+        
     }
     
     /**
@@ -358,57 +751,30 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
     *
     */
     protected void saveUserPrmData() throws IOException {
-        Collection<KeyValuePair> extUserPrmDataRefMap = getGsdPropertyModel()
-                .getExtUserPrmDataRefMap().values();
-        
-        if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
-            int i = 0;
-            for (KeyValuePair ref : extUserPrmDataRefMap) {
-                Object prmTextObject = _prmTextCV.get(i);
-                if (prmTextObject instanceof ComboViewer) {
-                    ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                    handleComboViewer(prmTextCV, ref.getIndex());
-                } else if (prmTextObject instanceof Text) {
-                    Text prmText = (Text) prmTextObject;
-                    handleText(prmText, ref.getIndex());
-                }
-                i++;
-            }
+        AbstractGsdPropertyModel gsdPropertyModel = getGsdPropertyModel();
+        if (gsdPropertyModel != null) {
+            Collection<KeyValuePair> extUserPrmDataRefMap = gsdPropertyModel
+                    .getExtUserPrmDataRefMap().values();
             
-        }
-    }
-    
-    private void handleComboViewer(@Nonnull final ComboViewer prmTextCV,
-                                   @Nonnull final Integer byteIndex) throws IOException {
-        if (!prmTextCV.getCombo().isDisposed()) {
-            ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
-            StructuredSelection selection = (StructuredSelection) prmTextCV.getSelection();
-            Integer bitValue = ((PrmTextItem) selection.getFirstElement()).getIndex();
-            setValue2BitMask(extUserPrmData, byteIndex, bitValue);
-            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement().toString());
-            prmTextCV.getCombo().setData(indexOf);
-        }
-    }
-    
-    @Nonnull
-    private void handleText(@Nonnull final Text prmText, @Nonnull Integer byteIndex) {
-        if (!prmText.isDisposed()) {
-            Object data = prmText.getData("ExtUserPrmData");
-            if (data instanceof ExtUserPrmData) {
-                ExtUserPrmData extUserPrmData = (ExtUserPrmData) data;
-                
-                String value = prmText.getText();
-                Integer bitValue;
-                if (value == null || value.isEmpty()) {
-                    bitValue = extUserPrmData.getDefault();
-                } else {
-                    bitValue = Integer.parseInt(value);
+            if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
+                int i = 0;
+                for (KeyValuePair ref : extUserPrmDataRefMap) {
+                    Object prmTextObject = _prmTextCV.get(i);
+                    if (prmTextObject instanceof ComboViewer) {
+                        ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+                        handleComboViewer(prmTextCV, ref.getIndex());
+                    } else if (prmTextObject instanceof Text) {
+                        Text prmText = (Text) prmTextObject;
+                        handleText(prmText, ref.getIndex());
+                    }
+                    i++;
                 }
-                setValue2BitMask(extUserPrmData, byteIndex, bitValue);
-                prmText.setData(bitValue);
+                
             }
         }
     }
+    
+    abstract void setPrmUserData(@Nonnull Integer index, @Nonnull Integer value);
     
     /**
      * Change the a value on the Bit places, that is given from the input, to
@@ -434,8 +800,8 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
             minBit = extUserPrmData.getMaxBit();
             maxBit = extUserPrmData.getMinBit();
         }
-        int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
-        if ((maxBit > 7) && (maxBit < 16)) {
+        int mask = ~ ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+        if ( (maxBit > 7) && (maxBit < 16)) {
             int modifyByteHigh = 0;
             int modifyByteLow = 0;
             modifyByteHigh = getPrmUserData(byteIndex);

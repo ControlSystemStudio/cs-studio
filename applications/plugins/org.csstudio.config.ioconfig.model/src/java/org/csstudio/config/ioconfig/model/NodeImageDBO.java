@@ -24,14 +24,13 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.Table;
 
 /**
  * @author hrickens
@@ -71,6 +70,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * Default Constructor needed by Hibernate.
      */
     public NodeImageDBO() {
+        // Constructor for Hibernate
     }
 
     /** @return the ID. */
@@ -91,7 +91,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * 
      * @param name set the Name of this Node.
      */
-    public void setName(String name) {
+    public void setName(@Nonnull String name) {
         this._name = name;
     }
 
@@ -111,7 +111,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
         return _file;
     }
 
-    public void setFile(String file) {
+    public void setFile(@Nonnull String file) {
         _file = file;
     }
 
@@ -122,14 +122,15 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
         return _imageBytes;
     }
 
-    public void setImageBytes(byte[] imageBytes) {
+    public void setImageBytes(@Nonnull byte[] imageBytes) {
         _imageBytes = imageBytes;
     }
     
     /**
      * {@inheritDoc}
      */
-    public int compareTo(NodeImageDBO arg0) {
+    @Override
+    public int compareTo(@Nonnull NodeImageDBO arg0) {
         return (getId()-arg0.getId());
     }
 

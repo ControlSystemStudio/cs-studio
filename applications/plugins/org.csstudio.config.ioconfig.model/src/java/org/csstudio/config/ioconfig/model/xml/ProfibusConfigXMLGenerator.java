@@ -110,7 +110,7 @@ public class ProfibusConfigXMLGenerator {
      *            The Profibus Subnet.
      * @throws PersistenceException 
      */
-    public final void setSubnet(final ProfibusSubnetDBO subnet) throws PersistenceException {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
         Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
         if ((masterTree == null) || (masterTree.size() < 1)) {
             return;
@@ -132,7 +132,7 @@ public class ProfibusConfigXMLGenerator {
         }
     }
 
-    private void makeFMB(final MasterDBO master) {
+    private void makeFMB(@Nonnull final MasterDBO master) {
         String[] fmbKeys = new String[] {
                 "max_number_slaves",
                 "max_slave_output_len",
@@ -157,8 +157,8 @@ public class ProfibusConfigXMLGenerator {
         }
     }
 
-    private void makeMaster(final ProfibusSubnetDBO subnet, final MasterDBO master) {
-        String[] masterKeys = new String[] { "bus_para_len", "fdl_add", "baud_rate", "tslot",
+    private void makeMaster(@Nonnull final ProfibusSubnetDBO subnet, @Nonnull final MasterDBO master) {
+        String[] masterKeys = new String[] {"bus_para_len", "fdl_add", "baud_rate", "tslot",
                 "min_tsdr", "max_tsdr", "tqui", "tset", "ttr", "gap", "hsa", "max_retry_limit",
                 "bp_flag", "min_slave_interval", "poll_timeout", "data_control_time", "reserved",
                 "master_user_data_length", "master_user_data" };
@@ -211,7 +211,7 @@ public class ProfibusConfigXMLGenerator {
      *            The Profibus Slave.
      * @throws PersistenceException 
      */
-	private void addSlave(final SlaveDBO slave) throws PersistenceException {
+	private void addSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
 		/*
 		 * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
 		 * a configuration on the IOC.
@@ -253,6 +253,7 @@ public class ProfibusConfigXMLGenerator {
      *
      * @return The Slave Table XML element.
      */
+    @Nonnull 
     private Element slaveTable() {
         Element slaveTable = new Element("SLAVE_TABLE");
         for (int i = 0; i < _slaveFldAdrs.size(); i++) {
@@ -267,7 +268,7 @@ public class ProfibusConfigXMLGenerator {
      * @param value The integer value as Sting.
      * @return The value as int.
      */
-    public static int getInt(final String value) {
+    public static int getInt(@Nonnull final String value) {
         String tmp = value.toUpperCase().trim();
         int radix = 10;
         try {

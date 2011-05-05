@@ -5,6 +5,12 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
+/**
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 04.05.2011
+ */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override

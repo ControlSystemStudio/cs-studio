@@ -27,6 +27,9 @@ package org.csstudio.config.ioconfig.model.tools;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 
 /**
@@ -43,13 +46,15 @@ public final class NodeMap {
     private static int _CHANNEL_CONFIG_COMPOSITE;
     
     private NodeMap() {
+        // Constructor
     }
     
-    public static void put(Integer key, AbstractNodeDBO value) {
+    public static void put(@Nonnull Integer key, @Nonnull AbstractNodeDBO value) {
         _NODE_MAP.put(key, value);
     }
     
-    public static AbstractNodeDBO get(Integer key) {
+    @CheckForNull
+    public static AbstractNodeDBO get(@Nonnull Integer key) {
         return _NODE_MAP.get(key);
     }
 

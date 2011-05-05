@@ -19,7 +19,6 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,15 +32,11 @@ import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
-import org.csstudio.config.ioconfig.config.view.helper.GSDLabelProvider;
-import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -57,15 +52,8 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -87,8 +75,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
@@ -98,10 +84,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.EditorPart;
 
@@ -113,9 +97,6 @@ import org.eclipse.ui.part.EditorPart;
  * @since 31.03.2010
  */
 public abstract class AbstractNodeEditor extends EditorPart implements INodeConfig {
-    
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AbstractNodeEditor.class);
     
     /**
      * 
@@ -167,135 +148,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             doCancle();
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 14.06.2010
-     */
-    private final class GSDFileChangeListener implements ISelectionChangedListener {
-        private final Button _fileSelect;
-        
-        /**
-         * Constructor.
-         * 
-         * @param fileSelect
-         */
-        protected GSDFileChangeListener(@Nonnull final Button fileSelect) {
-            _fileSelect = fileSelect;
-        }
-        
-        @Override
-        public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-            final StructuredSelection selection = (StructuredSelection) event.getSelection();
-            if (selection == null || selection.isEmpty()) {
-                _fileSelect.setEnabled(false);
-                return;
-            }
-            final GSDFileDBO file = (GSDFileDBO) selection.getFirstElement();
-            _fileSelect.setEnabled(getNode().needGSDFile() == GSDFileTypes.Master == file
-                    .isMasterNonHN());
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 14.06.2010
-     */
-    private final class GSDFileRemoveListener implements SelectionListener {
-        private final TableViewer _tableViewer;
-        
-        /**
-         * Constructor.
-         * 
-         * @param tableViewer
-         */
-        protected GSDFileRemoveListener(@Nonnull final TableViewer tableViewer) {
-            _tableViewer = tableViewer;
-        }
-        
-        @Override
-        public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-            // TODO:
-        }
-        
-        @Override
-        public void widgetSelected(@Nonnull final SelectionEvent e) {
-            final StructuredSelection selection = (StructuredSelection) _tableViewer.getSelection();
-            final GSDFileDBO removeFile = (GSDFileDBO) selection.getFirstElement();
-            
-            if (removeFile != null) {
-                if (MessageDialog.openQuestion(getShell(),
-                                               "Lösche Datei aus der Datenbank",
-                                               "Sind sie sicher das sie die Datei "
-                                                       + removeFile.getName() + " löschen möchten")) {
-                    try {
-                        Repository.removeGSDFiles(removeFile);
-                        List<GSDFileDBO> gsdFiles = getGsdFiles();
-                        if (gsdFiles != null) {
-                            gsdFiles.remove(removeFile);
-                        }
-                        _tableViewer.setInput(gsdFiles);
-                    } catch (PersistenceException pE) {
-                        DeviceDatabaseErrorDialog
-                                .open(null, "Can't remove file from Database!", pE);
-                        CentralLogger.getInstance().error(this, pE);
-                    }
-                }
-            }
-            
-        }
-    }
-    
-    /**
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 14.06.2010
-     */
-    private final class GSDFileSelectionListener implements SelectionListener {
-        private final TableViewer _tableViewer;
-        private final Text _tSelected;
-        
-        /**
-         * Constructor.
-         * 
-         * @param tableViewer
-         * @param tSelected
-         */
-        protected GSDFileSelectionListener(@Nonnull final TableViewer tableViewer,
-                                           @Nonnull final Text tSelected) {
-            _tableViewer = tableViewer;
-            _tSelected = tSelected;
-        }
-        
-        private void doFileAdd() {
-            try {
-                setGsdFile((GSDFileDBO) ((StructuredSelection) _tableViewer.getSelection())
-                        .getFirstElement());
-                GSDFileDBO gsdFile = getGsdFile();
-                if (gsdFile != null) {
-                    if (fill(gsdFile)) {
-                        _tSelected.setText(gsdFile.getName());
-                        setSavebuttonEnabled("GSDFile", true);
-                    }
-                }
-            } catch (PersistenceException e) {
-                LOG.error(e);
-                DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
-            }
-        }
-        
-        @Override
-        public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
-            doFileAdd();
-        }
-        
-        @Override
-        public void widgetSelected(@Nullable final SelectionEvent e) {
-            doFileAdd();
         }
     }
     
@@ -368,68 +220,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         }
     }
     
-    /**
-     * TODO (hrickens) :
-     * 
-     * @author hrickens
-     * @author $Author: hrickens $
-     * @since 14.06.2010
-     */
-    private final class ViewerSorterExtension extends ViewerSorter {
-        
-        public ViewerSorterExtension() {
-            // default constructor
-        }
-        
-        @Override
-        public int compare(@Nullable final Viewer viewer,
-                           @Nullable final Object e1,
-                           @Nullable final Object e2) {
-            if (e1 instanceof GSDFileDBO && e2 instanceof GSDFileDBO) {
-                final GSDFileDBO file1 = (GSDFileDBO) e1;
-                final GSDFileDBO file2 = (GSDFileDBO) e2;
-                
-                // sort wrong files to back.
-                if (!(file1.isMasterNonHN() || file1.isSlaveNonHN())
-                        && (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
-                    return -1;
-                } else if ((file1.isMasterNonHN() || file1.isSlaveNonHN())
-                        && !(file2.isMasterNonHN() || file2.isSlaveNonHN())) {
-                    return 1;
-                }
-                
-                // if master -> master file to top
-                switch (getNode().needGSDFile()) {
-                    case Master:
-                        if (file1.isMasterNonHN() && !file2.isMasterNonHN()) {
-                            return -1;
-                        } else if (!file1.isMasterNonHN() && file2.isMasterNonHN()) {
-                            return 1;
-                        }
-                        break;
-                    case Slave:
-                        // if slave -> slave file to top
-                        if (file1.isSlaveNonHN() && !file2.isSlaveNonHN()) {
-                            return -1;
-                        } else if (!file1.isSlaveNonHN() && file2.isSlaveNonHN()) {
-                            return 1;
-                        }
-                        break;
-                    default:
-                        // do nothing
-                }
-                return file1.getName().compareToIgnoreCase(file2.getName());
-            }
-            return super.compare(viewer, e1, e2);
-        }
-    }
-    
-    /**
-     * The warn background color (SWT.COLOR_RED) of the index Spinner.
-     */
-    protected static final Color WARN_BACKGROUND_COLOR = CustomMediaFactory.getInstance()
-            .getColor(CustomMediaFactory.COLOR_RED);
-    
     private static Font _FONT;
     
     private static GridDataFactory _LABEL_GRID_DATA = GridDataFactory.fillDefaults();
@@ -437,23 +227,15 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     private static GridDataFactory _TEXT_GRID_DATA = GridDataFactory.fillDefaults().grab(true,
                                                                                          false);
     
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AbstractNodeEditor.class);
+    
     /**
-     *
+    /**
+     * The warn background color (SWT.COLOR_RED) of the index Spinner.
      */
-    private static void createGSDFileActions(@Nonnull final TableViewer viewer) {
-        final Menu menu = new Menu(viewer.getControl());
-        final MenuItem showItem = new MenuItem(menu, SWT.PUSH);
-        showItem.addSelectionListener(new ShowFileSelectionListener(viewer));
-        showItem.setText("&Show");
-        showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
-                .getImage(ISharedImages.IMG_OBJ_FOLDER));
-        // MenuItem saveAsItem = new MenuItem(menu, SWT.PUSH);
-        // saveAsItem.addSelectionListener(new SaveAsSelectionListener(viewer));
-        // saveAsItem.setText("&Show");
-        // saveAsItem.setImage(PlatformUI.getWorkbench().getSharedImages()
-        // .getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
-        viewer.getTable().setMenu(menu);
-    }
+    protected static final Color WARN_BACKGROUND_COLOR = CustomMediaFactory.getInstance()
+            .getColor(CustomMediaFactory.COLOR_RED);
     
     @Nonnull
     private static Label getNewLabel(@Nonnull final Composite header, @Nonnull final String string) {
@@ -472,27 +254,20 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return newText;
     }
     
+    protected static void resetSelection(@Nonnull Combo combo) {
+        Integer index = (Integer) combo.getData();
+        if (index != null) {
+            combo.select(index);
+        }
+        
+    }
+    
     protected static void resetString(@Nonnull Text textField) {
         String text = (String) textField.getData();
         if (text != null) {
             textField.setText(text);
         }
     }
-    
-    /**
-     * A ModifyListener that set the save button enable to store the changes.
-     * Works with {@link Text}, {@link Combo} and {@link Spinner}.
-     */
-    private final ModifyListener _mLSB = new NodeConfigModifyListener();
-    
-    /**
-     * Contain all different events that have change a Value and the status of
-     * the change. The status means is the new Value a differnt from the origin
-     * Value.
-     */
-    private final HashMap<String, Boolean> _saveButtonEvents = new HashMap<String, Boolean>();
-    
-    private final Map<HeaderFields, Text> headerFields = new HashMap<HeaderFields, Text>();
     
     /**
      * The Button to cancel Changes.
@@ -506,12 +281,12 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      */
     private DocumentationManageView _documentationManageView;
     
-    // ---------------------------------------
-    // Node Editor View
-    
     private GSDFileDBO _gsdFile;
     
     private List<GSDFileDBO> _gsdFiles;
+    
+    // ---------------------------------------
+    // Node Editor View
     
     /**
      * The Spinner for the channel index.
@@ -519,24 +294,30 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     private Spinner _indexSpinner;
     
     /**
+     * A ModifyListener that set the save button enable to store the changes.
+     * Works with {@link Text}, {@link Combo} and {@link Spinner}.
+     */
+    private final ModifyListener _mLSB = new NodeConfigModifyListener();
+    
+    /**
      * The text field for the name of the node.
      */
     private Text _nameText;
-    
-    // ---------------------------------------
-    // Node Editor View
     
     /**
      * if true an new SubNet a created also modified _slave.
      */
     private boolean _new = false;
     
-    private AbstractNodeDBO _node;
-    
     // ---------------------------------------
     // Node Editor View
     
+    private AbstractNodeDBO _node;
+    
     private Composite _parent;
+    
+    // ---------------------------------------
+    // Node Editor View
     
     /**
      * The Button to save Changes.
@@ -544,13 +325,25 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     private Button _saveButton;
     
     /**
+     * Contain all different events that have change a Value and the status of
+     * the change. The status means is the new Value a differnt from the origin
+     * Value.
+     */
+    private final HashMap<String, Boolean> _saveButtonEvents = new HashMap<String, Boolean>();
+    
+    /**
      * The Tabfolder for a config view.
      */
     private TabFolder _tabFolder;
     
+    private final Map<HeaderFields, Text> headerFields = new HashMap<HeaderFields, Text>();
+    
     public AbstractNodeEditor() {
         // constructor
     }
+    
+    // ---------------------------------------
+    // Node Editor View
     
     public AbstractNodeEditor(final boolean nevv) {
         // super(parent, SWT.NONE);
@@ -562,9 +355,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         
     }
     
-    // ---------------------------------------
-    // Node Editor View
-    
     public void cancel() {
         Text descText = getDescText();
         if (descText != null && descText.getData() != null && descText.getData() instanceof String) {
@@ -575,112 +365,14 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         }
     }
     
-    @SuppressWarnings("unused")
-    private void createButtonArea(@Nonnull final TabFolder tabFolder,
-                                  @Nonnull final Composite comp,
-                                  @Nonnull final Text selectedText,
-                                  @Nonnull final TableViewer gsdFileTableViewer) {
-        new Label(comp, SWT.NONE);
-        final Button fileSelect = new Button(comp, SWT.PUSH);
-        fileSelect.setText("Select");
-        fileSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileSelect.addSelectionListener(new GSDFileSelectionListener(gsdFileTableViewer,
-                                                                     selectedText));
-        new Label(comp, SWT.NONE);
-        new Label(comp, SWT.NONE);
-        final Button fileAdd = new Button(comp, SWT.PUSH);
-        fileAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileAdd.setText("Add File");
-        fileAdd.addSelectionListener(new GSDFileAddListener(this,
-                                                            tabFolder,
-                                                            gsdFileTableViewer,
-                                                            comp));
-        final Button fileRemove = new Button(comp, SWT.PUSH);
-        fileRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileRemove.setText("Remove File");
-        fileRemove.addSelectionListener(new GSDFileRemoveListener(gsdFileTableViewer));
-        
-        gsdFileTableViewer.addSelectionChangedListener(new GSDFileChangeListener(fileSelect));
-        
-        new Label(comp, SWT.NONE);
-    }
-    
-    /**
-     * @param columnNum
-     * @param comp
-     * @return
-     */
-    @Nonnull
-    private TableViewer createChooserArea(final int columnNum, @Nonnull final Composite comp) {
-        final Group gAvailable = new Group(comp, SWT.NONE);
-        gAvailable.setText("Available GSD File:");
-        gAvailable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, columnNum, 1));
-        gAvailable.setLayout(new GridLayout(1, false));
-        
-        final TableColumnLayout tableColumnLayout = new TableColumnLayout();
-        final Composite tableComposite = new Composite(gAvailable, SWT.BORDER);
-        GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
-        tableComposite.setLayout(tableColumnLayout);
-        
-        final TableViewer gsdFileTableViewer = new TableViewer(tableComposite, SWT.H_SCROLL
-                | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
-        gsdFileTableViewer.setContentProvider(new ArrayContentProvider());
-        gsdFileTableViewer.setSorter(new ViewerSorterExtension());
-        gsdFileTableViewer.setLabelProvider(new GSDLabelProvider(getNode().needGSDFile()));
-        gsdFileTableViewer.getTable().setHeaderVisible(false);
-        gsdFileTableViewer.getTable().setLinesVisible(false);
-        GridDataFactory.fillDefaults().grab(true, true).applyTo(gsdFileTableViewer.getTable());
-        
-        try {
-            List<GSDFileDBO> load = Repository.load(GSDFileDBO.class);
-            setGsdFiles(load);
-        } catch (PersistenceException e) {
-            DeviceDatabaseErrorDialog.open(null, "Can't read GSDFiles from Database!", e);
-            CentralLogger.getInstance().error(this, e);
-        }
-        List<GSDFileDBO> gsdFiles = getGsdFiles();
-        if (gsdFiles == null) {
-            setGsdFiles(new ArrayList<GSDFileDBO>());
-        } else if (!gsdFiles.isEmpty()) {
-            gsdFileTableViewer.setInput(gsdFiles.toArray(new GSDFileDBO[gsdFiles.size()]));
-        }
-        return gsdFileTableViewer;
-    }
-    
     /**
      * (@inheritDoc)
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        _parent = parent;
+        setParent(parent);
         setBackgroundComposite();
-        if (getTabFolder() != null && getNode().needGSDFile() != GSDFileTypes.NONE) {
-            makeGSDFileChooser(getTabFolder(), "GSD File List");
-        }
         documents();
-    }
-    
-    @Nonnull
-    private Text createSelectionArea(final int columnNum, @Nonnull final Composite comp) {
-        final Text tSelected;
-        final Group gSelected = new Group(comp, SWT.NONE);
-        gSelected.setText("Selected GSD File:");
-        gSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, columnNum, 1));
-        gSelected.setLayout(new GridLayout(1, false));
-        
-        tSelected = new Text(gSelected, SWT.SINGLE | SWT.BORDER);
-        tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        GSDFileDBO gsdFile = getGsdFile();
-        if (gsdFile != null) {
-            try {
-                setGsdFile(gsdFile);
-            } catch (PersistenceException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            tSelected.setText(gsdFile.getName());
-        }
-        return tSelected;
     }
     
     /**
@@ -700,7 +392,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     /**
      * set the documents and Icon tab item.
      */
-    private void documents() {
+    protected void documents() {
         final String head = "Documents";
         final TabItem item = new TabItem(getTabFolder(), SWT.NO_SCROLL);
         item.setText(head);
@@ -731,6 +423,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         });
         
     }
+    
+    // ---------------------------------------
+    // Node Editor View
     
     @Override
     public void doSave(@Nullable final IProgressMonitor monitor) {
@@ -764,9 +459,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         // now = null;
     }
     
-    // ---------------------------------------
-    // Node Editor View
-    
     /**
      * (@inheritDoc)
      */
@@ -774,16 +466,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     public void doSaveAs() {
         // save as not supported
     }
-    
-    /**
-     * Fill the View whit data from GSDFile.
-     * 
-     * @param gsdFile
-     *            the GSDFile whit the data.
-     * @return true when set the data ok.
-     * @throws PersistenceException 
-     */
-    public abstract boolean fill(@Nullable GSDFileDBO gsdFile) throws PersistenceException;
     
     /**
      * @return the cancelButton
@@ -802,13 +484,13 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return descText.getText();
     }
     
+    // ---------------------------------------
+    // Node Editor View
+    
     @CheckForNull
     protected Text getDescText() {
         return _descText;
     }
-    
-    // ---------------------------------------
-    // Node Editor View
     
     /**
      * 
@@ -827,6 +509,11 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
     @CheckForNull
     protected final DocumentationManageView getDocumentationManageView() {
         return _documentationManageView;
+    }
+    
+    @CheckForNull
+    protected GSDFileDBO getGsdFile() {
+        return _gsdFile;
     }
     
     @CheckForNull
@@ -933,10 +620,17 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return _tabFolder;
     }
     
-    protected final void selecttTabFolder(int index) {
-        if (_tabFolder != null) {
-            _tabFolder.setSelection(index);
+    /**
+     * @return
+     */
+    @Nonnull
+    private String getUserName() {
+        final User user = SecurityFacade.getInstance().getCurrentUser();
+        String name = "Unknown";
+        if (user != null) {
+            name = user.getUsername();
         }
+        return name;
     }
     
     /**
@@ -947,7 +641,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         setSite(site);
         setInput(input);
         _node = ((NodeEditorInput) input).getNode();
-        setNew(((NodeEditorInput) input).isNew());
+        setNew( ((NodeEditorInput) input).isNew());
         setPartName(_node.getName());
         getProfiBusTreeView().setOpenEditor(this);
     }
@@ -962,6 +656,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
             return getNode().isDirty();
         }
         return true;
+    }
+    
+    protected boolean isNew() {
+        return _new;
     }
     
     @Override
@@ -1018,33 +716,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         });
         setText(descText, getNode().getDescription(), 255);
         setDescWidget(descText);
-        gDesc.setTabList(new Control[] { descText });
-    }
-    
-    /**
-     * 
-     * @param tabFolder
-     *            The Tab Folder to add the Tab Item.
-     * @param head
-     *            Headline for the Tab.
-     * @return Tab Item Composite.
-     */
-    @Nonnull
-    public Composite makeGSDFileChooser(@Nonnull final TabFolder tabFolder,
-                                        @Nonnull final String head) {
-        final int columnNum = 7;
-        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum, 520, 200);
-        
-        final Text selectedText = createSelectionArea(columnNum, comp);
-        
-        final TableViewer gsdFileTableViewer = createChooserArea(columnNum, comp);
-        
-        createButtonArea(tabFolder, comp, selectedText, gsdFileTableViewer);
-        
-        createGSDFileActions(gsdFileTableViewer);
-        
-        return comp;
-        
+        gDesc.setTabList(new Control[] {descText});
     }
     
     /**
@@ -1094,19 +766,6 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
             DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
         }
         return false;
-    }
-    
-    /**
-     * @return
-     */
-    @Nonnull
-    private String getUserName() {
-        final User user = SecurityFacade.getInstance().getCurrentUser();
-        String name = "Unknown";
-        if (user != null) {
-            name = user.getUsername();
-        }
-        return name;
     }
     
     /**
@@ -1191,6 +850,12 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         }
     }
     
+    protected final void selecttTabFolder(int index) {
+        if (_tabFolder != null) {
+            _tabFolder.setSelection(index);
+        }
+    }
+    
     /**
      * 
      * This method generate the Background of an NodeConfig this a 3 Parts. 1.
@@ -1204,7 +869,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      *            The node that was configured.
      */
     @SuppressWarnings("unused")
-    private void setBackgroundComposite() {
+    protected void setBackgroundComposite() {
         final int columnNum = 5;
         final AbstractNodeDBO node = getNode();
         if (node == null) {
@@ -1417,6 +1082,15 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         });
     }
     
+    @Override
+    public void setFocus() {
+        // nothing to do;
+    }
+    
+    protected void setGsdFile(@Nullable GSDFileDBO gsdFile) throws PersistenceException {
+        _gsdFile = gsdFile;
+    }
+    
     @CheckForNull
     protected void setGsdFiles(@Nullable final List<GSDFileDBO> gsdFiles) {
         _gsdFiles = gsdFiles;
@@ -1452,11 +1126,19 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
             @Override
             public void keyReleased(@Nonnull final KeyEvent e) {
                 Text descText = getDescText();
-                if ((e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) && (descText != null)) {
+                if ( (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) && (descText != null)) {
                     descText.setFocus();
                 }
             }
         });
+    }
+    
+    protected void setNew(boolean nevv) {
+        _new = nevv;
+    }
+    
+    protected void setParent(@Nonnull Composite parent) {
+        _parent = parent;
     }
     
     protected void setSaveButton(@Nullable final Button saveButton) {
@@ -1555,35 +1237,5 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         // f.format("The maximum text length is %s character", limit);
         textField.setToolTipText("");
         textField.addModifyListener(getMLSB());
-    }
-    
-    protected void setGsdFile(@Nullable GSDFileDBO gsdFile) throws PersistenceException {
-        _gsdFile = gsdFile;
-    }
-    
-    @CheckForNull
-    protected GSDFileDBO getGsdFile() {
-        return _gsdFile;
-    }
-    
-    protected static void resetSelection(@Nonnull Combo combo) {
-        Integer index = (Integer) combo.getData();
-        if (index != null) {
-            combo.select(index);
-        }
-        
-    }
-    
-    protected void setNew(boolean nevv) {
-        _new = nevv;
-    }
-    
-    protected boolean isNew() {
-        return _new;
-    }
-    
-    @Override
-    public void setFocus() {
-        // nothing to do;
     }
 }

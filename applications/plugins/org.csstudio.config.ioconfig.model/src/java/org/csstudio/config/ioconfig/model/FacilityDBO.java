@@ -65,7 +65,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Override
     @Nonnull 
-    public AbstractNodeDBO copyParameter(@Nullable final NamedDBClass parent) {
+    public FacilityDBO copyParameter(@Nullable final NamedDBClass parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
         return copy;
@@ -77,8 +77,8 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Override
     @Nonnull
-    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
-        final AbstractNodeDBO copy = super.copyThisTo(parentNode);
+    public FacilityDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
+        final FacilityDBO copy = super.copyThisTo(parentNode);
         for (final AbstractNodeDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

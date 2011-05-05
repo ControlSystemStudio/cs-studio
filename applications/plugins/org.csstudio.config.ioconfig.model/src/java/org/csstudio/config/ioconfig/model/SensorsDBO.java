@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -68,6 +69,7 @@ public class SensorsDBO {
      *
      * @return the IO Name of this Channel.
      */
+    @Nonnull 
     public String getIoName() {
         return _ioName;
     }
@@ -77,32 +79,32 @@ public class SensorsDBO {
      * @param ioName
      *            the IO Name of this Channel.
      */
-    public void setIoName(final String ioName) {
+    public void setIoName(@Nonnull final String ioName) {
         this._ioName = ioName;
     }
 
     @Column(length=32)
+    @Nonnull 
     public String getSelection() {
         return _selection;
     }
 
-    public void setSelection(final String selection) {
+    public void setSelection(@Nonnull final String selection) {
         _selection = selection;
     }
 
     @Column(length=32)
+    @Nonnull 
     public String getSensorID() {
         return _sensorID;
     }
 
-    public void setSensorID(final String sensorID) {
+    public void setSensorID(@Nonnull final String sensorID) {
         _sensorID = sensorID;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
+    @Nonnull 
     public String toString() {
         return String.format("%1$3s : %2$3s", getSelection(),getSensorID());
     }

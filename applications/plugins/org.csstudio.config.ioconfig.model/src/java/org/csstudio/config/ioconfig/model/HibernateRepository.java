@@ -358,6 +358,7 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     public final String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
         return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
@@ -368,10 +369,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     public final List<String> getIoNames() throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @Nonnull
             public List<String> execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("select channel.ioName from "
                         + ChannelDBO.class.getName() + " as channel");
@@ -387,10 +390,12 @@ public class HibernateRepository implements IRepository {
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     public final List<String> getIoNames(@Nonnull final String iocName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @Nonnull
             public List<String> execute(@Nonnull final Session session) {
                 // TODO: Der IOC name wird noch nicht mir abgefragt!
                 final Query query = session.createQuery("select channel.ioName from "
@@ -403,10 +408,12 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
+    @Nonnull
     public final String getShortChannelDesc(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @Nonnull
             public String execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("select channel.description from "
                         + ChannelDBO.class.getName() + " as channel where channel.ioName like ?");
@@ -431,10 +438,12 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
+    @Nonnull
     public final List<SensorsDBO> loadSensors(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @Nonnull
             public List<SensorsDBO> execute(@Nonnull final Session session) {
                 final Query query = session.createQuery("from " + SensorsDBO.class.getName()
                         + " as sensors where sensors.ioName like ?");
@@ -448,10 +457,12 @@ public class HibernateRepository implements IRepository {
     }
     
     @Override
+    @CheckForNull
     public final SensorsDBO loadSensor(@Nonnull final String ioName, @Nonnull final String selection) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @Override
             @SuppressWarnings("unchecked")
+            @CheckForNull
             public SensorsDBO execute(@Nonnull final Session session) {
                 String statment = "select" + " s" + " from " + SensorsDBO.class.getName() + " s"
                         + ", " + ChannelDBO.class.getName() + " c"
@@ -468,10 +479,12 @@ public class HibernateRepository implements IRepository {
     }
     
     @CheckForNull
+    @Nonnull
     public final List<Integer> getRootPath(final int id) throws PersistenceException {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
+            @Nonnull
             public List<Integer> execute(@Nonnull final Session session) {
                 int level = 0;
                 int searchId = id;
@@ -500,6 +513,7 @@ public class HibernateRepository implements IRepository {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
+            @CheckForNull
             public ChannelDBO execute(@Nonnull final Session session) {
                 if (ioName == null) {
                     return null;
@@ -524,8 +538,9 @@ public class HibernateRepository implements IRepository {
         HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
+            @CheckForNull
             public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
-                if ((pvName == null) || (pvName.size() == 0)) {
+                if ((pvName == null) || pvName.isEmpty()) {
                     return null;
                 }
                 StringBuilder statement = new StringBuilder("select pv from ")
