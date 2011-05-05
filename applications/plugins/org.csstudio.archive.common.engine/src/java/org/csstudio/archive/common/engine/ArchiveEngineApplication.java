@@ -97,8 +97,7 @@ public class ArchiveEngineApplication implements IApplication {
      */
     @Override
     @Nonnull
-    @SuppressWarnings("nls")
-    public Object start(@Nonnull final IApplicationContext context) {
+    public final Object start(@Nonnull final IApplicationContext context) {
 
         final IServiceProvider provider = new ServiceProvider();
 

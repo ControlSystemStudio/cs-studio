@@ -21,19 +21,17 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.platform.util.StringUtil;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * TODO (bknerr) : Consider a hierarchical data structure for meta data
@@ -48,7 +46,7 @@ public class EpicsMetaData {
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
     private final Short _precision;
     private final EpicsAlarm _alarm;
-    private final Map<Integer, EpicsEnum> _stateMap;
+    private final ImmutableList<EpicsEnum> _states;
 
 
 
@@ -56,7 +54,7 @@ public class EpicsMetaData {
      * Constructor.
      */
     public EpicsMetaData(@Nonnull final String[] states) {
-        _stateMap = initStateMap(states);
+        _states = initStateList(states);
 
         _alarm = null;
         _graphicsData = null;
@@ -64,20 +62,21 @@ public class EpicsMetaData {
         _precision = null;
     }
 
-    private Map<Integer, EpicsEnum> initStateMap(@Nonnull final String[] states) {
+    @Nonnull
+    private ImmutableList<EpicsEnum> initStateList(@Nonnull final String[] states) {
         if (states.length == 0) {
             throw new IllegalArgumentException("States array for enumerated values is empty.");
         }
-        final LinkedHashMap<Integer, EpicsEnum> stateMap = Maps.newLinkedHashMap();
+        final List<EpicsEnum> enumList = Lists.newArrayListWithExpectedSize(states.length);
         int i = 0;
-        for (final String state : states) {
-            // States may contain a lot of empty strings, as EPICS uses them this way
-            if (!StringUtil.isBlank(state)) {
-                stateMap.put(Integer.valueOf(i), EpicsEnum.create(i, state, null));
+        for (String state : states) {
+            if (Strings.isNullOrEmpty(state)) {
+                state = EpicsEnum.UNSET_STATE;
             }
+            enumList.add(EpicsEnum.create(i, state, 0));
             i++;
         }
-        return stateMap;
+        return ImmutableList.copyOf(enumList);
     }
 
     /**
@@ -97,7 +96,7 @@ public class EpicsMetaData {
         }
         _precision = precision;
 
-        _stateMap = Collections.emptyMap();
+        _states  = ImmutableList.of();
     }
 
     @CheckForNull
@@ -126,15 +125,12 @@ public class EpicsMetaData {
      * @return an immutable copy of the states.
      */
     @CheckForNull
-    public ImmutableSet<EpicsEnum> getStates() {
-        return ImmutableSet.<EpicsEnum>builder().addAll(_stateMap.values()).build();
+    public ImmutableList<EpicsEnum> getStates() {
+        return _states;
     }
 
-    @CheckForNull
+    @Nonnull
     public EpicsEnum getState(final int index) {
-        if (_stateMap.containsKey(Integer.valueOf(index))) {
-            return _stateMap.get(Integer.valueOf(index));
-        }
-        return null;
+        return _states.get(index);
     }
 }

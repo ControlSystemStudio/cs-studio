@@ -140,10 +140,12 @@ class MainResponse extends AbstractResponse {
         final Duration avgWriteDuration = getModel().getAvgWriteDuration();
         String printDur = "NONE";
         if (avgWriteDuration != null) {
-            printDur = TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(avgWriteDuration.toPeriod());
+            printDur =
+                TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(avgWriteDuration.toPeriod());
             if (StringUtil.isBlank(printDur)) {
-                printDur = "<1ms";
+                printDur = "<1";
             }
+            printDur += "ms";
         }
         html.tableLine(new String[] {Messages.HTTP_WRITE_DURATION, printDur});
     }

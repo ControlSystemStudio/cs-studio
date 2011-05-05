@@ -290,7 +290,7 @@ public final class EngineModel {
     /** @return  Average duration of write run in milliseconds */
     @CheckForNull
     public Duration getAvgWriteDuration() {
-        return _writeExecutor.getAvgWriteDuration();
+        return _writeExecutor.getAvgWriteDurationInMS();
     }
 
     /** Ask the model to stop.

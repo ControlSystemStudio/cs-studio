@@ -116,8 +116,14 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                 _connected = true;
             }
             final ArchiveSample<V, T> sample = createSampleFromValue(pv, _channelName, _channelId, _metaData);
+
             if (sample != null) {
-                storeNewSample(sample);
+                if (sample.getValue() == null) {
+                    LOG.warn("Value is null for channel id " + _channelName + "(" + _channelId + "). No sample created.");
+                } else {
+                    storeNewSample(sample);
+                }
+
             }
 
         } catch (final TypeSupportException e) {
@@ -204,10 +210,10 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                                                       @Nonnull final ArchiveChannelId id,
                                                       @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final IValue value = pv.getValue();
-
         final EpicsSystemVariable<V> sv =
             (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value, metaData);
         final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(id, (T) sv, sv.getAlarm());
+
         return sample;
     }
 

@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.logging.CentralLogger;
@@ -149,9 +150,13 @@ public class WriteExecutor {
 
     /** @return  Average duration of write run */
     @CheckForNull
-    public Duration getAvgWriteDuration() {
-        final Double doubleDurMS = _writeWorker.getAvgWriteDurationInMS().getValue();
-        return _writeWorker != null ? new Duration(doubleDurMS.longValue()) : null;
+    public Duration getAvgWriteDurationInMS() {
+        if (_writeWorker == null) {
+            return Duration.ZERO;
+        }
+        final CumulativeAverageCache avgWriteDurationInMS = _writeWorker.getAvgWriteDurationInMS();
+        final Double doubleDurMS = avgWriteDurationInMS.getValue();
+        return new Duration(doubleDurMS.longValue());
     }
 
     /**
@@ -188,7 +193,7 @@ public class WriteExecutor {
 
     @Nonnull
     private Duration computeAwaitTerminationTime() {
-        Duration dur = getAvgWriteDuration();
+        Duration dur = getAvgWriteDurationInMS();
         if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S).getMillis()) {
             dur = Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S);
         }
