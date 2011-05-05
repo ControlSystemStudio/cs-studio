@@ -27,13 +27,19 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
@@ -51,6 +57,8 @@ import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.extra.DynamicGroup;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.GridData;
 
 /**
  * @author shroffk
@@ -206,10 +214,12 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		parent.setLayout(new GridLayout(1, false));
 
 		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);
 		table = tableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 
@@ -281,7 +291,6 @@ public class PVTableEditor extends EditorPart {
 			}
 		});
 		TableColumn tblclmnPvName = tableViewerColumn.getColumn();
-		tblclmnPvName.setWidth(100);
 		tblclmnPvName.setText("PV Name");
 
 		TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
@@ -301,7 +310,6 @@ public class PVTableEditor extends EditorPart {
 			}
 		});
 		TableColumn tblclmnValue = tableViewerColumn_1.getColumn();
-		tblclmnValue.setWidth(100);
 		tblclmnValue.setText("Value");
 
 		TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
@@ -320,7 +328,6 @@ public class PVTableEditor extends EditorPart {
 			}
 		});
 		TableColumn tblclmnAlarm = tableViewerColumn_2.getColumn();
-		tblclmnAlarm.setWidth(100);
 		tblclmnAlarm.setText("Alarm");
 
 		TableViewerColumn tableViewerColumn_3 = new TableViewerColumn(
@@ -338,8 +345,14 @@ public class PVTableEditor extends EditorPart {
 			}
 		});
 		TableColumn tblclmnTime = tableViewerColumn_3.getColumn();
-		tblclmnTime.setWidth(100);
 		tblclmnTime.setText("Time");
+		// Set the Column width
+		TableColumn[] columns = table.getColumns();
+		int initialWidth = table.getSize().x/columns.length >= 100 ? table.getSize().x/columns.length : 100;
+		for (TableColumn tableColumn : columns) {
+			tableColumn.setWidth(initialWidth);
+		}
+		
 		tableViewer.setContentProvider(new ContentProvider());
 		tableViewer.setInput(new PVTableModel());
 
@@ -359,6 +372,47 @@ public class PVTableEditor extends EditorPart {
 		});
 
 		pv.addPVValueChangeListener(pvListener);
+		
+		// Make the Columns stretch with the table
+		parent.addControlListener(new ControlAdapter() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				Rectangle area = table.getClientArea();
+				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+				ScrollBar vBar = table.getVerticalBar();
+				int width = area.width - table.computeTrim(0,0,0,0).width - vBar.getSize().x;
+				if (size.y > area.height + table.getHeaderHeight()) {
+					// Subtract the scrollbar width from the total column width
+					// if a vertical scrollbar will be required
+					Point vBarSize = vBar.getSize();
+					width -= vBarSize.x;
+				}
+				Point oldSize = table.getSize();
+				TableColumn[] columns;
+				if (oldSize.x > area.width) {
+					// table is getting smaller so make the columns 
+					// smaller first and then resize the table to
+					// match the client area width
+					columns = table.getColumns();
+					int newWidth = area.width/columns.length >= 100 ? area.width/columns.length : 100;
+					for (TableColumn tableColumn : columns) {
+						tableColumn.setWidth(newWidth);
+					}
+					table.setSize(columns.length * newWidth, area.height);
+				} else {
+					// table is getting bigger so make the table 
+					// bigger first and then make the columns wider
+					// to match the client area width
+					columns = table.getColumns();
+					int newWidth = area.width/columns.length >= 100 ? area.width/columns.length : 100;
+					table.setSize(columns.length * newWidth, area.height);
+					for (TableColumn tableColumn : columns) {
+						tableColumn.setWidth(newWidth);
+					}
+				}
+			}
+		});
 	}
 
 	/*

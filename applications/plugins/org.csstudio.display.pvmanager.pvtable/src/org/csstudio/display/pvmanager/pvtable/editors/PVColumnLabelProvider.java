@@ -14,13 +14,16 @@ public class PVColumnLabelProvider extends ColumnLabelProvider {
 	private Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
 	private Color yellow = Display.getCurrent()
 			.getSystemColor(SWT.COLOR_YELLOW);
-	private Font bold = JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
+	private Font bold = JFaceResources.getFontRegistry().getBold(
+			JFaceResources.DEFAULT_FONT);
 
 	@Override
 	public Color getForeground(Object element) {
 		Item item = (Item) element;
 		if (item == null || item.getProcessVariableName() == null) {
 			return null;
+		} else if (item.getException() != null) {
+			return red;
 		} else if (item.getValue() != null) {
 			String alarm = Util.alarmOf(item.getValue()).getAlarmSeverity()
 					.toString();
