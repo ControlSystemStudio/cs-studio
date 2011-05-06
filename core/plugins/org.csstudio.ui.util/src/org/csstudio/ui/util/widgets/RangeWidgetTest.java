@@ -65,6 +65,31 @@ public class RangeWidgetTest extends ApplicationWindow {
 		fd_button.right = new FormAttachment(100);
 		button.setLayoutData(fd_button);
 		button.setText("New Button");
+		
+		final Button btnInvertDirection = new Button(container, SWT.CHECK);
+		FormData fd_btnInvertDirection = new FormData();
+		fd_btnInvertDirection.top = new FormAttachment(spinner, 3);
+		fd_btnInvertDirection.left = new FormAttachment(composite, 6);
+		btnInvertDirection.setLayoutData(fd_btnInvertDirection);
+		btnInvertDirection.setText("Invert direction");
+		btnInvertDirection.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println(e);
+				if (btnInvertDirection.getSelection()) {
+					composite.setAlignment(SWT.DOWN);
+				} else {
+					composite.setAlignment(SWT.UP);
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		spinner.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

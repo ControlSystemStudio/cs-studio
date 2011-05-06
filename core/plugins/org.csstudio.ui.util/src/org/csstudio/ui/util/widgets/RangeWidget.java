@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 public class RangeWidget extends Canvas {
 	
 	private double distancePerPx = 0.5;
+	private int alignment = SWT.TOP;
 	private double pxPerTick = 2.0;
 	private int[] sizes = new int[] {20, 10, 10, 10, 10, 15, 10, 10, 10, 10};
 	private Set<RangeListener> listeners = new HashSet<RangeListener>();
@@ -33,6 +34,15 @@ public class RangeWidget extends Canvas {
 		for (RangeListener listener : listeners) {
 			listener.rangeChanged();
 		}
+	}
+	
+	public void setAlignment(int alignment) {
+		this.alignment = alignment;
+		redraw();
+	}
+	
+	public int getAlignment() {
+		return alignment;
 	}
 
 	public RangeWidget(Composite parent, int style) {
@@ -110,8 +120,15 @@ public class RangeWidget extends Canvas {
 			int sizeIndex = 0;
 			while (currentPx < height) {
 				int tickPosition = (int) currentPx;
+				if ((alignment & SWT.BOTTOM) != 0) {
+					tickPosition = getClientArea().height - tickPosition - 1;
+				}
 				if (sizeIndex == 0) {
-					e.gc.drawText(label(distancePerPx * currentPx), 0, tickPosition);
+					if ((alignment & SWT.BOTTOM) != 0) {
+						e.gc.drawText(label(distancePerPx * currentPx), 0, tickPosition - e.gc.getFontMetrics().getHeight());
+					} else {
+						e.gc.drawText(label(distancePerPx * currentPx), 0, tickPosition);
+					}
 				}
 				e.gc.drawLine(width - sizes[sizeIndex], tickPosition, width, tickPosition);
 				if (pxPerTick >= 10.0) {
