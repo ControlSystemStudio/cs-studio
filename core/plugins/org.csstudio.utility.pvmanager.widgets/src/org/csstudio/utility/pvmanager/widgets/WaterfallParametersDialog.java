@@ -1,7 +1,5 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
-
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -18,6 +16,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
 
 public class WaterfallParametersDialog extends Dialog {
 
@@ -113,6 +113,7 @@ public class WaterfallParametersDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				result = null;
 				widget.setShowRange(oldShowRange);
+				widget.setWaterfallPlotParameters(oldParameters);
 				shell.close();
 			}
 		});
@@ -125,8 +126,6 @@ public class WaterfallParametersDialog extends Dialog {
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				prepareResult();
-				widget.setWaterfallPlotParameters(result);
 				shell.close();
 			}
 		});
@@ -144,11 +143,25 @@ public class WaterfallParametersDialog extends Dialog {
 		grpRange.setLayoutData(fd_grpRange);
 		
 		btnMetadata = new Button(grpRange, SWT.RADIO);
+		btnMetadata.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(adaptiveRange(false)));
+			}
+		});
 		btnMetadata.setSelection(true);
 		btnMetadata.setText("Metadata");
 		
 		btnAutoRange = new Button(grpRange, SWT.RADIO);
 		btnAutoRange.setText("Auto");
+		btnAutoRange.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(adaptiveRange(true)));
+			}
+		});
 		
 		Group grpScroll = new Group(shell, SWT.NONE);
 		grpScroll.setText("Scroll:");
@@ -160,9 +173,23 @@ public class WaterfallParametersDialog extends Dialog {
 		grpScroll.setLayoutData(fd_grpScroll);
 		
 		btnUp = new Button(grpScroll, SWT.RADIO);
+		btnUp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(scrollDown(false)));
+			}
+		});
 		btnUp.setText("Up");
 		
 		btnDown = new Button(grpScroll, SWT.RADIO);
+		btnDown.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(scrollDown(true)));
+			}
+		});
 		btnDown.setText("Down");
 		
 		Label lblResolution = new Label(shell, SWT.NONE);
@@ -173,6 +200,13 @@ public class WaterfallParametersDialog extends Dialog {
 		lblResolution.setText("Resolution:");
 		
 		spPixelDuration = new Spinner(shell, SWT.BORDER);
+		spPixelDuration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(pixelDuration(TimeDuration.ms(spPixelDuration.getSelection()))));
+			}
+		});
 		FormData fd_spPixelDuration = new FormData();
 		fd_spPixelDuration.top = new FormAttachment(lblResolution, -3, SWT.TOP);
 		fd_spPixelDuration.left = new FormAttachment(lblResolution, 6);
