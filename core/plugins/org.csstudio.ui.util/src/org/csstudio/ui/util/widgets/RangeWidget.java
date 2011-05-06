@@ -85,7 +85,16 @@ public class RangeWidget extends Canvas {
 		@Override
 		public void mouseMove(MouseEvent e) {
 			if ((e.stateMask & SWT.BUTTON1) != 0 && e.y > 0) {
-				setDistancePerPx(startDistancePerPx * startY / e.y);
+				if ((alignment & SWT.DOWN) != 0) {
+					int height = getClientArea().height;
+					if (e.y < height) {
+						setDistancePerPx(startDistancePerPx * (height - startY) / (height - e.y));
+					}
+				} else {
+					if (e.y > 0) {
+						setDistancePerPx(startDistancePerPx * startY / e.y);
+					}
+				}
 			}
 		}
 		
@@ -133,6 +142,9 @@ public class RangeWidget extends Canvas {
 				e.gc.drawLine(width - sizes[sizeIndex], tickPosition, width, tickPosition);
 				if (pxPerTick >= 10.0) {
 					tickPosition = (int) (currentPx + pxPerTick / 2.0);
+					if ((alignment & SWT.BOTTOM) != 0) {
+						tickPosition = getClientArea().height - tickPosition - 1;
+					}
 					e.gc.drawLine(width - 5, tickPosition, width, tickPosition);
 				}
 				
