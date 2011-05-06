@@ -19,12 +19,16 @@ import org.eclipse.swt.widgets.Spinner;
 
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
 
-public class WaterfallParametersDialog extends Dialog {
+/**
+ * Popup dialog used by the waterfall widget to modify the WaterfallWidget.
+ * 
+ * @author carcassi
+ */
+class WaterfallParametersDialog extends Dialog {
 
-	protected WaterfallPlotParameters result;
-	protected WaterfallPlotParameters oldParameters;
+	private WaterfallPlotParameters oldParameters;
 	private boolean oldShowRange;
-	protected Shell shell;
+	private Shell shell;
 	
 	private WaterfallWidget widget;
 	
@@ -51,11 +55,15 @@ public class WaterfallParametersDialog extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public WaterfallPlotParameters open(WaterfallWidget widget, int x, int y) {
+	public void open(WaterfallWidget widget, int x, int y) {
+		// Save widget and old status (in case of cancel)
 		this.widget = widget;
-		this.oldShowRange = widget.isShowRange();
-		btnHideRange.setSelection(!oldShowRange);
 		this.oldParameters = widget.getWaterfallPlotParameters();
+		this.oldShowRange = widget.isShowRange();
+		
+		// Make all controls display the current parameters
+		// of the widget
+		btnHideRange.setSelection(!oldShowRange);
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
 			btnMetadata.setSelection(false);
@@ -74,6 +82,7 @@ public class WaterfallParametersDialog extends Dialog {
 		spPixelDuration.setMinimum(1);
 		spPixelDuration.setSelection((int) (oldParameters.getPixelDuration().getNanoSec() / 1000000));
 		
+		// Open the dialog
 		shell.open();
 		shell.layout();
 		shell.setBounds(Math.min(x, shell.getDisplay().getClientArea().width - shell.getBounds().width),
@@ -86,13 +95,6 @@ public class WaterfallParametersDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
-	}
-	
-	private void prepareResult() {
-		result = oldParameters.with(WaterfallPlotParameters.adaptiveRange(btnAutoRange.getSelection()),
-				WaterfallPlotParameters.scrollDown(btnDown.getSelection()),
-				WaterfallPlotParameters.pixelDuration(TimeDuration.ms(spPixelDuration.getSelection())));
 	}
 
 	/**
@@ -113,7 +115,7 @@ public class WaterfallParametersDialog extends Dialog {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				result = null;
+				// If click cancel, reset the old parameters
 				widget.setShowRange(oldShowRange);
 				widget.setWaterfallPlotParameters(oldParameters);
 				shell.close();
@@ -128,6 +130,7 @@ public class WaterfallParametersDialog extends Dialog {
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// If apply clicked, leave the new changes
 				shell.close();
 			}
 		});
