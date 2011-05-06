@@ -176,9 +176,9 @@ public class WaterfallWidget extends Composite {
 		}
 		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
 		if (parameters.isScrollDown()) {
-			rangeWidget.setAlignment(SWT.UP);
+			rangeWidget.setStartPosition(SWT.UP);
 		} else {
-			rangeWidget.setAlignment(SWT.DOWN);
+			rangeWidget.setStartPosition(SWT.DOWN);
 		}
 	}
 	
