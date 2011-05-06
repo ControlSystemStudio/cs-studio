@@ -25,6 +25,7 @@ public class RangeWidget extends Canvas {
 	private double distancePerPx = 0.5;
 	private int startPosition = SWT.TOP;
 	private double pxPerTick = 2.0;
+	private boolean editable = true;
 	
 	// The tick sizes for the first few ticks (loop around after that)
 	private int[] sizes = new int[] {20, 10, 10, 10, 10, 15, 10, 10, 10, 10};
@@ -72,6 +73,24 @@ public class RangeWidget extends Canvas {
 	 */
 	public int getStartPosition() {
 		return startPosition;
+	}
+	
+	/**
+	 * Whether the use can use the mouse to change the resolution.
+	 * 
+	 * @return true if user changes are allowed
+	 */
+	public boolean isEditable() {
+		return editable;
+	}
+	
+	/**
+	 * Changes whether the use can use the mouse to change the resolution.
+	 * 
+	 * @param editable true if user changes are allowed
+	 */
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	/**
@@ -122,8 +141,8 @@ public class RangeWidget extends Canvas {
 		
 		@Override
 		public void mouseMove(MouseEvent e) {
-			// Only if it is a left click drag
-			if ((e.stateMask & SWT.BUTTON1) != 0) {
+			// Only if editable and it is a left click drag
+			if (editable && (e.stateMask & SWT.BUTTON1) != 0) {
 				// Re-scale based on how much the mouse is dragged
 				if ((startPosition & SWT.DOWN) != 0) {
 					// Calculate the coordinates starting from the bottom
