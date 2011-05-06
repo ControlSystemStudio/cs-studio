@@ -61,7 +61,6 @@ public class WaterfallWidget extends Composite {
 		setLayout(gridLayout);
 		
 		rangeWidget = new RangeWidget(this, SWT.NONE);
-		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
 		rangeWidget.addRangeListener(new RangeListener() {
 			
 			@Override
@@ -126,7 +125,7 @@ public class WaterfallWidget extends Composite {
 		errorLabel.setText("");
 		errorLabel.setVisible(false);
 		
-		//parametersChanged();
+		parametersChanged();
 	}
 	
 	// The pv name for connection
@@ -180,6 +179,11 @@ public class WaterfallWidget extends Composite {
 			imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
 		}
 		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
+		if (parameters.isScrollDown()) {
+			rangeWidget.setAlignment(SWT.UP);
+		} else {
+			rangeWidget.setAlignment(SWT.DOWN);
+		}
 	}
 	
 	// Reconnects the pv
