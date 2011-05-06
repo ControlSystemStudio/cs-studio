@@ -119,6 +119,7 @@ public class WaterfallWidget extends Composite {
 		errorLabel.setText("");
 		errorLabel.setVisible(false);
 		
+		// Set the parameters to the default
 		parametersChanged();
 	}
 	
@@ -185,17 +186,18 @@ public class WaterfallWidget extends Composite {
 	}
 	
 	private void parametersChanged() {
+		// Make sure image alignment and the range direction
+		// are consistent with the scroll direction
 		if (parameters.isScrollDown()) {
 			imageDisplay.setAlignment(SWT.LEFT | SWT.TOP);
-		} else {
-			imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
-		}
-		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
-		if (parameters.isScrollDown()) {
 			rangeWidget.setStartPosition(SWT.UP);
 		} else {
+			imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
 			rangeWidget.setStartPosition(SWT.DOWN);
 		}
+		
+		// Make sure the range is consistent with the image resolution
+		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
 	}
 	
 	// Reconnects the pv
@@ -206,7 +208,7 @@ public class WaterfallWidget extends Composite {
 			pv = null;
 		}
 		
-		// Clean up old image if present
+		// Clean up old image and previous error
 		imageDisplay.setVImage(null);
 		setLastError(null);
 		
@@ -238,6 +240,11 @@ public class WaterfallWidget extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 	
+	/**
+	 * Changes the parameters used for the waterfall plot.
+	 * 
+	 * @param parameters a set of waterfall plot parameter
+	 */
 	public void setWaterfallPlotParameters(WaterfallPlotParameters parameters) {
 		this.parameters = parameters;
 		parametersChanged();
@@ -246,12 +253,26 @@ public class WaterfallWidget extends Composite {
 		}
 	}
 
+	/**
+	 * The parameters used for the waterfall plot.
+	 * 
+	 * @return waterfall plot parameters
+	 */
 	public WaterfallPlotParameters getWaterfallPlotParameters() {
 		return parameters;
 	}
 	
+	/**
+	 * Changes whether the range should be displayed.
+	 * 
+	 * @param showRange true if range should be displayed
+	 */
 	public void setShowRange(boolean showRange) {
 		rangeWidget.setVisible(showRange);
+		
+		// Making the range invisible is not enough to not show it.
+		// We have to change the layout so that the width is
+		// zero and redo the layout
 		if (showRange) {
 			gd_rangeWidget.widthHint = 61;
 			rangeWidget.setLayoutData(gd_rangeWidget);
@@ -262,6 +283,11 @@ public class WaterfallWidget extends Composite {
 		layout();
 	}
 	
+	/**
+	 * Whether the range should be displayed.
+	 * 
+	 * @return true if the range is displayed
+	 */
 	public boolean isShowRange() {
 		return rangeWidget.isVisible();
 	}
