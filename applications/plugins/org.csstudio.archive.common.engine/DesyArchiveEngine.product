@@ -30,6 +30,7 @@
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
+      <plugin id="org.csstudio.archive.common.requesttype"/>
       <plugin id="org.csstudio.archive.common.service"/>
       <plugin id="org.csstudio.archive.rdb"/>
       <plugin id="org.csstudio.data"/>
