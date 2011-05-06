@@ -179,6 +179,7 @@ public class WaterfallWidget extends Composite {
 		} else {
 			imageDisplay.setAlignment(SWT.LEFT | SWT.BOTTOM);
 		}
+		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
 	}
 	
 	// Reconnects the pv
