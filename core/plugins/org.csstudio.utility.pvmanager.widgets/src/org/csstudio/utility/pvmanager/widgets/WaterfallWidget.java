@@ -1,5 +1,7 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import org.csstudio.ui.util.widgets.RangeListener;
+import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.widgets.Composite;
 import org.epics.pvmanager.PV;
@@ -8,9 +10,11 @@ import org.epics.pvmanager.PVValueChangeListener;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
+import org.epics.pvmanager.util.TimeDuration;
 
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
@@ -25,6 +29,7 @@ import com.swtdesigner.ResourceManager;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.FillLayout;
 
 /**
  * A widget that connects to an array and display a waterfall plot based on it.
@@ -34,6 +39,7 @@ import org.eclipse.swt.layout.GridData;
 public class WaterfallWidget extends Composite {
 	
 	private VImageDisplay imageDisplay;
+	private RangeWidget rangeWidget;
 	private WaterfallPlotParameters parameters = WaterfallPlotParameters.defaults();
 	private WaterfallPlot plot;
 	private CLabel errorLabel;
@@ -47,9 +53,31 @@ public class WaterfallWidget extends Composite {
 	 */
 	public WaterfallWidget(Composite parent, int style) {
 		super(parent, style);
-		setLayout(new FormLayout());
+		GridLayout gridLayout = new GridLayout(2, false);
+		gridLayout.horizontalSpacing = 0;
+		gridLayout.verticalSpacing = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
+		setLayout(gridLayout);
+		
+		rangeWidget = new RangeWidget(this, SWT.NONE);
+		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
+		rangeWidget.addRangeListener(new RangeListener() {
+			
+			@Override
+			public void rangeChanged() {
+				parameters = parameters.with(pixelDuration(TimeDuration.nanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
+				if (plot != null) {
+					plot.with(parameters);
+				}
+			}
+		});
+		GridData gd_rangeWidget = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
+		gd_rangeWidget.widthHint = 61;
+		rangeWidget.setLayoutData(gd_rangeWidget);
 		
 		imageDisplay = new VImageDisplay(this);
+		imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		imageDisplay.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
@@ -73,12 +101,6 @@ public class WaterfallWidget extends Composite {
 		gl_imageDisplay.marginWidth = 0;
 		gl_imageDisplay.marginHeight = 0;
 		imageDisplay.setLayout(gl_imageDisplay);
-		FormData fd_imageDisplay = new FormData();
-		fd_imageDisplay.bottom = new FormAttachment(100);
-		fd_imageDisplay.right = new FormAttachment(100);
-		fd_imageDisplay.top = new FormAttachment(0);
-		fd_imageDisplay.left = new FormAttachment(0);
-		imageDisplay.setLayoutData(fd_imageDisplay);
 		imageDisplay.addControlListener(new ControlListener() {
 			
 			@Override
@@ -93,11 +115,12 @@ public class WaterfallWidget extends Composite {
 		});
 		
 		errorImage = new Label(imageDisplay, SWT.NONE);
+		errorImage.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, true, 1, 1));
 		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
 		errorImage.setVisible(false);
 		
 		errorLabel = new CLabel(imageDisplay, SWT.NONE);
-		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
 		gd_errorLabel.widthHint = 221;
 		errorLabel.setLayoutData(gd_errorLabel);
 		errorLabel.setText("");
