@@ -91,6 +91,7 @@ public class WaterfallWidget extends Composite {
 		});
 		imageDisplay.setStretched(SWT.HORIZONTAL);
 		GridLayout gl_imageDisplay = new GridLayout(2, false);
+		gl_imageDisplay.marginLeft = 1;
 		gl_imageDisplay.marginWidth = 0;
 		gl_imageDisplay.marginHeight = 0;
 		imageDisplay.setLayout(gl_imageDisplay);
@@ -108,12 +109,11 @@ public class WaterfallWidget extends Composite {
 		});
 		
 		errorImage = new Label(imageDisplay, SWT.NONE);
-		errorImage.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, true, 1, 1));
 		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
 		errorImage.setVisible(false);
 		
 		errorLabel = new CLabel(imageDisplay, SWT.NONE);
-		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_errorLabel.widthHint = 221;
 		errorLabel.setLayoutData(gd_errorLabel);
 		errorLabel.setText("");
@@ -190,8 +190,9 @@ public class WaterfallWidget extends Composite {
 		
 		// Clean up old image if present
 		imageDisplay.setVImage(null);
+		setLastError(null);
 		
-		if (pvName != null) {
+		if (pvName != null && !pvName.trim().isEmpty()) {
 			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters,
 					WaterfallPlotParameters.height(imageDisplay.getSize().y));
 			parameters = plot.getParameters();
