@@ -84,14 +84,7 @@ public class WaterfallWidget extends Composite {
 					WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
 					Point position = new Point(e.x, e.y);
 					position = getDisplay().map(WaterfallWidget.this, null, position);
-					WaterfallPlotParameters newParameters = dialog.open(parameters, position.x, position.y);
-					if (newParameters != null) {
-						parameters = newParameters;
-						parametersChanged();
-						if (plot != null) {
-							plot.with(parameters);
-						}
-					}
+					dialog.open(WaterfallWidget.this, position.x, position.y);
 				}
 			}
 		});
@@ -224,5 +217,17 @@ public class WaterfallWidget extends Composite {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+	
+	public void setWaterfallPlotParameters(WaterfallPlotParameters parameters) {
+		this.parameters = parameters;
+		parametersChanged();
+		if (plot != null) {
+			plot.with(parameters);
+		}
+	}
+
+	public WaterfallPlotParameters getWaterfallPlotParameters() {
+		return parameters;
 	}
 }

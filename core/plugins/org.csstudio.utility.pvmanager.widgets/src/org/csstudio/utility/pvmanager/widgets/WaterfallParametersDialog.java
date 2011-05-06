@@ -23,6 +23,8 @@ public class WaterfallParametersDialog extends Dialog {
 	protected WaterfallPlotParameters oldParameters;
 	protected Shell shell;
 	
+	private WaterfallWidget widget;
+	
 	private Button btnMetadata;
 	private Button btnAutoRange;
 	private Button btnUp;
@@ -45,8 +47,9 @@ public class WaterfallParametersDialog extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public WaterfallPlotParameters open(WaterfallPlotParameters oldParameters, int x, int y) {
-		this.oldParameters = oldParameters;
+	public WaterfallPlotParameters open(WaterfallWidget widget, int x, int y) {
+		this.widget = widget;
+		this.oldParameters = widget.getWaterfallPlotParameters();
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
 			btnMetadata.setSelection(false);
@@ -116,6 +119,7 @@ public class WaterfallParametersDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				prepareResult();
+				widget.setWaterfallPlotParameters(result);
 				shell.close();
 			}
 		});
