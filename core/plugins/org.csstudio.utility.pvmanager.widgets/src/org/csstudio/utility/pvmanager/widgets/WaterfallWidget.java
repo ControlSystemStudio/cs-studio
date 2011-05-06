@@ -1,9 +1,23 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
+import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
+
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
@@ -12,24 +26,7 @@ import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
 
-import static org.epics.pvmanager.extra.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Label;
 import com.swtdesigner.ResourceManager;
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.FillLayout;
 
 /**
  * A widget that connects to an array and display a waterfall plot based on it.
@@ -45,6 +42,7 @@ public class WaterfallWidget extends Composite {
 	private CLabel errorLabel;
 	private Label errorImage;
 	private GridData gd_rangeWidget;
+	private boolean editable;
 
 	/**
 	 * Creates a new widget.
@@ -81,7 +79,7 @@ public class WaterfallWidget extends Composite {
 		imageDisplay.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				if (e.button == 3) {
+				if (editable && e.button == 3) {
 					WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
 					Point position = new Point(e.x, e.y);
 					position = getDisplay().map(WaterfallWidget.this, null, position);
@@ -151,6 +149,24 @@ public class WaterfallWidget extends Composite {
 		
 		this.pvName = pvName;
 		reconnect();
+	}
+	
+	/**
+	 * Whether the user is able to customize the widget.
+	 * 
+	 * @return true if it can be customized
+	 */
+	public boolean isEditable() {
+		return editable;
+	}
+	
+	/**
+	 * Changes whether the user is able to customize the widget.
+	 * 
+	 * @param editable true if it can be customized
+	 */
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 	
 	// Displays the last error generated
