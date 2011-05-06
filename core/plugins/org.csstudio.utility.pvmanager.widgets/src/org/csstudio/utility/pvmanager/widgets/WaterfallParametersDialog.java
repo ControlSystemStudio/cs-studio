@@ -1,5 +1,7 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -21,6 +23,7 @@ public class WaterfallParametersDialog extends Dialog {
 
 	protected WaterfallPlotParameters result;
 	protected WaterfallPlotParameters oldParameters;
+	private boolean oldShowRange;
 	protected Shell shell;
 	
 	private WaterfallWidget widget;
@@ -31,6 +34,7 @@ public class WaterfallParametersDialog extends Dialog {
 	private Button btnDown;
 
 	private Spinner spPixelDuration;
+	private Button btnHideRange;
 
 	/**
 	 * Create the dialog.
@@ -49,6 +53,8 @@ public class WaterfallParametersDialog extends Dialog {
 	 */
 	public WaterfallPlotParameters open(WaterfallWidget widget, int x, int y) {
 		this.widget = widget;
+		this.oldShowRange = widget.isShowRange();
+		btnHideRange.setSelection(!oldShowRange);
 		this.oldParameters = widget.getWaterfallPlotParameters();
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
@@ -92,7 +98,7 @@ public class WaterfallParametersDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
-		shell.setSize(271, 225);
+		shell.setSize(271, 269);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
@@ -106,6 +112,7 @@ public class WaterfallParametersDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				result = null;
+				widget.setShowRange(oldShowRange);
 				shell.close();
 			}
 		});
@@ -177,6 +184,19 @@ public class WaterfallParametersDialog extends Dialog {
 		fd_lblMsPerPixel.left = new FormAttachment(spPixelDuration, 6);
 		lblMsPerPixel.setLayoutData(fd_lblMsPerPixel);
 		lblMsPerPixel.setText("ms per pixel");
+		
+		btnHideRange = new Button(shell, SWT.CHECK);
+		FormData fd_btnHideRange = new FormData();
+		fd_btnHideRange.top = new FormAttachment(lblResolution, 6);
+		fd_btnHideRange.left = new FormAttachment(grpRange, 0, SWT.LEFT);
+		btnHideRange.setLayoutData(fd_btnHideRange);
+		btnHideRange.setText("Hide range");
+		btnHideRange.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setShowRange(!btnHideRange.getSelection());
+			}
+		});
 
 	}
 }

@@ -44,6 +44,7 @@ public class WaterfallWidget extends Composite {
 	private WaterfallPlot plot;
 	private CLabel errorLabel;
 	private Label errorImage;
+	private GridData gd_rangeWidget;
 
 	/**
 	 * Creates a new widget.
@@ -71,7 +72,7 @@ public class WaterfallWidget extends Composite {
 				}
 			}
 		});
-		GridData gd_rangeWidget = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
+		gd_rangeWidget = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
 		gd_rangeWidget.widthHint = 61;
 		rangeWidget.setLayoutData(gd_rangeWidget);
 		
@@ -229,5 +230,21 @@ public class WaterfallWidget extends Composite {
 
 	public WaterfallPlotParameters getWaterfallPlotParameters() {
 		return parameters;
+	}
+	
+	public void setShowRange(boolean showRange) {
+		rangeWidget.setVisible(showRange);
+		if (showRange) {
+			gd_rangeWidget.widthHint = 61;
+			rangeWidget.setLayoutData(gd_rangeWidget);
+		} else {
+			gd_rangeWidget.widthHint = 0;
+			rangeWidget.setLayoutData(gd_rangeWidget);
+		}
+		layout();
+	}
+	
+	public boolean isShowRange() {
+		return rangeWidget.isVisible();
 	}
 }
