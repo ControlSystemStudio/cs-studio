@@ -70,6 +70,8 @@ public class WaterfallParametersDialog extends Dialog {
 			btnDown.setSelection(false);
 			btnUp.setSelection(true);
 		}
+		spPixelDuration.setMaximum(10000);
+		spPixelDuration.setMinimum(1);
 		spPixelDuration.setSelection((int) (oldParameters.getPixelDuration().getNanoSec() / 1000000));
 		
 		shell.open();
