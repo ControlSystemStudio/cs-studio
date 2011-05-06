@@ -99,7 +99,9 @@ public class WaterfallWidget extends Composite {
 			
 			@Override
 			public void controlResized(ControlEvent e) {
-				changePlotHeight(imageDisplay.getSize().y);
+				if (imageDisplay.getSize().y != 0) {
+					changePlotHeight(imageDisplay.getSize().y);
+				}
 			}
 			
 			@Override
@@ -193,8 +195,7 @@ public class WaterfallWidget extends Composite {
 		setLastError(null);
 		
 		if (pvName != null && !pvName.trim().isEmpty()) {
-			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters,
-					WaterfallPlotParameters.height(imageDisplay.getSize().y));
+			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters);
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
 				.andNotify(SWTUtil.onSWTThread()).atHz(50);
