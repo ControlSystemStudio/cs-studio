@@ -97,8 +97,7 @@ public class ArchiveEngineApplication implements IApplication {
      */
     @Override
     @Nonnull
-    @SuppressWarnings("nls")
-    public Object start(@Nonnull final IApplicationContext context) {
+    public final Object start(@Nonnull final IApplicationContext context) {
 
         final IServiceProvider provider = new ServiceProvider();
 
@@ -109,7 +108,7 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version " + EngineModel.VERSION);
+        LOG.info("DESY Archive Engine Version " + EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
         final EngineHttpServer httpServer = startHttpServer();

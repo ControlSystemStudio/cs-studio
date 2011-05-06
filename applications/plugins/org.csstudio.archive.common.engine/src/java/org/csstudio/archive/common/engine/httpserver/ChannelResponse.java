@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.Messages;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
@@ -55,26 +54,21 @@ class ChannelResponse extends AbstractResponse {
     private void createChannelTable(@Nonnull final String channelName,
                                     @Nonnull final ArchiveChannel<?, ?> channel,
                                     @Nonnull final HTMLWriter html) {
-        html.openTable(2, new String[] {Messages.HTTP_ChannelInfo});
+        html.openTable(2, new String[] {Messages.HTTP_CHANNEL_INFO});
 
-        html.tableLine(new String[] {Messages.HTTP_Channel, channelName});
+        html.tableLine(new String[] {Messages.HTTP_CHANNEL, channelName});
 
         final String connected = channel.isConnected()
-                        ? Messages.HTTP_Connected
-                        : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
-        html.tableLine(new String[] {Messages.HTTP_Connected, connected});
+                        ? Messages.HTTP_YES
+                        : HTMLWriter.makeRedText(Messages.HTTP_NO);
+        html.tableLine(new String[] {Messages.HTTP_COLUMN_CONNECTED, connected});
 
-        html.tableLine(new String[] {Messages.HTTP_InternalState, channel.getInternalState()});
+        html.tableLine(new String[] {Messages.HTTP_INTERNAL_STATE, channel.getInternalState()});
 
-        //html.tableLine(new String[] {Messages.HTTP_Mechanism, channel.getMechanism()});
-
-        html.tableLine(new String[] {Messages.HTTP_CurrentValue, getValueAsString(channel.getMostRecentSample())});
-
-//        html.tableLine(new String[] {Messages.HTTP_State, channel.isEnabled() ? Messages.HTTP_Enabled :
-//                                                                                HTMLWriter.makeRedText(Messages.HTTP_Disabled)});
+        html.tableLine(new String[] {Messages.HTTP_CURRENT_VALUE, getValueAsString(channel.getMostRecentSample())});
 
         final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
-        html.tableLine(new String[] {Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
+        html.tableLine(new String[] {Messages.HTTP_QUEUELEN, Integer.toString(buffer.size())});
 
         final BufferStats stats = buffer.getBufferStats();
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEAVG, String.format("%.1f", stats.getAverageSize())});

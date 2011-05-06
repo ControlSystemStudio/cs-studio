@@ -20,6 +20,8 @@ import org.csstudio.data.values.TimestampFactory;
  */
 @SuppressWarnings("nls")
 public class HTMLWriter {
+    public static final int MAX_TABLE_ENTRY_WIDTH = 70;
+
     protected static final String BACKGROUND = "images/blueback.jpg"; //$NON-NLS-1$
     protected static final String RED_FONT = "<font color='#ff0000'>"; //$NON-NLS-1$
     protected static final String CLOSE_FONT = "</font>"; //$NON-NLS-1$
