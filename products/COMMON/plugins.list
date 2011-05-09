@@ -62,6 +62,7 @@ org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.speech
+org.csstudio.ui.util
 org.csstudio.platform
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.ui
