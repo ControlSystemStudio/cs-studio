@@ -7,6 +7,9 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.extra.ExpressionLanguage.group;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,10 +18,14 @@ import org.csstudio.display.pvmanager.pvtable.EmptyEditorInput;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel.Item;
 import org.csstudio.display.pvmanager.pvtable.PVTableModelListener;
+import org.csstudio.display.pvmanager.pvtable.PVTableStaXParser;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -29,27 +36,28 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
@@ -57,8 +65,6 @@ import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Util;
 import org.epics.pvmanager.data.ValueFormat;
 import org.epics.pvmanager.extra.DynamicGroup;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 /**
  * @author shroffk
@@ -103,6 +109,9 @@ public class PVTableEditor extends EditorPart {
 	private Table table;
 	private TableViewer tableViewer;
 
+	private PVTableModel pvTableModel;
+	private boolean isDirty = false;
+
 	private DynamicGroup group = group();
 	private PV<List<Object>> pv = PVManager.read(group)
 			.andNotify(SWTUtil.onSWTThread()).atHz(2);
@@ -110,7 +119,6 @@ public class PVTableEditor extends EditorPart {
 
 		@Override
 		public void pvValueChanged() {
-			// TODO Auto-generated method stub
 			PVTableModel model = (PVTableModel) tableViewer.getInput();
 			if (model != null) {
 				model.updateValues(pv.getValue(), group.lastExceptions());
@@ -136,7 +144,6 @@ public class PVTableEditor extends EditorPart {
 	 * 
 	 */
 	public PVTableEditor() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -147,8 +154,11 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
+		IFile file = getEditorInputFile(this.getEditorInput());
+		if (file != null)
+			saveToFile(monitor, file);
+		else
+			doSaveAs();
 	}
 
 	/*
@@ -158,8 +168,69 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
+		SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
+		saveAsDialog.setBlockOnOpen(true);
+		IFile currentFile = getEditorInputFile(this.getEditorInput());
+		if (currentFile != null)
+			saveAsDialog.setOriginalFile(currentFile);
+		saveAsDialog.open();
+		// The path to the new resource relative to the workspace
+        IPath newResourcePath = saveAsDialog.getResult();
+        if (newResourcePath == null)
+            return;
+        String ext = newResourcePath.getFileExtension();
+        if (newResourcePath.getFileExtension() == null  ||  !ext.equals("css-pvtable"))
+        {
+        	newResourcePath = newResourcePath.removeFileExtension();
+        	newResourcePath.addFileExtension("css-pvtable");
+        }
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IFile newFile = root.getFile(newResourcePath);
+        if (newFile == null  ||  !saveToFile(null, newFile))
+            return;
+        // Update input and title
+        setInput(new FileEditorInput(newFile));
+        this.setPartName(newFile.getName());
+	}
 
+	/**
+	 * Save current model content to given file, mark editor as clean.
+	 * 
+	 * @param monitor
+	 *            <code>IProgressMonitor</code>, may be null.
+	 * @param file
+	 *            The file to use. May not exist, but I think its container has
+	 *            to.
+	 * @return Returns <code>true</code> when successful.
+	 */
+	private boolean saveToFile(IProgressMonitor monitor, IFile file) {
+		boolean ok = true;
+		if (monitor != null)
+			monitor.beginTask("Save PV Table", IProgressMonitor.UNKNOWN);
+		InputStream stream = new ByteArrayInputStream(PVTableStaXParser
+				.createByteBuffer(Arrays.asList(pvTableModel.getItems()))
+				.toByteArray());
+		try {
+			if (file.exists())
+				file.setContents(stream, true, false, monitor);
+			else
+				file.create(stream, true, monitor);
+			if (monitor != null)
+				monitor.done();
+			// Mark as clean
+			isDirty = false;
+			firePropertyChange(IEditorPart.PROP_DIRTY);
+		} catch (Exception e) {
+			ok = false;
+			if (monitor != null)
+				monitor.setCanceled(true);
+		} finally {
+			try {
+				stream.close();
+			} catch (Exception e) { /* NOP */
+			}
+		}
+		return ok;
 	}
 
 	/*
@@ -174,6 +245,28 @@ public class PVTableEditor extends EditorPart {
 		setSite(site);
 		setInput(input);
 		setPartName(input.getName());
+		pvTableModel = new PVTableModel();
+		IFile file = getEditorInputFile(input);
+		if (file != null) {
+			List<ProcessVariableName> pvs = PVTableStaXParser
+					.readPVTableFile(file.getLocationURI().getPath());
+			for (ProcessVariableName processVariableName : pvs) {
+				pvTableModel.addPVName(processVariableName);
+				group.add(latestValueOf(channel(processVariableName
+						.getProcessVariableName())));
+			}
+		}
+	}
+
+	private IFile getEditorInputFile(IEditorInput input) {
+		if (input instanceof EmptyEditorInput) {
+			return null;
+		} else {
+			IFile file = (IFile) input.getAdapter(IFile.class);
+			if (file != null)
+				return file;
+		}
+		return null;
 	}
 
 	/*
@@ -183,8 +276,7 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
+		return isDirty;
 	}
 
 	/*
@@ -194,8 +286,7 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -271,6 +362,8 @@ public class PVTableEditor extends EditorPart {
 							}
 							model.updateValues(group.lastExceptions());
 						}
+						isDirty = true;
+						firePropertyChange(PROP_DIRTY);
 					}
 				} finally {
 					editingDone = false;
@@ -348,13 +441,14 @@ public class PVTableEditor extends EditorPart {
 		tblclmnTime.setText("Time");
 		// Set the Column width
 		TableColumn[] columns = table.getColumns();
-		int initialWidth = table.getSize().x/columns.length >= 100 ? table.getSize().x/columns.length : 100;
+		int initialWidth = table.getSize().x / columns.length >= 100 ? table
+				.getSize().x / columns.length : 100;
 		for (TableColumn tableColumn : columns) {
 			tableColumn.setWidth(initialWidth);
 		}
-		
+
 		tableViewer.setContentProvider(new ContentProvider());
-		tableViewer.setInput(new PVTableModel());
+		tableViewer.setInput(pvTableModel);
 
 		table.addMouseMoveListener(new MouseMoveListener() {
 
@@ -372,7 +466,7 @@ public class PVTableEditor extends EditorPart {
 		});
 
 		pv.addPVValueChangeListener(pvListener);
-		
+
 		// Make the Columns stretch with the table
 		parent.addControlListener(new ControlAdapter() {
 
@@ -381,7 +475,8 @@ public class PVTableEditor extends EditorPart {
 				Rectangle area = table.getClientArea();
 				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 				ScrollBar vBar = table.getVerticalBar();
-				int width = area.width - table.computeTrim(0,0,0,0).width - vBar.getSize().x;
+				int width = area.width - table.computeTrim(0, 0, 0, 0).width
+						- vBar.getSize().x;
 				if (size.y > area.height + table.getHeaderHeight()) {
 					// Subtract the scrollbar width from the total column width
 					// if a vertical scrollbar will be required
@@ -391,21 +486,25 @@ public class PVTableEditor extends EditorPart {
 				Point oldSize = table.getSize();
 				TableColumn[] columns;
 				if (oldSize.x > area.width) {
-					// table is getting smaller so make the columns 
+					// table is getting smaller so make the columns
 					// smaller first and then resize the table to
 					// match the client area width
 					columns = table.getColumns();
-					int newWidth = area.width/columns.length >= 100 ? area.width/columns.length : 100;
+					int newWidth = area.width / columns.length >= 100 ? area.width
+							/ columns.length
+							: 100;
 					for (TableColumn tableColumn : columns) {
 						tableColumn.setWidth(newWidth);
 					}
 					table.setSize(columns.length * newWidth, area.height);
 				} else {
-					// table is getting bigger so make the table 
+					// table is getting bigger so make the table
 					// bigger first and then make the columns wider
 					// to match the client area width
 					columns = table.getColumns();
-					int newWidth = area.width/columns.length >= 100 ? area.width/columns.length : 100;
+					int newWidth = area.width / columns.length >= 100 ? area.width
+							/ columns.length
+							: 100;
 					table.setSize(columns.length * newWidth, area.height);
 					for (TableColumn tableColumn : columns) {
 						tableColumn.setWidth(newWidth);
@@ -422,6 +521,7 @@ public class PVTableEditor extends EditorPart {
 	 */
 	@Override
 	public void setFocus() {
+		this.table.setFocus();
 	}
 
 }
