@@ -32,16 +32,37 @@ import com.google.common.base.Joiner;
 /**
  * The enum type for epics.
  * Example epics record definition
-   field(ZRVL, "33")<br>
-   field(ONVL, "21")<br>
-   field(TWVL, "12")<br>
-   field(THVL, "45")<br>
-   field(ZRST, "val of 33")<br>
-   field(ONST, "val of 21")<br>
-   field(TWST, "val of 12")<br>
-   field(THST, "val of 45")<br>
+ *
+   field(ZRVL, "0x01")<br>
+   field(ONVL, "0x80")<br>
+   field(TWVL, "0xA1")<br>
+   field(THVL, "0x00")<br>
+   field(ZRST, "val of first")<br>
+   field(ONST, "val of second")<br>
+   field(TWST, "val of third")<br>
+   field(THST, "val of fourth")<br>
    <br>
+
+   Careful! Depending on whether
+   field(DTYP, "Soft Channel")
+   or
+   field(DTYP, "Raw Soft Channel")
+   is defined, the record behaves differently:
+
+   As device type 'Soft Channel' the mapping between the bit muster 0x?? and the corresponding
+   enum string is NOT performed, but the incoming value is either directly copied into the VAL field,
+   (e.g. myRecord.VAL == 0x80) or it is interpreted as 'index' of the number of states (when 0x02 is
+   the value input, the state with index 2 is copied into VAL="val of third").
+
+   Only when the DTYP is set to 'Raw Soft Channel' and a constant INP link is provided the INP bit
+   muster is copied into RVAL, the mapping into VAL is performed, leading to e.g.:
+   .RVAL==0x01, .VAL="val of first"
+
+   Hence, we store simply that what we get as string.
+   The raw value can be stored as registered channel by itself.
+
    Resulting EpicsEnums:<br>
+
    (0, "val of 33", 33)<br>
    (1, "val of 21", 21)<br>
    (2, "val of 12", 12)<br>
@@ -54,6 +75,7 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
 
     private static final long serialVersionUID = -3340079923729173798L;
     public static final String UNKNOWN_STATE = "UNKNOWN";
+    public static final String UNSET_STATE = "NOT_SET";
 
     @Nonnull
     public static final EpicsEnum create(@Nonnull final Integer index,

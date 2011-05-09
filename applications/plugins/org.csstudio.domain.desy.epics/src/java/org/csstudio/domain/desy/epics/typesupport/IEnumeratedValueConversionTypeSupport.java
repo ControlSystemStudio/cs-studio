@@ -87,6 +87,9 @@ final class IEnumeratedValueConversionTypeSupport extends
                 final String[] states = iMetaData.getStates();
                 if (states.length != 0 && index >=0 && index < states.length) {
                     state = states[index];
+                } else {
+                    throw new IndexOutOfBoundsException("State index " + index + " is outside range of states array length (" +
+                                                        states.length + ") for channel " + name + ".");
                 }
             }
             enumState = EpicsEnum.create(index, state, null);

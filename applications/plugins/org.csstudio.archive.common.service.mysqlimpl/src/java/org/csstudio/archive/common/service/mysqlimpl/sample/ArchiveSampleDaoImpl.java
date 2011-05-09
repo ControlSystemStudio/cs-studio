@@ -155,17 +155,21 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             final ArchiveChannelId channelId = sample.getChannelId();
             final T sysVar = sample.getSystemVariable();
             final TimeInstant timestamp = sysVar.getTimestamp();
-                values.add(createSampleValueStmtStr(channelId,
-                                                    sysVar,
-                                                    timestamp));
+            if (sysVar.getData() == null) {
+                LOG.warn("Value is null for channel id " + channelId.asString() + ". No sample created.");
+                continue;
+            }
 
-                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
-                    writeReducedData(channelId,
-                                     sysVar,
-                                     timestamp,
-                                     valuesPerMinute,
-                                     valuesPerHour);
-                }
+            values.add(createSampleValueStmtStr(channelId,
+                                                sysVar,
+                                                timestamp));
+            if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
+                writeReducedData(channelId,
+                                 sysVar,
+                                 timestamp,
+                                 valuesPerMinute,
+                                 valuesPerHour);
+            }
         }
         return joinStringsToStatementBatch(values, valuesPerMinute, valuesPerHour);
     }
@@ -313,11 +317,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                         @Nonnull final T value,
                                         @Nonnull final TimeInstant timestamp) {
             try {
+
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted() + "'",
                                                   timestamp.getFractalSecondsInNanos(),
                                                   "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData()) + "'") +
-                       ")";
+                        ")";
+
             } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
                 return "";

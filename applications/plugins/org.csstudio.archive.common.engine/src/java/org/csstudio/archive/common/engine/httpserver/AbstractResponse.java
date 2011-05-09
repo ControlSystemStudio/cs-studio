@@ -51,6 +51,7 @@ abstract class AbstractResponse extends HttpServlet {
         try {
             fillResponse(req, resp);
         } catch (final Exception ex) {
+            ex.printStackTrace();
             if (resp.isCommitted()) {
                 CentralLogger.getInstance().getLogger(this).warn("HTTP Server exception", ex);
                 return;

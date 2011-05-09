@@ -17,11 +17,20 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class WaterfallParametersDialog extends Dialog {
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
 
-	protected WaterfallPlotParameters result;
-	protected WaterfallPlotParameters oldParameters;
-	protected Shell shell;
+/**
+ * Popup dialog used by the waterfall widget to modify the WaterfallWidget.
+ * 
+ * @author carcassi
+ */
+class WaterfallParametersDialog extends Dialog {
+
+	private WaterfallPlotParameters oldParameters;
+	private boolean oldShowRange;
+	private Shell shell;
+	
+	private WaterfallWidget widget;
 	
 	private Button btnMetadata;
 	private Button btnAutoRange;
@@ -29,6 +38,7 @@ public class WaterfallParametersDialog extends Dialog {
 	private Button btnDown;
 
 	private Spinner spPixelDuration;
+	private Button btnHideRange;
 
 	/**
 	 * Create the dialog.
@@ -45,8 +55,15 @@ public class WaterfallParametersDialog extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public WaterfallPlotParameters open(WaterfallPlotParameters oldParameters, int x, int y) {
-		this.oldParameters = oldParameters;
+	public void open(WaterfallWidget widget, int x, int y) {
+		// Save widget and old status (in case of cancel)
+		this.widget = widget;
+		this.oldParameters = widget.getWaterfallPlotParameters();
+		this.oldShowRange = widget.isShowRange();
+		
+		// Make all controls display the current parameters
+		// of the widget
+		btnHideRange.setSelection(!oldShowRange);
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
 			btnMetadata.setSelection(false);
@@ -61,8 +78,11 @@ public class WaterfallParametersDialog extends Dialog {
 			btnDown.setSelection(false);
 			btnUp.setSelection(true);
 		}
+		spPixelDuration.setMaximum(10000);
+		spPixelDuration.setMinimum(1);
 		spPixelDuration.setSelection((int) (oldParameters.getPixelDuration().getNanoSec() / 1000000));
 		
+		// Open the dialog
 		shell.open();
 		shell.layout();
 		shell.setBounds(Math.min(x, shell.getDisplay().getClientArea().width - shell.getBounds().width),
@@ -75,13 +95,6 @@ public class WaterfallParametersDialog extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
-	}
-	
-	private void prepareResult() {
-		result = oldParameters.with(WaterfallPlotParameters.adaptiveRange(btnAutoRange.getSelection()),
-				WaterfallPlotParameters.scrollDown(btnDown.getSelection()),
-				WaterfallPlotParameters.pixelDuration(TimeDuration.ms(spPixelDuration.getSelection())));
 	}
 
 	/**
@@ -89,7 +102,7 @@ public class WaterfallParametersDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL);
-		shell.setSize(271, 225);
+		shell.setSize(271, 269);
 		shell.setText(getText());
 		shell.setLayout(new FormLayout());
 		
@@ -102,7 +115,9 @@ public class WaterfallParametersDialog extends Dialog {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				result = null;
+				// If click cancel, reset the old parameters
+				widget.setShowRange(oldShowRange);
+				widget.setWaterfallPlotParameters(oldParameters);
 				shell.close();
 			}
 		});
@@ -115,7 +130,7 @@ public class WaterfallParametersDialog extends Dialog {
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				prepareResult();
+				// If apply clicked, leave the new changes
 				shell.close();
 			}
 		});
@@ -133,11 +148,25 @@ public class WaterfallParametersDialog extends Dialog {
 		grpRange.setLayoutData(fd_grpRange);
 		
 		btnMetadata = new Button(grpRange, SWT.RADIO);
+		btnMetadata.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(adaptiveRange(false)));
+			}
+		});
 		btnMetadata.setSelection(true);
 		btnMetadata.setText("Metadata");
 		
 		btnAutoRange = new Button(grpRange, SWT.RADIO);
 		btnAutoRange.setText("Auto");
+		btnAutoRange.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(adaptiveRange(true)));
+			}
+		});
 		
 		Group grpScroll = new Group(shell, SWT.NONE);
 		grpScroll.setText("Scroll:");
@@ -149,9 +178,23 @@ public class WaterfallParametersDialog extends Dialog {
 		grpScroll.setLayoutData(fd_grpScroll);
 		
 		btnUp = new Button(grpScroll, SWT.RADIO);
+		btnUp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(scrollDown(false)));
+			}
+		});
 		btnUp.setText("Up");
 		
 		btnDown = new Button(grpScroll, SWT.RADIO);
+		btnDown.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(scrollDown(true)));
+			}
+		});
 		btnDown.setText("Down");
 		
 		Label lblResolution = new Label(shell, SWT.NONE);
@@ -162,6 +205,13 @@ public class WaterfallParametersDialog extends Dialog {
 		lblResolution.setText("Resolution:");
 		
 		spPixelDuration = new Spinner(shell, SWT.BORDER);
+		spPixelDuration.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setWaterfallPlotParameters(widget.getWaterfallPlotParameters()
+						.with(pixelDuration(TimeDuration.ms(spPixelDuration.getSelection()))));
+			}
+		});
 		FormData fd_spPixelDuration = new FormData();
 		fd_spPixelDuration.top = new FormAttachment(lblResolution, -3, SWT.TOP);
 		fd_spPixelDuration.left = new FormAttachment(lblResolution, 6);
@@ -173,6 +223,19 @@ public class WaterfallParametersDialog extends Dialog {
 		fd_lblMsPerPixel.left = new FormAttachment(spPixelDuration, 6);
 		lblMsPerPixel.setLayoutData(fd_lblMsPerPixel);
 		lblMsPerPixel.setText("ms per pixel");
+		
+		btnHideRange = new Button(shell, SWT.CHECK);
+		FormData fd_btnHideRange = new FormData();
+		fd_btnHideRange.top = new FormAttachment(lblResolution, 6);
+		fd_btnHideRange.left = new FormAttachment(grpRange, 0, SWT.LEFT);
+		btnHideRange.setLayoutData(fd_btnHideRange);
+		btnHideRange.setText("Hide range");
+		btnHideRange.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				widget.setShowRange(!btnHideRange.getSelection());
+			}
+		});
 
 	}
 }
