@@ -55,7 +55,7 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                                   sysVar.getAlarm().getStatus().toString(),
                                                   null,
                                                   null,
-                                                  new int[] {sysVar.getData().getIndex().intValue()});
+                                                  new int[] {sysVar.getData().getRaw().intValue()});
     }
 
     @Override
@@ -68,7 +68,7 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                    new Function<EpicsEnum, Integer> () {
                 @Override
                 public Integer apply(@Nonnull final EpicsEnum from) {
-                    return from.getIndex();
+                    return from.getRaw();
                 }
             });
         return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(timestamp),

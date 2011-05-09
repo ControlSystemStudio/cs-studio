@@ -39,8 +39,9 @@
         <!-- 
             Run the test.
         -->
+    	<property name="eclipse-home" value="${testEnvironmentInstance}"/>
         <property name="libraryFile" value="${testEnvironmentInstance}/plugins/org.eclipse.test_3.3.0/library.xml"/>
-        
+    	
         <ant target="${testTarget}" 
              antfile="${libraryFile}" 
              dir="${testEnvironmentInstance}">

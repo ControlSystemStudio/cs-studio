@@ -24,6 +24,7 @@ package org.csstudio.domain.desy.epics.types;
 import java.util.Collection;
 
 import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.IValue;
@@ -171,11 +172,11 @@ public class EpicsSystemVariableSupportUnitTest {
     }
 
     @Test
-    public void testEpicsEnumTripleCollection() throws TypeSupportException {
+    public void testEpicsEnumCollection() throws TypeSupportException {
         final IAlarmSystemVariable<Collection<EpicsEnum>> cssVal =
             new EpicsSystemVariable<Collection<EpicsEnum>>("NONE",
-                                                           Lists.newArrayList(EpicsEnum.create(Integer.valueOf(1), "ON", null),
-                                                                              EpicsEnum.create(Integer.valueOf(0), "OFF", null)),
+                                                           Lists.newArrayList(EpicsEnum.createFromState("ON"),
+                                                                              EpicsEnum.createFromState("OFF")),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));
@@ -187,5 +188,9 @@ public class EpicsSystemVariableSupportUnitTest {
         Assert.assertEquals(2, values.length);
         Assert.assertEquals(Integer.valueOf(1), Integer.valueOf(values[0]));
         Assert.assertEquals(Integer.valueOf(0), Integer.valueOf(values[1]));
+        
+        final IEnumeratedMetaData meta = ((IEnumeratedValue) iVal).getMetaData();
+        Assert.assertNotNull(meta);
+
     }
 }

@@ -21,17 +21,15 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import java.io.Serializable;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.csstudio.domain.desy.types.AbstractTriple;
-
-import com.google.common.base.Joiner;
 
 /**
  * The enum type for epics.
- * Example epics record definition
+ * Example epics record definition from e.g. vxBoot/ioc/kryo/kryoVBox/dbd/Epics3-14-11.dbd
+ * for recordtypes digLog, mbbo, mbbi, bo, bi -> VAL field is DBF_ENUM
  *
    field(ZRVL, "0x01")<br>
    field(ONVL, "0x80")<br>
@@ -43,7 +41,7 @@ import com.google.common.base.Joiner;
    field(THST, "val of fourth")<br>
    <br>
 
-   Careful! Depending on whether
+   Careful, depending on whether
    field(DTYP, "Soft Channel")
    or
    field(DTYP, "Raw Soft Channel")
@@ -58,51 +56,103 @@ import com.google.common.base.Joiner;
    muster is copied into RVAL, the mapping into VAL is performed, leading to e.g.:
    .RVAL==0x01, .VAL="val of first"
 
-   Hence, we store simply that what we get as string.
-   The raw value can be stored as registered channel by itself.
+   Hence, we store that what we get either as string if it is known from the meta data of the first
+   connection or we store the value we get as integer.
+   The raw value can be stored as registered channel by itself (just register the .RVAL field to
+   be archived)
 
    Resulting EpicsEnums:<br>
 
-   (0, "val of 33", 33)<br>
-   (1, "val of 21", 21)<br>
-   (2, "val of 12", 12)<br>
-   (3, "val of 45", 45)<br>
+   (Integer, String)
+   (null, "val of first")<br>
+   (null, "val of second")<br>
+   (4711, null)<br>
+
  *
  * @author bknerr
  * @since 15.12.2010
  */
-public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
+public class EpicsEnum implements Serializable {
 
-    private static final long serialVersionUID = -3340079923729173798L;
+    public static final String SEP = ":";
+    public static final String STATE = "STATE";
+    public static final String RAW = "RAW";
     public static final String UNKNOWN_STATE = "UNKNOWN";
     public static final String UNSET_STATE = "NOT_SET";
 
+    private static final long serialVersionUID = -3340079923729173798L;
+
     @Nonnull
-    public static final EpicsEnum create(@Nonnull final Integer index,
-                                         @Nonnull final String state,
-                                         @Nullable final Integer raw) {
-        return new EpicsEnum(index, state, raw);
+    public static final EpicsEnum createFromRaw(@Nonnull final Integer raw) {
+        return new EpicsEnum(raw);
+    }
+    @Nonnull
+    public static final EpicsEnum createFromState(@Nonnull final String state) {
+        return new EpicsEnum(state);
+    }
+    @Nonnull
+    public static final EpicsEnum createFromString(@Nonnull final String string) {
+        if (string.startsWith(RAW + SEP)) {
+            return EpicsEnum.createFromRaw(Integer.valueOf(string.replaceFirst(RAW + SEP, "")));
+        }
+        if (string.startsWith(STATE + SEP)) {
+            return EpicsEnum.createFromState(string.replaceFirst(STATE + SEP, ""));
+        }
+        throw new IllegalArgumentException("String " + string + " cannot be converted to " +
+                                           EpicsEnum.class.getSimpleName() + ".");
+    }
+
+    private final Integer _raw;
+    private final String _state;
+
+
+    private EpicsEnum(@Nonnull final String state) {
+        this(null, state);
+    }
+
+    private EpicsEnum(@Nonnull final Integer raw) {
+        this(raw, null);
+    }
+
+    private EpicsEnum(@CheckForNull final Integer raw,
+                      @CheckForNull final String state) {
+        _raw = raw;
+        _state = state;
+        if (isRaw() && isState() ||
+            !isRaw() && !isState()) {
+            throw new IllegalArgumentException("Exactly one out of both fields has to be set to null.");
+        }
+
     }
 
     /**
-     * Constructor.
+     * @throws IllegalStateException if the epics enum does not hold a raw value but a state
+     * @return the raw value as integer
      */
-    protected EpicsEnum(@Nonnull final Integer index,
-                        @Nonnull final String state,
-                        @Nullable final Integer raw) {
-        super(index, state, raw);
-    }
     @Nonnull
-    public Integer getIndex() {
-        return super.getFirst();
+    public Integer getRaw() {
+        if (isRaw()) {
+            return _raw;
+        }
+        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
     }
+
+    /**
+     * @throws IllegalStateException if the epics enum does not hold a state but a raw value
+     * @return the state value as string
+     */
     @Nonnull
     public String getState() {
-        return super.getSecond();
+        if (isState()) {
+            return _state;
+        }
+        throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
     }
-    @CheckForNull
-    public Integer getRaw() {
-        return super.getThird();
+    public boolean isRaw() {
+        return _raw != null;
+    }
+    public boolean isState() {
+        return _state != null;
     }
 
     /**
@@ -111,12 +161,13 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
     @Override
     @Nonnull
     public String toString() {
-        final Integer raw = getRaw();
-        String rawStr = "null";
-        if (raw != null) {
-            rawStr = raw.toString();
+        if (isRaw()) {
+            return RAW + SEP + _raw.toString();
         }
-        return "(" + Joiner.on(",").join(getIndex(), getState(), rawStr) + ")";
+        if (isState()) {
+            return STATE + SEP + _state;
+        }
+        throw new IllegalStateException("Exactly one out of both fields has to be set to null.");
     }
 
     /**
@@ -124,14 +175,15 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
      */
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + getState().hashCode();
-        final Integer raw = getRaw();
-        if (raw != null) {
-            result = 31 * result + getRaw().hashCode();
+        if (isState()) {
+            return 31 + _state.hashCode();
         }
-        return result;
+        if (isRaw()) {
+            return 31 + _raw.hashCode();
+        }
+        throw new IllegalStateException("All object's fields have been initialized to null.");
     }
+
     /**
      * {@inheritDoc}
      */
@@ -141,12 +193,12 @@ public class EpicsEnum extends AbstractTriple<Integer, String, Integer> {
             return false;
         }
         final EpicsEnum other = (EpicsEnum) obj;
-        if (!getState().equals(other.getState())) {
-            return false;
+        if (other.isRaw()) {
+            return other.getRaw().equals(_raw);
         }
-        if (getRaw() != other.getRaw()) {
-            return false;
+        if (other.isState()) {
+            return other.getState().equals(_state);
         }
-        return true;
+        throw new IllegalStateException("Other's fields are both set to null, which is not allowed for this object: " + obj.toString());
     }
 }

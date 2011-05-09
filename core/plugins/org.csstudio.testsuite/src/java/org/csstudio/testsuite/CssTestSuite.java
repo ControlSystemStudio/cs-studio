@@ -78,7 +78,7 @@ public final class CssTestSuite {
     	    filter = TestSuiteFactory.COMMON_TEST_SUFFIX;
     	}
 
-        return TestSuiteFactory.getSuite(filter + "TestSuite",
+        return TestSuiteFactory.getSuite("CssTestSuite_" + filter,
                                          filter,
                                          COMMON_TEST_SUFFIX);
     }

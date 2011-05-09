@@ -161,16 +161,23 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testScalarEnumArchiveStringConversion() {
         try {
-            final EpicsEnum t = EpicsEnum.create(3, "in case we die", 44);
-            final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
-            Assert.assertTrue(archiveString.equals(ARCHIVE_TUPLE_PREFIX +
-                                                   "3" + ARCHIVE_TUPLE_SEP + "in case we die" + ARCHIVE_TUPLE_SEP + "44" +
-                                                   ARCHIVE_TUPLE_SUFFIX));
-            final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
-            Assert.assertNotNull(tFromA);
-            Assert.assertEquals(Integer.valueOf(3), tFromA.getIndex());
-            Assert.assertEquals("in case we die", tFromA.getState());
-            Assert.assertEquals(Integer.valueOf(44), tFromA.getRaw());
+                {
+                    final EpicsEnum t = EpicsEnum.createFromRaw(3);
+                    final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
+                    Assert.assertTrue(archiveString.equals(EpicsEnum.RAW + EpicsEnum.SEP + "3"));
+                    final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
+                    Assert.assertNotNull(tFromA);
+                    Assert.assertEquals(Integer.valueOf(3), tFromA.getRaw());
+                }
+                {
+                    final EpicsEnum t = EpicsEnum.createFromState("MyState");
+                    final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
+                    Assert.assertTrue(archiveString.equals(EpicsEnum.STATE + EpicsEnum.SEP + "MyState"));
+                    final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
+                    Assert.assertNotNull(tFromA);
+                    Assert.assertEquals("MyState", tFromA.getState());
+                    
+                }
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
@@ -296,18 +303,14 @@ public class ArchiveTypeConversionSupportUnitTest {
 
     @Test
     public void testMultiScalarEnumConversion() {
-        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.create(0, "first", 26),
-                                                                 EpicsEnum.create(1, "second", 27));
+        final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.createFromRaw(1),
+                                                                 EpicsEnum.createFromState("second"));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
-                                ARCHIVE_TUPLE_PREFIX +
-                                "0" + ARCHIVE_TUPLE_SEP + "first" + ARCHIVE_TUPLE_SEP + "26" +
-                                ARCHIVE_TUPLE_SUFFIX +
+                                EpicsEnum.RAW + EpicsEnum.SEP + "1" +
                                 ARCHIVE_COLLECTION_ELEM_SEP +
-                                ARCHIVE_TUPLE_PREFIX +
-                                "1" + ARCHIVE_TUPLE_SEP + "second" + ARCHIVE_TUPLE_SEP + "27" +
-                                ARCHIVE_TUPLE_SUFFIX +
+                                EpicsEnum.STATE + EpicsEnum.SEP + "second"+
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
             final Vector<EpicsEnum> enums =
                 (Vector<EpicsEnum>) ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Vector.class, EpicsEnum.class, archiveString);
@@ -315,7 +318,7 @@ public class ArchiveTypeConversionSupportUnitTest {
 
             final Iterator<EpicsEnum> iterator = enums.iterator();
             final EpicsEnum first = iterator.next();
-            Assert.assertEquals("first", first.getState());
+            Assert.assertEquals(Integer.valueOf(1), first.getRaw());
 
             final EpicsEnum second = iterator.next();
             Assert.assertEquals("second", second.getState());

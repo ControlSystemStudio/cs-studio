@@ -65,7 +65,8 @@ public class EpicsMetaData {
     @Nonnull
     private ImmutableList<EpicsEnum> initStateList(@Nonnull final String[] states) {
         if (states.length == 0) {
-            throw new IllegalArgumentException("States array for enumerated values is empty.");
+            // throw new IllegalArgumentException("States array for enumerated values is empty.");
+            return ImmutableList.of();
         }
         final List<EpicsEnum> enumList = Lists.newArrayListWithExpectedSize(states.length);
         int i = 0;
@@ -73,7 +74,7 @@ public class EpicsMetaData {
             if (Strings.isNullOrEmpty(state)) {
                 state = EpicsEnum.UNSET_STATE;
             }
-            enumList.add(EpicsEnum.create(i, state, 0));
+            enumList.add(EpicsEnum.createFromState(state));
             i++;
         }
         return ImmutableList.copyOf(enumList);
@@ -129,8 +130,22 @@ public class EpicsMetaData {
         return _states;
     }
 
+    /**
+     * Three cases:<br/>
+     * <ul>
+     *   <li> a list of states exists and index is within bounds -> return the enum holding the state
+     *   <li> a list of states exists, but index is out of bounds -> return the enum from index
+     *        (==raw value), and log a warning
+     *   <li> a list of states doesn't exist -> return enum from index (==raw value)
+     * </ul>
+     * @param index
+     * @return
+     */
     @Nonnull
     public EpicsEnum getState(final int index) {
-        return _states.get(index);
+        if (index >= 0 && index < _states.size()) {
+            return _states.get(index);
+        }
+        return EpicsEnum.createFromRaw(index);
     }
 }
