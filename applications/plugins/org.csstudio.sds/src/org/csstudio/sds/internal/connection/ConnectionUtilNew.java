@@ -283,8 +283,11 @@ public final class ConnectionUtilNew {
 				+ responsibleDalPlugId;
 	    }
 		final String property = pv.getProperty();
-		String characteristic = pv.getCharacteristic();
-		return new RemoteInfo(cs, property, characteristic, null);
+//		The characteristic has to be hardcoded null, otherwise there are no dynamic actions.
+//		(e.g. Action Button in Display Rufbereitschaft has no actions)
+//		String characteristic = pv.getCharacteristic();
+//		return new RemoteInfo(cs, property, characteristic, null);
+		return new RemoteInfo(cs, property, null, null);
 	}
 
 }
