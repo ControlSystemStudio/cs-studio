@@ -32,11 +32,11 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Service that provides an encrypted store for login and other information.
@@ -72,7 +72,10 @@ public final class SecureStore {
 	private static final String CIPHER_TRANSFORMATION = "DES/ECB/PKCS5Padding";
 
 	private SecretKey key;
+
 	private SecurePreferences securePreferences;
+
+	private static final Logger log = Logger.getLogger(SecureStore.class.getName());
 
 	/**
 	 * Singleton accessor for the secure store manager.
@@ -129,8 +132,7 @@ public final class SecureStore {
 			securePreferences = SecurePreferences.load(username);
 			return true;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"Secure store could not be unlocked.", e);
+        	log.log(Level.WARNING, "Secure store could not be unlocked.", e);
 			return false;
 		}
 	}
@@ -173,23 +175,20 @@ public final class SecureStore {
 				loaded = true;
 //			} catch (IOException e) {
 			} catch (Exception e) {
-				CentralLogger.getInstance().error(this,
-						"Error loading keystore.", e);
+	        	log.log(Level.SEVERE, "Error loading keystore.", e);
 				try {
 					// if the keystore was not loaded from the file, create
 					// an empty keystore
 					ks.load(null);
 				} catch (IOException e1) {
-					CentralLogger.getInstance().error(this,
-							"Error loading keystore.", e);
+		        	log.log(Level.SEVERE, "Error loading keystore.", e);
 				}
 			} finally {
 				if (is != null) {
 					try {
 						is.close();
 					} catch (IOException e) {
-						CentralLogger.getInstance().error(this,
-								"Error closing input stream.", e);
+			        	log.log(Level.SEVERE, "Error closing input stream.", e);
 					}
 				}
 			}
@@ -198,8 +197,7 @@ public final class SecureStore {
 			try {
 				ks.load(null);
 			} catch (IOException e) {
-				CentralLogger.getInstance().error(this,
-						"Error loading keystore.", e);
+	        	log.log(Level.SEVERE, "Error loading keystore.", e);
 			}
 		}
 		return ks;
@@ -223,14 +221,13 @@ public final class SecureStore {
 			os = new FileOutputStream(file);
 			ks.store(os, password);
 		} catch (IOException e) {
-			CentralLogger.getInstance().error(this, "Error saving keystore", e);
+        	log.log(Level.SEVERE, "Error saving keystore", e);
 		} finally {
 			if (os != null) {
 				try {
 					os.close();
 				} catch (IOException e) {
-					CentralLogger.getInstance().error(this,
-							"Error closing output stream", e);
+		        	log.log(Level.SEVERE, "Error closing output stream", e);
 				}
 			}
 		}
@@ -249,8 +246,7 @@ public final class SecureStore {
 						CIPHER_TRANSFORMATION);
 			}			
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this,
-					"Error storing object in secure store.", e);
+        	log.log(Level.SEVERE, "Error storing object in secure store.", e);
 		}
 	}
 	
@@ -267,8 +263,7 @@ public final class SecureStore {
 					CIPHER_TRANSFORMATION)
 				: null;
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this,
-					"Error loading object from secure store.", e);
+        	log.log(Level.SEVERE, "Error loading object from secure store.", e);
 			return null;
 		}
 	}

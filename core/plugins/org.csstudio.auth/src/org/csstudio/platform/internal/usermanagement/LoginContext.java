@@ -21,8 +21,10 @@
  */
  package org.csstudio.platform.internal.usermanagement;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
 import org.csstudio.platform.security.User;
@@ -47,8 +49,11 @@ public final class LoginContext {
 	private static final String LOGIN_MODULE_EXT_ID = "org.csstudio.auth.loginModule";
 	
     final private String _name;
-	private User _user = null;
+
+    private User _user = null;
 	
+	private static final Logger log = Logger.getLogger(LoginContext.class.getName());
+
 	/** Initialize
 	 *  @param name Name of this login context
 	 */
@@ -71,16 +76,17 @@ public final class LoginContext {
 		if (loginModule != null) {
 			_user = loginModule.login(handler);
 			if (_user != null) {
-				CentralLogger.getInstance().getLogger(this).info(
-						"User logged in: " + _user.getUsername());
+	        	log.log(Level.INFO, "User logged in: " + _user.getUsername());
+
 				WorkspaceIndependentStore.writeLastLoginUser(_user.getUsername());
 				RightsManagementService.getInstance().readRightsForUser(_user);
 			} else {
-				CentralLogger.getInstance().getLogger(this).info("Anonymous login");
+	        	log.log(Level.INFO, "Anonymous login");
+
 			}
 		} else {
 			_user = null;
-			CentralLogger.getInstance().getLogger(this).warn("No login module provided. " +
+        	log.log(Level.WARNING, "No login module provided. " +
 					"The system acts as anonymous login");
 		}
 	}
@@ -107,13 +113,11 @@ public final class LoginContext {
 			}
 			catch (CoreException e)
 			{
-			    CentralLogger.getInstance().getLogger(this).
-			        error("Cannot obtain login module", e);
+	        	log.log(Level.SEVERE, "Cannot obtain login module", e);
 			}
 		}
 		else if (extension.length > 1)
-            CentralLogger.getInstance().getLogger(this).
-                error("Found multiple login modules");
+        	log.log(Level.SEVERE, "Found multiple login modules");
 		return null;
 	}
 	

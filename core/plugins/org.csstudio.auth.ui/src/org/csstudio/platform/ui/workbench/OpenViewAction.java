@@ -1,6 +1,9 @@
 package org.csstudio.platform.ui.workbench;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -57,6 +60,8 @@ public class OpenViewAction extends Action
 {
     /** ID of the view to open */
     final private String id;
+    
+	private static final Logger log = Logger.getLogger(OpenViewAction.class.getName());
 
     /** @param id ID of the view to open */
     public OpenViewAction(final String id)
@@ -112,8 +117,7 @@ public class OpenViewAction extends Action
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this)
-                .error("Error opening view '" + id + "': " + ex);
+        	log.log(Level.SEVERE, "Error opening view '" + id + "': " + ex);
         }
     }
 

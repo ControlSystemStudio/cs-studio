@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.CSSPlatformPlugin;
@@ -35,7 +37,6 @@ import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.LoginContext;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -118,6 +119,8 @@ public final class SecurityFacade {
 	 */
 	private static final String AUTHORIZATION_ID_EXTENSION_POINT = "org.csstudio.auth.authorizationId";
 
+	private static final Logger log = Logger.getLogger(SecurityFacade.class.getName());
+	
 	/**
 	 * Private constructor due to singleton pattern.
 	 */
@@ -301,8 +304,7 @@ public final class SecurityFacade {
     			}
     		    catch (RuntimeException e)
     		    {
-    				CentralLogger.getInstance().warn(this,
-    						"User management event listener threw unexpected RuntimeException", e);
+    	        	log.log(Level.WARNING, "User management event listener threw unexpected RuntimeException", e);
     			}
     		    ++i;
 		    }

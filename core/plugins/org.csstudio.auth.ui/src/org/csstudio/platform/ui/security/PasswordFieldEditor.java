@@ -1,6 +1,8 @@
 package org.csstudio.platform.ui.security;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.security.SecureStorage;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.jface.preference.FieldEditor;
@@ -86,6 +88,8 @@ public class PasswordFieldEditor extends FieldEditor
     private static final String FAKE_PASSWORD = "*********"; //$NON-NLS-1$
     
     private boolean loadFromDefault = false;
+    
+	private static final Logger log = Logger.getLogger(PasswordFieldEditor.class.getName());
     
     /**
      * Creates a string field editor of unlimited width.
@@ -225,10 +229,9 @@ public class PasswordFieldEditor extends FieldEditor
          	}
          	catch (Exception e)
          	{
-				CentralLogger.getInstance().getLogger(this).error(
-							"Error in retrieving data from secure storage. " +
-							"The default preference value of _" +
-							getPreferenceName()+ "_ will be loaded.", e);				
+	        	log.log(Level.SEVERE, "Error in retrieving data from secure storage. " +
+						"The default preference value of _" +
+						getPreferenceName()+ "_ will be loaded.", e);
 				value = getPreferenceStore().getString(getPreferenceName());
 			}        	
     	} else
@@ -283,7 +286,7 @@ public class PasswordFieldEditor extends FieldEditor
 		}
     	catch (Exception e)
     	{
-			CentralLogger.getInstance().getLogger(this).error(e);
+        	log.log(Level.SEVERE, "Error writing data from secure storage.", e);
 		}
     }
 

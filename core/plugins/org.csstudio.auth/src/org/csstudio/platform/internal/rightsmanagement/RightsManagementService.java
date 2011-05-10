@@ -22,9 +22,11 @@
 package org.csstudio.platform.internal.rightsmanagement;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.security.IAuthorizationProvider;
 import org.csstudio.platform.security.IRight;
 import org.csstudio.platform.security.RightSet;
@@ -58,6 +60,8 @@ public final class RightsManagementService {
 	 * The authorization provider.
 	 */
 	private IAuthorizationProvider _authProvider = null;
+
+	private static final Logger log = Logger.getLogger(RightsManagementService.class.getName());
 
 	/**
 	 * Private constructor due to singleton pattern.
@@ -155,7 +159,6 @@ public final class RightsManagementService {
 			}
 			return result;
 		} else {
-			//CentralLogger.getInstance().warn(this, "No authorization provider found.");
 			return new RightSet("EMPTY");
 		}
 	}
@@ -195,13 +198,12 @@ public final class RightsManagementService {
 		IAuthorizationProvider provider = getAuthorizationProvider();
 		if (provider != null) {
 			RightSet userRights = provider.getRights(user);
-			CentralLogger.getInstance().debug(this, "Rights for " + user + ": " + userRights);
+        	log.log(Level.FINE, "Rights for " + user + ": " + userRights);
 			_rights.put(user, userRights);
 		} else {
 			if (_rights.containsKey(user)) {
 				_rights.remove(user);
 			}
-			//CentralLogger.getInstance().warn(this, "No Authorization Provider found.");
 		}
 	}
 
@@ -228,7 +230,7 @@ public final class RightsManagementService {
 				try {
 					return (IAuthorizationProvider) element.createExecutableExtension("class");
 				} catch (CoreException e) {
-					CentralLogger.getInstance().error(this, "Could not create extension", e);
+		        	log.log(Level.SEVERE, "Could not create extension", e);
 				}
 			}
 		}
