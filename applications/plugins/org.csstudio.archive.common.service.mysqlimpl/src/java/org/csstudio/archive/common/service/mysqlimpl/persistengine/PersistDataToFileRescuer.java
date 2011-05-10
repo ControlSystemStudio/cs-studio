@@ -45,7 +45,6 @@ import com.google.common.collect.Lists;
 public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
 
     private static final String FILE_SUFFIX = ".sql";
-    public static final String SQL_STATEMENT_DELIMITER = ";";
 
     private final List<String> _statements;
 
@@ -71,7 +70,7 @@ public class PersistDataToFileRescuer extends AbstractToFileDataRescuer {
         final OutputStreamWriter writer = new OutputStreamWriter(outStream);
         for (final String statement : _statements) {
             writer.write(statement);
-            writer.write(SQL_STATEMENT_DELIMITER + "\n");
+            writer.write("\n");
         }
         writer.close();
     }

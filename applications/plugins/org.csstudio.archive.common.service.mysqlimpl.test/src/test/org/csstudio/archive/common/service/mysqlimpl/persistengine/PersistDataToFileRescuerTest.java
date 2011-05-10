@@ -79,7 +79,7 @@ public class PersistDataToFileRescuerTest {
 
         int i = 0;
         for (String stmt : STATEMENTS) {
-            Assert.assertEquals(stmt + PersistDataToFileRescuer.SQL_STATEMENT_DELIMITER, resultFromFile.get(i));
+            Assert.assertEquals(stmt, resultFromFile.get(i));
             i++;
         }
     }
