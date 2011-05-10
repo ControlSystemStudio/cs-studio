@@ -166,7 +166,6 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
     @Override
     public void paint(final Graphics graphics) {
         super.paint(graphics);
-        _scrollBar.enableButtons(_enable);
         _crossedOutAdapter.paint(graphics);
         _rhombusAdapter.paint(graphics);
 
@@ -538,7 +537,7 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
     @Override
     public void setEnabled(final boolean value) {
         _enable = value;
-
+        _scrollBar.enableButtons(_enable);
         _scrollBar.setEnabled(true);
         super.setEnabled(value);
     }
