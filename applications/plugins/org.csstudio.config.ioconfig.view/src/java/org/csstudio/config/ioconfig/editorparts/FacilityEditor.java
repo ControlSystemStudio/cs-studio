@@ -24,7 +24,6 @@ package org.csstudio.config.ioconfig.editorparts;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -160,18 +159,6 @@ public class FacilityEditor extends AbstractNodeEditor{
                 getProfiBusTreeView()));
 
         makeDescGroup(comp,3);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio
-     * .config.ioconfig.model.pbmodel.GSDFile)
-     */
-    @Override
-    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
     }
 
     @Override

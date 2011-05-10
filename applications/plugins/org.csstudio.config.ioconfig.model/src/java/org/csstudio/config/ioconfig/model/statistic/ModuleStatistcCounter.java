@@ -79,7 +79,7 @@ public class ModuleStatistcCounter {
      * @param module
      * @throws PersistenceException 
      */
-    public void addModule(ModuleDBO module) throws PersistenceException {
+    public void addModule(@Nonnull ModuleDBO module) throws PersistenceException {
         _moduleCount++;
         Collection<ChannelStructureDBO> channelStructs = module.getChannelStructsAsMap().values();
         for (ChannelStructureDBO channelStructure : channelStructs) {

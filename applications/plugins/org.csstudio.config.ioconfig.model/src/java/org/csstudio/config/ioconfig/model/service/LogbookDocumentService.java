@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
@@ -51,7 +53,7 @@ public class LogbookDocumentService implements DocumentService {
      * @throws PersistenceException 
      */
     @Override
-    public void openDocument(final String id) throws PersistenceException {
+    public void openDocument(@Nonnull final String id) throws PersistenceException {
         DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
         File createTempFile = null;
         try {
@@ -77,7 +79,7 @@ public class LogbookDocumentService implements DocumentService {
      * {@inheritDoc}
      */
     @Override
-    public void saveDocumentAs(final String id, final File file) {
+    public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
         // TODO Auto-generated method stub
 
     }
@@ -87,6 +89,7 @@ public class LogbookDocumentService implements DocumentService {
      * Get all Document from a Node.
      * @throws PersistenceException 
      */
+    @Nonnull 
     List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException{
         List<IDocument> docList = new ArrayList<IDocument>();
         AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class, nodeId);

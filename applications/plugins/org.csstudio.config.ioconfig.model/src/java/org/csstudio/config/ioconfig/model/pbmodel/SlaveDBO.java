@@ -136,12 +136,6 @@ public class SlaveDBO extends AbstractNodeDBO {
     private String _iDNo;
     
     /**
-     * The GSD Slave Model.
-     */
-    @Transient
-    private ParsedGsdFileModel _gsdSlaveModel;
-    
-    /**
      * This Constructor is only used by Hibernate. To create an new {@link SlaveDBO}
      * {@link #Slave(MasterDBO)}
      */
@@ -149,11 +143,11 @@ public class SlaveDBO extends AbstractNodeDBO {
         // only for Hibernate
     }
     
-    public SlaveDBO(final MasterDBO master) throws PersistenceException {
+    public SlaveDBO(@Nonnull final MasterDBO master) throws PersistenceException {
         this(master, -1);
     }
     
-    private SlaveDBO(final MasterDBO master, final int stationAddress) throws PersistenceException {
+    private SlaveDBO(@Nonnull final MasterDBO master, final int stationAddress) throws PersistenceException {
         setParent(master);
         master.addChild(this);
         moveSortIndex(stationAddress);
@@ -164,7 +158,7 @@ public class SlaveDBO extends AbstractNodeDBO {
         return (MasterDBO) getParent();
     }
     
-    public void setProfibusDPMaster(final MasterDBO profibusDPMaster) {
+    public void setProfibusDPMaster(@Nonnull final MasterDBO profibusDPMaster) {
         this.setParent(profibusDPMaster);
     }
     
@@ -187,7 +181,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      *            set the GSDFile.
      * @throws IOException 
      */
-    public void setGSDFile(@CheckForNull final GSDFileDBO gsdFile) throws IOException {
+    public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) throws IOException {
         if (gsdFile == null) {
             _gsdFile = gsdFile;
         } else if (!gsdFile.equals(_gsdFile)) {
@@ -212,7 +206,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param vendorName
      *            Set the Vendor name of this slave.
      */
-    public void setVendorName(final String vendorName) {
+    public void setVendorName(@Nonnull final String vendorName) {
         _vendorName = vendorName;
     }
     
@@ -229,7 +223,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param modelName
      *            Set the Model Name of Slave.
      */
-    public void setModelName(final String modelName) {
+    public void setModelName(@Nonnull final String modelName) {
         _modelName = modelName;
     }
     
@@ -237,7 +231,7 @@ public class SlaveDBO extends AbstractNodeDBO {
         return _revision;
     }
     
-    public void setRevision(final String revision) {
+    public void setRevision(@Nonnull final String revision) {
         _revision = revision;
     }
     
@@ -371,7 +365,7 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param newValue
      */
     @Transient
-    public void setPrmUserDataByte(final int index, final Integer newValue) {
+    public void setPrmUserDataByte(final int index, @Nonnull final Integer newValue) {
         _prmUserDataList.set(index, newValue);
     }
     
@@ -443,8 +437,6 @@ public class SlaveDBO extends AbstractNodeDBO {
              * Settings - Groups
              */
 
-            // setGSDData
-            setGSDSlaveData(parsedGsdFileModel);
         }
         return true;
     }
@@ -463,14 +455,6 @@ public class SlaveDBO extends AbstractNodeDBO {
     @Transient
     public final String getIDNo() {
         return _iDNo;
-    }
-    
-    /**
-     * @param slaveKeywords
-     */
-    @Transient
-    public void setGSDSlaveData(final ParsedGsdFileModel parsedGsdFileModel) {
-        _gsdSlaveModel = parsedGsdFileModel;
     }
     
     /**

@@ -27,6 +27,9 @@ package org.csstudio.config.ioconfig.model.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.dct.IoNameService;
@@ -48,7 +51,9 @@ public class ProfiBusIoNameService implements IoNameService {
      * @return Field and the Epics Address String for the given IO-Name separated by ':'.
      * @throws PersistenceException 
      */
-    public final String getEpicsAddress(String ioName, String field) {
+    @Override
+    @Nonnull
+    public final String getEpicsAddress(@Nonnull String ioName, @Nonnull String field) {
         // return the Bus-type
         if(field.equals("DTYP")) {
             // at the moment only Profibus DP
@@ -69,6 +74,8 @@ public class ProfiBusIoNameService implements IoNameService {
         }
     }
     
+    @Override
+    @CheckForNull
     public List<String> getAllIoNames(){
         try {
             return Repository.getIoNames();
@@ -85,7 +92,8 @@ public class ProfiBusIoNameService implements IoNameService {
      * @param ioName the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      */
-    public List<String> getIoNamesFromIoc(String iocName){
+    @Nonnull 
+    public List<String> getIoNamesFromIoc(@Nonnull String iocName){
         try {
             return Repository.getIoNames(iocName);
         } catch (PersistenceException e) {

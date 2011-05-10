@@ -31,7 +31,6 @@ import java.util.Date;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -132,7 +131,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * @param desc set the long description.
      * @param keywords set the keywords.
      */
-    public DocumentDBO(@Nullable final String subject,@Nullable final String desc,@Nullable final String keywords) {
+    public DocumentDBO(@Nonnull final String subject,@Nonnull final String desc,@Nonnull final String keywords) {
         setSubject(subject);
         setDesclong(desc);
         setKeywords(keywords);
@@ -186,6 +185,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Transient
+    @Nonnull
     public InputStream getImageData() throws PersistenceException {
         try {
             return _image.getBinaryStream();
@@ -282,6 +282,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Column(length = 4000)
+    @Nonnull
     public String getDesclong() {
         return _desclong;
     }
@@ -292,6 +293,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Column(name = "Link_Forward", length = 200)
+    @Nonnull
     public String getLinkForward() {
         return _linkForward;
     }
@@ -324,6 +326,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Column(name = "UPDATE_DATE")
+    @Nonnull
     public Date getUpdateDate() {
         return _updateDate;
     }
@@ -334,6 +337,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Column(length = 30)
+    @Nonnull
     public String getLocation() {
         return _location;
     }
@@ -344,6 +348,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
 
     @Override
     @Column(length = 200)
+    @Nonnull
     public String getKeywords() {
         return _keywords;
     }
@@ -357,7 +362,18 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      */
     @Override
     public int compareTo(@CheckForNull DocumentDBO other) {
-        return getId().compareTo(other.getId());
+        String id = getId();
+        if(id==null) {
+            return 1;
+        }
+        if(other==null) {
+            return -1;
+        }
+        String otherID = other.getId();
+        if(otherID==null) {
+            return -1;
+        }
+        return id.compareTo(otherID);
     }
 
     

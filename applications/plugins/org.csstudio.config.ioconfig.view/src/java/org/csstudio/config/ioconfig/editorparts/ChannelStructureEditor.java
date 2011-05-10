@@ -155,11 +155,6 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
 	}
 
     @Override
-    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
-    }
-
-    @Override
     @CheckForNull
     public GSDFileDBO getGsdFile() {
         return null;

@@ -25,23 +25,19 @@ public class AcceptGSDFileUnitTest {
     
     @Test
     public void GSDTestFile_B756_P33() throws Exception {
-        GsdFileParser gsdFileParser = new GsdFileParser();
-//        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.B756_P33.getFileAsGSDFileDBO());
         AbstractGsdPropertyModel model = GSDTestFiles.B756_P33.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
     }
 
     @Test
     public void GSDTestFile_BIMF5861() throws Exception {
-        GsdFileParser gsdFileParser = new GsdFileParser();
-        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.BIMF5861.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
     }
     
     @Test
     public void GSDTestFile_DESY_MSyS_V10() throws Exception {
-        GsdFileParser gsdFileParser = new GsdFileParser();
-        AbstractGsdPropertyModel model = gsdFileParser.parse(GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO());
+        AbstractGsdPropertyModel model = GSDTestFiles.DESY_MSyS_V10.getFileAsGSDFileDBO().getParsedGsdFileModel();
         Assert.assertNotNull(model);
     }
     

@@ -145,7 +145,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     /**
      * The Slave which displayed.
      */
-    SlaveDBO _slave;
+    private SlaveDBO _slave;
     /**
      * Check Button to de.-/activate Station Address.
      */
@@ -300,24 +300,14 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     /** {@inheritDoc} 
      * @throws PersistenceException */
     @Override
-    public final boolean fill(@Nullable final GSDFileDBO gsdFile) throws PersistenceException {
-        if (gsdFile == null) {
-            return false;
-        } else if (gsdFile.equals(_gsdFile)) {
-            return true;
+    public final void fill(@Nullable final GSDFileDBO gsdFile) throws PersistenceException {
+        if (gsdFile == null || gsdFile.equals(_gsdFile)) {
+            return;
         }
-        
         _gsdFile = gsdFile;
-//        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
         ParsedGsdFileModel parsedGsdFileModel;
         try {
             parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
-            
-            // setGSDData
-//            HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(_gsdFile, slaveModel);
-//            slaveModel.setGsdModuleList(moduleList);
-//            _slave.setGSDSlaveData(slaveModel);
-            _slave.setGSDSlaveData(parsedGsdFileModel);
             
             // Head
             getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getGsdRevision() + "");
@@ -331,7 +321,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             _slave.setMinTsdr(_slave.getMinTsdr());
             _slave.setModelName(parsedGsdFileModel.getModelName());
             if (_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
-                //            _slave.setPrmUserData(slaveModel.getUserPrmData());
                 _slave.setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
             }
             _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
@@ -354,7 +343,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         } catch (IOException e) {
             throw new PersistenceException(e);
         }
-        return true;
     }
     
     /** {@inheritDoc} */
@@ -605,7 +593,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         buildCurrentUserPrmData(currentUserParamDataComposite);
         topGroup.layout();
     }
-
+    
     /**
      * @param comp
      */
@@ -675,7 +663,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
                                                      Ranges.TTR,
                                                      ProfibusHelper.VL_TYP_U32);
         _watchDogText2.addModifyListener(getMLSB());
-        new Label(operationModeGroup, SWT.NONE);
+        new Label(operationModeGroup, SWT.NONE).setText("");
         Label watchdogTotal = new Label(operationModeGroup, SWT.NONE);
         watchdogTotal.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         watchdogTotal.setText("Watchdog Total");
@@ -717,10 +705,10 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
         List<TableColumn> columns = new ArrayList<TableColumn>();
-        String[] headers = new String[] { "Adr", "Adr", "Name", "IO Name", "IO Epics Address",
-                "Desc", "Type", "DB Id" };
-        int[] styles = new int[] { SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
-                SWT.LEFT, SWT.LEFT };
+        String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address",
+                "Desc", "Type", "DB Id"};
+        int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
+                SWT.LEFT, SWT.LEFT};
         
         TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER
                 | SWT.FULL_SELECTION);
@@ -771,9 +759,8 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(3, false));
         
-        
         Text text = new Text(comp, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,false,false,3,1));
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
         // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
         text.setText(_slave.getPrmUserData());
         
@@ -797,7 +784,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         _groupsRadioButtons.setLayout(new GridLayout(4, true));
         _groupsRadioButtons.setText("Groups");
         _groupIdentStored = _slave.getGroupIdent();
-        if ((_groupIdentStored < 0) || (_groupIdentStored > 7)) {
+        if ( (_groupIdentStored < 0) || (_groupIdentStored > 7)) {
             _groupIdentStored = 0;
         }
         _groupIdent = _groupIdentStored;
@@ -841,7 +828,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
      */
     private void makeSlaveKonfiguration() throws PersistenceException {
         boolean nevv = false;
-        String[] heads = { "Basics", "Settings", "Overview" };
+        String[] heads = {"Basics", "Settings", "Overview"};
         makeOverview(heads[2]);
         try {
             makeSettings(heads[1]);
@@ -888,7 +875,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         tc.setText("Ext User Prm Data Const");
         tc.setWidth(450);
     }
-    
     
     /**
      *
@@ -1110,7 +1096,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
             return null;
         }
     }
-
+    
     /**
      * {@inheritDoc}
      * @throws IOException 
@@ -1120,12 +1106,12 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     ParsedGsdFileModel getGsdPropertyModel() throws IOException {
         ParsedGsdFileModel parsedGsdFileModel = null;
         GSDFileDBO gsdFile = _slave.getGSDFile();
-        if(gsdFile!=null) {
+        if (gsdFile != null) {
             parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         }
         return parsedGsdFileModel;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -1149,7 +1135,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     @Override
     @CheckForNull
     Integer getPrmUserData(@Nonnull Integer index) {
-        if(_slave.getPrmUserDataList().size()>index) {
+        if (_slave.getPrmUserDataList().size() > index) {
             return _slave.getPrmUserDataList().get(index);
         }
         return null;

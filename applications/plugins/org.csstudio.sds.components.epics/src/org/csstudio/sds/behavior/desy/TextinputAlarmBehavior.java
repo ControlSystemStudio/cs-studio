@@ -25,6 +25,8 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.cursorservice.CursorService;
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
@@ -36,7 +38,7 @@ import org.epics.css.dal.simple.MetaData;
  * @since 26.03.2010
  */
 public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputModel> {
-
+    
     /**
      * Constructor.
      */
@@ -45,18 +47,18 @@ public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputM
         addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doInitialize(final TextInputModel widget) {
         super.doInitialize(widget);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        if (widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -66,12 +68,34 @@ public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputM
         // .. fill level (influenced by current value)
         model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
     }
-
+    
     @Override
     protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
-        // do nothing
+        if (metaData != null) {
+            switch (metaData.getAccessType()) {
+                case NONE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(7));
+                    break;
+                case READ_WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                case WRITE:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+                    break;
+                default:
+                    widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
+                            .getInstance().availableCursors().get(0));
+            }
+        }
     }
-
+    
     /**
      * {@inheritDoc}
      */

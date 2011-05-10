@@ -40,7 +40,6 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
 
     private final String _name;
     private final List<Integer> _value;
-    private Integer _extModulePrmDataLen;
     private int _moduleNo;
     private ParsedGsdFileModel _parent;
 
@@ -73,21 +72,15 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
         return GsdFileParser.intList2HexString(_value);
     }
     
-    /**
-     * @param extModulePrmDataLen
-     */
-    public void setExtModulePrmDataLen(@Nonnull Integer extModulePrmDataLen) {
-        _extModulePrmDataLen = extModulePrmDataLen;
-    }
-
     public void setModuleNumber(int moduleNo) {
         _moduleNo = moduleNo;
     }
 
-    public void setParent(ParsedGsdFileModel parent) {
+    public void setParent(@Nonnull ParsedGsdFileModel parent) {
         _parent = parent;
     }
 
+    @Nonnull
     public ParsedGsdFileModel getParent() {
         return _parent;
     }
@@ -99,6 +92,7 @@ public class GsdModuleModel2 extends AbstractGsdPropertyModel {
     }
     
     @Override
+    @Nonnull
     public final String toString() {
         return getName();
     }

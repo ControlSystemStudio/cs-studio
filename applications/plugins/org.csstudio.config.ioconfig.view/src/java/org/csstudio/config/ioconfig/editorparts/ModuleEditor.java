@@ -62,7 +62,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmTextItem;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -72,7 +71,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -91,7 +89,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -163,29 +160,32 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
                     openErrorDialog(e);
                 }
             }
-            getNameWidget().setText(gsdModule.getName());
-            setSavebuttonEnabled("ModuleTyp", hasChanged);
-            
-            // Generate Input Channel
-            TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
-                    .getModuleChannelPrototypeNH();
             try {
-                if (moduleChannelPrototypes != null) {
-                    ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
-                            .toArray(new ModuleChannelPrototypeDBO[0]);
-                    for (int sortIndex = 0; sortIndex < array.length; sortIndex++) {
-                        ModuleChannelPrototypeDBO prototype = array[sortIndex];
-                        makeNewChannel(prototype, sortIndex);
+                // TODO (hrickens) [05.05.2011]:Kann die Abfrage nicht vereinfacht werden.
+                module.setConfigurationData(gsdModule.getGSDFile().getParsedGsdFileModel()
+                        .getModule(selectedModuleNo).getExtUserPrmDataConst());
+                getNameWidget().setText(gsdModule.getName());
+                setSavebuttonEnabled("ModuleTyp", hasChanged);
+                
+                // Generate Input Channel
+                TreeSet<ModuleChannelPrototypeDBO> moduleChannelPrototypes = gsdModule
+                        .getModuleChannelPrototypeNH();
+                try {
+                    if (moduleChannelPrototypes != null) {
+                        ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
+                                .toArray(new ModuleChannelPrototypeDBO[0]);
+                        for (int sortIndex = 0; sortIndex < array.length; sortIndex++) {
+                            ModuleChannelPrototypeDBO prototype = array[sortIndex];
+                            makeNewChannel(prototype, sortIndex);
+                        }
                     }
+                    module.localUpdate();
+                    module.localSave();
+                } catch (PersistenceException e) {
+                    LOG.error(e);
+                    DeviceDatabaseErrorDialog.open(null, "Database error!", e);
                 }
-                module.localUpdate();
-                module.localSave();
-            } catch (PersistenceException e) {
-                LOG.error(e);
-                DeviceDatabaseErrorDialog.open(null, "Database error!", e);
-            }
-            getProfiBusTreeView().refresh(module.getParent());
-            try {
+                getProfiBusTreeView().refresh(module.getParent());
                 makeCurrentUserParamData(_topGroup);
             } catch (IOException e) {
                 LOG.error(e);
@@ -198,7 +198,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
          * @return
          */
         private boolean ifSameModule(@Nullable final GsdModuleModel2 selectedModule) {
-            return ((selectedModule == null) || (getModule() == null) || ((getModule()
+            return ( (selectedModule == null) || (getModule() == null) || ( (getModule()
                     .getGSDModule() != null) && (getModule().getGSDModule().getModuleId() == selectedModule
                     .getModuleNumber())));
         }
@@ -469,7 +469,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
                                   @Nullable final Object element) {
                 if (element instanceof GsdModuleModel2) {
                     GsdModuleModel2 gsdModuleModel = (GsdModuleModel2) element;
-                    if ((filter.getText() == null) || (filter.getText().length() < 1)) {
+                    if ( (filter.getText() == null) || (filter.getText().length() < 1)) {
                         return true;
                     }
                     String filterString = ".*" + filter.getText().replaceAll("\\*", ".*") + ".*";
@@ -509,7 +509,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             public int compare(@Nullable final Viewer viewer,
                                @Nullable final Object e1,
                                @Nullable final Object e2) {
-                if ((e1 instanceof GsdModuleModel2) && (e2 instanceof GsdModuleModel2)) {
+                if ( (e1 instanceof GsdModuleModel2) && (e2 instanceof GsdModuleModel2)) {
                     GsdModuleModel2 eUPD1 = (GsdModuleModel2) e1;
                     GsdModuleModel2 eUPD2 = (GsdModuleModel2) e2;
                     return eUPD1.getModuleNumber() - eUPD2.getModuleNumber();
@@ -681,131 +681,14 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
     
     /** {@inheritDoc} */
     @Override
-    public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
+    public final void fill(@Nullable final GSDFileDBO gsdFile) {
+        return;
     }
     
     /** {@inheritDoc} */
     @Override
     public final GSDFileDBO getGsdFile() {
         return _module.getSlave().getGSDFile();
-    }
-    
-    //    /**
-    //     *
-    //     * @param currentUserParamDataGroup
-    //     * @param extUserPrmData
-    //     * @param value
-    //     * @throws IOException 
-    //     */
-    //    private void makecurrentUserParamData(@Nonnull final Composite currentUserParamDataGroup,
-    //                                          @Nonnull final ExtUserPrmData extUserPrmData,
-    //                                          @CheckForNull final Integer value) throws IOException {
-    //        
-    //        Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
-    //        
-    //        if (extUserPrmData != null) {
-    //            text.setText(extUserPrmData.getText() + ":");
-    //            //            prmTextMap = extUserPrmData.getPrmText();
-    //            PrmText prmText = extUserPrmData.getPrmText();
-    //            if ((prmText == null)
-    //                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
-    //                _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
-    //            } else {
-    //                _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData));
-    //            }
-    //        }
-    //        new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
-    //    }
-    
-    /**
-     *
-     * @param parent
-     *            the Parent Composite.
-     * @param value
-     *            the Selected currentUserParamData Value.
-     * @param extUserPrmData
-     * @param prmTextMap
-     * @return a ComboView for are currentUserParamData Property
-     * @throws IOException 
-     */
-    @Nonnull
-    private ComboViewer makeComboViewer(@Nonnull final Composite parent,
-                                        @CheckForNull final Integer value,
-                                        @Nonnull final ExtUserPrmData extUserPrmData) throws IOException {
-        Integer localValue = value;
-        ComboViewer prmTextCV = new ComboViewer(parent);
-        RowData data = new RowData();
-        data.exclude = false;
-        prmTextCV.getCombo().setLayoutData(data);
-        prmTextCV.setLabelProvider(new LabelProvider());
-        prmTextCV.setContentProvider(new IStructuredContentProvider() {
-            
-            @Override
-            @CheckForNull
-            public Object[] getElements(@Nullable final Object inputElement) {
-                if (inputElement instanceof ExtUserPrmData) {
-                    ExtUserPrmData extUserPrmData = (ExtUserPrmData) inputElement;
-                    PrmText prmText = extUserPrmData.getPrmText();
-                    if (prmText == null) {
-                        PrmTextItem[] prmTextArray = new PrmTextItem[extUserPrmData.getMaxValue()
-                                - extUserPrmData.getMinValue() + 1];
-                        for (int i = extUserPrmData.getMinValue(); i <= extUserPrmData
-                                .getMaxValue(); i++) {
-                            prmTextArray[i] = new PrmTextItem(Integer.toString(i), i);
-                        }
-                        return prmTextArray;
-                    }
-                    return prmText.getPrmTextItems().toArray();
-                }
-                return null;
-            }
-            
-            @Override
-            public void dispose() {
-            }
-            
-            @Override
-            public void inputChanged(final Viewer viewer,
-                                     final Object oldInput,
-                                     final Object newInput) {
-            }
-        });
-        prmTextCV.getCombo().addModifyListener(getMLSB());
-        prmTextCV.setSorter(new ViewerSorter() {
-            
-            @Override
-            public int compare(@Nullable final Viewer viewer,
-                               @Nullable final Object e1,
-                               @Nullable final Object e2) {
-                if ((e1 instanceof PrmTextItem) && (e2 instanceof PrmTextItem)) {
-                    PrmTextItem eUPD1 = (PrmTextItem) e1;
-                    PrmTextItem eUPD2 = (PrmTextItem) e2;
-                    return eUPD1.getIndex() - eUPD2.getIndex();
-                }
-                return super.compare(viewer, e1, e2);
-            }
-            
-        });
-        if (localValue == null) {
-            localValue = extUserPrmData.getDefault();
-        }
-        prmTextCV.setInput(extUserPrmData);
-        PrmText prmTextMap = extUserPrmData.getPrmText();
-        if (prmTextMap != null) {
-            PrmTextItem prmText = prmTextMap.getPrmTextItem(localValue);
-            if (prmText != null) {
-                prmTextCV.setSelection(new StructuredSelection(prmTextMap
-                        .getPrmTextItem(localValue)));
-            } else {
-                prmTextCV.getCombo().select(0);
-            }
-        } else {
-            prmTextCV.getCombo().select(localValue);
-        }
-        prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
-        setModify(prmTextCV);
-        return prmTextCV;
     }
     
     /**
@@ -852,7 +735,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         }
         String createdBy = "UNKNOWN";
         User currentUser = SecurityFacade.getInstance().getCurrentUser();
-        if ((currentUser != null) && (currentUser.getUsername() != null)) {
+        if ( (currentUser != null) && (currentUser.getUsername() != null)) {
             createdBy = currentUser.getUsername();
         }
         gsdModule.setCreatedBy(createdBy);
@@ -899,7 +782,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
                 .getFirstElement();
         
         try {
-            if ((getNode() instanceof FacilityDBO) || (obj == null)) {
+            if ( (getNode() instanceof FacilityDBO) || (obj == null)) {
                 getProfiBusTreeView().getTreeViewer().setInput(getNode());
             } else if (obj instanceof AbstractNodeDBO) {
                 AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;

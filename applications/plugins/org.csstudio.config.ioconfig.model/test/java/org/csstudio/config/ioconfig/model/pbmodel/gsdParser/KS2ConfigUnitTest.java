@@ -525,8 +525,7 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.PF009A8.getFileAsGSDFileDBO());
         
-        int sortIndex = 0;
-        addNewModule(pk2, 1, sortIndex++);
+        addNewModule(pk2, 1, 0);
     }
     
     private void buildSlave30(MasterDBO ks2Master) throws PersistenceException, IOException {
@@ -534,8 +533,7 @@ public class KS2ConfigUnitTest {
 
         pk2.setGSDFile(GSDTestFiles.PF009A8.getFileAsGSDFileDBO());
         
-        int sortIndex = 0;
-        addNewModule(pk2, 1, sortIndex++);
+        addNewModule(pk2, 1, 0);
     }
     
     private void buildSlave31(MasterDBO ks2Master) throws PersistenceException, IOException {

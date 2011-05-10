@@ -175,17 +175,6 @@ public class ChannelEditor extends AbstractNodeEditor {
 			setName((String) nameWidget.getData());
 		}
         ChannelDBO channel = getChannel();
-		if (channel != null) {
-            _gsdFile = channel.getGSDFile();
-            if (_gsdFile != null) {
-                fill(_gsdFile);
-            } else {
-                getHeaderField(HeaderFields.VERSION).setText("");
-            }
-        } else {
-            _gsdFile = null;
-            fill(_gsdFile);
-        }
     }
 
     /**
@@ -280,9 +269,6 @@ public class ChannelEditor extends AbstractNodeEditor {
         setSavebuttonEnabled(null, getNode().isPersistent());
         String[] heads = {"Channel settings", "Documents", "GSD File List" };
         general(heads[0]);
-        if (_gsdFile != null) {
-            fill(_gsdFile);
-        }
         if (getChannel().isDirty()) {
             perfromSave();
         }
@@ -349,14 +335,6 @@ public class ChannelEditor extends AbstractNodeEditor {
             channel.setDocuments(docs);
         }
         save();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
     }
 
     /**

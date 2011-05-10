@@ -65,6 +65,7 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public String getIOName(@Nonnull final String pvName) {
         return null;
     }
@@ -74,6 +75,7 @@ public class ProcessVariable2IONameImplemation implements ProcessVariable2IOName
      * @throws PersistenceException 
      */
     @Override
+    @CheckForNull
     public INode getNode(@Nonnull final String pvName) throws PersistenceException {
         final ArrayList<String> list = new ArrayList<String>();
         list.add(pvName);

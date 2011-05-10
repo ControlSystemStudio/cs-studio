@@ -23,6 +23,8 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import javax.annotation.Nonnull;
+
 /**
  * TODO (hrickens) : 
  * 
@@ -50,6 +52,7 @@ public class LineCounter {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String toString() {
         return Integer.toString(_counter);
     }
