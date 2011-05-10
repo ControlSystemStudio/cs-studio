@@ -56,6 +56,7 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguratio
 import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -99,6 +100,7 @@ public final class ImportXmlFileJob extends Job {
     }
     
     @Override
+    @Nonnull
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
         
@@ -175,8 +177,7 @@ public final class ImportXmlFileJob extends Job {
         
         existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
         
-        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap = model
-                .getByType(FACILITY);
+        final Map<String, INodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap = model.getByType(FACILITY);
         
         existingFacilityNames.retainAll(facilityMap.keySet());
         

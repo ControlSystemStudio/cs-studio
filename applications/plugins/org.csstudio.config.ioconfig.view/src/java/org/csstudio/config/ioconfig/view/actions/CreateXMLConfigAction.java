@@ -67,8 +67,7 @@ public class CreateXMLConfigAction extends Action {
 
 	private void makeXMLFile(@Nullable final File path,
 			@Nullable final ProfibusSubnetDBO subnet) {
-		final ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator(
-				subnet.getName());
+		final ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator();
 		try {
             xml.setSubnet(subnet);
             final File xmlFile = new File(path, subnet.getName() + ".xml");

@@ -15,6 +15,7 @@ public class GSDPROPERTY {
      * Output: Property value as string<br>
      * Error: Error tag: "Property not found" as string
      */
+ // TODO (hrickens) [03.05.2011]: Raus damit!
     public String selectPropertyValue(String inputStr, String propertyName) {
         int startIndex = 0;
         int endIndex = 0;

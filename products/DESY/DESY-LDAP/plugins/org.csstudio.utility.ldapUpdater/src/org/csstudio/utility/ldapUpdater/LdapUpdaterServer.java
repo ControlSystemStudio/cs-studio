@@ -21,17 +21,12 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_AUTO_INTERVAL;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_AUTO_START;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_PASSWD;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_SERVER;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.XMPP_USER;
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.LDAP_AUTO_INTERVAL;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.LDAP_AUTO_START;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_PASSWORD;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_SERVER;
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference.XMPP_USER;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -41,9 +36,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.domain.desy.net.HostAddress;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.joda.time.DateTimeFieldType;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
@@ -55,7 +54,8 @@ import org.remotercp.service.connection.session.ISessionService;
  * @version $Revision$
  * @since 13.04.2010
  */
-public class LdapUpdaterServer implements IApplication, IGenericServiceListener<ISessionService> {
+public class LdapUpdaterServer implements IApplication,
+                                          IGenericServiceListener<ISessionService> {
 
     /**
      * The running instance of this server.
@@ -97,22 +97,20 @@ public class LdapUpdaterServer implements IApplication, IGenericServiceListener<
     @Nonnull
     public final Object start(@Nullable final IApplicationContext context)
     throws Exception {
-        final String startSecString = getValueFromPreferences(LDAP_AUTO_START, "0");
-        final String intervalString = getValueFromPreferences(LDAP_AUTO_INTERVAL, "43200");
-        final int startTimeSec = Integer.parseInt(startSecString == null ? "0" : startSecString);
-        final long intervalSec = Long.parseLong(intervalString);
+        final long startTimeSec = LDAP_AUTO_START.getValue();
+        final long intervalSec = LDAP_AUTO_INTERVAL.getValue();
 
-        final TimeZone timeZone = TimeZone.getTimeZone("ECT");
-        final Calendar now = new GregorianCalendar(timeZone);
+        final TimeInstant now = TimeInstantBuilder.fromNow();
 
-        LOG.info(now.getTime());
+        LOG.info(now.formatted());
 
         final long delaySec = getDelayInSeconds(startTimeSec, now);
-        logStartAndPeriod(startTimeSec, intervalSec, timeZone);
+        logStartAndPeriod(startTimeSec, intervalSec);
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
-                                                 delaySec,
+//                                                 delaySec,
+                                                 0L,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);
         synchronized (this) {
@@ -130,29 +128,25 @@ public class LdapUpdaterServer implements IApplication, IGenericServiceListener<
 
 
 
-    private void logStartAndPeriod(final int startTimeSec,
-                                   final long intervalSec,
-                                   @Nonnull final TimeZone timeZone) {
-        final Calendar start = new GregorianCalendar(timeZone);
-        start.set(Calendar.SECOND, startTimeSec % 60);
-        start.set(Calendar.MINUTE, startTimeSec % 60 % 60);
-        start.set(Calendar.HOUR, startTimeSec / 3600);
-        final String startStr = new SimpleDateFormat("HH:mm:ss").format(start.getTime());
+    private void logStartAndPeriod(final long startTimeSec,
+                                   final long intervalSec) {
+        final long minute = startTimeSec % 60L;
+        final long second = startTimeSec % 60L % 60L;
+        final long hour = startTimeSec / 3600L;
+        final String startTime = hour + ":" + minute + ":" + second;
 
-        LOG.info("\nLDAP Updater autostart scheduled at " + startStr +  " (ECT) every " + intervalSec + " seconds");
+        LOG.info("\nLDAP Updater autostart scheduled at " + startTime +  " every " + intervalSec + " seconds");
     }
 
 
-    private long getDelayInSeconds(final int startTimeSec, @Nonnull final Calendar now) {
-        final int s = now.get(Calendar.SECOND);
-        final int m = now.get(Calendar.MINUTE);
-        final int h = now.get(Calendar.HOUR_OF_DAY);
+    private long getDelayInSeconds(final long startTimeSec,
+                                   @Nonnull final TimeInstant now) {
 
-        final long secondsSinceMidnight = s + m*60 + h*3600;
+        final int secondsSinceMidnight = now.getInstant().get(DateTimeFieldType.secondOfDay());
 
         long delaySec = startTimeSec - secondsSinceMidnight;
         if (delaySec < 0) {
-            delaySec = 3600*24 + delaySec; // turn over to new day
+            delaySec = 3600*24 + delaySec; // start at startTimeSec on the next day
         }
         return delaySec;
     }
@@ -168,20 +162,28 @@ public class LdapUpdaterServer implements IApplication, IGenericServiceListener<
     }
 
 
-    public void bindService(ISessionService sessionService) {
-        final String username = getValueFromPreferences(XMPP_USER, "anonymous");
-        final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
-        final String server = getValueFromPreferences(XMPP_SERVER, "krynfs.desy.de");
-    	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void bindService(@Nonnull final ISessionService sessionService) {
+        final String username = XMPP_USER.getValue();
+        final String password = XMPP_PASSWORD.getValue();
+        final HostAddress server = XMPP_SERVER.getValue();
+
     	try {
-			sessionService.connect(username, password, server);
-		} catch (Exception e) {
+			sessionService.connect(username, password, server.getHostAddress());
+		} catch (final Exception e) {
 			CentralLogger.getInstance().warn(this,
 					"XMPP connection is not available, " + e.toString());
 		}
     }
-    
-    public void unbindService(ISessionService service) {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void unbindService(@Nonnull final ISessionService service) {
     	service.disconnect();
     }
 }

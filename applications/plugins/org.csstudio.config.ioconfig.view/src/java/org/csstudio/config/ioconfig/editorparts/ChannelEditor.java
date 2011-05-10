@@ -75,9 +75,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class ChannelEditor extends AbstractNodeEditor {
 
 	/**
-	 * 
-	 * TODO (hrickens) : 
-	 * 
 	 * @author hrickens
 	 * @author $Author: $
 	 * @since 30.09.2010
@@ -444,16 +441,7 @@ public class ChannelEditor extends AbstractNodeEditor {
 	protected void setChannel(@Nullable ChannelDBO channel) {
 		_channel = channel;
 	}
-
 	
-	/**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-    	// nothing to do.
-    }
-
 	/**
      *
      * @param ioNameText

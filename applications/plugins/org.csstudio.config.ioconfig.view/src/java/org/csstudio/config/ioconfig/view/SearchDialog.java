@@ -412,8 +412,7 @@ public class SearchDialog extends Dialog {
 		@Override
 		public void inputChanged(@Nullable Viewer viewer,
 				@Nullable Object oldInput, @Nullable Object newInput) {
-			// TODO Auto-generated method stub
-
+		    // Empty
 		}
 
 	}

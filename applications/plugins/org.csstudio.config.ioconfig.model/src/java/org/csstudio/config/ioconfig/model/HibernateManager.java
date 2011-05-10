@@ -84,6 +84,7 @@ public final class HibernateManager extends Observable {
         }
         
         @Override
+        @Nonnull
         protected IStatus run(@Nonnull IProgressMonitor monitor) {
             boolean watch = true;
             Date date = new Date();
@@ -141,8 +142,8 @@ public final class HibernateManager extends Observable {
      */
     private int _timeout = 10;
     private Transaction _trx;
-    private SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-    private List<Class<?>> _classes = new ArrayList<Class<?>>();
+    private final SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+    private final List<Class<?>> _classes = new ArrayList<Class<?>>();
     private Session _sessionLazy;
     
     /**

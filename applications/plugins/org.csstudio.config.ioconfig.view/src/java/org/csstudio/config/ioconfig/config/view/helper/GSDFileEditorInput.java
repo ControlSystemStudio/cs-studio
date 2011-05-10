@@ -74,7 +74,6 @@ public class GSDFileEditorInput implements IEditorInput {
      */
     @Override
     public ImageDescriptor getImageDescriptor() {
-        // TODO Auto-generated method stub
         return null;
     }
 

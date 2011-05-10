@@ -93,37 +93,31 @@ public class DummyRepository implements IRepository {
     }
 
     public List<Integer> getRootPath(final int id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public DocumentDBO save(final DocumentDBO document) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String getShortChannelDesc(final String ioName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ChannelDBO loadChannel(final String ioName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void close() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(final Collection<String> pvName) {
-        // TODO Auto-generated method stub
         return null;
     }
 

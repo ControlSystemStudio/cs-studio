@@ -49,7 +49,6 @@ public interface INodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     @CheckForNull
     ISubtreeNodeComponent<T> getParent();
 
-
     boolean hasChildren();
 
     @CheckForNull

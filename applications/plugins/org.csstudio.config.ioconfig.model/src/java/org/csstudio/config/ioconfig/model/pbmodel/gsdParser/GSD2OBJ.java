@@ -12,7 +12,7 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
  * beckhoff.gsd * bimf5801.gsd * rmt3051.gsd * Sipart.gsd * wagob750.gsd *
  * softb203.gsd * Siem80A6.gsd * YP0004C2 * * Precondition: * Postcondition: * *
  ******************************************************************************/
-
+//TODO (hrickens) [03.05.2011]: Raus damit!
 public class GSD2OBJ {
 
     /**
@@ -567,85 +567,6 @@ public class GSD2OBJ {
                 "Max_Master_Data_Len");
         sMaxMasterDataLen = (byte) intermediateValue;
         masterStruct.setMaxMasterDataLen(sMaxMasterDataLen);
-
-        return 0;
-    }
-
-    /**
-     * @param gsdFile
-     *            The String representation of the GSD File.
-     * @param slaveStruct
-     *            The GSD Model to fill.
-     * @return !=0 when the gsd File is not a Slave.
-     */
-    public final int setSlaveStruct(final String gsdFile, final GsdSlaveModel slaveStruct) {
-
-        String bool;
-
-        GSDPROPERTY selProperty = new GSDPROPERTY();
-
-        /** ************** Set stationType ******************* */
-        if(getIntermediateValue(selProperty, gsdFile,"Station_Type")!=0){
-            // Station is not a slave
-            return -1;
-        }
-
-        // Station is Slave
-        /** ************** Set FreezeModeSupp ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "Freeze_Mode_supp");
-        slaveStruct.setFreezeModeSupp(bool.equals("1"));
-
-        /** ************** Set SyncModeSupp ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "Sync_Mode_supp");
-        slaveStruct.setSyncModeSupp(bool.equals("1"));
-
-        /** ************** Set AutoBaudSupp ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "Auto_Baud_supp");
-        slaveStruct.setAutoBaudSupp(bool.equals("1"));
-
-        /** ************** Set SetSlaveAddSupp ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "Set_Slave_Add_supp");
-        slaveStruct.setSetSlaveAddSupp(bool.equals("1"));
-
-        /** ************** Set UserPrmDataLen ********************* */
-        slaveStruct.setUserPrmDataLen(
-                (byte) getIntermediateValue(selProperty, gsdFile,"User_Prm_Data_Len")
-        );
-        /** ************** Set UserPrmData ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "User_Prm_Data");
-        if(bool.equals("Property not found")){
-            bool = selProperty.selectPropertyValue(gsdFile, "Ext_User_Prm_Data_Const(0)");
-        }
-        slaveStruct.setUserPrmData(bool);
-
-        /** ************** Set MinSlaveIntervall ********************* */
-        slaveStruct.setMinSlaveIntervall(
-                (short) getIntermediateValue(selProperty, gsdFile,"Min_Slave_Intervall")
-        );
-
-        /** ************** Set ModularStation ********************* */
-        bool = selProperty.selectPropertyValue(gsdFile, "Modular_Station");
-        slaveStruct.setModularStation(bool.equals("1"));
-
-        /** ************** Set MaxModule ********************* */
-        slaveStruct.setMaxModule(
-                (short) getIntermediateValue(selProperty, gsdFile,"Max_Module")
-        );
-
-        /** ************** Set MaxInputLen ********************* */
-        slaveStruct.setMaxmInputLen(
-                (byte) getIntermediateValue(selProperty, gsdFile,"Max_Input_Len")
-        );
-
-        /** ************** Set MaxOutputLen ********************* */
-        slaveStruct.setMaxOutputLen(
-                (byte) getIntermediateValue(selProperty, gsdFile, "Max_Output_Len")
-        );
-
-        /** ************** Set MaxDataLen ********************* */
-        slaveStruct.setMaxDataLen(
-                (short) getIntermediateValue(selProperty, gsdFile, "Max_Data_Len")
-        );
 
         return 0;
     }

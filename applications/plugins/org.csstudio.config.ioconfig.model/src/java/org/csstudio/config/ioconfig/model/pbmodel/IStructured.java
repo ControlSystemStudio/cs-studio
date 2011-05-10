@@ -30,7 +30,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
  * @author $Author: hrickens $
  * @version $Revision: 1.1 $
  * @since 09.01.2009
- */
+ */// TODO (hrickens) [03.05.2011]: Kann das Interface nicht weg?!
 public interface IStructured{
 
 

@@ -27,13 +27,12 @@ package org.csstudio.config.ioconfig.model.service;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
@@ -67,9 +66,6 @@ public class LogbookDocumentService implements DocumentService {
                     }
                 }
             }
-//        } catch (SQLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -102,23 +98,4 @@ public class LogbookDocumentService implements DocumentService {
         }
         return docList;
     }
-
-//    @Override
-//    public IDocument getDocumentFromNode(int id) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public IDocument getDocumentFromNode(String EpicsAddressString) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-//
-//    @Override
-//    public IDocument getDocumentFromPV(String pv) {
-//        // TODO Auto-generated method stub
-//        return null;
-//    }
-
 }

@@ -47,7 +47,7 @@ public final class EngineModel {
         CentralLogger.getInstance().getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
-    public static String VERSION = "1.0.0";
+    private static String VERSION = "1.0.0";
 
     /** Name of this model */
     private String _name = "DESY Archive Engine";  //$NON-NLS-1$
@@ -142,7 +142,7 @@ public final class EngineModel {
     @Nonnull
     private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
-        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName, groupCfg.getId().longValue()));
+        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
         return _groupMap.get(groupName);
     }
 
@@ -290,7 +290,7 @@ public final class EngineModel {
     /** @return  Average duration of write run in milliseconds */
     @CheckForNull
     public Duration getAvgWriteDuration() {
-        return _writeExecutor.getAvgWriteDuration();
+        return _writeExecutor.getAvgWriteDurationInMS();
     }
 
     /** Ask the model to stop.
@@ -474,6 +474,11 @@ public final class EngineModel {
             buf.append(", last stored " + lastArchivedValue == null ? "null" : lastArchivedValue);
             System.out.println(buf.toString());
         }
+    }
+
+    @Nonnull
+    public static String getVersion() {
+        return VERSION;
     }
 
 }

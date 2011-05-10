@@ -12,8 +12,7 @@ Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reex
  org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
  org.csstudio.platform.libs.guava;bundle-version="0.6.0",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
- javax.annotation,
- org.junit
+ javax.annotation
 Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.channel,
  org.csstudio.archive.common.service.channelgroup,
@@ -21,6 +20,5 @@ Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.controlsystem,
  org.csstudio.archive.common.service.engine,
  org.csstudio.archive.common.service.enginestatus,
- org.csstudio.archive.common.service.requesttypes,
  org.csstudio.archive.common.service.sample,
  org.csstudio.archive.common.service.util

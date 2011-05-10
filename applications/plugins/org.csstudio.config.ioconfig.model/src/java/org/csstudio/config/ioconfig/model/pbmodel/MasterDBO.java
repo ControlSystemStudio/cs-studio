@@ -150,7 +150,7 @@ public class MasterDBO extends AbstractNodeDBO {
         this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
+    private MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -191,8 +191,8 @@ public class MasterDBO extends AbstractNodeDBO {
      * >= is redundant.
      * @param fdlAddress
      */
-    public void setRedundant(final short fdlAddress) {
-        this._fdlAddress = fdlAddress;
+    public void setRedundant(final int fdlAddress) {
+        this._fdlAddress = (short)fdlAddress;
     }
 
     public String getMasterUserData() {

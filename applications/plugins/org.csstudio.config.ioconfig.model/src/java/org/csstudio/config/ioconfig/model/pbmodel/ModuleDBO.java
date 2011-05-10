@@ -24,21 +24,27 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.hibernate.annotations.BatchSize;
 
 /**
@@ -58,7 +64,7 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     private int _moduleNumber = -1;
 
-    private String _configurationData;
+    private List<Integer> _configurationData = new ArrayList<Integer>();
 
     private int _inputSize;
 
@@ -107,11 +113,37 @@ public class ModuleDBO extends AbstractNodeDBO {
      */
     @Column(name = "cfg_data", length = 99)
     public String getConfigurationData() {
+        return GsdFileParser.intList2HexString(_configurationData);
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public List<Integer> getConfigurationDataList() {
         return _configurationData;
     }
 
-    public void setConfigurationData(final String configurationData) {
-        _configurationData = configurationData;
+    
+    public void setConfigurationData(@CheckForNull final String configurationData) {
+        if (configurationData != null && !configurationData.trim().isEmpty()) {
+            String[] split = configurationData.split(",");
+            _configurationData = new ArrayList<Integer>();
+            for (String value : split) {
+                _configurationData.add(GsdFileParser.gsdValue2Int(value));
+            }
+        }
+    }
+    
+    @Transient
+    public void setConfigurationDataByte(Integer index, Integer value) {
+        _configurationData.set(index, value);
+    }
+
+    
+    @Transient
+    public void setConfigurationData(@Nonnull final List<Integer> configurationDataList) {
+        _configurationData = configurationDataList;
     }
 
     /**
@@ -201,9 +233,6 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     public void setModuleNumber(final int moduleNumber) {
-        if (_moduleNumber == moduleNumber) {
-            return;
-        }
         _moduleNumber = moduleNumber;
     }
 
@@ -266,22 +295,38 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    public GsdModuleModel getGsdModuleModel() {
+    @CheckForNull
+    public GsdModuleModel2 getGsdModuleModel2() throws IOException {
         try {
-            if (getSlave().getGSDSlaveData().getGsdModuleList().containsKey(getModuleNumber())) {
-                return getSlave().getGSDSlaveData().getGsdModuleList().get(getModuleNumber());
-            }
-            return getSlave().getGSDSlaveData().getGsdModuleList().values().iterator().next();
+            GsdModuleModel2 module = getSlave().getGSDFile().getParsedGsdFileModel().getModule(getModuleNumber());
+//            if (module == null) {
+//                module = getSlave().getGSDFile().getParsedGsdFileModel().getModule(getModuleNumber());
+//            }
+            return module;
         } catch (NullPointerException e) {
             return null;
         }
     }
 
+//    @Transient
+//    public GsdModuleModel getGsdModuleModel() {
+//        try {
+//            HashMap<Integer, GsdModuleModel> gsdModuleList = getSlave().getGSDSlaveData().getGsdModuleList();
+//            if (gsdModuleList.containsKey(getModuleNumber())) {
+//                return gsdModuleList.get(getModuleNumber());
+//            }
+//            return gsdModuleList.values().iterator().next();
+//        } catch (NullPointerException e) {
+//            return null;
+//        }
+//    }
+    
     @Transient
-    public short getMaxOffset() {
-        if (getGsdModuleModel() != null) {
+    public short getMaxOffset() throws IOException {
+        GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
+        if (gsdModuleModel2 != null) {
             short offset = getSortIndex();
-            SlaveCfgData slaveCfgData = new SlaveCfgData(getGsdModuleModel().getValue());
+            SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
             int byteMulti = 1;
             if (slaveCfgData.isWordSize()) {
                 byteMulti = 2;
@@ -373,9 +418,18 @@ public class ModuleDBO extends AbstractNodeDBO {
     }
 
     @Transient
+    @Nonnull
     public String getExtUserPrmDataConst() {
         if(getConfigurationData()==null) {
-            return getGsdModuleModel().getModiExtUserPrmDataConst().trim();
+            List<Integer> extUserPrmDataConst;
+            String defaultUserPrmDataConst;
+            try {
+                extUserPrmDataConst = getGsdModuleModel2().getExtUserPrmDataConst();
+                defaultUserPrmDataConst = GsdFileParser.intList2HexString(extUserPrmDataConst);
+            } catch (IOException e) {
+                defaultUserPrmDataConst = "";
+            }
+            return defaultUserPrmDataConst;
         }
         return getConfigurationData();
     }
@@ -387,6 +441,25 @@ public class ModuleDBO extends AbstractNodeDBO {
     @Transient
     public NodeType getNodeType() {
         return NodeType.MODULE;
+    }
+
+    /**
+     * @return The Name of this Node.
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        if (getSortIndex() != null) {
+            sb.append(getSortIndex());
+        }
+        sb.append('[');
+        sb.append(getModuleNumber());
+        sb.append(']');
+        if (getName() != null) {
+            sb.append(':');
+            sb.append(getName());
+        }
+        return sb.toString();
     }
 
 }

@@ -58,7 +58,6 @@ public final class Diagnose {
     }
     
     public static synchronized void addNewLine(@Nonnull String line) {
-//    public static void addNewLine(String line) {
         long time = new Date().getTime();
         long l = time-_OLD_TIME;
         _OLD_TIME = time;

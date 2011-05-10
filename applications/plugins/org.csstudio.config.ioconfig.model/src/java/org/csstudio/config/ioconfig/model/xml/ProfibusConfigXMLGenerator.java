@@ -27,11 +27,15 @@ package org.csstudio.config.ioconfig.model.xml;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
@@ -51,6 +55,9 @@ import org.jdom.output.XMLOutputter;
  */
 public class ProfibusConfigXMLGenerator {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(ProfibusConfigXMLGenerator.class);
+    
     /**
      * The Profibus Config XML {@link Document}.
      */
@@ -85,11 +92,7 @@ public class ProfibusConfigXMLGenerator {
 
     private final Element _fmbSet;
 
-    /**
-     * @param fileName
-     *            The name of the XML file.
-     */
-    public ProfibusConfigXMLGenerator(final String fileName) {
+    public ProfibusConfigXMLGenerator() {
         _slaveFldAdrs = new ArrayList<Integer>();
         _slaveList = new ArrayList<XmlSlave>();
         _root = new Element("PROFIBUS-DP_PARAMETERSET");
@@ -163,14 +166,7 @@ public class ProfibusConfigXMLGenerator {
         if (master.isAutoclear()) {
             autoClear = "1";
         }
-        short fdl;
-		// XXX: Es wird immer der Index des Masters benötigt.
-            fdl = master.getSortIndex();
-		// if(master.getRedundant()<0) {
-		// fdl = master.getSortIndex();
-		// }else {
-		// fdl = master.getRedundant();
-		// }
+        short fdl = master.getSortIndex();
         String[] masterValues = new String[] {
                 /* bus_para_len */"66"/*
                                        * TODO:busParaLen is Default=66? und muss das geändert werden
@@ -213,8 +209,9 @@ public class ProfibusConfigXMLGenerator {
      *
      * @param slave
      *            The Profibus Slave.
+     * @throws PersistenceException 
      */
-	private void addSlave(final SlaveDBO slave) {
+	private void addSlave(final SlaveDBO slave) throws PersistenceException {
 		/*
 		 * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
 		 * a configuration on the IOC.
@@ -232,19 +229,23 @@ public class ProfibusConfigXMLGenerator {
      *            The target File Path.
      * @throws IOException
      */
-    public final void getXmlFile(final File path) throws IOException {
+    public final void getXmlFile(@Nonnull final File path) throws IOException {
+        Writer writer = new FileWriter(path);
+        LOG.info("Write File:" + path.getAbsolutePath());
+        getXmlFile(writer);
+    }
+    
+    public final void getXmlFile(@Nonnull final Writer writer) throws IOException {
         _root.addContent(_busparameter);
         _slaveConfig.addContent(slaveTable());
         for (XmlSlave xmlSlave : _slaveList) {
             _slaveConfig.addContent(xmlSlave.getSlave());
         }
         _root.addContent(_slaveConfig);
-        FileWriter writer = new FileWriter(path);
         Format format = Format.getPrettyFormat();
         format.setEncoding("ISO-8859-1");
         XMLOutputter out = new XMLOutputter(format);
         out.output(_document, writer);
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
         writer.close();
     }
 

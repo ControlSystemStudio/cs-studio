@@ -45,6 +45,7 @@ import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
 import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
@@ -125,10 +126,10 @@ public class DctContentModelBuilder extends
 		final String ldapName = LdapUtils.createLdapName(
 				FACILITY.getNodeTypeName(), _dctPoject.getName(),
 				UNIT.getNodeTypeName(), _dctPoject.getName()).toString();
-		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel
-				.getChildByLdapName(ldapName);
+		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = 
+		    (ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) contentModel.getChildByLdapName(ldapName);
 
-		ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
+		INodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
 		for (final String instance : prototypeInstances) {
 			newChild = null;
 			final LdapName parentName = new LdapName(parent.getLdapName()
@@ -140,7 +141,7 @@ public class DctContentModelBuilder extends
 						instance, COMPONENT, parent, null, parentName);
 				contentModel.addChild(parent, newChild);
 			}
-			parent = newChild;
+			parent = (ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) newChild;
 		}
 		final String epicsName = ResolutionUtil.resolve(
 				AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);

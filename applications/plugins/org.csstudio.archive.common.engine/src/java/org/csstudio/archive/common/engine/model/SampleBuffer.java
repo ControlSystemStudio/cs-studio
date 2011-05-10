@@ -53,7 +53,7 @@ public class SampleBuffer<V,
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
      */
-    private static volatile boolean error = false;
+    private static volatile boolean ERROR = false;
 
     /**
      * Create sample buffer with flexible capacity
@@ -73,12 +73,12 @@ public class SampleBuffer<V,
 
     /** @return <code>true</code> if currently experiencing write errors */
     public static boolean isInErrorState() {
-        return error;
+        return ERROR;
     }
 
     /** Set the error state. */
     static void setErrorState(final boolean error) {
-        SampleBuffer.error = error;
+        SampleBuffer.ERROR = error;
     }
 
     /**

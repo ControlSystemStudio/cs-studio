@@ -100,7 +100,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -108,7 +107,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -138,8 +136,6 @@ public class ProfiBusTreeView extends Composite {
      */
     public static final String ID = ProfiBusTreeView.class.getName();
     public static final String PARENT_NODE_ID = "org.csstudio.config.ioconfig.parent.node";
-//    private static final String NEW_NODE_COMMAND_ID = CallNewSiblingNodeEditor.getEditorID();
-//    private static final String NEW_NODE_COMMAND_ID = IocEditor.ID;
     private final IViewSite _site;
     
     /**
@@ -619,7 +615,6 @@ public class ProfiBusTreeView extends Composite {
                 IHandlerService handlerService = (IHandlerService) getSite()
                         .getService(IHandlerService.class);
                 try {
-//                    handlerService.executeCommand(CallNewSiblingNodeEditor.getEditorID(), null);
                     handlerService.executeCommand(CallNewFacilityEditor.ID, null);
                 } catch (Exception ex) {
                     LOG.error(ex.getMessage(), ex);
@@ -659,7 +654,7 @@ public class ProfiBusTreeView extends Composite {
             @SuppressWarnings("unchecked")
             public void run() {
                 _copiedNodesReferenceList = getSelectedNodes().toList();
-                _move = false;
+                setMove(false);
             }
         };
         _copyNodeAction.setText("&Copy");
@@ -674,7 +669,7 @@ public class ProfiBusTreeView extends Composite {
             @SuppressWarnings("unchecked")
             public void run() {
                 _copiedNodesReferenceList = getSelectedNodes().toList();
-                _move = true;
+                setMove(true);
             }
         };
         _cutNodeAction.setText("Cut");
@@ -866,6 +861,14 @@ public class ProfiBusTreeView extends Composite {
         return _editNodeAction;
     }
     
+    protected void setMove(boolean move) {
+        _move = move;
+    }
+
+    protected boolean isMove() {
+        return _move;
+    }
+
     /**
      * TODO (Rickens Helge) : 
      * 
@@ -884,6 +887,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @Nonnull
         protected IStatus run(@Nonnull final IProgressMonitor monitor) {
             monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
             monitor.setTaskName("Load \t-\tStart Time: " + new Date());
@@ -950,40 +954,6 @@ public class ProfiBusTreeView extends Composite {
                 }
             });
             
-            /*
-             * If they hit Enter, set the text into the tree and end the editing session. If they
-             * hit Escape, ignore the text and end the editing session.
-             */
-            text.addKeyListener(new KeyAdapter() {
-                // TODO: Umstellen auf Editor
-//                 public void keyPressed(final KeyEvent event) {
-//                 switch (event.keyCode) {
-//                 case SWT.CR:
-//                 case SWT.KEYPAD_CR:
-//                 // Enter hit--set the text into the tree and drop through
-//                 String changedText = text.getText();
-//                 if (node instanceof ChannelDBO) {
-//                 ((ChannelDBO) node).setIoName(changedText);
-//                 if (_nodeConfigComposite instanceof ChannelConfigComposite) {
-//                 ((ChannelConfigComposite) _nodeConfigComposite)
-//                 .setIoNameText(changedText);
-//                 }
-//                 } else {
-//                 _nodeConfigComposite.setName(text.getText());
-//                 }
-//                 _nodeConfigComposite.store();
-//                 item.setText(node.toString());
-//                 text.dispose();
-//                 case SWT.ESC:
-//                 // End editing session
-//                 text.dispose();
-//                 break;
-//                 default:
-//                 break;
-//                 }
-//                 }
-            });
-            
             // Set the text field into the editor
             _editor.setEditor(text, item);
         }
@@ -1036,7 +1006,7 @@ public class ProfiBusTreeView extends Composite {
         private void copy2Parent(@Nonnull AbstractNodeDBO selectedNode,
                                  @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
             AbstractNodeDBO copy = null;
-            if (_move) {
+            if (isMove()) {
                 AbstractNodeDBO oldParent = node2Copy.getParent();
                 oldParent.removeChild(node2Copy);
                 AbstractNodeDBO node = selectedNode.getChildrenAsMap()
@@ -1048,12 +1018,7 @@ public class ProfiBusTreeView extends Composite {
                 }
                 selectedNode.addChild(node2Copy);
                 copy = node2Copy;
-                try {
-                    selectedNode.save();
-                } catch (PersistenceException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                selectedNode.save();
             } else {
                 // paste to a Parent
                 copy = node2Copy.copyThisTo(selectedNode);
@@ -1073,18 +1038,13 @@ public class ProfiBusTreeView extends Composite {
         private void copy2Sibling(@Nonnull AbstractNodeDBO selectedNode,
                                   @Nonnull AbstractNodeDBO node2Copy) throws PersistenceException {
             AbstractNodeDBO nodeCopy = null;
-            if (_move) {
+            if (isMove()) {
                 AbstractNodeDBO oldParent = node2Copy.getParent();
                 oldParent.removeChild(node2Copy);
                 AbstractNodeDBO parent = selectedNode.getParent();
                 node2Copy.setSortIndex((int) selectedNode.getSortIndex());
                 parent.addChild(node2Copy);
-                try {
-                    parent.save();
-                } catch (PersistenceException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                parent.save();
                 nodeCopy = node2Copy;
             } else {
                 // paste to a sibling
@@ -1121,8 +1081,9 @@ public class ProfiBusTreeView extends Composite {
      * @since 08.10.2010
      */
     private final class DeleteNodeActionExtension extends Action {
+        
         public DeleteNodeActionExtension() {
-            // TODO Auto-generated constructor stub
+            // constructor
         }
         
         @Override
@@ -1198,9 +1159,6 @@ public class ProfiBusTreeView extends Composite {
     }
     
     /**
-     * 
-     * TODO (hrickens) : 
-     * 
      * @author hrickens
      * @author $Author: $
      * @since 08.10.2010
@@ -1212,6 +1170,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @Nonnull
         protected Control createDialogArea(@Nonnull final Composite parent) {
             final Composite createDialogArea = (Composite) super.createDialogArea(parent);
             createDialogArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
@@ -1249,9 +1208,6 @@ public class ProfiBusTreeView extends Composite {
     }
     
     /**
-     * 
-     * TODO (hrickens) : 
-     * 
      * @author hrickens
      * @author $Author: $
      * @since 07.10.2010
@@ -1277,9 +1233,6 @@ public class ProfiBusTreeView extends Composite {
     }
     
     /**
-     * 
-     * TODO (hrickens) : 
-     * 
      * @author hrickens
      * @author $Author: $
      * @since 05.10.2010
@@ -1359,6 +1312,7 @@ public class ProfiBusTreeView extends Composite {
                 .getFont("Tahoma", 8, SWT.ITALIC);
         
         @Override
+        @CheckForNull
         public Color getBackground(@Nullable final Object element) {
             if (haveProgrammableModule(element)) {
                 return PROGRAMMABLE_MARKER_COLOR;
@@ -1367,6 +1321,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @CheckForNull
         public Font getFont(@Nullable final Object element) {
             if (haveProgrammableModule(element)) {
                 return PROGRAMMABLE_MARKER_FONT;
@@ -1375,6 +1330,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @CheckForNull
         public Image getImage(@Nullable final Object obj) {
             if (obj instanceof AbstractNodeDBO) {
                 AbstractNodeDBO node = (AbstractNodeDBO) obj;
@@ -1386,6 +1342,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @CheckForNull
         public String getText(@Nonnull final Object element) {
             String text = super.getText(element);
             String[] split = text.split("(\r(\n)?)");
@@ -1399,6 +1356,7 @@ public class ProfiBusTreeView extends Composite {
         }
         
         @Override
+        @CheckForNull
         public String getToolTipText(@Nullable final Object element) {
             if (haveProgrammableModule(element)) {
                 return "Is a programmable Module!";

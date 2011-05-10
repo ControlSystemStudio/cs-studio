@@ -202,14 +202,4 @@ public class IocEditor extends AbstractNodeEditor {
 
         save();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

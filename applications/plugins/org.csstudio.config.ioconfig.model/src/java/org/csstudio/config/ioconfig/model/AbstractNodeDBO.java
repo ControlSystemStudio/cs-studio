@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -140,8 +142,6 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     @Cascade( { org.hibernate.annotations.CascadeType.SAVE_UPDATE,
             org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
     public Set<? extends AbstractNodeDBO> getChildren() {
-//        CentralLogger.getInstance().info(this, "Id\t"+getId()+"\tTime\t"+System.currentTimeMillis()+"\tClass\t"+
-//                this.getClass().getSimpleName()+"");
         return _children;
     }
 
@@ -151,7 +151,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @param children
      *            The Children for this node.
      */
-    public void setChildren(final Set<AbstractNodeDBO> children) {
+    public void setChildren(@Nonnull final Set<AbstractNodeDBO> children) {
         _children = children;
     }
 
@@ -163,7 +163,8 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return null or the old Node for the SortIndex Position.
      * @throws PersistenceException 
      */
-    public <T extends AbstractNodeDBO> AbstractNodeDBO addChild(final T child) throws PersistenceException {
+    @CheckForNull
+    public <T extends AbstractNodeDBO> AbstractNodeDBO addChild(@Nonnull final T child) throws PersistenceException {
         short sortIndex = child.getSortIndex();
         AbstractNodeDBO oldNode = getChildrenAsMap().get(sortIndex);
 
@@ -434,7 +435,8 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return the copy of this node.
      * @throws PersistenceException 
      */
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
+    @Nonnull
+    public <T extends AbstractNodeDBO> T copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
         String createdBy = "Unknown";
         try {
             final User user = SecurityFacade.getInstance().getCurrentUser();
@@ -444,7 +446,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         } catch (final NullPointerException e) {
             createdBy = "Unknown";
         }
-        final AbstractNodeDBO copy = copyParameter(parentNode);
+        final T copy = copyParameter(parentNode);
         copy.setCreatedBy(createdBy);
         copy.setUpdatedBy(createdBy);
         copy.setCreatedOn(new Date());
@@ -459,28 +461,14 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         return copy;
     }
 
-
-    // ---- Test Start
-
-//    @ManyToOne
     @Transient
     public NodeImageDBO getIcon() {
         return _icon;
     }
-//
-//    /**
-//     * Set the Children to this node.
-//     *
-//     * @param children
-//     *            The Children for this node.
-//     */
+
     public void setIcon(final NodeImageDBO icon) {
         _icon = icon;
     }
-
-    // ---- Test End
-
-
 
     /**
      * Copy this node and set Special Parameter.
@@ -490,7 +478,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return a Copy of this node.
      * @throws PersistenceException 
      */
-    protected abstract AbstractNodeDBO copyParameter(NamedDBClass parent) throws PersistenceException;
+    protected abstract <T extends AbstractNodeDBO> T copyParameter(NamedDBClass parent) throws PersistenceException;
 
     /**
      * Save his self.
@@ -564,7 +552,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return if this node equals whit the give node return 0.
      */
     @Override
-    public int compareTo(final AbstractNodeDBO other) {
+    public int compareTo(@CheckForNull final AbstractNodeDBO other) {
 
         if (other == null) {
             return -1;
@@ -613,6 +601,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     /**
      * @return Return only true when the node need to work a GSD-File!
      */
+    @Nonnull
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.NONE;
     }

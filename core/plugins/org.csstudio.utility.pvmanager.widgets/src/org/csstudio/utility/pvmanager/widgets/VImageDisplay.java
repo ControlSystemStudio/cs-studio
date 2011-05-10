@@ -30,24 +30,31 @@ public class VImageDisplay extends Canvas {
 	
 	// The current image being displayed
 	private VImage vImage;
-	// Whether the image should be stretched to the full size of the display
-	private boolean stretched;
 	
+	// Whether the image should be horizontally or vertically stretched to the full size of the display.
+	// Any combination of SWT.HORIZONTAL or SWT.VERTICAL are allowed	
+	private int stretched = SWT.NONE;
+	
+	// How the image should be allowed. Any combination of SWT.LEFT, SWT.RIGHT, SWT.TOP, SWT.BOTTOM
+	// is allowed
+	private int alignment = SWT.LEFT | SWT.TOP;
+
 	/**
-	 * True if the image is stretched to fit the size of the display.
+	 * In which direction the image should be stretched.
 	 * 
 	 * @return the current property value
 	 */
-	public boolean isStretched() {
+	public int getStretched() {
 		return stretched;
 	}
 	
 	/**
-	 * Changes whether the image is streatched to fit the size of the display.
+	 * Changes in which direction the image should be stretched. Possible values are SWT.NONE,
+	 * SWT.HORIZONTAL, SWT.VERTICAL, SWT.HORIZONTAL | SWT.VERTICAL
 	 * 
 	 * @param stretched the new property value
 	 */
-	public void setStretched(boolean stretched) {
+	public void setStretched(int stretched) {
 		this.stretched = stretched;
 	}
 	
@@ -63,6 +70,29 @@ public class VImageDisplay extends Canvas {
 		}
 	}
 	
+	/**
+	 * Where the image is positioned in the widget.
+	 * 
+	 * @return current alignment
+	 */
+	public int getAlignment() {
+		return alignment;
+	}
+
+	/**
+	 * Changes where the image is position in the widget. Possible values are
+	 * SWT.CENTER,
+	 * SWT.TOP, SWT.BOTTOM, SWT.LEFT, SWT.RIGHT, the four corners (i.e. SWT.TOP | SWT.LEFT).
+	 * 
+	 * @param alignment
+	 */
+	public void setAlignment(int alignment) {
+		if (!isDisposed()) {
+			this.alignment = alignment;
+			redraw();
+		}
+	}
+
 	/**
 	 * Returns the current image being displayed.
 	 * 
@@ -80,19 +110,49 @@ public class VImageDisplay extends Canvas {
 			
 			if (vImage != null) {
 				Image image = SWTUtil.toImage(gc, vImage);
-				if (stretched) {
-					// Stretch the image to the whole client area
-					gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
-							0, 0, getClientArea().width, getClientArea().height);
+				int x;
+				int width;
+				
+				if ((stretched & SWT.HORIZONTAL) != 0) {
+					width = getClientArea().width;
+					x = 0;
 				} else {
-					// Draw the image, then draw the background at the right of the image
-					// and then below the image
-					gc.drawImage(image, 0, 0);
-					drawBackground(gc, image.getBounds().width, 0,
-							Math.max(0, getClientArea().width - image.getBounds().width), image.getBounds().height);
-					drawBackground(gc, 0, image.getBounds().height,
-							getClientArea().width, Math.max(0, getClientArea().height - image.getBounds().height));
+					width = image.getBounds().width;
+					if ((alignment & SWT.LEFT) != 0) {
+						x = 0;
+					} else if ((alignment & SWT.RIGHT) != 0) {
+						x = getClientArea().width - image.getBounds().width;
+					} else {
+						x = (getClientArea().width - image.getBounds().width)/2;
+					}
 				}
+				
+				int y;
+				int height;
+				if ((stretched & SWT.VERTICAL) != 0) {
+					height = getClientArea().height;
+					y = 0;
+				} else {
+					height = image.getBounds().height;
+					if ((alignment & SWT.TOP) != 0) {
+						y = 0;
+					} else if ((alignment & SWT.BOTTOM) != 0) {
+						y = getClientArea().height - image.getBounds().height;
+					} else {
+						y = (getClientArea().height - image.getBounds().height)/2;
+					}
+				}
+				
+				
+
+				gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height,
+						x, y, width, height);
+				drawBackground(gc, 0, 0, x, getClientArea().height);
+				drawBackground(gc, x + width, 0, getClientArea().width, getClientArea().height);
+				drawBackground(gc, 0, 0, getClientArea().width, y);
+				drawBackground(gc, 0, y + height, getClientArea().width, getClientArea().height);
+				
+				image.dispose();
 			} else {
 				// If image is not set, just paint the background
 				drawBackground(gc, 0, 0, getSize().x, getSize().y);
