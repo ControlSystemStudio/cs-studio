@@ -108,8 +108,11 @@ public final class GsdFileParser {
         value = removeComment(value);
         while (value.endsWith("\\")) {
             lineCounter.count();
-            value = value.substring(0, value.length() - 1).trim()
-                    .concat(br.readLine().split(";")[0].trim());
+            String readLine = br.readLine();
+            if(readLine != null) {
+                value = value.substring(0, value.length() - 1).trim()
+                        .concat(readLine.split(";")[0].trim());
+            }
         }
         return value;
     }

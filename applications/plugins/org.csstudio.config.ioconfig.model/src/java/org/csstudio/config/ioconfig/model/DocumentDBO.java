@@ -369,7 +369,11 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         if(other==null) {
             return -1;
         }
-        return id.compareTo(other.getId());
+        String otherID = other.getId();
+        if(otherID==null) {
+            return -1;
+        }
+        return id.compareTo(otherID);
     }
 
     

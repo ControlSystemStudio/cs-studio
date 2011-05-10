@@ -36,7 +36,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -124,11 +123,10 @@ public class ProfibusConfigXMLGenerator {
         _busparameter.addContent(_master);
         _busparameter.addContent(_fmbSet);
 
-        Map<Short, ? extends AbstractNodeDBO> childrenAsMap = master.getChildrenAsMap();
-        Iterator<Short> iterator = childrenAsMap.keySet().iterator();
+        Map<Short, SlaveDBO> childrenAsMap = (Map<Short, SlaveDBO>) master.getChildrenAsMap();
+        Iterator<SlaveDBO> iterator = childrenAsMap.values().iterator();
         while (iterator.hasNext()) {
-            Short key = iterator.next();
-            addSlave((SlaveDBO) childrenAsMap.get(key));
+            addSlave(iterator.next());
         }
     }
 
