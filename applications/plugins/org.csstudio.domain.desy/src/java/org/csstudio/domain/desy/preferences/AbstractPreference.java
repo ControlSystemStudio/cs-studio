@@ -230,6 +230,9 @@ public abstract class AbstractPreference<T> {
     @Nonnull
     protected AbstractPreference<T> addValidator(@Nonnull final IPreferenceValidator<T> validator) {
         _validator = validator;
+        if(!_validator.validate(_defaultValue)) {
+            throw new IllegalArgumentException("Default value is not valid with this validator.");
+        }
         return this;
     }
 
