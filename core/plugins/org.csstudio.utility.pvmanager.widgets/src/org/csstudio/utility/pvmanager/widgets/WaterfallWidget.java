@@ -42,7 +42,7 @@ public class WaterfallWidget extends Composite {
 	private CLabel errorLabel;
 	private Label errorImage;
 	private GridData gd_rangeWidget;
-	private boolean editable;
+	private boolean editable = true;
 
 	/**
 	 * Creates a new widget.
