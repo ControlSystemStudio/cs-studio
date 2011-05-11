@@ -21,9 +21,9 @@
  */
 package org.csstudio.platform.ui.security;
 
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.auth.internal.rightsmanagement.RightsManagementEvent;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.ActivationService;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
@@ -248,7 +248,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	protected abstract void doWork();
 
 	/**
-	 * @see org.csstudio.platform.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.platform.internal.usermanagement.UserManagementEvent)
+	 * @see org.csstudio.auth.internal.usermanagement.IUserManagementListener#handleUserManagementEvent(org.csstudio.auth.internal.usermanagement.UserManagementEvent)
 	 * @param event
 	 *            the UserManagementEvent to handle
 	 */
@@ -257,7 +257,7 @@ public abstract class AbstractUserDependentAction extends Action implements
 	}
 
 	/**
-	 * @see org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent)
+	 * @see org.csstudio.auth.internal.rightsmanagement.IRightsManagementListener#handleRightsManagementEvent(org.csstudio.auth.internal.rightsmanagement.RightsManagementEvent)
 	 * @param event
 	 *            the RightsManagementEvent to handle
 	 */

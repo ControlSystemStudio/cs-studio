@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.ui.workbench;
 
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;

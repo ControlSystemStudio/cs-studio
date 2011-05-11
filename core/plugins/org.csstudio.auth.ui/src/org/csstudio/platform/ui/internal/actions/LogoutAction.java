@@ -1,7 +1,7 @@
 package org.csstudio.platform.ui.internal.actions;
 
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.Credentials;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.SecurityFacade;

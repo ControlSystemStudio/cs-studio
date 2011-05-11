@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.security;
 
-import org.csstudio.platform.internal.usermanagement.LoginContext;
+import org.csstudio.auth.internal.usermanagement.LoginContext;
 
 /**
  * Abstract super class for executables. An executable encapsulates code that

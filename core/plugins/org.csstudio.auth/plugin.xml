@@ -7,7 +7,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.csstudio.platform.internal.PlatformPreferencesInitializer">
+            class="org.csstudio.auth.internal.PlatformPreferencesInitializer">
       </initializer>
    </extension>
 </plugin>

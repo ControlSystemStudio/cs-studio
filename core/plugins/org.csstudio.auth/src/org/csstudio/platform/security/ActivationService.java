@@ -25,13 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener;
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
-import org.csstudio.platform.internal.security.NoActivationAdapterFoundException;
-import org.csstudio.platform.internal.security.ActivateableList;
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.auth.internal.rightsmanagement.IRightsManagementListener;
+import org.csstudio.auth.internal.rightsmanagement.RightsManagementEvent;
+import org.csstudio.auth.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.auth.internal.security.ActivateableList;
+import org.csstudio.auth.internal.security.NoActivationAdapterFoundException;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 

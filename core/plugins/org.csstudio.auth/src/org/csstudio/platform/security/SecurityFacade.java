@@ -31,12 +31,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.auth.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.LoginContext;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.CSSPlatformPlugin;
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.LoginContext;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;

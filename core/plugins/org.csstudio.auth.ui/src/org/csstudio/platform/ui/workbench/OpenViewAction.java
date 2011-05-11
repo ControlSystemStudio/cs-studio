@@ -3,7 +3,7 @@ package org.csstudio.platform.ui.workbench;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.platform.internal.usermanagement.LoginContext;
+import org.csstudio.auth.internal.usermanagement.LoginContext;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;

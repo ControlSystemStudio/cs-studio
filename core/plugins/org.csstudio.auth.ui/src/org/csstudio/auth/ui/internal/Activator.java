@@ -1,4 +1,4 @@
-package org.csstudio.auth.ui;
+package org.csstudio.auth.ui.internal;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

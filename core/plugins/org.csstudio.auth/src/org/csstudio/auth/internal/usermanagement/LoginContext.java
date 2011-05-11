@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.internal.usermanagement;
+ package org.csstudio.auth.internal.usermanagement;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.auth.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.security.ILoginCallbackHandler;
 import org.csstudio.platform.security.ILoginModule;
 import org.csstudio.platform.security.User;

@@ -20,10 +20,10 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform.ui.internal.workbench;
+package org.csstudio.auth.ui.internal.workbench;
 
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;

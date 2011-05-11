@@ -37,10 +37,10 @@ package org.csstudio.platform.internal.ldapauthorization.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.internal.ldapauthorization.LdapAuthorizationReader;
 import org.csstudio.platform.internal.ldapauthorization.ui.localization.Messages;
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.IRight;
 import org.csstudio.platform.security.Right;
 import org.csstudio.platform.security.RightSet;

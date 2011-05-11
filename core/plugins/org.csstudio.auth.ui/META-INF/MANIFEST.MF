@@ -4,7 +4,7 @@ Bundle-Name: CSS Authentication and Authorization Ui
 Bundle-SymbolicName: org.csstudio.auth.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Localization: plugin
-Bundle-Activator: org.csstudio.auth.ui.Activator
+Bundle-Activator: org.csstudio.auth.ui.internal.Activator
 Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -14,10 +14,10 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.workspace;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.csstudio.auth.ui,
+Export-Package: org.csstudio.auth.ui.internal,
  org.csstudio.platform.ui.dialogs,
  org.csstudio.platform.ui.internal.actions,
- org.csstudio.platform.ui.internal.preferences,
- org.csstudio.platform.ui.internal.workbench,
+ org.csstudio.auth.ui.internal.preferences,
+ org.csstudio.auth.ui.internal.workbench,
  org.csstudio.platform.ui.security,
  org.csstudio.platform.ui.workbench

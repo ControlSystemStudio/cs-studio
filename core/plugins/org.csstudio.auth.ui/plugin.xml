@@ -31,7 +31,7 @@
         <toolbar
               id="org.csstudio.auth.ui.loginInformationToolbar">
            <control
-                 class="org.csstudio.platform.ui.internal.workbench.LoginInformationToolbar">
+                 class="org.csstudio.auth.ui.internal.workbench.LoginInformationToolbar">
            </control>
         </toolbar>
      </menuContribution>
@@ -40,7 +40,7 @@
            point="org.eclipse.ui.preferencePages">
         <page
               category="org.csstudio.platform.ui.css.platform"
-              class="org.csstudio.platform.ui.internal.preferences.AuthenticationPreferencePage"
+              class="org.csstudio.auth.ui.internal.preferences.AuthenticationPreferencePage"
               id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
               name="%authenticationPageName">
         </page>
