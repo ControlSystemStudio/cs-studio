@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.views;
+package org.csstudio.multichannelviewer;
 
 import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.swt.SWT;

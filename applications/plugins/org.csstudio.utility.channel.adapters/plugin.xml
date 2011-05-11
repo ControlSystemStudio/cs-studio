@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.utility.channel.ICSSChannel"
+            class="org.csstudio.utility.channel.adapters.ICSSChannelAdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.platform.model.IProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.platform.model.IProcessVariableWithArchive">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="gov.bnl.channelfinder.api.Channel"
+            class="org.csstudio.utility.channel.adapters.ChannelAdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.utility.channel.ICSSChannel">
+         </adapter>
+         <adapter
+               type="org.csstudio.platform.model.IProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariableName">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup></startup>
+   </extension>
+
+</plugin>

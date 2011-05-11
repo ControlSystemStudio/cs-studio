@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.csstudio.channelfinder.views.GlazedSortNameComparator;
+import org.csstudio.multichannelviewer.GlazedSortNameComparator;
 import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.swt.SWT;

@@ -1,4 +1,4 @@
-package org.csstudio.channelfinder.views;
+package org.csstudio.channelfinder.util;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
@@ -7,21 +7,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import org.csstudio.utility.channel.ICSSChannel;
-import org.csstudio.utility.channel.ICSSChannelFactory;
-import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
+import org.csstudio.channelfinder.views.ChannelFinderView;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 
-public class SearchChannels extends Job {
+public class FindChannels extends Job {
 	private String searchPattern;
 	private ChannelFinderView channelFinderView;
+	private static Logger logger = Logger.getLogger("org.csstudio.channelfinder.views.FindChannels");
 
-	public SearchChannels(String name, String pattern,
+	public FindChannels(String name, String pattern,
 			ChannelFinderView channelFinderView) {
 		super(name);
 		this.searchPattern = pattern;
@@ -31,15 +31,12 @@ public class SearchChannels extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
-		final Collection<ICSSChannel> channels = new HashSet<ICSSChannel>();
+		final Collection<Channel> channels = new HashSet<Channel>();
 		try {
-			for (Channel channel : ChannelFinderClient.getInstance()
-					.findChannels(buildSearchMap(searchPattern))) {
-				ICSSChannelFactory cssChannelFactory = CSSChannelFactory
-						.getInstance();
-				channels.add(cssChannelFactory.getCSSChannel(channel));
-			}
-			// final XmlChannels channels = testData(); // to use test data
+			if(searchPattern.startsWith("sim://"))
+				channels.addAll(GenerateTestChannels.getChannels(Integer.valueOf(searchPattern.split("sim://")[1])));
+			else
+				channels.addAll(ChannelFinderClient.getInstance().findChannels(buildSearchMap(searchPattern)));
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -49,17 +46,17 @@ public class SearchChannels extends Job {
 				}
 			});
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.severe("Failed to find channels from channelfinder:"+ e.getMessage());
+			
 		}
 		monitor.done();
 		return Status.OK_STATUS;
 	}
 
-	private static Map<String, String> buildSearchMap(String searchPattern) {
+	protected static Map<String, String> buildSearchMap(String searchPattern) {
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		String[] words = searchPattern.split("\\s");
-		if (words.length < 0) {
+		if (words.length <= 0) {
 			// ERROR
 		}
 		for (int index = 0; index < words.length; index++) {
@@ -70,12 +67,12 @@ public class SearchChannels extends Job {
 				// this is a property or tag
 				String key = words[index].split("=")[0];
 				String values = words[index].split("=")[1];
-				if (key.equals("Tags")) {
-					map.put("~tag", values);
+				if (key.equalsIgnoreCase("Tags")) {
+					map.put("~tag", values.replace("||", ","));
 					// for (int i = 0; i < values.length; i++)
 					// map.put("~tag", values[i]);
 				} else {
-					map.put(key, values);
+					map.put(key, values.replace("||", ","));
 				}
 			}
 		}

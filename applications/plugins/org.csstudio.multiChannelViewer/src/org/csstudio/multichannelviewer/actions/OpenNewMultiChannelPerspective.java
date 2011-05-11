@@ -45,9 +45,10 @@ public class OpenNewMultiChannelPerspective extends AbstractHandler implements
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
+			for (@SuppressWarnings("rawtypes")
+			Iterator iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.add(iterator.next());
+				channels.add((ICSSChannel) Platform.getAdapterManager().getAdapter(iterator.next(), ICSSChannel.class));				
 			}
 		}
 

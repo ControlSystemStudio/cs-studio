@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.channelfinder.views;
+package org.csstudio.multichannelviewer;
 
 import gov.bnl.channelfinder.api.Property;
 

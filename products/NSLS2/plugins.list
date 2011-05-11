@@ -1,3 +1,4 @@
+javax.annotation
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive
@@ -5,6 +6,7 @@ org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
+org.csstudio.csdata
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
@@ -18,6 +20,8 @@ org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
+org.csstudio.logging
+org.csstudio.logging.ui
 org.csstudio.multiChannelViewer
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
@@ -29,12 +33,15 @@ org.csstudio.opi.intro
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
+org.csstudio.testsuite
 org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
+org.csstudio.ui.util
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
+org.csstudio.utility.channel.adapters
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
@@ -51,7 +58,6 @@ org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.platform
-org.csstudio.platform.libs.annotations
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics

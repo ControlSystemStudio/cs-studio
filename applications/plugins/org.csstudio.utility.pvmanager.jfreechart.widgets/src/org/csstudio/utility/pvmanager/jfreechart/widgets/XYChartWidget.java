@@ -11,6 +11,8 @@ import static org.epics.pvmanager.util.TimeDuration.ms;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
@@ -32,6 +34,7 @@ import org.epics.pvmanager.data.VMultiDouble;
  */
 public class XYChartWidget extends Composite {
 
+	private static Logger logger = Logger.getLogger("org.csstudio.utility.pvmanager.jfreechart.widget.XYChartWidget");
 	private VMultiChannelChartDisplay multiDoubleDisplay;
 	private int plotUsing;
 

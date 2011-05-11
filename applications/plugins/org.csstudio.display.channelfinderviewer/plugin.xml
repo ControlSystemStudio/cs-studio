@@ -39,19 +39,6 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.csstudio.popmenu">
-         <command
-               commandId="org.csstudio.nsls2.channelviewer.openView"
-               icon="icons/cficon.gif"
-               label="channelfinder"
-               style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channelfinder.views.ChannelfinderView">
-            </parameter>
-         </command>
-      </menuContribution>
-      <menuContribution
             allPopups="false"
             locationURI="menu:display">
          <command

@@ -1,6 +1,5 @@
 package org.csstudio.multichannelviewer;
 
-import org.csstudio.channelfinder.views.ChannelFinderView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -26,7 +25,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 		// Bottom
 		bottom.addView(ChannelsListView.ID);
-		bottom.addPlaceholder(ChannelFinderView.ID);;
+//		bottom.addPlaceholder(ChannelFinderView.ID);;
 		bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 		bottom.addPlaceholder(IPageLayout.ID_PROBLEM_VIEW);
 
