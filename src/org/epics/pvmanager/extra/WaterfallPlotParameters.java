@@ -24,6 +24,7 @@ public class WaterfallPlotParameters extends Parameters {
         final Boolean adaptiveRange;
         final Boolean scrollDown;
         final TimeDuration pixelDuration;
+        final Integer backgroundColor;
         
         private InternalCopy(Map<Object, Object> params) {
             height = (Integer) params.get("height");
@@ -31,6 +32,7 @@ public class WaterfallPlotParameters extends Parameters {
             adaptiveRange = (Boolean) params.get("adaptiveRange");
             scrollDown = (Boolean) params.get("scrollDown");
             pixelDuration = (TimeDuration) params.get("pixelDuration");
+            backgroundColor = (Integer) params.get("backgroundColor");
         }
         
     }
@@ -116,6 +118,16 @@ public class WaterfallPlotParameters extends Parameters {
      */
     public static WaterfallPlotParameters pixelDuration(TimeDuration pixelDuration) {
         return new WaterfallPlotParameters("pixelDuration", pixelDuration);
+    }
+
+    /**
+     * How much time should be allocated to each line of the plot.
+     * 
+     * @param pixelDuration amount of time for each pixel
+     * @return a new parameter
+     */
+    public static WaterfallPlotParameters backgroundColor(int rgb) {
+        return new WaterfallPlotParameters("backgroundColor", rgb);
     }
     
     /**

@@ -7,6 +7,7 @@ package org.epics.pvmanager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,11 +27,18 @@ import java.util.List;
 class QueueCollector<T> extends Collector<T> {
 
     // @GuardedBy(buffer)
-    private final List<T> buffer = new ArrayList<T>();
+    private final List<T> buffer = new LinkedList<T>();
     private final Function<T> function;
+    private final Integer maxValues;
     
     public QueueCollector(Function<T> function) {
         this.function = function;
+        maxValues = null;
+    }
+    
+    public QueueCollector(Function<T> function, int maxValues) {
+        this.function = function;
+        this.maxValues = maxValues;
     }
 
     /**
@@ -45,6 +53,9 @@ class QueueCollector<T> extends Collector<T> {
         if (newValue != null) {
             synchronized(buffer) {
                 buffer.add(newValue);
+                if (maxValues != null && buffer.size() > maxValues) {
+                    buffer.remove(0);
+                }
             }
         }
     }
@@ -56,7 +67,7 @@ class QueueCollector<T> extends Collector<T> {
     @Override
     public List<T> getValue() {
         synchronized(buffer) {
-            List<T> data = new ArrayList<T>(buffer);
+            List<T> data = new LinkedList<T>(buffer);
             buffer.clear();
             return data;
         }
