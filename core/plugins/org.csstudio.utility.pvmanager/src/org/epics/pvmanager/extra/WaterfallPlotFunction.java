@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager.extra;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -112,6 +113,12 @@ class WaterfallPlotFunction extends Function<VImage> {
         BufferedImage image = new BufferedImage(newWidth, parameters.height, BufferedImage.TYPE_3BYTE_BGR);
         if (previousImage != null && !redrawAll) {
             drawOldImage(image, previousBuffer, nNewPixels, parameters);
+        } else if (parameters.backgroundColor != null) {
+            Graphics2D gc = image.createGraphics();
+            Color background = new Color(parameters.backgroundColor);
+            gc.setColor(background);
+            gc.fillRect(0, 0, newWidth, parameters.height);
+            gc.dispose();
         }
         
         // Calculate the rest of the time range
@@ -258,6 +265,7 @@ class WaterfallPlotFunction extends Function<VImage> {
         } else {
             gc.drawImage(previousBuffer, 0, -nNewPixels, null);
         }
+        gc.dispose();
     }
 
 }

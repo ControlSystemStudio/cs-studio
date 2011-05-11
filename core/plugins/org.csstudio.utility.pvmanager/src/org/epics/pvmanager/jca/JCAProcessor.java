@@ -12,6 +12,7 @@ import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
+import java.util.Arrays;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.ExceptionHandler;
@@ -35,27 +36,12 @@ class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType>
         super(collector, cache, handler);
         this.cacheType = cache.getType();
         this.monitorMask = monitorMask;
+        this.channel = channel;
+        connectionListener = createConnectionListener(channel, handler) ;
 
         // Need to wait for the connection to be established
         // before reading the metadata
-        channel.addConnectionListener(new ConnectionListener() {
-
-            @Override
-            public void connectionChanged(ConnectionEvent ev) {
-                try {
-                    // Setup monitors on connection and tear them
-                    // down on disconnection
-                    if (ev.isConnected()) {
-                        setup(channel);
-                    } else {
-                        close();
-                        processValue(event);
-                    }
-                } catch (Exception ex) {
-                    handler.handleException(ex);
-                }
-            }
-        });
+        channel.addConnectionListener(connectionListener);
 
         // If the channel was already connected, then the monitor may
         // be never called. Set it up.
@@ -91,6 +77,31 @@ class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType>
     volatile Monitor monitor;
     volatile DBR metadata;
     private volatile MonitorEvent event;
+    private final ConnectionListener connectionListener;
+    private final Channel channel;
+    
+    private ConnectionListener createConnectionListener(final Channel channel,
+            final ExceptionHandler handler) {
+        return new ConnectionListener() {
+
+            @Override
+            public void connectionChanged(ConnectionEvent ev) {
+                try {
+                    // Setup monitors on connection and tear them
+                    // down on disconnection
+                    if (ev.isConnected()) {
+                        setup(channel);
+                    } else {
+                        close();
+                        processValue(event);
+                    }
+                } catch (Exception ex) {
+                    handler.handleException(ex);
+                }
+            }
+        };
+    }
+    
     final MonitorListener monitorListener = new MonitorListener() {
 
         @Override
@@ -103,8 +114,15 @@ class JCAProcessor<VType> extends DataSource.ValueProcessor<MonitorEvent, VType>
     @Override
     public void close() {
         if (monitor != null) {
-            monitor.removeMonitorListener(monitorListener);
+            Monitor toClear = monitor;
             monitor = null;
+            try {
+                channel.removeConnectionListener(connectionListener);
+                toClear.removeMonitorListener(monitorListener);
+                toClear.clear();
+            } catch (Exception ex) {
+                throw new RuntimeException("Couldn't close channel", ex);
+            }
         }
     }
 

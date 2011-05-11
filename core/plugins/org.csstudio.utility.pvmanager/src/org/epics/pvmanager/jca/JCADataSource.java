@@ -40,6 +40,7 @@ public class JCADataSource extends DataSource {
     private volatile Context ctxt = null;
     private final String className;
     private final int monitorMask;
+    private final boolean destroyContextWhenDone;
 
     static final JCADataSource INSTANCE = new JCADataSource();
 
@@ -57,8 +58,21 @@ public class JCADataSource extends DataSource {
      * @param monitorMask Monitor.VALUE, ...
      */
     public JCADataSource(String className, int monitorMask) {
+        this(className, monitorMask, false);
+    }
+
+    /**
+     * Creates a new data source using the className to create the context, and
+     * specifying whether the context should be destroy when the last
+     * connection is closed.
+     *
+     * @param className JCALibrary.CHANNEL_ACCESS_JAVA, JCALibrary.JNI_THREAD_SAFE, ...
+     * @param monitorMask Monitor.VALUE, ...
+     */
+    public JCADataSource(String className, int monitorMask, boolean destroyContextWhenDone) {
         this.className = className;
         this.monitorMask = monitorMask;
+        this.destroyContextWhenDone = destroyContextWhenDone;
     }
 
     /*
@@ -83,7 +97,7 @@ public class JCADataSource extends DataSource {
      * Destroy JCA context.
      */
     private void releaseContext(ExceptionHandler handler) {
-        if (ctxt != null && connectedProcessors.isEmpty()) {
+        if (ctxt != null && connectedProcessors.isEmpty() && destroyContextWhenDone) {
             try {
                 // If a context was created and is the last pv active,
                 // destroy the context.
@@ -96,6 +110,10 @@ public class JCADataSource extends DataSource {
                 handler.handleException(e);
             }
         }
+    }
+    
+    Context getContext() {
+        return ctxt;
     }
 
     @Override

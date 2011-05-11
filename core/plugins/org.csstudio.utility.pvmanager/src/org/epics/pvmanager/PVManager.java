@@ -131,10 +131,16 @@ public class PVManager {
         /**
          * Sets the rate of scan of the expression and creates the actual {@link PV}
          * object that can be monitored through listeners.
-         * @param rate rate in Hz; should be between 1 and 50
+         * @param rate rate in Hz; should be between 0 and 50
          * @return the PV
          */
         public PV<T> atHz(double rate) {
+            if (rate <= 0)
+                throw new IllegalArgumentException("Rate has to be greater than 0 (requested " + rate + ")");
+            
+            if (rate > 200.0)
+                throw new IllegalArgumentException("Current implementation limits the rate up to 200 Hz (requested " + rate + ")");
+            
             long scanPeriodMs = (long) (1000.0 * (1.0 / rate));
 
             // Get defaults
