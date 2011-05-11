@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.utility.channel.ICSSChannel;
 import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
 import org.eclipse.core.runtime.IStatus;
@@ -44,7 +43,6 @@ public class AddTagsJobUnitTest {
 	 */
 	@BeforeClass
 	public void setUp() throws Exception {
-		final TestProperties settings = new TestProperties();
 		try {
 			client = ChannelFinderClient.getInstance();
 			ch1 = channel("cssUnitTestChannel1").owner("css");
