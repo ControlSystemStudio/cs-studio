@@ -129,7 +129,6 @@ public class ModuleTest {
 
         final ModuleDBO out = new ModuleDBO(_slave);
         assertTrue(out.getChildren().size()==0);
-        assertTrue(out.getChannelStructs().size()==0);
 
         final ChannelStructureDBO channelStructure = ChannelStructureDBO.makeChannelStructure(out, false, DataType.INT8, "StructChannelModel");
         channelStructure.setId(21);
@@ -152,10 +151,8 @@ public class ModuleTest {
 //        channelStructure.setChildren(pureChannels);
 
         assertNotNull(out.getChildren());
-        assertNotNull(out.getChannelStructs());
 
         assertEquals(2, out.getPureChannels().size());
-        assertEquals(2, out.getChannelStructs().size());
         assertEquals(2, out.getChildren().size());
 
         assertTrue(out.getChildren().contains(channelStructure));

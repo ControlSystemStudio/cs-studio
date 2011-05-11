@@ -128,14 +128,14 @@ public class CreateXMLConfigAction extends Action {
 		} else if (selectedNode instanceof IocDBO) {
 			final IocDBO ioc = (IocDBO) selectedNode;
 			LOG.info("Create XML for Ioc: " + ioc);
-			for (final ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+			for (final ProfibusSubnetDBO subnet : ioc.getChildren()) {
 				makeXMLFile(path, subnet);
 			}
 		} else if (selectedNode instanceof FacilityDBO) {
 			final FacilityDBO facility = (FacilityDBO) selectedNode;
 			LOG.info("Create XML for Facility: " + facility);
-			for (final IocDBO ioc : facility.getIoc()) {
-				for (final ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+			for (final IocDBO ioc : facility.getChildren()) {
+				for (final ProfibusSubnetDBO subnet : ioc.getChildren()) {
 					makeXMLFile(path, subnet);
 				}
 			}

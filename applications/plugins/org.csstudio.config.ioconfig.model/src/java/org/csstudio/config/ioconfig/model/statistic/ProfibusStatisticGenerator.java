@@ -56,10 +56,10 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfibusStatisticGenerator {
     
-    private StringBuilder _statistic;
-    private Map<GSDFileDBO, Integer> _gsdMasterFileMap;
-    private Map<GSDFileDBO, Integer> _gsdSlaveFileMap;
-    private Map<GSDModuleDBO, ModuleStatistcCounter> _gsdModuleMap;
+    private final StringBuilder _statistic;
+    private final Map<GSDFileDBO, Integer> _gsdMasterFileMap;
+    private final Map<GSDFileDBO, Integer> _gsdSlaveFileMap;
+    private final Map<GSDModuleDBO, ModuleStatistcCounter> _gsdModuleMap;
     private static final String LINE_END = "\r\n";
     
     /**
@@ -112,7 +112,7 @@ public class ProfibusStatisticGenerator {
      * @throws PersistenceException 
      */
     private void iocStatisticCreator(@Nonnull IocDBO ioc) throws PersistenceException {
-        Set<ProfibusSubnetDBO> subnets = ioc.getProfibusSubnets();
+        Set<ProfibusSubnetDBO> subnets = ioc.getChildren();
         for (ProfibusSubnetDBO subnet: subnets) {
             subnetStatisticCreator(subnet);
         }
@@ -134,7 +134,7 @@ public class ProfibusStatisticGenerator {
      * @throws PersistenceException 
      */
     private void masterStatisticCreator(@Nonnull MasterDBO master) throws PersistenceException {
-        Set<SlaveDBO> slaves = master.getSlaves();
+        Set<SlaveDBO> slaves = master.getChildren();
         GSDFileDBO gsdFile = master.getGSDFile();
         if (gsdFile != null) {
             Integer masterCounter = _gsdMasterFileMap.get(gsdFile);
@@ -154,7 +154,7 @@ public class ProfibusStatisticGenerator {
      * @throws PersistenceException 
      */
     private void slaveStatisticCreator(@Nonnull SlaveDBO slave) throws PersistenceException {
-        Set<ModuleDBO> modules = slave.getModules();
+        Set<ModuleDBO> modules = slave.getChildren();
         countGsdFile(slave.getGSDFile());
         for (ModuleDBO module : modules) {
             countGsdModule(module);

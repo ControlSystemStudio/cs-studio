@@ -27,7 +27,6 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -114,7 +113,6 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     /**
      * Parameter user data.
      */
-    //    private String _prmUserData;
     private List<Integer> _prmUserDataList = new ArrayList<Integer>();
     
     /**
@@ -159,12 +157,6 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     
     public void setProfibusDPMaster(@Nonnull final MasterDBO profibusDPMaster) {
         this.setParent(profibusDPMaster);
-    }
-    
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Set<ModuleDBO> getModules() {
-        return (Set<ModuleDBO>) getChildren();
     }
     
     /** @return the GSDFile. */

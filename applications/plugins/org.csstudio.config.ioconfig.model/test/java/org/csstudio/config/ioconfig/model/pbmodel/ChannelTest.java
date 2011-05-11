@@ -990,7 +990,7 @@ public class ChannelTest {
         final ChannelStructureDBO channelStructure1 = ChannelStructureDBO.makeChannelStructure(module1, false,
                 DataType.INT8, "ABC");
         final Set<? extends AbstractNodeDBO> values1 = channelStructure1.getChildren();
-        final Collection<ChannelDBO> channels1 = channelStructure1.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels1 = channelStructure1.getChildrenAsMap().values();
         assertEquals(8, values1.size());
         assertEquals(8, channels1.size());
         final ChannelDBO[] structChannels1 = channels1.toArray(new ChannelDBO[0]);
@@ -1074,7 +1074,7 @@ public class ChannelTest {
                 DataType.INT8, "def");
 
         final Collection<? extends AbstractNodeDBO> values2 = channelStructure2.getChildren();
-        final Collection<ChannelDBO> channels2 = channelStructure2.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels2 = channelStructure2.getChildrenAsMap().values();
         assertEquals(8, values2.size());
         assertEquals(8, channels2.size());
         final ChannelDBO[] structChannels2 = channels2.toArray(new ChannelDBO[0]);
@@ -1171,7 +1171,7 @@ public class ChannelTest {
                 DataType.INT16, "GhI");
 
         final Collection<? extends AbstractNodeDBO> values3 = channelStructure3.getChildren();
-        final Collection<ChannelDBO> channels3 = channelStructure3.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels3 = channelStructure3.getChildrenAsMap().values();
         assertEquals(16, values3.size());
         assertEquals(16, channels3.size());
         final ChannelDBO[] structChannels3 = channels3.toArray(new ChannelDBO[0]);
@@ -1339,7 +1339,7 @@ public class ChannelTest {
                 DataType.UINT16, "jKl");
 
         final Collection<? extends AbstractNodeDBO> values4 = channelStructure4.getChildren();
-        final Collection<ChannelDBO> channels4 = channelStructure4.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels4 = channelStructure4.getChildrenAsMap().values();
         assertEquals(16, values4.size());
         assertEquals(16, channels4.size());
         final ChannelDBO[] structChannels4 = channels4.toArray(new ChannelDBO[0]);
@@ -1485,8 +1485,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 31, 0, 2, 0, 1, module1);
 
         // - Test Structure Channels.
-        final Collection<ChannelDBO> valuesSCO1 = sco11.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCO1 = sco11.getChannels();
+        final Collection<ChannelDBO> valuesSCO1 = sco11.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCO1 = sco11.getChildren();
         assertEquals(8, valuesSCO1.size());
         assertEquals(8, channelsSCO1.size());
 
@@ -1523,8 +1523,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 31, 0, 3, 0, 3, module1);
 
         // - Test Channel.
-        final Collection<ChannelDBO> valuesSCI1 = sci1.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelssci1 = sci1.getChannels();
+        final Collection<ChannelDBO> valuesSCI1 = sci1.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelssci1 = sci1.getChildren();
         assertEquals(8, valuesSCI1.size());
         assertEquals(8, channelssci1.size());
 
@@ -1545,7 +1545,7 @@ public class ChannelTest {
 
         // - Test Channel.
         assertEquals(16, sco12.getChildren().size());
-        assertEquals(16, sco12.getChannelsAsMap().values().size());
+        assertEquals(16, sco12.getChildrenAsMap().values().size());
 //        testChannelFromStructure("@Subnet:123/3 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 3, 3,
 //                sco12);
 //        testChannelFromStructure("@Subnet:123/3 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 3, 3,
@@ -1586,8 +1586,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 1, 5, 0, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCI21 = sci21.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCI21 = sci21.getChannels();
+        final Collection<ChannelDBO> valuesSCI21 = sci21.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCI21 = sci21.getChildren();
         assertEquals(8, valuesSCI21.size());
         assertEquals(8, channelsSCI21.size());
 
@@ -1637,8 +1637,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 2, 5, 4, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCO21 = sco21.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCO21 = sco21.getChannels();
+        final Collection<ChannelDBO> valuesSCO21 = sco21.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCO21 = sco21.getChildren();
         assertEquals(16, valuesSCO21.size());
         assertEquals(16, channelsSCO21.size());
 
@@ -1673,8 +1673,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 4, 5, 5, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCI22 = sci22.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCI22 = sci22.getChannels();
+        final Collection<ChannelDBO> valuesSCI22 = sci22.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCI22 = sci22.getChildren();
         assertEquals(16, valuesSCI22.size());
         assertEquals(16, channelsSCI22.size());
 

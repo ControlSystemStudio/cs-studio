@@ -54,7 +54,7 @@ public class CopyNodeTest {
         // -- Test Children
         assertEquals(module.getChildren().size(), copyModule.getChildren().size());
         assertEquals(module.getPureChannels().size(), copyModule.getPureChannels().size());
-        assertEquals(module.getChannelStructs().size(), copyModule.getChannelStructs().size());
+        assertEquals(module.getChildren().size(), copyModule.getChildren().size());
 
         // -- Test PCO Children
         Set<ChannelDBO> pureChannels = module.getPureChannels();
@@ -79,8 +79,8 @@ public class CopyNodeTest {
         }
         // -- Test PCO Children
         
-        Set<ChannelStructureDBO> channelStructs = module.getChannelStructs();
-        Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChannelStructs();
+        Set<ChannelStructureDBO> channelStructs = module.getChildren();
+        Set<ChannelStructureDBO> copyChannelStructs = copyModule.getChildren();
         assertEquals(channelStructs.isEmpty(), copyChannelStructs.isEmpty());
         assertEquals(channelStructs.size(), copyChannelStructs.size());
         

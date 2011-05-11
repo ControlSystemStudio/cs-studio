@@ -439,7 +439,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         int output = 0;
         
         if (_slave.hasChildren()) {
-            Iterator<ModuleDBO> iterator = _slave.getModules().iterator();
+            Iterator<ModuleDBO> iterator = _slave.getChildren().iterator();
             while (iterator.hasNext()) {
                 ModuleDBO module = iterator.next();
                 input += module.getInputSize();
@@ -735,10 +735,9 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         Collection<ModuleDBO> modules = (Collection<ModuleDBO>) _slave.getChildrenAsMap().values();
         for (ModuleDBO module : modules) {
             children.add(module);
-            Collection<ChannelStructureDBO> channelStructures = module.getChannelStructsAsMap()
-                    .values();
+            Collection<ChannelStructureDBO> channelStructures = module.getChildrenAsMap().values();
             for (ChannelStructureDBO channelStructure : channelStructures) {
-                Collection<ChannelDBO> channels = channelStructure.getChannelsAsMap().values();
+                Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
                 for (ChannelDBO channel : channels) {
                     children.add(channel);
                 }

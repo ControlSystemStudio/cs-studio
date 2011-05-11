@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -239,17 +238,6 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
         return getGSDFile().getGSDModule(getModuleNumber());
     }
     
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Set<ChannelStructureDBO> getChannelStructs() {
-        return (Set<ChannelStructureDBO>) getChildren();
-    }
-    
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Map<Short, ChannelStructureDBO> getChannelStructsAsMap() throws PersistenceException {
-        return (Map<Short, ChannelStructureDBO>) getChildrenAsMap();
-    }
     
     @ManyToOne
     public SlaveDBO getSlave() {
@@ -297,27 +285,11 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
         try {
             GsdModuleModel2 module = getSlave().getGSDFile().getParsedGsdFileModel()
                     .getModule(getModuleNumber());
-            //            if (module == null) {
-            //                module = getSlave().getGSDFile().getParsedGsdFileModel().getModule(getModuleNumber());
-            //            }
             return module;
         } catch (NullPointerException e) {
             return null;
         }
     }
-    
-    //    @Transient
-    //    public GsdModuleModel getGsdModuleModel() {
-    //        try {
-    //            HashMap<Integer, GsdModuleModel> gsdModuleList = getSlave().getGSDSlaveData().getGsdModuleList();
-    //            if (gsdModuleList.containsKey(getModuleNumber())) {
-    //                return gsdModuleList.get(getModuleNumber());
-    //            }
-    //            return gsdModuleList.values().iterator().next();
-    //        } catch (NullPointerException e) {
-    //            return null;
-    //        }
-    //    }
     
     @Transient
     public short getMaxOffset() throws IOException {
@@ -347,7 +319,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final SlaveDBO parentNode) throws PersistenceException {
+    public ModuleDBO copyParameter(final SlaveDBO parentNode) throws PersistenceException {
         SlaveDBO slave = parentNode;
         ModuleDBO copy = new ModuleDBO(slave);
         copy.setModuleNumber(getModuleNumber());
@@ -376,9 +348,9 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
         input = 0;
         output = 0;
         
-        Set<ChannelStructureDBO> channelStructs = getChannelStructs();
+        Set<ChannelStructureDBO> channelStructs = getChildren();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            Set<ChannelDBO> channels = channelStructure.getChannels();
+            Set<ChannelDBO> channels = channelStructure.getChildren();
             for (ChannelDBO channel : channels) {
                 if(channel.isInput()) {
                     input += channel.getChannelType().getBitSize();
@@ -403,9 +375,9 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     @Transient
     public Set<ChannelDBO> getPureChannels() {
         Set<ChannelDBO> result = new HashSet<ChannelDBO>();
-        for (ChannelStructureDBO s : getChannelStructs()) {
+        for (ChannelStructureDBO s : getChildren()) {
             if(s.isSimple()) {
-                result.addAll(s.getChannels());
+                result.addAll(s.getChildren());
             }
         }
         return result;
@@ -433,6 +405,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.MODULE;
     }
@@ -441,6 +414,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @return The Name of this Node.
      */
     @Override
+    @Nonnull
     public String toString() {
         StringBuffer sb = new StringBuffer();
         if(getSortIndex() != null) {

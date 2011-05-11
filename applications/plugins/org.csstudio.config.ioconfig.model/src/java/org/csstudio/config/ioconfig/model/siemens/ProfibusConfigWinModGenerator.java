@@ -183,7 +183,7 @@ public class ProfibusConfigWinModGenerator {
         } catch (IOException e) {
             throw new PersistenceException(e);
         }
-		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChannelStructsAsMap();
+		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChildrenAsMap();
 		Set<Short> keySet = channelStructsAsMap.keySet();
 		for (Short key : keySet) {
 			createChannel(channelStructsAsMap.get(key));
@@ -195,7 +195,7 @@ public class ProfibusConfigWinModGenerator {
 	 * @throws PersistenceException 
 	 */
 	private void createChannel(ChannelStructureDBO channelStructureDBO) throws PersistenceException {
-		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChannelsAsMap();
+		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChildrenAsMap();
 		Set<Short> keySet = channelsAsMap.keySet();
 		for (Short key : keySet) {
 			ChannelDBO channelDBO = channelsAsMap.get(key);
