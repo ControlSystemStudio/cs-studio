@@ -49,8 +49,6 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LDAPReader;
@@ -67,6 +65,8 @@ import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -79,8 +79,8 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public final class LdapServiceImpl implements ILdapService {
 
-    static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceImpl.class);
-
+    static final Logger LOG = LoggerFactory.getLogger(LdapServiceImpl.class);
+    
     /**
      * DirContext Holder to prevent accidental direct access to DirContext field.
      *
@@ -101,7 +101,7 @@ public final class LdapServiceImpl implements ILdapService {
                 try {
                     ldapConnector = new LDAPConnector();
                 } catch (final NamingException e) {
-                    LOG.fatal("Engine.run - connection to LDAP server failed", e);
+                    LOG.error("Engine.run - connection to LDAP server failed", e);
                     return null;
                 }
 
@@ -110,7 +110,7 @@ public final class LdapServiceImpl implements ILdapService {
                 if (_context != null) {
                     LOG.info("Engine.run - successfully connected to LDAP server");
                 } else {
-                    LOG.fatal("Engine.run - context creation for LDAP server failed");
+                    LOG.error("Engine.run - context creation for LDAP server failed");
                 }
             }
             return _context;
@@ -129,8 +129,7 @@ public final class LdapServiceImpl implements ILdapService {
             try {
                 _context = new InitialLdapContext(env, null);
             } catch (final NamingException e) {
-                LOG.error("Re-initialization of LDAP context failed.\n" +
-                          "Preferences:\n" + ldapPrefs);
+                LOG.error("Re-initialization of LDAP context failed.\nPreferences:\n{}",  ldapPrefs);
                 return false;
             }
 
@@ -264,7 +263,7 @@ public final class LdapServiceImpl implements ILdapService {
         boolean removeComponent(@Nonnull final T configurationRoot,
                                 @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException {
 
-        LOG.debug("Remove entry incl. subtree:\n" + component.toString());
+        LOG.debug("Remove entry incl. subtree:\n{}", component.toString());
 
         // get complete subtree of 'oldLdapName' and create model
         final LdapSearchResult result =
@@ -273,8 +272,8 @@ public final class LdapServiceImpl implements ILdapService {
                                               SearchControls.SUBTREE_SCOPE);
 
         if (result == null || result.getAnswerSet().isEmpty()) {
-            LOG.debug("LDAP query returned empty or null result for component " + component.toString() +
-                      "\nand filter " + any(ATTR_FIELD_OBJECT_CLASS));
+            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}", 
+                      component.toString(), any(ATTR_FIELD_OBJECT_CLASS));
             return false;
         }
 
@@ -286,7 +285,7 @@ public final class LdapServiceImpl implements ILdapService {
         // retrieve component from model
         INodeComponent<T> childByLdapName = model.getChildByLdapName(component.toString());
         if (childByLdapName == null) {
-            LOG.debug("Model does not contain entry for component " + component.toString());
+            LOG.debug("Model does not contain entry for component {}", component.toString());
             return false;
         }
 
@@ -311,7 +310,7 @@ public final class LdapServiceImpl implements ILdapService {
             LOG.error("LDAP context is null.");
             return;
         }
-        LOG.debug("Modify entry for: " + name);
+        LOG.debug("Modify entry for: {}", name);
         context.modifyAttributes(name, mods);
     }
 
@@ -326,7 +325,7 @@ public final class LdapServiceImpl implements ILdapService {
             LOG.error("LDAP context is null.");
             return;
         }
-        LOG.info("Rename entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
+        LOG.info("Rename entry from:\n{}\nto\n{}", oldLdapName.toString(), newLdapName.toString());
         context.rename(oldLdapName, newLdapName);
     }
 

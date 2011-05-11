@@ -36,8 +36,6 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
@@ -49,6 +47,8 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
 import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builds a content model from LDAP.
@@ -62,8 +62,8 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
 public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T>
         implements ILdapContentModelBuilder<T> {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapContentModelBuilder.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(LdapContentModelBuilder.class);
+    
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
 

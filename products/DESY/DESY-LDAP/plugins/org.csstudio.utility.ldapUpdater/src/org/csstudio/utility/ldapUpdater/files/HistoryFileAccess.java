@@ -35,10 +35,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -57,7 +57,7 @@ import org.csstudio.platform.logging.CentralLogger;
 @Deprecated
 public class HistoryFileAccess {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(HistoryFileAccess.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HistoryFileAccess.class);
 
     /**
      * Constructor.
@@ -83,9 +83,9 @@ public class HistoryFileAccess {
             model = processLineByLine(model, fr);
             fr.close();
         } catch (final FileNotFoundException e) {
-            LOG.error ("Error : File not Found(r) : " + filePath );
+            LOG.error ("Error : File not Found(r) : {}", filePath );
         } catch (final IOException e) {
-            LOG.error ("I/O-Exception while handling " + filePath );
+            LOG.error ("I/O-Exception while handling {}", filePath );
         } finally {
             try {
                 if (fr != null) {
@@ -171,8 +171,7 @@ public class HistoryFileAccess {
             fw.flush();
             fw.close();
         } catch (final IOException e) {
-            LOG.error("I/O-Exception while trying to append a line to "
-                         + HISTORY_DAT_FILEPATH.getValue());
+            LOG.error("I/O-Exception while trying to append a line to {}", HISTORY_DAT_FILEPATH.getValue());
         }
     }
 }

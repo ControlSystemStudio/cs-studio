@@ -40,10 +40,8 @@ import javax.naming.directory.Attribute;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
@@ -61,6 +59,8 @@ import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -75,8 +75,8 @@ import com.google.inject.Inject;
  */
 public final class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
-    public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterServiceImpl.class);
 
     /**
      * Update Result.

@@ -35,8 +35,9 @@ import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Generic content model to capture arbitrary LDAP tree structures.
@@ -49,8 +50,8 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ContentModel.class);
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ContentModel.class);
     /**
      * A type object to give access to the type specific functionality of the tree components.
      */

@@ -33,8 +33,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
@@ -45,6 +43,8 @@ import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -56,7 +56,7 @@ public class IocEnumeration implements IDynamicParameterValues {
 
     private static final CommandParameterEnumValue[] EMPTY_VALUES = new CommandParameterEnumValue[] {};
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(IocEnumeration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IocEnumeration.class);
 
     private ILdapUpdaterService _service;
 

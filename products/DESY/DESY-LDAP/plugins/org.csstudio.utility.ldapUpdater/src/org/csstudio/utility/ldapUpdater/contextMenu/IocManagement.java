@@ -26,8 +26,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -39,6 +37,8 @@ import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModifi
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -48,7 +48,7 @@ import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
  */
 public class IocManagement implements IManagementCommand {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(IocManagement.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IocManagement.class);
     private ILdapUpdaterService _service;
     private ILdapUpdaterFileService _fileService;
 
@@ -78,7 +78,7 @@ public class IocManagement implements IManagementCommand {
         try {
             return commandDispatchAndExecute(command, value);
         } catch (final LdapUpdaterServiceException e) {
-            LOG.error("Command " + command + " failed due to exception.", e);
+            LOG.error("Command failed due to exception.", e);
             return CommandResult.createFailureResult("Internal LDAP Exception: " + command + " failed.\n" + e.getMessage());
         }
     }

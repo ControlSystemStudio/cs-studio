@@ -33,8 +33,6 @@ import java.util.Enumeration;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.builder.TestTreeConfiguration;
 import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderHeadlessTest;
 import org.custommonkey.xmlunit.Diff;
@@ -60,10 +58,7 @@ import org.xml.sax.SAXException;
  * @since 05.07.2010
  */
 public class ContentModelExporterHeadlessTest {
-    @SuppressWarnings("unused")
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ContentModelExporterHeadlessTest.class);
-
+    
     private static final String TEST_EXPORT_XML = "Test_Export.xml";
     private static final String TEST_DTD = "test.dtd";
 

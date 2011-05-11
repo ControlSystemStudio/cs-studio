@@ -37,9 +37,7 @@ import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -57,6 +55,8 @@ import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -72,8 +72,7 @@ import com.google.common.collect.Collections2;
  */
 public class UpdateLdapAction implements IManagementCommand {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(UpdateLdapAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateLdapAction.class);
 
     private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
 
@@ -112,7 +111,7 @@ public class UpdateLdapAction implements IManagementCommand {
             try {
                 updateLdapFromIOCFiles();
             } catch (final Exception e) {
-                LOG.error("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater", e);
+                LOG.error("Exception while running ldapUpdater", e);
                 return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
 
             } finally {
@@ -197,7 +196,7 @@ public class UpdateLdapAction implements IManagementCommand {
 
     private void handleIocEntriesInHistoryFileNotPresentInLdap(@Nonnull final Set<String> iocsFromHistFileNotInLdap) {
         for (final String ioc : iocsFromHistFileNotInLdap) {
-            LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");
+            LOG.warn("IOC {} found in history file is not present in LDAP!", ioc);
         }
     }
 
@@ -205,7 +204,7 @@ public class UpdateLdapAction implements IManagementCommand {
         final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
 
         for (final INodeComponent<LdapEpicsControlsConfiguration> ioc : iocsFromLdapNotInFile) {
-            LOG.warn("IOC " + ioc.getName() + " from LDAP is not present in history file!");
+            LOG.warn("IOC {} from LDAP is not present in history file!", ioc.getName());
             getResponsiblePersonForIOC(ioc, missingIOCsPerPerson);
         }
 
@@ -226,8 +225,9 @@ public class UpdateLdapAction implements IManagementCommand {
             }
             iocsPerPerson.get(person).add(ioc.getName());
         } catch (final NamingException e) {
-            LOG.error("Attribute for " + LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
-                      " in IOC " + ioc.getName() + "could not be retrieved.");
+            LOG.error("Attribute for {} in IOC {} could not be retrieved.",
+                      LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON,
+                      ioc.getName());
         }
         return iocsPerPerson;
     }

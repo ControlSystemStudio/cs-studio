@@ -29,9 +29,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -44,6 +42,8 @@ import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;
 import org.csstudio.utility.treemodel.ContentModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Command to start the tidy up mechanism for LDAP.
@@ -54,7 +54,7 @@ import org.csstudio.utility.treemodel.ContentModel;
  */
 public class TidyUpLdapAction implements IManagementCommand {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(TidyUpLdapAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TidyUpLdapAction.class);
 
     private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
 
@@ -96,7 +96,7 @@ public class TidyUpLdapAction implements IManagementCommand {
 	                return CommandResult.createMessageResult("ldapUpdater is busy for max. 300 s (was probably started by timer). Try later!");
 	            }
 	        } catch (final Exception e) {
-	            LOG.error("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater", e);
+	            LOG.error("Exception while running ldapUpdater", e);
 	            return CommandResult.createFailureResult("\"" + e.getCause() + "\"" + "-" + "Exception while running ldapUpdater");
 	        } finally {
 	            UPDATER.setBusy(false);
