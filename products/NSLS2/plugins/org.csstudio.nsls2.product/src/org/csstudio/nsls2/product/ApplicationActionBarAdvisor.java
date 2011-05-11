@@ -1,7 +1,5 @@
 package org.csstudio.nsls2.product;
 
-import org.csstudio.platform.ui.internal.actions.LogoutAction;
-import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.nsls2.product.Activator;
 import org.csstudio.nsls2.product.Messages;
 import org.eclipse.jface.action.GroupMarker;
@@ -18,7 +16,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ContributionItemFactory;
-import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.part.CoolItemGroupMarker;
@@ -85,9 +82,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 		exportAction = ActionFactory.EXPORT.create(window);
 		register(exportAction);
-
-		logout = new LogoutAction(window);
-		register(logout);
 
 		quit = ActionFactory.QUIT.create(window);
 		register(quit);
