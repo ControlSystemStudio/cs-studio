@@ -4,6 +4,8 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 
+import java.awt.Color;
+
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
@@ -213,7 +215,8 @@ public class WaterfallWidget extends Composite {
 		setLastError(null);
 		
 		if (pvName != null && !pvName.trim().isEmpty()) {
-			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters);
+			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
+			plot = waterfallPlotOf(vDoubleArray(pvName)).with(parameters, WaterfallPlotParameters.backgroundColor(color));
 			parameters = plot.getParameters();
 			pv = PVManager.read(plot)
 				.andNotify(SWTUtil.onSWTThread()).atHz(50);
