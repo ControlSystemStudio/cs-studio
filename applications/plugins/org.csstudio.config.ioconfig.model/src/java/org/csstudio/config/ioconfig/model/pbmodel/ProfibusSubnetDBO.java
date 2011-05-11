@@ -2,6 +2,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -9,7 +10,6 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
@@ -26,7 +26,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 @Entity
 //@Table(name = "ddb_ProfibusSubnet")
 @Table(name = "ddb_Profibus_Subnet")
-public class ProfibusSubnetDBO extends AbstractNodeDBO {
+public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     /**
      * The highest accept station address.
@@ -402,9 +402,9 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
     }
 
     @Transient
-    @SuppressWarnings("unchecked")
+    @Nonnull
     public Set<MasterDBO> getProfibusDPMaster() {
-        return (Set<MasterDBO>) getChildren();
+        return getChildren();
     }
 
     /**
@@ -447,9 +447,8 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parent) throws PersistenceException {
-        if (parent instanceof IocDBO) {
-            IocDBO ioc = (IocDBO) parent;
+    public ProfibusSubnetDBO copyParameter(final IocDBO parent) throws PersistenceException {
+            IocDBO ioc = parent;
             ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
             copy.setDescription(getDescription());
             copy.setBaudRate(getBaudRate());
@@ -473,14 +472,12 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO {
             copy.setTtr(getTtr());
             copy.setWatchdog(getWatchdog());
             return copy;
-        }
-        return null;
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (AbstractNodeDBO node : getChildren()) {
+    public ProfibusSubnetDBO copyThisTo(final IocDBO parentNode) throws PersistenceException {
+        ProfibusSubnetDBO copy = super.copyThisTo(parentNode);
+        for (MasterDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }

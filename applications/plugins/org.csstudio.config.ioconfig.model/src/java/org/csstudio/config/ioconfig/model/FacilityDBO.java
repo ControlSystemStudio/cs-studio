@@ -40,7 +40,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "ddb_Facility")
-public class FacilityDBO extends AbstractNodeDBO {
+public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
 
     /**
      * Default Constructor needed by Hibernate.
@@ -65,7 +65,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Override
     @Nonnull 
-    public FacilityDBO copyParameter(@Nullable final NamedDBClass parent) {
+    public FacilityDBO copyParameter(@Nullable final VirtualRoot parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
         return copy;
@@ -77,9 +77,9 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Override
     @Nonnull
-    public FacilityDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
+    public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode) throws PersistenceException {
         final FacilityDBO copy = super.copyThisTo(parentNode);
-        for (final AbstractNodeDBO node : getChildren()) {
+        for (final IocDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
@@ -93,7 +93,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      *            facility can't have a parent!
      */
     @Override
-    public void setParent(@Nullable final AbstractNodeDBO parent) {
+    public void setParent(@Nullable final VirtualRoot parent) {
         // do nothing
     }
 

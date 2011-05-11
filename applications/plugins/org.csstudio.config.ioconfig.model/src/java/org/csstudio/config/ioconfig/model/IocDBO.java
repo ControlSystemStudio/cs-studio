@@ -42,7 +42,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
  */
 @Entity
 @Table(name = "ddb_Ioc")
-public class IocDBO extends AbstractNodeDBO {
+public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
 
     /**
      * Default Constructor needed by Hibernate.
@@ -79,7 +79,7 @@ public class IocDBO extends AbstractNodeDBO {
     @Transient
     @Nonnull
     public FacilityDBO getFacility() {
-        return (FacilityDBO) getParent();
+        return getParent();
     }
 
     /**
@@ -107,14 +107,11 @@ public class IocDBO extends AbstractNodeDBO {
      */
     @Override
     @CheckForNull
-    public IocDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
-        if (parentNode instanceof FacilityDBO) {
-            final FacilityDBO facility = (FacilityDBO) parentNode;
-            final IocDBO copy = new IocDBO(facility);
-            copy.setDescription(getDescription());
-            return copy;
-        }
-        return null;
+    public IocDBO copyParameter(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
+        final FacilityDBO facility = parentNode;
+        final IocDBO copy = new IocDBO(facility);
+        copy.setDescription(getDescription());
+        return copy;
     }
 
     /**
@@ -123,9 +120,9 @@ public class IocDBO extends AbstractNodeDBO {
      */
     @Override
     @Nonnull
-    public IocDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
+    public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
         final IocDBO copy = super.copyThisTo(parentNode);
-        for (final AbstractNodeDBO node : getChildren()) {
+        for (final ProfibusSubnetDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }

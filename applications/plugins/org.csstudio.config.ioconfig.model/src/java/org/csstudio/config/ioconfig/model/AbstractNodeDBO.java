@@ -22,6 +22,7 @@
 package org.csstudio.config.ioconfig.model;
 
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,13 +56,13 @@ import org.hibernate.annotations.Cascade;
  * @author $Author: hrickens $
  * @version $Revision: 1.4 $
  * @since 21.03.2007
+ * 
  */
-
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable<AbstractNodeDBO>,
-        IDocumentable, INode {
+public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> extends
+        NamedDBClass implements Comparable<AbstractNodeDBO>, IDocumentable, INode, Serializable {
     
     protected static final int DEFAULT_MAX_STATION_ADDRESS = 255;
     
@@ -74,19 +75,14 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     /**
      * The Node Patent.
      */
-    private AbstractNodeDBO _parent;
+    private P _parent;
     
     /**
      * The Version of the Node.
      */
     private int _version;
     
-    /**
-     * A set of all manipulated Node from this node.
-     */
-    private final Set<AbstractNodeDBO> _alsoChanfedNodes = new HashSet<AbstractNodeDBO>();
-    
-    private Set<AbstractNodeDBO> _children = new HashSet<AbstractNodeDBO>();
+    private Set<C> _children = new HashSet<C>();
     
     /**
      * A collection of documents that relate to this node.
@@ -109,7 +105,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @param parent
      *            set the Parent of this Node
      */
-    public void setParent(@Nonnull final AbstractNodeDBO parent) {
+    public void setParent(@Nonnull final P parent) {
         this._parent = parent;
     }
     
@@ -120,7 +116,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     @Override
     @ManyToOne
     @CheckForNull
-    public AbstractNodeDBO getParent() {
+    public P getParent() {
         return _parent;
     }
     
@@ -140,11 +136,11 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return the Children of this node.
      */
     @OneToMany(mappedBy = "parent", targetEntity = AbstractNodeDBO.class, fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE })
-    @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-            org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+            CascadeType.PERSIST, CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+            org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
     @Nonnull
-    public Set<? extends AbstractNodeDBO> getChildren() {
+    public Set<C> getChildren() {
         return _children;
     }
     
@@ -154,7 +150,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @param children
      *            The Children for this node.
      */
-    public void setChildren(@Nonnull final Set<AbstractNodeDBO> children) {
+    public void setChildren(@Nonnull final Set<C> children) {
         _children = children;
     }
     
@@ -167,11 +163,11 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     @CheckForNull
-    public <T extends AbstractNodeDBO> AbstractNodeDBO addChild(@Nonnull final T child) throws PersistenceException {
+    public C addChild(@Nonnull final C child) throws PersistenceException {
         short sortIndex = child.getSortIndex();
-        AbstractNodeDBO oldNode = getChildrenAsMap().get(sortIndex);
+        C oldNode = getChildrenAsMap().get(sortIndex);
         
-        if (oldNode != null && oldNode.equals(child)) {
+        if(oldNode != null && oldNode.equals(child)) {
             return null;
         }
         child.setParent(this);
@@ -179,7 +175,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         _children.add(child);
         
         while (oldNode != null) {
-            final AbstractNodeDBO node = oldNode;
+            final C node = oldNode;
             sortIndex++;
             oldNode = getChildrenAsMap().get(sortIndex);
             node.setSortIndexNonHibernate(sortIndex);
@@ -200,7 +196,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @param child
      *            the children that remove.
      */
-    public void removeChild(@Nonnull final AbstractNodeDBO child) {
+    public void removeChild(@Nonnull final C child) {
         _children.remove(child);
     }
     
@@ -218,10 +214,10 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      */
     @Transient
     @Nonnull
-    public Map<Short, ? extends AbstractNodeDBO> getChildrenAsMap() throws PersistenceException {
-        final Map<Short, AbstractNodeDBO> nodeMap = new TreeMap<Short, AbstractNodeDBO>();
-        if (hasChildren()) {
-            for (final AbstractNodeDBO child : getChildren()) {
+    public Map<Short, C> getChildrenAsMap() throws PersistenceException {
+        final Map<Short, C> nodeMap = new TreeMap<Short, C>();
+        if(hasChildren()) {
+            for (final C child : getChildren()) {
                 nodeMap.put(child.getSortIndex(), child);
             }
         }
@@ -237,17 +233,17 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      */
     @Transient
     public short getfirstFreeStationAddress(final int maxStationAddress) throws PersistenceException {
-        final Map<Short, ? extends AbstractNodeDBO> children = getChildrenAsMap();
+        final Map<Short, C> children = getChildrenAsMap();
         Short nextKey = 0;
-        if (!children.containsKey(nextKey)) {
+        if(!children.containsKey(nextKey)) {
             return nextKey;
         }
         final Set<Short> descendingKeySet = children.keySet();
         for (final Short key : descendingKeySet) {
-            if (key - nextKey > 1) {
+            if(key - nextKey > 1) {
                 return (short) (nextKey + 1);
             }
-            if (key >= 0) {
+            if(key >= 0) {
                 nextKey = key;
             }
         }
@@ -277,7 +273,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return Documents for the Node.
      */
     @Override
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     //    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     @Nonnull
@@ -300,9 +296,9 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return this Node.
      */
     @Nonnull
-    public AbstractNodeDBO addDocument(@Nonnull final DocumentDBO document) {
+    public void addDocument(@Nonnull final DocumentDBO document) {
         this._documents.add(document);
-        return this;
+//        return this;
     }
     
     /**
@@ -329,9 +325,9 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     public void setSortIndexNonHibernate(final int i) throws PersistenceException {
-        if (getSortIndex() != i) {
+        if(getSortIndex() != i) {
             setSortIndex(i);
-            if (getSortIndex() >= 0) {
+            if(getSortIndex() >= 0) {
                 localUpdate();
             }
         }
@@ -365,14 +361,14 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     public void moveSortIndex(final int toIndex) throws PersistenceException {
         short index = this.getSortIndex();
         short toIdx = (short) toIndex;
-        if (toIdx == index) {
+        if(toIdx == index) {
             return;
         }
-        if (getParent() == null) {
+        if(getParent() == null) {
             setSortIndexNonHibernate(toIdx);
             return;
         }
-        if (index == -1) {
+        if(index == -1) {
             putNewNode(index, toIdx);
         } else {
             moveNode(index, toIdx);
@@ -389,16 +385,17 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         short direction = 1;
         // Move a exist Node
         int start = index;
-        AbstractNodeDBO parent = getParent();
-        if (parent != null) {
-            final AbstractNodeDBO moveNode = parent.getChildrenAsMap().get(index);
-            if (index > toIdx) {
+        P parent = getParent();
+        if(parent != null) {
+            Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = parent
+                    .getChildrenAsMap();
+            final AbstractNodeDBO moveNode = childrenAsMap.get(index);
+            if(index > toIdx) {
                 direction = -1;
             }
             for (; start != toIdx; start += direction) {
-                final AbstractNodeDBO nextNode = parent.getChildrenAsMap()
-                        .get((short) (start + direction));
-                if (nextNode != null) {
+                final AbstractNodeDBO nextNode = childrenAsMap.get((short) (start + direction));
+                if(nextNode != null) {
                     nextNode.setSortIndexNonHibernate(start);
                 }
             }
@@ -416,39 +413,21 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         short direction = 1;
         short idx = index;
         // Put a new Node in.
-        if (idx > toIndex) {
+        if(idx > toIndex) {
             direction = -1;
         }
         AbstractNodeDBO node = this;
         idx = toIndex;
-        AbstractNodeDBO parent = getParent();
-        if (parent != null) {
+        P parent = getParent();
+        if(parent != null) {
             Map<Short, ? extends AbstractNodeDBO> childrenAsMap = parent.getChildrenAsMap();
             do {
                 final AbstractNodeDBO nextNode = childrenAsMap.get(idx);
-                
                 node.setSortIndexNonHibernate(idx);
                 node = nextNode;
                 idx = (short) (idx + direction);
             } while (node != null);
         }
-    }
-    
-    /**
-     * @param oldNode
-     *            a node that a manipulated.
-     */
-    @Transient
-    public void addAlsoChangedNodes(@Nonnull final AbstractNodeDBO oldNode) {
-        _alsoChanfedNodes.add(oldNode);
-    }
-    
-    /**
-     *
-     */
-    @Transient
-    public void clearAlsoChangedNodes() {
-        _alsoChanfedNodes.clear();
     }
     
     @Deprecated
@@ -472,11 +451,11 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     @Nonnull
-    public <T extends AbstractNodeDBO> T copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
+    public <T extends AbstractNodeDBO> T copyThisTo(@Nonnull final P parentNode) throws PersistenceException {
         String createdBy = "Unknown";
         try {
             final User user = SecurityFacade.getInstance().getCurrentUser();
-            if (user != null) {
+            if(user != null) {
                 createdBy = user.getUsername();
             }
         } catch (final NullPointerException e) {
@@ -491,7 +470,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
         copy.setName("Copy of " + getName());
         //        copy.setName(getName());
         copy.setVersion(getVersion());
-        if (parentNode != null) {
+        if(parentNode != null) {
             parentNode.localUpdate();
         }
         return copy;
@@ -516,7 +495,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     @Nonnull
-    protected abstract <T extends AbstractNodeDBO> T copyParameter(@Nonnull NamedDBClass parent) throws PersistenceException;
+    protected abstract <T extends AbstractNodeDBO> T copyParameter(@Nonnull P parent) throws PersistenceException;
     
     /**
      * Save his self.
@@ -539,12 +518,12 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     public void update() throws PersistenceException {
-        if (isRootNode()) {
+        if(isRootNode()) {
             localUpdate();
             updateChildrenOf(this);
         } else {
-            AbstractNodeDBO parent = getParent();
-            if(parent!=null) {
+            P parent = getParent();
+            if(parent != null) {
                 updateChildrenOf(parent);
             }
         }
@@ -556,7 +535,9 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @throws PersistenceException 
      */
     protected void updateChildrenOf(@Nonnull final AbstractNodeDBO parent) throws PersistenceException {
-        for (final AbstractNodeDBO n : parent.getChildrenAsMap().values()) {
+        Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = parent
+                .getChildrenAsMap();
+        for (final AbstractNodeDBO n : childrenAsMap.values()) {
             n.localUpdate();
             updateChildrenOf(n);
         }
@@ -576,10 +557,10 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      */
     @Transient
     public void assembleEpicsAddressString() throws PersistenceException {
-        for (final AbstractNodeDBO node : getChildren()) {
-            if (node != null) {
+        for (final C node : getChildren()) {
+            if(node != null) {
                 node.assembleEpicsAddressString();
-                if (node.isDirty()) {
+                if(node.isDirty()) {
                     node.save();
                 }
             }
@@ -596,15 +577,15 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     @Override
     public int compareTo(@CheckForNull final AbstractNodeDBO other) {
         
-        if (other == null) {
+        if(other == null) {
             return -1;
         }
         
-        if (this.getClass() != other.getClass()) {
+        if(this.getClass() != other.getClass()) {
             return -1;
         }
         int compare = getId() - other.getId();
-        if (compare == 0 && getId() == 0) {
+        if(compare == 0 && getId() == 0) {
             compare = this.getSortIndex() - other.getSortIndex();
         }
         return compare;
@@ -616,21 +597,21 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     @Override
     public boolean equals(@CheckForNull final Object obj) {
         // TODO (hrickens) : check whether this method does what is intended - do we need hashcode as well?
-        if (super.equals(obj)) {
+        if(super.equals(obj)) {
             return true;
         }
-        if (obj == null) {
+        if(obj == null) {
             return false;
         }
-        if (this.getClass() != obj.getClass()) {
+        if(this.getClass() != obj.getClass()) {
             return false;
         }
         
-        if (obj instanceof AbstractNodeDBO) {
+        if(obj instanceof AbstractNodeDBO) {
             
             final AbstractNodeDBO other = (AbstractNodeDBO) obj;
-            if (getId() == other.getId()) {
-                if (getId() > 0) {
+            if(getId() == other.getId()) {
+                if(getId() > 0) {
                     return true;
                 }
                 return false;

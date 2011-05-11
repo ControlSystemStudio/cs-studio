@@ -70,7 +70,7 @@ public class UserPrmDataUnitTest {
     }
     
     @Test
-    public void UserPrmBIMF5861DataTest() throws Exception {
+    public void userPrmBIMF5861DataTest() throws Exception {
         List<Integer> expected = Arrays.asList(0,1,0,55,0,19,0,0,0,1,1);
         _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
         AbstractGsdPropertyModel parsedGsdFileModel = _BIMF5861.getParsedGsdFileModel();

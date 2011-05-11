@@ -43,7 +43,6 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
@@ -61,7 +60,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
-public class SlaveDBO extends AbstractNodeDBO {
+public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     /**
      * Vendor name of slave.
      */
@@ -182,12 +181,12 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @throws IOException 
      */
     public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) throws IOException {
-        if (gsdFile == null) {
+        if(gsdFile == null) {
             _gsdFile = gsdFile;
-        } else if (!gsdFile.equals(_gsdFile)) {
+        } else if(!gsdFile.equals(_gsdFile)) {
             GSDFileDBO oldGDS = _gsdFile;
             _gsdFile = gsdFile;
-            if (!fill()) {
+            if(!fill()) {
                 _gsdFile = oldGDS;
             }
         }
@@ -316,11 +315,11 @@ public class SlaveDBO extends AbstractNodeDBO {
         Integer minSlaveIntervall;
         try {
             GSDFileDBO gsdFile = getGSDFile();
-            if (gsdFile != null) {
+            if(gsdFile != null) {
                 ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-                if (parsedGsdFileModel != null) {
+                if(parsedGsdFileModel != null) {
                     minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
-                    if (minSlaveIntervall != null) {
+                    if(minSlaveIntervall != null) {
                         minTsdrSet.add(minSlaveIntervall);
                     }
                 }
@@ -351,7 +350,7 @@ public class SlaveDBO extends AbstractNodeDBO {
     
     public void setPrmUserData(@Nonnull final String prmUserData) {
         // System.out.println("prmUserData in:  " + prmUserData);
-        if (prmUserData != null) {
+        if(prmUserData != null) {
             String[] split = prmUserData.split(",");
             _prmUserDataList = new ArrayList<Integer>();
             for (String value : split) {
@@ -380,7 +379,7 @@ public class SlaveDBO extends AbstractNodeDBO {
          * Read GSD-File
          */
         GSDFileDBO gsdFile = getGSDFile();
-        if (gsdFile == null) {
+        if(gsdFile == null) {
             return false;
         }
         
@@ -390,7 +389,7 @@ public class SlaveDBO extends AbstractNodeDBO {
         /*
          * Head
          */
-        if (parsedGsdFileModel != null) {
+        if(parsedGsdFileModel != null) {
             setVersion(parsedGsdFileModel.getGsdRevision());
             
             /*
@@ -426,7 +425,7 @@ public class SlaveDBO extends AbstractNodeDBO {
             //            }
             
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
-            if (_maxSize < 1) {
+            if(_maxSize < 1) {
                 return false;
             }
             
@@ -463,35 +462,32 @@ public class SlaveDBO extends AbstractNodeDBO {
      */
     @Override
     @CheckForNull
-    public SlaveDBO copyParameter(@Nullable final NamedDBClass parentNode) throws PersistenceException {
-        if (parentNode instanceof MasterDBO) {
-            MasterDBO master = (MasterDBO) parentNode;
-            SlaveDBO copy = new SlaveDBO(master);
-            copy.setFdlAddress(getFdlAddress());
-            copy.setGroupIdent(getGroupIdent());
-            try {
-                copy.setGSDFile(getGSDFile());
-            } catch (IOException e) {
-                throw new PersistenceException(e);
-            }
-            copy.setMinTsdr(getMinTsdr());
-            copy.setModelName(getModelName());
-            copy.setPrmUserData(getPrmUserData());
-            copy.setProfibusPNoID(getProfibusPNoID());
-            copy.setRevision(getRevision());
-            copy.setSlaveFlag(getSlaveFlag());
-            copy.setSlaveType(getSlaveType());
-            copy.setStationStatus(getStationStatus());
-            copy.setVendorName(getVendorName());
-            copy.setWdFact1(getWdFact1());
-            copy.setWdFact2(getWdFact2());
-            for (AbstractNodeDBO node : getChildren()) {
-                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
-                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
-            }
-            return copy;
+    public SlaveDBO copyParameter(@Nullable final MasterDBO parentNode) throws PersistenceException {
+        MasterDBO master = parentNode;
+        SlaveDBO copy = new SlaveDBO(master);
+        copy.setFdlAddress(getFdlAddress());
+        copy.setGroupIdent(getGroupIdent());
+        try {
+            copy.setGSDFile(getGSDFile());
+        } catch (IOException e) {
+            throw new PersistenceException(e);
         }
-        return null;
+        copy.setMinTsdr(getMinTsdr());
+        copy.setModelName(getModelName());
+        copy.setPrmUserData(getPrmUserData());
+        copy.setProfibusPNoID(getProfibusPNoID());
+        copy.setRevision(getRevision());
+        copy.setSlaveFlag(getSlaveFlag());
+        copy.setSlaveType(getSlaveType());
+        copy.setStationStatus(getStationStatus());
+        copy.setVendorName(getVendorName());
+        copy.setWdFact1(getWdFact1());
+        copy.setWdFact2(getWdFact2());
+        for (AbstractNodeDBO node : getChildren()) {
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
+        }
+        return copy;
     }
     
     /**
@@ -505,23 +501,23 @@ public class SlaveDBO extends AbstractNodeDBO {
     @Override
     public void moveSortIndex(final int toIndex) throws PersistenceException {
         short index = (short) toIndex;
-        if (index == getSortIndex()) {
+        if(index == getSortIndex()) {
             // no new Address don't move
             return;
         }
-        if (getParent() == null) {
+        if(getParent() == null) {
             // Have no Parent
             setSortIndexNonHibernate(index);
             CentralLogger.getInstance().warn(this, "Slave has no Parent!");
             return;
         }
-        if (index < 0) {
+        if(index < 0) {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         // Move a exist Node
         AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(index);
-        if (moveNode != null) {
-            moveNode.moveSortIndex((index + 1));
+        if(moveNode != null) {
+            moveNode.moveSortIndex( (index + 1));
         }
         setSortIndexNonHibernate(index);
     }

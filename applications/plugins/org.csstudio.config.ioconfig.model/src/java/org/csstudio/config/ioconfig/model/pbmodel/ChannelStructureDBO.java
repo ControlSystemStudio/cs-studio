@@ -35,8 +35,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.hibernate.annotations.BatchSize;
@@ -50,7 +50,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel_Structure")
-public class ChannelStructureDBO extends AbstractNodeDBO implements IStructured {
+public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> implements IStructured {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private String _structureType;
@@ -256,7 +256,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO implements IStructured 
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
+    public AbstractNodeDBO copyThisTo(final ModuleDBO parentNode) throws PersistenceException {
         AbstractNodeDBO copy = super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
@@ -267,20 +267,20 @@ public class ChannelStructureDBO extends AbstractNodeDBO implements IStructured 
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
-        if (parentNode instanceof ModuleDBO) {
-            ModuleDBO module = (ModuleDBO) parentNode;
-            ChannelStructureDBO copy = new ChannelStructureDBO(module, isSimple(), true,
-                    getStructureType(), getName());
-            copy.setSortIndex((int)getSortIndex());
-            copy.removeAllChild();
-            for (AbstractNodeDBO node : getChildrenAsMap().values()) {
-                AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
-                childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
-            }
-            return copy;
+    public AbstractNodeDBO copyParameter(final ModuleDBO parentNode) throws PersistenceException {
+        ModuleDBO module = parentNode;
+        ChannelStructureDBO copy = new ChannelStructureDBO(module,
+                                                           isSimple(),
+                                                           true,
+                                                           getStructureType(),
+                                                           getName());
+        copy.setSortIndex((int) getSortIndex());
+        copy.removeAllChild();
+        for (AbstractNodeDBO node : getChildrenAsMap().values()) {
+            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
-        return null;
+        return copy;
     }
 
     @Override

@@ -313,7 +313,7 @@ public class ChannelTest {
     }
 
     @Test
-    public void TestInput() {
+    public void testInput() {
         final ChannelDBO out = new ChannelDBO();
         out.setInput(true);
         assertTrue(out.isInput());
@@ -1446,7 +1446,7 @@ public class ChannelTest {
      *
      */
     @Test
-    public void TestAllChannelCombinations() throws PersistenceException {
+    public void allChannelCombinationsTest() throws PersistenceException {
         _slave.moveSortIndex((short) 123);
         _slave.localSave();
         assertEquals("@Subnet:123", _slave.getEpicsAdressString());

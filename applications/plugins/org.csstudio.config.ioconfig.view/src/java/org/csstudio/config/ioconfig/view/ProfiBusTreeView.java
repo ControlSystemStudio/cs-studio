@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -1009,8 +1010,8 @@ public class ProfiBusTreeView extends Composite {
             if (isMove()) {
                 AbstractNodeDBO oldParent = node2Copy.getParent();
                 oldParent.removeChild(node2Copy);
-                AbstractNodeDBO node = selectedNode.getChildrenAsMap()
-                        .get(node2Copy.getSortIndex());
+                Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = selectedNode.getChildrenAsMap();
+                AbstractNodeDBO node = childrenAsMap.get(node2Copy.getSortIndex());
                 if (node != null) {
                     int freeStationAddress = selectedNode
                             .getfirstFreeStationAddress(AbstractNodeDBO.MAX_STATION_ADDRESS);
