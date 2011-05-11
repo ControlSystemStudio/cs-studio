@@ -1,6 +1,6 @@
 package org.csstudio.cagateway;
 
-import org.csstudio.cagateway.preferences.Preference;
+import org.csstudio.cagateway.preferences.CAGatewayPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -23,9 +23,9 @@ public class CaGateway implements IApplication, IGenericServiceListener<ISession
  
 
     public void bindService(ISessionService sessionService) {
-        String username = Preference.XMPP_USER_NAME.getValue();
-        String password = Preference.XMPP_PASSWORD.getValue();
-        String server = Preference.XMPP_SERVER_NAME.getValue();
+        String username = CAGatewayPreference.XMPP_USER_NAME.getValue();
+        String password = CAGatewayPreference.XMPP_PASSWORD.getValue();
+        String server = CAGatewayPreference.XMPP_SERVER_NAME.getValue();
     	
     	try {
 			sessionService.connect(username, password, server);

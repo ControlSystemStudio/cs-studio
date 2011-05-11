@@ -31,7 +31,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.csstudio.cagateway.PreferenceProperties;
-import org.csstudio.cagateway.preferences.Preference;
+import org.csstudio.cagateway.preferences.CAGatewayPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
@@ -97,26 +97,9 @@ public enum JmsMessage {
 		/*
 		 * get preferences
 		 */
-//		final IPreferencesService prefs = Platform.getPreferencesService();
-//	    final String jmsTimeToLiveAlarms = prefs.getString(Activator.getDefault().getPluginId(),
-//	    		PreferenceConstants.JMS_TIME_TO_LIVE_ALARMS, "", null);
-//	    final String jmsTimeToLiveLogs = prefs.getString(Activator.getDefault().getPluginId(),
-//	    		PreferenceConstants.JMS_TIME_TO_LIVE_LOGS, "", null);
-//	    final String jmsTimeToLivePutLogs = prefs.getString(Activator.getDefault().getPluginId(),
-//	    		PreferenceConstants.JMS_TIME_TO_LIVE_PUT_LOGS, "", null);
-		
-//        final int jmsTimeToLiveAlarmsInt = 3600000;
-//		final int jmsTimeToLiveLogsInt = 600000;
-//		final int jmsTimeToLivePutLogsInt = 3600000;
-		
-		final IPreferencesService prefs = Platform.getPreferencesService();
-	    final String jmsTimeToLiveAlarms = Preference.JMS_TIME_TO_LIVE_ALARMS.getValue();
-	    final String jmsTimeToLiveLogs = Preference.JMS_TIME_TO_LIVE_LOGS.getValue();
-	    final String jmsTimeToLivePutLogs = Preference.JMS_TIME_TO_LIVE_PUT_LOGS.getValue();
-
-        final int jmsTimeToLiveAlarmsInt = Integer.parseInt(jmsTimeToLiveAlarms);
-		final int jmsTimeToLiveLogsInt = Integer.parseInt(jmsTimeToLiveLogs);
-		final int jmsTimeToLivePutLogsInt = Integer.parseInt(jmsTimeToLivePutLogs);
+	    final Integer jmsTimeToLiveAlarms = CAGatewayPreference.JMS_TIME_TO_LIVE_ALARMS.getValue();
+	    final Integer jmsTimeToLiveLogs = CAGatewayPreference.JMS_TIME_TO_LIVE_LOGS.getValue();
+	    final Integer jmsTimeToLivePutLogs = CAGatewayPreference.JMS_TIME_TO_LIVE_PUT_LOGS.getValue();
 
 		try {
 
@@ -126,21 +109,21 @@ public enum JmsMessage {
 				 */
 				session = createJmsSession();
 				jmsContext = PreferenceProperties.JMS_ALARM_CONTEXT;
-				jmsTimeToLive = jmsTimeToLiveAlarmsInt;
+				jmsTimeToLive = jmsTimeToLiveAlarms;
 			} else if ( messageType == JMS_MESSAGE_TYPE_LOG) {
 				/*
 				 * get JMS alarm connection from InterconnectionServer class
 				 */
 				session = createJmsSession();
 				jmsContext = PreferenceProperties.JMS_LOG_CONTEXT;
-				jmsTimeToLive = jmsTimeToLiveLogsInt;
+				jmsTimeToLive = jmsTimeToLiveLogs;
 			} else if ( messageType == JMS_MESSAGE_TYPE_PUT_LOG) {
 				/*
 				 * get JMS alarm connection from InterconnectionServer class
 				 */
 				session = createJmsSession();
 				jmsContext = PreferenceProperties.JMS_PUT_LOG_CONTEXT;
-				jmsTimeToLive = jmsTimeToLivePutLogsInt;
+				jmsTimeToLive = jmsTimeToLivePutLogs;
 			}
 
 	        // Create the destination (Topic or Queue)
