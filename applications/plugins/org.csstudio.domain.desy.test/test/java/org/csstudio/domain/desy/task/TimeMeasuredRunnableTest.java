@@ -34,7 +34,7 @@ import org.junit.Test;
 public class TimeMeasuredRunnableTest {
     
     /**
-     * TODO (bknerr) : 
+     * Test time provider.
      * 
      * @author bknerr
      * @since 11.05.2011
@@ -48,6 +48,13 @@ public class TimeMeasuredRunnableTest {
                                          30 // end second run
                                          };
         
+        /**
+         * Constructor.
+         */
+        public TestTimeProviderImplementation() {
+            // Empty
+        }
+
         @Override
         public long getCurrentTimeInNanos() {
             return (long) (getCurrentTimeInMillis()*1e6);
@@ -60,7 +67,7 @@ public class TimeMeasuredRunnableTest {
     }
 
     @Test
-    public void testTwo() {
+    public void testRunnableStatistics() {
         final ICurrentTimeProvider provider = 
             new TestTimeProviderImplementation();
         
