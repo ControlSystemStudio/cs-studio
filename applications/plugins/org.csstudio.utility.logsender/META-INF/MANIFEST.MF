@@ -9,4 +9,5 @@ Require-Bundle: org.csstudio.platform,
  org.eclipse.ui.workbench,
  org.eclipse.ui,
  org.csstudio.platform.ui,
- org.junit4
+ org.junit4,
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16"

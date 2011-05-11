@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class DocumentShell extends Dialog {
 
-    private final DocumentContend _documentContendFactory;
+    private final DocumentContent _documentContendFactory;
 
     /**
          * @param parentShell
@@ -48,7 +48,7 @@ public class DocumentShell extends Dialog {
     protected DocumentShell(final Shell parentShell) {
         super(parentShell);
         setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.MAX | SWT.RESIZE |SWT.MODELESS);
-        _documentContendFactory = new DocumentContend();
+        _documentContendFactory = new DocumentContent();
     }
 
     /**

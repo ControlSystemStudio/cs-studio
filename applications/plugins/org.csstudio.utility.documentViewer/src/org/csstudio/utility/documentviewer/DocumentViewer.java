@@ -50,13 +50,13 @@ import org.eclipse.ui.part.ViewPart;
 public class DocumentViewer extends ViewPart {
 
     public static final String ID = "org.cssstudio.utility.documentViewer.DocumentViewer";
-    private final DocumentContend _documentContendFactory;
+    private final DocumentContent _documentContendFactory;
 
     /**
      * Constructor.
      */
     public DocumentViewer() {
-        _documentContendFactory = new DocumentContend();
+        _documentContendFactory = new DocumentContent();
     }
 
     /**
