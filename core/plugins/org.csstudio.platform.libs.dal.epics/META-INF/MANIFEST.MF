@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.csstudio.platform,
  org.csstudio.platform.libs.dal,
- org.csstudio.platform.libs.epics;visibility:=reexport
+ org.csstudio.platform.libs.epics;visibility:=reexport,
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Eclipse-LazyStart: true
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ClassPath: .
