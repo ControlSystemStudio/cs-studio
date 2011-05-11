@@ -33,10 +33,12 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
 
 /**
- * TODO (bknerr) :
+ * Meta data support.
  *
  * @author bknerr
  * @since Mar 4, 2011
+ * @param <T> the concrete type of the meta data.
+ *
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
 
@@ -48,7 +50,7 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
      *
      * @param type the supported type
      */
-    public EpicsIMetaDataTypeSupport(final Class<T> type) {
+    public EpicsIMetaDataTypeSupport(@Nonnull final Class<T> type) {
         super(type, EpicsIMetaDataTypeSupport.class);
     }
 
@@ -82,19 +84,22 @@ public abstract class EpicsIMetaDataTypeSupport<T> extends AbstractTypeSupport<T
         return support.convertToMetaData(meta);
     }
 
-    @CheckForNull
+    @Nonnull
     protected abstract EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException;
 
 
-
-    protected INumericMetaData checkAndConvertToNumeric(final IMetaData meta, final Class<?> typeClass) throws TypeSupportException {
+    @Nonnull
+    protected INumericMetaData checkAndConvertToNumeric(@Nonnull final IMetaData meta,
+                                                        @Nonnull final Class<?> typeClass) throws TypeSupportException {
         if (!(meta instanceof INumericMetaData)) {
             throw new TypeSupportException("Metadata is not of numeric type. Conversion failed for type " +
                                            typeClass.getName(), null);
         }
         return (INumericMetaData) meta;
     }
-    protected IEnumeratedMetaData checkAndConvertToEnumerated(final IMetaData meta, final Class<?> typeClass) throws TypeSupportException {
+    @Nonnull
+    protected IEnumeratedMetaData checkAndConvertToEnumerated(@Nonnull final IMetaData meta,
+                                                              @Nonnull final Class<?> typeClass) throws TypeSupportException {
         if (!(meta instanceof IEnumeratedMetaData)) {
             throw new TypeSupportException("Metadata is not of enumerated type. Conversion failed for type " +
                                            typeClass.getName(), null);

@@ -72,7 +72,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 15.12.2010
  */
-public class EpicsEnum implements Serializable {
+public final class EpicsEnum implements Serializable {
 
     public static final String SEP = ":";
     public static final String STATE = "STATE";
@@ -83,15 +83,15 @@ public class EpicsEnum implements Serializable {
     private static final long serialVersionUID = -3340079923729173798L;
 
     @Nonnull
-    public static final EpicsEnum createFromRaw(@Nonnull final Integer raw) {
+    public static EpicsEnum createFromRaw(@Nonnull final Integer raw) {
         return new EpicsEnum(raw);
     }
     @Nonnull
-    public static final EpicsEnum createFromState(@Nonnull final String state) {
+    public static EpicsEnum createFromState(@Nonnull final String state) {
         return new EpicsEnum(state);
     }
     @Nonnull
-    public static final EpicsEnum createFromString(@Nonnull final String string) {
+    public static EpicsEnum createFromString(@Nonnull final String string) {
         if (string.startsWith(RAW + SEP)) {
             return EpicsEnum.createFromRaw(Integer.valueOf(string.replaceFirst(RAW + SEP, "")));
         }

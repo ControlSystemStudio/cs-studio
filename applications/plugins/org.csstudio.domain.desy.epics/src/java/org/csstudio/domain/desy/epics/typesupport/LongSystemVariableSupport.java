@@ -101,6 +101,7 @@ final class LongSystemVariableSupport extends EpicsSystemVariableSupport<Long> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<Collection<Long>> createCollectionEpicsVariable(@Nonnull final String name,
                                                                                   @Nonnull final Class<?> typeClass,
                                                                                   @Nonnull final Collection<Long> values,

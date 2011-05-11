@@ -66,7 +66,7 @@ final class IEnumeratedValueConversionTypeSupport extends
             throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!", null);
         }
 
-        final EpicsEnum enumState = createEpicsEnum(metaData, values);
+        final EpicsEnum enumState = createEpicsEnum(metaData, values[0]);
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
@@ -79,8 +79,8 @@ final class IEnumeratedValueConversionTypeSupport extends
     }
 
     @Nonnull
-    private EpicsEnum createEpicsEnum(final EpicsMetaData metaData, final int[] values) {
-        final int index = values[0];
+    private EpicsEnum createEpicsEnum(@Nonnull final EpicsMetaData metaData,
+                                      final int index) {
         EpicsEnum enumState;
         if (metaData != null && !metaData.getStates().isEmpty()) {
             try {

@@ -54,7 +54,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
      *
      * @param type the supported type
      */
-    public EpicsIValueTypeSupport(final Class<T> type) {
+    public EpicsIValueTypeSupport(@Nonnull final Class<T> type) {
         super(type, EpicsIValueTypeSupport.class);
     }
 
@@ -62,7 +62,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         AbstractIValueConversionTypeSupport.install();
     }
 
-    @CheckForNull
+    @Nonnull
     public static <T extends IValue>
     EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
                                             @Nonnull final T value) throws TypeSupportException {
@@ -70,7 +70,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
     }
 
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @Nonnull
     public static <T extends IValue>
     EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
                                             @Nonnull final T value,
@@ -120,7 +120,7 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
         return EpicsAlarmSeverity.UNKNOWN;
     }
 
-    @CheckForNull
+    @Nonnull
     public static ISeverity toSeverity(@Nonnull final EpicsAlarmSeverity sev) {
         switch (sev) {
             case UNKNOWN : // unknown fall through to no alarm is apparently wrong, but once you use ISeverity, well, you're wrong.
@@ -128,7 +128,8 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
             case MINOR :    return ValueFactory.createMinorSeverity();
             case MAJOR :    return ValueFactory.createMajorSeverity();
             case INVALID :  return ValueFactory.createInvalidSeverity();
+            default:
+                throw new IllegalArgumentException("This severity has been defined.");
         }
-        return null;
     }
 }

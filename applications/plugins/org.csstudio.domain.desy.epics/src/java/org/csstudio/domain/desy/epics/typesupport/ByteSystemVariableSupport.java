@@ -40,6 +40,7 @@ import com.google.common.collect.Collections2;
 import com.google.common.primitives.Longs;
 
 /**
+ * System variable support for {@link Byte}.
  * @author bknerr
  * @since 22.12.2010
  */
@@ -62,6 +63,7 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
             Collections2.transform(data,
                                    new Function<Byte, Long> () {
                 @Override
+                @Nonnull
                 public Long apply(@Nonnull final Byte from) {
                     return Long.valueOf(from);
                 }
@@ -100,6 +102,7 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<Collection<Byte>> createCollectionEpicsVariable(@Nonnull final String name,
                                                                                   @Nonnull final Class<?> typeClass,
                                                                                   @Nonnull final Collection<Byte> values,
@@ -132,6 +135,6 @@ final class ByteSystemVariableSupport extends EpicsSystemVariableSupport<Byte> {
                                             sysVar.getAlarm().getStatus().toString(),
                                             null,
                                             null,
-                                            new long[]{ sysVar.getData().longValue() });
+                                            new long[]{sysVar.getData().longValue()});
     }
 }

@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
@@ -31,12 +30,12 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
- * TODO (bknerr) :
+ * Conversion support for {@link EpicsEnum}.
  *
  * @author bknerr
- * @since Mar 8, 2011
+ * @since 11.05.2011
  */
-public class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsEnum> {
+class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsEnum> {
 
     /**
      * Constructor.
@@ -49,7 +48,7 @@ public class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsE
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
         final IEnumeratedMetaData enumData = checkAndConvertToEnumerated(data, EpicsEnum.class);
 

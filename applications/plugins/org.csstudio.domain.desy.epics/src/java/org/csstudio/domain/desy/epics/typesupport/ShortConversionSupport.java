@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IMetaData;
@@ -31,6 +30,12 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+/**
+ * Conversion support for {@link Short}.
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
 
     @Nonnull
@@ -47,7 +52,7 @@ final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
         final INumericMetaData numData = checkAndConvertToNumeric(data, Short.class);
         final EpicsGraphicsData<Short> gr =
