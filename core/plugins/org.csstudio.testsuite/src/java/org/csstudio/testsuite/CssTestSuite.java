@@ -29,9 +29,9 @@ import javax.annotation.Nonnull;
 
 import junit.framework.Test;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class that collects all tests (class files that end on *&lt;testFilter&gt;.class) in the specified
@@ -60,8 +60,8 @@ import org.csstudio.platform.util.StringUtil;
  * @since 21.07.2010
  */
 public final class CssTestSuite {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(CssTestSuite.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(CssTestSuite.class);
+    
     private CssTestSuite() {
         // Empty
     }
@@ -72,8 +72,9 @@ public final class CssTestSuite {
     	String filter = System.getProperty("testFilter");
     	if (StringUtil.isBlank(filter)) {
     	    LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\n" +
-    	             "Default is " + TestSuiteFactory.COMMON_TEST_SUFFIX +
-    	             " (for all classes *" + TestSuiteFactory.COMMON_TEST_SUFFIX + ".java).");
+    	             "Default is {}  (for all classes *{}.java).", 
+    	             TestSuiteFactory.COMMON_TEST_SUFFIX,
+    	             TestSuiteFactory.COMMON_TEST_SUFFIX);
 
     	    filter = TestSuiteFactory.COMMON_TEST_SUFFIX;
     	}

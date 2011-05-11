@@ -71,9 +71,9 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
 
         measuredRun();
 
+
         _lastElapsedRunTimeInNanos = _stopWatch.getElapsedTimeInNS();
         _avgRunDurationInNanos.accumulate(Double.valueOf(_lastElapsedRunTimeInNanos));
-
     }
 
     protected abstract void measuredRun();
@@ -91,6 +91,14 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
         return getAccumulatedValue();
     }
 
+    public long getNumberOfRuns() {
+        return _avgRunDurationInNanos.getNumberOfAveragedValues();
+    }
+
+    public void clear() {
+        _avgRunDurationInNanos.clear();
+    }
+
     private long getAccumulatedValue() {
         final Double value = _avgRunDurationInNanos.getValue();
         if (value == null) {
@@ -98,4 +106,5 @@ public abstract class AbstractTimeMeasuredRunnable implements Runnable {
         }
         return value.longValue();
     }
+
 }

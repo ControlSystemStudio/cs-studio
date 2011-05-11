@@ -22,9 +22,10 @@ import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class allows you harvest tests from resolved bundles based on
@@ -67,8 +68,7 @@ import org.osgi.framework.Bundle;
  */
 public class BundleTestCollector {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(BundleTestCollector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BundleTestCollector.class);
 
     /**
      * Create a list of test classes for the bundles currently resolved by the
@@ -167,8 +167,8 @@ public class BundleTestCollector {
 
         if (isItATestClass(testClass)) {
             if (!className.endsWith(commonFilterSuffix)) {
-                LOG.warn("Class " + className + " is a test, but does not end on *" + commonFilterSuffix + ".java.\n" +
-                         "Please rename to one out of for this launch config: " + testClassFilters);
+                LOG.warn("Class {} is a test, but does not end on *{}.java.\n Please rename to one out of for this launch config: {}", 
+                         new Object[] {className, commonFilterSuffix, testClassFilters});
             } else {
                 for (final String filter : testClassFilters) { // check for filters
                     if (className.endsWith(filter)) {
@@ -178,8 +178,7 @@ public class BundleTestCollector {
             }
         } else {
             if (className.endsWith(commonFilterSuffix)) {
-                LOG.warn("Class " + className + " is NOT a test!\n" +
-                         "Please rename to a different suffix. (Perhaps *Demo?).");
+                LOG.warn("Class {} is NOT a test!\nPlease rename to a different suffix. (Perhaps *Demo?).", className);
             }
         }
         return false;

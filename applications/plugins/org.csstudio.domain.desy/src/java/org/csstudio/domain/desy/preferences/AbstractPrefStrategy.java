@@ -21,12 +21,15 @@
  */
 package org.csstudio.domain.desy.preferences;
 
+
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Abstract class to wrap the value retrieval by strategy for a non null preference service.
@@ -36,8 +39,11 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @param <T> the type of the preference value
  */
 abstract class AbstractPrefStrategy<T> implements IPrefStrategy<T> {
-    private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(AbstractPrefStrategy.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPrefStrategy.class);
+
+    //private static final Logger LOG = LoggerFactory.getLogger(AbstractPrefStrategy.class);
+
     /**
      * Constructor.
      */

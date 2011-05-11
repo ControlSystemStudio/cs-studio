@@ -26,11 +26,14 @@ import java.io.FileNotFoundException;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * TODO (bknerr) :
+ * Recursive file path parser.
+ * Can be configured to traverse directory structures up to a parameterizable depth.
+ * Implementors may override one of the two methods invoked by hitting a file or hitting a
+ * directory on traversal.
  *
  * @author bknerr
  * @since 27.04.2011
@@ -38,7 +41,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public abstract class AbstractRecursiveFilePathParser {
 
     private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(AbstractRecursiveFilePathParser.class);
+            LoggerFactory.getLogger(AbstractRecursiveFilePathParser.class);
 
     public void startTraversal(@Nonnull final File fileOrDirectory,
                                final int finalDepth) throws FileNotFoundException {
@@ -49,7 +52,7 @@ public abstract class AbstractRecursiveFilePathParser {
                                    final int finalDepth,
                                    @Nonnull final File f) throws FileNotFoundException {
         if (!f.exists()) {
-            LOG.error("Recursive call to file should exist...deleted in between?");
+            LOG.error("Recursive call to file which an instant before existed...deleted in between?");
             throw new FileNotFoundException("File " + f.getAbsolutePath() + " does not exist for traversal.");
         }
         if (f.isFile()) {
@@ -65,7 +68,7 @@ public abstract class AbstractRecursiveFilePathParser {
                 traverseDirectory(currentDepth + 1, finalDepth, new File (f, filePath));
             }
         } else {
-            LOG.warn(f.getAbsolutePath() + " is neither file nor directory.");
+            LOG.warn("{} is neither file nor directory.", f.getAbsolutePath());
         }
     }
 

@@ -29,8 +29,8 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A line based file parser.
@@ -43,7 +43,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public abstract class AbstractLineBasedFileContentParser {
 
     private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(AbstractLineBasedFileContentParser.class);
+        LoggerFactory.getLogger(AbstractLineBasedFileContentParser.class);
 
     /**
      * Constructor.
