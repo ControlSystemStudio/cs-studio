@@ -8,7 +8,7 @@
             label="System Actions"
             visible="true">         
          <action
-               class="org.csstudio.platform.ui.internal.actions.LoginAction"
+               class="org.csstudio.auth.ui.internal.actions.LoginAction"
                icon="icons/switch_user.png"
                id="org.csstudio.platform.ui.LoginAction"
                label="%menuLogin"

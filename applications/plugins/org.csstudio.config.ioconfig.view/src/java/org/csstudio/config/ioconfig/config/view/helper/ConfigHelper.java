@@ -36,6 +36,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -50,8 +52,6 @@ import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;

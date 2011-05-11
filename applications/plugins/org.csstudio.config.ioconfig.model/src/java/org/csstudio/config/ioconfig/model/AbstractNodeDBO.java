@@ -41,9 +41,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.hibernate.annotations.Cascade;
 
 /**

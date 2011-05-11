@@ -12,9 +12,9 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.eclipse.swt.widgets.Shell;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 
 /** Action that adds a Component or PV to the configuration.
  *  For AlarmTreeComponent items, it can add a PV.

@@ -37,16 +37,16 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
+import org.csstudio.auth.securestore.SecureStore;
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.ILoginCallbackHandler;
+import org.csstudio.auth.security.ILoginModule;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.internal.jassauthentication.preference.ConfigurationFromPreferences;
 import org.csstudio.platform.internal.jassauthentication.preference.JAASPreferenceModel;
 import org.csstudio.platform.internal.jassauthentication.preference.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.securestore.SecureStore;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.platform.security.ILoginModule;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 
 
 /**

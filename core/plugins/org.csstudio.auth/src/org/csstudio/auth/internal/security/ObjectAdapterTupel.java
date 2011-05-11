@@ -23,7 +23,7 @@ package org.csstudio.auth.internal.security;
 
 import java.lang.ref.WeakReference;
 
-import org.csstudio.platform.security.IActivationAdapter;
+import org.csstudio.auth.security.IActivationAdapter;
 
 
 

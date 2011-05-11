@@ -23,8 +23,8 @@ package org.csstudio.config.authorizeid;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.auth.security.RegisteredAuthorizationId;
 import org.csstudio.config.authorizeid.SortActionFactory.TypedComparator;
-import org.csstudio.platform.security.RegisteredAuthorizationId;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;

@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.csstudio.platform.security.IAuthorizationProvider"/>
+                  <meta.attribute kind="java" basedOn="org.csstudio.auth.security.IAuthorizationProvider"/>
                </appinfo>
             </annotation>
          </attribute>

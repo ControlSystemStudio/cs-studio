@@ -1,6 +1,6 @@
 package org.csstudio.config.authorizeid;
 
-import org.csstudio.platform.ui.workbench.OpenViewAction;
+import org.csstudio.auth.ui.workbench.OpenViewAction;
 
 public class AuthorizeIdAction extends OpenViewAction {
 

@@ -24,7 +24,7 @@ package org.csstudio.auth.internal.security;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.csstudio.platform.security.IActivationAdapter;
+import org.csstudio.auth.security.IActivationAdapter;
 
 /**
  * This class contains a List of ObjectAdapterTupel and an IRight.

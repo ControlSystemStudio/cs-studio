@@ -25,8 +25,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.auth.security.RegisteredAuthorizationId;
 import org.csstudio.config.authorizeid.RegisteredAuthorizationIdTableViewerFactory.RegisteredAuthorizationIdTableColumns;
-import org.csstudio.platform.security.RegisteredAuthorizationId;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

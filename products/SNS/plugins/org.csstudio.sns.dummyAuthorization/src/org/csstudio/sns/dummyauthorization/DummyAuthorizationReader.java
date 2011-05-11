@@ -21,10 +21,10 @@
  */
 package org.csstudio.sns.dummyauthorization;
 
-import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.Right;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.IAuthorizationProvider;
+import org.csstudio.auth.security.Right;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.User;
 
 /** A dummy authorization provider. It makes every user could have the rights for all actions.
  * 

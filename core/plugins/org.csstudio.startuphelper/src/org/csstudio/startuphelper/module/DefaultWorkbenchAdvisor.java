@@ -22,11 +22,11 @@
 package org.csstudio.startuphelper.module;
 
 import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.workbench.WorkbenchActionBuilder;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;
-import org.csstudio.platform.ui.workbench.WorkbenchActionBuilder;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;

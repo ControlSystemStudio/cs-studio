@@ -27,10 +27,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.IRight;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.IAuthorizationProvider;
+import org.csstudio.auth.security.IRight;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.User;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;

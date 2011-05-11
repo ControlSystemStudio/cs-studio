@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

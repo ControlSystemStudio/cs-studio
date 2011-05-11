@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist;
 
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;

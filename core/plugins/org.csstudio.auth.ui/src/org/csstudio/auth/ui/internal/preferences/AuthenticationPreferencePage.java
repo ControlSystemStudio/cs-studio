@@ -21,8 +21,8 @@
  */
 package org.csstudio.auth.ui.internal.preferences;
 
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.ui.internal.Activator;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;

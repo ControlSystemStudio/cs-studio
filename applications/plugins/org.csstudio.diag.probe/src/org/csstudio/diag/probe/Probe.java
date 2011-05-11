@@ -12,12 +12,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.util.swt.meter.MeterWidget;

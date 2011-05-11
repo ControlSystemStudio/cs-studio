@@ -21,7 +21,7 @@
  */
 package org.csstudio.auth.internal;
 
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;

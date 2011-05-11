@@ -25,9 +25,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.rightsmanagement.RightsManagementService;
-import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.platform.security.ILoginModule;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.ILoginCallbackHandler;
+import org.csstudio.auth.security.ILoginModule;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

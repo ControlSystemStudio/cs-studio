@@ -29,14 +29,14 @@ import javax.naming.InvalidNameException;
 import javax.naming.ServiceUnavailableException;
 
 import org.apache.log4j.Logger;
+import org.csstudio.auth.security.RegisteredAuthorizationId;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdGRManagement;
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdManagement;
 import org.csstudio.config.authorizeid.ldap.LdapAccess;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.RegisteredAuthorizationId;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;

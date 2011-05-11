@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archivereader.rdb;
 
-import org.csstudio.platform.security.SecureStorage;
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

@@ -15,9 +15,9 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.auth.ui.internal,
- org.csstudio.platform.ui.dialogs,
- org.csstudio.platform.ui.internal.actions,
+ org.csstudio.auth.ui.dialogs,
+ org.csstudio.auth.ui.internal.actions,
  org.csstudio.auth.ui.internal.preferences,
  org.csstudio.auth.ui.internal.workbench,
- org.csstudio.platform.ui.security,
- org.csstudio.platform.ui.workbench
+ org.csstudio.auth.ui.security,
+ org.csstudio.auth.ui.workbench

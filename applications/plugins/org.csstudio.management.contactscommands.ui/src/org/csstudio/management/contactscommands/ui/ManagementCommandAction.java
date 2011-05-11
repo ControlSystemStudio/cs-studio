@@ -22,13 +22,13 @@
 
 package org.csstudio.management.contactscommands.ui;
 
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommandService;
 import org.csstudio.platform.management.IResultReceiver;
 import org.csstudio.platform.management.ResultDispatcher;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;

@@ -23,9 +23,9 @@ import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Activator;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
 
 /** Receives alarm updates, sends acknowledgments.
  *  <p>

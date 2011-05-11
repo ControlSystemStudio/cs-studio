@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.display.rdbtable.ui;
 
+import org.csstudio.auth.ui.dialogs.LoginDialog;
 import org.csstudio.display.rdbtable.Messages;
 import org.csstudio.display.rdbtable.model.RDBTableModel;
 import org.csstudio.display.rdbtable.model.RDBTableModelListener;
 import org.csstudio.display.rdbtable.model.RDBTableRow;
-import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;

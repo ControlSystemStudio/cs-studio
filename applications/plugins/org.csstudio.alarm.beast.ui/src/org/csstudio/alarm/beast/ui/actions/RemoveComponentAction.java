@@ -14,11 +14,11 @@ import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 
 /** Action that removes a Component or PV from the configuration.
  *  @author Kay Kasemir
