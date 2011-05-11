@@ -29,7 +29,6 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
@@ -38,12 +37,12 @@ import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.StopWatch;
-import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
+import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
@@ -53,10 +52,9 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 14.02.2011
  */
-final class WriteWorker implements Runnable {
+final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
-    private static final Logger WORKER_LOG =
-            CentralLogger.getInstance().getLogger(WriteWorker.class);
+    private static final Logger WORKER_LOG = LoggerFactory.getLogger(WriteWorker.class);
 
     private final String _name;
     private final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> _channels;
@@ -64,9 +62,6 @@ final class WriteWorker implements Runnable {
     private final long _periodInMS;
     /** Average number of values per write run */
     private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
-    /** Average duration of write run */
-    private final CumulativeAverageCache _avgWriteDurationInMS = new CumulativeAverageCache();
-
 
     private final IServiceProvider _provider;
 
@@ -84,38 +79,30 @@ final class WriteWorker implements Runnable {
         _channels = channels;
         _periodInMS = periodInMS;
 
-        WORKER_LOG.info(_name + " created with period " + periodInMS + "ms");
+        WORKER_LOG.info("{} created with period {}ms", _name, periodInMS);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void run() {
+    public void measuredRun() {
         try {
-            //WORKER_LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
+            WORKER_LOG.info("WRITE TO SERVICE: {} at {}", _name, TimeInstantBuilder.fromNow().formatted());
 
             List<IArchiveSample<Object, ISystemVariable<Object>>> samples = Collections.emptyList();
-
-            final RunningStopWatch watch = StopWatch.start();
 
             samples = collectSamplesFromBuffers(_channels);
 
             final long written = writeSamples(_provider,  samples);
+
             _lastWriteTime = TimeInstantBuilder.fromNow();
-
-            final long durationInMS = watch.getElapsedTimeInMillis();
-            if (durationInMS >= _periodInMS) {
-                // FIXME (bknerr) : this won't work, stupid
-                //_writeExec.enhanceWriterThroughput(this);
-            }
-
             _avgWriteCount.accumulate(Double.valueOf(written));
-            _avgWriteDurationInMS.accumulate(Double.valueOf(durationInMS));
+
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
         } catch (final Throwable t) {
-            WORKER_LOG.error("Unknown throwable. Thread " + _name + " is terminated");
+            WORKER_LOG.error("Unknown throwable. Thread {} is terminated", _name);
             t.printStackTrace();
         }
     }
@@ -131,7 +118,7 @@ final class WriteWorker implements Runnable {
             try {
                 ArchiveEngineSampleRescuer.with(samples).to(ArchiveEnginePreference.DATA_RESCUE_DIR.getValue()).rescue();
             } catch (final DataRescueException e1) {
-                WORKER_LOG.error("Data rescue to file system failed!:" + e1.getMessage());
+                WORKER_LOG.error("Data rescue to file system failed!: {}", e1.getMessage());
                 throw new ArchiveServiceException("Data rescue failed.", e1);
             }
         }
@@ -164,19 +151,15 @@ final class WriteWorker implements Runnable {
         return _avgWriteCount;
     }
 
-    @Nonnull
-    protected CumulativeAverageCache getAvgWriteDurationInMS() {
-        return _avgWriteDurationInMS;
-    }
-
     @CheckForNull
     protected TimeInstant getLastWriteTime() {
         return _lastWriteTime;
     }
 
+    @Override
     public void clear() {
+        super.clear();
         _avgWriteCount.clear();
-        _avgWriteDurationInMS.clear();
         _lastWriteTime = null;
     }
 }

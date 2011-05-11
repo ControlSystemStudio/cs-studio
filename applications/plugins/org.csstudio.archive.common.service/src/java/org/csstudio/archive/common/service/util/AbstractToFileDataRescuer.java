@@ -29,10 +29,10 @@ import java.io.OutputStream;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract data rescue class to write files to a safe location.
@@ -42,7 +42,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public abstract class AbstractToFileDataRescuer {
 
-    private static final Logger LOG = CentralLogger.getInstance()
+    private static final Logger LOG = LoggerFactory
             .getLogger(AbstractToFileDataRescuer.class);
 
     private File _rescueDir;

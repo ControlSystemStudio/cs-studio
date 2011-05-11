@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
@@ -32,7 +32,7 @@ import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.joda.time.Duration;
 
@@ -44,7 +44,7 @@ import com.google.common.collect.MapMaker;
  */
 public final class EngineModel {
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(EngineModel.class);
+        LoggerFactory.getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
     private static String VERSION = "1.0.0";

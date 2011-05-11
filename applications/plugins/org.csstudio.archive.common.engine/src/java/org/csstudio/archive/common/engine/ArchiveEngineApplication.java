@@ -10,7 +10,6 @@ package org.csstudio.archive.common.engine;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -25,17 +24,18 @@ import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
 public class ArchiveEngineApplication implements IApplication {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveEngineApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
     private int _port;
@@ -167,7 +167,7 @@ public class ArchiveEngineApplication implements IApplication {
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: " + _model.getChannels().size() +
                  " channels in " +
-                 TimeInstantBuilder.fromMillis(millis).formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS));
+                 TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(Period.millis((int) millis)));
     }
 
     /**
@@ -187,7 +187,7 @@ public class ArchiveEngineApplication implements IApplication {
             // Setup takes some time, but engine server should already respond.
             httpServer = new EngineHttpServer(_model, _port);
         } catch (final EngineHttpServerException e) {
-            LOG.fatal("Cannot start HTTP server on port " + _port + ": " + e.getMessage(), e);
+            LOG.error("Cannot start HTTP server on port {}: ", _port, e.getMessage());
         }
         return httpServer;
     }

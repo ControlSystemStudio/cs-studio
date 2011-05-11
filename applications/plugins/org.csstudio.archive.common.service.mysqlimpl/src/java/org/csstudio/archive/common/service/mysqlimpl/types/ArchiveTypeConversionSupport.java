@@ -27,7 +27,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -38,9 +37,10 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.epics.pvmanager.TypeSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -91,14 +91,13 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
             try {
                 return _support.convertToArchiveString(from);
             } catch (final TypeSupportException e) {
-                LOG.warn("No type conversion to archive string for " + from.getClass().getName() + " registered.");
+                LOG.warn("No type conversion to archive string for {}", from.getClass().getName() + " registered.");
                 return null;
             }
         }
     }
 
-    protected static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveTypeConversionSupport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveTypeConversionSupport.class);
 
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
     protected static final String ARCHIVE_COLLECTION_PREFIX = "[";

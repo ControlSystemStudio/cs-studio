@@ -14,14 +14,14 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.model.ArchiveChannel;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.Platform;
 import org.joda.time.Duration;
@@ -32,7 +32,7 @@ import org.joda.time.Duration;
  */
 class MainResponse extends AbstractResponse {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(MainResponse.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MainResponse.class);
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;

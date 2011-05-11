@@ -10,16 +10,16 @@ package org.csstudio.archive.common.engine.httpserver;
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Web server for the engine.
  *  @author Kay Kasemir
@@ -29,7 +29,7 @@ public class EngineHttpServer {
     private static final String EX_MSG = "Engine HTTP server could not be instantiated.";
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(EngineHttpServer.class);
+        LoggerFactory.getLogger(EngineHttpServer.class);
 
     /** TCP port used by the web server */
     private final int _port;
@@ -83,7 +83,7 @@ public class EngineHttpServer {
         try {
             HttpServiceHelper.stopHttpService(_port);
         } catch (final Exception ex) {
-            LOG.warn(ex);
+            LOG.warn("Unknown exception", ex);
         }
     }
 }

@@ -29,11 +29,11 @@ import java.sql.Statement;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -45,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public abstract class AbstractArchiveDao {
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractArchiveDao.class);
+        LoggerFactory.getLogger(AbstractArchiveDao.class);
 
     private final ArchiveConnectionHandler _connectionHandler;
     private final PersistEngineDataManager _engineMgr;
