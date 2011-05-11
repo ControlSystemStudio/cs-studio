@@ -9,9 +9,11 @@ Implementation-Version: 1.6.1
 Implementation-Title: slf4j-api
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.csstudio.platform.libs.slf4j
-Bundle-Name: slf4j.api
+Bundle-Name: Simple Logging Facade 4J
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Eclipse-BuddyPolicy: registered
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.slf4j;version=1.6.1, org.slf4j.spi;version=1.6.1, 
- org.slf4j.helpers;version=1.6.1
+Export-Package: org.slf4j,
+ org.slf4j.helpers,
+ org.slf4j.spi
 
