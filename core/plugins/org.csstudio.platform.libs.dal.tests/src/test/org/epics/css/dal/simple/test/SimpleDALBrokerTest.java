@@ -278,5 +278,13 @@ public class SimpleDALBrokerTest extends TestCase {
 		
 		assertEquals(initialValue+2*addValue, newValue);
 	}
+	
+	
+	public void testMultiChannelInitialization() {
+		
+		
+		
+		
+	}
 
 }
