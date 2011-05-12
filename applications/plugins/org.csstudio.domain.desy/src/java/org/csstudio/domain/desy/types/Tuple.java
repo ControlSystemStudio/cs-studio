@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,9 +23,7 @@ package org.csstudio.domain.desy.types;
 
 import java.io.Serializable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Abstract base class for any kind of immutable triple.
@@ -35,41 +33,33 @@ import javax.annotation.Nullable;
  * themselves serializable without ensuring any collection element to be serializable.)
  *
  * @author bknerr
- * @since 15.12.2010
- *
+ * @since 12.05.2011
+
  * @param <A> type of the 1st member
  * @param <B> type of the 2nd member
- * @param <C> type of the 3rd member
+ *
  */
-public abstract class AbstractTriple<A, B, C> implements Serializable {
+public class Tuple<A, B> implements Serializable {
 
-    private static final long serialVersionUID = 2488846834958701429L;
+    private static final long serialVersionUID = -7291262798373517336L;
 
     private final A _first;
     private final B _second;
-    private final C _third;
 
     /**
      * Constructor.
      */
-    protected AbstractTriple(@Nonnull  final A first, @Nonnull final B second, @Nullable final C third) {
+    public Tuple(@Nonnull  final A first,
+                            @Nonnull final B second) {
         _first = first;
         _second = second;
-        _third = third;
     }
-
     @Nonnull
-    protected A getFirst() {
+    public A getFirst() {
         return _first;
     }
-
     @Nonnull
-    protected B getSecond() {
+    public B getSecond() {
         return _second;
-    }
-
-    @CheckForNull
-    protected C getThird() {
-        return _third;
     }
 }

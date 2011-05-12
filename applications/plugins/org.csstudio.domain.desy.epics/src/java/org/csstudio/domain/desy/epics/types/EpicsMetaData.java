@@ -120,7 +120,7 @@ public final class EpicsMetaData {
             if (Strings.isNullOrEmpty(state)) {
                 state = EpicsEnum.UNSET_STATE;
             }
-            enumList.add(EpicsEnum.createFromState(state));
+            enumList.add(EpicsEnum.createFromState(state, i));
             i++;
         }
         return ImmutableList.copyOf(enumList);

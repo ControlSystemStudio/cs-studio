@@ -22,6 +22,8 @@
 package org.csstudio.domain.desy.epics.types;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -77,8 +79,14 @@ public final class EpicsEnum implements Serializable {
     public static final String SEP = ":";
     public static final String STATE = "STATE";
     public static final String RAW = "RAW";
-    public static final String UNKNOWN_STATE = "UNKNOWN";
-    public static final String UNSET_STATE = "NOT_SET";
+
+    public static final Pattern EPICS_ENUM_STATE_REGEX =
+        Pattern.compile(STATE + "\\(([\\d+])\\)" + SEP + "([^\\s]+)");
+    public static final Pattern EPICS_ENUM_RAW_REGEX =
+        Pattern.compile(RAW + SEP + "([^\\s]+)");
+
+    public static final String UNKNOWN_STATE = "STATE(0):UNKNOWN";
+    public static final String UNSET_STATE = "STATE(0):UNSET";
 
     private static final long serialVersionUID = -3340079923729173798L;
 
@@ -87,36 +95,47 @@ public final class EpicsEnum implements Serializable {
         return new EpicsEnum(raw);
     }
     @Nonnull
-    public static EpicsEnum createFromState(@Nonnull final String state) {
-        return new EpicsEnum(state);
+    public static EpicsEnum createFromStateName(@Nonnull final String state) {
+        return new EpicsEnum(state, 0);
+    }
+    @Nonnull
+    public static EpicsEnum createFromState(@Nonnull final String state,
+                                            @Nonnull final Integer index) {
+        return new EpicsEnum(state, index);
     }
     @Nonnull
     public static EpicsEnum createFromString(@Nonnull final String string) {
-        if (string.startsWith(RAW + SEP)) {
-            return EpicsEnum.createFromRaw(Integer.valueOf(string.replaceFirst(RAW + SEP, "")));
+        Matcher matcher = EPICS_ENUM_RAW_REGEX.matcher(string);
+        if (matcher.matches()) {
+            return EpicsEnum.createFromRaw(Integer.valueOf(matcher.group(1)));
         }
-        if (string.startsWith(STATE + SEP)) {
-            return EpicsEnum.createFromState(string.replaceFirst(STATE + SEP, ""));
+        matcher = EPICS_ENUM_STATE_REGEX.matcher(string);
+        if (matcher.matches()) {
+            return EpicsEnum.createFromState(matcher.group(2), Integer.valueOf(matcher.group(1)));
         }
         throw new IllegalArgumentException("String " + string + " cannot be converted to " +
                                            EpicsEnum.class.getSimpleName() + ".");
     }
 
     private final Integer _raw;
+    private final Integer _stateIndex;
     private final String _state;
 
 
-    private EpicsEnum(@Nonnull final String state) {
-        this(null, state);
+    private EpicsEnum(@Nonnull final String state,
+                      @Nonnull final Integer index) {
+        this(null, index, state);
     }
 
     private EpicsEnum(@Nonnull final Integer raw) {
-        this(raw, null);
+        this(raw, null, null);
     }
 
     private EpicsEnum(@CheckForNull final Integer raw,
+                      @CheckForNull final Integer index,
                       @CheckForNull final String state) {
         _raw = raw;
+        _stateIndex = index;
         _state = state;
         if (isRaw() && isState() ||
             !isRaw() && !isState()) {
@@ -148,11 +167,21 @@ public final class EpicsEnum implements Serializable {
         }
         throw new IllegalStateException("This " + getClass().getSimpleName() + " object holds a state, not a raw value.");
     }
-    public boolean isRaw() {
-        return _raw != null;
+
+    @Nonnull
+    public Integer getStateIndex() {
+        if (isState()) {
+            return _stateIndex;
+        }
+        throw new IllegalStateException(EpicsEnum.class.getName() + " is 'raw' instance not a 'state' instance.");
     }
+
+    public boolean isRaw() {
+        return _raw != null && _state == null && _stateIndex == null;
+    }
+
     public boolean isState() {
-        return _state != null;
+        return _state != null && _stateIndex != null;
     }
 
     /**
@@ -163,9 +192,8 @@ public final class EpicsEnum implements Serializable {
     public String toString() {
         if (isRaw()) {
             return RAW + SEP + _raw.toString();
-        }
-        if (isState()) {
-            return STATE + SEP + _state;
+        } else if (isState()) {
+            return STATE + "(" + _stateIndex.toString() + ")" + SEP + _state;
         }
         throw new IllegalStateException("Exactly one out of both fields has to be set to null.");
     }
@@ -176,10 +204,11 @@ public final class EpicsEnum implements Serializable {
     @Override
     public int hashCode() {
         if (isState()) {
-            return 31 + _state.hashCode();
+            final int result = 31 + _state.hashCode();
+            return result*31 + _raw.hashCode();
         }
         if (isRaw()) {
-            return 31 + _raw.hashCode();
+            return _raw.hashCode();
         }
         throw new IllegalStateException("All object's fields have been initialized to null.");
     }
@@ -197,7 +226,7 @@ public final class EpicsEnum implements Serializable {
             return other.getRaw().equals(_raw);
         }
         if (other.isState()) {
-            return other.getState().equals(_state);
+            return other.getState().equals(_state) && other.getStateIndex().equals(_stateIndex);
         }
         throw new IllegalStateException("Other's fields are both set to null, which is not allowed for this object: " + obj.toString());
     }
