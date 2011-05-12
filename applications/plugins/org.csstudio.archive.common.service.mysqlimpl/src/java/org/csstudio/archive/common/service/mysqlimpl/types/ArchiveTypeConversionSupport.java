@@ -97,7 +97,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(ArchiveTypeConversionSupport.class);
+    static final Logger LOG = LoggerFactory.getLogger(ArchiveTypeConversionSupport.class);
 
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
     protected static final String ARCHIVE_COLLECTION_PREFIX = "[";
