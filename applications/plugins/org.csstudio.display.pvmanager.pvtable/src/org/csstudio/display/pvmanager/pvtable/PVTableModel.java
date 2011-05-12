@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class PVTableModel {
 	
-	private List<ProcessVariableName> pvNames = new ArrayList<ProcessVariableName>();
+	private List<ProcessVariable> pvNames = new ArrayList<ProcessVariable>();
 	private List<Object> values;
 	private List<Exception> lastExceptions;
 	private Set<PVTableModelListener> listeners = new HashSet<PVTableModelListener>();
@@ -37,12 +37,12 @@ public class PVTableModel {
 		fireDataChanged();
 	}
 	
-	public void addPVName(ProcessVariableName pvName) {
+	public void addPVName(ProcessVariable pvName) {
 		pvNames.add(pvName);
 		fireDataChanged();
 	}
 	
-	public void updatePVName(Item item, ProcessVariableName pvName) {
+	public void updatePVName(Item item, ProcessVariable pvName) {
 		if (item.row < pvNames.size()) {
 			pvNames.set(item.row, pvName);
 		} else {
@@ -93,7 +93,7 @@ public class PVTableModel {
 			return row;
 		}
 		
-		public ProcessVariableName getProcessVariableName() {
+		public ProcessVariable getProcessVariableName() {
 			if (row < pvNames.size())
 				return pvNames.get(row);
 			else

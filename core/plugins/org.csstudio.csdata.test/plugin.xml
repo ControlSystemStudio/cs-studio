@@ -46,7 +46,7 @@
             adaptableType="org.csstudio.csdata.test.DeviceAndAPV"
             class="org.csstudio.csdata.test.DeviceAndAPVFactory">
          <adapter
-               type="org.csstudio.csdata.ProcessVariableName">
+               type="org.csstudio.csdata.ProcessVariable">
          </adapter>
          <adapter
                type="org.csstudio.csdata.DeviceName">

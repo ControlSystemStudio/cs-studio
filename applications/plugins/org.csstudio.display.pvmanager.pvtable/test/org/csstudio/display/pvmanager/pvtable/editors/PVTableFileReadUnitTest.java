@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel;
 import org.csstudio.display.pvmanager.pvtable.PVTableStaXParser;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel.Item;
@@ -38,17 +38,17 @@ public class PVTableFileReadUnitTest {
 	
 	@Test
 	public void readWritePVTableFile(){
-		List<ProcessVariableName> testList = new ArrayList<ProcessVariableName>();
-		testList.add(new ProcessVariableName("sim://noise"));
-		testList.add(new ProcessVariableName("sim://gaussian"));
-		testList.add(new ProcessVariableName("sim://String"));
+		List<ProcessVariable> testList = new ArrayList<ProcessVariable>();
+		testList.add(new ProcessVariable("sim://noise"));
+		testList.add(new ProcessVariable("sim://gaussian"));
+		testList.add(new ProcessVariable("sim://String"));
 		PVTableModel testModel = new PVTableModel();
-		for (ProcessVariableName processVariableName : testList) {
-			testModel.addPVName(processVariableName);
+		for (ProcessVariable processVariable : testList) {
+			testModel.addPVName(processVariable);
 		}
 		writePVTableFile(Arrays.asList(testModel.getItems()), file.getAbsolutePath());
 		
-		List<ProcessVariableName> list = PVTableStaXParser.readPVTableFile(file.getAbsolutePath());
+		List<ProcessVariable> list = PVTableStaXParser.readPVTableFile(file.getAbsolutePath());
 		
 		assertTrue(list.equals(testList));		
 	}

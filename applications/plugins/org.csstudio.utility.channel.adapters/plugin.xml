@@ -29,7 +29,7 @@
                type="org.csstudio.platform.model.IProcessVariable">
          </adapter>
          <adapter
-               type="org.csstudio.csdata.ProcessVariableName">
+               type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
    </extension>

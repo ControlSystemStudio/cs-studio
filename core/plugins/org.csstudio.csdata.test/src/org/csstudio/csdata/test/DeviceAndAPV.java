@@ -3,7 +3,7 @@ package org.csstudio.csdata.test;
 import java.io.Serializable;
 
 import org.csstudio.csdata.DeviceName;
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 
 public class DeviceAndAPV implements Serializable
 {
@@ -11,14 +11,14 @@ public class DeviceAndAPV implements Serializable
     final private static long serialVersionUID = 1L;
     
 	private final DeviceName device;
-	private final ProcessVariableName pv;
+	private final ProcessVariable pv;
 
 	public DeviceAndAPV(String device, String pv) {
 		this.device = new DeviceName(device);
-		this.pv = new ProcessVariableName(pv);
+		this.pv = new ProcessVariable(pv);
 	}
 
-	public DeviceAndAPV(DeviceName device, ProcessVariableName pv) {
+	public DeviceAndAPV(DeviceName device, ProcessVariable pv) {
 		this.device = device;
 		this.pv = pv;
 	}
@@ -27,7 +27,7 @@ public class DeviceAndAPV implements Serializable
 		return device;
 	}
 
-	public ProcessVariableName getPv() {
+	public ProcessVariable getPv() {
 		return pv;
 	}
 

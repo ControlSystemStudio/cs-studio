@@ -37,7 +37,7 @@ import java.io.Serializable;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ProcessVariableName implements Serializable
+public class ProcessVariable implements Serializable
 {
     /** @see Serializable */
     final private static long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class ProcessVariableName implements Serializable
     /** Initialize
      *  @param name Process Variable name
      */
-    public ProcessVariableName(final String name)
+    public ProcessVariable(final String name)
     {
         if (name == null)
             throw new IllegalArgumentException("Empty name");
@@ -56,7 +56,7 @@ public class ProcessVariableName implements Serializable
     }
 
     /** @return Process Variable Name */
-    public String getProcessVariableName()
+    public String getName()
     {
         return name;
     }
@@ -81,10 +81,10 @@ public class ProcessVariableName implements Serializable
     {
         if (this == obj)
             return true;
-        if (! (obj instanceof ProcessVariableName))
+        if (! (obj instanceof ProcessVariable))
             return false;
-        final ProcessVariableName other = (ProcessVariableName) obj;
-        return name.equals(other.getProcessVariableName());
+        final ProcessVariable other = (ProcessVariable) obj;
+        return name.equals(other.getName());
     }
 
     @Override

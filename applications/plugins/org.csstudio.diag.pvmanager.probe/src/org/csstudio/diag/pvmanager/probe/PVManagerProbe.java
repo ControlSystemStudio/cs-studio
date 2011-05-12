@@ -6,7 +6,7 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -89,7 +89,7 @@ public class PVManagerProbe extends ViewPart {
 	private FormData fd_bottomBox;
 
 	/** Currently displayed pv */
-	private ProcessVariableName PVName;
+	private ProcessVariable PVName;
 
 	/** Currently connected pv */
 	private PV<?> pv;
@@ -135,7 +135,7 @@ public class PVManagerProbe extends ViewPart {
 		super.saveState(memento);
 		// Save the currently selected variable
 		if (PVName != null) {
-			memento.putString(PV_TAG, PVName.getProcessVariableName());
+			memento.putString(PV_TAG, PVName.getName());
 		}
 	}
 
@@ -293,7 +293,7 @@ public class PVManagerProbe extends ViewPart {
 				.getDialogSettings(), PV_LIST_TAG, pvNameField.getCombo()) {
 			@Override
 			public void newSelection(final String pvName) {
-				setPVName(new ProcessVariableName(pvName));
+				setPVName(new ProcessVariable(pvName));
 			}
 		};
 
@@ -358,7 +358,7 @@ public class PVManagerProbe extends ViewPart {
 		pvNameHelper.loadSettings();
 
 		if (memento != null && memento.getString(PV_TAG) != null) {
-			setPVName(new ProcessVariableName(memento.getString(PV_TAG)));
+			setPVName(new ProcessVariable(memento.getString(PV_TAG)));
 			// Per default, the meter is shown.
 			// Hide according to memento.
 			final String show = memento.getString(METER_TAG);
@@ -470,14 +470,14 @@ public class PVManagerProbe extends ViewPart {
 	 * @param pvName
 	 *            the new pv name or null
 	 */
-	public void setPVName(ProcessVariableName pvName) {
+	public void setPVName(ProcessVariable pvName) {
 		log.log(Level.FINE, "setPVName ({0})", pvName); //$NON-NLS-1$
 
 		// If we are already scanning that pv, do nothing
 		if (this.PVName != null && this.PVName.equals(pvName)) {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
-			pvNameField.getCombo().setText(pvName.getProcessVariableName());
+			pvNameField.getCombo().setText(pvName.getName());
 		}
 
 		// The PV is different, so disconnect and reset the visuals
@@ -496,16 +496,16 @@ public class PVManagerProbe extends ViewPart {
 		}
 
 		// If new name, add to history and connect
-		pvNameHelper.addEntry(pvName.getProcessVariableName());
+		pvNameHelper.addEntry(pvName.getName());
 
 		// Update displayed name, unless it's already current
 		if (!(pvNameField.getCombo().getText().equals(pvName
-				.getProcessVariableName()))) {
-			pvNameField.getCombo().setText(pvName.getProcessVariableName());
+				.getName()))) {
+			pvNameField.getCombo().setText(pvName.getName());
 		}
 
 		setStatus(Messages.Probe_statusSearching);
-		pv = PVManager.read(channel(pvName.getProcessVariableName()))
+		pv = PVManager.read(channel(pvName.getName()))
 				.andNotify(onSWTThread()).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
 
@@ -524,7 +524,7 @@ public class PVManagerProbe extends ViewPart {
 		// If this is an instance of the multiple view, show the PV name
 		// as the title
 		if (MULTIPLE_VIEW_ID.equals(getSite().getId())) {
-			setPartName(pvName.getProcessVariableName());
+			setPartName(pvName.getName());
 		}
 	}
 
@@ -533,7 +533,7 @@ public class PVManagerProbe extends ViewPart {
 	 * 
 	 * @return pv name or null
 	 */
-	public ProcessVariableName getPVName() {
+	public ProcessVariable getPVName() {
 		return this.PVName;
 	}
 
@@ -656,7 +656,7 @@ public class PVManagerProbe extends ViewPart {
 	 * @param pvName the pv
 	 * @return true if successful
 	 */
-	public static boolean activateWithPV(ProcessVariableName pvName) {
+	public static boolean activateWithPV(ProcessVariable pvName) {
 		try {
 			final IWorkbench workbench = PlatformUI.getWorkbench();
 			final IWorkbenchWindow window = workbench

@@ -24,7 +24,7 @@ import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel.Item;
 
 public class PVTableStaXParser {
@@ -38,9 +38,9 @@ public class PVTableStaXParser {
 	private static final Logger logger = Logger
 			.getLogger(PVTableStaXParser.class.toString());
 
-	public static List<ProcessVariableName> readPVTableFile(String PVTableFile) {
-		List<ProcessVariableName> items = null;
-		ProcessVariableName pvName = null;
+	public static List<ProcessVariable> readPVTableFile(String PVTableFile) {
+		List<ProcessVariable> items = null;
+		ProcessVariable pvName = null;
 
 		try {
 			// First create a new XMLInputFactory
@@ -55,7 +55,7 @@ public class PVTableStaXParser {
 					StartElement startElement = event.asStartElement();
 					// If we have a pvlist element we create a new item
 					if (startElement.getName().getLocalPart() == (PVLIST)) {
-						items = new ArrayList<ProcessVariableName>();
+						items = new ArrayList<ProcessVariable>();
 					}
 				}
 				if (event.isStartElement()
@@ -67,7 +67,7 @@ public class PVTableStaXParser {
 						&& event.asStartElement().getName().getLocalPart()
 								.equals(NAME)) {
 					event = eventReader.nextEvent();
-					pvName = new ProcessVariableName(event.asCharacters()
+					pvName = new ProcessVariable(event.asCharacters()
 							.getData());
 				}
 				if (event.isEndElement()) {
@@ -127,7 +127,7 @@ public class PVTableStaXParser {
 					eventWriter.add(pvStartElement);
 					eventWriter.add(eventFactory.createDTD("\n"));
 					createNode(eventWriter, NAME, pvTableItem
-							.getProcessVariableName().getProcessVariableName());
+							.getProcessVariableName().getName());
 					eventWriter.add(eventFactory.createDTD("\t\t"));
 					eventWriter.add(pvEndElement);
 					eventWriter.add(eventFactory.createDTD("\n"));
