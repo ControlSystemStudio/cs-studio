@@ -75,6 +75,6 @@ public class Device implements Serializable
     @Override
     public String toString()
     {
-        return "DeviceName '" + name + "'";
+        return "Device '" + name + "'";
     }
 }

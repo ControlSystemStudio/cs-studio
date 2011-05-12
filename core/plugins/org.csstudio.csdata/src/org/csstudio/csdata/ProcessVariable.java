@@ -90,6 +90,6 @@ public class ProcessVariable implements Serializable
     @Override
     public String toString()
     {
-        return "ProcessVariableName '" + name + "'";
+        return "ProcessVariable '" + name + "'";
     }
 }
