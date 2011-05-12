@@ -47,24 +47,24 @@ public class EngineHttpServer {
         this._port = port;
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
-        HttpService http;
+        HttpService httpService;
         try {
-            http = HttpServiceHelper.createHttpService(context, port);
+            httpService = HttpServiceHelper.createHttpService(context, port);
 
-            final HttpContext httpContext = http.createDefaultHttpContext();
-            http.registerResources("/", "/webroot", httpContext);
+            final HttpContext httpContext = httpService.createDefaultHttpContext();
+            httpService.registerResources("/", "/webroot", httpContext);
 
-            http.registerServlet("/main", new MainResponse(model), null, httpContext);
-            http.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
-            http.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
-            http.registerServlet("/group", new GroupResponse(model), null, httpContext);
-            http.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
-            http.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
-            http.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
-            http.registerServlet("/restart", new RestartResponse(model), null, httpContext);
-            http.registerServlet("/reset", new ResetResponse(model), null, httpContext);
-            http.registerServlet("/stop", new StopResponse(model), null, httpContext);
-            http.registerServlet("/debug", new DebugResponse(model), null, httpContext);
+            httpService.registerServlet("/main", new MainResponse(model), null, httpContext);
+            httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
+            httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
+            httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
+            httpService.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
+            httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
+            httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
+            httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
+            httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
+            httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
+            httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
 
         } catch (final InvalidSyntaxException e) {
             throw new EngineHttpServerException(EX_MSG, e);
@@ -83,7 +83,7 @@ public class EngineHttpServer {
         try {
             HttpServiceHelper.stopHttpService(_port);
         } catch (final Exception ex) {
-            LOG.warn("Unknown exception", ex);
+            LOG.warn("Unknown exception while stopping Http Server", ex);
         }
     }
 }

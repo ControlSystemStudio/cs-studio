@@ -122,7 +122,7 @@ public class ArchiveEngineApplication implements IApplication {
 
                 LOG.info("ArchiveEngine ending");
 
-                stopAndClearEngine(_model);
+                stopEngine(_model);
             }
         } catch (final EngineModelException e) {
             LOG.error("Archive engine model error - try to shutdown.", e);
@@ -130,25 +130,23 @@ public class ArchiveEngineApplication implements IApplication {
             Thread.currentThread().interrupt();
         }
 
-        return fullEngineStop(_model, httpServer);
+        return killEngineAndHttpServer(_model, httpServer);
+    }
+
+    private void stopEngine(@Nonnull final EngineModel model) throws EngineModelException {
+        model.stop();
     }
 
     @Nonnull
-    private Integer fullEngineStop(@Nonnull final EngineModel model,
+    private Integer killEngineAndHttpServer(@Nonnull final EngineModel model,
                                    @Nonnull final EngineHttpServer httpServer) {
+        httpServer.stop();
         try {
-            httpServer.stop();
-            stopAndClearEngine(model);
+            stopEngine(model);
         } catch (final EngineModelException e) {
-            LOG.error("Properly stopping the engine failed. System exit.", e);
+            LOG.error("Stopping the engine failed. System exit.", e);
         }
         return EXIT_OK;
-    }
-
-    private void stopAndClearEngine(@Nonnull final EngineModel model) throws EngineModelException {
-        model.stop();
-        model.clearConfig();
-        LOG.info("ArchiveEngine stopped and cleared.");
     }
 
     /**
