@@ -48,12 +48,12 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * TODO (bknerr) : 
+ * Test for {@link ArchiveEngineSampleRescuer}. 
  * 
  * @author bknerr
  * @since Mar 28, 2011
  */
-public class ArchiveEngineSampleRescuerTest {
+public class ArchiveEngineSampleRescuerUnitTest {
     
     private static File RESCUE_DIR;
     
@@ -86,7 +86,7 @@ public class ArchiveEngineSampleRescuerTest {
         IArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>> sample3 = 
             new ArchiveSample<EpicsEnum, ISystemVariable<EpicsEnum>>(new ArchiveChannelId(3), 
                     new EpicsSystemVariable("bar", 
-                                            EpicsEnum.create(1, "foo", 666), 
+                                            EpicsEnum.createFromRaw(666), 
                                             ControlSystem.EPICS_DEFAULT, 
                                             TimeInstantBuilder.fromNow(),
                                             null), 
@@ -114,7 +114,6 @@ public class ArchiveEngineSampleRescuerTest {
         Assert.assertEquals(Double.valueOf(2.0), (Double) result.get(0).getValue());
         Assert.assertEquals(Integer.valueOf(26), (Integer) result.get(1).getValue());
         Assert.assertEquals(Integer.valueOf(666), ((EpicsEnum) result.get(2).getValue()).getRaw());
-        Assert.assertEquals("foo", ((EpicsEnum) result.get(2).getValue()).getState());
     }
 
     private List<IArchiveSample<?, ?>> readSamplesFromFile(File infile) throws IOException,

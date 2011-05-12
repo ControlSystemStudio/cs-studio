@@ -21,13 +21,16 @@
  */
 package org.csstudio.domain.desy.calc;
 
+
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.ValueCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Abstract value cache wrapper that offers an accumulation method to modify
@@ -41,10 +44,10 @@ import org.epics.pvmanager.ValueCache;
 public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
 
     private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(AbstractAccumulatorCache.class);
+        LoggerFactory.getLogger(AbstractAccumulatorCache.class);
 
     private final ValueCache<R> _accumulatedValue;
-    private int _num;
+    private long _num;
 
     /**
      * Constructor.
@@ -80,7 +83,7 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
         return _accumulatedValue.getValue();
     }
 
-    protected int getNumberOfAccumulations() {
+    protected long getNumberOfAccumulations() {
         return _num;
     }
 

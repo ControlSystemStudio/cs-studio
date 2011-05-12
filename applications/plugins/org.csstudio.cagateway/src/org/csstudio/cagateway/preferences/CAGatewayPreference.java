@@ -38,24 +38,24 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
 
  * @param <T> the type of the preference. It must match the type of the default value.
  */
-public final class Preference<T> extends AbstractPreference<T> {
+public final class CAGatewayPreference<T> extends AbstractPreference<T> {
 
-    public static final Preference<String> XMPP_SERVER_NAME =
-        new Preference<String>("XmppServerName", "krynfsb.desy.de");
-    public static final Preference<String> XMPP_USER_NAME =
-        new Preference<String>("XmppUserName", "cagateway");
-    public static final Preference<String> XMPP_PASSWORD =
-        new Preference<String>("XmppPassword", "cagateway");
+    public static final CAGatewayPreference<String> XMPP_SERVER_NAME =
+        new CAGatewayPreference<String>("XmppServerName", "krynfsb.desy.de");
+    public static final CAGatewayPreference<String> XMPP_USER_NAME =
+        new CAGatewayPreference<String>("XmppUserName", "cagateway");
+    public static final CAGatewayPreference<String> XMPP_PASSWORD =
+        new CAGatewayPreference<String>("XmppPassword", "cagateway");
     
-	public static final Preference<String> JMS_TIME_TO_LIVE_ALARMS = 
-		new Preference<String> ("jmsTimeToLiveAlarms","3600000");
-	public static final Preference<String> JMS_TIME_TO_LIVE_LOGS = 
-		new Preference<String> ("jmsTimeToLiveLogs", "600000");
-	public static final Preference<String> JMS_TIME_TO_LIVE_PUT_LOGS = 
-		new Preference<String> ("jmsTimeToLivePutLogs", "3600000");
+	public static final CAGatewayPreference<Integer> JMS_TIME_TO_LIVE_ALARMS = 
+		new CAGatewayPreference<Integer> ("jmsTimeToLiveAlarms",3600000);
+	public static final CAGatewayPreference<Integer> JMS_TIME_TO_LIVE_LOGS = 
+		new CAGatewayPreference<Integer> ("jmsTimeToLiveLogs", 600000);
+	public static final CAGatewayPreference<Integer> JMS_TIME_TO_LIVE_PUT_LOGS = 
+		new CAGatewayPreference<Integer> ("jmsTimeToLivePutLogs", 3600000);
 
 
-    private Preference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
+    private CAGatewayPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
@@ -73,7 +73,7 @@ public final class Preference<T> extends AbstractPreference<T> {
     @SuppressWarnings("unchecked")
     @Override
     protected Class<? extends AbstractPreference<T>> getClassType() {
-        return (Class<? extends AbstractPreference<T>>) Preference.class;
+        return (Class<? extends AbstractPreference<T>>) CAGatewayPreference.class;
     }
 
 }

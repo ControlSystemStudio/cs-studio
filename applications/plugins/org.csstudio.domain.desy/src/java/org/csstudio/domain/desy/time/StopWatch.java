@@ -36,7 +36,12 @@ public final class StopWatch {
 
     @Nonnull
     public static RunningStopWatch start() {
-        return new RunningStopWatch(System.nanoTime());
+        return new RunningStopWatch();
+    }
+
+    @Nonnull
+    public static RunningStopWatch startWith(@Nonnull final ICurrentTimeProvider provider) {
+        return new RunningStopWatch(provider);
     }
 
     /**
@@ -47,23 +52,36 @@ public final class StopWatch {
      */
     public static final class RunningStopWatch {
         private long _startInNS;
+
+        private final ICurrentTimeProvider _provider;
         /**
          * Constructor.
          */
-        RunningStopWatch(final long startInNS) {
-            _startInNS = startInNS;
+        RunningStopWatch() {
+            this(new SystemTimeProvider());
+        }
+        /**
+         * Constructor.
+         */
+        RunningStopWatch(@Nonnull final ICurrentTimeProvider provider) {
+            _provider = provider;
+            _startInNS = _provider.getCurrentTimeInNanos();
         }
         public long getStartTimeInNS() {
             return _startInNS;
         }
         public long getElapsedTimeInNS() {
-            return System.nanoTime() - _startInNS;
+            return _provider.getCurrentTimeInNanos() - _startInNS;
         }
         public long getElapsedTimeInMillis() {
-            return (long) ((System.nanoTime() - _startInNS) / 1.0e6);
+            return (long) (getElapsedTimeInNS() / 1.0e6);
         }
         public void restart() {
-            _startInNS = System.nanoTime();
+            _startInNS = _provider.getCurrentTimeInNanos();
+        }
+        public void start() {
+            restart();
         }
     }
+
 }

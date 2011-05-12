@@ -34,13 +34,13 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.net.HostAddress;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extend this class to implement your preferences.
@@ -72,8 +72,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public abstract class AbstractPreference<T> {
 
-    static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractPreference.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPreference.class);
 
     private static Map<Class<?>, IPrefStrategy<?>> TYPE_MAP = new HashMap<Class<?>, IPrefStrategy<?>>();
     static {
@@ -154,8 +153,7 @@ public abstract class AbstractPreference<T> {
                 try {
                     return new URL(prefs.getString(context, key, defaultValue.toString(), null));
                 } catch (final MalformedURLException e) {
-                    CentralLogger.getInstance().error(AbstractPreference.class,
-                                                      "URL preference is not well formed.", e);
+                    LoggerFactory.getLogger(AbstractPreference.class).error("URL preference is not well formed.", e);
                     throw new IllegalArgumentException("URL preference not well-formed. " +
                                                        "That is not supposed to happen, since the defaultValue is by definition of type URL.");
                 }
@@ -230,6 +228,9 @@ public abstract class AbstractPreference<T> {
     @Nonnull
     protected AbstractPreference<T> addValidator(@Nonnull final IPreferenceValidator<T> validator) {
         _validator = validator;
+        if(!_validator.validate(_defaultValue)) {
+            throw new IllegalArgumentException("Default value is not valid with this validator.");
+        }
         return this;
     }
 

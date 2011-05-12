@@ -25,8 +25,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
@@ -39,6 +37,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The LDAP read job. Creates a {@link LdapSearchResult} for a given query.
@@ -50,8 +50,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  */
 public final class LDAPReader extends Job {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(LDAPReader.class);
+    
     private final ILdapSearchParams _searchParams;
 
     private final ILdapSearchResult _searchResult;
@@ -166,7 +166,7 @@ public final class LDAPReader extends Job {
                                                       _searchParams.getFilter(),
                                                       _searchParams.getScope());
         if (result == null || result.getAnswerSet().isEmpty()) {
-            LOG.info("No results for LDAP search query.\n" + _searchParams.toString());
+            LOG.info("No results for LDAP search query.\n{}", _searchParams.toString());
         } else {
             _searchResult.setResult(_searchParams, result.getAnswerSet());
         }

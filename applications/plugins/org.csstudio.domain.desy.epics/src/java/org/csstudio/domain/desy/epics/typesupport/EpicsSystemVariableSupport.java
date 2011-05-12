@@ -23,7 +23,6 @@ package org.csstudio.domain.desy.epics.typesupport;
 
 import java.util.Collection;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IValue;
@@ -45,6 +44,7 @@ import org.epics.pvmanager.TypeSupport;
  *
  * @author bknerr
  * @since 22.12.2010
+ * @param <T> the concrete type of the meta data.
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class statically is accessed, hence the name should be short and descriptive!
  */
@@ -90,12 +90,12 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                                     alarm.getStatus().toString(),
                                                     null,
                                                     IValue.Quality.Original,
-                                                    new double[]{ valueData.doubleValue() },
+                                                    new double[]{valueData.doubleValue()},
                                                     min.doubleValue(),
                                                     max.doubleValue());
     }
 
-    @CheckForNull
+    @Nonnull
     protected IValue collectionToIValue(@Nonnull final Class<?> typeClass,
                                         @Nonnull final Collection<T> data,
                                         @Nonnull final EpicsAlarm alarm,
@@ -106,7 +106,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
         return support.convertCollectionToIValue(data, alarm, timestamp);
     }
 
-    @CheckForNull
+    @Nonnull
     public static <T>
     IValue toIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
                                 @Nonnull final T min,
@@ -134,7 +134,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     }
 
 
-    @CheckForNull
+    @Nonnull
     protected EpicsSystemVariable<?>
     createEpicsVariableFromCollection(@Nonnull final String name,
                                       @Nonnull final Class<?> typeClass,

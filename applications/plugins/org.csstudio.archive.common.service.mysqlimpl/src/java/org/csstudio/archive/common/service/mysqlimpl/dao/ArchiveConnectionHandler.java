@@ -36,10 +36,10 @@ import java.sql.SQLException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.util.StringUtil;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -57,8 +57,8 @@ public enum ArchiveConnectionHandler {
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
-    static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class);
-    static final Logger WORKER_LOG = CentralLogger.getInstance().getLogger(PersistDataWorker.class);
+    static final Logger LOG = LoggerFactory.getLogger(ArchiveConnectionHandler.class);
+    static final Logger WORKER_LOG = LoggerFactory.getLogger(PersistDataWorker.class);
 
 
     /**
@@ -120,7 +120,6 @@ public enum ArchiveConnectionHandler {
         ds.setPassword(_prefPassword);
         ds.setFailOverReadOnly(false);
         ds.setMaxAllowedPacket(_prefMaxAllowedPacketSizeInKB*1024);
-
         ds.setUseTimezone(true);
 
         return ds;
@@ -154,11 +153,11 @@ public enum ArchiveConnectionHandler {
                 final DatabaseMetaData meta = connection.getMetaData();
                 if (meta != null) {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class).debug("MySQL connection:\n" +
+                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("MySQL connection:\n" +
                               meta.getDatabaseProductName() + " " + meta.getDatabaseProductVersion());
                 } else {
                     // Constructor call -> LOG.debug not possible, not yet initialised
-                    CentralLogger.getInstance().getLogger(ArchiveConnectionHandler.class).debug("No meta data for MySQL connection");
+                    LoggerFactory.getLogger(ArchiveConnectionHandler.class).debug("No meta data for MySQL connection");
                 }
                 // set to true to enable failover to other host
                 connection.setAutoCommit(true);

@@ -39,6 +39,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.primitives.Ints;
 
+/**
+ * System variable conversion support for {@link EpicsEnum}.
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<EpicsEnum> {
     /**
      * Constructor.
@@ -55,7 +61,7 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                                                   sysVar.getAlarm().getStatus().toString(),
                                                   null,
                                                   null,
-                                                  new int[] {sysVar.getData().getIndex().intValue()});
+                                                  new int[] {sysVar.getData().getRaw().intValue()});
     }
 
     @Override
@@ -67,8 +73,9 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
             Collections2.transform(data,
                                    new Function<EpicsEnum, Integer> () {
                 @Override
+                @Nonnull
                 public Integer apply(@Nonnull final EpicsEnum from) {
-                    return from.getIndex();
+                    return from.getRaw();
                 }
             });
         return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(timestamp),

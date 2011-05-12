@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -56,7 +57,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
@@ -79,7 +80,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveSampleDaoImpl.class);
+        LoggerFactory.getLogger(ArchiveSampleDaoImpl.class);
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
@@ -144,11 +145,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private <V, T extends ISystemVariable<V>>
-        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples)
+                                       throws ArchiveDaoException,
+                                              ArchiveConnectionException,
+                                              SQLException,
+                                              TypeSupportException {
 
-        final List<String> values = Lists.newArrayList();
-        final List<String> valuesPerMinute = Lists.newArrayList();
-        final List<String> valuesPerHour = Lists.newArrayList();
+        final Deque<String> values = Lists.newLinkedList();
+        final Deque<String> valuesPerMinute = Lists.newLinkedList();
+        final Deque<String> valuesPerHour = Lists.newLinkedList();
 
         for (final IArchiveSample<V, T> sample : samples) {
 
@@ -179,8 +184,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         void writeReducedData(@Nonnull final ArchiveChannelId channelId,
                               @Nonnull final T data,
                               @Nonnull final TimeInstant timestamp,
-                              @Nonnull final List<String> valuesPerMinute,
-                              @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
+                              @Nonnull final Deque<String> valuesPerMinute,
+                              @Nonnull final Deque<String> valuesPerHour) throws ArchiveDaoException {
 
         final Double newValue = createDoubleFromValueOrNull(data);
         if (newValue == null) {
@@ -288,23 +293,28 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
 
     @CheckForNull
-    private List<String> joinStringsToStatementBatch(@Nonnull final List<String> values,
-                                                     @Nonnull final List<String> valuesPerMinute,
-                                                     @Nonnull final List<String> valuesPerHour)
+    private List<String> joinStringsToStatementBatch(@Nonnull final Deque<String> values,
+                                                     @Nonnull final Deque<String> valuesPerMinute,
+                                                     @Nonnull final Deque<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
         final List<String> statements = Lists.newLinkedList();
-        if (!values.isEmpty()) {
-            statements.add(Joiner.on(" ").join(_insertSamplesStmt, Joiner.on(", ").join(values)));
-        }
-        if (!valuesPerMinute.isEmpty()) {
-            final String stmtStr = Joiner.on(" ").join(_insertSamplesPerMinuteStmt, Joiner.on(", ").join(valuesPerMinute));
-            statements.add(stmtStr);
-        }
-        if (!valuesPerHour.isEmpty()) {
-            final String stmtStr = Joiner.on(" ").join(_insertSamplesPerHourStmt, Joiner.on(", ").join(valuesPerHour));
-            statements.add(stmtStr);
-        }
+
+        joinValuesFieldIntoStatementsList(_insertSamplesStmt, values, statements);
+
+        joinValuesFieldIntoStatementsList(_insertSamplesPerMinuteStmt, valuesPerMinute, statements);
+
+        joinValuesFieldIntoStatementsList(_insertSamplesPerHourStmt, valuesPerHour, statements);
+
         return statements;
+    }
+
+    private void joinValuesFieldIntoStatementsList(@Nonnull final String insertStmt,
+                                                   @Nonnull final Deque<String> values,
+                                                   @Nonnull final List<String> statements) {
+        if (!values.isEmpty()) {
+            final String allValues = Joiner.on(", ").join(values);
+            statements.add(Joiner.on(" ").join(insertStmt, allValues));
+        }
     }
 
     /**

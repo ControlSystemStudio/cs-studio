@@ -55,7 +55,7 @@ public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Dou
                                            @Nonnull final Double nextVal) {
 
         if (accVal != null) {
-            final int n = getNumberOfAccumulations();
+            final long n = getNumberOfAccumulations();
             return accVal + (nextVal - accVal)/(n + 1);
         }
         return nextVal;

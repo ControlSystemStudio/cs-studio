@@ -21,9 +21,9 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldapUpdater.action.UpdateLdapAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LDAP updater task.
@@ -34,7 +34,7 @@ import org.csstudio.utility.ldapUpdater.action.UpdateLdapAction;
  */
 public class LdapUpdaterTask implements Runnable {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterTask.class);
 
     /**
      * {@inheritDoc}
@@ -45,7 +45,7 @@ public class LdapUpdaterTask implements Runnable {
         try {
             new UpdateLdapAction().updateLdapFromIOCFiles();
         } catch (final Throwable t) {
-            LOG.error("Throwable " + t.getCause() + " in LDAP Updater.", t);
+            LOG.error("Throwable in LDAP Updater.", t);
         }
     }
 }

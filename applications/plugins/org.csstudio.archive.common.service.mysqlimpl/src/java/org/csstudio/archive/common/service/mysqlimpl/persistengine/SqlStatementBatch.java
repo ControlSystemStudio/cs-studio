@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.persistengine;
 
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -69,10 +70,11 @@ public enum SqlStatementBatch {
         return polled;
     }
 
-    @Nonnull
-    public BlockingQueue<String> getQueue() {
-        return _statements;
+    public int drainTo(@Nonnull final Collection<? super String> c) {
+        return _statements.drainTo(c);
     }
+
+
     public synchronized long sizeInBytes() {
         return _sizeInBytes;
     }

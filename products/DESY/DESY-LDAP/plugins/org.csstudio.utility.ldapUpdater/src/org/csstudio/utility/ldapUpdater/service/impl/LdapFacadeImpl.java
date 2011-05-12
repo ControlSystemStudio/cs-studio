@@ -53,9 +53,7 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.net.IpAddress;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
@@ -74,6 +72,8 @@ import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -88,7 +88,7 @@ import com.google.inject.Inject;
 public class LdapFacadeImpl implements ILdapFacade {
 
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapFacadeImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapFacadeImpl.class);
 
     private final ILdapServiceProvider _serviceProvider;
 
@@ -304,7 +304,7 @@ public class LdapFacadeImpl implements ILdapFacade {
                 final LdapName ldapName = record.getLdapName();
 
                 getLdapService().removeLeafComponent(ldapName);
-                LOG.info("Tidying: Record " + record.getName() + " removed.");
+                LOG.info("Tidying: Record {} removed.", record.getName());
             }
         }
     }

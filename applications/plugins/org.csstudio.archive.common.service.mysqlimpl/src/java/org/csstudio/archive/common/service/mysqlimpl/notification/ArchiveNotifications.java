@@ -28,10 +28,10 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.NotificationType;
 import org.csstudio.email.EMailSender;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Archive notification manager.
@@ -49,7 +49,7 @@ public final class ArchiveNotifications {
     }
 
     private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(ArchiveNotifications.class);
+            LoggerFactory.getLogger(ArchiveNotifications.class);
 
     public static void notify(@Nonnull final NotificationType type,
                               @Nonnull final String additionalBodyText) {

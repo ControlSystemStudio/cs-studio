@@ -114,7 +114,7 @@ public class EpicsIValueTypeSupportUnitTest {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<EpicsEnum> cssV = (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getIndex());
+            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getRaw());
             Assert.assertEquals("part", cssV.getData().getState());
             Assert.assertEquals(null, cssV.getData().getRaw());
         } catch (final TypeSupportException e) {

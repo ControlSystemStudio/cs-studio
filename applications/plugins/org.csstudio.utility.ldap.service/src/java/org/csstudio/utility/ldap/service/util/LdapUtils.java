@@ -37,11 +37,11 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Constants class for LDAP entries.
@@ -52,8 +52,8 @@ import org.csstudio.platform.util.StringUtil;
  */
 public final class LdapUtils {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class.getName());
-
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUtils.class);
+    
     /**
      * Constructor.
      */

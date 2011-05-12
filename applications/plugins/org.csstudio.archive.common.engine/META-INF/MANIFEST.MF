@@ -8,18 +8,21 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.equinox.ds;bundle-version="1.2.0",
- org.junit4;bundle-version="4.8.1",
+ org.eclipse.equinox.http.jetty;bundle-version="2.0.0",
+ org.eclipse.osgi.services;bundle-version="3.2.100",
  javax.servlet;bundle-version="2.5.0",
- org.csstudio.utility.pv;bundle-version="1.1.1",
- org.csstudio.utility.httpd;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.8.1",
+ javax.annotation;bundle-version="1.3.0",
+ org.csstudio.platform.libs.guava;bundle-version="0.8.0",
+ org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
+ org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
  org.csstudio.archive.common.service;bundle-version="1.0.0",
  org.csstudio.domain.desy;bundle-version="1.0.0",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
- org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
- javax.annotation;bundle-version="1.3.0",
- org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
- org.csstudio.platform.libs.guava;bundle-version="0.8.0",
- org.csstudio.apputil;bundle-version="1.1.7"
+ org.csstudio.apputil;bundle-version="1.1.7",
+ org.csstudio.utility.pv;bundle-version="1.1.1",
+ org.csstudio.platform;bundle-version="1.1.1"
 Bundle-ClassPath: .
 Bundle-Activator: org.csstudio.archive.common.engine.ArchiveEngineActivator
+Import-Package: org.slf4j

@@ -39,6 +39,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.primitives.Doubles;
 
+/**
+ * System variable support for {@link Float};
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float> {
     /**
      * Constructor.
@@ -67,6 +73,7 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
             Collections2.transform(data,
                                    new Function<Float, Double> () {
                                        @Override
+                                       @Nonnull
                                        public Double apply(@Nonnull final Float from) {
                                            return Double.valueOf(from);
                                        }
@@ -107,11 +114,12 @@ final class FloatSystemVariableSupport extends EpicsSystemVariableSupport<Float>
      * {@inheritDoc}
      */
     @Override
-    protected EpicsSystemVariable<Collection<Float>> createCollectionEpicsVariable(final String name,
-                                                                                   final Class<?> typeClass,
-                                                                                   final Collection<Float> values,
-                                                                                   final ControlSystem system,
-                                                                                   final TimeInstant timestamp) throws TypeSupportException {
+    @Nonnull
+    protected EpicsSystemVariable<Collection<Float>> createCollectionEpicsVariable(@Nonnull final String name,
+                                                                                   @Nonnull final Class<?> typeClass,
+                                                                                   @Nonnull final Collection<Float> values,
+                                                                                   @Nonnull final ControlSystem system,
+                                                                                   @Nonnull final TimeInstant timestamp) throws TypeSupportException {
         try {
             @SuppressWarnings("unchecked")
             final Collection<Float> newCollection = (Collection<Float>) typeClass.newInstance();

@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Helper for creating web pages with consistent look (header, footer, ...)
  *  @author Kay Kasemir
@@ -29,6 +30,8 @@ abstract class AbstractResponse extends HttpServlet {
     private static final long serialVersionUID = 1L;
     /** Model from which to serve info */
     private final EngineModel _model;
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractResponse.class);
 
 
     /** Construct <code>HttpServlet</code>
@@ -53,7 +56,7 @@ abstract class AbstractResponse extends HttpServlet {
         } catch (final Exception ex) {
             ex.printStackTrace();
             if (resp.isCommitted()) {
-                CentralLogger.getInstance().getLogger(this).warn("HTTP Server exception", ex);
+                LOG.warn("HTTP Server exception", ex);
                 return;
             }
             resp.sendError(400, "HTTP Server exception" + ex.getMessage());

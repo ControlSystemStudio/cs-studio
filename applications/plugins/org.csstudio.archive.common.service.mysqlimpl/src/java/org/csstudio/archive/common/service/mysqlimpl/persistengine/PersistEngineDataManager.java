@@ -36,13 +36,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -55,8 +55,49 @@ import com.google.common.collect.Sets;
 public enum PersistEngineDataManager {
     INSTANCE;
 
+    /**
+     * Thread to hold the shutdown worker on stopping the engine.
+     *
+     * @author bknerr
+     * @since 11.05.2011
+     */
+    private final class ShutdownWorkerThread extends Thread {
+        /**
+         * Constructor.
+         */
+        public ShutdownWorkerThread() {
+            // Empty
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("synthetic-access")
+        @Override
+        public void run() {
+            if (!_executor.isTerminating()) {
+                _executor.execute(new PersistDataWorker("SHUTDOWN MySQL Archive Worker",
+                                                        _sqlStatementBatch,
+                                                        Integer.valueOf(0),
+                                                        _prefMaxAllowedPacketInBytes));
+                _executor.shutdown();
+                try {
+                    if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.MILLISECONDS)) {
+                        LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
+                        final List<String> statements = Lists.newLinkedList();
+                        _sqlStatementBatch.drainTo(statements);
+                        rescueDataToFileSystem(statements);
+                    }
+                } catch (final InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
+
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(PersistEngineDataManager.class);
+        LoggerFactory.getLogger(PersistEngineDataManager.class);
 
 
     private static final File DATA_RESCUE_DIR = MySQLArchiveServicePreference.DATA_RESCUE_DIR.getValue();
@@ -113,9 +154,10 @@ public enum PersistEngineDataManager {
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
+        final PersistDataWorker newWorker = new PersistDataWorker("PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
                                                                   _sqlStatementBatch,
-                                                                  _prefPeriodInMS);
+                                                                  _prefPeriodInMS,
+                                                                  _prefMaxAllowedPacketInBytes);
         _executor.scheduleAtFixedRate(newWorker,
                                       0L,
                                       newWorker.getPeriodInMS(),
@@ -142,31 +184,7 @@ public enum PersistEngineDataManager {
         /**
          * Add shutdown hook.
          */
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            /**
-             * {@inheritDoc}
-             */
-            @SuppressWarnings("synthetic-access")
-            @Override
-            public void run() {
-                if (!_executor.isTerminating()) {
-                    _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
-                                                            _sqlStatementBatch,
-                                                            Integer.valueOf(0)));
-                    _executor.shutdown();
-                    try {
-                        if (!_executor.awaitTermination(_prefPeriodInMS + 1, TimeUnit.MILLISECONDS)) {
-                            LOG.warn("Executor for PersistDataWorkers did not terminate in the specified period. Try to rescue data.");
-                            final List<String> statements = Lists.newLinkedList();
-                            _sqlStatementBatch.getQueue().drainTo(statements);
-                            rescueDataToFileSystem(statements);
-                        }
-                    } catch (final InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new ShutdownWorkerThread());
     }
 
     /**

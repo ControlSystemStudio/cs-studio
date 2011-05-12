@@ -1,17 +1,11 @@
 Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: Apache Maven
-Built-By: ceki
-Build-Jdk: 1.6.0_16
-Bundle-Description: The slf4j API
-Bundle-Version: 1.6.1.qualifier
-Implementation-Version: 1.6.1
-Implementation-Title: slf4j-api
 Bundle-ManifestVersion: 2
+Bundle-Name: Simple Logging Facade 4J
 Bundle-SymbolicName: org.csstudio.platform.libs.slf4j
-Bundle-Name: slf4j.api
+Bundle-Version: 1.6.1.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.slf4j;version=1.6.1, org.slf4j.spi;version=1.6.1, 
- org.slf4j.helpers;version=1.6.1
-
+Eclipse-BuddyPolicy: registered
+Export-Package: org.slf4j,
+ org.slf4j.helpers,
+ org.slf4j.spi

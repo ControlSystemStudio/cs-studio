@@ -64,10 +64,10 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision: 1.1 $
  * @since 17.08.2010
  */
-public class DocumentContend {
+public class DocumentContent {
     
     protected static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(DocumentContend.class);
+            .getLogger(DocumentContent.class);
     
     private ListViewer _pvList;
     

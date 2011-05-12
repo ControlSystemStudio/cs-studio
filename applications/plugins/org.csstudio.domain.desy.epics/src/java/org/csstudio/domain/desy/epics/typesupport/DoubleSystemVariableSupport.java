@@ -101,6 +101,7 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(@Nonnull final String name,
                                                                                     @Nonnull final Class<?> typeClass,
                                                                                     @Nonnull final Collection<Double> values,

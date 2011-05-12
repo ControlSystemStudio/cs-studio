@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -45,6 +44,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.joda.time.DateTimeFieldType;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LDAP Updater server.
@@ -62,7 +63,7 @@ public class LdapUpdaterServer implements IApplication,
      */
     private static LdapUpdaterServer INSTANCE;
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterServer.class);
 
     private volatile boolean _stopped;
 
@@ -109,8 +110,7 @@ public class LdapUpdaterServer implements IApplication,
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
-//                                                 delaySec,
-                                                 0L,
+                                                 delaySec,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);
         synchronized (this) {
@@ -135,7 +135,8 @@ public class LdapUpdaterServer implements IApplication,
         final long hour = startTimeSec / 3600L;
         final String startTime = hour + ":" + minute + ":" + second;
 
-        LOG.info("\nLDAP Updater autostart scheduled at " + startTime +  " every " + intervalSec + " seconds");
+        LOG.info("\nLDAP Updater autostart scheduled at {} every {} seconds",
+                 startTime, intervalSec);
     }
 
 

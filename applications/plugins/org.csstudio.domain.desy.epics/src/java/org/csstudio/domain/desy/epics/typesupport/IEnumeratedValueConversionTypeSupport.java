@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.epics.typesupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
@@ -53,9 +52,8 @@ final class IEnumeratedValueConversionTypeSupport extends
      *
      * Kay's enumerated values have to have only a single value element corresponding to the set
      * enumerated value string. We want to archive the string, which yields the information, not the
-     * index which doesn't speak for itself or might be changed in the system later on.
-     *
-     * CHECKSTYLE OFF: CyclomaticComplexity (accepted here as we'll get rid of I*Values anyway)
+     * index which doesn't speak for itself or might be changed in the system later on. Otherwise,
+     * value is the RAW value, not the index. But that is not recognizable from this layer.
      */
     @Override
     @Nonnull
@@ -68,34 +66,7 @@ final class IEnumeratedValueConversionTypeSupport extends
             throw new TypeSupportException("EnumeratedValue conversion failed, since IEnumeratedValue hasn't any values!", null);
         }
 
-        final int index = values[0];
-        final EpicsEnum enumState;
-        /**
-         * Take care. It might happen that we receive value updates (including the very first one for a 'successful' connection)
-         * where the IEnumeratedValues do not contain data for the possible states (IEnumeratedMetaData is empty).
-         * That leads to the situation with the values[0]=X field (typically X=0) being the only info
-         * and the possible states are all unknown.
-         * Hence, the only thing to do is creating an 'unknown' epics enum with the fields  (X,UNKNOWN,null).
-         *
-         * And the WTF/minute count is even higher than it already was...
-         */
-        if (metaData == null || metaData.getStates().isEmpty()) {
-            final IEnumeratedMetaData iMetaData = value.getMetaData();
-
-            String state = EpicsEnum.UNKNOWN_STATE;
-            if (iMetaData != null) {
-                final String[] states = iMetaData.getStates();
-                if (states.length != 0 && index >=0 && index < states.length) {
-                    state = states[index];
-                } else {
-                    throw new IndexOutOfBoundsException("State index " + index + " is outside range of states array length (" +
-                                                        states.length + ") for channel " + name + ".");
-                }
-            }
-            enumState = EpicsEnum.create(index, state, null);
-        } else {
-            enumState = metaData.getState(index);
-        }
+        final EpicsEnum enumState = createEpicsEnum(metaData, values[0]);
 
         final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(), value.getStatus());
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
@@ -105,6 +76,24 @@ final class IEnumeratedValueConversionTypeSupport extends
                                                   ControlSystem.EPICS_DEFAULT,
                                                   timestamp,
                                                   alarm);
+    }
+
+    @Nonnull
+    private EpicsEnum createEpicsEnum(@Nonnull final EpicsMetaData metaData,
+                                      final int index) {
+        EpicsEnum enumState;
+        if (metaData != null && !metaData.getStates().isEmpty()) {
+            try {
+                enumState = metaData.getOrCreateState(index);
+            } catch (final IndexOutOfBoundsException e) {
+                // possible, when the record is specified as DTYP='Soft Channel', then the raw value is copied into VAL
+                // bypassing the record's 'bitpattern->state' mapping table.
+                enumState = EpicsEnum.createFromRaw(index);
+            }
+        } else {
+            enumState = EpicsEnum.createFromRaw(index);
+        }
+        return enumState;
     }
 
 }

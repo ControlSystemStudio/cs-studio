@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,39 +19,37 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.domain.desy.preferences;
 
-package org.csstudio.cagateway.preferences;
+import junit.framework.Assert;
 
-import java.util.List;
-
-import org.csstudio.cagateway.Activator;
-import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.junit.Test;
 
 /**
- *
- * Class used to initialize default preference values.
- *
- * @author jpenning
- * @author $Author: claus $
- * @version $Revision: 1.2 $
- * @since 09.06.2010
+ * Test for {@link MinMaxPreferenceValidator}. 
+ * 
+ * @author bknerr
+ * @since 11.05.2011
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer {
+public class MinMaxPreferenceValidatorUnitTest {
+    
+    
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-    public final void initializeDefaultPreferences() {
-        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+    @Test(expected=IllegalArgumentException.class)
+    public void testInvalidValidator() {
+        @SuppressWarnings("unused")
+        final MinMaxPreferenceValidator<Byte> val = 
+            new MinMaxPreferenceValidator<Byte>(Byte.valueOf((byte)0), Byte.valueOf((byte)-1));
+    }
 
-        final List<AbstractPreference<?>> preferences = Preference.XMPP_PASSWORD.getAllPreferences();
-        for (final AbstractPreference<?> preference : preferences) {
-            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
-
-        }
-	}
+    @Test
+    public void test() {
+        final MinMaxPreferenceValidator<Byte> val = 
+            new MinMaxPreferenceValidator<Byte>(Byte.valueOf((byte) -0), Byte.valueOf((byte) 10));
+        Assert.assertTrue(val.validate((byte) 0));
+        Assert.assertTrue(val.validate((byte) 5));
+        Assert.assertTrue(val.validate((byte) 10));
+        Assert.assertFalse(val.validate((byte) -1));
+        Assert.assertFalse(val.validate((byte) 11));
+    }
 }

@@ -37,12 +37,13 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -53,7 +54,7 @@ import org.csstudio.utility.ldap.service.util.LdapUtils;
  */
 public final class LdapNameUtils {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapNameUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapNameUtils.class);
     /**
      * Constructor.
      */

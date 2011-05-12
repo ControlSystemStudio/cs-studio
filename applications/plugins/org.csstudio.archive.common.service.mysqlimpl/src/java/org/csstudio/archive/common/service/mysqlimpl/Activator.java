@@ -26,11 +26,11 @@ import java.util.Hashtable;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -49,7 +49,7 @@ public class Activator implements BundleActivator {
      */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.service.mysqlimpl";
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
 
     private static Activator INSTANCE;
 

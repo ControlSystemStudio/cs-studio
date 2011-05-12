@@ -34,6 +34,12 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+/**
+ * System variable support for {@link String}.
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class StringSystemVariableSupport extends EpicsSystemVariableSupport<String> {
 
     /**
@@ -81,6 +87,7 @@ final class StringSystemVariableSupport extends EpicsSystemVariableSupport<Strin
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     protected EpicsSystemVariable<Collection<String>> createCollectionEpicsVariable(@Nonnull final String name,
                                                                                     @Nonnull final Class<?> typeClass,
                                                                                     @Nonnull final Collection<String> values,

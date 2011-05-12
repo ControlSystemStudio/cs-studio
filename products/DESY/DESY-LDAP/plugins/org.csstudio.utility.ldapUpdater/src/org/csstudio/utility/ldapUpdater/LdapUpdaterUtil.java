@@ -32,10 +32,10 @@ package org.csstudio.utility.ldapUpdater;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.apache.log4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -49,7 +49,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public enum LdapUpdaterUtil {
     INSTANCE;
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapUpdaterUtil.class);
 
     @GuardedBy("this")
     private boolean _busy;
@@ -78,16 +78,16 @@ public enum LdapUpdaterUtil {
         final TimeInstant endTime = TimeInstantBuilder.fromNow();
         final long deltaTime = TimeInstant.deltaInMillis(startTime, endTime);
 
-        LOG.info( actionName + " ends at " + endTime.formatted() + ". " +
-                  "Time used : " + deltaTime/1000. + "s\n.End.\n" +
-                  "-------------------------------------------------------------------\n" );
+        LOG.info( "{} ends at {}. Time used : {}s\n.End.\n-------------------------------------------------------------------\n",
+                  new Object[]{actionName, endTime.formatted(), deltaTime/1000.});
     }
 
     @Nonnull
     public TimeInstant logHeader(@Nonnull final String action) {
         final TimeInstant startTime = TimeInstantBuilder.fromNow();
-        LOG.info("\n-------------------------------------------------------------------\n" +
-                 action + " starts at " + startTime.formatted() + ".");
+        LOG.info("\n-------------------------------------------------------------------\n{} starts at {}.",
+                 action,
+                 startTime.formatted());
         return startTime;
     }
 }

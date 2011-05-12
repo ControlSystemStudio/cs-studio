@@ -34,8 +34,6 @@ import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -45,6 +43,9 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import com.google.common.collect.ImmutableSet;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Exports content model to different file formats.
@@ -57,8 +58,7 @@ import com.google.common.collect.ImmutableSet;
 public final class ContentModelExporter {
 
     private static final String XML_ENCODING_FORMAT = "ISO-8859-1";
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ContentModelExporter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ContentModelExporter.class);
 
     /**
      * Constructor.
