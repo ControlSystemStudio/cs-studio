@@ -106,7 +106,7 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
 
         final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(sysVar.getOrigin().getType());
         if (familyClass != null) {
-            final T value = sysVar.getData().getValueData();
+            final T value = sysVar.getData();
             @SuppressWarnings("unchecked")
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =
@@ -127,7 +127,7 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
     protected IValue convertToIMinMaxDoubleValue(@Nonnull final IAlarmSystemVariable<T> sysVar,
                                                  @SuppressWarnings("unused") @Nonnull final T min,
                                                  @SuppressWarnings("unused") @Nonnull final T max) throws TypeSupportException {
-        throw new TypeSupportException("Type " + sysVar.getData().getValueData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
+        throw new TypeSupportException("Type " + sysVar.getData().getClass() + " cannot be converted to IMinMaxDoubleValue!", null);
     }
 
 
@@ -135,7 +135,7 @@ public abstract class SystemVariableSupport<T> extends AbstractTypeSupport<T> {
     public static <T> IValue toIValue(@Nonnull final IAlarmSystemVariable<T> sysVar) throws TypeSupportException {
         final Class<? extends SystemVariableSupport<?>> familyClass = SYSTEM_DISCRIMINATOR.get(sysVar.getOrigin().getType());
         if (familyClass != null) {
-            final T value = sysVar.getData().getValueData();
+            final T value = sysVar.getData();
             @SuppressWarnings("unchecked")
             final Class<T> typeClass = (Class<T>) value.getClass();
             final SystemVariableSupport<T> support =

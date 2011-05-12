@@ -64,13 +64,51 @@ public class LdapNameUtilsUnitTest {
     public static void setUp() {
 
         QUERY = createLdapName(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
-                                COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                                FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
-                                UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
-                                ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
-                                COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
+                               COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
+                               FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
+                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
+                               ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
+                               COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
     }
 
+    @Test
+    public void testBaseName0() {
+        LdapName name = createLdapName("leaf", "leafValue",
+                                       "mid", "midvalue",
+                                       "base", "baseValue");
+        Assert.assertEquals(3, name.size());
+        LdapName baseName = LdapNameUtils.baseName(name);
+        Assert.assertEquals(2, baseName.size());
+        Assert.assertEquals("mid=midvalue,base=baseValue", baseName.toString());
+    }
+    @Test
+    public void testBaseName1() {
+        LdapName name = createLdapName("leaf", "leafValue",
+                                       "base", "baseValue");
+        Assert.assertEquals(2, name.size());
+        LdapName baseName = LdapNameUtils.baseName(name);
+        Assert.assertEquals(1, baseName.size());
+        Assert.assertEquals("base=baseValue", baseName.toString());
+    }
+    @Test
+    public void testBaseName2() {
+        
+        LdapName name = createLdapName("leaf", "leafValue");
+        Assert.assertEquals(1, name.size());
+        LdapName baseName = LdapNameUtils.baseName(name);
+        Assert.assertEquals(0, baseName.size());
+        Assert.assertEquals("", baseName.toString());
+    }
+    @Test
+    public void testBaseName3() throws InvalidNameException {
+        
+        LdapName name = new LdapName("");
+        Assert.assertEquals(0, name.size());
+        LdapName baseName = LdapNameUtils.baseName(name);
+        Assert.assertEquals(0, baseName.size());
+        Assert.assertEquals("", baseName.toString());
+    }
+    
     @Test
     public void testSimpleNameOfSingleRdnName() throws Exception {
         final LdapName name = new LdapName("foo=bar");

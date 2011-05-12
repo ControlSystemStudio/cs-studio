@@ -50,9 +50,7 @@ public class CommandEnumeration implements IDynamicParameterValues {
         /**
          * Constructor.
          */
-        //CHECKSTYLE:OFF
-        private IocModificationCommand(final String desc) {
-          //CHECKSTYLE:ON
+        private IocModificationCommand(@Nonnull final String desc) {
             _description = desc;
         }
 
@@ -69,7 +67,6 @@ public class CommandEnumeration implements IDynamicParameterValues {
 
     /**
      * (@inheritDoc)
-     * @return the parameter enum values
      */
     @Override
     @Nonnull

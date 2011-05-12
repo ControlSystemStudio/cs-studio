@@ -21,7 +21,7 @@ import com.google.common.collect.MapMaker;
  */
 public class ArchiveGroup {
     /** Name of this group */
-    final private String _name;
+    private final String _name;
 
     /** All the channels in this group
      *  <p>
@@ -31,7 +31,7 @@ public class ArchiveGroup {
     private final ConcurrentMap<String, ArchiveChannel<?, ?>> _channelMap;
 
     /** Set to <code>true</code> while running. */
-    private boolean is_running = false;
+    private boolean _isRunning = false;
 
     /**
      * Constructor.
@@ -40,15 +40,15 @@ public class ArchiveGroup {
      * @param numOfChannels the initial capacity for the number of channels (for performance
      * reasons), doesnt have to be exact.
      */
-    public ArchiveGroup(@Nonnull final String name,
-                        @Nonnull final Long groupId)    {
+    public ArchiveGroup(@Nonnull final String name)    {
         _name = name;
         // After Kay's comment, there are two threads that might work on groups.
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
     }
 
     /** @return Name of this group */
-    final public String getName() {
+    @Nonnull
+    public String getName() {
         return _name;
     }
 
@@ -56,8 +56,8 @@ public class ArchiveGroup {
      *  @param channel Channel to add
      */
     @SuppressWarnings("nls")
-    final void add(final ArchiveChannel<?, ?> channel) {
-        if (is_running) {
+    final void add(@Nonnull final ArchiveChannel<?, ?> channel) {
+        if (_isRunning) {
             throw new Error("Running"); //$NON-NLS-1$
         }
         // Is this an 'active' channel?
@@ -75,10 +75,8 @@ public class ArchiveGroup {
     }
 
     /** Remove channel from group */
-    final void remove(final ArchiveChannel<?, ?> channel)
-    {
-        if (is_running)
-         {
+    final void remove(@Nonnull final ArchiveChannel<?, ?> channel) {
+        if (_isRunning) {
             throw new Error("Running"); //$NON-NLS-1$
         }
         _channelMap.remove(channel.getName());
@@ -118,10 +116,10 @@ public class ArchiveGroup {
      */
     @Nonnull
     final void start(@Nonnull final String info) throws EngineModelException {
-        if (is_running) {
+        if (_isRunning) {
             return;
         }
-        is_running = true;
+        _isRunning = true;
 
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.start(info);
@@ -133,10 +131,10 @@ public class ArchiveGroup {
      * @throws EngineModelException
      */
     public void stop(@Nonnull final String info) throws EngineModelException {
-        if (!is_running) {
+        if (!_isRunning) {
             return;
         }
-        is_running = false;
+        _isRunning = false;
         for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
             channel.stop(info);
         }

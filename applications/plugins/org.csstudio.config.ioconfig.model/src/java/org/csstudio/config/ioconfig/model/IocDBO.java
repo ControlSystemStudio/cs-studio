@@ -24,9 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -42,7 +42,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
  */
 @Entity
 @Table(name = "ddb_Ioc")
-public class IocDBO extends AbstractNodeDBO {
+public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
 
     /**
      * Default Constructor needed by Hibernate.
@@ -67,7 +67,7 @@ public class IocDBO extends AbstractNodeDBO {
      * @param maxStationAddress the highest possible Station Address.
      * @throws PersistenceException 
      */
-    public IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
+    private IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
         setParent(facility);
         facility.addChild(this);
     }
@@ -79,7 +79,7 @@ public class IocDBO extends AbstractNodeDBO {
     @Transient
     @Nonnull
     public FacilityDBO getFacility() {
-        return (FacilityDBO) getParent();
+        return getParent();
     }
 
     /**
@@ -106,14 +106,12 @@ public class IocDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(@Nonnull final NamedDBClass parentNode) throws PersistenceException {
-        if (parentNode instanceof FacilityDBO) {
-            final FacilityDBO facility = (FacilityDBO) parentNode;
-            final IocDBO copy = new IocDBO(facility);
-            copy.setDescription(getDescription());
-            return copy;
-        }
-        return null;
+    @CheckForNull
+    public IocDBO copyParameter(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
+        final FacilityDBO facility = parentNode;
+        final IocDBO copy = new IocDBO(facility);
+        copy.setDescription(getDescription());
+        return copy;
     }
 
     /**
@@ -121,9 +119,10 @@ public class IocDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(@Nonnull final AbstractNodeDBO parentNode) throws PersistenceException {
-        final AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (final AbstractNodeDBO node : getChildren()) {
+    @Nonnull
+    public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
+        final IocDBO copy = super.copyThisTo(parentNode);
+        for (final ProfibusSubnetDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
@@ -135,6 +134,7 @@ public class IocDBO extends AbstractNodeDBO {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.IOC;
     }

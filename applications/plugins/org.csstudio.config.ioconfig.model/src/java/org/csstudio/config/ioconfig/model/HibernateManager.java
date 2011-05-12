@@ -84,6 +84,7 @@ public final class HibernateManager extends Observable {
         }
         
         @Override
+        @Nonnull
         protected IStatus run(@Nonnull IProgressMonitor monitor) {
             boolean watch = true;
             Date date = new Date();
@@ -97,12 +98,12 @@ public final class HibernateManager extends Observable {
                     // Ignore Interrupt
                 }
                 // CHECKSTYLE ON: EmptyBlock
-                if ( (_sessionFactory == null) || _sessionFactory.isClosed()) {
+                if( (_sessionFactory == null) || _sessionFactory.isClosed()) {
                     break;
                 }
-                if (_sessionUseCounter == 0) {
+                if(_sessionUseCounter == 0) {
                     Date now = new Date();
-                    if (now.getTime() - date.getTime() > getTimeToCloseSession()) {
+                    if(now.getTime() - date.getTime() > getTimeToCloseSession()) {
                         CentralLogger.getInstance().info(this, "DB Session closed by watchdog");
                         _sessionFactory.close();
                         _sessionFactory = null;
@@ -141,8 +142,8 @@ public final class HibernateManager extends Observable {
      */
     private int _timeout = 10;
     private Transaction _trx;
-    private SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
-    private List<Class<?>> _classes = new ArrayList<Class<?>>();
+    private final SessionWatchDog _sessionWatchDog = new SessionWatchDog("Session Watch Dog");
+    private final List<Class<?>> _classes = new ArrayList<Class<?>>();
     private Session _sessionLazy;
     
     /**
@@ -165,7 +166,7 @@ public final class HibernateManager extends Observable {
     }
     
     private void initSessionFactoryDevDB() {
-        if ( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
+        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
             return;
         }
         buildConifg();
@@ -216,15 +217,17 @@ public final class HibernateManager extends Observable {
                 .setProperty("hibernate.connection.provider_class",
                              "org.hibernate.connection.C3P0ConnectionProvider")
                 .setProperty("c3p0.min_size", "1").setProperty("c3p0.max_size", "3")
-                .setProperty("c3p0.timeout", "1800").setProperty("c3p0.acquire_increment", "1")
+                .setProperty("c3p0.timeout", "1800")
+                .setProperty("c3p0.acquire_increment", "1")
                 .setProperty("c3p0.idle_test_period", "100")
                 // sec
-                .setProperty("c3p0.max_statements", "1").setProperty("hibernate.hbm2ddl.auto",
-                                                                     "update")
+                .setProperty("c3p0.max_statements", "1")
+                .setProperty("hibernate.hbm2ddl.auto", "update")
+//                .setProperty("hibernate.hbm2ddl.auto", "validate")
                 .setProperty("hibernate.show_sql", "false");
-//                .setProperty("hibernate.format_sql", "true")
-//                .setProperty("hibernate.use_sql_comments", "true")
-//			.setProperty("hibernate.cache.use_second_level_cache", "true");
+        //                .setProperty("hibernate.format_sql", "true")
+        //                .setProperty("hibernate.use_sql_comments", "true")
+        //			.setProperty("hibernate.cache.use_second_level_cache", "true");
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
     }
     
@@ -245,13 +248,13 @@ public final class HibernateManager extends Observable {
      *            the value for the Property.
      */
     protected void setProperty(@Nonnull final String property, @Nonnull final Object value) {
-        if (property.equals(PreferenceConstants.DDB_TIMEOUT)) {
-            if (value instanceof Integer) {
+        if(property.equals(PreferenceConstants.DDB_TIMEOUT)) {
+            if(value instanceof Integer) {
                 setTimeout((Integer) value);
-            } else if (value instanceof String) {
+            } else if(value instanceof String) {
                 setTimeout(Integer.parseInt((String) value));
             }
-        } else if (value instanceof String) {
+        } else if(value instanceof String) {
             setStringProperty(property, value);
         }
     }
@@ -263,18 +266,18 @@ public final class HibernateManager extends Observable {
     private void setStringProperty(@Nonnull final String property, @Nonnull final Object value) {
         String stringValue = ((String) value).trim();
         
-        if (property.equals(DDB_PASSWORD)) {
+        if(property.equals(DDB_PASSWORD)) {
             _cfg.setProperty("hibernate.connection.password", stringValue);
-        } else if (property.equals(DDB_USER_NAME)) {
+        } else if(property.equals(DDB_USER_NAME)) {
             _cfg.setProperty("hibernate.connection.username", stringValue);
-        } else if (property.equals(DIALECT)) {
+        } else if(property.equals(DIALECT)) {
             _cfg.setProperty("hibernate.dialect", stringValue);
-        } else if (property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)) {
+        } else if(property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)) {
             _cfg.setProperty("hibernate.connection.driver_class", stringValue);
-        } else if (property.equals(HIBERNATE_CONNECTION_URL)) {
+        } else if(property.equals(HIBERNATE_CONNECTION_URL)) {
             _cfg.setProperty("hibernate.connection.url", stringValue);
             
-        } else if (property.equals(SHOW_SQL)) {
+        } else if(property.equals(SHOW_SQL)) {
             _cfg.setProperty("hibernate.show_sql", stringValue);
             _cfg.setProperty("hibernate.format_sql", stringValue);
             _cfg.setProperty("hibernate.use_sql_comments", stringValue);
@@ -283,18 +286,14 @@ public final class HibernateManager extends Observable {
     }
     
     @CheckForNull
-    public
-            <T>
-            T
-            doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback)
-                                                                                       throws PersistenceException {
+    public <T> T doInDevDBHibernateEager(@Nonnull final HibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
         _sessionWatchDog.setSessionFactory(_sessionFactoryDevDB);
         _sessionWatchDog.schedule(30000);
         _sessionWatchDog.useSession();
         _trx = null;
         Session sessionEager = _sessionFactoryDevDB.openSession();
-        T result = null;
+        T result;
         try {
             _trx = sessionEager.getTransaction();
             _trx.setTimeout(_timeout);
@@ -306,7 +305,7 @@ public final class HibernateManager extends Observable {
             tryRollback(ex);
             throw new PersistenceException(ex);
         } finally {
-            if (sessionEager != null) {
+            if(sessionEager != null) {
                 sessionEager.close();
                 sessionEager = null;
             }
@@ -320,7 +319,7 @@ public final class HibernateManager extends Observable {
      */
     private void tryRollback(@Nonnull HibernateException ex) throws PersistenceException {
         notifyObservers(ex);
-        if (_trx != null) {
+        if(_trx != null) {
             try {
                 _trx.rollback();
             } catch (HibernateException exRb) {
@@ -345,7 +344,7 @@ public final class HibernateManager extends Observable {
         _sessionWatchDog.schedule(30000);
         _sessionWatchDog.useSession();
         _trx = null;
-        if (_sessionLazy == null) {
+        if(_sessionLazy == null) {
             _sessionLazy = _sessionFactoryDevDB.openSession();
         }
         try {
@@ -358,7 +357,7 @@ public final class HibernateManager extends Observable {
         } catch (HibernateException ex) {
             tryRollback(ex);
             try {
-                if (_sessionLazy != null && _sessionLazy.isOpen()) {
+                if(_sessionLazy != null && _sessionLazy.isOpen()) {
                     _sessionLazy.close();
                 }
             } finally {
@@ -374,11 +373,11 @@ public final class HibernateManager extends Observable {
     }
     
     public synchronized void closeSession() {
-        if ( (_sessionLazy != null) && _sessionLazy.isOpen()) {
+        if( (_sessionLazy != null) && _sessionLazy.isOpen()) {
             _sessionLazy.close();
             _sessionLazy = null;
         }
-        if ( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
+        if( (_sessionFactoryDevDB != null) && !_sessionFactoryDevDB.isClosed()) {
             _sessionFactoryDevDB.close();
             _sessionFactoryDevDB = null;
         }
@@ -388,7 +387,7 @@ public final class HibernateManager extends Observable {
     
     @Nonnull
     public static synchronized HibernateManager getInstance() {
-        if (_INSTANCE == null) {
+        if(_INSTANCE == null) {
             _INSTANCE = new HibernateManager();
         }
         return _INSTANCE;

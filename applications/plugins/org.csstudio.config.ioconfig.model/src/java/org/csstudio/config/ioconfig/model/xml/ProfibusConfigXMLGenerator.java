@@ -27,12 +27,15 @@ package org.csstudio.config.ioconfig.model.xml;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -51,6 +54,9 @@ import org.jdom.output.XMLOutputter;
  */
 public class ProfibusConfigXMLGenerator {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(ProfibusConfigXMLGenerator.class);
+    
     /**
      * The Profibus Config XML {@link Document}.
      */
@@ -85,11 +91,7 @@ public class ProfibusConfigXMLGenerator {
 
     private final Element _fmbSet;
 
-    /**
-     * @param fileName
-     *            The name of the XML file.
-     */
-    public ProfibusConfigXMLGenerator(final String fileName) {
+    public ProfibusConfigXMLGenerator() {
         _slaveFldAdrs = new ArrayList<Integer>();
         _slaveList = new ArrayList<XmlSlave>();
         _root = new Element("PROFIBUS-DP_PARAMETERSET");
@@ -107,7 +109,7 @@ public class ProfibusConfigXMLGenerator {
      *            The Profibus Subnet.
      * @throws PersistenceException 
      */
-    public final void setSubnet(final ProfibusSubnetDBO subnet) throws PersistenceException {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
         Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
         if ((masterTree == null) || (masterTree.size() < 1)) {
             return;
@@ -121,15 +123,14 @@ public class ProfibusConfigXMLGenerator {
         _busparameter.addContent(_master);
         _busparameter.addContent(_fmbSet);
 
-        Map<Short, ? extends AbstractNodeDBO> childrenAsMap = master.getChildrenAsMap();
-        Iterator<Short> iterator = childrenAsMap.keySet().iterator();
+        Map<Short, SlaveDBO> childrenAsMap = (Map<Short, SlaveDBO>) master.getChildrenAsMap();
+        Iterator<SlaveDBO> iterator = childrenAsMap.values().iterator();
         while (iterator.hasNext()) {
-            Short key = iterator.next();
-            addSlave((SlaveDBO) childrenAsMap.get(key));
+            addSlave(iterator.next());
         }
     }
 
-    private void makeFMB(final MasterDBO master) {
+    private void makeFMB(@Nonnull final MasterDBO master) {
         String[] fmbKeys = new String[] {
                 "max_number_slaves",
                 "max_slave_output_len",
@@ -154,8 +155,8 @@ public class ProfibusConfigXMLGenerator {
         }
     }
 
-    private void makeMaster(final ProfibusSubnetDBO subnet, final MasterDBO master) {
-        String[] masterKeys = new String[] { "bus_para_len", "fdl_add", "baud_rate", "tslot",
+    private void makeMaster(@Nonnull final ProfibusSubnetDBO subnet, @Nonnull final MasterDBO master) {
+        String[] masterKeys = new String[] {"bus_para_len", "fdl_add", "baud_rate", "tslot",
                 "min_tsdr", "max_tsdr", "tqui", "tset", "ttr", "gap", "hsa", "max_retry_limit",
                 "bp_flag", "min_slave_interval", "poll_timeout", "data_control_time", "reserved",
                 "master_user_data_length", "master_user_data" };
@@ -163,14 +164,7 @@ public class ProfibusConfigXMLGenerator {
         if (master.isAutoclear()) {
             autoClear = "1";
         }
-        short fdl;
-		// XXX: Es wird immer der Index des Masters benötigt.
-            fdl = master.getSortIndex();
-		// if(master.getRedundant()<0) {
-		// fdl = master.getSortIndex();
-		// }else {
-		// fdl = master.getRedundant();
-		// }
+        short fdl = master.getSortIndex();
         String[] masterValues = new String[] {
                 /* bus_para_len */"66"/*
                                        * TODO:busParaLen is Default=66? und muss das geändert werden
@@ -213,8 +207,9 @@ public class ProfibusConfigXMLGenerator {
      *
      * @param slave
      *            The Profibus Slave.
+     * @throws PersistenceException 
      */
-	private void addSlave(final SlaveDBO slave) {
+	private void addSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
 		/*
 		 * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
 		 * a configuration on the IOC.
@@ -232,19 +227,23 @@ public class ProfibusConfigXMLGenerator {
      *            The target File Path.
      * @throws IOException
      */
-    public final void getXmlFile(final File path) throws IOException {
+    public final void getXmlFile(@Nonnull final File path) throws IOException {
+        Writer writer = new FileWriter(path);
+        LOG.info("Write File:" + path.getAbsolutePath());
+        getXmlFile(writer);
+    }
+    
+    public final void getXmlFile(@Nonnull final Writer writer) throws IOException {
         _root.addContent(_busparameter);
         _slaveConfig.addContent(slaveTable());
         for (XmlSlave xmlSlave : _slaveList) {
             _slaveConfig.addContent(xmlSlave.getSlave());
         }
         _root.addContent(_slaveConfig);
-        FileWriter writer = new FileWriter(path);
         Format format = Format.getPrettyFormat();
         format.setEncoding("ISO-8859-1");
         XMLOutputter out = new XMLOutputter(format);
         out.output(_document, writer);
-        CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
         writer.close();
     }
 
@@ -252,6 +251,7 @@ public class ProfibusConfigXMLGenerator {
      *
      * @return The Slave Table XML element.
      */
+    @Nonnull 
     private Element slaveTable() {
         Element slaveTable = new Element("SLAVE_TABLE");
         for (int i = 0; i < _slaveFldAdrs.size(); i++) {
@@ -266,7 +266,7 @@ public class ProfibusConfigXMLGenerator {
      * @param value The integer value as Sting.
      * @return The value as int.
      */
-    public static int getInt(final String value) {
+    public static int getInt(@Nonnull final String value) {
         String tmp = value.toUpperCase().trim();
         int radix = 10;
         try {

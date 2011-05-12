@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -44,15 +46,15 @@ public class PersistenceException extends Exception {
         super();
     }
     
-    public PersistenceException(String msg) {
+    public PersistenceException(@Nonnull String msg) {
         super(msg);
     }
     
-    public PersistenceException(Throwable t) {
+    public PersistenceException(@Nonnull Throwable t) {
         super(t);
     }
     
-    public PersistenceException(String msg, Throwable t) {
+    public PersistenceException(@Nonnull String msg, @Nonnull Throwable t) {
         super(msg, t);
     }
     

@@ -24,6 +24,7 @@ package org.csstudio.platform;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -71,10 +72,11 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		Dictionary<String, Object> dict = new Hashtable<String, Object>();
-		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
-		context.registerService(IManagementCommandService.class.getName(),
-				new ManagementServiceImpl(), dict);
+		
+//		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+//		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
+//		context.registerService(IManagementCommandService.class.getName(),
+//				new ManagementServiceImpl(), dict);
 	}
 
 	/**

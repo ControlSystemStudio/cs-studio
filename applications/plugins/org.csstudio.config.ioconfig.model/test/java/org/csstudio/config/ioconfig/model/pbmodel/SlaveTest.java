@@ -17,7 +17,7 @@ public class SlaveTest {
 
     
     @Test
-    public  void CreateNewSlaves() throws PersistenceException {
+    public  void createNewSlaves() throws PersistenceException {
         // add first Slave
         assertEquals(0, _master.getSlaves().size());
         SlaveDBO out1 = new SlaveDBO(_master);

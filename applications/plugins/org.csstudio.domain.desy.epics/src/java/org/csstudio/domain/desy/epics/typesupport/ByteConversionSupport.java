@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IMetaData;
@@ -31,6 +30,12 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+/**
+ * Conversion support for {@link Byte}.
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
 
     @Nonnull
@@ -47,7 +52,7 @@ final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
         final INumericMetaData numData = checkAndConvertToNumeric(data, Byte.class);
         final EpicsGraphicsData<Byte> gr =
@@ -57,6 +62,6 @@ final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
                                                             toByte(numData.getWarnHigh())),
                                         Limits.<Byte>create(toByte(numData.getDisplayLow()),
                                                             toByte(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

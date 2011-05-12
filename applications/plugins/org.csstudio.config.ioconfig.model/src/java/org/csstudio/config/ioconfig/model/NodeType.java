@@ -34,9 +34,9 @@
 		*/
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
+
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -55,13 +55,14 @@ public enum NodeType {
 
     private final String _name;
 
-    NodeType(final String name){
+    NodeType(@Nonnull final String name){
         _name = name;
     }
 
     /**
      * @return the name
      */
+    @Nonnull
     public String getName() {
         return _name;
     }

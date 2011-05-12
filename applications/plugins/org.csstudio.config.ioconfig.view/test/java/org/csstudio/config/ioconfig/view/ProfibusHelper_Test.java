@@ -8,8 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

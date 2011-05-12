@@ -94,6 +94,9 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
                                     .appendSuffix(":")
                                     .appendSeconds()
                                     .toFormatter();
+    public static final PeriodFormatter STD_DURATION_WITH_MILLIES_FMT =
+        new PeriodFormatterBuilder().append(STD_DURATION_FMT)
+                                    .appendMillis().toFormatter();
 
     private static final int NANOS_PER_SECOND = 1000000000;
     private static final int NANOS_PER_MILLIS = 1000000;
@@ -363,5 +366,17 @@ public final class TimeInstant implements Comparable<TimeInstant>, Serializable 
     @Nonnull
     public String toString() {
         return formatted() + "." + _fracMillisInNanos;
+    }
+
+    /**
+     * Returns the interval between two time instants in millis in absolute numbers.
+     *
+     * @param startTime the first time instant
+     * @param endTime the second time instant
+     * @return the difference in millis, always non-negative
+     */
+    public static long deltaInMillis(@Nonnull final TimeInstant startTime,
+                                     @Nonnull final TimeInstant endTime) {
+        return Math.abs(endTime.getMillis() - startTime.getMillis());
     }
 }

@@ -46,6 +46,7 @@ org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
+org.csstudio.utility.channel.adapters
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
@@ -62,6 +63,7 @@ org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.speech
+org.csstudio.ui.util
 org.csstudio.platform
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.ui
@@ -77,6 +79,7 @@ org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
+org.csstudio.platform.libs.slf4j
 org.csstudio.platform.simpledal
 org.csstudio.platform.test
 org.csstudio.platform.ui

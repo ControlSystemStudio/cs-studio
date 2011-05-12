@@ -24,8 +24,8 @@ package org.csstudio.archive.common.service.mysqlimpl.requesttypes;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestTypeParameter;
-import org.csstudio.archive.common.service.requesttypes.RequestTypeParameterException;
+import org.csstudio.archive.common.requesttype.IArchiveRequestTypeParameter;
+import org.csstudio.archive.common.requesttype.RequestTypeParameterException;
 
 /**
  * Parameter available to the archive request types of this service implementation.

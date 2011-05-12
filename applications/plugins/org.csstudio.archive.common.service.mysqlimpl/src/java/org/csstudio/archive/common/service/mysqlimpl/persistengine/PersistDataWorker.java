@@ -25,16 +25,18 @@ import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Deque;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
+import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.Lists;
@@ -47,10 +49,10 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 08.02.2011
  */
-public class PersistDataWorker implements Runnable {
+public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     private static final Logger LOG =
-            CentralLogger.getInstance().getLogger(PersistDataWorker.class);
+            LoggerFactory.getLogger(PersistDataWorker.class);
 
     private final PersistEngineDataManager _mgr = PersistEngineDataManager.INSTANCE;
 
@@ -59,15 +61,26 @@ public class PersistDataWorker implements Runnable {
 
     private final List<String> _batchedStatements;
     private final SqlStatementBatch _queuedStatements;
+
+    private int _numOfStmtsInBatch;
+    private long _totalSizeOfBatchInBytes;
+    private final long _maxBatchSizeInBytes;
+
+
+
     /**
      * Constructor.
      * @param sqlStatements
      */
     public PersistDataWorker(@Nonnull final String name,
                              @Nonnull final SqlStatementBatch sqlStatements,
-                             @Nonnull final long period) {
+                             @Nonnull final long period,
+                             @Nonnull final long maxBatchSizeInBytes) {
         _name = name;
         _period = period;
+        _numOfStmtsInBatch = 0;
+        _totalSizeOfBatchInBytes = 0;
+        _maxBatchSizeInBytes = maxBatchSizeInBytes;
 
         _queuedStatements = sqlStatements;
         _batchedStatements = Lists.newLinkedList();
@@ -77,23 +90,22 @@ public class PersistDataWorker implements Runnable {
      * {@inheritDoc}
      */
     @Override
-    public void run() {
+    public void measuredRun() {
         LOG.info("RUN: " + _name + " at " + TimeInstantBuilder.fromNow().formatted());
 
         Statement sqlStmt = null;
         Connection connection = null;
         try {
+
+            final Deque<String> stmtStrings = Lists.newLinkedList();
+            _queuedStatements.drainTo(stmtStrings);
+
             connection = ArchiveConnectionHandler.INSTANCE.getConnection();
             sqlStmt = connection.createStatement();
-            long size = 0;
-            while (_queuedStatements.peek() != null) {
-                final String queuedStmt = _queuedStatements.poll();
-                _batchedStatements.add(queuedStmt);
-                sqlStmt.addBatch(queuedStmt);
-                size += StringUtil.getSizeInBytes(queuedStmt);
+            while (stmtStrings.peek() != null) {
+                sqlStmt = executeBatchOnCondition(connection, sqlStmt, stmtStrings.pop());
             }
-            LOG.info("Execute batched stmt - size:\t" + size);
-            sqlStmt.executeBatch();
+            executeBatchAndResetSqlStatement(connection, sqlStmt);
 
         } catch (final Throwable t) {
             handleThrowable(t);
@@ -109,6 +121,73 @@ public class PersistDataWorker implements Runnable {
             }
         }
     }
+
+    /**
+     * Collects the queued statements in a batch for the sql statement. If the number of statements
+     * exceeds 500, the statement is executed and closed, the batched statements field is cleared,
+     * and a newly created statement is returned. Otherwise the very same statement is returned, ready
+     * for more queued statements to be batched.
+     *
+     * @param connection
+     * @param PStmt
+     * @param stmtStr
+     * @return
+     */
+    @Nonnull
+    private Statement executeBatchOnCondition(@Nonnull final Connection connection,
+                                              @Nonnull final Statement pSqlStmt,
+                                              @Nonnull final String stmtStr) {
+        final Statement sqlStmt = pSqlStmt;
+
+        if(stmtSizeConditionNotMet(stmtStr, _numOfStmtsInBatch)) {
+            addStmtStrToBatchedStmt(stmtStr, sqlStmt);
+            return sqlStmt;
+        }
+
+        return executeBatchAndResetSqlStatement(connection, sqlStmt);
+    }
+
+    private boolean stmtSizeConditionNotMet(@Nonnull final String stmtStr,
+                                            @Nonnull final int numOfStmtsInBatch) {
+        final int sizeInBytes = StringUtil.getSizeInBytes(stmtStr);
+        _totalSizeOfBatchInBytes += sizeInBytes;
+        if (numOfStmtsInBatch < 100 && _totalSizeOfBatchInBytes < _maxBatchSizeInBytes) {
+            return true;
+        }
+        return false;
+    }
+
+    private void addStmtStrToBatchedStmt(@Nonnull final String stmtStr,
+                                         @Nonnull final Statement sqlStmt) {
+        try {
+            _batchedStatements.add(stmtStr);
+            sqlStmt.addBatch(stmtStr);
+            _numOfStmtsInBatch++;
+        } catch (final Throwable t) {
+            handleThrowable(t);
+        }
+    }
+
+    @Nonnull
+    private Statement executeBatchAndResetSqlStatement(@Nonnull final Connection connection,
+                                                       @Nonnull final Statement sqlStmt) {
+        try {
+            sqlStmt.executeBatch();
+            LOG.info("Execute batched stmt - num: " + _batchedStatements.size());
+
+            return connection.createStatement();
+        }  catch (final Throwable t) {
+            handleThrowable(t);
+        } finally {
+            _batchedStatements.clear();
+            closeStatement(sqlStmt);
+            _numOfStmtsInBatch = 0;
+            _totalSizeOfBatchInBytes = 0;
+        }
+        return sqlStmt;
+    }
+
+
 
     void handleThrowable(@Nonnull final Throwable t) {
         try {

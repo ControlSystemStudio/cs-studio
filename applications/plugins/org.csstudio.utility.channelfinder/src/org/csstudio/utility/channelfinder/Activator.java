@@ -74,6 +74,7 @@ public class Activator extends AbstractUIPlugin {
 				null));
 		preferences.put("username", prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Username, "", null));
+		// FIXME 3.0.0 SecureStorage dependency
 		preferences.put(
 				"password",
 				nullToEmpty(SecureStorage.retrieveSecureStorage(

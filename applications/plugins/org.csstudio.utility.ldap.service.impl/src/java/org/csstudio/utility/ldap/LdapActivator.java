@@ -29,14 +29,14 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -48,8 +48,8 @@ public final class LdapActivator extends AbstractCssPlugin {
      */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldap.service.impl";
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(LdapActivator.class);
+    
     private static LdapActivator INSTANCE;
 
     private LdapServiceTracker _ldapServiceTracker;
@@ -71,6 +71,7 @@ public final class LdapActivator extends AbstractCssPlugin {
     @Override
     protected void doStart(@Nullable final BundleContext context) throws Exception {
 
+        // FIXME (jpenning) Hack: Find a better way to find out whether to use ldap
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
         final String ldapURL = getCssPluginPreferences().getString(LdapPreference.URL.getKeyAsString());
         final boolean useLDAP = ldapURL != null && ldapURL.length() > 5;

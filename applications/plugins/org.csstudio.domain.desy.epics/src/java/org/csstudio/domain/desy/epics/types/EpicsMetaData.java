@@ -21,19 +21,17 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.platform.util.StringUtil;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 /**
  * TODO (bknerr) : Consider a hierarchical data structure for meta data
@@ -42,21 +40,47 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since Mar 4, 2011
  */
-public class EpicsMetaData {
+public final class EpicsMetaData {
 
     private final EpicsGraphicsData<? extends Comparable<?>> _graphicsData;
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
     private final Short _precision;
     private final EpicsAlarm _alarm;
-    private final Map<Integer, EpicsEnum> _stateMap;
+    private final ImmutableList<EpicsEnum> _states;
 
+    /**
+     * Null object/flyweight pattern (there are a lot of channels in which states array is empty for
+     * enum types or display ranges, or alarms are  not present.
+     */
+    private static final EpicsMetaData EMPTY_DATA =
+        new EpicsMetaData(null, null, null, null);
+
+
+    @Nonnull
+    public static EpicsMetaData create(@Nonnull final String[] states) {
+        if (states.length == 0) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(states);
+    }
+
+    @Nonnull
+    public static EpicsMetaData create(@Nullable final EpicsAlarm alarm,
+                                @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
+                                @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
+                                @Nullable final Short precision) {
+        if (alarm == null && gr == null && ctrl == null && precision == null) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(alarm, gr, ctrl, precision);
+    }
 
 
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nonnull final String[] states) {
-        _stateMap = initStateMap(states);
+    private EpicsMetaData(@Nonnull final String[] states) {
+        _states = initStateList(states);
 
         _alarm = null;
         _graphicsData = null;
@@ -64,23 +88,10 @@ public class EpicsMetaData {
         _precision = null;
     }
 
-    private Map<Integer, EpicsEnum> initStateMap(@Nonnull final String[] states) {
-
-        final LinkedHashMap<Integer, EpicsEnum> stateMap = Maps.newLinkedHashMap();
-        int i = 0;
-        for (final String state : states) {
-            // States may contain a lot of empty strings, as EPICS uses them this way
-            if (!StringUtil.isBlank(state)) {
-                stateMap.put(Integer.valueOf(i), EpicsEnum.create(i++, state, null));
-            }
-        }
-        return stateMap;
-    }
-
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nullable final EpicsAlarm alarm,
+    private EpicsMetaData(@Nullable final EpicsAlarm alarm,
                          @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
                          @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
                          @Nullable final Short precision) {
@@ -90,11 +101,29 @@ public class EpicsMetaData {
         if (_graphicsData != null && _ctrlLimits != null &&
             !gr.getAlarmHigh().getClass().equals(_ctrlLimits.getCtrlHigh().getClass())) {
                 throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and " +
-                		                           "graphics don't have the same class type.");
+                                                   "graphics don't have the same class type.");
         }
         _precision = precision;
 
-        _stateMap = Collections.emptyMap();
+        _states  = ImmutableList.of();
+    }
+
+    @Nonnull
+    private ImmutableList<EpicsEnum> initStateList(@Nonnull final String[] states) {
+        if (states.length == 0) {
+            // throw new IllegalArgumentException("States array for enumerated values is empty.");
+            return ImmutableList.of();
+        }
+        final List<EpicsEnum> enumList = Lists.newArrayListWithExpectedSize(states.length);
+        int i = 0;
+        for (String state : states) {
+            if (Strings.isNullOrEmpty(state)) {
+                state = EpicsEnum.UNSET_STATE;
+            }
+            enumList.add(EpicsEnum.createFromState(state));
+            i++;
+        }
+        return ImmutableList.copyOf(enumList);
     }
 
     @CheckForNull
@@ -123,15 +152,26 @@ public class EpicsMetaData {
      * @return an immutable copy of the states.
      */
     @CheckForNull
-    public ImmutableSet<EpicsEnum> getStates() {
-        return ImmutableSet.<EpicsEnum>builder().addAll(_stateMap.values()).build();
+    public ImmutableList<EpicsEnum> getStates() {
+        return _states;
     }
 
-    @CheckForNull
-    public EpicsEnum getState(final int index) {
-        if (_stateMap.containsKey(Integer.valueOf(index))) {
-            return _stateMap.get(Integer.valueOf(index));
+    /**
+     * Three cases possible:<br/>
+     * <ul>
+     *   <li> a list of states exists and index is within bounds -> return the enum holding the state
+     *   <li> a list of states exists, but index is out of bounds -> return a newly created enum
+     *        from index (==raw value)
+     *   <li> a list of states doesn't exist -> return a newly created enum from index (==raw value)
+     * </ul>
+     * @param index
+     * @return
+     */
+    @Nonnull
+    public EpicsEnum getOrCreateState(final int index) {
+        if (index >= 0 && index < _states.size()) {
+            return _states.get(index);
         }
-        return null;
+        return EpicsEnum.createFromRaw(index);
     }
 }

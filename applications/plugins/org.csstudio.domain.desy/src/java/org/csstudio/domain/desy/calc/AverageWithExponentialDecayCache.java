@@ -66,4 +66,8 @@ public class AverageWithExponentialDecayCache extends AbstractAccumulatorCache<D
     public Double getDecay() {
         return _decay;
     }
+
+    public long getNumberOfAveragedValues() {
+        return super.getNumberOfAccumulations();
+    }
 }

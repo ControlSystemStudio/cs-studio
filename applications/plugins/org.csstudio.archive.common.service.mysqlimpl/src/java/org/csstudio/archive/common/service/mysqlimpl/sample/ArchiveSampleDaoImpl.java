@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -56,7 +57,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.joda.time.Duration;
 import org.joda.time.Hours;
 import org.joda.time.Minutes;
@@ -79,7 +80,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private static final String ARCH_TABLE_PLACEHOLDER = "<arch.table>";
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveSampleDaoImpl.class);
+        LoggerFactory.getLogger(ArchiveSampleDaoImpl.class);
 
     private static final String RETRIEVAL_FAILED = "Sample retrieval from archive failed.";
 
@@ -144,28 +145,36 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @CheckForNull
     private <V, T extends ISystemVariable<V>>
-        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException, TypeSupportException {
+        List<String> composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples)
+                                       throws ArchiveDaoException,
+                                              ArchiveConnectionException,
+                                              SQLException,
+                                              TypeSupportException {
 
-        final List<String> values = Lists.newArrayList();
-        final List<String> valuesPerMinute = Lists.newArrayList();
-        final List<String> valuesPerHour = Lists.newArrayList();
+        final Deque<String> values = Lists.newLinkedList();
+        final Deque<String> valuesPerMinute = Lists.newLinkedList();
+        final Deque<String> valuesPerHour = Lists.newLinkedList();
 
         for (final IArchiveSample<V, T> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
             final T sysVar = sample.getSystemVariable();
             final TimeInstant timestamp = sysVar.getTimestamp();
-                values.add(createSampleValueStmtStr(channelId,
-                                                    sysVar,
-                                                    timestamp));
+            if (sysVar.getData() == null) {
+                LOG.warn("Value is null for channel id " + channelId.asString() + ". No sample created.");
+                continue;
+            }
 
-                if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getValueData().getClass())) {
-                    writeReducedData(channelId,
-                                     sysVar,
-                                     timestamp,
-                                     valuesPerMinute,
-                                     valuesPerHour);
-                }
+            values.add(createSampleValueStmtStr(channelId,
+                                                sysVar,
+                                                timestamp));
+            if (ArchiveTypeConversionSupport.isDataTypeOptimizable(sysVar.getData().getClass())) {
+                writeReducedData(channelId,
+                                 sysVar,
+                                 timestamp,
+                                 valuesPerMinute,
+                                 valuesPerHour);
+            }
         }
         return joinStringsToStatementBatch(values, valuesPerMinute, valuesPerHour);
     }
@@ -175,16 +184,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         void writeReducedData(@Nonnull final ArchiveChannelId channelId,
                               @Nonnull final T data,
                               @Nonnull final TimeInstant timestamp,
-                              @Nonnull final List<String> valuesPerMinute,
-                              @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
-        Double newValue = null;
-        try {
-            newValue = BaseTypeConversionSupport.toDouble(data.getData().getValueData());
-        } catch (final TypeSupportException e) {
-            return; // not convertible. Type support missing.
-        }
-        if (newValue.equals(Double.NaN)) {
-            return; // not convertible, no data reduction possible
+                              @Nonnull final Deque<String> valuesPerMinute,
+                              @Nonnull final Deque<String> valuesPerHour) throws ArchiveDaoException {
+
+        final Double newValue = createDoubleFromValueOrNull(data);
+        if (newValue == null) {
+            return;
         }
 
         final String minuteValueStr = aggregateAndComposeValueString(_reducedDataMapForMinutes,
@@ -200,11 +205,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         valuesPerMinute.add(minuteValueStr); // add to write VALUES() list for minutes
         final SampleMinMaxAggregator minuteAgg = _reducedDataMapForMinutes.get(channelId);
 
+        final Double avg = minuteAgg.getAvg();
+        final Double min = minuteAgg.getMin();
+        final Double max = minuteAgg.getMax();
+
         final String hourValueStr = aggregateAndComposeValueString(_reducedDataMapForHours,
                                                                    channelId,
-                                                                   minuteAgg.getAvg(),
-                                                                   minuteAgg.getMin(),
-                                                                   minuteAgg.getMax(),
+                                                                   avg == null ? newValue : avg,
+                                                                   min == null ? newValue : min,
+                                                                   max == null ? newValue : max,
                                                                    timestamp,
                                                                    Hours.ONE.toStandardDuration());
         minuteAgg.reset();
@@ -217,6 +226,21 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final SampleMinMaxAggregator hoursAgg = _reducedDataMapForHours.get(channelId);
         // for days would be here...
         hoursAgg.reset(); // and reset this aggregator
+    }
+
+    @CheckForNull
+    private <T extends ISystemVariable<?>>
+    Double createDoubleFromValueOrNull(@Nonnull final T data) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(data.getData());
+        } catch (final TypeSupportException e) {
+            return null; // not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
+            return null; // not convertible, no data reduction possible
+        }
+        return newValue;
     }
 
     // CHECKSTYLE OFF: ParameterNumber
@@ -269,23 +293,28 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
 
     @CheckForNull
-    private List<String> joinStringsToStatementBatch(@Nonnull final List<String> values,
-                                                     @Nonnull final List<String> valuesPerMinute,
-                                                     @Nonnull final List<String> valuesPerHour)
+    private List<String> joinStringsToStatementBatch(@Nonnull final Deque<String> values,
+                                                     @Nonnull final Deque<String> valuesPerMinute,
+                                                     @Nonnull final Deque<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
         final List<String> statements = Lists.newLinkedList();
-        if (!values.isEmpty()) {
-            statements.add(Joiner.on(" ").join(_insertSamplesStmt, Joiner.on(", ").join(values)));
-        }
-        if (!valuesPerMinute.isEmpty()) {
-            final String stmtStr = Joiner.on(" ").join(_insertSamplesPerMinuteStmt, Joiner.on(", ").join(valuesPerMinute));
-            statements.add(stmtStr);
-        }
-        if (!valuesPerHour.isEmpty()) {
-            final String stmtStr = Joiner.on(" ").join(_insertSamplesPerHourStmt, Joiner.on(", ").join(valuesPerHour));
-            statements.add(stmtStr);
-        }
+
+        joinValuesFieldIntoStatementsList(_insertSamplesStmt, values, statements);
+
+        joinValuesFieldIntoStatementsList(_insertSamplesPerMinuteStmt, valuesPerMinute, statements);
+
+        joinValuesFieldIntoStatementsList(_insertSamplesPerHourStmt, valuesPerHour, statements);
+
         return statements;
+    }
+
+    private void joinValuesFieldIntoStatementsList(@Nonnull final String insertStmt,
+                                                   @Nonnull final Deque<String> values,
+                                                   @Nonnull final List<String> statements) {
+        if (!values.isEmpty()) {
+            final String allValues = Joiner.on(", ").join(values);
+            statements.add(Joiner.on(" ").join(insertStmt, allValues));
+        }
     }
 
     /**
@@ -298,11 +327,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                         @Nonnull final T value,
                                         @Nonnull final TimeInstant timestamp) {
             try {
+
                 return "(" + Joiner.on(", ").join(channelId.intValue(),
                                                   "'" + timestamp.formatted() + "'",
                                                   timestamp.getFractalSecondsInNanos(),
-                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData().getValueData()) + "'") +
-                       ")";
+                                                  "'" + ArchiveTypeConversionSupport.toArchiveString(value.getData()) + "'") +
+                        ")";
+
             } catch (final TypeSupportException e) {
                 LOG.warn("No type support for archive string representation.", e);
                 return "";
@@ -457,7 +488,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 break;
             }
             default:
-                break;
+                throw new ArchiveDaoException("Archive request type unknown. Sample could not be created from query", null);
         }
         final TimeInstant timeInstant = TimeInstantBuilder.fromMillis(timestamp.getTime()).plusNanosPerSecond(nanosecs);
         final IArchiveControlSystem cs = channel.getControlSystem();

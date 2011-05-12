@@ -36,6 +36,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.util.ArrayList;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -153,20 +154,9 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
         }
 	}
 
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio.config.ioconfig.model.pbmodel.GSDFile)
-     */
     @Override
-    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
-     */
-    @Override
+    @CheckForNull
     public GSDFileDBO getGsdFile() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -192,14 +182,4 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
             CentralLogger.getInstance().error(this, e.getLocalizedMessage());
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

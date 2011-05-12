@@ -30,7 +30,6 @@ import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.LdapName;
 
@@ -46,7 +45,6 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author $Author$
  * @version $Revision$
  * @since 08.04.2010
- * @param <T>
  */
 public interface ILdapService {
 
@@ -66,7 +64,7 @@ public interface ILdapService {
      * @return the content model builder
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                    @Nonnull final ILdapSearchResult searchResult);
 
@@ -77,9 +75,13 @@ public interface ILdapService {
      * @return the content model builder
      */
     @Nonnull
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder<T>
         getLdapContentModelBuilder(@Nonnull final ContentModel<T> model);
 
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot,
+                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException;
 
     /**
      * Creates a new Record in LDAP.

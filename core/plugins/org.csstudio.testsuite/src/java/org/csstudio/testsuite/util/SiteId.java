@@ -36,7 +36,8 @@ import javax.annotation.Nonnull;
 public enum SiteId {
     SNS("sns"),
     DESY("desy"),
-    ITER("iter");
+    ITER("iter"),
+    BNL("bnl");
 
     private final String _prefix;
 

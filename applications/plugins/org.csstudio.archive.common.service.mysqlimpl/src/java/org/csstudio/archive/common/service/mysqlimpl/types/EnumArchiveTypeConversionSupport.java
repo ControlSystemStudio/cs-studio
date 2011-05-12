@@ -22,7 +22,6 @@
 package org.csstudio.archive.common.service.mysqlimpl.types;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -31,7 +30,6 @@ import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -93,10 +91,7 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public String convertToArchiveString(@Nonnull final EpicsEnum value) throws TypeSupportException {
-        return tupleEmbrace(Joiner.on(ARCHIVE_TUPLE_SEP).join(value.getIndex(),
-                                                              value.getState(),
-                                                              value.getRaw() != null ? value.getRaw() :
-                                                                                       ARCHIVE_NULL_ENTRY));
+        return value.toString();
     }
 
     /**
@@ -105,26 +100,15 @@ public class EnumArchiveTypeConversionSupport extends ArchiveTypeConversionSuppo
     @Override
     @Nonnull
     public EpicsEnum convertFromArchiveString(@Nonnull final String value) throws TypeSupportException {
-        final String released = tupleRelease(value);
-        if (released == null) {
-            throw new TypeSupportException("EpicsEnum '" + value + "' is not embraced by proper pre- and suffixes.", null);
+        if ("".equals(value)) {
+            throw new TypeSupportException("EpicsEnum '" + value + "' is empty string.", null);
         }
-        final Iterable<String> splitted = Splitter.on(ARCHIVE_TUPLE_SEP).split(released);
-        if (Iterables.size(splitted) != 3) {
-            throw new TypeSupportException("EpicsEnum '" + value + "' from archive cannot be split into three elements.", null);
-        }
-        final Iterator<String> it = splitted.iterator();
-        final String iStr = it.next();
-        final String state = it.next();
-        final String rawStr = it.next();
-
         try {
-            final Integer i = Integer.parseInt(iStr);
-            final Integer raw = ARCHIVE_NULL_ENTRY.equals(rawStr) ? null : Integer.parseInt(rawStr);
-            return EpicsEnum.create(i, state,  raw);
-
+            return EpicsEnum.createFromString(value);
         } catch (final NumberFormatException e) {
-            throw new TypeSupportException("1st and 3rd part of EpicsEnumTriple '" + value + "' cannot be parsed into Integer.", e);
+            throw new TypeSupportException(value + " cannot be parsed into " + EpicsEnum.class.getSimpleName(), e);
+        } catch (final IllegalArgumentException e) {
+            throw new TypeSupportException(value + " cannot be parsed into " + EpicsEnum.class.getSimpleName(), e);
         }
     }
 

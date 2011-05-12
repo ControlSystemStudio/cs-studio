@@ -11,13 +11,13 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -33,7 +33,7 @@ import org.csstudio.utility.pv.PVListener;
 @SuppressWarnings("nls")
 public class ArchiveChannel<V, T extends ISystemVariable<V>> {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(PVListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
 
     /** Channel name.
      *  This is the name by which the channel was created,
@@ -182,17 +182,8 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
         _pv.stop();
     }
 
-    /** @return Most recent value of the channel's PV */
     @Nonnull
-    public synchronized String getCurrentValueAsString() {
-        if (_mostRecentSysVar == null) {
-            return "null"; //$NON-NLS-1$
-        }
-        return _mostRecentSysVar.getData().getValueData().toString();
-    }
-
-    @Nonnull
-    public T getMostRecentValue() {
+    public synchronized T getMostRecentSample() {
         return _mostRecentSysVar;
     }
 
@@ -203,13 +194,8 @@ public class ArchiveChannel<V, T extends ISystemVariable<V>> {
 
     /** @return Last value written to archive */
     @Nonnull
-    public final String getLastArchivedValue() {
-        synchronized (this) {
-            if (_lastArchivedSample == null) {
-                return "null"; //$NON-NLS-1$
-            }
-            return _lastArchivedSample.getData().getValueData().toString();
-        }
+    public synchronized T getLastArchivedSample() {
+        return _lastArchivedSample;
     }
 
     /** @return Sample buffer */

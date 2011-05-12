@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
@@ -27,14 +26,14 @@ import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
-import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.MapMaker;
 
@@ -44,13 +43,13 @@ import com.google.common.collect.MapMaker;
  */
 public final class EngineModel {
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(EngineModel.class);
+        LoggerFactory.getLogger(EngineModel.class);
 
     /** Version code. See also webroot/version.html */
-    public static String VERSION = "1.0.0";
+    private static String VERSION = "1.0.0";
 
     /** Name of this model */
-    private String _name = "DESY Archive Engine";  //$NON-NLS-1$
+    private final String _name;
 
     /** Thread that writes to the <code>archive</code> */
     private WriteExecutor _writeExecutor;
@@ -68,8 +67,10 @@ public final class EngineModel {
 
     /** Engine states */
     public enum State {
-        /** Initial model state before <code>start()</code> */
+        /** Initial model state before it has been configured */
         IDLE,
+        /** Configured model state before <code>start()</code> */
+        CONFIGURED,
         /** Running model, state after <code>start()</code> */
         RUNNING,
         /** State after <code>requestStop()</code>; still running. */
@@ -142,7 +143,7 @@ public final class EngineModel {
     @Nonnull
     private ArchiveGroup addGroup(@Nonnull final IArchiveChannelGroup groupCfg) {
         final String groupName = groupCfg.getName();
-        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName, groupCfg.getId().longValue()));
+        _groupMap.putIfAbsent(groupName, new ArchiveGroup(groupName));
         return _groupMap.get(groupName);
     }
 
@@ -174,13 +175,14 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     public void start() throws EngineModelException {
-
+        if (_state != State.CONFIGURED) {
+            throw new IllegalStateException("Engine has not been configured before start.", null);
+        }
         if (_engine == null || _writeExecutor == null) {
-            throw new EngineModelException("Engine or writeExecutor is null. Did you read the engine configuration successfully?", null);
+            throw new IllegalStateException("Engine or executor are null although engine is configured.", null);
         }
 
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
-
 
         _startTime = TimeInstantBuilder.fromNow();
 
@@ -290,7 +292,7 @@ public final class EngineModel {
     /** @return  Average duration of write run in milliseconds */
     @CheckForNull
     public Duration getAvgWriteDuration() {
-        return _writeExecutor.getAvgWriteDuration();
+        return _writeExecutor.getAvgWriteDurationInMS();
     }
 
     /** Ask the model to stop.
@@ -325,7 +327,11 @@ public final class EngineModel {
      */
     @SuppressWarnings("nls")
     public void stop() throws EngineModelException {
+        if (_state == State.STOPPING || _state == State.IDLE) {
+            return;
+        }
         _state = State.STOPPING;
+
         // Disconnect from network
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
@@ -344,9 +350,7 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        // Update state
-        _state = State.IDLE;
-        _startTime = null;
+        _state = State.CONFIGURED;
     }
 
 
@@ -377,6 +381,7 @@ public final class EngineModel {
         } catch (final Exception e) {
             handleExceptions(e);
         }
+        _state = State.CONFIGURED;
     }
 
     @Nonnull
@@ -443,35 +448,23 @@ public final class EngineModel {
         }
     }
 
-    /** Remove all channels and groups. */
-    @SuppressWarnings("nls")
-    public void clearConfig() {
-        if (_state != State.IDLE) {
-            throw new IllegalStateException("Only allowed in IDLE state");
+    public void clearConfiguration() {
+        if (_state != State.IDLE && _state != State.CONFIGURED) {
+            throw new IllegalStateException("Clearing configuration only allowed in " +
+                                            State.IDLE.name() + " or " + State.CONFIGURED.name() + " state.");
         }
-        _name = null;
         _engine = null;
         _groupMap.clear();
         _channelMap.clear();
+
+        _startTime = null;
+
+        _state = State.IDLE;
     }
 
-    /** Write debug info to stdout */
-    @SuppressWarnings("nls")
-    public void dumpDebugInfo() {
-        System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (final ArchiveChannel<?, ?> channel : _channelMap.values()) {
-            final StringBuilder buf = new StringBuilder();
-            buf.append("'" + channel.getName() + "' (");
-            //buf.append(Joiner.on(",").join(channel.getGroups()));
-            buf.append("): ");
-            buf.append(channel.getMechanism());
-
-            buf.append(channel.isConnected() ? ", connected (" : ", DISCONNECTED (");
-            buf.append(channel.getInternalState() + ")");
-            buf.append(", value " + channel.getCurrentValueAsString());
-            buf.append(", last stored " + channel.getLastArchivedValue());
-            System.out.println(buf.toString());
-        }
+    @Nonnull
+    public static String getVersion() {
+        return VERSION;
     }
 
 }

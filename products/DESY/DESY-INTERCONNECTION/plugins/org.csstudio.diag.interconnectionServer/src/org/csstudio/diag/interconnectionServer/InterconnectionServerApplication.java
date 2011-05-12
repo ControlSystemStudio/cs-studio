@@ -31,17 +31,19 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.common.tracker.ServiceListener;
+import org.remotercp.common.tracker.ServiceProvider;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The application class for the interconnection server.
  *
  * @author Matthias Clausen, Joerg Rathlev
  */
-public final class InterconnectionServerApplication implements IApplication {
-
+public final class InterconnectionServerApplication implements IApplication,
+		IGenericServiceListener<ISessionService> {
+			
 	// XXX: This is currently set from the outside by the RestartIcServer
 	// and StopIcServer actions. That's not good.
 	public static boolean SHUTDOWN = true;
@@ -50,10 +52,14 @@ public final class InterconnectionServerApplication implements IApplication {
 	 * {@inheritDoc}
 	 */
 	public Object start(final IApplicationContext context) throws Exception {
-		CentralLogger.getInstance().info(this, "Starting Interconnection Server");
+		CentralLogger.getInstance().info(this,
+				"Starting Interconnection Server");
 
+//		ServiceProvider.addServiceListener(ISessionService.class, this);
+
+		Activator.getDefault().addSessionServiceListener(this);
+		
 		runStartupServices();
-		connectToXmppServer();
 
 		context.applicationRunning();
 		final InterconnectionServer ics = InterconnectionServer.getInstance();
@@ -66,9 +72,23 @@ public final class InterconnectionServerApplication implements IApplication {
 	}
 
 	/**
-	 * Connects to the XMPP server for remote management (ECF-based).
+	 * Runs the startup services.
 	 */
-	private void connectToXmppServer() throws Exception {
+	private void runStartupServices() {
+		for (final IStartupServiceListener s : StartupServiceEnumerator
+				.getServices()) {
+			s.run();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void stop() {
+		// TODO: implement code to forcibly stop the application
+	}
+
+	public void bindService(ISessionService sessionService) {
 
 		final IPreferencesService service = Platform.getPreferencesService();
 
@@ -80,26 +100,25 @@ public final class InterconnectionServerApplication implements IApplication {
 				PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
 
 		try {
-			HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-			ServiceLauncher.startRemoteServices();
+			sessionService.connect(username, password, server);
 		} catch (final Exception e) {
-			CentralLogger.getInstance().warn(this, "XMPP connection is not available, " + e.toString());
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
 		}
 	}
 
-	/**
-	 * Runs the startup services.
-	 */
-	private void runStartupServices() {
-		for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
-			s.run();
-		}
-	}
+	public void unbindService(ISessionService service) {
+		service.disconnect();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void stop() {
-		// TODO: implement code to forcibly stop the application
 	}
+	
+//	/**
+//	 * Runs the startup services.
+//	 */
+//	private void runStartupServices() {
+//		for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+//			s.run();
+//		}
+//	}
+
 }

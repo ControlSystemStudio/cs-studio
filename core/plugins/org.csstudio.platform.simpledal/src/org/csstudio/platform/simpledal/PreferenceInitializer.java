@@ -11,7 +11,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     
     @Override
     public void initializeDefaultPreferences() {
-        // TODO (jpenning) sdal review
         IEclipsePreferences node = new DefaultScope().getNode(SimpleDalPluginActivator.ID);
         initializeControlSystemPreferences(node);
     }

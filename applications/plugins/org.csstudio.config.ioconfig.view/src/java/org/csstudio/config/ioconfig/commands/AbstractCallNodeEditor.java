@@ -78,7 +78,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         if (window != null) {
             IWorkbenchPage page = window.getActivePage();
             
-            AbstractNodeDBO obj = getCallerNode(page);
+            AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO> obj = getCallerNode(page);
             
             if (obj != null) {
                 try {
@@ -101,7 +101,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
      * @return
      */
     @CheckForNull
-    private AbstractNodeDBO getCallerNode(@Nonnull final IWorkbenchPage page) {
+    private AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO> getCallerNode(@Nonnull final IWorkbenchPage page) {
         //TODO: I think that is not the right way to do this.
         MainView view = (MainView) page.findView(MainView.ID);
         // Get the selection
@@ -110,7 +110,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
             Object obj = ((IStructuredSelection) selection).getFirstElement();
             // If we had a selection lets open the editor
             if ( (obj != null) && (obj instanceof AbstractNodeDBO)) {
-                return (AbstractNodeDBO) obj;
+                return (AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>) obj;
             }
         }
         return null;

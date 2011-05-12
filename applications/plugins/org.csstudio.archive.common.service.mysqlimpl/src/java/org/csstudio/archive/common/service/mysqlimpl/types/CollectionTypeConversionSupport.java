@@ -50,11 +50,6 @@ final class CollectionTypeConversionSupport extends ArchiveTypeConversionSupport
         if (values.isEmpty()) {
             return "";
         }
-        // TODO (bknerr) : couldn't it be recursive until the non-collection type is met with
-        final Class typeClass = values.iterator().next().getClass();
-        final ArchiveTypeConversionSupport<?> support =
-            (ArchiveTypeConversionSupport<?>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                   typeClass);
         return convertFromMultiScalarToArchiveString(values);
     }
 

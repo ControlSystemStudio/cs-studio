@@ -36,8 +36,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -52,6 +50,8 @@ import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -266,25 +266,33 @@ public final class ConfigHelper {
      * @param file
      *            the Text file.
      * @return the Text of the File.
+     * @throws IOException 
      */
     @Nonnull
-    public static String file2String(@Nonnull final File file) {
+    public static String file2String(@Nonnull final File file) throws IOException {
         StringBuilder text = new StringBuilder();
         BufferedReader br = null;
+        FileReader fileReader = null;
         try {
-            br = new BufferedReader(new FileReader(file));
+            fileReader = new FileReader(file);
+            br = new BufferedReader(fileReader);
             String tmp;
             while ( (tmp = br.readLine()) != null) {
                 text = text.append(tmp + "\r\n");
             }
-            br.close();
         } catch (FileNotFoundException e1) {
-            // TODO Fehler händling!
-            e1.printStackTrace();
+            throw e1;
         } catch (IOException e2) {
-            // TODO Fehler händling!
-            e2.printStackTrace();
+            throw e2;
+        } finally {
+            if(br!=null) {
+                br.close();
+            }
+            if(fileReader!=null) {
+                fileReader.close();
+            }
         }
+        
         
         return text.toString();
     }

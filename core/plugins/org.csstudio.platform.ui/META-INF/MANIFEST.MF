@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;visibility:=reexport,
  org.csstudio.platform.workspace,
  org.eclipse.equinox.security,
- org.csstudio.platform.libs.jdom;bundle-version="1.1.0"
+ org.csstudio.platform.libs.jdom;bundle-version="1.1.0",
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Bundle-Vendor: Desy
 Export-Package: org.csstudio.platform.ui,
  org.csstudio.platform.ui.composites,

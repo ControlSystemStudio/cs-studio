@@ -5,6 +5,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -17,6 +20,8 @@ public class Activator extends AbstractCssPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	private GenericServiceTracker<ISessionService> _genericServiceTracker;
+
 	/**
 	 * The constructor
 	 */
@@ -36,6 +41,9 @@ public class Activator extends AbstractCssPlugin {
 	@Override
 	protected void doStart(BundleContext context) throws Exception {
 	
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
 		//create a defaultscope for the plugin. Otherwise the preference initialzier
 		//will be called AFTER StartupService and the LoginCallbackhandler
 		//has no preference values.
@@ -112,4 +120,8 @@ public class Activator extends AbstractCssPlugin {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
 
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
 }

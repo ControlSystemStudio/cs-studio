@@ -10,7 +10,6 @@ package org.csstudio.archive.common.engine;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.IntegerOption;
@@ -25,17 +24,18 @@ import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.joda.time.Period;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /** Eclipse Application for CSS archive engine
  *  @author Kay Kasemir
  */
 public class ArchiveEngineApplication implements IApplication {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveEngineApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** HTTP Server port */
     private int _port;
@@ -70,8 +70,8 @@ public class ArchiveEngineApplication implements IApplication {
         try {
             parser.parse(args);
         } catch (final Exception ex) { // Bad options
-            LOG.error("Option parse error: " + ex.getMessage(), ex);
-            LOG.info("Option parse error: " + parser.getHelp());
+            LOG.error("Option parse error: {}.", ex.getMessage());
+            LOG.info("Option parse error: {}.", parser.getHelp());
             return false;
         }
         if (helpOpt.get()) {   // Help requested
@@ -97,8 +97,7 @@ public class ArchiveEngineApplication implements IApplication {
      */
     @Override
     @Nonnull
-    @SuppressWarnings("nls")
-    public Object start(@Nonnull final IApplicationContext context) {
+    public final Object start(@Nonnull final IApplicationContext context) {
 
         final IServiceProvider provider = new ServiceProvider();
 
@@ -109,66 +108,85 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version " + EngineModel.VERSION);
+        LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
-        final EngineHttpServer httpServer = startHttpServer();
+        final EngineHttpServer httpServer = startHttpServer(_model, _port);
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
 
-                runEngineLoop();
+                configureAndRunEngine(_model, _port);
 
                 LOG.info("ArchiveEngine ending");
 
-                _model.stop();
-                _model.clearConfig();
+                stopEngineAndClearConfiguration(_model);
             }
-            LOG.info("ArchiveEngine stopped");
         } catch (final EngineModelException e) {
             LOG.error("Archive engine model error - try to shutdown.", e);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+
+        return killEngineAndHttpServer(_model, httpServer);
+    }
+
+    private void stopEngineAndClearConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
+        model.stop();
+        model.clearConfiguration();
+    }
+
+    @Nonnull
+    private Integer killEngineAndHttpServer(@Nonnull final EngineModel model,
+                                   @Nonnull final EngineHttpServer httpServer) {
         httpServer.stop();
+        try {
+            model.stop();
+        } catch (final EngineModelException e) {
+            LOG.error("Stopping the engine failed. System exit.", e);
+        }
         return EXIT_OK;
     }
 
     /**
      * Run until model gets stopped via HTTPD or #stop()
+     * @param model
      *
      * @throws EngineModelException
      * @throws InterruptedException
      */
-    private void runEngineLoop() throws EngineModelException, InterruptedException {
+    private void configureAndRunEngine(@Nonnull final EngineModel model,
+                                       final int port) throws EngineModelException, InterruptedException {
 
-        readEngineConfiguration();
+        readEngineConfiguration(model, port);
 
-        LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
+        LOG.info("Running, CA addr list: {}.", System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
 
-        _model.start();
+        model.start();
 
         while (true) {
             Thread.sleep(1000);
-            if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
+            if (model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
                 _run = false;
                 break;
             }
-            if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {
+            if (model.getState() == EngineModel.State.RESTART_REQUESTED) {
                 break;
             }
         }
     }
-    private void readEngineConfiguration() throws EngineModelException {
-        LOG.info("Reading configuration for engine '" + _engineName + "'");
+
+    private void readEngineConfiguration(@Nonnull final EngineModel model,
+                                         final int port) throws EngineModelException {
+        LOG.info("Reading configuration for engine '{}'.", model.getName());
         final RunningStopWatch watch = StopWatch.start();
-        _model.readConfig(_port);
+        model.readConfig(port);
         final long millis = watch.getElapsedTimeInMillis();
-        LOG.info("Read configuration: " + _model.getChannels().size() +
-                 " channels in " +
-                 TimeInstantBuilder.fromMillis(millis).formatted(TimeInstant.STD_DATETIME_FMT_WITH_MILLIS));
+        LOG.info("Read configuration: {} channels in {}.",
+                 model.getChannels().size(),
+                 TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(Period.millis((int) millis)));
     }
 
     /**
@@ -182,13 +200,14 @@ public class ArchiveEngineApplication implements IApplication {
     }
 
     @CheckForNull
-    private EngineHttpServer startHttpServer() {
+    private EngineHttpServer startHttpServer(@Nonnull final EngineModel model,
+                                             final int port) {
         EngineHttpServer httpServer = null;
         try {
             // Setup takes some time, but engine server should already respond.
-            httpServer = new EngineHttpServer(_model, _port);
+            httpServer = new EngineHttpServer(model, port);
         } catch (final EngineHttpServerException e) {
-            LOG.fatal("Cannot start HTTP server on port " + _port + ": " + e.getMessage(), e);
+            LOG.error("Cannot start HTTP server on port {}: {}", port, e.getMessage());
         }
         return httpServer;
     }

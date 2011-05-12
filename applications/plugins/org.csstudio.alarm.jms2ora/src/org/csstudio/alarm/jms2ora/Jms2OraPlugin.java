@@ -28,6 +28,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleContext;
+import org.remotercp.common.tracker.GenericServiceTracker;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -46,6 +49,8 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     /** The plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
 
+    private GenericServiceTracker<ISessionService> _genericServiceTracker;
+    
     /**
 	 * The constructor
 	 */
@@ -62,6 +67,10 @@ public class Jms2OraPlugin extends AbstractCssPlugin
         logger.info("Jms2Ora started...");
         
         bundleContext = context;
+		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
+				context, ISessionService.class);
+		_genericServiceTracker.open();
+
     }
 
     @Override
@@ -94,4 +103,10 @@ public class Jms2OraPlugin extends AbstractCssPlugin
     {
         return PLUGIN_ID;
     }
+    
+	public void addSessionServiceListener(
+			IGenericServiceListener<ISessionService> sessionServiceListener) {
+		_genericServiceTracker.addServiceListener(sessionServiceListener);
+	}
+
 }

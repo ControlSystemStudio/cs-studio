@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -32,8 +33,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -563,17 +564,17 @@ public class SubnetEditor extends AbstractNodeEditor {
         Label front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
         front.setText("Tslot_Init: ");
-        String value;
+        String val;
         long min = Ranges.TSLOT_INIT.getMin();
         if (_subnet.getSlotTime() < min) {
-            value = Ranges.TSLOT_INIT.getDefault() + "";
+            val = Ranges.TSLOT_INIT.getDefault() + "";
         } else {
-            value = _subnet.getSlotTime() + "";
+            val = _subnet.getSlotTime() + "";
         }
 
         _tslotInit = ProfibusHelper.getTextField(left,
                                                  true,
-                                                 value,
+                                                 val,
                                                  Ranges.TSLOT_INIT,
                                                  ProfibusHelper.VL_TYP_U16);
         _tslotInit.addModifyListener(getMLSB());
@@ -584,15 +585,11 @@ public class SubnetEditor extends AbstractNodeEditor {
         front.setAlignment(SWT.RIGHT);
         front.setText("Max. Tsdr.: ");
         if (_subnet.getMaxTsdr() < Ranges.MAX_TSDR.getMin()) {
-            value = Ranges.MAX_TSDR.getDefault() + "";
+            val = Ranges.MAX_TSDR.getDefault() + "";
         } else {
-            value = _subnet.getMaxTsdr() + "";
+            val = _subnet.getMaxTsdr() + "";
         }
-        _maxTsdr = ProfibusHelper.getTextField(left,
-                                               true,
-                                               value,
-                                               Ranges.MAX_TSDR,
-                                               ProfibusHelper.VL_TYP_U16);
+        _maxTsdr = ProfibusHelper.getTextField(left, true, val, Ranges.MAX_TSDR, ProfibusHelper.VL_TYP_U16);
         _maxTsdr.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -601,14 +598,14 @@ public class SubnetEditor extends AbstractNodeEditor {
         front.setAlignment(SWT.RIGHT);
         front.setText("Min. Tsdr.: ");
         if (_subnet.getMinTsdr() < Ranges.MIN_TSDR.getMin()) {
-            value = Ranges.MIN_TSDR.getDefault() + "";
+            val = Ranges.MIN_TSDR.getDefault() + "";
         } else {
-            value = _subnet.getMinTsdr() + "";
+            val = _subnet.getMinTsdr() + "";
         }
 
         _minTsdr = ProfibusHelper.getTextField(left,
                                                true,
-                                               value,
+                                               val,
                                                Ranges.MIN_TSDR,
                                                ProfibusHelper.VL_TYP_U16);
         _minTsdr.addModifyListener(getMLSB());
@@ -619,16 +616,12 @@ public class SubnetEditor extends AbstractNodeEditor {
         front.setAlignment(SWT.RIGHT);
         front.setText("tset: ");
         if (_subnet.getTset() < Ranges.TSET.getMin()) {
-            value = Ranges.TSET.getDefault() + "";
+            val = Ranges.TSET.getDefault() + "";
         } else {
-            value = _subnet.getTset() + "";
+            val = _subnet.getTset() + "";
         }
 
-        _tset = ProfibusHelper.getTextField(left,
-                                            true,
-                                            value,
-                                            Ranges.TSET,
-                                            ProfibusHelper.VL_TYP_U08);
+        _tset = ProfibusHelper.getTextField(left, true, val, Ranges.TSET, ProfibusHelper.VL_TYP_U08);
         _tset.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -637,13 +630,13 @@ public class SubnetEditor extends AbstractNodeEditor {
         front.setAlignment(SWT.RIGHT);
         front.setText("Tqui: ");
         if (_subnet.getMinTsdr() < Ranges.TQUI.getMin()) {
-            value = Ranges.TQUI.getDefault() + "";
+            val = Ranges.TQUI.getDefault() + "";
         } else {
-            value = _subnet.getTqui() + "";
+            val = _subnet.getTqui() + "";
         }
         _tqui = ProfibusHelper.getTextField(left,
                                             true,
-                                            value,
+                                            val,
                                             Ranges.TQUI,
                                             ProfibusHelper.VL_TYP_U08);
         _tqui.addModifyListener(getMLSB());
@@ -700,12 +693,7 @@ public class SubnetEditor extends AbstractNodeEditor {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
+    @CheckForNull
     public final GSDFileDBO getGsdFile() {
         return null;
     }
@@ -730,13 +718,4 @@ public class SubnetEditor extends AbstractNodeEditor {
         selecttTabFolder(0);
         getTabFolder().pack();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFocus() {
-
-    }
-
 }

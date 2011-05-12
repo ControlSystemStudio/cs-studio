@@ -28,10 +28,10 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
-import org.csstudio.archive.common.service.requesttypes.IArchiveRequestType;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.ValueIterator;
@@ -39,7 +39,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 
@@ -51,8 +51,9 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  */
 public class DesyArchiveValueIterator implements ValueIterator {
 
+    @SuppressWarnings("unused")
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(DesyArchiveValueIterator.class);
+        LoggerFactory.getLogger(DesyArchiveValueIterator.class);
 
     @SuppressWarnings("rawtypes")
     private static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =

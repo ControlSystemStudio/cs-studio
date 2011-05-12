@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
 
@@ -40,7 +39,8 @@ import org.csstudio.domain.desy.system.ControlSystemType;
  *
  * Epics alarms are comparable by their severity field.<br>
  *
- * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable} on setting its alarm.
+ * TODO (bknerr) : Checked for plausibility by the
+ * {@link org.csstudio.domain.desy.epics.types.EpicsSystemVariable} on setting its alarm.
  *
  * @author Bastian Knerr
  */

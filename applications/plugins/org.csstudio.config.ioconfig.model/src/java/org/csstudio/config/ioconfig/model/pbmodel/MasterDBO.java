@@ -36,7 +36,6 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
-import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
@@ -52,7 +51,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 @Entity
 @Table(name = "ddb_Profibus_Master")
-public class MasterDBO extends AbstractNodeDBO {
+public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
     /**
      * The highest accept station address.
@@ -150,7 +149,7 @@ public class MasterDBO extends AbstractNodeDBO {
         this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
+    private MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -191,8 +190,8 @@ public class MasterDBO extends AbstractNodeDBO {
      * >= is redundant.
      * @param fdlAddress
      */
-    public void setRedundant(final short fdlAddress) {
-        this._fdlAddress = fdlAddress;
+    public void setRedundant(final int fdlAddress) {
+        this._fdlAddress = (short)fdlAddress;
     }
 
     public String getMasterUserData() {
@@ -361,9 +360,8 @@ public class MasterDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parentNode) throws PersistenceException {
-        if (parentNode instanceof ProfibusSubnetDBO) {
-            ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) parentNode;
+    public AbstractNodeDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+            ProfibusSubnetDBO subnet = parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
             copy.setAutoclear(isAutoclear());
@@ -379,14 +377,12 @@ public class MasterDBO extends AbstractNodeDBO {
             copy.setProfibusPnoId(getProfibusPnoId());
             copy.setVendorName(getVendorName());
             return copy;
-        }
-        return null;
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (AbstractNodeDBO node : getChildren()) {
+    public AbstractNodeDBO copyThisTo(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+        MasterDBO copy = super.copyThisTo(parentNode);
+        for (SlaveDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }

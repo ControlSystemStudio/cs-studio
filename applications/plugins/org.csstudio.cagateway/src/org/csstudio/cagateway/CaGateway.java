@@ -1,13 +1,13 @@
 package org.csstudio.cagateway;
 
-import org.csstudio.cagateway.preferences.Preference;
+import org.csstudio.cagateway.preferences.CAGatewayPreference;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
-public class CaGateway implements IApplication {
+public class CaGateway implements IApplication, IGenericServiceListener<ISessionService> {
 	
 	private static CaServer caGatewayInstance = null;
 
@@ -15,24 +15,29 @@ public class CaGateway implements IApplication {
 		System.out.println("Start caGateway");
 		caGatewayInstance = CaServer.getGatewayInstance();	
 		
-		connectToXmppServer();
 		caGatewayInstance.execute();
 		
 		return null;
 	}
 
-    /**
-     * Connects to the XMPP server for remote management (ECF-based).
-     */
-    private void connectToXmppServer() throws Exception {
-        String username = Preference.XMPP_USER_NAME.getValue();
-        String password = Preference.XMPP_PASSWORD.getValue();
-        String server = Preference.XMPP_SERVER_NAME.getValue();
-        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
-        ServiceLauncher.startRemoteServices();
-    }
+ 
 
-	
+    public void bindService(ISessionService sessionService) {
+        String username = CAGatewayPreference.XMPP_USER_NAME.getValue();
+        String password = CAGatewayPreference.XMPP_PASSWORD.getValue();
+        String server = CAGatewayPreference.XMPP_SERVER_NAME.getValue();
+    	
+    	try {
+			sessionService.connect(username, password, server);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
+    }
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
 	public void stop() {
 		// TODO Auto-generated method stub
 

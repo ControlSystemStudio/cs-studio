@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
@@ -42,7 +42,7 @@ import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.LoggerFactory;
 import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -52,10 +52,14 @@ import org.csstudio.utility.pv.PVListener;
  *
  * @author bknerr
  * @since Mar 23, 2011
+ * @param <V> the basic type of the variable's value
+ * @param <T> the generic system variable type
  */
+//CHECKSTYLE OFF: AbstractClassName
 abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements PVListener {
+//CHECKSTYLE ON: AbstractClassName
 
-    private static final Logger LOG = CentralLogger.getInstance()
+    private static final Logger LOG = LoggerFactory
             .getLogger(DesyArchivePVListener.class);
 
     private IServiceProvider _provider;
@@ -112,8 +116,14 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                 _connected = true;
             }
             final ArchiveSample<V, T> sample = createSampleFromValue(pv, _channelName, _channelId, _metaData);
+
             if (sample != null) {
-                storeNewSample(sample);
+                if (sample.getValue() == null) {
+                    LOG.warn("Value is null for channel id " + _channelName + "(" + _channelId + "). No sample created.");
+                } else {
+                    storeNewSample(sample);
+                }
+
             }
 
         } catch (final TypeSupportException e) {
@@ -200,10 +210,10 @@ abstract class DesyArchivePVListener<V, T extends ISystemVariable<V>> implements
                                                       @Nonnull final ArchiveChannelId id,
                                                       @Nullable final EpicsMetaData metaData) throws TypeSupportException {
         final IValue value = pv.getValue();
-
         final EpicsSystemVariable<V> sv =
             (EpicsSystemVariable<V>) EpicsIValueTypeSupport.toSystemVariable(name, value, metaData);
         final ArchiveSample<V, T> sample = new ArchiveSample<V, T>(id, (T) sv, sv.getAlarm());
+
         return sample;
     }
 

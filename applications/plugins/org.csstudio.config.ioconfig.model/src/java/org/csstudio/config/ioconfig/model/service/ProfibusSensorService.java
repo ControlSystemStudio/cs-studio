@@ -27,6 +27,8 @@ package org.csstudio.config.ioconfig.model.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
@@ -40,10 +42,9 @@ import org.csstudio.dct.ISensorIdService;
  */
 public class ProfibusSensorService implements ISensorIdService {
 
-    /* (non-Javadoc)
-     * @see org.csstudio.dct.SensorService#getSonsorId(java.lang.String, java.lang.String)
-     */
-    public String getSensorId(String ioName, String selection) {
+    @Override
+    @Nonnull 
+    public String getSensorId(@Nonnull String ioName, @Nonnull String selection) {
         SensorsDBO loadSensors;
         try {
             loadSensors = Repository.loadSensor(ioName, selection);
@@ -57,10 +58,8 @@ public class ProfibusSensorService implements ISensorIdService {
         return loadSensors.getSensorID();
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.dct.SensorService#getSonsorIds(java.lang.String)
-     */
-    public List<String> getSensorIds(String ioName) {
+    @Nonnull 
+    public List<String> getSensorIds(@Nonnull String ioName) {
         List<SensorsDBO> loadSensors;
         List<String> sensorsIds = new ArrayList<String>();
         try {

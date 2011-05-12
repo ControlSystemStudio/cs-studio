@@ -34,6 +34,7 @@
 		*/
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -95,7 +96,7 @@ public class PV2IONameMatcherModelDBO {
      * @param ioName
      *            the IO Name of this Channel.
      */
-    public void setIoName(final String ioName) {
+    public void setIoName(@Nonnull final String ioName) {
         _ioName = ioName;
     }
 
@@ -104,6 +105,7 @@ public class PV2IONameMatcherModelDBO {
      * @return the IO Name of this Channel.
      */
     @Column(name = "io_name", nullable=false)
+    @Nonnull 
     public String getIoName() {
         return _ioName;
     }
@@ -111,13 +113,14 @@ public class PV2IONameMatcherModelDBO {
     /**
      * @param epicsName the epicsName to set
      */
-    public void setEpicsName(final String epicsName) {
+    public void setEpicsName(@Nonnull final String epicsName) {
         _epicsName = epicsName;
     }
 
     /**
      * @return the epicsName
      */
+    @Nonnull 
     @Column(name = "epics_name", nullable=false)
     public String getEpicsName() {
         return _epicsName;
@@ -126,7 +129,7 @@ public class PV2IONameMatcherModelDBO {
     /**
      * @param reordType the reordType to set
      */
-    public void setReordType(final String reordType) {
+    public void setReordType(@Nonnull final String reordType) {
         _reordType = reordType;
     }
 
@@ -134,6 +137,7 @@ public class PV2IONameMatcherModelDBO {
      * @return the reordType
      */
     @Column(name = "record_type", nullable=false)
+    @Nonnull 
     public String getReordType() {
         return _reordType;
     }

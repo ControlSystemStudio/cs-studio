@@ -25,13 +25,12 @@ package org.csstudio.domain.desy.epics.typesupport;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.logging.CentralLogger;
 import org.epics.pvmanager.TypeSupport;
+
 
 
 /**
@@ -40,14 +39,10 @@ import org.epics.pvmanager.TypeSupport;
  *
  * @author bknerr
  * @since 02.12.2010
- * @param <R> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
 public abstract class AbstractIValueConversionTypeSupport<T extends IValue>
     extends EpicsIValueTypeSupport<T> {
-
-    static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AbstractIValueConversionTypeSupport.class);
 
     private static boolean INSTALLED = false;
 

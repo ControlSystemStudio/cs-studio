@@ -53,7 +53,7 @@ public class SampleBuffer<V,
     /** Is the buffer in an error state because of RDB write errors?
      *  Note that this is global for all buffers, not per instance!
      */
-    private static volatile boolean error = false;
+    private static volatile boolean ERROR = false;
 
     /**
      * Create sample buffer with flexible capacity
@@ -73,12 +73,12 @@ public class SampleBuffer<V,
 
     /** @return <code>true</code> if currently experiencing write errors */
     public static boolean isInErrorState() {
-        return error;
+        return ERROR;
     }
 
     /** Set the error state. */
     static void setErrorState(final boolean error) {
-        SampleBuffer.error = error;
+        SampleBuffer.ERROR = error;
     }
 
     /**
@@ -87,18 +87,9 @@ public class SampleBuffer<V,
     @Override
     @SuppressWarnings("nls")
     public boolean add(@Nonnull final S value) {
-    	synchronized (_samples) {
-    	    if (!super.offer(value)) {
-
-                while (!super.offer(value)) { // TODO (bknerr) : not yet a strategy
-                    if (super.poll() == null) { // drop samples as long appending doesn't work.
-                        throw new IllegalStateException("Sample buffer cannot append value, although queue is empty (poll returns null).");
-                    }
-                }
-            } else { // sample could not be put into sample buffer
-                // FIXME (bknerr) : sample could not be added to buffer - rescue data
-
-            }
+	    if (!super.offer(value)) {
+            // FIXME (bknerr) : data rescue if adding to sample buffer failed.
+	        return false;
         }
     	return true;
     }

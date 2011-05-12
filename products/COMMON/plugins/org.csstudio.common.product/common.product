@@ -75,6 +75,7 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
+      <plugin id="org.csstudio.platform.libs.slf4j"/>
       <plugin id="org.csstudio.platform.simpledal"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
@@ -90,6 +91,7 @@
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
       <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.adlParser"/>
       <plugin id="org.csstudio.utility.channel"/>
       <plugin id="org.csstudio.utility.channelfinder"/>

@@ -24,9 +24,10 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -39,7 +40,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "ddb_Facility")
-public class FacilityDBO extends AbstractNodeDBO {
+public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
 
     /**
      * Default Constructor needed by Hibernate.
@@ -54,6 +55,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Transient
     @SuppressWarnings("unchecked")
+    @Nonnull
     public Set<IocDBO> getIoc() {
         return (Set<IocDBO>) getChildren();
     }
@@ -62,7 +64,8 @@ public class FacilityDBO extends AbstractNodeDBO {
      * {@inheritDoc}
      */
     @Override
-    public AbstractNodeDBO copyParameter(final NamedDBClass parent) {
+    @Nonnull 
+    public FacilityDBO copyParameter(@Nullable final VirtualRoot parent) {
         final FacilityDBO copy = new FacilityDBO();
         copy.setDescription(getDescription());
         return copy;
@@ -73,9 +76,10 @@ public class FacilityDBO extends AbstractNodeDBO {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(final AbstractNodeDBO parentNode) throws PersistenceException {
-        final AbstractNodeDBO copy = super.copyThisTo(parentNode);
-        for (final AbstractNodeDBO node : getChildren()) {
+    @Nonnull
+    public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode) throws PersistenceException {
+        final FacilityDBO copy = super.copyThisTo(parentNode);
+        for (final IocDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
@@ -89,7 +93,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      *            facility can't have a parent!
      */
     @Override
-    public void setParent(final AbstractNodeDBO parent) {
+    public void setParent(@Nullable final VirtualRoot parent) {
         // do nothing
     }
 
@@ -98,6 +102,7 @@ public class FacilityDBO extends AbstractNodeDBO {
      */
     @Override
     @Transient
+    @Nonnull 
     public NodeType getNodeType() {
         return NodeType.FACILITY;
     }

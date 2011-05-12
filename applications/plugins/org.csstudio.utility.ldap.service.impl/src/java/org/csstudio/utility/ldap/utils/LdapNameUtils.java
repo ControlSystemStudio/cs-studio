@@ -22,6 +22,8 @@
  */
 package org.csstudio.utility.ldap.utils;
 
+import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
+
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -35,20 +37,24 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+
+import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * Utility functions for working with names from an LDAP directory.
  *
  * @author Joerg Rathlev, Jurij Kodre
+ * @author Bastian Knerr
  */
 public final class LdapNameUtils {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapNameUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapNameUtils.class);
     /**
      * Constructor.
      */
@@ -237,5 +243,37 @@ public final class LdapNameUtils {
         }
 
         return result;
+    }
+
+    /**
+     * Removes the last or simple name from the ldap name.
+     * Always returning
+     * @param iocLdapName
+     * @return
+     */
+    @Nonnull
+    public static LdapName baseName(@Nonnull final LdapName fullName) {
+        if (fullName.size() > 0) {
+            return (LdapName) fullName.getPrefix(fullName.size()-1);
+        }
+        return fullName;
+    }
+    
+    
+    /**
+     * Filters for forbidden substrings {@link LdapUtils}.
+     * @param recordName the name to filter
+     * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
+     */
+    public static boolean filterName(@Nonnull final String recordName) {
+        if (!StringUtil.hasLength(recordName)) {
+            return false;
+        }
+        for (final String s : FORBIDDEN_SUBSTRINGS) {
+            if (recordName.contains(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

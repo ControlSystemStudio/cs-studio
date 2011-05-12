@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -59,6 +60,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
 
 	/** {@inheritDoc} */
 	@Override
+	@Nonnull
 	public Object[] getElements(@Nullable final Object parent) {
 		if (_facilities != null) {
 			return _facilities.toArray();
@@ -70,6 +72,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
 
 	/** {@inheritDoc} */
 	@Override
+	@CheckForNull
 	public Object getParent(@Nullable final Object child) {
 		if (child instanceof AbstractNodeDBO) {
 			return ((AbstractNodeDBO) child).getParent();
@@ -85,6 +88,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
 	 * @return an Array of Children Objects.
 	 */
 	@Override
+	@Nonnull
 	public Object[] getChildren(@Nullable final Object parent) {
         try {
             if (parent instanceof ModuleDBO) {

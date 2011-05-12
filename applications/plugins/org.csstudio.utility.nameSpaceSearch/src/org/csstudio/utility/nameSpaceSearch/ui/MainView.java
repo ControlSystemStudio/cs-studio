@@ -346,9 +346,10 @@ public class MainView extends ViewPart {
 		String filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT
 				+ searchTemp; //$NON-NLS-1$
 
-		if (searchTemp.compareTo(FIELD_WILDCARD) != 0) {
-			filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
-		}
+		//(hrickens) [09.05.2011]: It will not automatically search with wildcard at the end 
+//		if (searchTemp.compareTo(FIELD_WILDCARD) != 0) {
+//			filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
+//		}
 
 		if (_headline.isEmpty()) {
 			_headline.put(FACILITY.getNodeTypeName(),

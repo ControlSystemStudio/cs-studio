@@ -80,14 +80,14 @@ public class SampleMinMaxAggregator {
     }
 
     public void aggregate(@Nonnull final Double newVal,
-                                @Nonnull final TimeInstant timestamp) {
+                          @Nonnull final TimeInstant timestamp) {
         aggregate(newVal, newVal, newVal, timestamp);
     }
 
-    public void aggregate(@Nonnull final Double newVal,
-                          @Nonnull final Double min,
-                          @Nonnull final Double max,
-                          @Nonnull final TimeInstant timestamp) {
+    public synchronized void aggregate(@Nonnull final Double newVal,
+                                       @Nonnull final Double min,
+                                       @Nonnull final Double max,
+                                       @Nonnull final TimeInstant timestamp) {
         _avg.accumulate(newVal);
         _minVal = Ordering.natural().nullsLast().min(newVal, min, max, _minVal);
         _maxVal = Ordering.natural().nullsFirst().max(newVal, min, max, _maxVal);
@@ -101,7 +101,7 @@ public class SampleMinMaxAggregator {
      * Sets the minimum and maximum values to <code>null</code>.
      * Clears the current average value cache.
      */
-    public void reset() {
+    public synchronized void reset() {
         _resetTimeStamp = _lastSampleTimeStamp;
         _lastSampleTimeStamp = null;
         _lastAvgBeforeReset = _avg.getValue();
@@ -111,27 +111,27 @@ public class SampleMinMaxAggregator {
         _avg.clear();
     }
     @CheckForNull
-    public Double getAvg() {
+    public synchronized Double getAvg() {
         return _avg.getValue();
     }
     @CheckForNull
-    public Double getMin() {
+    public synchronized Double getMin() {
         return _minVal;
     }
     @CheckForNull
-    public Double getMax() {
+    public synchronized Double getMax() {
         return _maxVal;
     }
     @CheckForNull
-    public Double getAverageBeforeReset() {
+    public synchronized Double getAverageBeforeReset() {
         return _lastAvgBeforeReset;
     }
     @CheckForNull
-    public TimeInstant getSampleTimestamp() {
+    public synchronized TimeInstant getSampleTimestamp() {
         return _lastSampleTimeStamp;
     }
     @CheckForNull
-    public TimeInstant getResetTimestamp() {
+    public synchronized TimeInstant getResetTimestamp() {
         return _resetTimeStamp;
     }
 }

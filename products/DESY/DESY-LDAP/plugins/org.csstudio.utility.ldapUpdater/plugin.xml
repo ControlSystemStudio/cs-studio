@@ -27,12 +27,6 @@
       </product>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences">
-      </initializer>
-   </extension>
-   <extension
          point="org.csstudio.platform.managementCommands">
       <command
             class="org.csstudio.utility.ldapUpdater.action.ShutdownLdapUpdaterAction"

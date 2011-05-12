@@ -56,7 +56,7 @@ import org.csstudio.utility.ldap.utils.LdapSearchParams;
 import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -123,7 +123,7 @@ public class LdapServiceImplHeadlessTest {
                                                            SearchControls.SUBTREE_SCOPE);
         Assert.assertNotNull(result);
 
-        final ILdapContentModelBuilder builder = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
+        final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
         Assert.assertNotNull(builder);
 
         try {
@@ -133,7 +133,7 @@ public class LdapServiceImplHeadlessTest {
         }
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
-        final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> records =
+        final Map<String, INodeComponent<LdapEpicsControlsConfiguration>> records =
             model.getByType(RECORD);
 
         Assert.assertEquals(4, records.size());

@@ -31,7 +31,6 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssValueType;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -71,13 +70,13 @@ final class IStringValueConversionTypeSupport extends
         final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
         if (values.length == 1) {
             return new EpicsSystemVariable<String>(name,
-                                                   new CssValueType<String>(values[0]),
+                                                   values[0],
                                                    ControlSystem.EPICS_DEFAULT,
                                                    timestamp,
                                                    alarm);
         }
         return new EpicsSystemVariable<List<String>>(name,
-                                                    new CssValueType<List<String>>(Lists.newArrayList(values)),
+                                                    Lists.newArrayList(values),
                                                     ControlSystem.EPICS_DEFAULT,
                                                     timestamp,
                                                     alarm);

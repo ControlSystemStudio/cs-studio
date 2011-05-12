@@ -40,18 +40,19 @@ public class AddTestChannels implements IViewActionDelegate {
 		channels = new ArrayList<ICSSChannel>();
 
 		for (int i = 0; i < 2000; i++) {
-			String channelName = "Test_";
+			String channelName = "SR:C01";
 			channelName += getName(i);
-			Channel.Builder channel = channel(channelName).owner("shroffk")
-					.with(property("Test_PropA", Integer.toString(i)).owner(
+			Channel.Builder channel = channel(channelName).owner("simulation")
+					.with(property("ChannelCount", Integer.toString(i)).owner(
 							"shroffk"));
 			if (i < 1000)
-				channel.with(tag("Test_TagA", "shroffk"));
+				channel.with(tag("GoldenOrbit", "shroffk"));
 			if ((i >= 500) || (i < 1500))
-				channel.with(tag("Test_TagB", "Shroffk"));
-			channel.with(property("Test_PropB",
-					Integer.toString(generator.nextInt(100))));
-			channel.with(property("Test_PropC", "ALL"));
+				channel.with(tag("myFavorite", "Shroffk"));
+			channel.with(property("Position",
+					generateString(new Random(), "0123456789.", 4)));
+			channel.with(property("Facility", "storageRing"));
+			channel.with(property("element", i%2 == 0?"sextupole":"quadrupole"));
 			channels.add(factory.getCSSChannel(channel.build()));
 		}
 		// Add all the channels;
@@ -96,4 +97,12 @@ public class AddTestChannels implements IViewActionDelegate {
 		// TODO Auto-generated method stub
 	}
 
+	private static String generateString(Random rng, String characters,
+			int length) {
+		char[] text = new char[length];
+		for (int i = 0; i < length; i++) {
+			text[i] = characters.charAt(rng.nextInt(characters.length()));
+		}
+		return new String(text);
+	}
 }

@@ -37,6 +37,7 @@ import org.csstudio.config.ioconfig.model.GSDFileTypes;
  * @version $Revision: 1.2 $
  * @since 18.07.2008
  */
+//TODO (hrickens) [03.05.2011]: Raus damit!
 public class GsdMasterModel extends GsdGeneralModel {
     /**
      * The DP device supports the function download, Start_seq and End_seq.<br>

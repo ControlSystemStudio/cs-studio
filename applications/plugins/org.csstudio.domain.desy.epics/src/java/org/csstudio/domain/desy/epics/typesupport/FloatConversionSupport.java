@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.IMetaData;
@@ -31,6 +30,12 @@ import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+/**
+ * Conversion support for {@link Float}.
+ *
+ * @author bknerr
+ * @since 11.05.2011
+ */
 final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
 
     @Nonnull
@@ -47,7 +52,7 @@ final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     protected EpicsMetaData convertToMetaData(@Nonnull final IMetaData data) throws TypeSupportException {
         final INumericMetaData numData = checkAndConvertToNumeric(data, Float.class);
         final EpicsGraphicsData<Float> gr =
@@ -57,6 +62,6 @@ final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
                                                             toFloat(numData.getWarnHigh())),
                                         Limits.<Float>create(toFloat(numData.getDisplayLow()),
                                                             toFloat(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

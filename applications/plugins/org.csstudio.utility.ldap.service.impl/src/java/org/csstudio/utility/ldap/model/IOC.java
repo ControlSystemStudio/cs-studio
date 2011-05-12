@@ -22,15 +22,17 @@
 package org.csstudio.utility.ldap.model;
 
 import java.io.Serializable;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+import org.csstudio.domain.desy.net.IpAddress;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 
 /**
@@ -53,6 +55,8 @@ public class IOC implements Serializable {
      * The name of this IOC.
      */
     private final String _name;
+    
+    private IpAddress _ipAddress;
 
     /**
      * The group of this IOC.
@@ -62,7 +66,7 @@ public class IOC implements Serializable {
     /**
      * The date time of last change.
      */
-    private GregorianCalendar _lastUpdated;
+    private TimeInstant _lastBootTime;
     /**
      * The email address of the responsible person for this IOC.
      */
@@ -76,48 +80,28 @@ public class IOC implements Serializable {
 
     /**
      * Constructor.
-     * @param name .
-     * @param dateTime time of last record update from file
      */
-    public IOC(@Nonnull final String name, @Nonnull final GregorianCalendar dateTime) {
-        this(name, NO_GROUP, dateTime, DEFAULT_RESPONSIBLE_PERSON);
-    }
-
-    /**
-     * Constructor.
-     * @param econ the IOC name
-     * @param efan the facility name
-     */
-    public IOC(@Nonnull final String econ, @Nonnull final String efan) {
-        this(econ, efan, null, DEFAULT_RESPONSIBLE_PERSON);
-    }
-
-    /**
-     * Creates a new IOC information object.
-     *
-     * @param name the name of the IOC.
-     * @param group the group of the IOC.
-     * @param physicalName the physical name of the IOC.
-     * @param dateTime time stamp of last update
-     * @param resp responsible person for this IOC
-     */
-    public IOC(@Nonnull final String name,
-               @Nullable final String group,
-               @Nullable final GregorianCalendar dateTime,
-               @Nullable final String resp) {
+    public IOC(@Nonnull final String name, 
+               @Nonnull final TimeInstant lastBootTime,
+               @Nonnull final IpAddress ipAddress,
+               @Nonnull final SortedSet<Record> records) {
         _name = name;
-        _group = group;
-        _lastUpdated = dateTime;
-        setResponsible(resp);
+        _group = NO_GROUP;
+        _lastBootTime = lastBootTime;
+        _ipAddress = ipAddress;
+        _responsible = DEFAULT_RESPONSIBLE_PERSON;
+        for (Record record : records) {
+            _records.put(record.getName(), record);
+        }
     }
 
     @CheckForNull
-    public GregorianCalendar getLastUpdated() {
-        return _lastUpdated;
+    public TimeInstant getLastBootTime() {
+        return _lastBootTime;
     }
 
-    public void setLastUpdated(@Nonnull final GregorianCalendar date) {
-        _lastUpdated = date;
+    public void setLastUpdated(@Nonnull final TimeInstant date) {
+        _lastBootTime = date;
     }
 
     /**
@@ -148,12 +132,12 @@ public class IOC implements Serializable {
      * @return a copy of the records
      */
     @Nonnull
-    public Set<Record> getRecordValues() {
+    public Set<Record> getRecordSet() {
         return new HashSet<Record>(_records.values());
     }
 
     @Nonnull
-    public Map<String, Record> getRecords() {
+    public Map<String, Record> getRecordMap() {
         return new HashMap<String, Record>(_records);
     }
 
@@ -166,11 +150,13 @@ public class IOC implements Serializable {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public final String toString() {
         return "IOC(name=" + _name +
                     ", group=" + _group +
                     ", responsible=" + _responsible +
-                    ", last update=" + _lastUpdated + ")";
+                    ", IP address=" + _ipAddress +
+                    ", last boot time=" + _lastBootTime.formatted() + ")";
     }
 
     public void addRecord(@Nonnull final String eren) {
@@ -185,8 +171,9 @@ public class IOC implements Serializable {
         return _responsible;
     }
 
-    public void setResponsible(@Nonnull final String responsible) {
-        _responsible = responsible;
+    @CheckForNull
+    public IpAddress getIpAddress() {
+        return _ipAddress;
     }
 
 }

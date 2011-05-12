@@ -24,9 +24,10 @@ package org.csstudio.config.ioconfig.model.siemens;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
@@ -36,7 +37,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -162,23 +162,27 @@ public class ProfibusConfigWinModGenerator {
      */
     private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
-		String slaveCfgData = module.getGsdModuleModel().getValue()
-				.replaceAll("0x", "");
-		int length = slaveCfgData.split(",").length;
-		if (module.getGSDModule() != null) {
-			_winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
-					.append(fdlAddress + ", ").append("SLOT ").append(_slot++)
-					.append(", ")
-					.append("\"" + module.getGSDModule().getName() + "\"")
-					.append(LINE_END).append("BEGIN").append(LINE_END)
-					.append("  SLAVE_CFG_DATA ").append("\"");
-			appendAs2HexString(_winModConfig, length);
-			_winModConfig.append(" ").append(slaveCfgData.replaceAll(",", " "))
-			.append("\"").append(LINE_END)
-			.append("  OBJECT_REMOVEABLE ").append("\"1\"")
-			.append(LINE_END).append("END").append(LINE_END)
-			.append(LINE_END);
-		}
+		List<Integer> slaveCfgData;
+        try {
+            slaveCfgData = module.getGsdModuleModel2().getValue();
+            int length = slaveCfgData.size();
+    		if (module.getGSDModule() != null) {
+    			_winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
+    					.append(fdlAddress + ", ").append("SLOT ").append(_slot++)
+    					.append(", ")
+    					.append("\"" + module.getGSDModule().getName() + "\"")
+    					.append(LINE_END).append("BEGIN").append(LINE_END)
+    					.append("  SLAVE_CFG_DATA ").append("\"");
+    			appendAs2HexString(_winModConfig, length);
+    			_winModConfig.append(" ").append(Arrays.toString(slaveCfgData.toArray()).replaceAll(",", " ").replaceAll("[\\[\\]]", ""))
+    			.append("\"").append(LINE_END)
+    			.append("  OBJECT_REMOVEABLE ").append("\"1\"")
+    			.append(LINE_END).append("END").append(LINE_END)
+    			.append(LINE_END);
+    		}
+        } catch (IOException e) {
+            throw new PersistenceException(e);
+        }
 		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChannelStructsAsMap();
 		Set<Short> keySet = channelStructsAsMap.keySet();
 		for (Short key : keySet) {

@@ -34,10 +34,11 @@ import java.util.Properties;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Test data provider that yields access to test configuration files that are
@@ -57,8 +58,8 @@ import org.osgi.framework.Bundle;
  */
 public final class TestDataProvider {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(TestDataProvider.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(TestDataProvider.class);
+    
     private static final String CONFIGURATION_FILE_SUFFIX = "TestConfiguration.ini";
 
     private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";

@@ -24,7 +24,6 @@
 package org.csstudio.utility.ldap.service.util;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +32,9 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Common constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.
@@ -46,8 +46,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public final class LdapFieldsAndAttributes {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(LdapFieldsAndAttributes.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapFieldsAndAttributes.class);
 
     public static final String COUNTRY_FIELD_NAME = "c";
     public static final String ORGANIZATION_FIELD_NAME = "o";
@@ -61,13 +60,13 @@ public final class LdapFieldsAndAttributes {
 
     public static final String ATTR_VAL_REC_OBJECT_CLASS = "epicsRecord";
     public static final String ATTR_VAL_IOC_OBJECT_CLASS = "epicsController";
+    public static final String ATTR_VAL_IOC_IP_ADDRESS = "epicsIPAddress";
     public static final String ATTR_VAL_COM_OBJECT_CLASS = "epicsComponent";
     public static final String ATTR_VAL_FAC_OBJECT_CLASS = "epicsFacility";
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
 
     public static LdapName LDAP_ROOT;
-
     static {
         List<Rdn> rdns;
         try {

@@ -26,6 +26,8 @@ import java.io.File;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.preferences.AbstractPreference;
+import org.csstudio.domain.desy.preferences.IPreferenceValidator;
+import org.csstudio.domain.desy.preferences.MinMaxPreferenceValidator;
 
 /**
  * Constant definitions for archive service preferences (mimicked enum with inheritance).
@@ -37,14 +39,20 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
  */
 public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T> {
 
+    private static final Integer MIN_PACKET_SIZE_KB = 1024;
+    private static final Integer MAX_PACKET_SIZE_KB = 65536;
+    private static final int MIN_PERIOD_MS = 2000;
+    private static final int MAX_PERIOD_MS = 60000;
+
     public static final MySQLArchiveServicePreference<String> HOST =
         new MySQLArchiveServicePreference<String>("host", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<String> FAILOVER_HOST =
         new MySQLArchiveServicePreference<String>("failoverHost", "NOT PUBLIC");
 
-    public static final MySQLArchiveServicePreference<Integer> PERIOD =
-        new MySQLArchiveServicePreference<Integer>("periodInMS", 5000);
+    public static final MySQLArchiveServicePreference<Integer> PERIOD_IN_MS =
+        new MySQLArchiveServicePreference<Integer>("periodInMS", 5000)
+            .with(new MinMaxPreferenceValidator<Integer>(MIN_PERIOD_MS, MAX_PERIOD_MS));
 
     public static final MySQLArchiveServicePreference<Integer> PORT =
         new MySQLArchiveServicePreference<Integer>("port", 3306);
@@ -59,7 +67,8 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         new MySQLArchiveServicePreference<String>("password", "NOT PUBLIC");
 
     public static final MySQLArchiveServicePreference<Integer> MAX_ALLOWED_PACKET_IN_KB =
-        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 32768);
+        new MySQLArchiveServicePreference<Integer>("maxAllowedPacketInKB", 32768)
+            .with(new MinMaxPreferenceValidator<Integer>(MIN_PACKET_SIZE_KB, MAX_PACKET_SIZE_KB));
 
     public static final MySQLArchiveServicePreference<String> SMTP_HOST =
         new MySQLArchiveServicePreference<String>("mailhost", "NOT PUBLIC");
@@ -71,14 +80,12 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         new MySQLArchiveServicePreference<String>("emailAddress", "NOT PUBLIC");
 
 
-
-
     /**
      * Constructor.
      * @param keyAsString
      * @param defaultValue
      */
-    protected MySQLArchiveServicePreference(@Nonnull final String keyAsString,
+    private MySQLArchiveServicePreference(@Nonnull final String keyAsString,
                                             @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
@@ -102,6 +109,8 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
         return Activator.PLUGIN_ID;
     }
 
-
-
+    @Nonnull
+    private MySQLArchiveServicePreference<T> with(@Nonnull final IPreferenceValidator<T> val) {
+        return (MySQLArchiveServicePreference<T>) super.addValidator(val);
+    }
 }

@@ -100,6 +100,7 @@ public interface IRepository {
      *            the document that save to DB
      * @return the Saved document.
      */
+    @Nonnull
     DocumentDBO save(@Nonnull final DocumentDBO document) throws PersistenceException;
 
     /**
@@ -107,6 +108,7 @@ public interface IRepository {
      *            the document that update to DB.
      * @return the update document.
      */
+    @Nonnull
     DocumentDBO update(@Nonnull final DocumentDBO document) throws PersistenceException;
 
     /**
@@ -114,18 +116,21 @@ public interface IRepository {
      * @param ioName the IO Name.
      * @return the Epics Address String.
      */
+    @Nonnull
     String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException;
 
     /**
      *
      * @return a List of all IoNames at the DB.
      */
+    @Nonnull
     List<String> getIoNames() throws PersistenceException;
 
     /**
      * @param iocName the name of the Ioc.
      * @return a List of all IoNames from the Ioc with the given name.
      */
+    @Nonnull
     List<String> getIoNames(@Nonnull String iocName) throws PersistenceException;
 
     /**
@@ -133,6 +138,7 @@ public interface IRepository {
      * @param ioName the Key IO-Name for the search Sensors.
      * @return a {@link List} of {@link SensorsDBO}
      */
+    @Nonnull
     List<SensorsDBO> loadSensors(@Nonnull String ioName) throws PersistenceException;
 
     /**
@@ -141,6 +147,7 @@ public interface IRepository {
      * @param selection the selection of the Sensor.
      * @return a {@link List} of {@link SensorsDBO}
      */
+    @CheckForNull
     SensorsDBO loadSensor(@Nonnull String ioName,@Nonnull  String selection) throws PersistenceException;
 
     /**
@@ -148,6 +155,7 @@ public interface IRepository {
      * @param ioName the selection IO-Name.
      * @return The the short Description or null when not found!
      */
+    @Nonnull
     String getShortChannelDesc(@Nonnull String ioName) throws PersistenceException;
 
     /**
@@ -155,12 +163,14 @@ public interface IRepository {
      * @param ioName the selection IO-Name.
      * @return The the selected Channel or null when not found!
      */
+    @CheckForNull
     ChannelDBO loadChannel(@Nullable String ioName) throws PersistenceException;
 
     /**
      * @param pvName
      * @return
      */
+    @Nonnull
     List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable Collection<String> pvName) throws PersistenceException;
 
     /**

@@ -57,15 +57,14 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.login.connection.HeadlessConnection;
+import org.remotercp.common.tracker.IGenericServiceListener;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * @author Markus Moeller
  *
  */
-public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAccessible {
+public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAccessible, IGenericServiceListener<ISessionService> {
     
     /** The provider of the alarm messages */
     private AlarmMessageListProvider alarmListProvider;
@@ -110,8 +109,6 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         Restart.staticInject(this);
         MessageCounter.staticInject(this);
         MessageDeleter.staticInject(this);
-
-        connectToXMPPServer();
 
         try {
             final HttpService http = HttpServiceHelper.createHttpService(WebSuiteActivator.getBundleContext(), jettyPort);
@@ -204,24 +201,26 @@ public class WebSuiteApplication implements IApplication, Stoppable, RemotlyAcce
         http.registerServlet("/data.txt", new DataExporter(), null, httpContext);
     }
     
-    /**
-     * Creates the connection to the XMPP server.
-     */
-    public void connectToXMPPServer() {
-        
+
+
+    public void bindService(ISessionService sessionService) {
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppUser = prefs.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
         String xmppPassword = prefs.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
         String xmppServer = prefs.getString(WebSuiteActivator.PLUGIN_ID, PreferenceConstants.XMPP_SERVER, "", null);
-
-        try {
-            HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
-        } catch(Exception e) {
-            CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
-        }
+    	
+    	try {
+			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+		} catch (Exception e) {
+			CentralLogger.getInstance().warn(this,
+					"XMPP connection is not available, " + e.toString());
+		}
     }
-
+    
+    public void unbindService(ISessionService service) {
+    	service.disconnect();
+    }
+    
     /**
      * @see org.eclipse.equinox.app.IApplication#stop()
      */

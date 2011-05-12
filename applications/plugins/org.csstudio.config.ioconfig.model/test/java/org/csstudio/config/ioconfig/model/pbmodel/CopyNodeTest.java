@@ -2,6 +2,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class CopyNodeTest {
         assertTrue(node instanceof ModuleDBO);
         ModuleDBO copyModule = (ModuleDBO) node;
         assertEquals(_slave, copyModule.getParent());
-        assertEquals("Copy of Module", copyModule.getName());
+        assertEquals("Module", copyModule.getName());
         assertEquals(0, copyModule.getId());
         
         // TODO: Test Simple and Struct Channle

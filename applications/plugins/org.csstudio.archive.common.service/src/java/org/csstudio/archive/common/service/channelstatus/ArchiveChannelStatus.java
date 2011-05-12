@@ -27,8 +27,9 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
+ * Data transfer object for channel status.
  *
- * @author baschtl
+ * @author bknerr
  * @since Feb 26, 2011
  */
 public class ArchiveChannelStatus implements IArchiveChannelStatus {
@@ -63,8 +64,8 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
      */
     @Override
     @Nonnull
-    public ArchiveChannelStatusId getId() {
-        return _id;
+    public ArchiveChannelId getChannelId() {
+        return _channelId;
     }
 
     /**
@@ -72,8 +73,8 @@ public class ArchiveChannelStatus implements IArchiveChannelStatus {
      */
     @Override
     @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    public ArchiveChannelStatusId getId() {
+        return _id;
     }
 
     /**

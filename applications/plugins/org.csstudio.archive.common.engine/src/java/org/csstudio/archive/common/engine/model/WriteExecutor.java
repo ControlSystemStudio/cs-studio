@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
@@ -38,7 +38,7 @@ public class WriteExecutor {
 
     private static final int MAX_AWAIT_TERMINATION_TIME_S = 2;
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WriteExecutor.class);
 
     /** Minimum write period [seconds] */
     private static final long MIN_WRITE_PERIOD_MS = 5000;
@@ -149,9 +149,11 @@ public class WriteExecutor {
 
     /** @return  Average duration of write run */
     @CheckForNull
-    public Duration getAvgWriteDuration() {
-        final Double doubleDurMS = _writeWorker.getAvgWriteDurationInMS().getValue();
-        return _writeWorker != null ? new Duration(doubleDurMS.longValue()) : null;
+    public Duration getAvgWriteDurationInMS() {
+        if (_writeWorker == null) {
+            return Duration.ZERO;
+        }
+        return new Duration(_writeWorker.getAverageRunTimeInMillis());
     }
 
     /**
@@ -172,7 +174,7 @@ public class WriteExecutor {
     private void performFinalWriteBeforeShutdown() {
         final ExecutorService finalWriteExecutor = Executors.newSingleThreadExecutor();
         finalWriteExecutor.execute(new WriteWorker(_provider,
-                                                   "Shutdown worker",
+                                                   "Shutdown Archive Engine writer",
                                                    _channelMap.values(),
                                                    0L));
 
@@ -188,7 +190,7 @@ public class WriteExecutor {
 
     @Nonnull
     private Duration computeAwaitTerminationTime() {
-        Duration dur = getAvgWriteDuration();
+        Duration dur = getAvgWriteDurationInMS();
         if (dur == null || dur.getMillis() < Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S).getMillis()) {
             dur = Duration.standardSeconds(MAX_AWAIT_TERMINATION_TIME_S);
         }

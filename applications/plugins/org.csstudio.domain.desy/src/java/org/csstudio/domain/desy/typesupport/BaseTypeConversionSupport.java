@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.typesupport;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,11 +112,12 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
      * @param datatype the name of the class
      * @param packages the array of package names to try
      * @return a {@link Class} object or <code>null</code>.
+     * @throws TypeSupportException
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @Nonnull
     public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype,
-                                                         @Nonnull final String... packages) {
+                                                         @Nonnull final String... packages) throws TypeSupportException {
         Class<T> typeClass = null;
         for (final String pkg : packages) {
             try {
@@ -126,6 +128,11 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
                 // Ignore
                 // CHECKSTYLE ON: EmptyBlock
             }
+        }
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for datatype " + datatype +
+                                           " could not be created from packages:\n" +
+                                           Arrays.asList(packages), null);
         }
         return typeClass;
     }
@@ -140,22 +147,23 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
      * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
      * @param packages the packages to try for the element type, e.g. typically "java.lang".
      * @return the class object or <code>null</code>
+     * @throws TypeSupportException
      */
     @CheckForNull
     public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                    @Nonnull final String... packages) {
+                                                                    @Nonnull final String... packages) throws TypeSupportException {
         return createClassFromString(TypeLiteralGroup.COLL_ELEM, datatype, packages);
     }
     @CheckForNull
     public static <T> Class<T> createCollectionClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                          @Nonnull final String... packages) {
+                                                                          @Nonnull final String... packages) throws TypeSupportException {
         return createClassFromString(TypeLiteralGroup.COLL, datatype, packages);
     }
 
     @CheckForNull
     private static <T> Class<T> createClassFromString(@Nonnull final TypeLiteralGroup typeGroup,
                                                       @Nonnull final String datatype,
-                                                      @Nonnull final String... packages) {
+                                                      @Nonnull final String... packages) throws TypeSupportException {
         final Matcher m = COLLECTION_PATTERN.matcher(datatype);
         if (m.matches()) {
             final String elementType = m.group(typeGroup.getIndex()); // e.g. Byte from List<Byte>

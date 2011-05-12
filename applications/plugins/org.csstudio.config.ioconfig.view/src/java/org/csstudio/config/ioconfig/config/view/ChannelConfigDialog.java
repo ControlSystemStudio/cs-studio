@@ -32,8 +32,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.DBClass;
@@ -45,9 +43,11 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -90,7 +90,7 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ChannelConfigDialog extends Dialog implements IHasDocumentableObject {
 
-    private final GsdModuleModel _moduleModel;
+    private final GsdModuleModel2 _moduleModel;
     private boolean[] _ioTypeArray;
     private String _parameter;
     private final GSDModuleDBO _gsdModule;
@@ -141,7 +141,7 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
      * @param module
      *            the Parent Module
      */
-    public ChannelConfigDialog(final Shell parentShell, final GsdModuleModel gsdModuleModel,
+    public ChannelConfigDialog(final Shell parentShell, final GsdModuleModel2 gsdModuleModel,
             final GSDModuleDBO gsdModule, final ModuleDBO module) {
         super(parentShell);
         setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
@@ -603,7 +603,7 @@ public class ChannelConfigDialog extends Dialog implements IHasDocumentableObjec
          * Constructor.
          */
         public RemoveSelectionListener() {
-            // TODO Auto-generated constructor stub
+            // constructor 
         }
 
         @Override
