@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.slf4j.LoggerFactory;
 import org.joda.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
@@ -174,7 +174,7 @@ public class WriteExecutor {
     private void performFinalWriteBeforeShutdown() {
         final ExecutorService finalWriteExecutor = Executors.newSingleThreadExecutor();
         finalWriteExecutor.execute(new WriteWorker(_provider,
-                                                   "Shutdown worker",
+                                                   "Shutdown Archive Engine writer",
                                                    _channelMap.values(),
                                                    0L));
 

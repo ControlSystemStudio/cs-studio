@@ -175,11 +175,11 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     public void start() throws EngineModelException {
-        if (State.CONFIGURED.equals(_state)) {
+        if (_state != State.CONFIGURED) {
             throw new IllegalStateException("Engine has not been configured before start.", null);
         }
         if (_engine == null || _writeExecutor == null) {
-            throw new IllegalStateException("Engine has not been configured before start.", null);
+            throw new IllegalStateException("Engine or executor are null although engine is configured.", null);
         }
 
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
@@ -327,7 +327,7 @@ public final class EngineModel {
      */
     @SuppressWarnings("nls")
     public void stop() throws EngineModelException {
-        if (_state.equals(State.STOPPING)) {
+        if (_state == State.STOPPING || _state == State.IDLE) {
             return;
         }
         _state = State.STOPPING;
@@ -350,10 +350,7 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        // Update state
-        _state = State.IDLE;
-
-        clearConfiguration();
+        _state = State.CONFIGURED;
     }
 
 
@@ -451,15 +448,18 @@ public final class EngineModel {
         }
     }
 
-    private void clearConfiguration() {
-        if (_state != State.IDLE) {
-            throw new IllegalStateException("Clearing configuration only allowed in IDLE state");
+    public void clearConfiguration() {
+        if (_state != State.IDLE && _state != State.CONFIGURED) {
+            throw new IllegalStateException("Clearing configuration only allowed in " +
+                                            State.IDLE.name() + " or " + State.CONFIGURED.name() + " state.");
         }
         _engine = null;
         _groupMap.clear();
         _channelMap.clear();
 
         _startTime = null;
+
+        _state = State.IDLE;
     }
 
     @Nonnull

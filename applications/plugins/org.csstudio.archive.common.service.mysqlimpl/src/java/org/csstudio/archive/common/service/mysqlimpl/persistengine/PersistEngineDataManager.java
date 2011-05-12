@@ -36,12 +36,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.notification.ArchiveNotifications;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.archive.common.service.util.DataRescueResult;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
@@ -76,7 +76,7 @@ public enum PersistEngineDataManager {
         @Override
         public void run() {
             if (!_executor.isTerminating()) {
-                _executor.execute(new PersistDataWorker("Persist Data SHUTDOWN Worker",
+                _executor.execute(new PersistDataWorker("SHUTDOWN MySQL Archive Worker",
                                                         _sqlStatementBatch,
                                                         Integer.valueOf(0),
                                                         _prefMaxAllowedPacketInBytes));
@@ -154,7 +154,7 @@ public enum PersistEngineDataManager {
     }
 
     private void submitNewPersistDataWorker() {
-        final PersistDataWorker newWorker = new PersistDataWorker("Persist Data PERIODIC worker: " + _workerId.getAndIncrement(),
+        final PersistDataWorker newWorker = new PersistDataWorker("PERIODIC MySQL Archive Worker: " + _workerId.getAndIncrement(),
                                                                   _sqlStatementBatch,
                                                                   _prefPeriodInMS,
                                                                   _prefMaxAllowedPacketInBytes);
