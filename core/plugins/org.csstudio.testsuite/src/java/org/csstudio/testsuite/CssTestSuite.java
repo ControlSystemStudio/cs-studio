@@ -71,8 +71,7 @@ public final class CssTestSuite {
 
     	String filter = System.getProperty("testFilter");
     	if (StringUtil.isBlank(filter)) {
-    	    LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\n" +
-    	             "Default is {}  (for all classes *{}.java).", 
+    	    LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\nDefault is {} (for all classes *{}.java).", 
     	             TestSuiteFactory.COMMON_TEST_SUFFIX,
     	             TestSuiteFactory.COMMON_TEST_SUFFIX);
 
