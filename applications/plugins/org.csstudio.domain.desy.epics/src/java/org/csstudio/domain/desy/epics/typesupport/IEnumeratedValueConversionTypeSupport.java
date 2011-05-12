@@ -84,7 +84,7 @@ final class IEnumeratedValueConversionTypeSupport extends
         EpicsEnum enumState;
         if (metaData != null && !metaData.getStates().isEmpty()) {
             try {
-                enumState = metaData.getState(index);
+                enumState = metaData.getOrCreateState(index);
             } catch (final IndexOutOfBoundsException e) {
                 // possible, when the record is specified as DTYP='Soft Channel', then the raw value is copied into VAL
                 // bypassing the record's 'bitpattern->state' mapping table.

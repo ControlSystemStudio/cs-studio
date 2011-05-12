@@ -58,6 +58,6 @@ final class DoubleConversionSupport extends EpicsIMetaDataTypeSupport<Double> {
                                                               numData.getWarnHigh()),
                                         Limits.<Double>create(numData.getDisplayLow(),
                                                               numData.getDisplayHigh()));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

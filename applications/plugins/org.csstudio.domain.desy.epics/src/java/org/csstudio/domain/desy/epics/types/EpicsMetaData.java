@@ -40,7 +40,7 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since Mar 4, 2011
  */
-public class EpicsMetaData {
+public final class EpicsMetaData {
 
     private final EpicsGraphicsData<? extends Comparable<?>> _graphicsData;
     private final IControlLimits<? extends Comparable<?>> _ctrlLimits;
@@ -48,18 +48,64 @@ public class EpicsMetaData {
     private final EpicsAlarm _alarm;
     private final ImmutableList<EpicsEnum> _states;
 
+    /**
+     * Null object/flyweight pattern (there are a lot of channels in which states array is empty for
+     * enum types or display ranges, or alarms are  not present.
+     */
+    private static final EpicsMetaData EMPTY_DATA =
+        new EpicsMetaData(null, null, null, null);
+
+
+    @Nonnull
+    public static EpicsMetaData create(@Nonnull final String[] states) {
+        if (states.length == 0) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(states);
+    }
+
+    @Nonnull
+    public static EpicsMetaData create(@Nullable final EpicsAlarm alarm,
+                                @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
+                                @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
+                                @Nullable final Short precision) {
+        if (alarm == null && gr == null && ctrl == null && precision == null) {
+            return EMPTY_DATA;
+        }
+        return new EpicsMetaData(alarm, gr, ctrl, precision);
+    }
 
 
     /**
      * Constructor.
      */
-    public EpicsMetaData(@Nonnull final String[] states) {
+    private EpicsMetaData(@Nonnull final String[] states) {
         _states = initStateList(states);
 
         _alarm = null;
         _graphicsData = null;
         _ctrlLimits = null;
         _precision = null;
+    }
+
+    /**
+     * Constructor.
+     */
+    private EpicsMetaData(@Nullable final EpicsAlarm alarm,
+                         @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
+                         @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
+                         @Nullable final Short precision) {
+        _alarm = alarm;
+        _graphicsData = gr;
+        _ctrlLimits = ctrl;
+        if (_graphicsData != null && _ctrlLimits != null &&
+            !gr.getAlarmHigh().getClass().equals(_ctrlLimits.getCtrlHigh().getClass())) {
+                throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and " +
+                                                   "graphics don't have the same class type.");
+        }
+        _precision = precision;
+
+        _states  = ImmutableList.of();
     }
 
     @Nonnull
@@ -78,26 +124,6 @@ public class EpicsMetaData {
             i++;
         }
         return ImmutableList.copyOf(enumList);
-    }
-
-    /**
-     * Constructor.
-     */
-    public EpicsMetaData(@Nullable final EpicsAlarm alarm,
-                         @Nullable final EpicsGraphicsData<? extends Comparable<?>> gr,
-                         @Nullable final IControlLimits<? extends Comparable<?>> ctrl,
-                         @Nullable final Short precision) {
-        _alarm = alarm;
-        _graphicsData = gr;
-        _ctrlLimits = ctrl;
-        if (_graphicsData != null && _ctrlLimits != null &&
-            !gr.getAlarmHigh().getClass().equals(_ctrlLimits.getCtrlHigh().getClass())) {
-                throw new IllegalArgumentException("Type mismatch on object construction. Meta data for ctrl limits and " +
-                		                           "graphics don't have the same class type.");
-        }
-        _precision = precision;
-
-        _states  = ImmutableList.of();
     }
 
     @CheckForNull
@@ -131,18 +157,18 @@ public class EpicsMetaData {
     }
 
     /**
-     * Three cases:<br/>
+     * Three cases possible:<br/>
      * <ul>
      *   <li> a list of states exists and index is within bounds -> return the enum holding the state
-     *   <li> a list of states exists, but index is out of bounds -> return the enum from index
-     *        (==raw value), and log a warning
-     *   <li> a list of states doesn't exist -> return enum from index (==raw value)
+     *   <li> a list of states exists, but index is out of bounds -> return a newly created enum
+     *        from index (==raw value)
+     *   <li> a list of states doesn't exist -> return a newly created enum from index (==raw value)
      * </ul>
      * @param index
      * @return
      */
     @Nonnull
-    public EpicsEnum getState(final int index) {
+    public EpicsEnum getOrCreateState(final int index) {
         if (index >= 0 && index < _states.size()) {
             return _states.get(index);
         }

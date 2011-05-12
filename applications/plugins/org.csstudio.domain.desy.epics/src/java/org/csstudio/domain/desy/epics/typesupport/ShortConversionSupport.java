@@ -62,6 +62,6 @@ final class ShortConversionSupport extends EpicsIMetaDataTypeSupport<Short> {
                                                             toShort(numData.getWarnHigh())),
                                         Limits.<Short>create(toShort(numData.getDisplayLow()),
                                                             toShort(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

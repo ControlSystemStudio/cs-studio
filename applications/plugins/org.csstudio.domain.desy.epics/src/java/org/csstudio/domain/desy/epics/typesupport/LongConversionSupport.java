@@ -62,6 +62,6 @@ final class LongConversionSupport extends EpicsIMetaDataTypeSupport<Long> {
                                                             toLong(numData.getWarnHigh())),
                                         Limits.<Long>create(toLong(numData.getDisplayLow()),
                                                             toLong(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

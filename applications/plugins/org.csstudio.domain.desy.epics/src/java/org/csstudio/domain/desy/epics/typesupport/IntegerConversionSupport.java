@@ -62,6 +62,6 @@ final class IntegerConversionSupport extends EpicsIMetaDataTypeSupport<Integer> 
                                                             toInteger(numData.getWarnHigh())),
                                         Limits.<Integer>create(toInteger(numData.getDisplayLow()),
                                                             toInteger(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

@@ -53,6 +53,6 @@ class EpicsEnumConversionSupport extends EpicsIMetaDataTypeSupport<EpicsEnum> {
         final IEnumeratedMetaData enumData = checkAndConvertToEnumerated(data, EpicsEnum.class);
 
         final String[] states = enumData.getStates();
-        return new EpicsMetaData(states);
+        return EpicsMetaData.create(states);
     }
 }

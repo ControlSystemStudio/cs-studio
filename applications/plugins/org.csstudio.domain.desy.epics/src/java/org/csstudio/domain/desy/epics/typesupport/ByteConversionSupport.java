@@ -62,6 +62,6 @@ final class ByteConversionSupport extends EpicsIMetaDataTypeSupport<Byte> {
                                                             toByte(numData.getWarnHigh())),
                                         Limits.<Byte>create(toByte(numData.getDisplayLow()),
                                                             toByte(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }

@@ -70,8 +70,8 @@ public class ArchiveEngineApplication implements IApplication {
         try {
             parser.parse(args);
         } catch (final Exception ex) { // Bad options
-            LOG.error("Option parse error: " + ex.getMessage(), ex);
-            LOG.info("Option parse error: " + parser.getHelp());
+            LOG.error("Option parse error: {}.", ex.getMessage());
+            LOG.info("Option parse error: {}.", parser.getHelp());
             return false;
         }
         if (helpOpt.get()) {   // Help requested
@@ -108,65 +108,85 @@ public class ArchiveEngineApplication implements IApplication {
         // Install the type supports for the engine
         ArchiveEngineTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version " + EngineModel.getVersion());
+        LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
         _run = true;
         _model = new EngineModel(_engineName, provider);
-        final EngineHttpServer httpServer = startHttpServer();
+        final EngineHttpServer httpServer = startHttpServer(_model, _port);
         if (httpServer == null) {
             return EXIT_OK;
         }
         try {
             while (_run) {
 
-                runEngineLoop();
+                configureAndRunEngine(_model, _port);
 
                 LOG.info("ArchiveEngine ending");
 
-                _model.stop();
-                _model.clearConfig();
+                stopAndClearEngine(_model);
             }
-            LOG.info("ArchiveEngine stopped");
         } catch (final EngineModelException e) {
             LOG.error("Archive engine model error - try to shutdown.", e);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        httpServer.stop();
+
+        return fullEngineStop(_model, httpServer);
+    }
+
+    @Nonnull
+    private Integer fullEngineStop(@Nonnull final EngineModel model,
+                                   @Nonnull final EngineHttpServer httpServer) {
+        try {
+            httpServer.stop();
+            stopAndClearEngine(model);
+        } catch (final EngineModelException e) {
+            LOG.error("Properly stopping the engine failed. System exit.", e);
+        }
         return EXIT_OK;
+    }
+
+    private void stopAndClearEngine(@Nonnull final EngineModel model) throws EngineModelException {
+        model.stop();
+        model.clearConfig();
+        LOG.info("ArchiveEngine stopped and cleared.");
     }
 
     /**
      * Run until model gets stopped via HTTPD or #stop()
+     * @param model
      *
      * @throws EngineModelException
      * @throws InterruptedException
      */
-    private void runEngineLoop() throws EngineModelException, InterruptedException {
+    private void configureAndRunEngine(@Nonnull final EngineModel model,
+                                       final int port) throws EngineModelException, InterruptedException {
 
-        readEngineConfiguration();
+        readEngineConfiguration(model, port);
 
-        LOG.info("Running, CA addr list: " + System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
+        LOG.info("Running, CA addr list: {}.", System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
 
-        _model.start();
+        model.start();
 
         while (true) {
             Thread.sleep(1000);
-            if (_model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
+            if (model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
                 _run = false;
                 break;
             }
-            if (_model.getState() == EngineModel.State.RESTART_REQUESTED) {
+            if (model.getState() == EngineModel.State.RESTART_REQUESTED) {
                 break;
             }
         }
     }
-    private void readEngineConfiguration() throws EngineModelException {
-        LOG.info("Reading configuration for engine '" + _engineName + "'");
+
+    private void readEngineConfiguration(@Nonnull final EngineModel model,
+                                         final int port) throws EngineModelException {
+        LOG.info("Reading configuration for engine '{}'.", model.getName());
         final RunningStopWatch watch = StopWatch.start();
-        _model.readConfig(_port);
+        model.readConfig(port);
         final long millis = watch.getElapsedTimeInMillis();
-        LOG.info("Read configuration: " + _model.getChannels().size() +
-                 " channels in " +
+        LOG.info("Read configuration: {} channels in {}.",
+                 model.getChannels().size(),
                  TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(Period.millis((int) millis)));
     }
 
@@ -181,13 +201,14 @@ public class ArchiveEngineApplication implements IApplication {
     }
 
     @CheckForNull
-    private EngineHttpServer startHttpServer() {
+    private EngineHttpServer startHttpServer(@Nonnull final EngineModel model,
+                                             final int port) {
         EngineHttpServer httpServer = null;
         try {
             // Setup takes some time, but engine server should already respond.
-            httpServer = new EngineHttpServer(_model, _port);
+            httpServer = new EngineHttpServer(model, port);
         } catch (final EngineHttpServerException e) {
-            LOG.error("Cannot start HTTP server on port {}: ", _port, e.getMessage());
+            LOG.error("Cannot start HTTP server on port {}: {}", port, e.getMessage());
         }
         return httpServer;
     }

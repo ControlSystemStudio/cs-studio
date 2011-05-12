@@ -62,6 +62,6 @@ final class FloatConversionSupport extends EpicsIMetaDataTypeSupport<Float> {
                                                             toFloat(numData.getWarnHigh())),
                                         Limits.<Float>create(toFloat(numData.getDisplayLow()),
                                                             toFloat(numData.getDisplayHigh())));
-        return new EpicsMetaData(null, gr, null, null);
+        return EpicsMetaData.create(null, gr, null, null);
     }
 }
