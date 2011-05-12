@@ -2,7 +2,7 @@ package org.csstudio.csdata.test;
 
 import java.util.Collections;
 
-import org.csstudio.csdata.DeviceName;
+import org.csstudio.csdata.Device;
 import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
@@ -11,7 +11,7 @@ public class DeviceAndAPVFactory implements IAdapterFactory {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (DeviceName.class.equals(adapterType)) {
+		if (Device.class.equals(adapterType)) {
 			return ((DeviceAndAPV) adaptableObject).getDevice();
 		}
 		if (ProcessVariable.class.equals(adapterType)) {
@@ -26,7 +26,7 @@ public class DeviceAndAPVFactory implements IAdapterFactory {
 
 	@Override
 	public Class<?>[] getAdapterList() {
-		return new Class<?>[] {DeviceName.class, ProcessVariable.class, DeviceAndPVs.class};
+		return new Class<?>[] {Device.class, ProcessVariable.class, DeviceAndPVs.class};
 	}
 
 }
