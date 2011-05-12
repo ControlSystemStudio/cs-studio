@@ -48,8 +48,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
 /**
- * TODO (hrickens) :
- * 
  * @author hrickens
  * @author $Author: $
  * @since 08.10.2010

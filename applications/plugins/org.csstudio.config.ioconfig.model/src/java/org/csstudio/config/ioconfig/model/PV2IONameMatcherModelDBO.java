@@ -42,8 +42,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $

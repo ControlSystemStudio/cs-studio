@@ -39,8 +39,6 @@ import javax.annotation.CheckForNull;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $

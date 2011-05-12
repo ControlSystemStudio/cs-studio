@@ -56,7 +56,7 @@ public class ModuleTest {
             out.setConfigurationData("^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
             fail("NumberFormatException not thowed!");
         } catch (NumberFormatException e) {
-            
+            assertTrue(true);
         }
 //        assertEquals(out.getConfigurationData(), "^1234567890ß´qwertzuiopü+asdfghjklöä#yxcvbnm,.-QAY\\\"");
     }

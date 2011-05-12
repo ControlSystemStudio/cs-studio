@@ -11,8 +11,8 @@ import org.junit.Test;
 
 /**
  * @author hrickens
- *
  */
+// CHECKSTYLE:OFF
 public class AcceptGSDFileUnitTest {
     
     /**
@@ -83,3 +83,4 @@ public class AcceptGSDFileUnitTest {
         Assert.assertNotNull(model);
     }
 }
+//CHECKSTYLE:ON

@@ -47,8 +47,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * TODO (Rickens Helge) : 
- * 
  * @author Rickens Helge
  * @author $Author: $
  * @since 14.01.2011

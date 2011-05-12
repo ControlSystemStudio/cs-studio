@@ -81,8 +81,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $

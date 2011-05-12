@@ -16,9 +16,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * 
- * TODO (Rickens Helge) : 
- * 
  * @author Rickens Helge
  * @author $Author: $
  * @since 14.12.2010

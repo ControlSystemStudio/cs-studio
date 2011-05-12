@@ -871,12 +871,9 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * TODO (Rickens Helge) : 
-     * 
      * @author Rickens Helge
      * @author $Author: $
      * @since 12.01.2011
-    
      */
     private final class DBLoderJob extends Job {
         /**

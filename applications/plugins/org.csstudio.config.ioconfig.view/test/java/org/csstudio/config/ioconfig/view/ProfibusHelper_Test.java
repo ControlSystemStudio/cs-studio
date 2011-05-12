@@ -46,6 +46,7 @@ import org.junit.Test;
  * @version $Revision: 1.2 $
  * @since 12.12.2008
  */
+// CHECKSTYLE:OFF
 public class ProfibusHelper_Test {
 
 
@@ -82,7 +83,7 @@ public class ProfibusHelper_Test {
         assertTrue(textField.getListeners(SWT.Verify).length<1);
 
         textField = ProfibusHelper.getTextField(composite,false, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-        assertTrue(textField!=null);
+        assertNotNull(textField);
         assertFalse(textField.getEditable());
         assertEquals(textField.getText(), "value");
         assertEquals(textField.getData(), "value");
@@ -90,7 +91,7 @@ public class ProfibusHelper_Test {
         assertTrue(textField.getListeners(SWT.Verify).length<1);
 
         textField = ProfibusHelper.getTextField(composite,true, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-        assertTrue(textField!=null);
+        assertNotNull(textField);
         assertTrue(textField.getEditable());
         assertEquals(textField.getText(), "value");
         assertEquals(textField.getData(), "value");
@@ -113,3 +114,4 @@ public class ProfibusHelper_Test {
     }
 
 }
+//CHECKSTYLE:ON

@@ -50,6 +50,7 @@ public enum GSDTestFiles {
         return fileAsString.toString();
     }
     
+    @Nonnull
     public GSDFileDBO getFileAsGSDFileDBO() throws IOException {
         if(_gsdFileDBO == null) {
             _gsdFileDBO = new GSDFileDBO(_fileName, getFileAsString());

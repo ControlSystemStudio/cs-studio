@@ -15,6 +15,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 12.05.2011
+ */
+//CHECKSTYLE:OFF
 public class CopyNodeTest {
     
     private static final boolean OUTPUT = false;
@@ -132,3 +139,4 @@ public class CopyNodeTest {
     }
     
 }
+//CHECKSTYLE:ON

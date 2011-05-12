@@ -40,8 +40,6 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.IDocumentable;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $

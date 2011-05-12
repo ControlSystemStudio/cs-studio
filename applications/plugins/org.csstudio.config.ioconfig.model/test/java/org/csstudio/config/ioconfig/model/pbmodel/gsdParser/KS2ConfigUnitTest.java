@@ -43,13 +43,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 29.03.2011
  */
+//CHECKSTYLE:OFF
 public class KS2ConfigUnitTest {
     
     private BufferedReader _expected;
@@ -730,6 +729,5 @@ public class KS2ConfigUnitTest {
         }
         return mo;
     }
-
-    
 }
+//CHECKSTYLE:ON

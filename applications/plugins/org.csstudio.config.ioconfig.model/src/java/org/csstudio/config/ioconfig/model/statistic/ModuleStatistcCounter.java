@@ -33,12 +33,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 
 /**
- * TODO (Rickens Helge) : 
- * 
  * @author Rickens Helge
  * @author $Author: $
  * @since 18.01.2011
-
  */
 public class ModuleStatistcCounter {
     

@@ -928,12 +928,9 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     }
     
     /**
-     * TODO (Rickens Helge) : 
-     * 
      * @author Rickens Helge
      * @author $Author: $
      * @since 13.01.2011
-    
      */
     private final class WatchdogTimeCalculaterOnModify implements ModifyListener {
         private final Text _text1;

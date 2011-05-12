@@ -11,6 +11,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author hrickens
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
+ * @since 12.05.2011
+ */
 public class SlaveTest {
     private ProfibusSubnetDBO _profibusSubnet;
     private MasterDBO _master;

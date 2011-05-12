@@ -40,6 +40,7 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 15.04.2011
  */
+//CHECKSTYLE:OFF
 public class UserPrmDataUnitTest {
     
     private GSDFileDBO _BIMF5861;
@@ -87,3 +88,4 @@ public class UserPrmDataUnitTest {
     
     
 }
+//CHECKSTYLE:ON

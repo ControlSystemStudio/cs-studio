@@ -49,6 +49,7 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 29.03.2011
  */
+//CHECKSTYLE:OFF
 public class XAVCConfigUnitTest {
     
     private BufferedReader _expected;
@@ -316,3 +317,4 @@ public class XAVCConfigUnitTest {
     }
     
 }
+//CHECKSTYLE:ON
