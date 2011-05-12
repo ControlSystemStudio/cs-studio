@@ -49,7 +49,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel_Structure")
-public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> implements IStructured {
+public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private String _structureType;
