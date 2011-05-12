@@ -92,10 +92,10 @@ public class HistoryFileAccess {
                     fr.close();
                 }
             } catch (final IOException e) {
-                LOG.error ("I/O-Exception while closing " + filePath );
+                LOG.error ("I/O-Exception while closing {}", filePath );
             }
         }
-        LOG.info("IOC names in history-file : " + model.getEntrySet().size());
+        LOG.info("IOC names in history-file : {}",  model.getEntrySet().size());
 
         return model;
 
