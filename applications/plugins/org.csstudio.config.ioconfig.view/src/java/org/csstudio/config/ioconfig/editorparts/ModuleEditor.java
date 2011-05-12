@@ -625,9 +625,9 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
      *
      */
     private void updateChannels() throws PersistenceException {
-        Set<ChannelStructureDBO> channelStructs = _module.getChannelStructs();
+        Set<ChannelStructureDBO> channelStructs = _module.getChildren();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            Set<ChannelDBO> channels = channelStructure.getChannels();
+            Set<ChannelDBO> channels = channelStructure.getChildren();
             for (ChannelDBO channel : channels) {
                 channel.assembleEpicsAddressString();
             }

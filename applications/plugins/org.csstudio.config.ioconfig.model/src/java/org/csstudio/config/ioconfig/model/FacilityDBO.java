@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Entity;
@@ -47,17 +45,6 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
      */
     public FacilityDBO() {
         // Empty.
-    }
-
-    /**
-     *
-     * @return the children IOC's.
-     */
-    @Transient
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public Set<IocDBO> getIoc() {
-        return (Set<IocDBO>) getChildren();
     }
 
     /**

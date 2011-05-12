@@ -26,10 +26,9 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -136,27 +135,21 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         this.setParent(module);
     }
 
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Set<ChannelDBO> getChannels() {
-        return (Set<ChannelDBO>) getChildren();
-    }
-
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Map<Short, ChannelDBO> getChannelsAsMap() throws PersistenceException {
-        return (Map<Short, ChannelDBO>) getChildrenAsMap();
-    }
+//    @Transient
+//    @SuppressWarnings("unchecked")
+//    public Map<Short, ChannelDBO> getChannelsAsMap() throws PersistenceException {
+//        return (Map<Short, ChannelDBO>) getChildrenAsMap();
+//    }
 
     @Transient
     public ChannelDBO getFirstChannel() throws PersistenceException {
-        TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChannelsAsMap();
+        TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
         return treeMap.get(treeMap.firstKey());
     }
 
     @Transient
     public ChannelDBO getLastChannel() throws PersistenceException {
-        TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChannelsAsMap();
+        TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
         if (treeMap.size() > 0) {
             Short lastKey = treeMap.lastKey();
             return treeMap.get(lastKey);
@@ -195,7 +188,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         ChannelDBO channel;
         StringBuilder sb = new StringBuilder();
         try {
-            channel = getChannelsAsMap().get((short) 0);
+            channel = getChildrenAsMap().get((short) 0);
             if (channel != null) {
                 sb.append(channel.getFullChannelNumber());
                 sb.append(":");
@@ -267,7 +260,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final ModuleDBO parentNode) throws PersistenceException {
+    public ChannelStructureDBO copyParameter(final ModuleDBO parentNode) throws PersistenceException {
         ModuleDBO module = parentNode;
         ChannelStructureDBO copy = new ChannelStructureDBO(module,
                                                            isSimple(),
@@ -285,7 +278,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
 
     @Override
     protected void localUpdate() throws PersistenceException {
-        Collection<ChannelDBO> values = getChannelsAsMap().values();
+        Collection<ChannelDBO> values = getChildrenAsMap().values();
         for (ChannelDBO channel : values) {
             channel.localUpdate();
         }
@@ -293,7 +286,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
 
     @Override
     public void assembleEpicsAddressString() throws PersistenceException {
-        for (ChannelDBO node : getChannelsAsMap().values()) {
+        for (ChannelDBO node : getChildrenAsMap().values()) {
             if (node != null) {
                 node.localUpdate();
                 if (node.isDirty()) {
@@ -308,6 +301,7 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.CHANNEL_STRUCTURE;
     }

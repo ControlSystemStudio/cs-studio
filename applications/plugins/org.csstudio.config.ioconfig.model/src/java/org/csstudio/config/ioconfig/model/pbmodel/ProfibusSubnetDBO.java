@@ -29,12 +29,6 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     /**
-     * The highest accept station address.
-     */
-    @Transient
-    public static final int MAX_STATION_ADDRESS = 128;
-
-    /**
      * Subnet baud rate.
      */
     private String _baudRate;
@@ -91,19 +85,15 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * {@link #ProfibusSubnet(IocDBO)}
      */
     public ProfibusSubnetDBO() {
+        // Constructor for Hibernate
     }
 
     /**
      * The default Constructor.
      * @throws PersistenceException 
      */
-    public ProfibusSubnetDBO(final IocDBO ioc) throws PersistenceException {
-        this(ioc, DEFAULT_MAX_STATION_ADDRESS);
-    }
-
-    private ProfibusSubnetDBO(final IocDBO ioc, final int maxStationAddress) throws PersistenceException {
+    public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
         setParent(ioc);
-        // setSortIndex(ioc.getfirstFreeStationAddress(maxStationAddress));
         ioc.addChild(this);
     }
 
@@ -140,23 +130,6 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     public void setCuLineLength(final float cuLineLength) {
         this._cuLineLength = cuLineLength;
     }
-
-//    /**
-//     *
-//     * @return the Description of Profibus Subnet.
-//     */
-//    public String getDescription() {
-//        return _description;
-//    }
-//
-//    /**
-//     *
-//     * @param description
-//     *            set the description for the Profibus Subnet.
-//     */
-//    public void setDescription(final String description) {
-//        this._description = description;
-//    }
 
     /**
      *
@@ -411,7 +384,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      *
      * @return the parent Ioc of this subnet.
      */
-    @ManyToOne
+    @ManyToOne // TODO (hrickens) [11.05.2011]: Wieso ist hier eine ManyToOne Beziehung? Die ist doch inder der getParent Methode.
     public IocDBO getIoc() {
         return (IocDBO) getParent();
     }
@@ -431,6 +404,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      * @return the Epics Address String
      */
     @Transient
+    @Nonnull
     public String getEpicsAddressString() {
         return "@"+getName();
     }

@@ -19,25 +19,23 @@ public class SlaveTest {
     @Test
     public  void createNewSlaves() throws PersistenceException {
         // add first Slave
-        assertEquals(0, _master.getSlaves().size());
+        assertEquals(0, _master.getChildren().size());
         SlaveDBO out1 = new SlaveDBO(_master);
         out1.localSave();
         
         // Right size?
-        assertEquals(1, _master.getSlaves().size());
         assertEquals(1, _master.getChildren().size());
         // Right Slave in?
-        assertTrue(_master.getSlaves().contains(out1));
+        assertTrue(_master.getChildren().contains(out1));
         assertTrue(_master.getChildrenAsMap().containsValue(out1));
         
         // add second Slave
         SlaveDBO out2 = new SlaveDBO(_master);
         out2.localSave();
         // Right size?
-        assertEquals(2, _master.getSlaves().size());
         assertEquals(2, _master.getChildren().size());
         // Right Slave in?
-        assertTrue(_master.getSlaves().contains(out2));
+        assertTrue(_master.getChildren().contains(out2));
         assertTrue(_master.getChildrenAsMap().containsValue(out2));
         
     }

@@ -76,8 +76,7 @@ public class XmlSlave {
             
         };
         _modules = new TreeSet<ModuleDBO>(comparator);
-        _modules.addAll(slave.getModules());
-        //        _modules.addAll((Collection<? extends ModuleDBO>) slave.getChildrenAsMap());
+        _modules.addAll(slave.getChildren());
         Element e2;
         try {
             e2 = setSlavePrmData(slave);
