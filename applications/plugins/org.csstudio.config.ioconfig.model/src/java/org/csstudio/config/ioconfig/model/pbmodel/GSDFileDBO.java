@@ -83,11 +83,7 @@ public class GSDFileDBO {
     
     @Transient
     public boolean isMasterNonHN() {
-        try {
-            return getParsedGsdFileModel().isMaster();
-        } catch (IOException e) {
-            return false;
-        }
+        return getParsedGsdFileModel().isMaster();
     }
     
     public void setMaster(final Boolean master) {
@@ -101,11 +97,7 @@ public class GSDFileDBO {
     
     @Transient
     public boolean isSlaveNonHN() {
-        try {
-            return getParsedGsdFileModel().isSalve();
-        } catch (IOException e) {
-            return false;
-        }
+        return getParsedGsdFileModel().isSalve();
     }
     
     public void setSlave(final Boolean slave) {
@@ -122,8 +114,9 @@ public class GSDFileDBO {
      *            Name of gsdFile.
      * @param gsdFile
      *            The text of gsdFile.
+     * @throws IOException 
      */
-    public GSDFileDBO(final String name, final String gsdFile) {
+    public GSDFileDBO(final String name, final String gsdFile) throws IOException {
         setName(name);
         setGSDFile(gsdFile);
     }
@@ -157,9 +150,14 @@ public class GSDFileDBO {
     /**
      * @param gsdFile
      *            set the Text of gsdFile.
+     * @throws IOException 
      */
-    public void setGSDFile(final String gsdFile) {
-        this._gsdFile = gsdFile;
+    public void setGSDFile(final String gsdFile) throws IOException {
+        _gsdFile = gsdFile;
+        if(_gsdFile!=null) {
+            GsdFileParser gsdFileParser = new GsdFileParser();
+            _parsedGsdFileModel = gsdFileParser.parse(this);
+        }
     }
     
     /** @return the Name of gsdFile */
@@ -233,11 +231,7 @@ public class GSDFileDBO {
     }
     
     @Transient
-    public ParsedGsdFileModel getParsedGsdFileModel() throws IOException {
-        if(_parsedGsdFileModel == null) {
-            GsdFileParser gsdFileParser = new GsdFileParser();
-            _parsedGsdFileModel = gsdFileParser.parse(this);
-        }
+    public ParsedGsdFileModel getParsedGsdFileModel() {
         return _parsedGsdFileModel;
     }
     

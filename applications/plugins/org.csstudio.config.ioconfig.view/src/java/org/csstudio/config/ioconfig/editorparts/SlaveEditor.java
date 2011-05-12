@@ -306,42 +306,38 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         }
         _gsdFile = gsdFile;
         ParsedGsdFileModel parsedGsdFileModel;
-        try {
-            parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
-            
-            // Head
-            getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getGsdRevision() + "");
-            
-            // Basic - Slave Discription (read only)
-            _vendorText.setText(parsedGsdFileModel.getVendorName());
-            _iDNo.setText(String.format("0x%04X", parsedGsdFileModel.getIdentNumber()));
-            _revisionsText.setText(parsedGsdFileModel.getRevision());
-            
-            // Set all GSD-File Data to Slave.
-            _slave.setMinTsdr(_slave.getMinTsdr());
-            _slave.setModelName(parsedGsdFileModel.getModelName());
-            if (_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
-                _slave.setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
+        parsedGsdFileModel = _gsdFile.getParsedGsdFileModel();
+        
+        // Head
+        getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getGsdRevision() + "");
+        
+        // Basic - Slave Discription (read only)
+        _vendorText.setText(parsedGsdFileModel.getVendorName());
+        _iDNo.setText(String.format("0x%04X", parsedGsdFileModel.getIdentNumber()));
+        _revisionsText.setText(parsedGsdFileModel.getRevision());
+        
+        // Set all GSD-File Data to Slave.
+        _slave.setMinTsdr(_slave.getMinTsdr());
+        _slave.setModelName(parsedGsdFileModel.getModelName());
+        if(_slave.getPrmUserData() == null || _slave.getPrmUserData().isEmpty()) {
+            _slave.setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
+        }
+        _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
+        _slave.setRevision(parsedGsdFileModel.getRevision());
+        
+        // Modules
+        _maxSize = parsedGsdFileModel.getMaxModule();
+        setSlots();
+        // Settings - USER PRM MODE
+        ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
+        nodes.add(_slave);
+        nodes.addAll(_slave.getChildrenAsMap().values());
+        _userPrmDataList.setInput(nodes);
+        TableColumn[] columns = _userPrmDataList.getTable().getColumns();
+        for (TableColumn tableColumn : columns) {
+            if(tableColumn != null) {
+                tableColumn.pack();
             }
-            _slave.setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
-            _slave.setRevision(parsedGsdFileModel.getRevision());
-            
-            // Modules
-            _maxSize = parsedGsdFileModel.getMaxModule();
-            setSlots();
-            // Settings - USER PRM MODE
-            ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
-            nodes.add(_slave);
-            nodes.addAll(_slave.getChildrenAsMap().values());
-            _userPrmDataList.setInput(nodes);
-            TableColumn[] columns = _userPrmDataList.getTable().getColumns();
-            for (TableColumn tableColumn : columns) {
-                if (tableColumn != null) {
-                    tableColumn.pack();
-                }
-            }
-        } catch (IOException e) {
-            throw new PersistenceException(e);
         }
     }
     
@@ -352,12 +348,8 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
     }
     
     @Override
-    public final void setGsdFile(@CheckForNull GSDFileDBO gsdFile) throws PersistenceException {
-        try {
-            _slave.setGSDFile(gsdFile);
-        } catch (IOException e) {
-            throw new PersistenceException(e);
-        }
+    public final void setGsdFile(@CheckForNull GSDFileDBO gsdFile) {
+        _slave.setGSDFile(gsdFile);
     }
     
     /**

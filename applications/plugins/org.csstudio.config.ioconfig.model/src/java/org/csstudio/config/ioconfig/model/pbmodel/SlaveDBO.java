@@ -172,7 +172,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      *            set the GSDFile.
      * @throws IOException 
      */
-    public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) throws IOException {
+    public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) {
         if(gsdFile == null) {
             _gsdFile = gsdFile;
         } else if(!gsdFile.equals(_gsdFile)) {
@@ -305,19 +305,15 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         SortedSet<Integer> minTsdrSet = new TreeSet<Integer>();
         minTsdrSet.add(minTsdr);
         Integer minSlaveIntervall;
-        try {
-            GSDFileDBO gsdFile = getGSDFile();
-            if(gsdFile != null) {
-                ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-                if(parsedGsdFileModel != null) {
-                    minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
-                    if(minSlaveIntervall != null) {
-                        minTsdrSet.add(minSlaveIntervall);
-                    }
+        GSDFileDBO gsdFile = getGSDFile();
+        if(gsdFile != null) {
+            ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
+            if(parsedGsdFileModel != null) {
+                minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
+                if(minSlaveIntervall != null) {
+                    minTsdrSet.add(minSlaveIntervall);
                 }
             }
-        } catch (IOException e) {
-            // no min Slave Intervall!
         }
         _minTsdr = minTsdrSet.last().shortValue();
     }
@@ -366,68 +362,32 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
-    private boolean fill() throws IOException {
-        /*
-         * Read GSD-File
-         */
+    private boolean fill() {
         GSDFileDBO gsdFile = getGSDFile();
         if(gsdFile == null) {
             return false;
         }
         
-        //        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
         ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         
-        /*
-         * Head
-         */
+        // Head
         if(parsedGsdFileModel != null) {
             setVersion(parsedGsdFileModel.getGsdRevision());
             
-            /*
-             * Basic - Slave Discription (read only)
-             */
             setVendorName(parsedGsdFileModel.getVendorName());
             setModelName(parsedGsdFileModel.getModelName());
-            //            _iDNo = String.format("0x%04X", slaveModel.getIdentNumber());
             _iDNo = String.format("0x%04X", parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
             
-            /*
-             * Basic - Inputs / Outputs (read only)
-             */
-            /*
-             * Set all GSD-File Data to Slave.
-             */
             setModelName(parsedGsdFileModel.getModelName());
-            //            setPrmUserData(slaveModel.getUserPrmData());
             setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
-            //            setProfibusPNoID(slaveModel.getIdentNumber());
             setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
-            
-            /*
-             * Basic - DP / FDL Access
-             */
-            //            /*
-            //             * Modules
-            //             */
-            //            if (!parsedGsdFileModel.hasModule()) {
-            //                parsedGsdFileModel.setGsdModuleList(GSD2Module.parse(gsdFile, parsedGsdFileModel));
-            //            }
             
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
             if(_maxSize < 1) {
                 return false;
             }
-            
-            /*
-             * Settings - Operation Mode
-             */
-            /*
-             * Settings - Groups
-             */
-
         }
         return true;
     }
@@ -459,11 +419,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         SlaveDBO copy = new SlaveDBO(master);
         copy.setFdlAddress(getFdlAddress());
         copy.setGroupIdent(getGroupIdent());
-        try {
-            copy.setGSDFile(getGSDFile());
-        } catch (IOException e) {
-            throw new PersistenceException(e);
-        }
+        copy.setGSDFile(getGSDFile());
         copy.setMinTsdr(getMinTsdr());
         copy.setModelName(getModelName());
         copy.setPrmUserData(getPrmUserData());

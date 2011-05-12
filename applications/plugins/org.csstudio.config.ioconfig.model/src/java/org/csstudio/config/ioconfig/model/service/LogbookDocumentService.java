@@ -83,8 +83,7 @@ public class LogbookDocumentService implements DocumentService {
      */
     @Override
     public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
-        // TODO Auto-generated method stub
-        
+        // TODO Implement save Document as File!
     }
     
     /**

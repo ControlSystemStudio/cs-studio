@@ -510,17 +510,16 @@ public abstract class AbstractGsdNodeEditor extends AbstractNodeEditor {
         tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         GSDFileDBO gsdFile = getGsdFile();
         if(gsdFile != null) {
-            try {
-                setGsdFile(gsdFile);
-            } catch (PersistenceException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            setGsdFile(gsdFile);
             tSelected.setText(gsdFile.getName());
         }
         return tSelected;
     }
     
+    abstract void setGsdFile(GSDFileDBO gsdFile);
+
+    abstract GSDFileDBO getGsdFile();
+
     /**
      * Fill the View whit data from GSDFile.
      * 

@@ -258,7 +258,7 @@ public class ProfibusConfigWinModGenerator {
 					io2 = "D"; // Double Word
 					break;
 				case 5:
-					io2 = "D"; // TODO: hier kommt sicherlich was anderes hin!
+					io2 = "D"; // hier kommt sicherlich was anderes hin!
 					break;
 				default:
 					break;

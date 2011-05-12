@@ -57,7 +57,6 @@ public class CopyNodeTest {
         assertEquals("Module", copyModule.getName());
         assertEquals(0, copyModule.getId());
         
-        // TODO: Test Simple and Struct Channle
         // -- Test Children
         assertEquals(module.getChildren().size(), copyModule.getChildren().size());
         assertEquals(module.getPureChannels().size(), copyModule.getPureChannels().size());
