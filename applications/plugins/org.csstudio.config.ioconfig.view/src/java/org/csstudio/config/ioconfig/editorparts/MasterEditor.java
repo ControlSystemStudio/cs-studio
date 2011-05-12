@@ -56,8 +56,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -714,23 +712,20 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         if (gsdFile == null) {
             return;
         }
-        GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
         ParsedGsdFileModel parsedGsdFileModel;
         try {
             parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
             
             // setGSDData
-            _master.setGSDMasterData(masterModel);
-            
-            getHeaderField(HeaderFields.VERSION).setText(masterModel.getRevisionNumber() + "");
-            _vendorText.setText(masterModel.getVendorName());
-            _pbBoardText.setText(masterModel.getModelName());
+            getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getRevision());
+            _vendorText.setText(parsedGsdFileModel.getVendorName());
+            _pbBoardText.setText(parsedGsdFileModel.getModelName());
             String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber()).toUpperCase();
             if (hex.length() > 4) {
                 hex = hex.substring(hex.length() - 4, hex.length());
             }
             _idNoText.setText("0x" + hex);
-            _stationTypText.setText(masterModel.getStationType() + "");
+            _stationTypText.setText(parsedGsdFileModel.getIntProperty("Station_Type").toString());
             _gsdFile = gsdFile;
         } catch (IOException e) {
             throw new PersistenceException(e);

@@ -47,7 +47,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 27.08.2009
  */
 public class LogbookDocumentService implements DocumentService {
-
+    
     /**
      * {@inheritDoc}
      * @throws PersistenceException 
@@ -55,46 +55,48 @@ public class LogbookDocumentService implements DocumentService {
     @Override
     public void openDocument(@Nonnull final String id) throws PersistenceException {
         DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
-        File createTempFile = null;
-        try {
-            createTempFile = File.createTempFile("ddbDoc", "."
-                    + firstElement.getMimeType());
-            Helper.writeDocumentFile(createTempFile, firstElement);
-            if((createTempFile!=null)&&createTempFile.isFile()) {
-                if(Desktop.isDesktopSupported()) {
-                    if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                        CentralLogger.getInstance().debug(this,"Desktop unterstützt Open!");
-                        Desktop.getDesktop().open(createTempFile);
+        if(firstElement != null) {
+            File createTempFile = null;
+            try {
+                String mimeType = firstElement.getMimeType();
+                if(mimeType == null) {
+                    mimeType = "tmp";
+                }
+                createTempFile = File.createTempFile("ddbDoc", "." + mimeType);
+                Helper.writeDocumentFile(createTempFile, firstElement);
+                if( (createTempFile != null) && createTempFile.isFile()) {
+                    if(Desktop.isDesktopSupported()) {
+                        if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                            CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
+                            Desktop.getDesktop().open(createTempFile);
+                        }
                     }
                 }
+            } catch (IOException e) {
+                throw new PersistenceException(e);
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
     public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
         // TODO Auto-generated method stub
-
+        
     }
-
-
+    
     /**
      * Get all Document from a Node.
      * @throws PersistenceException 
      */
-    @Nonnull 
-    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException{
+    @Nonnull
+    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
         List<IDocument> docList = new ArrayList<IDocument>();
         AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class, nodeId);
-        while(load!=null) {
-            if(load.getDocuments()!=null) {
+        while (load != null) {
+            if(load.getDocuments() != null) {
                 docList.addAll(load.getDocuments());
             }
             load = load.getParent();

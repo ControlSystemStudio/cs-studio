@@ -39,7 +39,6 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 /*******************************************************************************
  * Data model for Profibus-DP Master<br>
@@ -115,11 +114,6 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     // *******************
     // * Transient data. *
     // *******************
-    /**
-     * The master GSD File Keywords for this Master from selected GSD file.
-     */
-    private GsdMasterModel _gsdMasterModel;
-
     private int _maxNrSlave;
 
     private int _maxSlaveOutputLen;
@@ -291,19 +285,6 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     @Transient
     public String getEpicsAdressString() {
         return getProfibusSubnet().getEpicsAddressString();
-    }
-
-    @Transient
-    public GsdMasterModel getGSDMasterData() {
-        return _gsdMasterModel;
-    }
-
-    /**
-     * @param masterModel
-     */
-    @Transient
-    public void setGSDMasterData(final GsdMasterModel masterModel) {
-        _gsdMasterModel = masterModel;
     }
 
     @Transient

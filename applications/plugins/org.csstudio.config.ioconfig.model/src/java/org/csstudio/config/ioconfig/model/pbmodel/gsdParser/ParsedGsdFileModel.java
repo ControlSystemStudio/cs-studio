@@ -108,11 +108,15 @@ public class ParsedGsdFileModel extends AbstractGsdPropertyModel {
         return maxModule;
     }
 
-    /**
-     * @return
-     */
     public boolean isSalve() {
-        //TODO: is Slave auswerten!
-        return false;
+        Integer intProperty = getIntProperty("Station_Type");
+        // Station_Type == 0 => Slave
+        return intProperty==null?false:intProperty==0;
+    }
+
+    public boolean isMaster() {
+        Integer intProperty = getIntProperty("Station_Type");
+        // Station_Type == 1 => Master
+        return intProperty==null?false:intProperty==1;
     }
 }
