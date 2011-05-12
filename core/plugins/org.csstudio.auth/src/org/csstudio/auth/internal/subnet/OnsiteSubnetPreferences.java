@@ -23,8 +23,11 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.AuthActivator;
+import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -42,6 +45,8 @@ public final class OnsiteSubnetPreferences {
 	 */
 	public static final String PREFERENCE_KEY = "onsite_subnets";
 
+	private static final Logger log = Logger.getLogger(OnsiteSubnetPreferences.class.getName());
+	
 	/**
 	 * Returns the onsite subnets configured in the preferences.
 	 * @return the array of onsite subnets.
@@ -57,11 +62,7 @@ public final class OnsiteSubnetPreferences {
 				try {
 					subnets.add(Subnet.parseSubnet(entries[i]));
 				} catch (IllegalArgumentException e) {
-//					TODO: jhatje Logger
-//					CentralLogger.getInstance().warn(
-//							OnsiteSubnetPreferences.class,
-//							"Invalid entry in onsite subnet preferences: "
-//									+ entries[i]);
+					log.log(Level.WARNING, "Invalid entry in onsite subnet preferences: " + entries[i]);
 				}
 			}
 		}

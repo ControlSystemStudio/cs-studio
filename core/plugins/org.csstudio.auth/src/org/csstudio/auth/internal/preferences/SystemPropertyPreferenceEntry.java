@@ -23,8 +23,11 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.AuthActivator;
+import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -52,6 +55,8 @@ public final class SystemPropertyPreferenceEntry {
 	 * The preference value.
 	 */
 	private String _value;
+	
+	private static final Logger log = Logger.getLogger(SystemPropertyPreferenceEntry.class.getName());
 	
 	/**
 	 * Creates a new system property preference entry.
@@ -129,8 +134,7 @@ public final class SystemPropertyPreferenceEntry {
                 result.add(entry);
             }
         } catch (BackingStoreException e) {
-//            CentralLogger.getInstance().error(SystemPropertyPreferenceEntry.class,
-//            		"Error reading preferences", e);
+        	log.log(Level.SEVERE, "Error reading preferences", e);
         }
         return result;
 	}
@@ -148,9 +152,7 @@ public final class SystemPropertyPreferenceEntry {
         try {
             systemPropertyPrefs.clear();
         } catch (BackingStoreException e) {
-//    			TODO: (jhatje) add jul logging
-//            CentralLogger.getInstance().warn(SystemPropertyPreferenceEntry.class,
-//            		"Error clearing preference node", e);
+        	log.log(Level.WARNING, "Error clearing preference node", e);
         }
         // now write the new values into the node
         for (SystemPropertyPreferenceEntry entry : entries) {

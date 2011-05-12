@@ -1,8 +1,11 @@
 package org.csstudio.auth.internal;
 
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.auth.internal.preferences.SystemPropertyPreferenceEntry;
+import org.csstudio.auth.security.SecurityFacade;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -16,6 +19,8 @@ public class AuthActivator implements BundleActivator {
 	private static BundleContext context;
 
 	private static AuthActivator INSTANCE;
+	
+	private static final Logger log = Logger.getLogger(AuthActivator.class.getName());
 	
 	static BundleContext getContext() {
 		return context;
@@ -71,9 +76,7 @@ public class AuthActivator implements BundleActivator {
 			// the system property is not already set to some other value
 			if (System.getProperty(entry.getKey()) == null) {
 				System.setProperty(entry.getKey(), entry.getValue());
-//				TODO (jhatje) logging
-//				CentralLogger.getInstance().getLogger(this).debug(
-//						"Setting system property: " + entry); //$NON-NLS-1$
+				log.log(Level.FINE, "Setting system property: " + entry);
 			}
 		}
 	}
