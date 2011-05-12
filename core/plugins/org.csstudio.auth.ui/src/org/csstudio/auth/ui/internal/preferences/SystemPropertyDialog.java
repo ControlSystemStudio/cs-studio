@@ -19,9 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.ui.internal.preferences;
+ package org.csstudio.auth.ui.internal.preferences;
 
-import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.auth.ui.internal.localization.Messages;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;

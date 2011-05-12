@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.ui.internal.preferences;
+ package org.csstudio.auth.ui.internal.preferences;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.csstudio.platform.Subnet;
+import org.csstudio.auth.internal.subnet.Subnet;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;

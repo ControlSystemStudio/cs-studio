@@ -39,10 +39,22 @@
      <extension
            point="org.eclipse.ui.preferencePages">
         <page
-              category="org.csstudio.platform.ui.css.platform"
+              category="org.csstudio.platform.ui.css.applications.configuration"
               class="org.csstudio.auth.ui.internal.preferences.AuthenticationPreferencePage"
               id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
               name="%authenticationPageName">
+        </page>
+        <page
+              category="org.csstudio.platform.ui.css.applications.configuration"
+              class="org.csstudio.auth.ui.internal.preferences.SystemPropertiesPreferencePage"
+              id="org.csstudio.auth.ui.internal.preferences.SystemPropertiesPreferencePage"
+              name="%systemPropertyPreferencesPageName">
+        </page>
+        <page
+              category="org.csstudio.platform.ui.css.applications.configuration"
+              class="org.csstudio.auth.ui.internal.preferences.OnsiteSubnetPreferencePage"
+              id="org.csstudio.auth.ui.internal.preferences.OnsiteSubnetPreferencePage"
+              name="Onsite Subnets">
         </page>
      </extension>
 </plugin>

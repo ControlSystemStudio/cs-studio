@@ -13,7 +13,7 @@
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/CSSDataBrowserTest"/>
 <booleanAttribute key="default" value="false"/>
 <booleanAttribute key="includeOptional" value="true"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-css-sds-test.product"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-css-sds-test.product_loeschen"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
@@ -22,6 +22,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -plugincustomization plugin_customization.ini"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc}/../runtime-css-sds-test.product_loeschen"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.csstudio.desy.product.product"/>
 <stringAttribute key="productFile" value="\org.csstudio.desy.product\css.product"/>

@@ -24,7 +24,7 @@
 
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.security.ILoginCallbackHandler;
-import org.csstudio.platform.workspace.Messages;
+import org.csstudio.auth.ui.internal.localization.Messages;
 import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;

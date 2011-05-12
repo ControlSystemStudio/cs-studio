@@ -1,7 +1,6 @@
 package org.csstudio.nsls2.product;
 
 import org.csstudio.auth.ui.internal.actions.LogoutAction;
-import org.csstudio.auth.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.nsls2.product.Activator;
 import org.csstudio.nsls2.product.Messages;
 import org.eclipse.jface.action.GroupMarker;

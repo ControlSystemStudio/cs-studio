@@ -31,12 +31,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.auth.internal.AuthActivator;
 import org.csstudio.auth.internal.rightsmanagement.RightsManagementService;
+import org.csstudio.auth.internal.subnet.CSSPlatformInfo;
 import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
 import org.csstudio.auth.internal.usermanagement.LoginContext;
 import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
-import org.csstudio.platform.CSSPlatformInfo;
-import org.csstudio.platform.CSSPlatformPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -171,7 +171,7 @@ public final class SecurityFacade {
 		String key = CSSPlatformInfo.getInstance().isOnsite()
 					? ONSITE_LOGIN_PREFERECE
 					: OFFSITE_LOGIN_PREFERENCE;
-		return prefs.getBoolean(CSSPlatformPlugin.ID, key, false, null);
+		return prefs.getBoolean(AuthActivator.ID, key, false, null);
 	}
 
 	/**

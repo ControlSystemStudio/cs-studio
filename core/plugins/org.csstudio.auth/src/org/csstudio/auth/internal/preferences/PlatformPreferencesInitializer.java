@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchroton,
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,17 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.auth.internal;
+package org.csstudio.auth.internal.preferences;
 
+import org.csstudio.auth.internal.AuthActivator;
+import org.csstudio.auth.internal.subnet.OnsiteSubnetPreferences;
 import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.osgi.service.prefs.Preferences;
 
 /**
- * Preference initializer implementation. This class initializes the authentication mechanism.
+ * Preference initializer implementation. This class initializes all core
+ * preferences. New preference settings should be initialized in this class,
+ * too.
  *
- * @author Jan Hatje
+ * @author Jan Hatje, Jörg Penning
  */
 public final class PlatformPreferencesInitializer extends
 		AbstractPreferenceInitializer {
@@ -40,11 +45,34 @@ public final class PlatformPreferencesInitializer extends
 	@Override
 	public void initializeDefaultPreferences() {
 		IEclipsePreferences node = new DefaultScope()
-				.getNode(Activator.ID);
+				.getNode(AuthActivator.ID);
 
+		initializeSystemPropertyPreferences(node);
+		initializeOnsitePreferences(node);
 		initializeAuthenticationPreferences(node);
 	}
 
+
+	/**
+	 * Initializes the preferences for the onsite networks.
+	 * @param node the preferences node to use.
+	 */
+	private void initializeOnsitePreferences(IEclipsePreferences node) {
+		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0,");
+	}
+
+	/**
+	 * Initializes preferences for system property defaults.
+	 * @param node the preferences node to use.
+	 */
+	@SuppressWarnings("nls")
+    private void initializeSystemPropertyPreferences(
+			final IEclipsePreferences node) {
+		Preferences propNode = node.node("systemProperties");
+		propNode.put("java.security.krb5.realm", "DESY.DE");
+		propNode.put("java.security.krb5.kdc", "kdc1.desy.de:kdc2.desy.de:kdc3.desy.de");
+	}
+	
 	/**
 	 * Initializes all preference settings for the authentication mechanism.
 	 *

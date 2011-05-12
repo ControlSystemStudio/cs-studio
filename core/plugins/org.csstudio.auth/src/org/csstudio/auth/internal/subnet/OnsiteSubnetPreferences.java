@@ -19,13 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform;
+ package org.csstudio.auth.internal.subnet;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Preferences;
+import org.csstudio.auth.internal.AuthActivator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * Preferences for the onsite/offsite settings.
@@ -44,8 +47,9 @@ public final class OnsiteSubnetPreferences {
 	 * @return the array of onsite subnets.
 	 */
 	public static Collection<Subnet> getOnsiteSubnets() {
-		Preferences prefs = CSSPlatformPlugin.getDefault().getPluginPreferences();
-		String list = prefs.getString(PREFERENCE_KEY);
+		IPreferencesService prefs = Platform.getPreferencesService();
+//TODO (jhatje): duplicated default value.
+		String list = prefs.getString(AuthActivator.ID, PREFERENCE_KEY, "131.169.0.0/255.255.0.0,", null);
 		String[] entries = list.split(",");
 		Collection<Subnet> subnets = new ArrayList<Subnet>();
 		for (int i = 0; i < entries.length; i++) {
@@ -53,10 +57,11 @@ public final class OnsiteSubnetPreferences {
 				try {
 					subnets.add(Subnet.parseSubnet(entries[i]));
 				} catch (IllegalArgumentException e) {
-					CentralLogger.getInstance().warn(
-							OnsiteSubnetPreferences.class,
-							"Invalid entry in onsite subnet preferences: "
-									+ entries[i]);
+//					TODO: jhatje Logger
+//					CentralLogger.getInstance().warn(
+//							OnsiteSubnetPreferences.class,
+//							"Invalid entry in onsite subnet preferences: "
+//									+ entries[i]);
 				}
 			}
 		}

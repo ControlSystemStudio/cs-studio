@@ -19,11 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.ui.internal.preferences;
+ package org.csstudio.auth.ui.internal.preferences;
 
-import org.csstudio.platform.OnsiteSubnetPreferences;
-import org.csstudio.platform.Subnet;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
+import org.csstudio.auth.internal.AuthActivator;
+import org.csstudio.auth.internal.subnet.OnsiteSubnetPreferences;
+import org.csstudio.auth.internal.subnet.Subnet;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.ListEditor;
@@ -31,11 +32,12 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Preference page for the onsite subnets.
  * 
- * @author Joerg Rathlev
+ * @author Jan Hatje
  */
 public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
@@ -87,7 +89,9 @@ public class OnsiteSubnetPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected final IPreferenceStore doGetPreferenceStore() {
-		return CSSPlatformUiPlugin.getCorePreferenceStore();
+		IPreferenceStore preferenceStore = new ScopedPreferenceStore(
+				new InstanceScope(), AuthActivator.ID);
+		return preferenceStore;
 	}
 
 	/**

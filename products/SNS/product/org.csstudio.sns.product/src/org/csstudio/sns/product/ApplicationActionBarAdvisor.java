@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.auth.ui.internal.actions.LogoutAction;
-import org.csstudio.auth.ui.workbench.CssWorkbenchActionConstants;
+import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.ActionContributionItem;

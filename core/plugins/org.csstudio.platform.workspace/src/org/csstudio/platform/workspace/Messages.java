@@ -9,8 +9,10 @@ public class Messages extends NLS
 	public static String LoginDialog_Login;
 	public static String LoginDialog_LoginAnonymous;
 	public static String LoginDialog_Password;
-	public static String StartupDialog_SelectWorkspace;
 	public static String LoginDialog_UserName;
+
+	public static String StartupDialog_SelectWorkspace;
+	
 	public static String Workspace_AskAgain;
     public static String Workspace_AskAgainTT;
     public static String Workspace_Browse;

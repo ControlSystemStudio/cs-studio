@@ -20,53 +20,58 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.platform;
+package org.csstudio.auth.internal.subnet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collection;
 
 /**
  * 
- * @author Markus Moeller
+ * @author Jan Hatje
  * 
  */
 
 public final class CSSPlatformInfo {
-	/** Holds the host name. */
-	private String hostID = null;
-	
-	/** Holds the qualified host name. */
-	private String qualifiedHostName = null;
-
-	/** Holds the user name. */
-	private String userID = null;
-
-	/** Holds the css application id */
-	private String applicationID = null;
-
 	/** Holds the only one instance of this class. */
 	private static CSSPlatformInfo _instance = null;
+	
+	/**
+	 * Stores whether CSS is running onsite.
+	 */
+	private boolean onsite = false;
 	
 	private CSSPlatformInfo() {
 		init();
 	}
 
 	private void init() {
-		userID = System.getProperty("user.name");
-
 		try {
 			InetAddress localhost = InetAddress.getLocalHost();
 
-			hostID = localhost.getHostName();
-			qualifiedHostName = localhost.getCanonicalHostName();
+			onsite = isOnsite(localhost);
 		} catch (UnknownHostException uhe) {
-			hostID = "NA";
-			qualifiedHostName = "";
+			onsite = false;
 		}
-
-		applicationID = "CSS";
 	}
 	
+	/**
+	 * Detects whether the given address is an onsite address.
+	 * @param address the address to check.
+	 * @return <code>true</code> if the address is onsite, <code>false</code>
+	 * otherwise.
+	 */
+	private boolean isOnsite(InetAddress address) {
+		Collection<Subnet> onsiteSubnets =
+			OnsiteSubnetPreferences.getOnsiteSubnets();
+		for (Subnet subnet : onsiteSubnets) {
+			if (subnet.contains(address)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Return the only one instance of this class.
 	 * 
@@ -81,23 +86,11 @@ public final class CSSPlatformInfo {
 	}
 	
 	/**
-	 * Returns the qualified hostname of the host this CSS instance runs on.
-	 * If the hostname is unknown, returns the empty string.
-	 * @return the qualified hostname of the host this CSS instance runs on.
+	 * Returns whether CSS is running onsite.
+	 * @return <code>true</code> if CSS is running onsite, <code>false</code>
+	 *         otherwise.
 	 */
-	public String getQualifiedHostname() {
-		return qualifiedHostName;
-	}
-
-	public String getHostId() {
-		return hostID;
-	}
-
-	public String getUserId() {
-		return userID;
-	}
-
-	public String getApplicationId() {
-		return applicationID;
+	public boolean isOnsite() {
+		return onsite;
 	}
 }

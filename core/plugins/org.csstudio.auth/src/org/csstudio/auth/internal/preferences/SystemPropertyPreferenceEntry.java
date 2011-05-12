@@ -19,12 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform;
+ package org.csstudio.auth.internal.preferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.auth.internal.AuthActivator;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -129,8 +129,8 @@ public final class SystemPropertyPreferenceEntry {
                 result.add(entry);
             }
         } catch (BackingStoreException e) {
-            CentralLogger.getInstance().error(SystemPropertyPreferenceEntry.class,
-            		"Error reading preferences", e);
+//            CentralLogger.getInstance().error(SystemPropertyPreferenceEntry.class,
+//            		"Error reading preferences", e);
         }
         return result;
 	}
@@ -148,8 +148,9 @@ public final class SystemPropertyPreferenceEntry {
         try {
             systemPropertyPrefs.clear();
         } catch (BackingStoreException e) {
-            CentralLogger.getInstance().warn(SystemPropertyPreferenceEntry.class,
-            		"Error clearing preference node", e);
+//    			TODO: (jhatje) add jul logging
+//            CentralLogger.getInstance().warn(SystemPropertyPreferenceEntry.class,
+//            		"Error clearing preference node", e);
         }
         // now write the new values into the node
         for (SystemPropertyPreferenceEntry entry : entries) {
@@ -163,7 +164,7 @@ public final class SystemPropertyPreferenceEntry {
 	 */
     private static IEclipsePreferences getPlatformPreferences() {
         return new InstanceScope().getNode(
-                CSSPlatformPlugin.getDefault().getBundle().getSymbolicName());
+                AuthActivator.ID);
     }
     
     /**
@@ -173,6 +174,6 @@ public final class SystemPropertyPreferenceEntry {
      */
     private static IEclipsePreferences getDefaultPlatformPreferences() {
     	return new DefaultScope().getNode(
-    			CSSPlatformPlugin.getDefault().getBundle().getSymbolicName());
+    			AuthActivator.ID);
     }
 }

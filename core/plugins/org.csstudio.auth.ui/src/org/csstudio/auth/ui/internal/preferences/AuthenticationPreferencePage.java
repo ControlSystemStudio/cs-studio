@@ -21,9 +21,9 @@
  */
 package org.csstudio.auth.ui.internal.preferences;
 
+import org.csstudio.auth.internal.AuthActivator;
 import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.ui.internal.Activator;
-import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.auth.ui.internal.localization.Messages;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -36,7 +36,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 /**
  * The preference page for the css authentication service.
  * 
- * @author Alexander Will
+ * @author Jan Hatje
  */
 public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
@@ -70,9 +70,7 @@ public class AuthenticationPreferencePage extends FieldEditorPreferencePage
 	@Override
 	protected final IPreferenceStore doGetPreferenceStore() {
 		IPreferenceStore preferenceStore = new ScopedPreferenceStore(
-				new InstanceScope(), Activator.getDefault().getBundle()
-						.getSymbolicName());
-
+				new InstanceScope(), AuthActivator.ID);
 		return preferenceStore;
 	}
 

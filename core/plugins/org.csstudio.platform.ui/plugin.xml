@@ -130,17 +130,6 @@
             class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             name="%localePageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            id="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            name="%systemPropertyPreferencesPageName"/>
-   <page
-         category="org.csstudio.platform.ui.css.platform"
-         class="org.csstudio.platform.ui.internal.preferences.OnsiteSubnetPreferencePage"
-         id="org.csstudio.platform.ui.page1"
-         name="Onsite Subnets">
-   </page>
    <page
          category="org.csstudio.platform.ui.css.applications.configuration"
          class="org.csstudio.platform.ui.internal.statisticview.PreferencePage"

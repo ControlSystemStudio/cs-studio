@@ -24,7 +24,6 @@ package org.csstudio.platform;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -72,30 +71,10 @@ public class CSSPlatformPlugin extends AbstractCssPlugin {
 	 */
 	@Override
 	protected final void doStart(final BundleContext context) throws Exception {
-		applySystemPropertyDefaults();
-		
 		Dictionary<String, Object> dict = new Hashtable<String, Object>();
 		dict.put("org.csstudio.management.remoteservice", Boolean.TRUE);
 		context.registerService(IManagementCommandService.class.getName(),
 				new ManagementServiceImpl(), dict);
-	}
-
-	/**
-	 * Applies the default values for system properties set up in the CSS
-	 * preferences.
-	 */
-	private void applySystemPropertyDefaults() {
-		Collection<SystemPropertyPreferenceEntry> properties = SystemPropertyPreferenceEntry
-				.loadFromPreferences();
-		for (SystemPropertyPreferenceEntry entry : properties) {
-			// the preferences are for defaults, so they are applied only if
-			// the system property is not already set to some other value
-			if (System.getProperty(entry.getKey()) == null) {
-				System.setProperty(entry.getKey(), entry.getValue());
-				CentralLogger.getInstance().getLogger(this).debug(
-						"Setting system property: " + entry); //$NON-NLS-1$
-			}
-		}
 	}
 
 	/**

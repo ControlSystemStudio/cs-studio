@@ -27,7 +27,7 @@ import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.auth.securestore.SecureStore;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
-import org.csstudio.platform.ui.internal.localization.Messages;
+import org.csstudio.auth.ui.internal.localization.Messages;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;

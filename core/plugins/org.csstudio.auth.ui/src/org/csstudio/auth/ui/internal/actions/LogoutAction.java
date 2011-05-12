@@ -5,8 +5,8 @@ import org.csstudio.auth.internal.usermanagement.UserManagementEvent;
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.security.ILoginCallbackHandler;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.internal.AuthUiActivator;
 import org.csstudio.auth.ui.security.UiLoginCallbackHandler;
-import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
@@ -31,7 +31,7 @@ public class LogoutAction extends Action implements IWorkbenchAction, IUserManag
 		setText("Logout");
 		setToolTipText("Logout");
 		setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-				CSSPlatformUiPlugin.getDefault().getPluginId(), "icons/logout.png"));
+				AuthUiActivator.PLUGIN_ID, "icons/logout.png"));
 		SecurityFacade.getInstance().addUserManagementListener(this);
 		setEnabled(SecurityFacade.getInstance().getCurrentUser() != null);
 	}
