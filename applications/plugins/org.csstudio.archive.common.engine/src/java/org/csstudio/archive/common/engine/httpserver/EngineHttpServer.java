@@ -35,9 +35,6 @@ public class EngineHttpServer {
     private static final Logger LOG =
         LoggerFactory.getLogger(EngineHttpServer.class);
 
-    /** TCP port used by the web server */
-    private final int _port;
-
     private String _pid;
 
     private ServiceTracker _httpTracker;
@@ -52,7 +49,6 @@ public class EngineHttpServer {
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
                             final int port) throws EngineHttpServerException {
-        _port = port;
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
         HttpService httpService;
