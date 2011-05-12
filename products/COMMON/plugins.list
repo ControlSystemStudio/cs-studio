@@ -77,6 +77,8 @@ org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
+org.csstudio.platform.libs.slf4j
+org.csstudio.platform.libs.slf4j-log4j12
 org.csstudio.platform.simpledal
 org.csstudio.platform.test
 org.csstudio.platform.ui
