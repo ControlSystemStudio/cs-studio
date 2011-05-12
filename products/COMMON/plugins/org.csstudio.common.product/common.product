@@ -47,6 +47,7 @@
       <plugin id="org.csstudio.common.product"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.data.test" fragment="true"/>
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.channelfinderviewer"/>
@@ -55,6 +56,7 @@
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.logging"/>
+      <plugin id="org.csstudio.logging.test" fragment="true"/>
       <plugin id="org.csstudio.multiChannelViewer"/>
       <plugin id="org.csstudio.opibuilder"/>
       <plugin id="org.csstudio.opibuilder.adl2boy"/>
@@ -75,6 +77,7 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
+      <plugin id="org.csstudio.platform.libs.slf4j"/>
       <plugin id="org.csstudio.platform.simpledal"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
@@ -192,6 +195,7 @@
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.gtk.aix.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.ppc64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.s390" fragment="true"/>
