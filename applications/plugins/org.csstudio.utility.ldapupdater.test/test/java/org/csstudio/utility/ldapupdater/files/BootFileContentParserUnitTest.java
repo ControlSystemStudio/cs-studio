@@ -49,7 +49,7 @@ import com.google.common.collect.Sets;
  * @author bknerr
  * @since 28.04.2011
  */
-public class BootFileContentParserTest {
+public class BootFileContentParserUnitTest {
     
     
     @Rule
