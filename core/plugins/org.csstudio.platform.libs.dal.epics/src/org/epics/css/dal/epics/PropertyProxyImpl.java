@@ -827,7 +827,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * @param dbr status DBR.
 	 */
 	public void updateConditionWithDBR(DBR dbr) {
-		if (!dbr.isSTS()) {
+		if (dbr== null  || !dbr.isSTS()) {
 			return;
 		}
 		STS sts= (STS)dbr;
