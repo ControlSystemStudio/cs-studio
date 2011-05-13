@@ -25,9 +25,11 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -55,8 +57,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
  */
 @Entity
 @Table(name = "ddb_GSD_File")
-public class GSDFileDBO {
+public class GSDFileDBO implements Serializable {
     
+    private static final long serialVersionUID = 1L;
     /** The DB ID. */
     private int _id;
     /** The Name of gsdFile. */
@@ -106,7 +109,7 @@ public class GSDFileDBO {
     
     /** */
     public GSDFileDBO() {
-        
+        // Constructor for Hibernate
     }
     
     /**
@@ -216,7 +219,8 @@ public class GSDFileDBO {
      *            the index for the given Module.
      * @return the selected Module.
      */
-    public GSDModuleDBO getGSDModule(final Integer indexModule) {
+    @CheckForNull
+    public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
         if(_gSDModules == null) {
             _gSDModules = new HashMap<Integer, GSDModuleDBO>();
         }
@@ -231,6 +235,7 @@ public class GSDFileDBO {
     }
     
     @Transient
+    @Nonnull
     public ParsedGsdFileModel getParsedGsdFileModel() {
         return _parsedGsdFileModel;
     }
