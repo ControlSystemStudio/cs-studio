@@ -17,4 +17,5 @@ org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
+org.csstudio.workspace
 

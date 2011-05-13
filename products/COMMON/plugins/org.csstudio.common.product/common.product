@@ -84,7 +84,6 @@
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
-      <plugin id="org.csstudio.platform.workspace"/>
       <plugin id="org.csstudio.startup"/>
       <plugin id="org.csstudio.startuphelper"/>
       <plugin id="org.csstudio.swt.chart"/>
@@ -112,6 +111,7 @@
       <plugin id="org.csstudio.utility.pvmanager.ui"/>
       <plugin id="org.csstudio.utility.pvmanager.widgets"/>
       <plugin id="org.csstudio.utility.speech"/>
+      <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>

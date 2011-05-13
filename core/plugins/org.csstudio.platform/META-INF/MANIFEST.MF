@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.csstudio.platform.libs.jmock,
  org.csstudio.platform.utility.jms,
  org.csstudio.data;bundle-version="1.0.0";visibility:=reexport,
- org.csstudio.platform.workspace,
+ org.csstudio.workspace,
  org.eclipse.equinox.security,
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
 Bundle-Activator: org.csstudio.platform.CSSPlatformPlugin
