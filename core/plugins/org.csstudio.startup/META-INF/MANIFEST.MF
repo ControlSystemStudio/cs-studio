@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Application Startup
 Bundle-SymbolicName: org.csstudio.startup;singleton:=true
-Bundle-Version: 1.1.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Description: Common CSS Application code
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
