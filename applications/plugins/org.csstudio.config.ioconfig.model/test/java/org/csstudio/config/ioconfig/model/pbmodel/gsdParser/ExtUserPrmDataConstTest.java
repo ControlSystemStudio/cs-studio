@@ -38,7 +38,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 09.01.2009
  */
-
+//CHECKSTYLE:OFF
 public class ExtUserPrmDataConstTest {
 
     /**
@@ -198,3 +198,4 @@ public class ExtUserPrmDataConstTest {
     }
 
 }
+//CHECKSTYLE:ON

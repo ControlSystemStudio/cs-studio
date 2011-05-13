@@ -44,8 +44,6 @@ import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $

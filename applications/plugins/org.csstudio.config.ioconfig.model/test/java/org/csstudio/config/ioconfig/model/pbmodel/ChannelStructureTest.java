@@ -63,11 +63,8 @@ public class ChannelStructureTest {
         ModuleDBO module = new ModuleDBO(_slave);
         ChannelStructureDBO out = new ChannelStructureDBO();
         module.addChild(out);
-        assertTrue(out.getChannels().size()==0);
         assertTrue(out.getChildren().size()==0);
 
-        out.getChannels();
-        
         ChannelDBO structChannel1 = new ChannelDBO();
         structChannel1.setId(111);
         structChannel1.moveSortIndex((short) 11);
@@ -79,12 +76,7 @@ public class ChannelStructureTest {
         out.addChild(structChannel1);
         out.addChild(structChannel2);
         
-        assertTrue(out.getChannels().size()==2);
         assertTrue(out.getChildren().size()==2);
-        
-        assertTrue(out.getChannels().containsAll(out.getChildren()));
-        assertTrue(out.getChildren().containsAll(out.getChannels()));
-        
         
         structChannel1 = new ChannelDBO();
         structChannel1.setId(211);
@@ -99,11 +91,7 @@ public class ChannelStructureTest {
         out.addChild(structChannel2);
         
         
-        assertTrue(out.getChannels().size()==2);
         assertTrue(out.getChildren().size()==2);
-        
-        assertTrue(out.getChannels().containsAll(out.getChildren()));
-        assertTrue(out.getChildren().containsAll(out.getChannels()));
     }
 
 }

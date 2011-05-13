@@ -36,7 +36,6 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.util.ArrayList;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -44,7 +43,6 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -153,12 +151,6 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
             text.setStyleRanges(array);
         }
 	}
-
-    @Override
-    @CheckForNull
-    public GSDFileDBO getGsdFile() {
-        return null;
-    }
 
     /**
      * {@inheritDoc}

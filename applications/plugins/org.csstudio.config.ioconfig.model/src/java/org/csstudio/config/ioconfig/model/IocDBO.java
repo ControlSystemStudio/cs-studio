@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.Set;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Entity;
@@ -57,48 +55,9 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
      * @throws PersistenceException 
      */
     public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
-        this(facility, DEFAULT_MAX_STATION_ADDRESS);
-
-    }
-
-    /**
-     * Create a new Ioc with parent Facility.
-     * @param facility the parent Facility.
-     * @param maxStationAddress the highest possible Station Address.
-     * @throws PersistenceException 
-     */
-    private IocDBO(@Nonnull final FacilityDBO facility, final int maxStationAddress) throws PersistenceException {
         setParent(facility);
         facility.addChild(this);
-    }
 
-    /**
-     *
-     * @return the parent Facility of this IOC.
-     */
-    @Transient
-    @Nonnull
-    public FacilityDBO getFacility() {
-        return getParent();
-    }
-
-    /**
-     * @return the ProfibusSubnets children.
-     */
-    @Transient
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public Set<ProfibusSubnetDBO> getProfibusSubnets() {
-        return (Set<ProfibusSubnetDBO>) getChildren();
-    }
-
-    /**
-     *
-     * @param facility
-     *            set the parent Facility of this IOC.
-     */
-    public void setFacility(@Nonnull final FacilityDBO facility) {
-        this.setParent(facility);
     }
 
     /**
@@ -121,7 +80,7 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
     @Override
     @Nonnull
     public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
-        final IocDBO copy = super.copyThisTo(parentNode);
+        final IocDBO copy = (IocDBO) super.copyThisTo(parentNode);
         for (final ProfibusSubnetDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

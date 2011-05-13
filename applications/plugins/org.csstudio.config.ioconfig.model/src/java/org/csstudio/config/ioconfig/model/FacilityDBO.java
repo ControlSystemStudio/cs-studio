@@ -24,8 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Entity;
@@ -50,17 +48,6 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
     }
 
     /**
-     *
-     * @return the children IOC's.
-     */
-    @Transient
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public Set<IocDBO> getIoc() {
-        return (Set<IocDBO>) getChildren();
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -78,9 +65,10 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
     @Override
     @Nonnull
     public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode) throws PersistenceException {
-        final FacilityDBO copy = super.copyThisTo(parentNode);
+        FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode);
+//        final FacilityDBO copy = super.copyThisTo(parentNode);
         for (final IocDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            IocDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;

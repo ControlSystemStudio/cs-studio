@@ -134,7 +134,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
      */
     @Nonnull
     private Object[] handleModule(@Nonnull ModuleDBO module) throws PersistenceException {
-        Collection<ChannelStructureDBO> values = module.getChannelStructsAsMap().values();
+        Collection<ChannelStructureDBO> values = module.getChildrenAsMap().values();
         List<AbstractNodeDBO> list = new ArrayList<AbstractNodeDBO>(values.size());
         for (ChannelStructureDBO channelStructure : values) {
             if (channelStructure.isSimple()) {

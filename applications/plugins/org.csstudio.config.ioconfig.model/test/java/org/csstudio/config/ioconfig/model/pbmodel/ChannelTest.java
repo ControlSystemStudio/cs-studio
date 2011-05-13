@@ -1,3 +1,4 @@
+// CHECKSTYLE:OFF
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import static org.junit.Assert.assertEquals;
@@ -36,259 +37,6 @@ public class ChannelTest {
     private MasterDBO _master;
     private SlaveDBO _slave;
     private ModuleDBO _module;
-    private final String _gsdFile = ";===============================================================================\r\n" +
-        "; Profibus Device Database of MKS-2 Measurement System                                        \r\n" +
-        ";                                                                                             \r\n" +
-        "; Model:       PROFIBUS DP-V1 with Anybus-CC                                                  \r\n" +
-        "; Description: PROFIBUS DP-V1 slave Anybus-CC                                                 \r\n" +
-        "; Language:    German                                                                         \r\n" +
-        "; Author:      Deutsches Elektronen Synchrotron                                             ! \r\n" +
-        ";              Torsten Böckmann (MKS-2)                                                       \r\n" +
-        ";              7. January 2009                                                                \r\n" +
-        "; WWW:         www.desy.de                                                                    \r\n" +
-        ";                                                                                             \r\n" +
-        ";                                                                                             \r\n" +
-        "; Revision log:                                                                               \r\n" +
-        "; 1.00   2009-01-07 First release                                                             \r\n" +
-        ";                                                                                             \r\n" +
-        ";===============================================================================              \r\n" +
-        "#Profibus_DP                                                                                  \r\n" +
-        "                                                                                              \r\n" +
-        "GSD_Revision        = 3                                                                       \r\n" +
-        "                                                                                              \r\n" +
-        "; Device identification                                                                       \r\n" +
-        "Vendor_Name         = \"Deutsches Elektronen Synchrotron\"                                      \r\n" +
-        "Model_Name          = \"DESY / DS-Automation / AnyBus-CC\"                                      \r\n" +
-        "Revision            = \"1.00\"                                                                  \r\n" +
-        "Ident_Number        = 0x1811                                                                  \r\n" +
-        "Protocol_Ident      = 0                ; DP protocol                                          \r\n" +
-        "Station_Type        = 0                ; Slave device                                         \r\n" +
-        "FMS_supp            = 0                ; FMS not supported                                    \r\n" +
-        "Slave_Family        = 0                ; General device                                       \r\n" +
-        "Hardware_Release    = \"Version 1.00\"                                                          \r\n" +
-        "Software_Release    = \"Version 1.04\"                                                          \r\n" +
-        "                                                                                              \r\n" +
-        "; Supported hardware features                                                                 \r\n" +
-        "Redundancy          = 0                ; not supported                                        \r\n" +
-        "Repeater_Ctrl_Sig   = 2                ; TTL                                                  \r\n" +
-        "24V_Pins            = 0                ; not connected                                        \r\n" +
-        "Implementation_Type = \"VPC3+C\"                                                                \r\n" +
-        "                                                                                              \r\n" +
-        "; Supported DP features                                                                       \r\n" +
-        "Freeze_Mode_supp    = 1                ; supported                                            \r\n" +
-        "Sync_Mode_supp      = 1                ; supported                                            \r\n" +
-        "Auto_Baud_supp      = 1                ; supported                                            \r\n" +
-        "Set_Slave_Add_supp  = 1                ; supported                                            \r\n" +
-        "Fail_Safe           = 1                ; supported                                            \r\n" +
-        "                                                                                              \r\n" +
-        "; Supported baudrates                                                                         \r\n" +
-        "9.6_supp            = 1                                                                       \r\n" +
-        "19.2_supp           = 1                                                                       \r\n" +
-        "45.45_supp          = 1                                                                       \r\n" +
-        "93.75_supp          = 1                                                                       \r\n" +
-        "187.5_supp          = 1                                                                       \r\n" +
-        "500_supp            = 1                                                                       \r\n" +
-        "1.5M_supp           = 1                                                                       \r\n" +
-        "3M_supp             = 1                                                                       \r\n" +
-        "6M_supp             = 1                                                                       \r\n" +
-        "12M_supp            = 1                                                                       \r\n" +
-        "                                                                                              \r\n" +
-        "; Maximum responder time for supported baudrates                                              \r\n" +
-        "MaxTsdr_9.6         = 15                                                                      \r\n" +
-        "MaxTsdr_19.2        = 15                                                                      \r\n" +
-        "MaxTsdr_45.45       = 15                                                                      \r\n" +
-        "MaxTsdr_93.75       = 15                                                                      \r\n" +
-        "MaxTsdr_187.5       = 15                                                                      \r\n" +
-        "MaxTsdr_500         = 15                                                                      \r\n" +
-        "MaxTsdr_1.5M        = 25                                                                      \r\n" +
-        "MaxTsdr_3M          = 50                                                                      \r\n" +
-        "MaxTsdr_6M          = 100                                                                     \r\n" +
-        "MaxTsdr_12M         = 200                                                                     \r\n" +
-        "                                                                                              \r\n" +
-        "; Maximum polling frequency                                                                   \r\n" +
-        "Min_Slave_Intervall = 1                ; 100 us                                               \r\n" +
-        "                                                                                              \r\n" +
-        "; I/O related keywords (Process data mode)                                                    \r\n" +
-        "Modular_Station     = 1                ; modular                                              \r\n" +
-        "Max_Module          = 244                                                                     \r\n" +
-        "Max_Input_Len       = 244                                                                     \r\n" +
-        "Max_Output_Len      = 244                                                                     \r\n" +
-        "Max_Data_Len        = 400                                                                     \r\n" +
-        "Modul_Offset        = 1                                                                       \r\n" +
-        "                                                                                              \r\n" +
-        "; Parametrization related keywords                                                            \r\n" +
-        "User_Prm_Data_Len   = 3                                                                       \r\n" +
-        "User_Prm_Data       = 0xC0,0x00,0x00                                                          \r\n" +
-        "                                                                                              \r\n" +
-        "Max_User_Prm_Data_Len = 16                                                                    \r\n" +
-        "Ext_User_Prm_Data_Const(0) = 0xC0,0x00,0x00                                                   \r\n" +
-        "                                                                                              \r\n" +
-        "; Diagnostic related keywords                                                                 \r\n" +
-        "Max_Diag_Data_len    = 16                                                                     \r\n" +
-        "                                                                                              \r\n" +
-        "                                                                                              \r\n" +
-        ";********** OFFSET 3 **********                                                               \r\n" +
-        "                                                                                              \r\n" +
-        "PrmText             = 3                          ; Kanal Eingangstyp                          \r\n" +
-        "Text(0)             = \"Automatisch\"              ; Automatische Eingangserkennung             \r\n" +
-        "Text(1)             = \"Widerstandssensor\"        ; Eingangstyp Widerstandssensor              \r\n" +
-        "Text(2)             = \"Spannungseingang\"         ; Eingangstyp Spannungseingang               \r\n" +
-        "Text(3)             = \"Diode (reserviert)\"       ; Reserviert für zukünftige Firmwareversion  \r\n" +
-        "EndPrmText                                                                                    \r\n" +
-        "                                                                                              \r\n" +
-        "PrmText             = 4                          ; Kanal Eingangsbewertung                    \r\n" +
-        "Text(0)             = \"Wert in Ohm\"              ; Wert in Ohm                                \r\n" +
-        "Text(1)             = \"Wert in mS\"               ; Wert in mS 1000/Ohm                        \r\n" +
-        "Text(2)             = \"Wert in C bei PT1000\"     ; Wert in °Celsius für PT1000 Sensor         \r\n" +
-        "Text(3)             = \"Wert in C bei PT100\"      ; Wert in °Celsius für PT100 Sensor          \r\n" +
-        "Text(4)             = \"Wert in K bei PT1000\"     ; Wert in Kelvin für PT 1000 Sensor          \r\n" +
-        "Text(5)             = \"Wert in K Bei PT100\"      ; Wert in Kelvin für PT100 Sensor            \r\n" +
-        "EndPrmText                                                                                    \r\n" +
-        "                                                                                              \r\n" +
-        "                                                                                              \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 3 \"1. Kanal Eingangstyp\"   ; Auswahl des Eingangstyps                   \r\n" +
-        "BitArea(0-1) 1 0-3                               ; (Default = 1).                             \r\n" +
-        "Prm_Text_Ref        = 3                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 4 \"2. Kanal Eingangstyp\"   ; Auswahl des Eingangstyps                   \r\n" +
-        "BitArea(0-1) 1 0-3                               ; (Default = 1).                             \r\n" +
-        "Prm_Text_Ref        = 3                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 5 \"3. Kanal Eingangstyp\"   ; Auswahl des Eingangstyps                   \r\n" +
-        "BitArea(0-1) 1 0-3                               ; (Default = 1).                             \r\n" +
-        "Prm_Text_Ref        = 3                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 6 \"4. Kanal Eingangstyp\"   ; Auswahl des Eingangstyps                   \r\n" +
-        "BitArea(0-1) 1 0-3                               ; (Default = 1).                             \r\n" +
-        "Prm_Text_Ref        = 3                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 7 \"1. Kanal Konversion\"    ; Widerstands- Konversion                    \r\n" +
-        "BitArea(2-4) 0 0-5                               ; (Default = 0).                             \r\n" +
-        "Prm_Text_Ref        = 4                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 8 \"2. Kanal Konversion\"    ; Widerstands- Konversion                    \r\n" +
-        "BitArea(2-4) 0 0-5                               ; (Default = 0).                             \r\n" +
-        "Prm_Text_Ref        = 4                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 9 \"3. Kanal Konversion\"    ; Widerstands- Konversion                    \r\n" +
-        "BitArea(2-4) 0 0-5                               ; (Default = 0).                             \r\n" +
-        "Prm_Text_Ref        = 4                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-        "                                                                                              \r\n" +
-        "ExtUserPrmData      = 10 \"4. Kanal Konversion\"   ; Widerstands- Konversion                    \r\n" +
-        "BitArea(2-4) 0 0-5                               ; (Default = 0).                             \r\n" +
-        "Prm_Text_Ref        = 4                          ;                                            \r\n" +
-        "EndExtUserPrmData                                ;                                            \r\n" +
-
-        ";Status diagnostic messages                                                                     \r\n"  +
-        "Unit_Diag_Area=16-17                                                                            \r\n"  +
-        "Value(0)  = \"Status not changed\"                                                                \r\n"  +
-        "Value(1)  = \"Status appears\"                                                                    \r\n"  +
-        "Value(2)  = \"Status disappears\"                                                                 \r\n"  +
-        "Unit_Diag_Area_End                                                                              \r\n"  +
-        "                                                                                                \r\n"  +
-        "Unit_Diag_Area=24-31                                                                            \r\n"  +
-        "Value(0)   = \"Minor, recoverable\"                                                               \r\n"  +
-        "Value(16)  = \"Minor, unrecoverable\"                                                             \r\n"  +
-        "Value(32)  = \"Major, recoverable\"                                                               \r\n"  +
-        "Unit_Diag_Area_End                                                                              \r\n"  +
-        "                                                                                                \r\n"  +
-        "Unit_Diag_Area=32-39                                                                            \r\n"  +
-        "Value(16)  = \"Generic Error\"                                                                    \r\n"  +
-        "Value(32)  = \"Current\"                                                                          \r\n"  +
-        "Value(33)  = \"Current, device input side\"                                                       \r\n"  +
-        "Value(34)  = \"Current, inside the device\"                                                       \r\n"  +
-        "Value(35)  = \"Current, device output side\"                                                      \r\n"  +
-        "Value(48)  = \"Voltage\"                                                                          \r\n"  +
-        "Value(49)  = \"Mains Voltage\"                                                                    \r\n"  +
-        "Value(50)  = \"Voltage inside the device\"                                                        \r\n"  +
-        "Value(51)  = \"Output Voltage\"                                                                   \r\n"  +
-        "Value(64)  = \"Temperature\"                                                                      \r\n"  +
-        "Value(65)  = \"Ambient Temperature\"                                                              \r\n"  +
-        "Value(66)  = \"Device Temperature\"                                                               \r\n"  +
-        "Value(80)  = \"Device Hardware\"                                                                  \r\n"  +
-        "Value(96)  = \"Device Software\"                                                                  \r\n"  +
-        "Value(97)  = \"Internal Software\"                                                                \r\n"  +
-        "Value(98)  = \"User Software\"                                                                    \r\n"  +
-        "Value(99)  = \"Data Set\"                                                                         \r\n"  +
-        "Value(112) = \"Additional Modules\"                                                               \r\n"  +
-        "Value(128) = \"Monitoring\"                                                                       \r\n"  +
-        "Value(129) = \"Communication\"                                                                    \r\n"  +
-        "Value(130) = \"Protocol Error\"                                                                   \r\n"  +
-        "Value(144) = \"External Error\"                                                                   \r\n"  +
-        "Value(240) = \"Additional Functions\"                                                             \r\n"  +
-        "Value(255) = \"Device specific\"                                                                  \r\n"  +
-        "Unit_Diag_Area_End                                                                              \r\n"  +
-        "                                                                                                \r\n"  +
-        "                                                                                                \r\n"  +
-        "; DPV1 related keywords                                                                         \r\n"  +
-        "DPV1_Slave              = 1                                                                     \r\n"  +
-        "Check_Cfg_Mode          = 1                                                                     \r\n"  +
-        "                                                                                                \r\n"  +
-        "C1_Read_Write_supp      = 1                                                                     \r\n"  +
-        "C1_Max_Data_Len         = 16                                                                    \r\n"  +
-        "C1_Response_Timeout     = 100  ;1 sec                                                           \r\n"  +
-        "                                                                                                \r\n"  +
-        "C2_Read_Write_supp      = 1                                                                     \r\n"  +
-        "C2_Max_Data_Len         = 48                                                                    \r\n"  +
-        "C2_Response_Timeout     = 100  ;1 sec                                                           \r\n"  +
-        "C2_Max_Count_Channels   = 1                                                                     \r\n"  +
-        "                                                                                                \r\n"  +
-        "Max_Initiate_PDU_Length = 52                                                                    \r\n"  +
-        "                                                                                                \r\n"  +
-        "; Definition of modules                                                                         \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"1 virtuelles Modul\" 0xE1  ;4 Output bytes, Consistency over whole module              \r\n"  +
-        "1                                                                                               \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"2 virtuelles Module\" 0xE3 ;8 Output bytes, Consistency over whole module              \r\n"  +
-        "2                                                                                               \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"3 virtuelles Module\" 0xE5 ;12 Output bytes, Consistency over whole module             \r\n"  +
-        "3                                                                                               \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"4 virtuelles Module\" 0xE7 ;16 Output bytes, Consistency over whole module             \r\n"  +
-        "4                                                                                               \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"5 virtuelles Module\" 0xE9 ;20 Output bytes, Consistency over whole module             \r\n"  +
-        "5                                                                                               \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"4 Ch. AI float + 1Byte Status\" 0xD9 ;20 Bytes, Consistency over whole module          \r\n"  +
-        "6                                                                                               \r\n"  +
-        "Ext_Module_Prm_Data_Len = 4                                                                     \r\n"  +
-        "Ext_User_Prm_Data_Const(0) = 0x01,0x01,0x01,0x01                                                \r\n"  +
-        "Ext_User_Prm_Data_Ref(0) = 3                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(0) = 7                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(1) = 4                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(1) = 8                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(2) = 5                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(2) = 9                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(3) = 6                                                                    \r\n"  +
-        "Ext_User_Prm_Data_Ref(3) = 10                                                                   \r\n"  +
-        "                                                                                                \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        "                                                                                                \r\n"  +
-        "Module = \"4 Ch. AI float + 1Byte Status ohne Para\" 0xD9 ;20 Bytes, Consistency over whole module\r\n"  +
-        "7                                                                                               \r\n"  +
-        "                                                                                                \r\n"  +
-        "EndModule                                                                                       \r\n"  +
-        ";                                                                                               \r\n";
-
-    // private ChannelStructure _structure;
 
     @Test
     public void testDocument() {
@@ -420,7 +168,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -464,7 +213,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // --- create Module 2 -----------------------
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName( "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -510,7 +260,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // --- create Module 3 -----------------------
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -580,7 +331,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -624,7 +376,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -669,7 +422,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 3
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -734,7 +488,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -777,7 +532,8 @@ public class ChannelTest {
 //        assertEquals("@Subnet:815/2 'T=INT16'", channelM1C4.getEpicsAddressStringNH());
 
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -816,7 +572,8 @@ public class ChannelTest {
 //        assertEquals("@Subnet:815/5 'T=UNSIGN16'", channelM2C4.getEpicsAddressStringNH());
 
         // create Module 3
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -861,7 +618,8 @@ public class ChannelTest {
 //        testSimpleChannel("@Subnet:815/8 'T=UNSIGN16'", (short) 3, channelM3C4, structureM3C4);
 
         // create Module 4
-        final ModuleDBO module4 = new ModuleDBO(_slave, "Module 4");
+        final ModuleDBO module4 = new ModuleDBO(_slave);
+        module4.setName("Module 4");
         module4.moveSortIndex((short) 24);
         module4.localSave();
 
@@ -969,6 +727,7 @@ public class ChannelTest {
     }
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void testTestOutputStructChannels() throws PersistenceException {
         // create Master
         _master.setRedundant((short) 4711);
@@ -981,7 +740,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -990,7 +750,7 @@ public class ChannelTest {
         final ChannelStructureDBO channelStructure1 = ChannelStructureDBO.makeChannelStructure(module1, false,
                 DataType.INT8, "ABC");
         final Set<? extends AbstractNodeDBO> values1 = channelStructure1.getChildren();
-        final Collection<ChannelDBO> channels1 = channelStructure1.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels1 = channelStructure1.getChildrenAsMap().values();
         assertEquals(8, values1.size());
         assertEquals(8, channels1.size());
         final ChannelDBO[] structChannels1 = channels1.toArray(new ChannelDBO[0]);
@@ -1074,7 +834,7 @@ public class ChannelTest {
                 DataType.INT8, "def");
 
         final Collection<? extends AbstractNodeDBO> values2 = channelStructure2.getChildren();
-        final Collection<ChannelDBO> channels2 = channelStructure2.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels2 = channelStructure2.getChildrenAsMap().values();
         assertEquals(8, values2.size());
         assertEquals(8, channels2.size());
         final ChannelDBO[] structChannels2 = channels2.toArray(new ChannelDBO[0]);
@@ -1157,7 +917,8 @@ public class ChannelTest {
         assertEquals(2, module1.getOutputSize());
 
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -1171,7 +932,7 @@ public class ChannelTest {
                 DataType.INT16, "GhI");
 
         final Collection<? extends AbstractNodeDBO> values3 = channelStructure3.getChildren();
-        final Collection<ChannelDBO> channels3 = channelStructure3.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels3 = channelStructure3.getChildrenAsMap().values();
         assertEquals(16, values3.size());
         assertEquals(16, channels3.size());
         final ChannelDBO[] structChannels3 = channels3.toArray(new ChannelDBO[0]);
@@ -1339,7 +1100,7 @@ public class ChannelTest {
                 DataType.UINT16, "jKl");
 
         final Collection<? extends AbstractNodeDBO> values4 = channelStructure4.getChildren();
-        final Collection<ChannelDBO> channels4 = channelStructure4.getChannelsAsMap().values();
+        final Collection<ChannelDBO> channels4 = channelStructure4.getChildrenAsMap().values();
         assertEquals(16, values4.size());
         assertEquals(16, channels4.size());
         final ChannelDBO[] structChannels4 = channels4.toArray(new ChannelDBO[0]);
@@ -1453,7 +1214,8 @@ public class ChannelTest {
 
         // create Module 1
         // M1-->
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 31);
         module1.localSave();
 
@@ -1485,8 +1247,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 31, 0, 2, 0, 1, module1);
 
         // - Test Structure Channels.
-        final Collection<ChannelDBO> valuesSCO1 = sco11.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCO1 = sco11.getChannels();
+        final Collection<ChannelDBO> valuesSCO1 = sco11.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCO1 = sco11.getChildren();
         assertEquals(8, valuesSCO1.size());
         assertEquals(8, channelsSCO1.size());
 
@@ -1523,8 +1285,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 31, 0, 3, 0, 3, module1);
 
         // - Test Channel.
-        final Collection<ChannelDBO> valuesSCI1 = sci1.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelssci1 = sci1.getChannels();
+        final Collection<ChannelDBO> valuesSCI1 = sci1.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelssci1 = sci1.getChildren();
         assertEquals(8, valuesSCI1.size());
         assertEquals(8, channelssci1.size());
 
@@ -1545,7 +1307,7 @@ public class ChannelTest {
 
         // - Test Channel.
         assertEquals(16, sco12.getChildren().size());
-        assertEquals(16, sco12.getChannelsAsMap().values().size());
+        assertEquals(16, sco12.getChildrenAsMap().values().size());
 //        testChannelFromStructure("@Subnet:123/3 'T=UNSIGN16,B=0'", (short) 0, DataType.BIT, 1, 3, 3,
 //                sco12);
 //        testChannelFromStructure("@Subnet:123/3 'T=UNSIGN16,B=7'", (short) 7, DataType.BIT, 1, 3, 3,
@@ -1570,7 +1332,8 @@ public class ChannelTest {
 
         // create Module 2
         // M2-->
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 32);
         module2.localSave();
 
@@ -1586,8 +1349,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 1, 5, 0, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCI21 = sci21.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCI21 = sci21.getChannels();
+        final Collection<ChannelDBO> valuesSCI21 = sci21.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCI21 = sci21.getChildren();
         assertEquals(8, valuesSCI21.size());
         assertEquals(8, channelsSCI21.size());
 
@@ -1637,8 +1400,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 2, 5, 4, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCO21 = sco21.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCO21 = sco21.getChannels();
+        final Collection<ChannelDBO> valuesSCO21 = sco21.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCO21 = sco21.getChildren();
         assertEquals(16, valuesSCO21.size());
         assertEquals(16, channelsSCO21.size());
 
@@ -1673,8 +1436,8 @@ public class ChannelTest {
         testModule("@Subnet:123", (short) 32, 4, 4, 5, 5, module2);
 
         // - Test structure Channels.
-        final Collection<ChannelDBO> valuesSCI22 = sci22.getChannelsAsMap().values();
-        final Set<ChannelDBO> channelsSCI22 = sci22.getChannels();
+        final Collection<ChannelDBO> valuesSCI22 = sci22.getChildrenAsMap().values();
+        final Set<ChannelDBO> channelsSCI22 = sci22.getChildren();
         assertEquals(16, valuesSCI22.size());
         assertEquals(16, channelsSCI22.size());
 
@@ -1697,25 +1460,25 @@ public class ChannelTest {
         assertEquals(outputSize, module.getOutputSize());
     }
 
-    private void testSimpleChannel(final String addressString, final short sortIndex, final ChannelDBO channel,
-            final ChannelStructureDBO structure) {
-        assertEquals(sortIndex, (short) structure.getSortIndex());
-        assertEquals(sortIndex, (short) channel.getSortIndex());
-        assertEquals(addressString, channel.getEpicsAddressStringNH());
-    }
+//    private void testSimpleChannel(final String addressString, final short sortIndex, final ChannelDBO channel,
+//            final ChannelStructureDBO structure) {
+//        assertEquals(sortIndex, (short) structure.getSortIndex());
+//        assertEquals(sortIndex, (short) channel.getSortIndex());
+//        assertEquals(addressString, channel.getEpicsAddressStringNH());
+//    }
 
-    private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
-            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) throws PersistenceException {
-        final ChannelDBO channel = (ChannelDBO) channelStructure.getChildrenAsMap().get(sortIndex);
-        assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
-                + channelStructure.getFirstChannel().getSortIndex(), channel);
-        assertEquals("Struct Channel: " + channel, dataType, channel.getChannelType());
-        assertEquals(sortIndex, (short) channel.getSortIndex());
-        assertEquals(chSize, channel.getChSize());
-        assertEquals(channelNumber, channel.getChannelNumber());
-        assertEquals(fullChannelNumber, channel.getFullChannelNumber());
-        assertEquals(addressString, channel.getEpicsAddressStringNH());
-    }
+//    private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
+//            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructureDBO channelStructure) throws PersistenceException {
+//        final ChannelDBO channel = (ChannelDBO) channelStructure.getChildrenAsMap().get(sortIndex);
+//        assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
+//                + channelStructure.getFirstChannel().getSortIndex(), channel);
+//        assertEquals("Struct Channel: " + channel, dataType, channel.getChannelType());
+//        assertEquals(sortIndex, (short) channel.getSortIndex());
+//        assertEquals(chSize, channel.getChSize());
+//        assertEquals(channelNumber, channel.getChannelNumber());
+//        assertEquals(fullChannelNumber, channel.getFullChannelNumber());
+//        assertEquals(addressString, channel.getEpicsAddressStringNH());
+//    }
 
     @Before
     public void setUp() throws PersistenceException {
@@ -1729,7 +1492,8 @@ public class ChannelTest {
         _slave = new SlaveDBO(_master);
         _slave.setName("Slave");
         _slave.localSave();
-        _module = new ModuleDBO(_slave, "Module");
+        _module = new ModuleDBO(_slave);
+        _module.setName("Module");
         _module.localSave();
 
     }
@@ -1745,3 +1509,4 @@ public class ChannelTest {
     }
 
 }
+//CHECKSTYLE:ON

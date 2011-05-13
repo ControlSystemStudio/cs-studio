@@ -24,16 +24,13 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -114,7 +111,6 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     /**
      * Parameter user data.
      */
-    //    private String _prmUserData;
     private List<Integer> _prmUserDataList = new ArrayList<Integer>();
     
     /**
@@ -153,18 +149,13 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @ManyToOne
+    @Nonnull
     public MasterDBO getProfibusDPMaster() {
         return (MasterDBO) getParent();
     }
     
     public void setProfibusDPMaster(@Nonnull final MasterDBO profibusDPMaster) {
         this.setParent(profibusDPMaster);
-    }
-    
-    @Transient
-    @SuppressWarnings("unchecked")
-    public Set<ModuleDBO> getModules() {
-        return (Set<ModuleDBO>) getChildren();
     }
     
     /** @return the GSDFile. */
@@ -178,11 +169,10 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     /**
      * @param gsdFile
      *            set the GSDFile.
-     * @throws IOException 
      */
-    public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) throws IOException {
+    public void setGSDFile(@CheckForNull final GSDFileDBO gsdFile) {
         if(gsdFile == null) {
-            _gsdFile = gsdFile;
+            _gsdFile = null;
         } else if(!gsdFile.equals(_gsdFile)) {
             GSDFileDBO oldGDS = _gsdFile;
             _gsdFile = gsdFile;
@@ -196,7 +186,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      *
      * @return The Vendor name of this slave.
      */
+    @Nonnull
     public String getVendorName() {
+        if(_vendorName == null) {
+            _vendorName = "";
+        }
         return _vendorName;
     }
     
@@ -213,7 +207,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      *
      * @return get the Model Name of Slave.
      */
+    @Nonnull
     public String getModelName() {
+        if(_modelName == null) {
+            _modelName = "";
+        }
         return _modelName;
     }
     
@@ -226,7 +224,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         _modelName = modelName;
     }
     
+    @Nonnull
     public String getRevision() {
+        if(_revision == null) {
+            _revision = "";
+        }
         return _revision;
     }
     
@@ -313,19 +315,15 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         SortedSet<Integer> minTsdrSet = new TreeSet<Integer>();
         minTsdrSet.add(minTsdr);
         Integer minSlaveIntervall;
-        try {
-            GSDFileDBO gsdFile = getGSDFile();
-            if(gsdFile != null) {
-                ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-                if(parsedGsdFileModel != null) {
-                    minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
-                    if(minSlaveIntervall != null) {
-                        minTsdrSet.add(minSlaveIntervall);
-                    }
+        GSDFileDBO gsdFile = getGSDFile();
+        if(gsdFile != null) {
+            ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
+            if(parsedGsdFileModel != null) {
+                minSlaveIntervall = parsedGsdFileModel.getIntProperty("Min_Slave_Intervall");
+                if(minSlaveIntervall != null) {
+                    minTsdrSet.add(minSlaveIntervall);
                 }
             }
-        } catch (IOException e) {
-            // no min Slave Intervall!
         }
         _minTsdr = minTsdrSet.last().shortValue();
     }
@@ -369,78 +367,44 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
+    @Nonnull
     public List<Integer> getPrmUserDataList() {
         return _prmUserDataList;
     }
     
     @Transient
-    private boolean fill() throws IOException {
-        /*
-         * Read GSD-File
-         */
+    private boolean fill() {
         GSDFileDBO gsdFile = getGSDFile();
         if(gsdFile == null) {
             return false;
         }
         
-        //        GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(gsdFile);
         ParsedGsdFileModel parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
         
-        /*
-         * Head
-         */
+        // Head
         if(parsedGsdFileModel != null) {
             setVersion(parsedGsdFileModel.getGsdRevision());
             
-            /*
-             * Basic - Slave Discription (read only)
-             */
             setVendorName(parsedGsdFileModel.getVendorName());
             setModelName(parsedGsdFileModel.getModelName());
-            //            _iDNo = String.format("0x%04X", slaveModel.getIdentNumber());
             _iDNo = String.format("0x%04X", parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
             
-            /*
-             * Basic - Inputs / Outputs (read only)
-             */
-            /*
-             * Set all GSD-File Data to Slave.
-             */
             setModelName(parsedGsdFileModel.getModelName());
-            //            setPrmUserData(slaveModel.getUserPrmData());
             setPrmUserData(parsedGsdFileModel.getExtUserPrmDataConst());
-            //            setProfibusPNoID(slaveModel.getIdentNumber());
             setProfibusPNoID(parsedGsdFileModel.getIdentNumber());
             setRevision(parsedGsdFileModel.getRevision());
-            
-            /*
-             * Basic - DP / FDL Access
-             */
-            //            /*
-            //             * Modules
-            //             */
-            //            if (!parsedGsdFileModel.hasModule()) {
-            //                parsedGsdFileModel.setGsdModuleList(GSD2Module.parse(gsdFile, parsedGsdFileModel));
-            //            }
             
             _maxSize = parsedGsdFileModel.getMaxModule().shortValue();
             if(_maxSize < 1) {
                 return false;
             }
-            
-            /*
-             * Settings - Operation Mode
-             */
-            /*
-             * Settings - Groups
-             */
-
         }
         return true;
     }
     
     @Transient
+    @Nonnull
     public String getEpicsAdressString() {
         /** contribution to ioName (PV-link to EPICSORA) */
         return getProfibusDPMaster().getEpicsAdressString() + ":" + getSortIndex();
@@ -452,6 +416,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
+    @CheckForNull
     public final String getIDNo() {
         return _iDNo;
     }
@@ -462,16 +427,12 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      */
     @Override
     @CheckForNull
-    public SlaveDBO copyParameter(@Nullable final MasterDBO parentNode) throws PersistenceException {
+    public SlaveDBO copyParameter(@Nonnull final MasterDBO parentNode) throws PersistenceException {
         MasterDBO master = parentNode;
         SlaveDBO copy = new SlaveDBO(master);
         copy.setFdlAddress(getFdlAddress());
         copy.setGroupIdent(getGroupIdent());
-        try {
-            copy.setGSDFile(getGSDFile());
-        } catch (IOException e) {
-            throw new PersistenceException(e);
-        }
+        copy.setGSDFile(getGSDFile());
         copy.setMinTsdr(getMinTsdr());
         copy.setModelName(getModelName());
         copy.setPrmUserData(getPrmUserData());
@@ -483,8 +444,8 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         copy.setVendorName(getVendorName());
         copy.setWdFact1(getWdFact1());
         copy.setWdFact2(getWdFact2());
-        for (AbstractNodeDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+        for (ModuleDBO node : getChildren()) {
+            AbstractNodeDBO<?, ?> childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -515,7 +476,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         // Move a exist Node
-        AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(index);
+        SlaveDBO moveNode = getParent().getChildrenAsMap().get(index);
         if(moveNode != null) {
             moveNode.moveSortIndex( (index + 1));
         }
@@ -526,6 +487,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.Slave;
     }
@@ -535,6 +497,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.SLAVE;
     }

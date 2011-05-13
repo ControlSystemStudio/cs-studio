@@ -49,6 +49,7 @@ import org.junit.Test;
  * @version $Revision: 1.7 $
  * @since 29.03.2011
  */
+//CHECKSTYLE:OFF
 public class XAVCConfigUnitTest {
     
     private BufferedReader _expected;
@@ -77,7 +78,7 @@ public class XAVCConfigUnitTest {
         for (int i = 0; i < 7; i++) {
             addNewModule(pk2, 4360, i+1);
         }
-        // TODO (hrickens) [30.03.2011]: Die sind später hinzu gekommen!
+        // (hrickens) [30.03.2011]: Die sind später hinzu gekommen!
         //        for (int i = 0; i < 2; i++) {
         //        addNewModule(pk2, 5132);
         //        }
@@ -316,3 +317,4 @@ public class XAVCConfigUnitTest {
     }
     
 }
+//CHECKSTYLE:ON

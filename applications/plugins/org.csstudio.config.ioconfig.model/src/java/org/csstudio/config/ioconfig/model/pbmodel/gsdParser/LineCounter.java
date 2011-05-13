@@ -26,8 +26,6 @@ package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $

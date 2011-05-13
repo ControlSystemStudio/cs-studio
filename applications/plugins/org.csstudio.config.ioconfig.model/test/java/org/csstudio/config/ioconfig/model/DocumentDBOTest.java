@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class DocumentDBOTest {
 
     @BeforeClass
@@ -53,3 +54,4 @@ public class DocumentDBOTest {
     }
 
 }
+//CHECKSTYLE:ON

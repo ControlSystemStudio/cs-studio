@@ -25,9 +25,11 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -44,14 +46,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.Diagnose;
-import org.csstudio.config.ioconfig.model.GSDFileTypes;
-import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * @author hrickens
@@ -61,206 +57,187 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 @Entity
 @Table(name = "ddb_GSD_File")
-public class GSDFileDBO {
-
-	/** The DB ID. */
-	private int _id;
-	/** The Name of gsdFile. */
-	private String _name;
-	/** The Text of gsdFile. */
-	private String _gsdFile;
-	/** Configured Modules of this GSD File. */
-	private Map<Integer, GSDModuleDBO> _gSDModules;
-	/**
-	 * If only true when this file config a Profibus Master.
-	 */
-	private Boolean _master;
-	/**
-	 * If only true when this file config a Profibus Slave.
-	 */
-	private Boolean _slave;
-	
-	private ParsedGsdFileModel _parsedGsdFileModel;
-
-	@Column(nullable = true)
-	public Boolean getMaster() {
-		return _master;
-	}
-
-	@Transient
-	public Boolean isMasterNonHN() {
-		if (getMaster() == null) {//||(!isSlave()&&!getMaster())) {
-			paresFile();
-		}
-		return getMaster();
-	}
-
-	public void setMaster(final Boolean master) {
-		_master = master;
-	}
-
-	@Column(nullable = true)
-	public Boolean isSlave() {
-	    return _parsedGsdFileModel!=null && _parsedGsdFileModel.isSalve();
-	}
-
-	@Transient
-	public Boolean isSlaveNonHN() {
-		if (isSlave() == null) {// ||(!isSlave()&&!getMaster())) {
-			paresFile();
-		}
-		return isSlave();
-	}
-
-	public void setSlave(final Boolean slave) {
-		_slave = slave;
-	}
-
-	/** */
-	public GSDFileDBO() {
-
-	}
-
-	/**
-	 * @param name
-	 *            Name of gsdFile.
-	 * @param gsdFile
-	 *            The text of gsdFile.
-	 */
-	public GSDFileDBO(final String name, final String gsdFile) {
-		setName(name);
-		setGSDFile(gsdFile);
-	}
-
-	/** @return the ID. */
-	@Id
-	@GeneratedValue
-	public int getId() {
-		return _id;
-	}
-
-	/**
-	 * @param id
-	 *            set the ID.
-	 */
-	public void setId(final int id) {
-		this._id = id;
-	}
-
-	/** @return the Text of gsdFile */
-	// Es gibt Problme Text die mehr als 150KB größe in die DB zu schreiben.
-	// Das Problem liegt bei log4J. Bei so großen Files darf das Logging nicht
-	// auf Debug stehen!
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(nullable = false)
-	public String getGSDFile() {
-		return _gsdFile;
-	}
-
-	/**
-	 * @param gsdFile
-	 *            set the Text of gsdFile.
-	 */
-	public void setGSDFile(final String gsdFile) {
-		this._gsdFile = gsdFile;
-	}
-
-	/** @return the Name of gsdFile */
-	@Column(unique = true, nullable = false)
-	@Nonnull
-	public String getName() {
-		return _name;
-	}
-
-	/**
-	 * @param name
-	 *            set the Name of gsdFile.
-	 */
-	public void setName(final String name) {
-		this._name = name;
-		Diagnose.addNewLine(_name+"\t"+this.getClass().getSimpleName());
-	}
-
-	/**
-	 *
-	 * @return a map of the Modules from this GSD File.
-	 */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDFile", fetch = FetchType.EAGER)
-	@OrderBy("moduleId")
-	@MapKey(name = "moduleId")
-	public Map<Integer, GSDModuleDBO> getGSDModules() {
-		return _gSDModules;
-	}
-
-	/**
-	 *
-	 * @param gsdModules
-	 *            set the Modules for this GSD File.
-	 */
-	public void setGSDModules(final Map<Integer, GSDModuleDBO> gsdModules) {
-		_gSDModules = gsdModules;
-	}
-
-	/**
-	 *
-	 * @param gSDModule
-	 *            add a Module to this file.
-	 */
-	public void addGSDModule(final GSDModuleDBO gSDModule) {
-		gSDModule.setGSDFile(this);
-		if (_gSDModules == null) {
-			_gSDModules = new HashMap<Integer, GSDModuleDBO>();
-		}
-		_gSDModules.put(gSDModule.getModuleId(), gSDModule);
-	}
-
-	/**
-	 * Get a Module of this File.
-	 *
-	 * @param indexModule
-	 *            the index for the given Module.
-	 * @return the selected Module.
-	 */
-	public GSDModuleDBO getGSDModule(final Integer indexModule) {
-		if (_gSDModules == null) {
-			_gSDModules = new HashMap<Integer, GSDModuleDBO>();
-		}
-		return _gSDModules.get(indexModule);
-	}
-
-	/**
-	 * Parse this file to set Master and Slave flag.
-	 * @throws PersistenceException 
-	 */
-	@Transient
-	private void paresFile() {
-		GsdMasterModel master = GsdFactory.makeGsdMaster(this.getGSDFile());
-		setMaster((master != null)
-				&& (master.getType() == GSDFileTypes.Master));
-		master = null;
-		try {
-            Repository.save(this);
-        } catch (PersistenceException e) {
-            CentralLogger.getInstance().error(this, e);
+public class GSDFileDBO implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    /** The DB ID. */
+    private int _id;
+    /** The Name of gsdFile. */
+    private String _name;
+    /** The Text of gsdFile. */
+    private String _gsdFile;
+    /** Configured Modules of this GSD File. */
+    private Map<Integer, GSDModuleDBO> _gSDModules;
+    /**
+     * If only true when this file config a Profibus Master.
+     */
+    private Boolean _master;
+    /**
+     * If only true when this file config a Profibus Slave.
+     */
+    private Boolean _slave;
+    
+    private ParsedGsdFileModel _parsedGsdFileModel;
+    
+    @Column(nullable = true)
+    public Boolean getMaster() {
+        return _master;
+    }
+    
+    @Transient
+    public boolean isMasterNonHN() {
+        return getParsedGsdFileModel().isMaster();
+    }
+    
+    public void setMaster(final Boolean master) {
+        _master = master;
+    }
+    
+    @Column(nullable = true)
+    public Boolean isSlave() {
+        return _parsedGsdFileModel != null && _parsedGsdFileModel.isSalve();
+    }
+    
+    @Transient
+    public boolean isSlaveNonHN() {
+        return getParsedGsdFileModel().isSalve();
+    }
+    
+    public void setSlave(final Boolean slave) {
+        _slave = slave;
+    }
+    
+    /** */
+    public GSDFileDBO() {
+        // Constructor for Hibernate
+    }
+    
+    /**
+     * @param name
+     *            Name of gsdFile.
+     * @param gsdFile
+     *            The text of gsdFile.
+     * @throws IOException 
+     */
+    public GSDFileDBO(final String name, final String gsdFile) throws IOException {
+        setName(name);
+        setGSDFile(gsdFile);
+    }
+    
+    /** @return the ID. */
+    @Id
+    @GeneratedValue
+    public int getId() {
+        return _id;
+    }
+    
+    /**
+     * @param id
+     *            set the ID.
+     */
+    public void setId(final int id) {
+        this._id = id;
+    }
+    
+    /** @return the Text of gsdFile */
+    // Es gibt Problme Text die mehr als 150KB größe in die DB zu schreiben.
+    // Das Problem liegt bei log4J. Bei so großen Files darf das Logging nicht
+    // auf Debug stehen!
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(nullable = false)
+    public String getGSDFile() {
+        return _gsdFile;
+    }
+    
+    /**
+     * @param gsdFile
+     *            set the Text of gsdFile.
+     * @throws IOException 
+     */
+    public void setGSDFile(final String gsdFile) throws IOException {
+        _gsdFile = gsdFile;
+        if(_gsdFile!=null) {
+            GsdFileParser gsdFileParser = new GsdFileParser();
+            _parsedGsdFileModel = gsdFileParser.parse(this);
         }
-	}
-
-	/** @return the Name of this gsdFile */
-	@Transient
-	@Override
-	public String toString() {
-		return getName();
-	}
-
-
-	@Transient
-    public ParsedGsdFileModel getParsedGsdFileModel() throws IOException {
-	    if(_parsedGsdFileModel == null) {
-	        GsdFileParser gsdFileParser = new GsdFileParser();
-	        _parsedGsdFileModel =  gsdFileParser.parse(this);
-	    }
+    }
+    
+    /** @return the Name of gsdFile */
+    @Column(unique = true, nullable = false)
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+    
+    /**
+     * @param name
+     *            set the Name of gsdFile.
+     */
+    public void setName(final String name) {
+        this._name = name;
+        Diagnose.addNewLine(_name + "\t" + this.getClass().getSimpleName());
+    }
+    
+    /**
+     *
+     * @return a map of the Modules from this GSD File.
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDFile", fetch = FetchType.EAGER)
+    @OrderBy("moduleId")
+    @MapKey(name = "moduleId")
+    public Map<Integer, GSDModuleDBO> getGSDModules() {
+        return _gSDModules;
+    }
+    
+    /**
+     *
+     * @param gsdModules
+     *            set the Modules for this GSD File.
+     */
+    public void setGSDModules(final Map<Integer, GSDModuleDBO> gsdModules) {
+        _gSDModules = gsdModules;
+    }
+    
+    /**
+     *
+     * @param gSDModule
+     *            add a Module to this file.
+     */
+    public void addGSDModule(final GSDModuleDBO gSDModule) {
+        gSDModule.setGSDFile(this);
+        if(_gSDModules == null) {
+            _gSDModules = new HashMap<Integer, GSDModuleDBO>();
+        }
+        _gSDModules.put(gSDModule.getModuleId(), gSDModule);
+    }
+    
+    /**
+     * Get a Module of this File.
+     *
+     * @param indexModule
+     *            the index for the given Module.
+     * @return the selected Module.
+     */
+    @CheckForNull
+    public GSDModuleDBO getGSDModule(@Nonnull final Integer indexModule) {
+        if(_gSDModules == null) {
+            _gSDModules = new HashMap<Integer, GSDModuleDBO>();
+        }
+        return _gSDModules.get(indexModule);
+    }
+    
+    /** @return the Name of this gsdFile */
+    @Transient
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
+    @Transient
+    @Nonnull
+    public ParsedGsdFileModel getParsedGsdFileModel() {
         return _parsedGsdFileModel;
     }
-
+    
 }

@@ -625,9 +625,9 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
      *
      */
     private void updateChannels() throws PersistenceException {
-        Set<ChannelStructureDBO> channelStructs = _module.getChannelStructs();
+        Set<ChannelStructureDBO> channelStructs = _module.getChildren();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            Set<ChannelDBO> channels = channelStructure.getChannels();
+            Set<ChannelDBO> channels = channelStructure.getChildren();
             for (ChannelDBO channel : channels) {
                 channel.assembleEpicsAddressString();
             }
@@ -652,11 +652,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
             }
         } catch (NullPointerException e) {
             _moduleTypList.getTable().select(0);
-        } catch (IOException e2) {
-            DeviceDatabaseErrorDialog.open(null, "Can't save Slave.GSD File read error", e2);
-            CentralLogger.getInstance().error(this, e2.getLocalizedMessage());
-        }
-        
+        }        
         for (Object prmTextObject : _prmTextCV) {
             if (prmTextObject instanceof ComboViewer) {
                 ComboViewer prmTextCV = (ComboViewer) prmTextObject;
@@ -690,6 +686,16 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
     public final GSDFileDBO getGsdFile() {
         return _module.getSlave().getGSDFile();
     }
+    
+    /**
+     * {@inheritDoc}
+     * @throws IOException 
+     */
+    @Override
+    public void setGsdFile(GSDFileDBO gsdFile) {
+        _module.getSlave().setGSDFile(gsdFile);
+    }
+
     
     /**
      *
@@ -832,5 +838,5 @@ public class ModuleEditor extends AbstractGsdNodeEditor {
         }
         return null;
     }
-    
+
 }
