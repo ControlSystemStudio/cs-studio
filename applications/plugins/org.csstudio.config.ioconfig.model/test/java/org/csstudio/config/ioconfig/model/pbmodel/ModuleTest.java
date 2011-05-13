@@ -196,7 +196,7 @@ public class ModuleTest {
         _slave.localSave();
 
         // create a second test Module with this own parent.
-        out = new ModuleDBO(_slave);
+//        out = new ModuleDBO(_slave);
 //        out.localSave();
 //
 //        // test the second Module
