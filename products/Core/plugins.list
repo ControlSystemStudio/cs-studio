@@ -1,3 +1,5 @@
+org.csstudio.auth
+org.csstudio.auth.ui
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.logging
