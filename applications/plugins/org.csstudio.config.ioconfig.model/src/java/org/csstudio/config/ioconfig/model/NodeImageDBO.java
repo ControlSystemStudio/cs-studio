@@ -84,7 +84,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * @param id Set the Image node key ID.
      */
     public void setId(int id) {
-        this._id = id;
+        _id = id;
     }
 
     /**
@@ -92,13 +92,15 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * @param name set the Name of this Node.
      */
     public void setName(@Nonnull String name) {
-        this._name = name;
+        _name = name;
     }
 
     /**
      * 
      * @return the Name of this Node.
      */
+    @Nonnull
+    @Column(nullable=false)
     public String getName() {
         return _name;
     }
@@ -107,6 +109,8 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
      * 
      * @return the Image File name. 
      */
+    @Nonnull
+    @Column(nullable=false)
     public String getFile() {
         return _file;
     }
@@ -118,6 +122,7 @@ public class NodeImageDBO implements Comparable<NodeImageDBO> {
     @Lob
     @Basic(fetch=FetchType.EAGER)
     @Column(nullable=false)
+    @Nonnull
     public byte[] getImageBytes() {
         return _imageBytes;
     }

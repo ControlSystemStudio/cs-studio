@@ -34,7 +34,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -69,23 +68,20 @@ public class ProfibusStatisticGenerator {
         _gsdSlaveFileMap = new HashMap<GSDFileDBO, Integer>();
         _gsdModuleMap = new HashMap<GSDModuleDBO, ModuleStatistcCounter>();
     }
-
+    
     /**
      * @param facility
      * @throws PersistenceException 
      */
     public void setFacility(@Nonnull FacilityDBO facility) throws PersistenceException {
-        _statistic.append("Statistik für ").append(facility.getName()).append(" vom ").append(new Date()).append(LINE_END);
-        Map<Short, ? extends AbstractNodeDBO> childrenAsMap = facility.getChildrenAsMap();
+        _statistic.append("Statistik für ").append(facility.getName()).append(" vom ")
+                .append(new Date()).append(LINE_END);
+        Map<Short, IocDBO> childrenAsMap = facility.getChildrenAsMap();
         int iocCounter = 0;
-        for (AbstractNodeDBO node : childrenAsMap.values()) {
-            if (node instanceof IocDBO) {
-                IocDBO ioc = (IocDBO) node;
-                iocCounter++;
-                iocStatisticCreator(ioc);
-                
-            }
-            
+        for (IocDBO node : childrenAsMap.values()) {
+            IocDBO ioc = (IocDBO) node;
+            iocCounter++;
+            iocStatisticCreator(ioc);
         }
         _statistic.append("Anzahl IOC = ").append(iocCounter).append(LINE_END);
         int gsdFileCount = 0;
@@ -93,13 +89,20 @@ public class ProfibusStatisticGenerator {
         
         for (GSDFileDBO gsdFileDBO : _gsdSlaveFileMap.keySet()) {
             Integer count = _gsdSlaveFileMap.get(gsdFileDBO);
-            _statistic.append("GSD File: \"").append(String.format("%20s", gsdFileDBO.getName())).append("\" wird ").append(String.format("%3d",count)).append(" mal verwendet").append(LINE_END);
+            _statistic.append("GSD File: \"").append(String.format("%20s", gsdFileDBO.getName()))
+                    .append("\" wird ").append(String.format("%3d", count))
+                    .append(" mal verwendet").append(LINE_END);
             gsdFileCount += count;
         }
         _statistic.append("GSD Files gesamt: ").append(gsdFileCount).append(LINE_END);
         for (GSDModuleDBO gsdModuleDBO : _gsdModuleMap.keySet()) {
             ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModuleDBO);
-            _statistic.append(String.format("GSD Module: \"%40s\" wird %3d mal verwendet.\tAngeschlossen: %4d von %4d Kanälen.",gsdModuleDBO.getName(),msc.getModuleCount(),msc.getUsedChannelsCount(),msc.getTotalChannelsCount())).append(LINE_END);
+            _statistic
+                    .append(String.format("GSD Module: \"%40s\" wird %3d mal verwendet.\tAngeschlossen: %4d von %4d Kanälen.",
+                                          gsdModuleDBO.getName(),
+                                          msc.getModuleCount(),
+                                          msc.getUsedChannelsCount(),
+                                          msc.getTotalChannelsCount())).append(LINE_END);
             gsdModuleCount += msc.getModuleCount();
         }
         _statistic.append("GSD Modules gesamt: ").append(gsdModuleCount).append(LINE_END);
@@ -111,11 +114,11 @@ public class ProfibusStatisticGenerator {
      */
     private void iocStatisticCreator(@Nonnull IocDBO ioc) throws PersistenceException {
         Set<ProfibusSubnetDBO> subnets = ioc.getChildren();
-        for (ProfibusSubnetDBO subnet: subnets) {
+        for (ProfibusSubnetDBO subnet : subnets) {
             subnetStatisticCreator(subnet);
         }
     }
-
+    
     /**
      * @param subnet
      * @throws PersistenceException 
@@ -126,7 +129,7 @@ public class ProfibusStatisticGenerator {
             masterStatisticCreator(master);
         }
     }
-
+    
     /**
      * @param master
      * @throws PersistenceException 
@@ -134,9 +137,9 @@ public class ProfibusStatisticGenerator {
     private void masterStatisticCreator(@Nonnull MasterDBO master) throws PersistenceException {
         Set<SlaveDBO> slaves = master.getChildren();
         GSDFileDBO gsdFile = master.getGSDFile();
-        if (gsdFile != null) {
+        if(gsdFile != null) {
             Integer masterCounter = _gsdMasterFileMap.get(gsdFile);
-            if (masterCounter == null) {
+            if(masterCounter == null) {
                 masterCounter = 0;
             }
             masterCounter++;
@@ -146,7 +149,7 @@ public class ProfibusStatisticGenerator {
             slaveStatisticCreator(slave);
         }
     }
-
+    
     /**
      * @param slave
      * @throws PersistenceException 
@@ -158,19 +161,19 @@ public class ProfibusStatisticGenerator {
             countGsdModule(module);
         }
     }
-
+    
     /**
      * @param gsdFile
      */
     private void countGsdFile(@Nullable GSDFileDBO gsdFile) {
         Integer gsdFileCounter = _gsdSlaveFileMap.get(gsdFile);
-        if(gsdFileCounter==null) {
+        if(gsdFileCounter == null) {
             gsdFileCounter = 0;
         }
         gsdFileCounter++;
         _gsdSlaveFileMap.put(gsdFile, gsdFileCounter);
     }
-
+    
     /**
      * @param module
      * @throws PersistenceException 
@@ -178,13 +181,12 @@ public class ProfibusStatisticGenerator {
     private void countGsdModule(@Nonnull ModuleDBO module) throws PersistenceException {
         GSDModuleDBO gsdModule = module.getGSDModule();
         ModuleStatistcCounter msc = _gsdModuleMap.get(gsdModule);
-        if(msc==null) {
+        if(msc == null) {
             msc = new ModuleStatistcCounter();
         }
         msc.addModule(module);
         _gsdModuleMap.put(gsdModule, msc);
     }
-
     
     /**
      * @param txtFile
@@ -196,6 +198,5 @@ public class ProfibusStatisticGenerator {
         CentralLogger.getInstance().info(this, "Write File:" + path.getAbsolutePath());
         writer.close();
     }
-
     
 }

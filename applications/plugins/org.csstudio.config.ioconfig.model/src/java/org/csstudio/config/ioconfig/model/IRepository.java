@@ -50,7 +50,7 @@ public interface IRepository {
      *            The Class Typ.
      * @return All Object of the Table clazz.getName.
      */
-    @CheckForNull
+    @Nonnull
     <T> List<T> load(@Nonnull final Class<T> clazz) throws PersistenceException;
 
     /**
@@ -92,7 +92,7 @@ public interface IRepository {
     /**
      * @return All loaded Document's from the DB.
      */
-    @CheckForNull
+    @Nonnull
     List<DocumentDBO> loadDocument() throws PersistenceException;
 
     /**

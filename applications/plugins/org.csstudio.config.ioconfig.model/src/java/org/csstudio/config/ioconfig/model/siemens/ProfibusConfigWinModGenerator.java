@@ -27,11 +27,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
@@ -87,7 +87,7 @@ public class ProfibusConfigWinModGenerator {
         }
 
         for (MasterDBO master : masterTree) {
-            Map<Short, ? extends AbstractNodeDBO> slaves = master.getChildrenAsMap();
+            Map<Short, SlaveDBO> slaves = master.getChildrenAsMap();
             for (short key : slaves.keySet()) {
                 SlaveDBO slave = (SlaveDBO) slaves.get(key);
                 createSlave(slave);
@@ -106,7 +106,7 @@ public class ProfibusConfigWinModGenerator {
         int normslaveParamDataSize = 0;
         int posNormslaveParamDataSize = 0;
         int fdlAddress = slave.getFdlAddress();
-        Map<Short, ? extends AbstractNodeDBO> childrenAsMap = slave.getChildrenAsMap();
+        Map<Short, ModuleDBO> childrenAsMap = slave.getChildrenAsMap();
         Set<Short> keySet = childrenAsMap.keySet();
         String modelName = slave.getModelName();
         if (modelName.length() > 24) {
@@ -161,22 +161,22 @@ public class ProfibusConfigWinModGenerator {
     private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
 		List<Integer> slaveCfgData;
-            slaveCfgData = module.getGsdModuleModel2().getValue();
-            int length = slaveCfgData.size();
-    		if (module.getGSDModule() != null) {
-    			_winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
-    					.append(fdlAddress + ", ").append("SLOT ").append(_slot++)
-    					.append(", ")
-    					.append("\"" + module.getGSDModule().getName() + "\"")
-    					.append(LINE_END).append("BEGIN").append(LINE_END)
-    					.append("  SLAVE_CFG_DATA ").append("\"");
-    			appendAs2HexString(_winModConfig, length);
-    			_winModConfig.append(" ").append(Arrays.toString(slaveCfgData.toArray()).replaceAll(",", " ").replaceAll("[\\[\\]]", ""))
-    			.append("\"").append(LINE_END)
-    			.append("  OBJECT_REMOVEABLE ").append("\"1\"")
-    			.append(LINE_END).append("END").append(LINE_END)
-    			.append(LINE_END);
-    		}
+        slaveCfgData = module.getGsdModuleModel2().getValue();
+        int length = slaveCfgData.size();
+		if (module.getGSDModule() != null) {
+			_winModConfig.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
+					.append(fdlAddress + ", ").append("SLOT ").append(_slot++)
+					.append(", ")
+					.append("\"" + module.getGSDModule().getName() + "\"")
+					.append(LINE_END).append("BEGIN").append(LINE_END)
+					.append("  SLAVE_CFG_DATA ").append("\"");
+			appendAs2HexString(_winModConfig, length);
+			_winModConfig.append(" ").append(Arrays.toString(slaveCfgData.toArray()).replaceAll(",", " ").replaceAll("[\\[\\]]", ""))
+			.append("\"").append(LINE_END)
+			.append("  OBJECT_REMOVEABLE ").append("\"1\"")
+			.append(LINE_END).append("END").append(LINE_END)
+			.append(LINE_END);
+		}
 		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChildrenAsMap();
 		Set<Short> keySet = channelStructsAsMap.keySet();
 		for (Short key : keySet) {
@@ -190,9 +190,9 @@ public class ProfibusConfigWinModGenerator {
 	 */
 	private void createChannel(ChannelStructureDBO channelStructureDBO) throws PersistenceException {
 		Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChildrenAsMap();
-		Set<Short> keySet = channelsAsMap.keySet();
-		for (Short key : keySet) {
-			ChannelDBO channelDBO = channelsAsMap.get(key);
+		Set<Entry<Short, ChannelDBO>> entrySet = channelsAsMap.entrySet();
+		for (Entry<Short, ChannelDBO> entry : entrySet) {
+			ChannelDBO channelDBO = entry.getValue();
 			char io1;
 			String io2="";
 			String def;

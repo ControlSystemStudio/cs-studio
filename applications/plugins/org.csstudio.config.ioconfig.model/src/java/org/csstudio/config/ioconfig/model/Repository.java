@@ -49,7 +49,9 @@ public final class Repository {
     /**
      * Default Constructor.
      */
-    private Repository() {}
+    private Repository() {
+        //Default Constructor.
+    }
 
     /**
      * For use different Repositories can inject the {@link IRepository}.<br>
@@ -211,7 +213,7 @@ public final class Repository {
      * @return the Saved Data class.
      */
     @Nonnull 
-    public static <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException, PersistenceException {
+    public static <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException {
         return _REPOSITORY.update(dbClass);
     }
 

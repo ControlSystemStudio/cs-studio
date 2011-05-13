@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -137,19 +138,53 @@ public class XmlSlave {
     @Nonnull
     private Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
         Element slavePrmData = new Element("SLAVE_PRM_DATA");
-        ParsedGsdFileModel slaveData = slave.getGSDFile().getParsedGsdFileModel();
-        StringBuilder prmDataSB = new StringBuilder();
-        prmDataSB.append(slave.getPrmUserData());
+        GSDFileDBO gsdFile = slave.getGSDFile();
+        if(gsdFile != null) {
+            ParsedGsdFileModel slaveData = gsdFile.getParsedGsdFileModel();
+            StringBuilder prmDataSB = new StringBuilder();
+            prmDataSB.append(slave.getPrmUserData());
+            addSlavePrmDataFromModules(prmDataSB);
+            int prmDataLen = 9 + prmDataSB.toString().split(",").length;
+            slavePrmData.setAttribute("prm_data_len", Integer.toString(prmDataLen));
+            slavePrmData.setAttribute("station_status", Integer.toString(slave.getStationStatus()));
+            slavePrmData.setAttribute("watchdog_fact_1", Integer.toString(slave.getWdFact1()));
+            slavePrmData.setAttribute("watchdog_fact_2", Integer.toString(slave.getWdFact2()));
+            slavePrmData.setAttribute("min_tsdr", Integer.toString(slave.getMinTsdr()));
+            if(slaveData != null) {
+                /*
+                 * we have some problems with work of the XML configuration. 1st. The parameter
+                 * baud_rate in the <MASTER> section must be write in decimal notation. Otherwise the
+                 * bus will start with a baud_rate = 9600 kbit/s.
+                 *
+                 * 2nd. The parameter ident_number in the <SLAVE> section must be write in hex notation.
+                 * Otherwise the Station will not work. You will get the error code 0x42 0x05 0x00.
+                 */
+                slavePrmData.setAttribute("ident_number",
+                                          "0x" + Integer.toHexString(slaveData.getIdentNumber()));
+            }
+            slavePrmData.setAttribute("group_ident", Integer.toString(slave.getGroupIdent()));
+            slavePrmData.setText(prmDataSB.toString());
+        }
+        return slavePrmData;
+    }
+
+    /**
+     * @param prmDataSB
+     */
+    private void addSlavePrmDataFromModules(@Nonnull StringBuilder prmDataSB) {
         for (ModuleDBO module : _modules) {
+            List<Integer> modiExtUserPrmDataConstDef = null;
             String modiExtUserPrmDataConst = module.getConfigurationData();
-            List<Integer> modiExtUserPrmDataConstDef = module.getGsdModuleModel2()
-                    .getExtUserPrmDataConst();
-            if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
+            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                modiExtUserPrmDataConstDef = gsdModuleModel2.getExtUserPrmDataConst();
+            }
+            if( (modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
                 continue; // Do Nothing
-            } else if ((modiExtUserPrmDataConstDef != null)
-                    && (modiExtUserPrmDataConstDef.size() > modiExtUserPrmDataConst
-                            .split(",").length)) {
-                modiExtUserPrmDataConst = GsdFileParser.intList2HexString(modiExtUserPrmDataConstDef);
+            } else if( (modiExtUserPrmDataConstDef != null)
+                    && (modiExtUserPrmDataConstDef.size() > modiExtUserPrmDataConst.split(",").length)) {
+                modiExtUserPrmDataConst = GsdFileParser
+                        .intList2HexString(modiExtUserPrmDataConstDef);
                 prmDataSB.append(',');
                 prmDataSB.append(modiExtUserPrmDataConst);
             } else {
@@ -157,27 +192,6 @@ public class XmlSlave {
                 prmDataSB.append(modiExtUserPrmDataConst);
             }
         }
-        int prmDataLen = 9 + prmDataSB.toString().split(",").length;
-        slavePrmData.setAttribute("prm_data_len", Integer.toString(prmDataLen));
-        slavePrmData.setAttribute("station_status", Integer.toString(slave.getStationStatus()));
-        slavePrmData.setAttribute("watchdog_fact_1", Integer.toString(slave.getWdFact1()));
-        slavePrmData.setAttribute("watchdog_fact_2", Integer.toString(slave.getWdFact2()));
-        slavePrmData.setAttribute("min_tsdr", Integer.toString(slave.getMinTsdr()));
-        if (slaveData != null) {
-            /*
-             * we have some problems with work of the XML configuration. 1st. The parameter
-             * baud_rate in the <MASTER> section must be write in decimal notation. Otherwise the
-             * bus will start with a baud_rate = 9600 kbit/s.
-             *
-             * 2nd. The parameter ident_number in the <SLAVE> section must be write in hex notation.
-             * Otherwise the Station will not work. You will get the error code 0x42 0x05 0x00.
-             */
-            slavePrmData.setAttribute("ident_number",
-                                      "0x" + Integer.toHexString(slaveData.getIdentNumber()));
-        }
-        slavePrmData.setAttribute("group_ident", Integer.toString(slave.getGroupIdent()));
-        slavePrmData.setText(prmDataSB.toString());
-        return slavePrmData;
     }
     
     /**
@@ -194,11 +208,11 @@ public class XmlSlave {
         String cfgData = "";
         for (ModuleDBO module : _modules) {
             GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if (gsdModuleModel2 != null) {
+            if(gsdModuleModel2 != null) {
                 cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
             }
         }
-        if (cfgData.endsWith(",")) {
+        if(cfgData.endsWith(",")) {
             cfgData = cfgData.substring(0, cfgData.length() - 1);
         }
         int cfgDataLen = cfgData.split(",").length + 2;
@@ -221,17 +235,20 @@ public class XmlSlave {
         String aat = "0,8";
         int offset = 0;
         for (ModuleDBO module : _modules) {
-            SlaveCfgData slaveCfgData = new SlaveCfgData(module.getGsdModuleModel2().getValue());
-            int leng = 0;
-            if (slaveCfgData.isInput()) {
-                leng = slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                aat = aat.concat(Integer.toString(leng));
+            GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                SlaveCfgData slaveCfgData = new SlaveCfgData(gsdModuleModel2.getValue());
+                int leng = 0;
+                if(slaveCfgData.isInput()) {
+                    leng = slaveCfgData.getWordSize() * slaveCfgData.getSize();
+                    aat = aat.concat(Integer.toString(leng));
+                }
+                if(slaveCfgData.isInput()) {
+                    leng += slaveCfgData.getWordSize() * slaveCfgData.getSize();
+                    aat = aat.concat(Integer.toString(leng));
+                }
+                offset += leng;
             }
-            if (slaveCfgData.isInput()) {
-                leng += slaveCfgData.getWordSize() * slaveCfgData.getSize();
-                aat = aat.concat(Integer.toString(leng));
-            }
-            offset += leng;
         }
         int slaveAatLen = 2;
         slaveAatData.setAttribute("slave_aat_len", Integer.toString(slaveAatLen));
