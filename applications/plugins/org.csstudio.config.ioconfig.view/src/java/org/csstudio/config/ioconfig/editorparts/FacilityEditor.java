@@ -30,7 +30,6 @@ import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -186,15 +185,5 @@ public class FacilityEditor extends AbstractNodeEditor{
             dMV.cancel();
         }
         setSaveButtonSaved();
-    }
-
-    /**
-     * Have no GSD File.
-     *
-     * @return null.
-     */
-    @Override
-    public GSDFileDBO getGsdFile() {
-        return null;
     }
 }

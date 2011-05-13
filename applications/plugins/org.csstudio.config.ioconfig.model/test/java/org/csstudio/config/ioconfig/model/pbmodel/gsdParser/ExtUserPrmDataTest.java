@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class ExtUserPrmDataTest {
 
     @Test
@@ -105,3 +106,4 @@ public class ExtUserPrmDataTest {
     }
 
 }
+//CHECKSTYLE:ON

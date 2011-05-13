@@ -77,8 +77,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -313,9 +311,6 @@ public class DocumentTableViewerBuilder {
     }
 
     /**
-     *
-     * TODO (hrickens) :
-     *
      * @author hrickens
      * @author $Author: hrickens $
      * @version $Revision: 1.2 $
@@ -422,6 +417,7 @@ public class DocumentTableViewerBuilder {
         /**
          * {@inheritDoc}
          */
+        @Override
         @SuppressWarnings("unchecked")
         public final Object[] getElements(final Object arg0) {
             if (arg0 instanceof List) {
@@ -439,6 +435,7 @@ public class DocumentTableViewerBuilder {
         /**
          * Disposes any resources.
          */
+        @Override
         public final void dispose() {
             // We don't create any resources, so we don't dispose any
         }
@@ -453,6 +450,7 @@ public class DocumentTableViewerBuilder {
          * @param arg2
          *            the new input
          */
+        @Override
         public final void inputChanged(final Viewer arg0, final Object arg1, final Object arg2) {
             // do noting
         }
@@ -463,9 +461,6 @@ public class DocumentTableViewerBuilder {
     }
 
     /**
-     * 
-     * TODO (Rickens Helge) : 
-     * 
      * @author Rickens Helge
      * @author $Author: $
      * @since 06.01.2011
@@ -510,9 +505,6 @@ public class DocumentTableViewerBuilder {
     }
 
     /**
-     * 
-     * TODO (Rickens Helge) : 
-     * 
      * @author Rickens Helge
      * @author $Author: $
      * @since 06.01.2011

@@ -40,13 +40,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
+//CHECKSTYLE:OFF
 public class HibernateLoadUnitTest {
     
     /**
@@ -204,3 +203,4 @@ public class HibernateLoadUnitTest {
     
     
 }
+//CHECKSTYLE:ON

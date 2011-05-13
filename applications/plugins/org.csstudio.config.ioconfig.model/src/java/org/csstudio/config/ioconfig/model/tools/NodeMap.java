@@ -40,7 +40,7 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
  */
 public final class NodeMap {
     
-    private static Map<Integer, AbstractNodeDBO> _NODE_MAP = new HashMap<Integer, AbstractNodeDBO>();
+    private static Map<Integer, AbstractNodeDBO<?,?>> _NODE_MAP = new HashMap<Integer, AbstractNodeDBO<?,?>>();
     private static int _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
     private static int _LOCAL_UPDATE;
     private static int _CHANNEL_CONFIG_COMPOSITE;
@@ -49,12 +49,12 @@ public final class NodeMap {
         // Constructor
     }
     
-    public static void put(@Nonnull Integer key, @Nonnull AbstractNodeDBO value) {
+    public static void put(@Nonnull Integer key, @Nonnull AbstractNodeDBO<?,?> value) {
         _NODE_MAP.put(key, value);
     }
     
     @CheckForNull
-    public static AbstractNodeDBO get(@Nonnull Integer key) {
+    public static AbstractNodeDBO<?,?> get(@Nonnull Integer key) {
         return _NODE_MAP.get(key);
     }
 

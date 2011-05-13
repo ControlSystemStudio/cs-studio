@@ -30,6 +30,7 @@ package org.csstudio.config.ioconfig.model.preference;
  * @version $Revision: 1.3 $
  * @since 24.04.2009
  */
+//CHECKSTYLE:OFF
 public class PreferenceConstants {
 
     public static String DDB_FACILITIES = "ddbFacilities";
@@ -44,3 +45,4 @@ public class PreferenceConstants {
     public static String DDB_TIMEOUT= "ddb_connection_timeout";
 
 }
+//CHECKSTYLE:ON

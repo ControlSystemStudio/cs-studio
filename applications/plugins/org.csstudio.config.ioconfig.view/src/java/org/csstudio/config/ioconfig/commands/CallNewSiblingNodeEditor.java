@@ -57,8 +57,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -91,7 +89,7 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
 			node = new FacilityDBO();
 		}else  if (siblingNode instanceof IocDBO) {
         	id = IocEditor.ID;
-        	node = new IocDBO(((IocDBO)siblingNode).getFacility());
+        	node = new IocDBO(((IocDBO)siblingNode).getParent());
         } else if (siblingNode instanceof ProfibusSubnetDBO) {
             id = SubnetEditor.ID;
             node = new ProfibusSubnetDBO(((ProfibusSubnetDBO)siblingNode).getIoc());

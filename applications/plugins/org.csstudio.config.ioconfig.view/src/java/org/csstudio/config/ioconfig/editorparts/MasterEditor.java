@@ -56,8 +56,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.AbstractGsdPropertyModel;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.platform.logging.CentralLogger;
@@ -218,14 +216,14 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         
         TreeMap<Short, ? extends AbstractNodeDBO> map = (TreeMap<Short, ? extends AbstractNodeDBO>) _master
                 .getChildrenAsMap();
-        if (map.size() > 0) {
+        if(map.size() > 0) {
             min = map.lastKey();
         }
         int maxNrSlave;
-        if ( (min <= 0) && (_master.getMaxNrSlave() <= 0)) {
+        if( (min <= 0) && (_master.getMaxNrSlave() <= 0)) {
             // default
             maxNrSlave = 60;
-        } else if (min > _master.getMaxNrSlave()) {
+        } else if(min > _master.getMaxNrSlave()) {
             maxNrSlave = min;
         } else {
             maxNrSlave = _master.getMaxNrSlave();
@@ -243,7 +241,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxSlaveOutputLenLabel.setText("Max Slave Output Len:");
         
         int slaveOutputLen = 160;
-        if (_master.getMaxSlaveOutputLen() >= 0) {
+        if(_master.getMaxSlaveOutputLen() >= 0) {
             slaveOutputLen = _master.getMaxSlaveOutputLen();
         }
         _maxSlaveOutputLenText = ProfibusHelper.getTextField(gName,
@@ -259,7 +257,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxSlaveInputLenLabel.setText("Max Slave Input Len:");
         
         int slaveInputLen = 160;
-        if (_master.getMaxSlaveInputLen() >= 0) {
+        if(_master.getMaxSlaveInputLen() >= 0) {
             slaveInputLen = _master.getMaxSlaveInputLen();
         }
         _maxSlaveInputLenText = ProfibusHelper.getTextField(gName,
@@ -287,7 +285,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxSlaveDiagEntriesLabel.setText("Max Slave Diag Entries:");
         
         value = 126;
-        if (_master.getMaxSlaveDiagEntries() >= 0) {
+        if(_master.getMaxSlaveDiagEntries() >= 0) {
             value = _master.getMaxSlaveDiagEntries();
         }
         _maxSlaveDiagEntriesText = ProfibusHelper.getTextField(gName,
@@ -302,7 +300,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxSlaveDiagLenLabel.setText("Max Slave Diag Len:");
         
         value = 32;
-        if (_master.getMaxSlaveDiagLen() >= 0) {
+        if(_master.getMaxSlaveDiagLen() >= 0) {
             value = _master.getMaxSlaveDiagLen();
         }
         _maxSlaveDiagLenText = ProfibusHelper.getTextField(gName,
@@ -317,7 +315,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxBusParaLenLabel.setText("Max Bus Para Len:");
         
         value = 128;
-        if (_master.getMaxBusParaLen() >= 0) {
+        if(_master.getMaxBusParaLen() >= 0) {
             value = _master.getMaxBusParaLen();
         }
         _maxBusParaLenText = ProfibusHelper.getTextField(gName,
@@ -332,7 +330,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         maxSlaveParaLenLabel.setText("Max Slave Para Len:");
         
         value = 244;
-        if (_master.getMaxSlaveParaLen() >= 0) {
+        if(_master.getMaxSlaveParaLen() >= 0) {
             value = _master.getMaxSlaveParaLen();
         }
         _maxSlaveParaLenText = ProfibusHelper.getTextField(gName,
@@ -414,7 +412,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         _masterUserDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
         
         // is a Default Value. Is not a part of the Master GSD File.
-        if ( (_master != null) && (_master.getMasterUserData() != null)
+        if( (_master != null) && (_master.getMasterUserData() != null)
                 && (_master.getMasterUserData().length() > 0)) {
             _masterUserDataText.setText(_master.getMasterUserData());
         } else {
@@ -467,7 +465,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         _autoclearButton = new Button(gParameters, SWT.CHECK | SWT.LEFT);
         _autoclearButton.setText("");
         
-        if (_master != null) {
+        if(_master != null) {
             _autoclearButton.setSelection(_master.isAutoclear());
         }
         _autoclearButton.addSelectionListener(new SelectionListener() {
@@ -530,7 +528,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         _redundentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         _redundentButton.setText("Redunden IOC: ");
         
-        if ( (_master.getRedundant() < 0)
+        if( (_master.getRedundant() < 0)
                 && !_master.getFreeStationAddress().contains((short) (_master.getSortIndex() + 1))) {
             _redundentButton.setEnabled(false);
             gRedundencyMaster
@@ -609,7 +607,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
                         .getFirstElement();
                 try {
                     getNode().moveSortIndex(index);
-                    if (getNode().getParent() != null) {
+                    if(getNode().getParent() != null) {
                         getProfiBusTreeView().refresh(getNode().getParent());
                     } else {
                         getProfiBusTreeView().refresh();
@@ -625,8 +623,8 @@ public class MasterEditor extends AbstractGsdNodeEditor {
     private void fillStationAddressCombo() throws PersistenceException {
         _freeStationAddress = _master.getFreeMStationAddress(_redundentButton.getSelection());
         Short sortIndex = _master.getSortIndex();
-        if (sortIndex >= 0) {
-            if (!_freeStationAddress.contains(sortIndex)) {
+        if(sortIndex >= 0) {
+            if(!_freeStationAddress.contains(sortIndex)) {
                 _freeStationAddress.add(sortIndex);
             }
             _indexCombo.setInput(_freeStationAddress);
@@ -657,7 +655,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         
         try {
             _master.setSortIndexNonHibernate(stationAddress);
-            if (_redundentButton.getSelection()) {
+            if(_redundentButton.getSelection()) {
                 _redundentButton.setData(true);
                 _master.setRedundant((short) (stationAddress + 1));
             } else {
@@ -711,37 +709,30 @@ public class MasterEditor extends AbstractGsdNodeEditor {
     /** {@inheritDoc}  */
     @Override
     public final void fill(@CheckForNull final GSDFileDBO gsdFile) throws PersistenceException {
-        if (gsdFile == null) {
+        if(gsdFile == null) {
             return;
         }
-        GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
         ParsedGsdFileModel parsedGsdFileModel;
-        try {
-            parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-            
-            // setGSDData
-            _master.setGSDMasterData(masterModel);
-            
-            getHeaderField(HeaderFields.VERSION).setText(masterModel.getRevisionNumber() + "");
-            _vendorText.setText(masterModel.getVendorName());
-            _pbBoardText.setText(masterModel.getModelName());
-            String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber()).toUpperCase();
-            if (hex.length() > 4) {
-                hex = hex.substring(hex.length() - 4, hex.length());
-            }
-            _idNoText.setText("0x" + hex);
-            _stationTypText.setText(masterModel.getStationType() + "");
-            _gsdFile = gsdFile;
-        } catch (IOException e) {
-            throw new PersistenceException(e);
+        parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
+        
+        // setGSDData
+        getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getRevision());
+        _vendorText.setText(parsedGsdFileModel.getVendorName());
+        _pbBoardText.setText(parsedGsdFileModel.getModelName());
+        String hex = Integer.toHexString(parsedGsdFileModel.getIdentNumber()).toUpperCase();
+        if(hex.length() > 4) {
+            hex = hex.substring(hex.length() - 4, hex.length());
         }
+        _idNoText.setText("0x" + hex);
+        _stationTypText.setText(parsedGsdFileModel.getIntProperty("Station_Type").toString());
+        _gsdFile = gsdFile;
     }
     
     /** {@inheritDoc} */
     @Override
     @CheckForNull
     public final GSDFileDBO getGsdFile() {
-        if (_master != null) {
+        if(_master != null) {
             return _master.getGSDFile();
         }
         return null;
@@ -759,12 +750,12 @@ public class MasterEditor extends AbstractGsdNodeEditor {
     @Override
     public void cancel() {
         super.cancel();
-        if (_indexCombo != null) {
+        if(_indexCombo != null) {
             _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
             getNameWidget().setText((String) getNameWidget().getData());
             Boolean selected = (Boolean) _redundentButton.getData();
             _redundentButton.setSelection(selected);
-            if (_master != null) {
+            if(_master != null) {
                 _gsdFile = _master.getGSDFile();
                 getHeaderField(HeaderFields.VERSION).setText("");
                 _vendorText.setText("");
@@ -790,7 +781,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
             }
         }
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -799,7 +790,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -808,7 +799,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -817,7 +808,7 @@ public class MasterEditor extends AbstractGsdNodeEditor {
         // TODO Auto-generated method stub
         
     }
-
+    
     /**
      * {@inheritDoc}
      */

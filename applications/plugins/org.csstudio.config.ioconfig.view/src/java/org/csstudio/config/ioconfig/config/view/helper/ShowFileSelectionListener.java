@@ -68,8 +68,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -77,16 +75,14 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ShowFileSelectionListener implements SelectionListener {
     /**
-     * TODO (hrickens) :
-     *
      * @author hrickens
      * @author $Author: hrickens $
      * @version $Revision: 1.2 $
      * @since 20.05.2010
      */
-    private final class GSDFileEditDialog extends Dialog {
-        private final Color GREEN = new Color(null, 0, 100, 0);
-        private final Color WHITE = new Color(null, 255, 255, 255);
+    private static final class GSDFileEditDialog extends Dialog {
+        private static final Color GREEN = new Color(null, 0, 100, 0);
+        private static final Color WHITE = new Color(null, 255, 255, 255);
         private final GSDFileDBO _gsdFile;
         private StyledText _text;
         
@@ -94,7 +90,7 @@ public class ShowFileSelectionListener implements SelectionListener {
          * Constructor.
          * @param parentShell
          */
-        private GSDFileEditDialog(@Nullable final Shell parentShell,
+        protected GSDFileEditDialog(@Nullable final Shell parentShell,
                                   @Nonnull final GSDFileDBO gsdFile) {
             super(parentShell);
             _gsdFile = gsdFile;
@@ -104,7 +100,7 @@ public class ShowFileSelectionListener implements SelectionListener {
          * {@inheritDoc}
          */
         @Override
-        protected void configureShell(@Nullable final Shell newShell) {
+        protected void configureShell(@Nonnull final Shell newShell) {
             super.configureShell(newShell);
             newShell.setText(_gsdFile.getName());
         }

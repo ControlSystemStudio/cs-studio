@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -80,6 +81,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * {@link #Channel(ChannelStructureDBO, String, boolean, boolean, short)} or
      */
     public ChannelDBO() {
+        // Constructor for Hibernate
     }
 
     /**
@@ -247,6 +249,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      *
      * @return the Type of this {@link ChannelDBO}
      */
+    @Nonnull
     public DataType getChannelType() {
         if (_channelType < DataType.values().length) {
             return DataType.values()[_channelType];
@@ -396,7 +399,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                     ChannelStructureDBO channelStructure = null;
                     short counter = structSortIndex;
                     while ((channelStructure == null) && (counter > 0)) {
-                        channelStructure = getModule().getChannelStructsAsMap().get(--counter);
+                        channelStructure = getModule().getChildrenAsMap().get(--counter);
                         if ((channelStructure != null) && (channelStructure.getLastChannel() != null)
                                 && (channelStructure.getLastChannel().isInput() == isInput())) {
                             // Previous Channel is:
@@ -422,7 +425,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                     ChannelDBO channel = null;
                     short counter = channelSortIndex;
                     while ((channel == null) && (counter > 0)) {
-                        channel = getChannelStructure().getChannelsAsMap().get(--counter);
+                        channel = getChannelStructure().getChildrenAsMap().get(--counter);
                         if (channel != null) {
                             channelNumber = channel.getChannelNumber();
                             channelNumber += channel.getChannelType().getByteSize();
@@ -436,7 +439,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                     ChannelStructureDBO channelStructure = null;
                     short counter = structSortIndex;
                     while ((channelStructure == null) && (counter > 0)) {
-                        channelStructure = getModule().getChannelStructsAsMap().get(--counter);
+                        channelStructure = getModule().getChildrenAsMap().get(--counter);
                         if ((channelStructure != null)
                                 && (channelStructure.getFirstChannel().isInput() == isInput())) {
                             if (channelStructure.isSimple()) {
@@ -631,6 +634,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.CHANNEL;
     }
@@ -639,7 +643,8 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * {@inheritDoc}
      */
     @Override
-    public InvalidLeave addChild(InvalidLeave child) throws PersistenceException {
+    @CheckForNull
+    public InvalidLeave addChild(@Nullable InvalidLeave child) throws PersistenceException {
         // do nothing. Channel is the leave node.
         return null;
     }
