@@ -25,12 +25,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IMetaData;
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
@@ -66,6 +70,19 @@ public abstract class EpicsIValueTypeSupport<T> extends AbstractTypeSupport<T> {
     public static <T extends IValue>
     EpicsSystemVariable<?> toSystemVariable(@Nonnull final String name,
                                             @Nonnull final T value) throws TypeSupportException {
+        final IMetaData meta = value.getMetaData();
+        if (meta != null) {
+            Class<?> clazz = null;
+            if (meta instanceof INumericMetaData) {
+                clazz = Double.class; // unfortunately, any other type has been swallowed.
+            } else if (meta instanceof IEnumeratedMetaData) {
+                clazz = EpicsEnum.class;
+            }
+            if (clazz != null) {
+                final EpicsMetaData epicsMetaData = EpicsIMetaDataTypeSupport.toMetaData(meta, clazz);
+                return toSystemVariable(name, value, epicsMetaData);
+            }
+        }
         return toSystemVariable(name, value, null);
     }
 

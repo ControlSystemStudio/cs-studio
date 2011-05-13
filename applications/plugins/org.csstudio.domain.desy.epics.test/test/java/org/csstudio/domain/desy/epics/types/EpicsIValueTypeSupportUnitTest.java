@@ -26,6 +26,7 @@ import java.util.List;
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
 import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.junit.Assert;
@@ -43,11 +44,12 @@ public class EpicsIValueTypeSupportUnitTest {
     @Before
     public void setup() {
         EpicsIValueTypeSupport.install();
+        EpicsIMetaDataTypeSupport.install();
     }
 
 
     @Test(expected=TypeSupportException.class)
-    public void testIValue2CssValueConversionReturnsNull() throws TypeSupportException {
+    public void testIValue2SystemVariableConversionReturnsNull() throws TypeSupportException {
         @SuppressWarnings({ "unchecked", "unused" })
         final EpicsSystemVariable<List<Double>> cssV =
             (EpicsSystemVariable<List<Double>>) EpicsIValueTypeSupport.toSystemVariable("foo",
@@ -60,7 +62,7 @@ public class EpicsIValueTypeSupportUnitTest {
     }
 
     @Test
-    public void testDoubleValue2CssValueConversion() {
+    public void testDoubleValue2SystemVariableConversion() {
         try {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<List<Double>> cssV =
@@ -81,7 +83,7 @@ public class EpicsIValueTypeSupportUnitTest {
     }
 
     @Test
-    public void testLongValue2CssValueConversion() {
+    public void testLongValue2SystemVariableConversion() {
         try {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<List<Long>> cssV =
@@ -102,7 +104,7 @@ public class EpicsIValueTypeSupportUnitTest {
     }
 
     @Test
-    public void testEnumValue2CssValueConversion() {
+    public void testEnumValue2SystemVariableConversion() {
         try {
             final IEnumeratedValue eVal = ValueFactory.createEnumeratedValue(TimestampFactory.now(),
                                                                              ValueFactory.createMinorSeverity(),
@@ -112,18 +114,18 @@ public class EpicsIValueTypeSupportUnitTest {
                                                                              new int[]{2});
 
             @SuppressWarnings("unchecked")
-            final EpicsSystemVariable<EpicsEnum> cssV = (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
+            final EpicsSystemVariable<EpicsEnum> cssV = 
+                (EpicsSystemVariable<EpicsEnum>) EpicsIValueTypeSupport.toSystemVariable("foo", eVal);
             Assert.assertNotNull(cssV);
-            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getRaw());
             Assert.assertEquals("part", cssV.getData().getState());
-            Assert.assertEquals(null, cssV.getData().getRaw());
+            Assert.assertEquals(Integer.valueOf(2), cssV.getData().getStateIndex());
         } catch (final TypeSupportException e) {
             Assert.fail();
         }
     }
 
     @Test
-    public void testStringValue2CssValueConversion() {
+    public void testStringValue2SystemVariableConversion() {
         try {
             @SuppressWarnings("unchecked")
             final EpicsSystemVariable<List<String>> sysVar =
