@@ -450,7 +450,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     @Override
     public ProfibusSubnetDBO copyThisTo(final IocDBO parentNode) throws PersistenceException {
-        ProfibusSubnetDBO copy = super.copyThisTo(parentNode);
+        ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
         for (MasterDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

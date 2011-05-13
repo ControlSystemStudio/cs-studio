@@ -80,7 +80,7 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
     @Override
     @Nonnull
     public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
-        final IocDBO copy = super.copyThisTo(parentNode);
+        final IocDBO copy = (IocDBO) super.copyThisTo(parentNode);
         for (final ProfibusSubnetDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

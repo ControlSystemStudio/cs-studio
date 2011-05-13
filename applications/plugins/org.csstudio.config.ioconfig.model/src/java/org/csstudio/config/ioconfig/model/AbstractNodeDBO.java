@@ -51,19 +51,24 @@ import org.csstudio.platform.security.User;
 import org.hibernate.annotations.Cascade;
 
 /**
- *
- * @author gerke
- * @author $Author: hrickens $
- * @version $Revision: 1.4 $
- * @since 21.03.2007
- * 
- */
+*
+* @author gerke
+* @author $Author: hrickens $
+* @version $Revision: 1.4 $
+* @since 21.03.2007
+* @param <C> The Parent node types
+* @param <P> The Children node types 
+* 
+*/
+@SuppressWarnings("rawtypes")
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends AbstractNodeDBO> extends
-        NamedDBClass implements Comparable<AbstractNodeDBO>, IDocumentable, INode, Serializable {
+        NamedDBClass implements Comparable<AbstractNodeDBO<P,C>>, IDocumentable, INode, Serializable {
     
+    private static final long serialVersionUID = 1L;
+
     protected static final int DEFAULT_MAX_STATION_ADDRESS = 255;
     
     /**
@@ -106,7 +111,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *            set the Parent of this Node
      */
     public void setParent(@Nonnull final P parent) {
-        this._parent = parent;
+        _parent = parent;
     }
     
     /**
@@ -115,7 +120,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     @Override
     @ManyToOne
-    @CheckForNull
+    @Nonnull
     public P getParent() {
         return _parent;
     }
@@ -162,6 +167,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @return null or the old Node for the SortIndex Position.
      * @throws PersistenceException 
      */
+    @SuppressWarnings("unchecked")
     @CheckForNull
     public C addChild(@Nonnull final C child) throws PersistenceException {
         short sortIndex = child.getSortIndex();
@@ -387,14 +393,15 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         int start = index;
         P parent = getParent();
         if(parent != null) {
-            Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = parent
+            @SuppressWarnings("unchecked")
+            Map<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = parent
                     .getChildrenAsMap();
-            final AbstractNodeDBO moveNode = childrenAsMap.get(index);
+            AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> moveNode = childrenAsMap.get(index);
             if(index > toIdx) {
                 direction = -1;
             }
             for (; start != toIdx; start += direction) {
-                final AbstractNodeDBO nextNode = childrenAsMap.get((short) (start + direction));
+                final AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> nextNode = childrenAsMap.get((short) (start + direction));
                 if(nextNode != null) {
                     nextNode.setSortIndexNonHibernate(start);
                 }
@@ -403,12 +410,6 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         }
     }
     
-    /**
-     * @param direction
-     * @param index
-     * @param toIndex
-     * @throws PersistenceException
-     */
     private void putNewNode(final short index, final short toIndex) throws PersistenceException {
         short direction = 1;
         short idx = index;
@@ -416,13 +417,14 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         if(idx > toIndex) {
             direction = -1;
         }
-        AbstractNodeDBO node = this;
+        AbstractNodeDBO<P, C> node = this;
         idx = toIndex;
         P parent = getParent();
         if(parent != null) {
-            Map<Short, ? extends AbstractNodeDBO> childrenAsMap = parent.getChildrenAsMap();
+            @SuppressWarnings("unchecked")
+            Map<Short, ? extends AbstractNodeDBO<P,C>> childrenAsMap = parent.getChildrenAsMap();
             do {
-                final AbstractNodeDBO nextNode = childrenAsMap.get(idx);
+                final AbstractNodeDBO<P, C> nextNode = childrenAsMap.get(idx);
                 node.setSortIndexNonHibernate(idx);
                 node = nextNode;
                 idx = (short) (idx + direction);
@@ -451,7 +453,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @throws PersistenceException 
      */
     @Nonnull
-    public <T extends AbstractNodeDBO> T copyThisTo(@Nonnull final P parentNode) throws PersistenceException {
+    public AbstractNodeDBO<P,C> copyThisTo(@Nonnull final P parentNode) throws PersistenceException {
         String createdBy = "Unknown";
         try {
             final User user = SecurityFacade.getInstance().getCurrentUser();
@@ -461,7 +463,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         } catch (final NullPointerException e) {
             createdBy = "Unknown";
         }
-        final T copy = copyParameter(parentNode);
+        final AbstractNodeDBO<P,C> copy = copyParameter(parentNode);
         copy.setCreatedBy(createdBy);
         copy.setUpdatedBy(createdBy);
         copy.setCreatedOn(new Date());
@@ -495,7 +497,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @throws PersistenceException 
      */
     @Nonnull
-    protected abstract <T extends AbstractNodeDBO> T copyParameter(@Nonnull P parent) throws PersistenceException;
+    protected abstract AbstractNodeDBO<P,C> copyParameter(@Nonnull P parent) throws PersistenceException;
     
     /**
      * Save his self.
@@ -531,13 +533,13 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     
     /**
      * Update the node an his children.
-     * @param parent the node to update.
+     * @param node the node to update.
      * @throws PersistenceException 
      */
-    protected void updateChildrenOf(@Nonnull final AbstractNodeDBO parent) throws PersistenceException {
-        Map<Short, AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> childrenAsMap = parent
-                .getChildrenAsMap();
-        for (final AbstractNodeDBO n : childrenAsMap.values()) {
+    protected void updateChildrenOf(@Nonnull final AbstractNodeDBO node) throws PersistenceException {
+        @SuppressWarnings("unchecked")
+        Map<Short, AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>> childrenAsMap = node.getChildrenAsMap();
+        for (final AbstractNodeDBO<?,?> n : childrenAsMap.values()) {
             n.localUpdate();
             updateChildrenOf(n);
         }
@@ -575,8 +577,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      * @return if this node equals whit the give node return 0.
      */
     @Override
-    public int compareTo(@CheckForNull final AbstractNodeDBO other) {
-        
+    public int compareTo(@CheckForNull final AbstractNodeDBO<P,C> other) {
         if(other == null) {
             return -1;
         }
@@ -609,7 +610,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         
         if(obj instanceof AbstractNodeDBO) {
             
-            final AbstractNodeDBO other = (AbstractNodeDBO) obj;
+            final AbstractNodeDBO<?,?> other = (AbstractNodeDBO<?,?>) obj;
             if(getId() == other.getId()) {
                 if(getId() > 0) {
                     return true;
