@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Strings;
+
 /**
  * The enum type for epics.
  * Example epics record definition from e.g. vxBoot/ioc/kryo/kryoVBox/dbd/Epics3-14-11.dbd
@@ -83,7 +85,7 @@ public final class EpicsEnum implements Serializable {
     public static final Pattern EPICS_ENUM_STATE_REGEX =
         Pattern.compile(STATE + "\\(([\\d+])\\)" + SEP + "([^\\s]+)");
     public static final Pattern EPICS_ENUM_RAW_REGEX =
-        Pattern.compile(RAW + SEP + "([^\\s]+)");
+        Pattern.compile(RAW + SEP + "([-+]?[0-9]*([eE][-+]?[0-9]+)?)");
 
     public static final String UNKNOWN_STATE = "STATE(0):UNKNOWN";
     public static final String UNSET_STATE = "STATE(0):UNSET";
@@ -107,7 +109,13 @@ public final class EpicsEnum implements Serializable {
     public static EpicsEnum createFromString(@Nonnull final String string) {
         Matcher matcher = EPICS_ENUM_RAW_REGEX.matcher(string);
         if (matcher.matches()) {
-            return EpicsEnum.createFromRaw(Integer.valueOf(matcher.group(1)));
+            final String eGroup = matcher.group(2);
+            final String number = matcher.group(1);
+            if (Strings.isNullOrEmpty(eGroup)) {
+                return EpicsEnum.createFromRaw(Integer.valueOf(number));
+            } else {
+                return EpicsEnum.createFromRaw(Double.valueOf(number).intValue());
+            }
         }
         matcher = EPICS_ENUM_STATE_REGEX.matcher(string);
         if (matcher.matches()) {

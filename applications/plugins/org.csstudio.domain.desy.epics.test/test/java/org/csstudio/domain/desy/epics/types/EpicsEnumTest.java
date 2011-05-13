@@ -47,12 +47,27 @@ public class EpicsEnumTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidCreationFromString3() {
-        EpicsEnum.createFromString("RAW  : 2");
+        EpicsEnum.createFromString("RAW:2.5");
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void testInvalidCreationFromString4() {
         EpicsEnum.createFromString("STATE(hallo):2");
+    }
+    
+    @Test
+    public void testRawCreationFromStringExponentialNotation() {
+        EpicsEnum fromString = EpicsEnum.createFromString("RAW:1e6");
+        Assert.assertEquals(Integer.valueOf((int) 1e6), fromString.getRaw());
+
+        fromString = EpicsEnum.createFromString("RAW:-1e-6");
+        Assert.assertEquals(Integer.valueOf((int) -1e-6), fromString.getRaw());
+    }
+
+    @Test
+    public void testRawCreationFromStringNegativeInteger() {
+        EpicsEnum fromString = EpicsEnum.createFromString("RAW:-13");
+        Assert.assertEquals(Integer.valueOf(-13), fromString.getRaw());
     }
     
     @Test
