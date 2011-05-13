@@ -58,6 +58,7 @@
       <plugin id="org.csstudio.logbook"/>
       <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.multiChannelViewer"/>
+      <plugin id="org.csstudio.openfile"/>
       <plugin id="org.csstudio.opibuilder"/>
       <plugin id="org.csstudio.opibuilder.adl2boy"/>
       <plugin id="org.csstudio.opibuilder.examples"/>
