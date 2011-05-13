@@ -42,7 +42,6 @@ import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.StringAccess;
 import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.IdentifierUtilities;
 import org.epics.css.dal.proxy.DirectoryProxy;
@@ -354,14 +353,6 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
 	{
 		super.removeDynamicValueListener(l);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.ValueUpdateable#getLatestReceivedValueAsObject()
-	 */
-	public Object getLatestReceivedValueAsObject()
-	{
-		return lastValue;
 	}
 
 	/* (non-Javadoc)
