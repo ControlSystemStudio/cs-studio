@@ -44,6 +44,8 @@
       <plugin id="org.csstudio.archive.channelarchiver"/>
       <plugin id="org.csstudio.archivereader"/>
       <plugin id="org.csstudio.archivereader.channelarchiver"/>
+      <plugin id="org.csstudio.auth"/>
+      <plugin id="org.csstudio.auth.ui"/>
       <plugin id="org.csstudio.common.product"/>
       <plugin id="org.csstudio.csdata"/>
       <plugin id="org.csstudio.data"/>

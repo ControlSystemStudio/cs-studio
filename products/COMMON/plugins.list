@@ -10,6 +10,8 @@ org.csstudio.alarm.beast.ui.alarmtable
 org.csstudio.alarm.beast.ui.alarmtree
 org.csstudio.apputil
 org.csstudio.apputil.ui
+org.csstudio.auth
+org.csstudio.auth.ui
 org.csstudio.archive
 org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
