@@ -24,6 +24,8 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import javax.annotation.Nonnull;
+
 
 /**
  * @author hrickens
@@ -139,7 +141,9 @@ public final class Ranges {
     /**
      * Default Constructor. 
      */
-    private Ranges() { }
+    private Ranges() {
+        // Default Constructor. 
+    }
     
     /**
      * 
@@ -148,6 +152,7 @@ public final class Ranges {
      * @param def default Value.
      * @return return a Range Value with min / max limits 
      */
+    @Nonnull
     public static Value getRangeValue(final long min, final long max, final long def){
         return new Value(min, max, def); 
     }
