@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.platform.ui.util.DisplayUtil;
+import org.csstudio.openfile.DisplayUtil;
 import org.csstudio.startup.Plugin;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
