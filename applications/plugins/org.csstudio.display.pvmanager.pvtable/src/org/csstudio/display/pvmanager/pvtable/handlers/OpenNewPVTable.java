@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvmanager.pvtable.editors.PVTableEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -46,12 +46,12 @@ public class OpenNewPVTable extends AbstractHandler {
 		} else if ((selection != null)
 				& (selection instanceof IStructuredSelection)) {
 			// create a pvtable using the selected pv
-			Collection<ProcessVariableName> PVNames = new ArrayList<ProcessVariableName>();
+			Collection<ProcessVariable> PVNames = new ArrayList<ProcessVariable>();
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			for (@SuppressWarnings("rawtypes")
 			Iterator iterator = strucSelection.iterator(); iterator.hasNext();) {
-				PVNames.add((ProcessVariableName) Platform.getAdapterManager()
-						.getAdapter(iterator.next(), ProcessVariableName.class));
+				PVNames.add((ProcessVariable) Platform.getAdapterManager()
+						.getAdapter(iterator.next(), ProcessVariable.class));
 			}
 			
 			return newEditor;

@@ -22,7 +22,7 @@ import java.io.Serializable;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DeviceName implements Serializable
+public class Device implements Serializable
 {
     /** @see Serializable */
     final private static long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class DeviceName implements Serializable
     /** Initialize
      *  @param name Device name
      */
-    public DeviceName(final String name)
+    public Device(final String name)
     {
         if (name == null)
             throw new IllegalArgumentException("Empty name");
@@ -41,7 +41,7 @@ public class DeviceName implements Serializable
     }
 
     /** @return Device Name */
-    public String getDeviceName()
+    public String getName()
     {
         return name;
     }
@@ -66,15 +66,15 @@ public class DeviceName implements Serializable
     {
         if (this == obj)
             return true;
-        if (! (obj instanceof DeviceName))
+        if (! (obj instanceof Device))
             return false;
-        final DeviceName other = (DeviceName) obj;
-        return name.equals(other.getDeviceName());
+        final Device other = (Device) obj;
+        return name.equals(other.getName());
     }
 
     @Override
     public String toString()
     {
-        return "DeviceName '" + name + "'";
+        return "Device '" + name + "'";
     }
 }

@@ -1,6 +1,6 @@
 package org.csstudio.display.waterfall;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -31,10 +31,10 @@ public class OpenWaterfall extends AbstractHandler implements IHandler {
 			IWorkbenchPage page = window.getActivePage();
 			WaterfallView waterfall = (WaterfallView) page
 					.showView(WaterfallView.ID);
-			ProcessVariableName[] pvs = AdapterUtil.convert(selection, ProcessVariableName.class);
+			ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
 			
 			if (pvs.length > 0) {
-				waterfall.setPVName(pvs[0].getProcessVariableName());
+				waterfall.setPVName(pvs[0].getName());
 			}
 
 		} catch (Exception e) {

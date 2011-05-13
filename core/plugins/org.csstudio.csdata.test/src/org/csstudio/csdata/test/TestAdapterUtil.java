@@ -2,7 +2,7 @@ package org.csstudio.csdata.test;
 
 import java.util.Arrays;
 
-import org.csstudio.csdata.DeviceName;
+import org.csstudio.csdata.Device;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -29,23 +29,23 @@ public class TestAdapterUtil extends AbstractHandler implements IHandler {
 				"Convert to an array: " + Arrays.toString((Object[]) AdapterUtil.convert(device,
 						DeviceAndAPV[].class.getName())) + "\n" +
 				"Convert to a Device: " + AdapterUtil.convert(device,
-						DeviceName.class.getName()) + "\n" +
+						Device.class.getName()) + "\n" +
 				"Convert to a Device array: " + Arrays.toString((Object[]) AdapterUtil.convert(device,
-						DeviceName[].class.getName())) + "\n" +
+						Device[].class.getName())) + "\n" +
 				"Array of single DeviceAndAPV\n" +
 				"Convert to single: " + AdapterUtil.convert(singleDevice,
 						DeviceAndAPV.class.getName()) + "\n" +
 				"Convert to an array: " + Arrays.toString((Object[]) AdapterUtil.convert(singleDevice,
 						DeviceAndAPV[].class.getName())) + "\n" +
 				"Convert to a Device: " + AdapterUtil.convert(singleDevice,
-						DeviceName.class.getName()) + "\n" +
+						Device.class.getName()) + "\n" +
 				"Convert to a Device array: " + Arrays.toString((Object[]) AdapterUtil.convert(singleDevice,
-				DeviceName[].class.getName())) + "\n" +
+				Device[].class.getName())) + "\n" +
 				"Array of multiple DeviceAndAPV\n" +
 				"Convert to an array: " + Arrays.toString((Object[]) AdapterUtil.convert(multipleDevices,
 						DeviceAndAPV[].class.getName())) + "\n" +
 				"Convert to a Device array: " + Arrays.toString((Object[]) AdapterUtil.convert(multipleDevices,
-						DeviceName[].class.getName())) + "\n" +
+						Device[].class.getName())) + "\n" +
 				"");
 //		MessageDialog.openInformation(
 //				window.getShell(),
