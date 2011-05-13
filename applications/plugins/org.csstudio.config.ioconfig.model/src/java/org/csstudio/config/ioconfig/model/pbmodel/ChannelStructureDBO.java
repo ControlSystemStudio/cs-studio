@@ -249,8 +249,8 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final ModuleDBO parentNode) throws PersistenceException {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
+    public ChannelStructureDBO copyThisTo(final ModuleDBO parentNode) throws PersistenceException {
+        ChannelStructureDBO copy = (ChannelStructureDBO) super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
     }

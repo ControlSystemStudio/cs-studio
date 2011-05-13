@@ -24,7 +24,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -32,7 +31,6 @@ import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -151,6 +149,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @ManyToOne
+    @Nonnull
     public MasterDBO getProfibusDPMaster() {
         return (MasterDBO) getParent();
     }
@@ -170,11 +169,10 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     /**
      * @param gsdFile
      *            set the GSDFile.
-     * @throws IOException 
      */
-    public void setGSDFile(@Nonnull final GSDFileDBO gsdFile) {
+    public void setGSDFile(@CheckForNull final GSDFileDBO gsdFile) {
         if(gsdFile == null) {
-            _gsdFile = gsdFile;
+            _gsdFile = null;
         } else if(!gsdFile.equals(_gsdFile)) {
             GSDFileDBO oldGDS = _gsdFile;
             _gsdFile = gsdFile;
@@ -188,7 +186,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      *
      * @return The Vendor name of this slave.
      */
+    @Nonnull
     public String getVendorName() {
+        if(_vendorName == null) {
+            _vendorName = "";
+        }
         return _vendorName;
     }
     
@@ -205,7 +207,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      *
      * @return get the Model Name of Slave.
      */
+    @Nonnull
     public String getModelName() {
+        if(_modelName == null) {
+            _modelName = "";
+        }
         return _modelName;
     }
     
@@ -218,7 +224,11 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         _modelName = modelName;
     }
     
+    @Nonnull
     public String getRevision() {
+        if(_revision == null) {
+            _revision = "";
+        }
         return _revision;
     }
     
@@ -357,6 +367,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
+    @Nonnull
     public List<Integer> getPrmUserDataList() {
         return _prmUserDataList;
     }
@@ -393,6 +404,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
+    @Nonnull
     public String getEpicsAdressString() {
         /** contribution to ioName (PV-link to EPICSORA) */
         return getProfibusDPMaster().getEpicsAdressString() + ":" + getSortIndex();
@@ -404,6 +416,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     }
     
     @Transient
+    @CheckForNull
     public final String getIDNo() {
         return _iDNo;
     }
@@ -414,7 +427,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      */
     @Override
     @CheckForNull
-    public SlaveDBO copyParameter(@Nullable final MasterDBO parentNode) throws PersistenceException {
+    public SlaveDBO copyParameter(@Nonnull final MasterDBO parentNode) throws PersistenceException {
         MasterDBO master = parentNode;
         SlaveDBO copy = new SlaveDBO(master);
         copy.setFdlAddress(getFdlAddress());
@@ -431,8 +444,8 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         copy.setVendorName(getVendorName());
         copy.setWdFact1(getWdFact1());
         copy.setWdFact2(getWdFact2());
-        for (AbstractNodeDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+        for (ModuleDBO node : getChildren()) {
+            AbstractNodeDBO<?, ?> childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -463,7 +476,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
             throw new ArrayIndexOutOfBoundsException(index);
         }
         // Move a exist Node
-        AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(index);
+        SlaveDBO moveNode = getParent().getChildrenAsMap().get(index);
         if(moveNode != null) {
             moveNode.moveSortIndex( (index + 1));
         }
@@ -474,6 +487,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.Slave;
     }
@@ -483,6 +497,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
      */
     @Override
     @Transient
+    @Nonnull
     public NodeType getNodeType() {
         return NodeType.SLAVE;
     }

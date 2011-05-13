@@ -161,7 +161,6 @@ public class ProfibusConfigWinModGenerator {
     private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
     	_module = module.getSortIndex()+1;
 		List<Integer> slaveCfgData;
-        try {
             slaveCfgData = module.getGsdModuleModel2().getValue();
             int length = slaveCfgData.size();
     		if (module.getGSDModule() != null) {
@@ -178,9 +177,6 @@ public class ProfibusConfigWinModGenerator {
     			.append(LINE_END).append("END").append(LINE_END)
     			.append(LINE_END);
     		}
-        } catch (IOException e) {
-            throw new PersistenceException(e);
-        }
 		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChildrenAsMap();
 		Set<Short> keySet = channelStructsAsMap.keySet();
 		for (Short key : keySet) {

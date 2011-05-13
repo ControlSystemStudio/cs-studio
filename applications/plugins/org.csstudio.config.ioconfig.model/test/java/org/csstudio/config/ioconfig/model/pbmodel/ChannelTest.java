@@ -168,7 +168,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -212,7 +213,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // --- create Module 2 -----------------------
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName( "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -258,7 +260,8 @@ public class ChannelTest {
          * OUTPUT, ANALOG
          */
         // --- create Module 3 -----------------------
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -328,7 +331,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -372,7 +376,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -417,7 +422,8 @@ public class ChannelTest {
          * INPUT, ANALOG
          */
         // create Module 3
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -482,7 +488,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -525,7 +532,8 @@ public class ChannelTest {
 //        assertEquals("@Subnet:815/2 'T=INT16'", channelM1C4.getEpicsAddressStringNH());
 
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -564,7 +572,8 @@ public class ChannelTest {
 //        assertEquals("@Subnet:815/5 'T=UNSIGN16'", channelM2C4.getEpicsAddressStringNH());
 
         // create Module 3
-        final ModuleDBO module3 = new ModuleDBO(_slave, "Module 3");
+        final ModuleDBO module3 = new ModuleDBO(_slave);
+        module3.setName("Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -609,7 +618,8 @@ public class ChannelTest {
 //        testSimpleChannel("@Subnet:815/8 'T=UNSIGN16'", (short) 3, channelM3C4, structureM3C4);
 
         // create Module 4
-        final ModuleDBO module4 = new ModuleDBO(_slave, "Module 4");
+        final ModuleDBO module4 = new ModuleDBO(_slave);
+        module4.setName("Module 4");
         module4.moveSortIndex((short) 24);
         module4.localSave();
 
@@ -730,7 +740,8 @@ public class ChannelTest {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
@@ -906,7 +917,8 @@ public class ChannelTest {
         assertEquals(2, module1.getOutputSize());
 
         // create Module 2
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -1202,7 +1214,8 @@ public class ChannelTest {
 
         // create Module 1
         // M1-->
-        final ModuleDBO module1 = new ModuleDBO(_slave, "Module 1");
+        final ModuleDBO module1 = new ModuleDBO(_slave);
+        module1.setName("Module 1");
         module1.moveSortIndex((short) 31);
         module1.localSave();
 
@@ -1319,7 +1332,8 @@ public class ChannelTest {
 
         // create Module 2
         // M2-->
-        final ModuleDBO module2 = new ModuleDBO(_slave, "Module 2");
+        final ModuleDBO module2 = new ModuleDBO(_slave);
+        module2.setName("Module 2");
         module2.moveSortIndex((short) 32);
         module2.localSave();
 
@@ -1478,7 +1492,8 @@ public class ChannelTest {
         _slave = new SlaveDBO(_master);
         _slave.setName("Slave");
         _slave.localSave();
-        _module = new ModuleDBO(_slave, "Module");
+        _module = new ModuleDBO(_slave);
+        _module.setName("Module");
         _module.localSave();
 
     }

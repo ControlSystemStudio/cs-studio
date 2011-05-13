@@ -80,6 +80,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * {@link #Module(SlaveDBO)}
      */
     public ModuleDBO() {
+        // Constructor for Hiberrnate
     }
     
     /**
@@ -87,19 +88,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @param slave the parent Slave.
      * @throws PersistenceException 
      */
-    public ModuleDBO(final SlaveDBO slave) throws PersistenceException {
-        this(slave, null);
-    }
-    
-    /**
-     * This Constructor set the parent and the name of this node.
-     * @param slave The parent Salve
-     * @param name the name of this Module.
-     * @throws PersistenceException 
-     */
-    public ModuleDBO(final SlaveDBO slave, final String name) throws PersistenceException {
+    public ModuleDBO(@Nonnull final SlaveDBO slave) throws PersistenceException {
         setParent(slave);
-        setName(name);
         slave.addChild(this);
     }
     
@@ -110,6 +100,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * kann. length = 204+19
      */
     @Column(name = "cfg_data", length = 99)
+    @Nonnull
     public String getConfigurationData() {
         return GsdFileParser.intList2HexString(_configurationData);
     }
@@ -118,6 +109,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @return
      */
     @Transient
+    @Nonnull
     public List<Integer> getConfigurationDataList() {
         return _configurationData;
     }
@@ -133,7 +125,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     }
     
     @Transient
-    public void setConfigurationDataByte(Integer index, Integer value) {
+    public void setConfigurationDataByte(@Nonnull Integer index, @Nonnull Integer value) {
         _configurationData.set(index, value);
     }
     
@@ -234,17 +226,23 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     }
     
     @Transient
+    @CheckForNull
     public GSDModuleDBO getGSDModule() {
-        return getGSDFile().getGSDModule(getModuleNumber());
+        GSDModuleDBO gsdModule = null;
+        GSDFileDBO gsdFile = getGSDFile();
+        if(gsdFile!=null) {
+          gsdModule = gsdFile.getGSDModule(getModuleNumber());
+        }
+        return gsdModule;
     }
     
-    
     @ManyToOne
+    @Nonnull
     public SlaveDBO getSlave() {
         return (SlaveDBO) getParent();
     }
     
-    public void setSlave(final SlaveDBO slave) {
+    public void setSlave(@Nonnull final SlaveDBO slave) {
         this.setParent(slave);
     }
     
@@ -253,11 +251,13 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @return the Slave GSD File.
      */
     @Transient
+    @CheckForNull
     public GSDFileDBO getGSDFile() {
         return getSlave().getGSDFile();
     }
     
     @Transient
+    @CheckForNull
     public String getExtModulePrmDataLen() {
         return _extModulePrmDataLen;
     }
@@ -265,30 +265,26 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     /**
      * @param trim
      */
-    public void setExtModulePrmDataLen(final String extModulePrmDataLen) {
+    public void setExtModulePrmDataLen(@Nonnull final String extModulePrmDataLen) {
         _extModulePrmDataLen = extModulePrmDataLen;
     }
     
     @Transient
+    @Nonnull
     public String getEpicsAddressString() {
         /** contribution to ioName (PV-link to EPICSORA) */
-        try {
-            return getSlave().getEpicsAdressString();
-        } catch (NullPointerException e) {
-            return null;
-        }
+        return getSlave().getEpicsAdressString();
     }
     
     @Transient
     @CheckForNull
-    public GsdModuleModel2 getGsdModuleModel2() throws IOException {
-        try {
-            GsdModuleModel2 module = getSlave().getGSDFile().getParsedGsdFileModel()
-                    .getModule(getModuleNumber());
-            return module;
-        } catch (NullPointerException e) {
-            return null;
+    public GsdModuleModel2 getGsdModuleModel2() {
+        GsdModuleModel2 module = null;
+        GSDFileDBO gsdFile = getParent().getGSDFile();
+        if(gsdFile != null) {
+            module = gsdFile.getParsedGsdFileModel().getModule(getModuleNumber());
         }
+        return module;
     }
     
     @Transient
@@ -308,8 +304,9 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     }
     
     @Override
-    public AbstractNodeDBO copyThisTo(final SlaveDBO parentNode) throws PersistenceException {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
+    @Nonnull
+    public ModuleDBO copyThisTo(@Nonnull final SlaveDBO parentNode) throws PersistenceException {
+        ModuleDBO copy = (ModuleDBO) super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
     }
@@ -319,7 +316,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
      * @throws PersistenceException 
      */
     @Override
-    public ModuleDBO copyParameter(final SlaveDBO parentNode) throws PersistenceException {
+    @Nonnull
+    public ModuleDBO copyParameter(@Nonnull final SlaveDBO parentNode) throws PersistenceException {
         SlaveDBO slave = parentNode;
         ModuleDBO copy = new ModuleDBO(slave);
         copy.setModuleNumber(getModuleNumber());
@@ -330,8 +328,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
         copy.setConfigurationData(getConfigurationData());
         copy.setExtModulePrmDataLen(getExtModulePrmDataLen());
         
-        for (AbstractNodeDBO node : getChildrenAsMap().values()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+        for (ChannelStructureDBO node : getChildrenAsMap().values()) {
+            ChannelStructureDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         
@@ -373,6 +371,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     }
     
     @Transient
+    @Nonnull 
     public Set<ChannelDBO> getPureChannels() {
         Set<ChannelDBO> result = new HashSet<ChannelDBO>();
         for (ChannelStructureDBO s : getChildren()) {
@@ -389,12 +388,8 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
         if(getConfigurationData() == null) {
             List<Integer> extUserPrmDataConst;
             String defaultUserPrmDataConst;
-            try {
-                extUserPrmDataConst = getGsdModuleModel2().getExtUserPrmDataConst();
-                defaultUserPrmDataConst = GsdFileParser.intList2HexString(extUserPrmDataConst);
-            } catch (IOException e) {
-                defaultUserPrmDataConst = "";
-            }
+            extUserPrmDataConst = getGsdModuleModel2().getExtUserPrmDataConst();
+            defaultUserPrmDataConst = GsdFileParser.intList2HexString(extUserPrmDataConst);
             return defaultUserPrmDataConst;
         }
         return getConfigurationData();
