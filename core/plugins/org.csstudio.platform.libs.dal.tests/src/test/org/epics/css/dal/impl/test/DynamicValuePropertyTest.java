@@ -1606,17 +1606,12 @@ public abstract class DynamicValuePropertyTest extends TestCase
 			Thread.sleep(3000);
 
 			assertTrue(matchValue(randomValue, prop.getLatestReceivedValue()));
-			assertTrue(matchValue(randomValue, prop.getLatestReceivedValueAsObject()));
 
 			//listener.wait(5000);
 
 			ResponseEvent responseEvent = listener.getResponses()
 				.get(listener.getResponseCount() - 1);
 			Object value = responseEvent.getResponse().getValue();
-
-			Object lastValueObj = prop.getLatestReceivedValueAsObject();
-
-			assertTrue(matchValue(lastValueObj, value));
 
 			randomValue = getRandomValue();
 			prop.setAsynchronous(randomValue);

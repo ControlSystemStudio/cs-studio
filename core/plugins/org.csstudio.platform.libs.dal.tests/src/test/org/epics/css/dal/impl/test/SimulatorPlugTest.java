@@ -33,6 +33,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueMonitor;
@@ -356,6 +357,74 @@ public class SimulatorPlugTest extends TestCase{
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	public void testTwoFactories() {
+		
+
+		try {
+			
+			
+			String name= "ReuseProperty";
+
+			DynamicValueProperty p1= pfac.getProperty(name);
+			PropertyListener l1= new PropertyListener();
+			
+			p1.addLinkListener(l1);
+			p1.addDynamicValueListener(l1);
+			
+			Thread.sleep(1000);
+			
+			assertEquals(ConnectionState.CONNECTED, p1.getConnectionState());
+
+			assertEquals(1, l1.valueChanged);
+			//assertEquals(1, l1.conditionChange);
+			//assertEquals(1, l1.connecting);
+			//assertEquals(1, l1.connected);
+			//assertEquals(1, l1.ready);
+		
+			Object m1= p1.getCharacteristic(CharacteristicInfo.C_DESCRIPTION.getName());
+			assertNotNull(m1);
+			assertEquals(m1, p1.getDescription());
+			assertNotNull(p1.getData());
+			assertNotNull(p1.getData().getMetaData());
+			assertEquals(m1, p1.getData().getMetaData().getDescription());
+
+			PropertyFactory pfac2 = DefaultPropertyFactoryService.getPropertyFactoryService()
+			.getPropertyFactory(ctx, LinkPolicy.SYNC_LINK_POLICY);
+
+			DynamicValueProperty p2= pfac2.getProperty(name);
+			PropertyListener l2= new PropertyListener();
+			
+			p2.addLinkListener(l2);
+			p2.addDynamicValueListener(l2);
+			
+			Thread.sleep(1000);
+
+			assertEquals(1, l2.valueChanged);
+			//assertEquals(1, l2.conditionChange);
+			//assertEquals(1, l2.connecting);
+			//assertEquals(1, l2.connected);
+			//assertEquals(1, l2.ready);
+		
+			assertEquals(ConnectionState.CONNECTED, p2.getConnectionState());
+		
+			assertEquals(p1.getLatestReceivedValue(), p2.getLatestReceivedValue());
+
+			Object m2= p2.getCharacteristic(CharacteristicInfo.C_DESCRIPTION.getName());
+			assertNotNull(m2);
+			assertEquals(m2, p2.getDescription());
+			assertNotNull(p2.getData());
+			assertNotNull(p2.getData().getMetaData());
+			assertEquals(m2, p2.getData().getMetaData().getDescription());
+			assertEquals(m1, m2);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.toString());
+		}
+		
+		
 	}
 	
 }
