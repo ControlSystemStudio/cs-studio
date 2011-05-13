@@ -30,6 +30,7 @@ org.csstudio.email.ui
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.multiChannelViewer
+org.csstudio.openfile
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
