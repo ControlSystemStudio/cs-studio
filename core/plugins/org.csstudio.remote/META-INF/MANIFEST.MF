@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Remote
+Bundle-SymbolicName: org.csstudio.remote
+Bundle-Version: 3.0.0.qualifier
+Bundle-Activator: org.csstudio.remote.internal.RemoteActivator
+Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.platform.management
+Service-Component: OSGI-INF/remotecommands-component.xml

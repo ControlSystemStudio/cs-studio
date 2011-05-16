@@ -29,7 +29,6 @@ import org.csstudio.platform.epicsdbfile.RecordInstanceDatabaseLexerTest;
 import org.csstudio.platform.epicsdbfile.RecordInstanceDatabaseParserTest;
 import org.csstudio.platform.epicsdbfile.RecordInstanceTest;
 import org.csstudio.platform.epicsdbfile.TokenTest;
-import org.csstudio.platform.internal.management.CommandContributionTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceFactoryTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceTest;
 import org.csstudio.platform.internal.model.ControlSystemItemFactoriesRegistryTest;
@@ -54,8 +53,6 @@ import org.junit.runners.Suite.SuiteClasses;
         RecordInstanceDatabaseParserTest.class,
         RecordInstanceTest.class,
         TokenTest.class,
-
-        CommandContributionTest.class,
 
         ArchiveDataSourceFactoryTest.class,
         ArchiveDataSourceTest.class,
