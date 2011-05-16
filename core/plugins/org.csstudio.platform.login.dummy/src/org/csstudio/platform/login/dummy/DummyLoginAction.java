@@ -1,7 +1,7 @@
 package org.csstudio.platform.login.dummy;
 
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.dialogs.LoginDialog;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.dialogs.LoginDialog;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;

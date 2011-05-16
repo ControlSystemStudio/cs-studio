@@ -1,7 +1,8 @@
 package org.csstudio.config.ioconfig.model;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Date;
@@ -12,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class FacilityDBOTest {
 
     @Test
@@ -102,3 +104,4 @@ public class FacilityDBOTest {
     }
 
 }
+//CHECKSTYLE:ON

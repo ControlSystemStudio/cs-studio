@@ -34,11 +34,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.csstudio.auth.security.IAuthorizationProvider;
+import org.csstudio.auth.security.Right;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.Right;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.User;
 import org.eclipse.core.runtime.Preferences;
 
 

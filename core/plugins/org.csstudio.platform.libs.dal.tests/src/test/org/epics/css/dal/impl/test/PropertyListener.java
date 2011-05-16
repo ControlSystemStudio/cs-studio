@@ -187,6 +187,8 @@ public class PropertyListener implements ConnectionListener,
 	 */
 	public void valueChanged(DynamicValueEvent event)
 	{
+		//System.err.println(">>> "+event.getValue());
+		//Thread.dumpStack();
 		valueChanged++;
 	}
 

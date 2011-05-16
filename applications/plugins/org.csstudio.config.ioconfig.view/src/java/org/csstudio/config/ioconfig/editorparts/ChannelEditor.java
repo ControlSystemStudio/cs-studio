@@ -370,14 +370,6 @@ public class ChannelEditor extends AbstractNodeEditor {
 	}
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final GSDFileDBO getGsdFile() {
-        return null;
-    }
-
-    /**
 	 * @param comp
 	 * @param loadSensors
 	 */

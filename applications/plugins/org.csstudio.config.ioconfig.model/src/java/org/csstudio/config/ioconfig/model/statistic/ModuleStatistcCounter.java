@@ -33,12 +33,9 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 
 /**
- * TODO (Rickens Helge) : 
- * 
  * @author Rickens Helge
  * @author $Author: $
  * @since 18.01.2011
-
  */
 public class ModuleStatistcCounter {
     
@@ -81,9 +78,9 @@ public class ModuleStatistcCounter {
      */
     public void addModule(@Nonnull ModuleDBO module) throws PersistenceException {
         _moduleCount++;
-        Collection<ChannelStructureDBO> channelStructs = module.getChannelStructsAsMap().values();
+        Collection<ChannelStructureDBO> channelStructs = module.getChildrenAsMap().values();
         for (ChannelStructureDBO channelStructure : channelStructs) {
-            Collection<ChannelDBO> channels = channelStructure.getChannelsAsMap().values();
+            Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
             for (ChannelDBO channel : channels) {
                 _totalChannelsCount++;
                 String ioName = channel.getIoName();

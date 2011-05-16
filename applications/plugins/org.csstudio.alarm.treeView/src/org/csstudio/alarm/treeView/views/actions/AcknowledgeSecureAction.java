@@ -30,9 +30,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 

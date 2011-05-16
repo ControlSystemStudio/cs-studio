@@ -28,8 +28,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.platform.security.RegisteredAuthorizationId;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.RegisteredAuthorizationId;
+import org.csstudio.auth.security.SecurityFacade;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**

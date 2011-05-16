@@ -1,8 +1,8 @@
 package org.csstudio.platform.login.dummy;
 
-import org.csstudio.platform.security.ILoginCallbackHandler;
-import org.csstudio.platform.security.ILoginModule;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.ILoginCallbackHandler;
+import org.csstudio.auth.security.ILoginModule;
+import org.csstudio.auth.security.User;
 
 public class DummyLoginModule implements ILoginModule {
 

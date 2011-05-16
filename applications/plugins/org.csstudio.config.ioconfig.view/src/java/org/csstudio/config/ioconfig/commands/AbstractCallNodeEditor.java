@@ -55,8 +55,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $

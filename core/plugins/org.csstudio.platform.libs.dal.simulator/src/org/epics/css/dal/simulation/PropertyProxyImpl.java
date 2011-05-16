@@ -34,6 +34,7 @@ import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
+import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseListener;
@@ -102,10 +103,11 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,SimulatorP
 	{
 		super(name,plug);
 		setConnectionState(ConnectionState.READY);
-		delayedConnect(connectDelay);
 		DataGeneratorInfo info = DataGeneratorInfo.getInfo(name);
 		refreshRate = info.getRefreshRate(name);
 		setValueProvider(info.getDataGeneratorFactory().createGenerator(type, info.getOptions(name)));
+		delayedConnect(connectDelay);
+		updateConditionWith("", DynamicValueState.HAS_METADATA);
 	}
 
 	public void delayedConnect(long timeout)

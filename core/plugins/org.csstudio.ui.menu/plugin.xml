@@ -67,7 +67,7 @@
                <with
                      variable="activeMenuSelection">
                                        <iterate>
-                     <adapt type="org.csstudio.csdata.ProcessVariableName"/>
+                     <adapt type="org.csstudio.csdata.ProcessVariable"/>
                   </iterate>
                      
                </with>

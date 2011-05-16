@@ -52,19 +52,6 @@ package org.epics.css.dal;
  */
 public interface ValueUpdateable<T>
 {
-	/**
-	 * Returns the last known dynamic value in object rendering. This
-	 * method does not cause the implementation to query the primary data
-	 * source and so the data that this method returns <b>must</b> be local. A
-	 * call to this method does not cause the latest timestamps to change. In
-	 * a way, this method provides a single (latest) value buffer for the
-	 * dynamic value. The "latest" is defined with respect to the timestamp
-	 * provided by the underlying implementation, or, if that is unavailable,
-	 * to the local timestamp of the data.
-	 *
-	 * @return Object the latest dynamic value in object rendering
-	 */
-	public Object getLatestReceivedValueAsObject();
 
 	/**
 	 * Returns the latest value change timestamp. The change is defined

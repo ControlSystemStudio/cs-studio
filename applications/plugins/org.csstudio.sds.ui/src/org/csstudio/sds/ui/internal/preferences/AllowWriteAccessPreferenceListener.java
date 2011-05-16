@@ -1,6 +1,6 @@
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.platform.security.ActivationService;
+import org.csstudio.auth.security.ActivationService;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;

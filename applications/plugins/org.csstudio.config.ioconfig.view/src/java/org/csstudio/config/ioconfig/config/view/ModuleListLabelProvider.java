@@ -70,16 +70,14 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      */
     public ModuleListLabelProvider(@Nonnull final Table table, @Nonnull GSDFileDBO file) {
         _file = file;
-        if(_BOLD==null) {
-            FontData fontData = table.getFont().getFontData()[0];
+        FontData fontData = table.getFont().getFontData()[0];
+        if(_GRAY==null) {
             _HEIGHT = fontData.getHeight();
             _NAME = fontData.getName();
-    
+            _GRAY = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
             _BOLD = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.BOLD);
             _NORMAL = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.NORMAL);
             _ITALIC = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.ITALIC);
-            
-            _GRAY = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_BLACK);
         }
     }
 

@@ -44,8 +44,8 @@ import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -281,7 +281,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
      */
     private DocumentationManageView _documentationManageView;
     
-    private GSDFileDBO _gsdFile;
+//    private GSDFileDBO _gsdFile;
     
     private List<GSDFileDBO> _gsdFiles;
     
@@ -511,10 +511,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         return _documentationManageView;
     }
     
-    @CheckForNull
-    protected GSDFileDBO getGsdFile() {
-        return _gsdFile;
-    }
+//    @CheckForNull
+//    protected GSDFileDBO getGsdFile() {
+//        return _gsdFile;
+//    }
     
     @CheckForNull
     protected List<GSDFileDBO> getGsdFiles() {
@@ -1087,9 +1087,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         // nothing to do;
     }
     
-    protected void setGsdFile(@Nullable GSDFileDBO gsdFile) throws PersistenceException {
-        _gsdFile = gsdFile;
-    }
+//    protected void setGsdFile(@Nullable GSDFileDBO gsdFile) {
+//        _gsdFile = gsdFile;
+//    }
     
     @CheckForNull
     protected void setGsdFiles(@Nullable final List<GSDFileDBO> gsdFiles) {

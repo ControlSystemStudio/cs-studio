@@ -110,6 +110,23 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addProxyListener(ProxyListener<?> l) {
+		super.addProxyListener(l);
+		
+		@SuppressWarnings("rawtypes")
+		ProxyEvent e = new ProxyEvent(this, getCondition(),
+			    getConnectionState(), null);
+
+		try {
+			l.dynamicValueConditionChange(e);
+		} catch (Exception ex) {
+			Logger.getLogger(this.getClass()).error("Failed to forward listener.", ex);
+		}
+
+	}
+	
 	/**
 	 * Remove monitor.
 	 * @param monitor monitor to be removed.

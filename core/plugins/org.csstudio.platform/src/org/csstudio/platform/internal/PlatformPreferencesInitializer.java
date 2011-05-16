@@ -23,15 +23,12 @@ package org.csstudio.platform.internal;
 
 import org.csstudio.platform.CSSPlatformPlugin;
 import org.csstudio.platform.LocaleService;
-import org.csstudio.platform.OnsiteSubnetPreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.osgi.service.prefs.Preferences;
 
 /**
  * Preference initializer implementation. This class initializes all core
@@ -52,10 +49,7 @@ public final class PlatformPreferencesInitializer extends
 				.getNode(CSSPlatformPlugin.ID);
 
 		initializeLoggingPreferences(node);
-		initializeAuthenticationPreferences(node);
 		initializeLocalePreferences(node);
-		initializeSystemPropertyPreferences(node);
-		initializeOnsitePreferences(node);
 //		initializeWorkspacePreferences();
 	}
 
@@ -63,26 +57,6 @@ public final class PlatformPreferencesInitializer extends
 		//FIXME: Funktioniert so noch nicht
 		IEclipsePreferences node = new DefaultScope().getNode(ResourcesPlugin.PI_RESOURCES);
 		node.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
-	}
-
-	/**
-	 * Initializes the preferences for the onsite networks.
-	 * @param node the preferences node to use.
-	 */
-	private void initializeOnsitePreferences(IEclipsePreferences node) {
-		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0,");
-	}
-
-	/**
-	 * Initializes preferences for system property defaults.
-	 * @param node the preferences node to use.
-	 */
-	@SuppressWarnings("nls")
-    private void initializeSystemPropertyPreferences(
-			final IEclipsePreferences node) {
-		Preferences propNode = node.node("systemProperties");
-		propNode.put("java.security.krb5.realm", "DESY.DE");
-		propNode.put("java.security.krb5.kdc", "kdc1.desy.de:kdc2.desy.de:kdc3.desy.de");
 	}
 
 	/**
@@ -160,18 +134,6 @@ public final class PlatformPreferencesInitializer extends
 		initializeConsoleAppenderPreferences(node);
 		initializeFileAppenderPreferences(node);
 		initializeJmsAppenderPreferences(node);
-	}
-
-	/**
-	 * Initializes all preference settings for the authentication mechanism.
-	 *
-	 * @param node
-	 *            the preferences node to use
-	 */
-	private void initializeAuthenticationPreferences(
-			final IEclipsePreferences node) {
-		node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
-		node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
 	}
 
 	/**

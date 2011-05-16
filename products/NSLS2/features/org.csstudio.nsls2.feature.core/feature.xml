@@ -91,7 +91,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.workspace"
+         id="org.csstudio.workspace"
          download-size="0"
          install-size="0"
          version="0.0.0"

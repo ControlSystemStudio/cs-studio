@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.platform.security.ActivationService;
+import org.csstudio.auth.security.ActivationService;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractBehavior;

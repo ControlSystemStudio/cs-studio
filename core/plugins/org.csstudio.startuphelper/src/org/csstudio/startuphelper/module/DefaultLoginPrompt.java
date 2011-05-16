@@ -9,10 +9,10 @@ package org.csstudio.startuphelper.module;
 
 import java.util.Map;
 
+import org.csstudio.auth.security.Credentials;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.dialogs.LoginDialog;
 import org.csstudio.platform.CSSPlatformPlugin;
-import org.csstudio.platform.security.Credentials;
-import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.dialogs.LoginDialog;
 import org.csstudio.startup.module.LoginExtPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplicationContext;

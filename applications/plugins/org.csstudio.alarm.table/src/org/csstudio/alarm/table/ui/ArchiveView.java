@@ -39,10 +39,10 @@ import org.csstudio.alarm.table.preferences.archive.ArchiveViewPreferenceConstan
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.apputil.time.StartEndTimeParser;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;

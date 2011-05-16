@@ -23,6 +23,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 
 /**
  * Virtual Root 
@@ -32,14 +35,17 @@ package org.csstudio.config.ioconfig.model;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class VirtualRoot extends AbstractNodeDBO {
     
+    private static final long serialVersionUID = -296484498706601307L;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public NodeType getNodeType() {
-        // TODO Auto-generated method stub
+    @CheckForNull
+    public final NodeType getNodeType() {
         return null;
     }
     
@@ -47,8 +53,8 @@ public class VirtualRoot extends AbstractNodeDBO {
      * {@inheritDoc}
      */
     @Override
-    protected AbstractNodeDBO copyParameter(AbstractNodeDBO parent) throws PersistenceException {
-        // TODO Auto-generated method stub
+    @CheckForNull
+    protected AbstractNodeDBO copyParameter(@Nullable AbstractNodeDBO parent) throws PersistenceException {
         return null;
     }
     

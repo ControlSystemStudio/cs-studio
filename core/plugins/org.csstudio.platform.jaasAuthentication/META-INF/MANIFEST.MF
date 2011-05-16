@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.platform.internal.jaasauthentication.Activator
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.platform,
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16"
+ org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
+ org.csstudio.auth;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.platform.internal.jassauthentication.preference

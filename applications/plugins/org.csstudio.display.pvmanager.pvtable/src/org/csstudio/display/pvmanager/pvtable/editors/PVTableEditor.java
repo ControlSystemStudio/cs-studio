@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvmanager.pvtable.EmptyEditorInput;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel;
 import org.csstudio.display.pvmanager.pvtable.PVTableModel.Item;
@@ -248,12 +248,12 @@ public class PVTableEditor extends EditorPart {
 		pvTableModel = new PVTableModel();
 		IFile file = getEditorInputFile(input);
 		if (file != null) {
-			List<ProcessVariableName> pvs = PVTableStaXParser
+			List<ProcessVariable> pvs = PVTableStaXParser
 					.readPVTableFile(file.getLocationURI().getPath());
-			for (ProcessVariableName processVariableName : pvs) {
-				pvTableModel.addPVName(processVariableName);
-				group.add(latestValueOf(channel(processVariableName
-						.getProcessVariableName())));
+			for (ProcessVariable processVariable : pvs) {
+				pvTableModel.addPVName(processVariable);
+				group.add(latestValueOf(channel(processVariable
+						.getName())));
 			}
 		}
 	}
@@ -329,7 +329,7 @@ public class PVTableEditor extends EditorPart {
 				Item item = (Item) element;
 				if (item == null || item.getProcessVariableName() == null)
 					return "";
-				return item.getProcessVariableName().getProcessVariableName();
+				return item.getProcessVariableName().getName();
 			}
 
 			protected void setValue(Object element, Object value) {
@@ -350,7 +350,7 @@ public class PVTableEditor extends EditorPart {
 							model.updateValues(group.lastExceptions());
 						} else {
 							// We are updating the row
-							model.updatePVName(item, new ProcessVariableName(
+							model.updatePVName(item, new ProcessVariable(
 									value.toString()));
 							if (item.getRow() == oldSize) {
 								group.add(latestValueOf(channel(value
@@ -380,7 +380,7 @@ public class PVTableEditor extends EditorPart {
 				Item item = (Item) element;
 				if (item == null || item.getProcessVariableName() == null)
 					return null;
-				return item.getProcessVariableName().getProcessVariableName();
+				return item.getProcessVariableName().getName();
 			}
 		});
 		TableColumn tblclmnPvName = tableViewerColumn.getColumn();

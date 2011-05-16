@@ -13,8 +13,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.hibernate.cfg.AnnotationConfiguration;
@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+//CHECKSTYLE:OFF
 public class AbstractNodeDBOTest {
 
     @Test
@@ -154,3 +155,4 @@ public class AbstractNodeDBOTest {
     }
 
 }
+//CHECKSTYLE:ON

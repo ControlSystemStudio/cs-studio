@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipse.csstudio.ui.systemActions"
+            label="System Actions"
+            visible="true">         
+         <action
+               class="org.csstudio.auth.ui.internal.actions.LoginAction"
+               icon="icons/switch_user.png"
+               id="org.csstudio.platform.ui.LoginAction"
+               label="%menuLogin"
+               menubarPath="file/workspace"
+               style="push"
+               toolbarPath="user/css_login">
+            <enablement>
+               <systemProperty
+                     name="org.csstudio.platform.loginAvailable"
+                     value="true">
+               </systemProperty>
+            </enablement>
+         </action>
+      </actionSet>
+   </extension>
+     <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           locationURI="toolbar:org.eclipse.ui.trim.status">
+        <toolbar
+              id="org.csstudio.auth.ui.loginInformationToolbar">
+           <control
+                 class="org.csstudio.auth.ui.internal.workbench.LoginInformationToolbar">
+           </control>
+        </toolbar>
+     </menuContribution>
+  </extension>
+     <extension
+           point="org.eclipse.ui.preferencePages">
+        <page
+              category="org.csstudio.platform.ui.css.applications.configuration"
+              class="org.csstudio.auth.ui.internal.preferences.AuthenticationPreferencePage"
+              id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
+              name="%authenticationPageName">
+        </page>
+        <page
+              category="org.csstudio.platform.ui.css.applications.configuration"
+              class="org.csstudio.auth.ui.internal.preferences.SystemPropertiesPreferencePage"
+              id="org.csstudio.auth.ui.internal.preferences.SystemPropertiesPreferencePage"
+              name="%systemPropertyPreferencesPageName">
+        </page>
+        <page
+              category="org.csstudio.platform.ui.css.applications.configuration"
+              class="org.csstudio.auth.ui.internal.preferences.OnsiteSubnetPreferencePage"
+              id="org.csstudio.auth.ui.internal.preferences.OnsiteSubnetPreferencePage"
+              name="Onsite Subnets">
+        </page>
+     </extension>
+</plugin>

@@ -21,8 +21,8 @@
  */
 package org.csstudio.startuphelper.module;
 
-import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.internal.usermanagement.IUserManagementListener;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.console.Console;
 import org.csstudio.platform.ui.internal.localization.Messages;
 import org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective;

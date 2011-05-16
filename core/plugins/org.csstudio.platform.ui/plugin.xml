@@ -77,20 +77,6 @@
             label="System Actions"
             visible="true">         
          <action
-               class="org.csstudio.platform.ui.internal.actions.LoginAction"
-               icon="icons/switch_user.png"
-               id="org.csstudio.platform.ui.LoginAction"
-               label="%menuLogin"
-               menubarPath="file/css_login"
-               style="push"
-               toolbarPath="user/css_login">
-            <enablement>
-               <systemProperty
-                     name="org.csstudio.platform.loginAvailable"
-                     value="true"/>
-            </enablement>
-         </action>
-         <action
                class="org.csstudio.platform.ui.internal.actions.OpenPreferencesAction"
                id="org.csstudio.platform.ui.internal.actions.PreferencesAction"
                label="%menuCssPreferences_Label"
@@ -141,25 +127,9 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.preferences.AuthenticationPreferencePage"
-            id="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
-            name="%authenticationPageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             id="org.csstudio.platform.ui.internal.localization.LocalePreferencePage"
             name="%localePageName"/>
-      <page
-            category="org.csstudio.platform.ui.css.platform"
-            class="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            id="org.csstudio.platform.ui.internal.preferences.SystemPropertiesPreferencePage"
-            name="%systemPropertyPreferencesPageName"/>
-   <page
-         category="org.csstudio.platform.ui.css.platform"
-         class="org.csstudio.platform.ui.internal.preferences.OnsiteSubnetPreferencePage"
-         id="org.csstudio.platform.ui.page1"
-         name="Onsite Subnets">
-   </page>
    <page
          category="org.csstudio.platform.ui.css.applications.configuration"
          class="org.csstudio.platform.ui.internal.statisticview.PreferencePage"
@@ -350,18 +320,6 @@
               </or>
            </visibleWhen>
         </command>
-     </menuContribution>
-  </extension>
-  <extension
-        point="org.eclipse.ui.menus">
-     <menuContribution
-           locationURI="toolbar:org.eclipse.ui.trim.status">
-        <toolbar
-              id="org.csstudio.platform.ui.loginInformationToolbar">
-           <control
-                 class="org.csstudio.platform.ui.internal.workbench.LoginInformationToolbar">
-           </control>
-        </toolbar>
      </menuContribution>
   </extension>
   <extension

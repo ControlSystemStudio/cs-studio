@@ -32,13 +32,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 29.03.2011
  */
+//CHECKSTYLE:OFF
 public class ParsedGsdFileModelUnitTest {
     
     private ParsedGsdFileModel _out;
@@ -144,3 +143,4 @@ public class ParsedGsdFileModelUnitTest {
         _out.setModule(gsdModuleModel3);
     }
 }
+//CHECKSTYLE:ON

@@ -274,10 +274,10 @@ public final class GsdFileParser {
                 gsdModuleModel.setProperty(extractKeyValue);
             } else if (isLineParameter(tmpLine, "F_ParamDescCRC")) {
                 extractKeyValue(tmpLine, lineCounter, br);
-                //TODO set F_ParamDescCRC. If this information required or can it be ignored?
+                //set F_ParamDescCRC. This information can be ignored.
             } else if (isLineParameter(tmpLine, "F_IO_StructureDescCRC")) {
                 extractKeyValue(tmpLine, lineCounter, br);
-                //TODO set F_IO_StructureDescCRC. If this information required or can it be ignored?
+                //set F_IO_StructureDescCRC. This information can be ignored.
             } else {
                 try {
                     tmpLine = tmpLine.split(";")[0].trim();
@@ -331,7 +331,7 @@ public final class GsdFileParser {
                                      @Nonnull LineCounter lineCounter,
                                      @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                      @Nonnull BufferedReader br) throws IOException {
-        // XXX (hrickens) [28.03.2011]:  buildSlotDefinition. If this information required or can it be ignored?
+        // (hrickens) [28.03.2011]:  buildSlotDefinition. If this information can be ignored.
         String tmpLine = line;
         while (!isLineParameter(tmpLine, "EndSlotDefinition")) {
             lineCounter.count();
@@ -344,7 +344,7 @@ public final class GsdFileParser {
                                    @Nonnull LineCounter lineCounter,
                                    @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull BufferedReader br) throws IOException {
-        // XXX (hrickens) [28.03.2011]: buildUnitDiagArea. If this information required or can it be ignored? 
+        // (hrickens) [28.03.2011]: buildUnitDiagArea. This information can be ignored. 
         String tmpLine = line;
         while (!isLineParameter(tmpLine, "Unit_Diag_Area_End")) {
             lineCounter.count();
@@ -358,7 +358,7 @@ public final class GsdFileParser {
                                    @Nonnull LineCounter lineCounter,
                                    @Nonnull AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull BufferedReader br) throws IOException {
-        // XXX (hrickens) [28.03.2011]: buildUnitDiagType. If this information required or can it be ignored?
+        // (hrickens) [28.03.2011]: buildUnitDiagType. This information can be ignored.
         String tmpLine = line;
         while (!isLineParameter(tmpLine, "EndUnitDiagType")) {
             lineCounter.count();
@@ -469,11 +469,6 @@ public final class GsdFileParser {
         parsedGsdFileModel.setExtUserPrmDataConst(keyValuePair);
     }
     
-    /**
-     * @param fileAsString
-     * @return
-     * @throws IOException 
-     */
     @Nonnull
     public ParsedGsdFileModel parse(@Nonnull GSDFileDBO gsdFileDBO) throws IOException {
         StringReader sr = new StringReader(gsdFileDBO.getGSDFile());

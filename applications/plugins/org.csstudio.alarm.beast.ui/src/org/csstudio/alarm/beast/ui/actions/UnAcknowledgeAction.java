@@ -14,12 +14,12 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 
 /** Action that un-acknowledges alarms
  *  @author Kay Kasemir

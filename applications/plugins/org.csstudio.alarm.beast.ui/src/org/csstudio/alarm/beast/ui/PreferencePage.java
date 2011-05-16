@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;

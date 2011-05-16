@@ -1,15 +1,23 @@
+org.csstudio.auth
+org.csstudio.auth.ui
 org.csstudio.csdata
 org.csstudio.data
 org.csstudio.logging
 org.csstudio.logging.test
 org.csstudio.logging.ui
+org.csstudio.openfile
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.jms
+org.csstudio.startup
 org.csstudio.ui.menu
 org.csstudio.ui.util
+org.csstudio.utility.pv
+org.csstudio.utility.pv.epics
+org.csstudio.utility.pv.simu
 org.csstudio.utility.pvmanager
 org.csstudio.utility.pvmanager.epics
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
+org.csstudio.workspace
 

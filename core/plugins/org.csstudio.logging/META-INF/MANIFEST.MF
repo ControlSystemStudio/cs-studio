@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Logging
 Bundle-Description: Configure java.util.logging for CSS
 Bundle-SymbolicName: org.csstudio.logging
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.8.1",

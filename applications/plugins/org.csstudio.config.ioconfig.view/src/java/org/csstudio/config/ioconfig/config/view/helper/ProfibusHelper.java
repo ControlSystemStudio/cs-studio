@@ -59,9 +59,6 @@ import org.eclipse.swt.widgets.Text;
 public final class ProfibusHelper {
 
 	/**
-	 * 
-	 * TODO (hrickens) :
-	 * 
 	 * @author hrickens
 	 * @author $Author: $
 	 * @since 05.10.2010

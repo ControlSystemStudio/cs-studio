@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.mockito;bundle-version="1.8.5",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1"
+ org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
+ org.csstudio.auth;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: com.sun.mail.handlers,
  org.csstudio.alarm.table,

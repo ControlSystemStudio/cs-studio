@@ -29,8 +29,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.alarm.treeView.views.dialog.DetailDialog;
+import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**

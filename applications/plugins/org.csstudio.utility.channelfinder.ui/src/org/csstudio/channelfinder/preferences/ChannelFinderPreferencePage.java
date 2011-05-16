@@ -13,8 +13,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.platform.security.SecureStorage;
-import org.csstudio.platform.ui.security.PasswordFieldEditor;
+import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.csstudio.utility.channelfinder.PreferenceConstants;
 
 /**

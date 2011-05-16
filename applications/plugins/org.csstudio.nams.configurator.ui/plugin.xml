@@ -221,7 +221,7 @@
       </actionSet>
    </extension>
    <extension
-         point="org.csstudio.platform.authorizationId">
+         point="org.csstudio.auth.authorizationId">
       <id
             description="Permission to open and use the AMS Configurator."
             id="amsconfigurator">

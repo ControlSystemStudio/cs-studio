@@ -21,7 +21,7 @@
  */
  package org.csstudio.sds.ui.internal.adapters;
 
-import org.csstudio.platform.security.IActivationAdapter;
+import org.csstudio.auth.security.IActivationAdapter;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.IAdapterFactory;
 

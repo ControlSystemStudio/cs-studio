@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.platform.security.RegisteredAuthorizationId;
-import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.auth.security.RegisteredAuthorizationId;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.sds.internal.model.StringProperty;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.eclipse.jface.fieldassist.IContentProposal;

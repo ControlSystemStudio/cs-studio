@@ -48,8 +48,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
 /**
- * TODO (hrickens) : 
- * 
  * @author hrickens
  * @author $Author: $
  * @since 08.10.2010
@@ -164,14 +162,14 @@ public class CreateWinModAction extends Action {
         } else if (selectedNode instanceof IocDBO) {
             IocDBO ioc = (IocDBO) selectedNode;
             LOG.info("Create XML for Ioc: " + ioc);
-            for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+            for (ProfibusSubnetDBO subnet : ioc.getChildren()) {
                 makeFiles(path, subnet);
             }
         } else if (selectedNode instanceof FacilityDBO) {
             FacilityDBO facility = (FacilityDBO) selectedNode;
             LOG.info("Create XML for Facility: " + facility);
-            for (IocDBO ioc : facility.getIoc()) {
-                for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
+            for (IocDBO ioc : facility.getChildren()) {
+                for (ProfibusSubnetDBO subnet : ioc.getChildren()) {
                     makeFiles(path, subnet);
                 }
             }

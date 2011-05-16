@@ -43,7 +43,6 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -127,11 +126,6 @@ public class IocEditor extends AbstractNodeEditor {
 
 			makeDescGroup(comp, 3);
 		}
-    }
-
-    @Override
-    public GSDFileDBO getGsdFile() {
-        return null;
     }
 
     @Override

@@ -190,10 +190,7 @@ public class ProfibusConfigXMLGenerator {
                 /* min_slave_interval */Integer.toString(master.getMinSlaveInt()),
                 /* poll_timeout */Integer.toString(master.getPollTime()),
                 /* data_control_time */Integer.toString(master.getDataControlTime()),
-                /* reserved */"0,0,0,0,0,0"/*
-                                            * TODO:reserved is Default=0? und muss das geändert
-                                            * werden können?
-                                            */,
+                /* reserved */"0,0,0,0,0,0",// TODO:reserved is Default=0? und muss das geändert werden können?
                 /* master_user_data_length */Integer
                         .toString(master.getMasterUserData().split(",").length),
                 /* master_user_data */master.getMasterUserData() };

@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -38,7 +39,6 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 /*******************************************************************************
  * Data model for Profibus-DP Master<br>
@@ -114,11 +114,6 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     // *******************
     // * Transient data. *
     // *******************
-    /**
-     * The master GSD File Keywords for this Master from selected GSD file.
-     */
-    private GsdMasterModel _gsdMasterModel;
-
     private int _maxNrSlave;
 
     private int _maxSlaveOutputLen;
@@ -145,11 +140,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * The default Constructor.
      * @throws PersistenceException 
      */
-    public MasterDBO(final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
-        this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
-    }
-
-    private MasterDBO(final ProfibusSubnetDBO profibusSubnet, final int maxStationAddress) throws PersistenceException {
+    public MasterDBO(@Nonnull final ProfibusSubnetDBO profibusSubnet) throws PersistenceException {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -267,12 +258,6 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
         this.setParent(profibusSubnet);
     }
 
-    @SuppressWarnings("unchecked")
-    @Transient
-    public Set<SlaveDBO> getSlaves() {
-        return (Set<SlaveDBO>) getChildren();
-    }
-
     /**
      * @return the GSDFile.
      */
@@ -300,19 +285,6 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     @Transient
     public String getEpicsAdressString() {
         return getProfibusSubnet().getEpicsAddressString();
-    }
-
-    @Transient
-    public GsdMasterModel getGSDMasterData() {
-        return _gsdMasterModel;
-    }
-
-    /**
-     * @param masterModel
-     */
-    @Transient
-    public void setGSDMasterData(final GsdMasterModel masterModel) {
-        _gsdMasterModel = masterModel;
     }
 
     @Transient
@@ -360,7 +332,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+    public MasterDBO copyParameter(final ProfibusSubnetDBO parentNode) throws PersistenceException {
             ProfibusSubnetDBO subnet = parentNode;
 
             MasterDBO copy = new MasterDBO(subnet);
@@ -380,8 +352,8 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     }
 
     @Override
-    public AbstractNodeDBO copyThisTo(final ProfibusSubnetDBO parentNode) throws PersistenceException {
-        MasterDBO copy = super.copyThisTo(parentNode);
+    public MasterDBO copyThisTo(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+        MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode);
         for (SlaveDBO node : getChildren()) {
             AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

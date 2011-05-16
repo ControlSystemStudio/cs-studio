@@ -2,8 +2,8 @@ package org.csstudio.csdata.test;
 
 import java.util.Arrays;
 
-import org.csstudio.csdata.DeviceName;
-import org.csstudio.csdata.ProcessVariableName;
+import org.csstudio.csdata.Device;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -44,9 +44,9 @@ import org.eclipse.ui.part.ViewPart;
 
 public class DnDTestView extends ViewPart {
 	// Data to transfer via Drag & Drop
-	final ProcessVariableName pv = new ProcessVariableName("Fred");
-	final ProcessVariableName pv2 = new ProcessVariableName("Barney");
-	final DeviceName device = new DeviceName("SomeIOC");
+	final ProcessVariable pv = new ProcessVariable("Fred");
+	final ProcessVariable pv2 = new ProcessVariable("Barney");
+	final Device device = new Device("SomeIOC");
 	final DeviceAndAPV deviceAndAPV = new DeviceAndAPV(device, pv);
 	final DeviceAndPVs deviceAndPVs = new DeviceAndPVs(device, Arrays.asList(pv, pv2));
 
@@ -129,13 +129,13 @@ public class DnDTestView extends ViewPart {
 		pv_ctl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Accept PV or text
-		new ControlSystemDropTarget(pv_ctl, ProcessVariableName.class,
+		new ControlSystemDropTarget(pv_ctl, ProcessVariable.class,
 				String.class) {
 			@Override
 			public void handleDrop(Object item) {
-				if (item instanceof ProcessVariableName) {
-					pv_ctl.setText(((ProcessVariableName) item)
-							.getProcessVariableName());
+				if (item instanceof ProcessVariable) {
+					pv_ctl.setText(((ProcessVariable) item)
+							.getName());
 				} else {
 					pv_ctl.setText((String) item);
 				}
@@ -162,11 +162,11 @@ public class DnDTestView extends ViewPart {
 		dvc_ctl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Accept device
-		new ControlSystemDropTarget(dvc_ctl, DeviceName.class) {
+		new ControlSystemDropTarget(dvc_ctl, Device.class) {
 			@Override
 			public void handleDrop(final Object item) {
 				dvc_ctl.setText("Device: "
-						+ ((DeviceName) item).getDeviceName());
+						+ ((Device) item).getName());
 			}
 		};
 	}
@@ -198,21 +198,21 @@ public class DnDTestView extends ViewPart {
 
 		// Accept PV or device
 		new ControlSystemDropTarget(both_ctl, DeviceAndAPV.class,
-				ProcessVariableName.class, DeviceName.class) {
+				ProcessVariable.class, Device.class) {
 			@Override
 			public void handleDrop(final Object item) {
-				if (item instanceof ProcessVariableName) {
-					both_pv.setText(((ProcessVariableName) item)
-							.getProcessVariableName());
+				if (item instanceof ProcessVariable) {
+					both_pv.setText(((ProcessVariable) item)
+							.getName());
 					both_device.setText("");
-				} else if (item instanceof DeviceName) {
+				} else if (item instanceof Device) {
 					both_pv.setText("");
-					both_device.setText(((DeviceName) item).getDeviceName());
+					both_device.setText(((Device) item).getName());
 				} else if (item instanceof DeviceAndAPV) {
 					both_pv.setText(((DeviceAndAPV) item).getPv()
-							.getProcessVariableName());
+							.getName());
 					both_device.setText(((DeviceAndAPV) item).getDevice()
-							.getDeviceName());
+							.getName());
 				}
 				both_ctl.layout();
 			}
@@ -246,19 +246,19 @@ public class DnDTestView extends ViewPart {
 
 		// Accept PV or device
 		new ControlSystemDropTarget(both_ctl,  DeviceAndPVs.class,
-				ProcessVariableName[].class, DeviceName.class) {
+				ProcessVariable[].class, Device.class) {
 			@Override
 			public void handleDrop(final Object item) {
-				if (item instanceof ProcessVariableName[]) {
-					both_pv.setText(Arrays.toString((ProcessVariableName[]) item));
+				if (item instanceof ProcessVariable[]) {
+					both_pv.setText(Arrays.toString((ProcessVariable[]) item));
 					both_device.setText("");
-				} else if (item instanceof DeviceName) {
+				} else if (item instanceof Device) {
 					both_pv.setText("");
-					both_device.setText(((DeviceName) item).getDeviceName());
+					both_device.setText(((Device) item).getName());
 				} else if (item instanceof DeviceAndPVs) {
 					both_pv.setText(((DeviceAndPVs) item).getPvs().toString());
 					both_device.setText(((DeviceAndPVs) item).getDevice()
-							.getDeviceName());
+							.getName());
 				}
 				both_ctl.layout();
 			}

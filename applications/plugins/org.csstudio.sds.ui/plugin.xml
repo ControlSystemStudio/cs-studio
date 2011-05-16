@@ -243,7 +243,7 @@
      <factory
            adaptableType="org.csstudio.sds.model.AbstractWidgetModel"
            class="org.csstudio.sds.ui.internal.adapters.SdsActivationAdapterFactory">
-        <adapter type="org.csstudio.platform.security.IActivationAdapter"/>
+        <adapter type="org.csstudio.auth.security.IActivationAdapter"/>
      </factory>
      <factory
            adaptableType="org.csstudio.sds.internal.model.Layer"

@@ -36,11 +36,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.platform.security.IAuthorizationProvider;
-import org.csstudio.platform.security.Right;
-import org.csstudio.platform.security.RightSet;
-import org.csstudio.platform.security.SecureStorage;
-import org.csstudio.platform.security.User;
+import org.csstudio.auth.security.IAuthorizationProvider;
+import org.csstudio.auth.security.Right;
+import org.csstudio.auth.security.RightSet;
+import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.auth.security.User;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.osgi.util.NLS;
@@ -74,7 +74,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 	/** Given a user name, determine the user's rights,
 	 *  i.e. which roles the user has in which groups.
 	 *  @param user authenticated user name
-	 *  @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
+	 *  @see org.csstudio.auth.security.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.auth.security.User)
 	 */
     @Override
     public RightSet getRights(final User user)
@@ -117,7 +117,7 @@ public class LdapAuthorizationReader implements IAuthorizationProvider
 
 	/** Determine the rights that are required to perform a given action
 	 *  @param actionId Action ID
-	 *  @see org.csstudio.platform.security.IAuthorizationProvider#getRights(java.lang.String)
+	 *  @see org.csstudio.auth.security.IAuthorizationProvider#getRights(java.lang.String)
 	 */
 	@Override
     public RightSet getRights(final String actionId)

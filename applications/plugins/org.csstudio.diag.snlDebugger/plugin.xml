@@ -49,7 +49,7 @@
             primary="true"/>
    </extension>
    <extension
-         point="org.csstudio.platform.authorizationId">
+         point="org.csstudio.auth.authorizationId">
       <id
             description="Permission for the IOC tools."
             id="iocAccesses">

@@ -10,6 +10,8 @@ org.csstudio.alarm.beast.ui.alarmtable
 org.csstudio.alarm.beast.ui.alarmtree
 org.csstudio.apputil
 org.csstudio.apputil.ui
+org.csstudio.auth
+org.csstudio.auth.ui
 org.csstudio.archive
 org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
@@ -28,6 +30,7 @@ org.csstudio.email.ui
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.multiChannelViewer
+org.csstudio.openfile
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
@@ -85,10 +88,10 @@ org.csstudio.platform.test
 org.csstudio.platform.ui
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.rdb
-org.csstudio.platform.workspace
 org.csstudio.startup
 org.csstudio.startuphelper
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
+org.csstudio.workspace
 
