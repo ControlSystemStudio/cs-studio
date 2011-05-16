@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0",
  org.csstudio.utility.pvmanager.jfreechart.widgets;bundle-version="1.0.0",
  org.csstudio.ui.menu;bundle-version="3.0.0",
- org.csstudio.platform.libs.guava;bundle-version="0.8.0"
+ com.google.common
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab
