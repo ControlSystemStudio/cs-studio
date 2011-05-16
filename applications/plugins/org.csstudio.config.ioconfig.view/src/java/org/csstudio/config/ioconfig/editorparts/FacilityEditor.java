@@ -125,7 +125,7 @@ public class FacilityEditor extends AbstractNodeEditor{
 
         save();
 //        getProfiBusTreeView().refresh(getNode());
-        getProfiBusTreeView().refresh();
+//        getProfiBusTreeView().refresh();
     }
 
     private void buildGui() {
