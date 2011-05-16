@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Css Core Remote Test
 Bundle-SymbolicName: org.csstudio.remote.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: DESY <css-developer@desy.de>, Jan Hatje
 Fragment-Host: org.csstudio.remote;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

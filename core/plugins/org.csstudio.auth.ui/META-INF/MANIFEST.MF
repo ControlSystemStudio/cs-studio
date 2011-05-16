@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSS Authentication and Authorization Ui
 Bundle-SymbolicName: org.csstudio.auth.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: org.csstudio.auth.ui.internal.AuthUiActivator
 Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
