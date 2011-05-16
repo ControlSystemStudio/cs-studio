@@ -57,6 +57,8 @@ import org.hibernate.annotations.BatchSize;
 @Table(name = "ddb_Profibus_Module")
 public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
     
+    private static final long serialVersionUID = 1L;
+
     /**
      * The number of module at the GSD File.
      */

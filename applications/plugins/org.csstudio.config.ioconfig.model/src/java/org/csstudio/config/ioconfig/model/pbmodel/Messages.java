@@ -27,6 +27,9 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -39,9 +42,11 @@ public final class Messages {
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
     private Messages() {
+        // Constructor
     }
 
-    public static String getString(String key) {
+    @CheckForNull
+    public static String getString(@Nonnull String key) {
         try {
             return RESOURCE_BUNDLE.getString(key);
         } catch (MissingResourceException e) {

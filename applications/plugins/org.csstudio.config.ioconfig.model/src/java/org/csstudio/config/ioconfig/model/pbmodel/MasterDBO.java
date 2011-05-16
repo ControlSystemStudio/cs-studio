@@ -53,6 +53,8 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 @Table(name = "ddb_Profibus_Master")
 public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The highest accept station address.
      */

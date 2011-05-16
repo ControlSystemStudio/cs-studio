@@ -91,8 +91,7 @@ public enum DataType {
     /**
      * Data Type for a Byte with a status bytes.   
      */
-    DS33_1(16,"DS-33-1",Messages.getString("DataType.DS33-1"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT) //$NON-NLS-1$
-    ; //$NON-NLS-1$
+    DS33_1(16,"DS-33-1",Messages.getString("DataType.DS33-1"),BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT,BIT); //$NON-NLS-1$
     
     /**
      * The size in Bit.

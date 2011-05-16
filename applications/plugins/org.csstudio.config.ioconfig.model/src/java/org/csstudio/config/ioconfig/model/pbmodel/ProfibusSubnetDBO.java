@@ -28,6 +28,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 @Table(name = "ddb_Profibus_Subnet")
 public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
+    private static final long serialVersionUID = 1L;
     /**
      * Subnet baud rate.
      */
