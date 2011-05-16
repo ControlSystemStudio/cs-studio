@@ -9,11 +9,9 @@ import java.util.logging.Level;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.swt.widgets.Display;
 
 /** One item in the PV tree model.
@@ -25,7 +23,7 @@ import org.eclipse.swt.widgets.Display;
  *
  *  @author Kay Kasemir
  */
-class PVTreeItem extends PlatformObject implements IProcessVariable
+class PVTreeItem
 {
    /** The model to which this whole tree belongs. */
     private final PVTreeModel model;
@@ -283,18 +281,12 @@ class PVTreeItem extends PlatformObject implements IProcessVariable
     }
 
     /** @return Returns the name of this PV. */
-    @Override
-    public String getName()
+    public String getPVName()
     {   return pv_name; }
 
     /** @return Severity of current value. May be <code>null</code>. */
     public ISeverity getSeverity()
     {   return severity; }
-
-    // @see IProcessVariable
-    @Override
-    public String getTypeId()
-    {   return IProcessVariable.TYPE_ID;    }
 
     /** @return Returns the record type of this item or <code>null</code>. */
     public String getType()
