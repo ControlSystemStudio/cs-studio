@@ -29,6 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.auth.security.User;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -44,8 +46,6 @@ import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -831,8 +831,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
                 getProfiBusTreeView().refresh(parent);
                 getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(),
                                                                     AbstractTreeViewer.ALL_LEVELS);
-                getProfiBusTreeView().getTreeViewer()
-                        .setSelection(new StructuredSelection(getNode()));
+//                getProfiBusTreeView().getTreeViewer()
+//                        .setSelection(new StructuredSelection(getNode()));
             } else if (isNew() && getNode().isRootNode()) {
                 getProfiBusTreeView().addFacility(getNode());
                 //			getProfiBusTreeView().getTreeViewer().expandToLevel(getNode(), AbstractTreeViewer.ALL_LEVELS);
@@ -895,6 +895,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
             if (securityFacade != null && securityFacade.getCurrentUser() != null
                     && securityFacade.getCurrentUser().getUsername() != null) {
                 temp = securityFacade.getCurrentUser().getUsername();
+                node.setCreatedBy(temp);
                 
             }
         } else if (node != null && node.getCreatedBy() != null) {
@@ -910,6 +911,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
         Date now = new Date();
         if (isNew()) {
             temp = ConfigHelper.getSimpleDateFormat().format(now);
+            node.setCreatedOn(now);
         } else if (node != null && node.getCreatedOn() != null) {
             now = node.getCreatedOn();
             temp = now.toString();

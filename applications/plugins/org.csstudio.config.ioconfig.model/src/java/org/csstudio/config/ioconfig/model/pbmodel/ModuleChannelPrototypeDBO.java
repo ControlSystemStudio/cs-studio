@@ -24,21 +24,13 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.DBClass;
-import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 
@@ -244,10 +236,12 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
         return getType().getByteSize();
     }
 
+    @Override
     public void save() throws PersistenceException {
         Repository.saveOrUpdate(this);
     }
 
+    @Override
     public int compareTo(ModuleChannelPrototypeDBO other) {
         if(getId() == other.getId()) {
             return 0;

@@ -592,34 +592,6 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         return compare;
     }
     
-    /**
-     * (@inheritDoc)
-     */
-    @Override
-    public boolean equals(@CheckForNull final Object obj) {
-        // TODO (hrickens) : check whether this method does what is intended - do we need hashcode as well?
-        if(super.equals(obj)) {
-            return true;
-        }
-        if(obj == null) {
-            return false;
-        }
-        if(this.getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        if(obj instanceof AbstractNodeDBO) {
-            
-            final AbstractNodeDBO<?,?> other = (AbstractNodeDBO<?,?>) obj;
-            if(getId() == other.getId()) {
-                if(getId() > 0) {
-                    return true;
-                }
-                return false;
-            }
-        }
-        return false;
-    }
     
     /**
      * @return Return only true when the node need to work a GSD-File!

@@ -223,7 +223,7 @@ public final class HibernateManager extends Observable {
                 // sec
                 .setProperty("c3p0.max_statements", "1")
 //                .setProperty("hibernate.hbm2ddl.auto", "update")
-                .setProperty("hibernate.hbm2ddl.auto", "validate")
+//                .setProperty("hibernate.hbm2ddl.auto", "validate")
                 .setProperty("hibernate.show_sql", "false");
         //                .setProperty("hibernate.format_sql", "true")
         //                .setProperty("hibernate.use_sql_comments", "true")

@@ -44,40 +44,40 @@ public class DBClass {
      * Key ID.
      */
     private int _id;
-
+    
     /**
      * The name of the creator of this Node.
      */
     private String _createdBy;
-
+    
     /**
      * The date who this Node is create.
      */
     private Date _createdOn;
-
+    
     /**
      * The name of the user that have make the last update of this Node.
      */
     private String _updatedBy;
-
+    
     /**
      * The date who this Node last update is.
      */
     private Date _updatedOn;
-
+    
     private boolean _dirty;
-
+    
     /**
      *
      * @return the Node key ID.
      */
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQ_G_DDB")
-    @SequenceGenerator(name="SEQ_G_DDB", sequenceName="SEQ_DDB")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_G_DDB")
+    @SequenceGenerator(name = "SEQ_G_DDB", sequenceName = "SEQ_DDB")
     public int getId() {
         return _id;
     }
-
+    
     /**
      *
      * @param id
@@ -86,16 +86,16 @@ public class DBClass {
     public void setId(final int id) {
         this._id = id;
     }
-
+    
     /**
      *
      * @return the Name of the creator of this Node.
      */
-    @Nonnull 
+    @Nonnull
     public String getCreatedBy() {
         return _createdBy;
     }
-
+    
     /**
      *
      * @param createdBy
@@ -104,16 +104,16 @@ public class DBClass {
     public void setCreatedBy(@Nonnull final String createdBy) {
         this._createdBy = createdBy;
     }
-
+    
     /**
      *
      * @return Created-Date of this node.
      */
-    @Nonnull 
+    @Nonnull
     public Date getCreatedOn() {
         return _createdOn;
     }
-
+    
     /**
      *
      * @param createdOn
@@ -122,16 +122,16 @@ public class DBClass {
     public void setCreatedOn(@Nonnull final Date createdOn) {
         this._createdOn = createdOn;
     }
-
+    
     /**
      *
      * @return Give the user that have make the last update.
      */
-    @Nonnull 
+    @Nonnull
     public String getUpdatedBy() {
         return _updatedBy;
     }
-
+    
     /**
      *
      * @param updatedBy
@@ -140,16 +140,16 @@ public class DBClass {
     public void setUpdatedBy(@Nonnull final String updatedBy) {
         this._updatedBy = updatedBy;
     }
-
+    
     /**
      *
      * @return get the date of last update.
      */
-    @Nonnull 
+    @Nonnull
     public Date getUpdatedOn() {
         return _updatedOn;
     }
-
+    
     /**
      * Set the date of last Update.
      *
@@ -159,15 +159,15 @@ public class DBClass {
     public void setUpdatedOn(@Nonnull final Date updatedOn) {
         this._updatedOn = updatedOn;
     }
-
+    
     /**
      * Save or Update the Class to the Repository.
      * @throws PersistenceException wa
      */
-    public void save() throws PersistenceException{
+    public void save() throws PersistenceException {
         Repository.saveOrUpdate(this);
     }
-
+    
     /**
      *
      * @return is this node persistent at DB return true.
@@ -176,7 +176,7 @@ public class DBClass {
     public boolean isPersistent() {
         return getId() != 0;
     }
-
+    
     /**
      * Class have changes that non persisted.
      * @return is this node dirty.
@@ -185,7 +185,7 @@ public class DBClass {
     public boolean isDirty() {
         return _dirty;
     }
-
+    
     /**
      * Set class have changes that non persisted.
      * @param dirty set the node dirty.
@@ -193,4 +193,5 @@ public class DBClass {
     public void setDirty(final boolean dirty) {
         _dirty = dirty;
     }
+    
 }

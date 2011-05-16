@@ -58,6 +58,7 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
 public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
+    private static final long serialVersionUID = 1L;
     /**
      * Vendor name of slave.
      */

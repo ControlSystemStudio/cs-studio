@@ -55,6 +55,8 @@ import org.hibernate.annotations.BatchSize;
 @Table(name = "ddb_Profibus_Channel")
 public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeave> {
 
+    private static final long serialVersionUID = 1L;
+
     private int _channelNumber;
 
     private boolean _input;
@@ -306,10 +308,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
     }
 
     public void setStatusAddressOffset(@CheckForNull Integer statusAddress) {
-        if (statusAddress == null) {
-            statusAddress = -1;
-        }
-        _statusAddressOffset = statusAddress;
+        _statusAddressOffset = statusAddress == null?-1:statusAddress;
     }
 
     /**
@@ -328,9 +327,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @return the Epics Address String
      */
     @Transient
+    @Nonnull
     public String getEpicsAddressStringNH() {
-//        assembleEpicsAddressString();
-        return _epicsAdress;
+        return _epicsAdress==null?"":_epicsAdress;
     }
 
     /**
@@ -338,8 +337,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      *
      * @return the Epics Address String
      */
+    @Nonnull
     public String getEpicsAddressString() {
-        return _epicsAdress;
+        return _epicsAdress==null?"":_epicsAdress;
     }
 
     @Transient
@@ -356,6 +356,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @return the parent {@link ChannelStructureDBO}.
      */
     @ManyToOne
+    @Nonnull
     public ChannelStructureDBO getChannelStructure() {
         return (ChannelStructureDBO) getParent();
     }
@@ -581,6 +582,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     public String toString() {
         StringBuffer sb = new StringBuffer();
         try {
@@ -602,8 +604,9 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @throws PersistenceException 
      */
     @Override
-    public AbstractNodeDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
-        AbstractNodeDBO copy = super.copyThisTo(parentNode);
+    @Nonnull
+    public ChannelDBO copyThisTo(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
+        ChannelDBO copy = (ChannelDBO) super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
     }
@@ -613,6 +616,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
      * @throws PersistenceException 
      */
     @Override
+    @Nonnull
     protected ChannelDBO copyParameter(@Nonnull final ChannelStructureDBO parentNode) throws PersistenceException {
         ChannelStructureDBO channelStructure = parentNode;
         ChannelDBO copy = new ChannelDBO(channelStructure,
