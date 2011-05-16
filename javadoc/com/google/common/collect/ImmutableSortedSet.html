@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-ImmutableSortedSet (Guava: Google Core Libraries for Java - r08)
+ImmutableSortedSet (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ ImmutableSortedSet (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ImmutableSortedSet (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="ImmutableSortedSet (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -591,8 +591,11 @@ An immutable <code>SortedSet</code> that stores its elements in a sorted array.
                   E...&nbsp;remainingElementsInOrder)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an immutable sorted set containing the provided elements in the
- same order.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#of()"><CODE>of()</CODE></A> will produce a set with the same elements in the same
+     order.  If the elements are arranged according to another <code>Comparator</code>, use <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>orderedBy(Comparator)</CODE></A>.  Otherwise, use <A HREF="../../../../com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that are
+     ordered but not sorted. This method is scheduled for deletion in Guava
+     release 10.</I></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -607,8 +610,13 @@ An immutable <code>SortedSet</code> that stores its elements in a sorted array.
 <TD><CODE><B><A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#withExplicitOrder(java.util.List)">withExplicitOrder</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;E&gt;&nbsp;elements)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an immutable sorted set containing the elements in the given list
- in the same order.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#copyOf(java.lang.Iterable)"><CODE>copyOf(Iterable)</CODE></A> will produce a set with the same elements in
+     the same order.  If the elements are arranged according to another
+     <code>Comparator</code>, use <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>orderedBy(Comparator)</CODE></A>.  Otherwise, use
+     <A HREF="../../../../com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that
+     are ordered but not sorted. This method is scheduled for deletion in
+     Guava release 10.</I></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_com.google.common.collect.ImmutableSet"><!-- --></A>
@@ -1084,8 +1092,17 @@ public static &lt;E&gt; <A HREF="../../../../com/google/common/collect/Immutable
 withExplicitOrder</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
+<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
 </FONT>public static &lt;E&gt; <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html" title="class in com.google.common.collect">ImmutableSortedSet</A>&lt;E&gt; <B>withExplicitOrder</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/List.html?is-external=true" title="class or interface in java.util">List</A>&lt;E&gt;&nbsp;elements)</PRE>
 <DL>
+<DD><B>Deprecated.</B>&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#copyOf(java.lang.Iterable)"><CODE>copyOf(Iterable)</CODE></A> will produce a set with the same elements in
+     the same order.  If the elements are arranged according to another
+     <code>Comparator</code>, use <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>orderedBy(Comparator)</CODE></A>.  Otherwise, use
+     <A HREF="../../../../com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that
+     are ordered but not sorted. This method is scheduled for deletion in
+     Guava release 10.</I>
+<P>
 <DD>Returns an immutable sorted set containing the elements in the given list
  in the same order. It is useful when the elements already have the desired
  order but constructing the appropriate comparator is difficult.
@@ -1109,9 +1126,16 @@ withExplicitOrder</H3>
 withExplicitOrder</H3>
 <PRE>
 <FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
+<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
 </FONT>public static &lt;E&gt; <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html" title="class in com.google.common.collect">ImmutableSortedSet</A>&lt;E&gt; <B>withExplicitOrder</B>(E&nbsp;firstElement,
-                                                               E...&nbsp;remainingElementsInOrder)</PRE>
+                                                                          E...&nbsp;remainingElementsInOrder)</PRE>
 <DL>
+<DD><B>Deprecated.</B>&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#of()"><CODE>of()</CODE></A> will produce a set with the same elements in the same
+     order.  If the elements are arranged according to another <code>Comparator</code>, use <A HREF="../../../../com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>orderedBy(Comparator)</CODE></A>.  Otherwise, use <A HREF="../../../../com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that are
+     ordered but not sorted. This method is scheduled for deletion in Guava
+     release 10.</I>
+<P>
 <DD>Returns an immutable sorted set containing the provided elements in the
  same order. It is useful when the elements already have the desired order
  but constructing the appropriate comparator is difficult.

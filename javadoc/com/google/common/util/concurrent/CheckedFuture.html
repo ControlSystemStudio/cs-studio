@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-CheckedFuture (Guava: Google Core Libraries for Java - r08)
+CheckedFuture (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ CheckedFuture (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="CheckedFuture (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="CheckedFuture (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -93,7 +93,7 @@ Interface CheckedFuture&lt;V,X extends <A HREF="http://download.oracle.com/javas
 <DT><B>All Superinterfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;V&gt;, <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt;</DD>
 </DL>
 <DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/AbstractCheckedFuture.html" title="class in com.google.common.util.concurrent">AbstractCheckedFuture</A></DD>
+<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/AbstractCheckedFuture.html" title="class in com.google.common.util.concurrent">AbstractCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent">ForwardingCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.SimpleForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent">ForwardingCheckedFuture.SimpleForwardingCheckedFuture</A></DD>
 </DL>
 <HR>
 <DL>
@@ -106,6 +106,8 @@ A <code>CheckedFuture</code> is an extension of <A HREF="http://download.oracle.
  versions of the <code>get</code> methods that can throw a checked exception and
  allows listeners to be attached to the future.  This makes it easier to
  create a future that executes logic which can throw an exception.
+
+ <p>Common implementations include <CODE>com.google.common.labs.concurrent.ValueCheckedFuture</CODE> and <A HREF="../../../../../com/google/common/util/concurrent/Futures.html#immediateCheckedFuture(V)"><CODE>Futures.immediateCheckedFuture(V)</CODE></A>.
 
  <p>Implementations of this interface must adapt the exceptions thrown by
  <code>Future#get()</code>: <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/CancellationException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>CancellationException</CODE></A>,

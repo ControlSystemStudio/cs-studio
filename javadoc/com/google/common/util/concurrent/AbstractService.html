@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-AbstractService (Guava: Google Core Libraries for Java - r08)
+AbstractService (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ AbstractService (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="AbstractService (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="AbstractService (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -94,12 +94,12 @@ Class AbstractService</H2>
   <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>com.google.common.util.concurrent.AbstractService</B>
 </PRE>
 <DL>
-<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></DD>
+<DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></DD>
 </DL>
 <HR>
 <DL>
 <DT><PRE><FONT SIZE="-1"><A HREF="../../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public abstract class <B>AbstractService</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></DL>
+</FONT>public abstract class <B>AbstractService</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A><DT>implements <A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></DL>
 </PRE>
 
 <P>
@@ -129,13 +129,13 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 <B>Nested Class Summary</B></FONT></TH>
 </TR>
 </TABLE>
-&nbsp;<A NAME="nested_classes_inherited_from_class_com.google.common.base.Service"><!-- --></A>
+&nbsp;<A NAME="nested_classes_inherited_from_class_com.google.common.util.concurrent.Service"><!-- --></A>
 <TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
 <TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
-<TH ALIGN="left"><B>Nested classes/interfaces inherited from interface com.google.common.base.<A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></B></TH>
+<TH ALIGN="left"><B>Nested classes/interfaces inherited from interface com.google.common.util.concurrent.<A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A></CODE></TD>
+<TD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;
@@ -186,7 +186,7 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#isRunning()">isRunning</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns <code>true</code> if this service is <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>running</CODE></A>.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns <code>true</code> if this service is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING">running</A>.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -195,7 +195,7 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Invoke this method to transition the service to the
- <A HREF="../../../../../com/google/common/base/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>.</TD>
+ <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -217,16 +217,16 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A>&gt;</CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A>&gt;</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#start()">start</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the service state is <A HREF="../../../../../com/google/common/base/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, this initiates service startup
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the service state is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, this initiates service startup
  and returns immediately.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A></CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#startAndWait()">startAndWait</A></B>()</CODE>
 
 <BR>
@@ -235,7 +235,7 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A></CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#state()">state</A></B>()</CODE>
 
 <BR>
@@ -243,16 +243,16 @@ Base class for implementing services that can handle <A HREF="../../../../../com
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A>&gt;</CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A>&gt;</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#stop()">stop</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the service is <A HREF="../../../../../com/google/common/base/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A> or <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>, this
- initiates service shutdown and returns immediately.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If the service is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STARTING">starting</A> or <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING">running</A>, this initiates service shutdown and returns
+ immediately.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A></CODE></FONT></TD>
+<CODE>&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A></CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/AbstractService.html#stopAndWait()">stopAndWait</A></B>()</CODE>
 
 <BR>
@@ -356,25 +356,25 @@ protected abstract void <B>doStop</B>()</PRE>
 <A NAME="start()"><!-- --></A><H3>
 start</H3>
 <PRE>
-public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A>&gt; <B>start</B>()</PRE>
+public final <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A>&gt; <B>start</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#start()">Service</A></CODE></B></DD>
-<DD>If the service state is <A HREF="../../../../../com/google/common/base/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, this initiates service startup
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#start()">Service</A></CODE></B></DD>
+<DD>If the service state is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, this initiates service startup
  and returns immediately. If the service has already been started, this
  method returns immediately without taking action. A stopped service may not
  be restarted.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#start()">start</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#start()">start</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>a future for the startup result, regardless of whether this call
-     initiated startup. Calling <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will block until the
-     service has finished starting, and returns one of <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>, <A HREF="../../../../../com/google/common/base/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> or <A HREF="../../../../../com/google/common/base/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A>. If
-     the service fails to start, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will throw an <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A>, and the service's state will be <A HREF="../../../../../com/google/common/base/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>. If it has already finished starting, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A>
-     returns immediately. Cancelling the returned future is unsupported and
-     always returns <code>false</code>.</DL>
+     initiated startup. Calling <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will block
+     until the service has finished starting, and returns one of <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>, <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> or <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A>. If
+     the service fails to start, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will throw an
+     <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A>, and the service's state will be <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>. If it has already finished starting, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> returns immediately. Cancelling the returned
+     future is unsupported and always returns <code>false</code>.</DL>
 </DD>
 </DL>
 <HR>
@@ -382,24 +382,27 @@ public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/con
 <A NAME="stop()"><!-- --></A><H3>
 stop</H3>
 <PRE>
-public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;<A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A>&gt; <B>stop</B>()</PRE>
+public final <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A>&gt; <B>stop</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#stop()">Service</A></CODE></B></DD>
-<DD>If the service is <A HREF="../../../../../com/google/common/base/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A> or <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>, this
- initiates service shutdown and returns immediately. If this is <A HREF="../../../../../com/google/common/base/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, it is <A HREF="../../../../../com/google/common/base/Service.State.html#TERMINATED"><CODE>terminated</CODE></A> without having been
- started nor stopped.  If the service has already been stopped, this
- method returns immediately without taking action.
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#stop()">Service</A></CODE></B></DD>
+<DD>If the service is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STARTING">starting</A> or <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING">running</A>, this initiates service shutdown and returns
+ immediately. If the service is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#NEW">new</A>, it is
+ <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#TERMINATED">terminated</A> without having been started nor
+ stopped.  If the service has already been stopped, this method returns
+ immediately without taking action.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#stop()">stop</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#stop()">stop</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 
 <DT><B>Returns:</B><DD>a future for the shutdown result, regardless of whether this call
-     initiated shutdown. Calling <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will block until the
-     service has finished shutting down, and either returns <A HREF="../../../../../com/google/common/base/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A> or throws an <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A>. If it has
-     already finished stopping, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> returns immediately.
-     Cancelling this future is unsupported and always returns <code>false</code>.</DL>
+     initiated shutdown. Calling <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> will block
+     until the service has finished shutting down, and either returns
+     <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A> or throws an <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A>. If
+     it has already finished stopping, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> returns
+     immediately.  Cancelling this future is unsupported and always returns
+     <code>false</code>.</DL>
 </DD>
 </DL>
 <HR>
@@ -407,15 +410,15 @@ public final <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/con
 <A NAME="startAndWait()"><!-- --></A><H3>
 startAndWait</H3>
 <PRE>
-public <A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A> <B>startAndWait</B>()</PRE>
+public <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A> <B>startAndWait</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#startAndWait()">Service</A></CODE></B></DD>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#startAndWait()">Service</A></CODE></B></DD>
 <DD>Initiates service startup (if necessary), returning once the service has
  finished starting. Unlike calling <code>start().get()</code>, this method throws
- no checked exceptions.
+ no checked exceptions, and it cannot be <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Thread.html?is-external=true#interrupt()" title="class or interface in java.lang">interrupted</A>.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#startAndWait()">startAndWait</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#startAndWait()">startAndWait</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 
@@ -427,15 +430,15 @@ public <A HREF="../../../../../com/google/common/base/Service.State.html" title=
 <A NAME="stopAndWait()"><!-- --></A><H3>
 stopAndWait</H3>
 <PRE>
-public <A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A> <B>stopAndWait</B>()</PRE>
+public <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A> <B>stopAndWait</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#stopAndWait()">Service</A></CODE></B></DD>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#stopAndWait()">Service</A></CODE></B></DD>
 <DD>Initiates service shutdown (if necessary), returning once the service has
- finished stopping. If this is <A HREF="../../../../../com/google/common/base/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A>, startup will be
- cancelled. If this is <A HREF="../../../../../com/google/common/base/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, it is <A HREF="../../../../../com/google/common/base/Service.State.html#TERMINATED"><CODE>terminated</CODE></A> without having been started nor stopped. Unlike calling <code>stop().get()</code>, this method throws no checked exceptions.
+ finished stopping. If this is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A>, startup will be
+ cancelled. If this is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#NEW"><CODE>Service.State.NEW</CODE></A>, it is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#TERMINATED"><CODE>terminated</CODE></A> without having been started nor stopped. Unlike calling <code>stop().get()</code>, this method throws no checked exceptions.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#stopAndWait()">stopAndWait</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#stopAndWait()">stopAndWait</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 
@@ -450,7 +453,7 @@ notifyStarted</H3>
 protected final void <B>notifyStarted</B>()</PRE>
 <DL>
 <DD>Implementing classes should invoke this method once their service has
- started. It will cause the service to transition from <A HREF="../../../../../com/google/common/base/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A> to <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>.
+ started. It will cause the service to transition from <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A> to <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -459,7 +462,7 @@ protected final void <B>notifyStarted</B>()</PRE>
 
 <DT><B>Throws:</B>
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if the service is not
-     <A HREF="../../../../../com/google/common/base/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A>.</DL>
+     <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STARTING"><CODE>Service.State.STARTING</CODE></A>.</DL>
 </DD>
 </DL>
 <HR>
@@ -470,7 +473,7 @@ notifyStopped</H3>
 protected final void <B>notifyStopped</B>()</PRE>
 <DL>
 <DD>Implementing classes should invoke this method once their service has
- stopped. It will cause the service to transition from <A HREF="../../../../../com/google/common/base/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> to <A HREF="../../../../../com/google/common/base/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A>.
+ stopped. It will cause the service to transition from <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> to <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#TERMINATED"><CODE>Service.State.TERMINATED</CODE></A>.
 <P>
 <DD><DL>
 </DL>
@@ -478,7 +481,7 @@ protected final void <B>notifyStopped</B>()</PRE>
 <DD><DL>
 
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if the service is neither <A HREF="../../../../../com/google/common/base/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> nor <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>.</DL>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang">IllegalStateException</A></CODE> - if the service is neither <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#STOPPING"><CODE>Service.State.STOPPING</CODE></A> nor <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING"><CODE>Service.State.RUNNING</CODE></A>.</DL>
 </DD>
 </DL>
 <HR>
@@ -489,7 +492,7 @@ notifyFailed</H3>
 protected final void <B>notifyFailed</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang">Throwable</A>&nbsp;cause)</PRE>
 <DL>
 <DD>Invoke this method to transition the service to the
- <A HREF="../../../../../com/google/common/base/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>. The service will <b>not be stopped</b> if it
+ <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#FAILED"><CODE>Service.State.FAILED</CODE></A>. The service will <b>not be stopped</b> if it
  is running. Invoke this method when a service has failed critically or
  otherwise cannot be started nor stopped.
 <P>
@@ -507,11 +510,11 @@ isRunning</H3>
 <PRE>
 public final boolean <B>isRunning</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#isRunning()">Service</A></CODE></B></DD>
-<DD>Returns <code>true</code> if this service is <A HREF="../../../../../com/google/common/base/Service.State.html#RUNNING"><CODE>running</CODE></A>.
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#isRunning()">Service</A></CODE></B></DD>
+<DD>Returns <code>true</code> if this service is <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html#RUNNING">running</A>.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#isRunning()">isRunning</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#isRunning()">isRunning</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 </DL>
@@ -522,13 +525,13 @@ public final boolean <B>isRunning</B>()</PRE>
 <A NAME="state()"><!-- --></A><H3>
 state</H3>
 <PRE>
-public final <A HREF="../../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base">Service.State</A> <B>state</B>()</PRE>
+public final <A HREF="../../../../../com/google/common/util/concurrent/Service.State.html" title="enum in com.google.common.util.concurrent">Service.State</A> <B>state</B>()</PRE>
 <DL>
-<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/base/Service.html#state()">Service</A></CODE></B></DD>
+<DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#state()">Service</A></CODE></B></DD>
 <DD>Returns the lifecycle state of the service.
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/base/Service.html#state()">state</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/base/Service.html" title="interface in com.google.common.base">Service</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html#state()">state</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/Service.html" title="interface in com.google.common.util.concurrent">Service</A></CODE></DL>
 </DD>
 <DD><DL>
 </DL>

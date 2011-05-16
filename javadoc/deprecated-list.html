@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Deprecated List (Guava: Google Core Libraries for Java - r08)
+Deprecated List (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Deprecated List (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Deprecated List (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Deprecated List (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -104,11 +104,6 @@ function windowTitle()
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>no need to use this</I>&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><A HREF="com/google/common/base/Equivalences.html#nullAwareEquals()">com.google.common.base.Equivalences.nullAwareEquals()</A>
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>use <A HREF="com/google/common/base/Equivalences.html#equals()"><CODE>Equivalences.equals()</CODE></A>, which now has the null-aware behavior</I>&nbsp;</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><A HREF="com/google/common/collect/ImmutableMultiset.html#of(E[])">com.google.common.collect.ImmutableMultiset.of(E[])</A>
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>use <A HREF="com/google/common/collect/ImmutableMultiset.html#copyOf(E[])"><CODE>ImmutableMultiset.copyOf(Object[])</CODE></A>. <b>This method is scheduled for
@@ -137,6 +132,26 @@ function windowTitle()
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>use <A HREF="com/google/common/collect/Lists.html#reverse(java.util.List)"><CODE>Lists.reverse(List)</CODE></A> or <A HREF="com/google/common/collect/ImmutableList.html#reverse()"><CODE>ImmutableList.reverse()</CODE></A>. <b>This method is scheduled for deletion in
      July 2012.</b></I>&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><A HREF="com/google/common/collect/ImmutableSortedSet.html#withExplicitOrder(E, E...)">com.google.common.collect.ImmutableSortedSet.withExplicitOrder(E, E...)</A>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="com/google/common/collect/ImmutableSortedSet.html#of()"><CODE>ImmutableSortedSet.of()</CODE></A> will produce a set with the same elements in the same
+     order.  If the elements are arranged according to another <code>Comparator</code>, use <A HREF="com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>ImmutableSortedSet.orderedBy(Comparator)</CODE></A>.  Otherwise, use <A HREF="com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that are
+     ordered but not sorted. This method is scheduled for deletion in Guava
+     release 10.</I>&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><A HREF="com/google/common/collect/ImmutableSortedSet.html#withExplicitOrder(java.util.List)">com.google.common.collect.ImmutableSortedSet.withExplicitOrder(List<E>)</A>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<I>If the provided elements are already in their natural order,
+     <A HREF="com/google/common/collect/ImmutableSortedSet.html#copyOf(java.lang.Iterable)"><CODE>ImmutableSortedSet.copyOf(Iterable)</CODE></A> will produce a set with the same elements in
+     the same order.  If the elements are arranged according to another
+     <code>Comparator</code>, use <A HREF="com/google/common/collect/ImmutableSortedSet.html#orderedBy(java.util.Comparator)"><CODE>ImmutableSortedSet.orderedBy(Comparator)</CODE></A>.  Otherwise, use
+     <A HREF="com/google/common/collect/ImmutableSet.html" title="class in com.google.common.collect"><CODE>ImmutableSet</CODE></A>, which maintains insertion order for inputs that
+     are ordered but not sorted. This method is scheduled for deletion in
+     Guava release 10.</I>&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD><A HREF="com/google/common/io/ByteArrayDataOutput.html#writeBytes(java.lang.String)">com.google.common.io.ByteArrayDataOutput.writeBytes(String)</A>

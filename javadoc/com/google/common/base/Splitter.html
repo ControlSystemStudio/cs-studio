@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Splitter (Guava: Google Core Libraries for Java - r08)
+Splitter (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Splitter (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Splitter (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Splitter (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -53,7 +53,7 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../com/google/common/base/Predicates.html" title="class in com.google.common.base"><B>PREV CLASS</B></A>&nbsp;
 &nbsp;<A HREF="../../../../com/google/common/base/Strings.html" title="class in com.google.common.base"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?com/google/common/base/Splitter.html" target="_top"><B>FRAMES</B></A>  &nbsp;
@@ -172,6 +172,15 @@ An object that divides strings (or other instances of <code>CharSequence</code>)
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a splitter that divides strings into pieces of the given length.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../com/google/common/base/Splitter.html" title="class in com.google.common.base">Splitter</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../com/google/common/base/Splitter.html#limit(int)">limit</A></B>(int&nbsp;limit)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a splitter that behaves equivalently to <code>this</code> splitter but
+ stops splitting after it reaches the limit.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -411,6 +420,35 @@ public <A HREF="../../../../com/google/common/base/Splitter.html" title="class i
 </DL>
 <HR>
 
+<A NAME="limit(int)"><!-- --></A><H3>
+limit</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
+</FONT>public <A HREF="../../../../com/google/common/base/Splitter.html" title="class in com.google.common.base">Splitter</A> <B>limit</B>(int&nbsp;limit)</PRE>
+<DL>
+<DD>Returns a splitter that behaves equivalently to <code>this</code> splitter but
+ stops splitting after it reaches the limit.
+ The limit defines the maximum number of items returned by the iterator.
+
+ <p>For example,
+ <code>Splitter.on(',').limit(3).split("a,b,c,d")</code> returns an iterable
+ containing <code>["a", "b", "c,d"]</code>.  When omitting empty strings, the
+ omitted strings do no count.  Hence,
+ <code>Splitter.on(',').limit(3).omitEmptyStrings().split("a,,,b,,,c,d")</code>
+ returns an iterable containing <code>["a", "b", "c,d"</code>.
+ When trim is requested, all entries, including the last are trimmed.  Hence
+ <code>Splitter.on(',').limit(3).trimResults().split(" a , b , c , d ")</code>
+ results in @{code ["a", "b", "c , d"]}.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>limit</CODE> - the maximum number of items returns
+<DT><B>Returns:</B><DD>a splitter with the desired configuration<DT><B>Since:</B></DT>
+  <DD>9</DD>
+</DL>
+</DD>
+</DL>
+<HR>
+
 <A NAME="trimResults()"><!-- --></A><H3>
 trimResults</H3>
 <PRE>
@@ -488,7 +526,7 @@ public <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../com/google/common/base/Service.State.html" title="enum in com.google.common.base"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../com/google/common/base/Predicates.html" title="class in com.google.common.base"><B>PREV CLASS</B></A>&nbsp;
 &nbsp;<A HREF="../../../../com/google/common/base/Strings.html" title="class in com.google.common.base"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../index.html?com/google/common/base/Splitter.html" target="_top"><B>FRAMES</B></A>  &nbsp;

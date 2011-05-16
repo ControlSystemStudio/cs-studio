@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Futures (Guava: Google Core Libraries for Java - r08)
+Futures (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Futures (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Futures (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Futures (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -163,58 +163,6 @@ Static utility methods pertaining to the <A HREF="http://download.oracle.com/jav
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
 <TR ALIGN="right" VALIGN="">
 <TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;I,O&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;O&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#compose(java.util.concurrent.Future, com.google.common.base.Function)">compose</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;I&gt;&nbsp;future,
-        <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>Future</code> whose result is the product of applying the
- given <code>Function</code> to the result of the given <code>Future</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#compose(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)">compose</A></B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
-        <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>ListenableFuture</code> whose result is the product of
- applying the given <code>Function</code> to the result of the given <code>Future</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
-<CODE>&lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt;</CODE></FONT></TD>
-</TR>
-</TABLE>
-</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#compose(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function, java.util.concurrent.Executor)">compose</A></B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
-        <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function,
-        <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</CODE>
-
-<BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>ListenableFuture</code> whose result is the product of
- applying the given <code>Function</code> to the result of the given <code>Future</code>.</TD>
-</TR>
-<TR BGCOLOR="white" CLASS="TableRowColor">
-<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
-<TR ALIGN="right" VALIGN="">
-<TD NOWRAP><FONT SIZE="-1">
 <CODE>&lt;V,X extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A>&gt; 
 <BR>
 <A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent">CheckedFuture</A>&lt;V,X&gt;</CODE></FONT></TD>
@@ -303,6 +251,26 @@ Static utility methods pertaining to the <A HREF="http://download.oracle.com/jav
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
 <TR ALIGN="right" VALIGN="">
 <TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;V,X extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A>&gt; 
+<BR>
+<A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent">CheckedFuture</A>&lt;V,X&gt;</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#makeChecked(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)">makeChecked</A></B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt;&nbsp;future,
+            <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A>,X&gt;&nbsp;mapper)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates a <A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent"><CODE>CheckedFuture</CODE></A> out of a normal <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A>
+ and a <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base"><CODE>Function</CODE></A> that maps from <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang"><CODE>Exception</CODE></A> instances into the
+ appropriate checked type.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
 <CODE>&lt;V&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt;</CODE></FONT></TD>
 </TR>
 </TABLE>
@@ -326,6 +294,58 @@ Static utility methods pertaining to the <A HREF="http://download.oracle.com/jav
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an uninterruptible view of a <code>Future</code>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;I,O&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;O&gt;</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#transform(java.util.concurrent.Future, com.google.common.base.Function)">transform</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;I&gt;&nbsp;future,
+          <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>Future</code> whose result is the product of applying the
+ given <code>Function</code> to the result of the given <code>Future</code>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt;</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#transform(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)">transform</A></B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
+          <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>ListenableFuture</code> whose result is the product of
+ applying the given <code>Function</code> to the result of the given <code>Future</code>.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt;</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/Futures.html#transform(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function, java.util.concurrent.Executor)">transform</A></B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
+          <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function,
+          <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns a new <code>ListenableFuture</code> whose result is the product of
+ applying the given <code>Function</code> to the result of the given <code>Future</code>.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -371,9 +391,13 @@ makeListenable</H3>
 <PRE>
 public static &lt;V&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt; <B>makeListenable</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;V&gt;&nbsp;future)</PRE>
 <DL>
-<DD>Creates a <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A> out of a normal <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>Future</CODE></A>. The
+<DD><p>Creates a <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A> out of a normal <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>Future</CODE></A>. The
  returned future will create a thread to wait for the source future to
  complete before executing the listeners.
+
+ <p><b>Warning:</b> If the input future does not already implement <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A>, the returned future will emulate <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html#addListener(java.lang.Runnable, java.util.concurrent.Executor)"><CODE>ListenableFuture.addListener(java.lang.Runnable, java.util.concurrent.Executor)</CODE></A> by taking a thread from an internal,
+ unbounded pool at the first call to <code>addListener</code> and holding it
+ until the future is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">done</A>.
 
  <p>Callers who have a future that subclasses
  <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/FutureTask.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>FutureTask</CODE></A> may want to instead subclass
@@ -396,12 +420,39 @@ public static &lt;V,X extends <A HREF="http://download.oracle.com/javase/6/docs/
  <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base"><CODE>Function</CODE></A> that maps from <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang"><CODE>Exception</CODE></A> instances into the
  appropriate checked type.
 
+ <p><b>Warning:</b> If the input future does not implement <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A>, the returned future will emulate <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html#addListener(java.lang.Runnable, java.util.concurrent.Executor)"><CODE>ListenableFuture.addListener(java.lang.Runnable, java.util.concurrent.Executor)</CODE></A> by taking a thread from an internal,
+ unbounded pool at the first call to <code>addListener</code> and holding it
+ until the future is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">done</A>.
+
  <p>The given mapping function will be applied to an
  <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang"><CODE>InterruptedException</CODE></A>, a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/CancellationException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>CancellationException</CODE></A>, or an
  <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A> with the actual cause of the exception.
  See <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> for details on the exceptions thrown.
 <P>
 <DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="makeChecked(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)"><!-- --></A><H3>
+makeChecked</H3>
+<PRE>
+public static &lt;V,X extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A>&gt; <A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent">CheckedFuture</A>&lt;V,X&gt; <B>makeChecked</B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt;&nbsp;future,
+                                                                     <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang">Exception</A>,X&gt;&nbsp;mapper)</PRE>
+<DL>
+<DD>Creates a <A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent"><CODE>CheckedFuture</CODE></A> out of a normal <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A>
+ and a <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base"><CODE>Function</CODE></A> that maps from <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Exception.html?is-external=true" title="class or interface in java.lang"><CODE>Exception</CODE></A> instances into the
+ appropriate checked type.
+
+ <p>The given mapping function will be applied to an
+ <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang"><CODE>InterruptedException</CODE></A>, a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/CancellationException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>CancellationException</CODE></A>, or an
+ <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/ExecutionException.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>ExecutionException</CODE></A> with the actual cause of the exception.
+ See <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#get()" title="class or interface in java.util.concurrent"><CODE>Future.get()</CODE></A> for details on the exceptions thrown.
+<P>
+<DD><DL>
+<DT><B>Since:</B></DT>
+  <DD>9 (source-compatible since release 1)</DD>
 </DL>
 </DD>
 </DL>
@@ -416,8 +467,7 @@ public static &lt;V&gt; <A HREF="../../../../../com/google/common/util/concurren
 <DD>Creates a <code>ListenableFuture</code> which has its value set immediately upon
  construction. The getters just return the value. This <code>Future</code> can't
  be canceled or timed out and its <code>isDone()</code> method always returns
- <code>true</code>. It's useful for returning something that implements the
- <code>ListenableFuture</code> interface but already has the result.
+ <code>true</code>.
 <P>
 <DD><DL>
 </DL>
@@ -493,7 +543,18 @@ public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurr
 <DD>Returns a new <code>ListenableFuture</code> whose result is asynchronously
  derived from the result of the given <code>Future</code>. More precisely, the
  returned <code>Future</code> takes its result from a <code>Future</code> produced by
- applying the given <code>Function</code> to the result of the original <code>Future</code>.
+ applying the given <code>Function</code> to the result of the original <code>Future</code>. Example:
+
+ <pre>   <code>ListenableFuture&lt;RowKey&gt; rowKeyFuture = indexService.lookUp(query);
+   Function&lt;RowKey, ListenableFuture&lt;QueryResult&gt;&gt; queryFunction =
+       new Function&lt;RowKey, ListenableFuture&lt;QueryResult&gt;&gt;() {
+         public ListenableFuture&lt;QueryResult&gt; apply(RowKey rowKey) {
+           return dataService.read(rowKey);
+         }
+       };
+   ListenableFuture&lt;QueryResult&gt; queryFuture =
+       chain(queryFuture, queryFunction);
+ </code></pre>
 
  <p>Successful cancellation of either the input future or the result of
  function application will cause the returned future to be cancelled.
@@ -528,7 +589,18 @@ public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurr
 <DD>Returns a new <code>ListenableFuture</code> whose result is asynchronously
  derived from the result of the given <code>Future</code>. More precisely, the
  returned <code>Future</code> takes its result from a <code>Future</code> produced by
- applying the given <code>Function</code> to the result of the original <code>Future</code>.
+ applying the given <code>Function</code> to the result of the original <code>Future</code>. Example:
+
+ <pre>   <code>ListenableFuture&lt;RowKey&gt; rowKeyFuture = indexService.lookUp(query);
+   Function&lt;RowKey, ListenableFuture&lt;QueryResult&gt;&gt; queryFunction =
+       new Function&lt;RowKey, ListenableFuture&lt;QueryResult&gt;&gt;() {
+         public ListenableFuture&lt;QueryResult&gt; apply(RowKey rowKey) {
+           return dataService.read(rowKey);
+         }
+       };
+   ListenableFuture&lt;QueryResult&gt; queryFuture =
+       chain(queryFuture, queryFunction, executor);
+ </code></pre>
 
  <p>Successful cancellation of either the input future or the result of
  function application will cause the returned future to be cancelled.
@@ -550,14 +622,25 @@ public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurr
 </DL>
 <HR>
 
-<A NAME="compose(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)"><!-- --></A><H3>
-compose</H3>
+<A NAME="transform(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function)"><!-- --></A><H3>
+transform</H3>
 <PRE>
-public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt; <B>compose</B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
-                                                <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</PRE>
+public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt; <B>transform</B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
+                                                  <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</PRE>
 <DL>
 <DD>Returns a new <code>ListenableFuture</code> whose result is the product of
- applying the given <code>Function</code> to the result of the given <code>Future</code>.
+ applying the given <code>Function</code> to the result of the given <code>Future</code>. Example:
+
+ <pre>   <code>ListenableFuture&lt;QueryResult&gt; queryFuture = ...;
+   Function&lt;QueryResult, List&lt;Row&gt;&gt; rowsFunction =
+       new Function&lt;QueryResult, List&lt;Row&gt;&gt;() {
+         public List&lt;Row&gt; apply(QueryResult queryResult) {
+           return queryResult.getRows();
+         }
+       };
+   ListenableFuture&lt;List&lt;Row&gt;&gt; rowsFuture =
+       transform(queryFuture, rowsFunction);
+ </code></pre>
 
  <p>Successful cancellation of the input future will cause the returned
  future to be cancelled.  Cancelling the returned future will succeed if it
@@ -571,20 +654,33 @@ public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurr
 <DT><B>Parameters:</B><DD><CODE>future</CODE> - The future to compose<DD><CODE>function</CODE> - A Function to compose the results of the provided future
      to the results of the returned future.  This will be run in the thread
      that notifies input it is complete.
-<DT><B>Returns:</B><DD>A future that holds result of the composition.</DL>
+<DT><B>Returns:</B><DD>A future that holds result of the composition.<DT><B>Since:</B></DT>
+  <DD>9 (in version 1 as <code>compose</code>)</DD>
+</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="compose(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function, java.util.concurrent.Executor)"><!-- --></A><H3>
-compose</H3>
+<A NAME="transform(com.google.common.util.concurrent.ListenableFuture, com.google.common.base.Function, java.util.concurrent.Executor)"><!-- --></A><H3>
+transform</H3>
 <PRE>
-public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt; <B>compose</B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
-                                                <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function,
-                                                <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</PRE>
+public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;O&gt; <B>transform</B>(<A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;I&gt;&nbsp;future,
+                                                  <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function,
+                                                  <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</PRE>
 <DL>
 <DD>Returns a new <code>ListenableFuture</code> whose result is the product of
- applying the given <code>Function</code> to the result of the given <code>Future</code>.
+ applying the given <code>Function</code> to the result of the given <code>Future</code>. Example:
+
+ <pre>   <code>ListenableFuture&lt;QueryResult&gt; queryFuture = ...;
+   Function&lt;QueryResult, List&lt;Row&gt;&gt; rowsFunction =
+       new Function&lt;QueryResult, List&lt;Row&gt;&gt;() {
+         public List&lt;Row&gt; apply(QueryResult queryResult) {
+           return queryResult.getRows();
+         }
+       };
+   ListenableFuture&lt;List&lt;Row&gt;&gt; rowsFuture =
+       transform(queryFuture, rowsFunction, executor);
+ </code></pre>
 
  <p>Successful cancellation of the input future will cause the returned
  future to be cancelled.  Cancelling the returned future will succeed if it
@@ -604,23 +700,30 @@ public static &lt;I,O&gt; <A HREF="../../../../../com/google/common/util/concurr
 <DT><B>Parameters:</B><DD><CODE>future</CODE> - The future to compose<DD><CODE>function</CODE> - A Function to compose the results of the provided future
      to the results of the returned future.<DD><CODE>exec</CODE> - Executor to run the function in.
 <DT><B>Returns:</B><DD>A future that holds result of the composition.<DT><B>Since:</B></DT>
-  <DD>2</DD>
+  <DD>9 (in version 2 as <code>compose</code>)</DD>
 </DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="compose(java.util.concurrent.Future, com.google.common.base.Function)"><!-- --></A><H3>
-compose</H3>
+<A NAME="transform(java.util.concurrent.Future, com.google.common.base.Function)"><!-- --></A><H3>
+transform</H3>
 <PRE>
-public static &lt;I,O&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;O&gt; <B>compose</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;I&gt;&nbsp;future,
-                                      <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</PRE>
+public static &lt;I,O&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;O&gt; <B>transform</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;I&gt;&nbsp;future,
+                                        <A HREF="../../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super I,? extends O&gt;&nbsp;function)</PRE>
 <DL>
 <DD>Returns a new <code>Future</code> whose result is the product of applying the
- given <code>Function</code> to the result of the given <code>Future</code>.
+ given <code>Function</code> to the result of the given <code>Future</code>. Example:
 
- <p>An example use of this method is to convert a Future that produces a
- handle to an object to a future that produces the object itself.
+ <pre>   <code>Future&lt;QueryResult&gt; queryFuture = ...;
+   Function&lt;QueryResult, List&lt;Row&gt;&gt; rowsFunction =
+       new Function&lt;QueryResult, List&lt;Row&gt;&gt;() {
+         public List&lt;Row&gt; apply(QueryResult queryResult) {
+           return queryResult.getRows();
+         }
+       };
+   Future&lt;List&lt;Row&gt;&gt; rowsFuture = transform(queryFuture, rowsFunction);
+ </code></pre>
 
  <p>Each call to <code>Future&lt;O&gt;.get(*)</code> results in a call to
  <code>Future&lt;I&gt;.get(*)</code>, but <code>function</code> is only applied once, so it
@@ -636,7 +739,9 @@ public static &lt;I,O&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/
 <DT><B>Parameters:</B><DD><CODE>future</CODE> - The future to compose<DD><CODE>function</CODE> - A Function to compose the results of the provided future
      to the results of the returned future.  This will be run in the thread
      that calls one of the varieties of <code>get()</code>.
-<DT><B>Returns:</B><DD>A future that computes result of the composition.</DL>
+<DT><B>Returns:</B><DD>A future that computes result of the composition.<DT><B>Since:</B></DT>
+  <DD>9 (in version 1 as <code>compose</code>)</DD>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

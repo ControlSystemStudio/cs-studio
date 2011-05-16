@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-ForwardingListenableFuture (Guava: Google Core Libraries for Java - r08)
+ForwardingListenableFuture (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ ForwardingListenableFuture (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ForwardingListenableFuture (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="ForwardingListenableFuture (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -53,8 +53,8 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingService.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?com/google/common/util/concurrent/ForwardingListenableFuture.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="ForwardingListenableFuture.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -74,7 +74,7 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
@@ -96,9 +96,12 @@ Class ForwardingListenableFuture&lt;V&gt;</H2>
           <IMG SRC="../../../../../resources/inherit.gif" ALT="extended by "><B>com.google.common.util.concurrent.ForwardingListenableFuture&lt;V&gt;</B>
 </PRE>
 <DL>
-<DT><DT><B>Type Parameters:</B><DD><CODE>V</CODE> - The result type returned by this Future's <tt>get</tt> method</DL>
+<DT><DT><B>Type Parameters:</B><DD><CODE>V</CODE> - The result type returned by this Future's <code>get</code> method</DL>
 <DL>
 <DT><B>All Implemented Interfaces:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;V&gt;, <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;V&gt;</DD>
+</DL>
+<DL>
+<DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent">ForwardingCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture.SimpleForwardingListenableFuture</A></DD>
 </DL>
 <HR>
 <DL>
@@ -107,9 +110,12 @@ Class ForwardingListenableFuture&lt;V&gt;</H2>
 </PRE>
 
 <P>
-A <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingFuture</CODE></A> that also implements <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A>.
- Subclasses will have to provide a delegate <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A> through
- the <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html#delegate()"><CODE>delegate()</CODE></A> method.
+A <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingListenableFuture.SimpleForwardingListenableFuture</CODE></A> which forwards all its method calls to another
+ future. Subclasses should override one or more methods to modify the behavior
+ of the backing future as desired per the <a
+ href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
+
+ <p>Most subclasses can just use <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingListenableFuture.SimpleForwardingListenableFuture</CODE></A>.
 <P>
 
 <P>
@@ -122,6 +128,35 @@ A <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.htm
 <HR>
 
 <P>
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+
+<A NAME="nested_class_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Nested Class Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;class</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture.SimpleForwardingListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="type parameter in ForwardingListenableFuture.SimpleForwardingListenableFuture">V</A>&gt;</B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A simplified version of <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingListenableFuture</CODE></A> where subclasses
+ can pass in an already constructed <A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent"><CODE>ListenableFuture</CODE></A> 
+ as the delegate.</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="nested_classes_inherited_from_class_com.google.common.util.concurrent.ForwardingFuture"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Nested classes/interfaces inherited from class com.google.common.util.concurrent.<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.html" title="class in com.google.common.util.concurrent">ForwardingFuture</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent">ForwardingFuture.SimpleForwardingFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="type parameter in ForwardingFuture.SimpleForwardingFuture">V</A>&gt;</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
 
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 
@@ -156,7 +191,8 @@ A <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.htm
             <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds a listener and executor to the ListenableFuture.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Registers a listener to be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">run</A> on
+ the given executor.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -262,21 +298,24 @@ public void <B>addListener</B>(<A HREF="http://download.oracle.com/javase/6/docs
                         <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</PRE>
 <DL>
 <DD><B>Description copied from interface: <CODE><A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html#addListener(java.lang.Runnable, java.util.concurrent.Executor)">ListenableFuture</A></CODE></B></DD>
-<DD><p>Adds a listener and executor to the ListenableFuture.
- The listener will be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">passed
- to the executor</A> for execution when the <code>Future</code>'s computation is
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A>.
+<DD>Registers a listener to be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">run</A> on
+ the given executor.  The listener will run when the <code>Future</code>'s
+ computation is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A> or, if the computation
+ is already complete, immediately.
 
- <p>There is no guaranteed ordering of execution of listeners, they may get
- called in the order they were added and they may get called out of order,
- but any listener added through this method is guaranteed to be called once
- the computation is complete.
+ <p>There is no guaranteed ordering of execution of listeners, but any
+ listener added through this method is guaranteed to be called once the
+ computation is complete.
+
+ <p>Listeners cannot throw checked exceptions and should not throw <code>RuntimeException</code> unless their executors are prepared to handle it.
+ Listeners that will execute in <A HREF="../../../../../com/google/common/util/concurrent/MoreExecutors.html#sameThreadExecutor()"><CODE>MoreExecutors.sameThreadExecutor()</CODE></A>
+ should take special care, since they may run during the call to <code>addListener</code> or during the call that sets the future's value.
 <P>
 <DD><DL>
 <DT><B>Specified by:</B><DD><CODE><A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html#addListener(java.lang.Runnable, java.util.concurrent.Executor)">addListener</A></CODE> in interface <CODE><A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html" title="interface in com.google.common.util.concurrent">ListenableFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="type parameter in ForwardingListenableFuture">V</A>&gt;</CODE></DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>listener</CODE> - the listener to run when the computation is complete.<DD><CODE>exec</CODE> - the executor to run the listener in.</DL>
+<DT><B>Parameters:</B><DD><CODE>listener</CODE> - the listener to run when the computation is complete<DD><CODE>exec</CODE> - the executor to run the listener in</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
@@ -309,8 +348,8 @@ public void <B>addListener</B>(<A HREF="http://download.oracle.com/javase/6/docs
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingService.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?com/google/common/util/concurrent/ForwardingListenableFuture.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="ForwardingListenableFuture.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -330,7 +369,7 @@ public void <B>addListener</B>(<A HREF="http://download.oracle.com/javase/6/docs
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>

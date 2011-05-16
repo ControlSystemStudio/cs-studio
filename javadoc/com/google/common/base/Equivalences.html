@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Equivalences (Guava: Google Core Libraries for Java - r08)
+Equivalences (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Equivalences (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Equivalences (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Equivalences (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -111,7 +111,7 @@ Contains static factory methods for creating <code>Equivalence</code> instances.
 <DT><B>Since:</B></DT>
   <DD>4</DD>
 <DT><B>Author:</B></DT>
-  <DD>Bob Lee, Kurt Alfred Kluever</DD>
+  <DD>Bob Lee, Kurt Alfred Kluever, Gregory Kick</DD>
 </DL>
 <HR>
 
@@ -143,11 +143,18 @@ Contains static factory methods for creating <code>Equivalence</code> instances.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>static&nbsp;<A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&gt;</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../com/google/common/base/Equivalences.html#nullAwareEquals()">nullAwareEquals</A></B>()</CODE>
+<CODE>static
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" SUMMARY="">
+<TR ALIGN="right" VALIGN="">
+<TD NOWRAP><FONT SIZE="-1">
+<CODE>&lt;T&gt; <A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&gt;</CODE></FONT></TD>
+</TR>
+</TABLE>
+</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../com/google/common/base/Equivalences.html#pairwise(com.google.common.base.Equivalence)">pairwise</A></B>(<A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;? super T&gt;&nbsp;elementEquivalence)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>Deprecated.</B>&nbsp;<I>use <A HREF="../../../../com/google/common/base/Equivalences.html#equals()"><CODE>equals()</CODE></A>, which now has the null-aware behavior</I></TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an equivalence over iterables based on the equivalence of their elements.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -190,25 +197,6 @@ public static <A HREF="../../../../com/google/common/base/Equivalence.html" titl
 </DL>
 <HR>
 
-<A NAME="nullAwareEquals()"><!-- --></A><H3>
-nullAwareEquals</H3>
-<PRE>
-<FONT SIZE="-1"><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang">@Deprecated</A>
-</FONT>public static <A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A>&gt; <B>nullAwareEquals</B>()</PRE>
-<DL>
-<DD><B>Deprecated.</B>&nbsp;<I>use <A HREF="../../../../com/google/common/base/Equivalences.html#equals()"><CODE>equals()</CODE></A>, which now has the null-aware behavior</I>
-<P>
-<DD>Returns an equivalence that delegates to <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang"><CODE>Object.equals(java.lang.Object)</CODE></A> and <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang"><CODE>Object.hashCode()</CODE></A>.
- <A HREF="../../../../com/google/common/base/Equivalence.html#equivalent(T, T)"><CODE>Equivalence.equivalent(T, T)</CODE></A> returns <code>true</code> if both values are null, or if neither
- value is null and <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang"><CODE>Object.equals(java.lang.Object)</CODE></A> returns <code>true</code>. <A HREF="../../../../com/google/common/base/Equivalence.html#hash(T)"><CODE>Equivalence.hash(T)</CODE></A> returns
- <code>0</code> if passed a null value.
-<P>
-<DD><DL>
-</DL>
-</DD>
-</DL>
-<HR>
-
 <A NAME="identity()"><!-- --></A><H3>
 identity</H3>
 <PRE>
@@ -218,6 +206,25 @@ public static <A HREF="../../../../com/google/common/base/Equivalence.html" titl
  returns <code>true</code> if <code>a == b</code>, including in the case that a and b are both null.
 <P>
 <DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="pairwise(com.google.common.base.Equivalence)"><!-- --></A><H3>
+pairwise</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/GwtCompatible.html" title="annotation in com.google.common.annotations">@GwtCompatible</A>(<A HREF="../../../../com/google/common/annotations/GwtCompatible.html#serializable()">serializable</A>=true)
+</FONT>public static &lt;T&gt; <A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&gt; <B>pairwise</B>(<A HREF="../../../../com/google/common/base/Equivalence.html" title="interface in com.google.common.base">Equivalence</A>&lt;? super T&gt;&nbsp;elementEquivalence)</PRE>
+<DL>
+<DD>Returns an equivalence over iterables based on the equivalence of their elements.  More
+ specifically, two iterables are considered equivalent if they both contain the same number of
+ elements, and each pair of corresponding elements is equivalent according to
+ <code>elementEquivalence</code>.  Null iterables are equivalent to one another.
+<P>
+<DD><DL>
+<DT><B>Since:</B></DT>
+  <DD>9</DD>
 </DL>
 </DD>
 </DL>
