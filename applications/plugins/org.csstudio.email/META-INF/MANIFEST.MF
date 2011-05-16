@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Email Sender
 Bundle-SymbolicName: org.csstudio.email
-Bundle-Version: 1.0.1.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Version: 1.0.2.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.junit4;bundle-version="4.5.0",
  org.eclipse.core.runtime;bundle-version="3.5.0",
- org.csstudio.platform;bundle-version="1.1.0",
- org.csstudio.testsuite;bundle-version="1.0.0"
+ org.csstudio.platform;bundle-version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Description: EMail support
 Export-Package: org.csstudio.email
-Bundle-RequiredExecutionEnvironment: J2SE-1.5

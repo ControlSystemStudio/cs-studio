@@ -16,6 +16,7 @@ import org.junit.Test;
  *  <p>
  *  Will not work without adjusting the host, image file name etc.
  *  @author Kay Kasemir
+ *  @author Bastian Knerr - Changed to TestDataProvider
  */
 @SuppressWarnings("nls")
 public class EMailSenderHeadlessTest
