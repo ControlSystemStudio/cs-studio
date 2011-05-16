@@ -415,16 +415,10 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
         assembleEpicsAddressString();
     }
     
-    /**
-     * @param channelNumber
-     * @param channelSortIndex
-     * @param structSortIndex
-     * @return
-     * @throws PersistenceException
-     */
     private int updateStructureChannel(int channelNumber,
                                        short channelSortIndex,
                                        short structSortIndex) throws PersistenceException {
+        int cNumber = channelNumber;
         // Structe Channel (8 bit (DI/DO)))
         boolean isSet = false;
         
@@ -434,8 +428,8 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             while ( (channel == null) && (counter > 0)) {
                 channel = getChannelStructure().getChildrenAsMap().get(--counter);
                 if(channel != null) {
-                    channelNumber = channel.getChannelNumber();
-                    channelNumber += channel.getChannelType().getByteSize();
+                    cNumber = channel.getChannelNumber();
+                    cNumber += channel.getChannelType().getByteSize();
                     isSet = true;
                     break;
                 }
@@ -450,13 +444,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                 if( (channelStructure != null)
                         && (channelStructure.getFirstChannel().isInput() == isInput())) {
                     if(channelStructure.isSimple()) {
-                        channelNumber = channelStructure.getFirstChannel().getChannelNumber();
-                        channelNumber += channelStructure.getFirstChannel().getChannelType()
+                        cNumber = channelStructure.getFirstChannel().getChannelNumber();
+                        cNumber += channelStructure.getFirstChannel().getChannelType()
                                 .getByteSize();
                         break;
-                    } else if(!channelStructure.isSimple()) {
+                    } else {
                         ChannelDBO lastChannel = channelStructure.getLastChannel();
-                        channelNumber = lastChannel.getChannelNumber()
+                        cNumber = lastChannel.getChannelNumber()
                                 + channelStructure.getStructureType().getByteSize();
                         break;
                     }
@@ -465,7 +459,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
                 channelStructure = null;
             }
         }
-        return channelNumber;
+        return cNumber;
     }
     
     private int updateSimpleChannel(int channelNumber, short structSortIndex) throws PersistenceException {
