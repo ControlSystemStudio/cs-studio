@@ -145,7 +145,7 @@ public class AbstractPreferenceUnitTest {
          *     new UnitTestPreference<Boolean>("NOT_STATIC", true);
          */
         UnitTestPreference(@Nonnull final String keyAsString, 
-                               @Nonnull final T defaultValue) {
+                           @Nonnull final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 

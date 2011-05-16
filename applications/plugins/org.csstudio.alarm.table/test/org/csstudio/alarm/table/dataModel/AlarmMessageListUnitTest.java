@@ -58,7 +58,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Before
     public void setUp() {
-        ISeverityMapping severityMapping = new SeverityMappingForTest();
+        ISeverityMapping severityMapping = new TestSeverityMapping();
         SeverityRegistry.setSeverityMapping(severityMapping);
     }
     
@@ -417,12 +417,12 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     /**
      * Mapping for test
      */
-    private static class SeverityMappingForTest implements ISeverityMapping {
+    private static class TestSeverityMapping implements ISeverityMapping {
         
         private final HashMap<String, String> _severityKeyValueMapping = new HashMap<String, String>();
         private final HashMap<String, Integer> _severityKeyNumberMapping = new HashMap<String, Integer>();
         
-        public SeverityMappingForTest() {
+        public TestSeverityMapping() {
             enterValueAndNumberForKey("MAJOR", "MAJOR", 0);
             enterValueAndNumberForKey("MINOR", "MINOR", 1);
             enterValueAndNumberForKey("NO_ALARM", "NO_ALARM", 2);
