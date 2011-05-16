@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.joda.time;bundle-version="1.6.2",
  com.google.common,
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
+ org.slf4j;bundle-version="1.6.1",
  org.csstudio.platform;bundle-version="1.2.0"
 Export-Package: org.csstudio.domain.desy,
  org.csstudio.domain.desy.alarm,
