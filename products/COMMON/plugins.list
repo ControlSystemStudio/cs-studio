@@ -38,6 +38,7 @@ org.csstudio.opibuilder.examples
 org.csstudio.opibuilder.performanceTest
 org.csstudio.opibuilder.widgets
 org.csstudio.opi.intro
+org.csstudio.remote
 org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph

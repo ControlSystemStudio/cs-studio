@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandDescription;
 import org.csstudio.platform.management.CommandParameterDefinition;
 import org.csstudio.platform.management.CommandParameterEnumValue;
@@ -61,7 +60,6 @@ public class ManagementServiceImpl implements IManagementCommandService {
 	private static final String EXTENSION_POINT_ID =
 		"org.csstudio.platform.managementCommands";
 	
-	private static final CentralLogger log = CentralLogger.getInstance();
 	
 	private Map<String, CommandContribution> _commands;
 
@@ -128,9 +126,10 @@ public class ManagementServiceImpl implements IManagementCommandService {
 			_commands.put(id, command);
 		} catch (Exception e) {
 			String contributor = configElement.getContributor().getName();
-			log.error(this, "The management command with id " + id + 
-					" from plug-in " + contributor + " is invalid. " +
-					e.getMessage(), e);
+//			TODO (jhatje): Change logging.
+//			log.error(this, "The management command with id " + id + 
+//					" from plug-in " + contributor + " is invalid. " +
+//					e.getMessage(), e);
 		}
 	}
 
