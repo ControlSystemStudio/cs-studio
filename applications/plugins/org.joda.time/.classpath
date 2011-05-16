@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry exported="true" kind="lib" path="" sourcepath="joda-time-1.6.2-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/org.csstudio.platform.libs.jodatime/joda-time-1.6.2-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/org.joda.time/joda-time-1.6.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

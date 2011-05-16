@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Joda
-Bundle-SymbolicName: org.csstudio.platform.libs.jodatime
+Bundle-SymbolicName: org.joda.time
 Bundle-Version: 1.6.2.qualifier
 Export-Package: org.joda.time,
  org.joda.time.base,
@@ -10,5 +10,5 @@ Export-Package: org.joda.time,
  org.joda.time.field,
  org.joda.time.format,
  org.joda.time.tz
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: J2SE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
