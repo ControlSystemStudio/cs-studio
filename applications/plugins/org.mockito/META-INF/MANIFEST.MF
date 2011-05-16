@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mockito
-Bundle-SymbolicName: org.csstudio.platform.libs.mockito
+Bundle-SymbolicName: org.mockito
 Bundle-Version: 1.8.5.qualifier
 Bundle-ClassPath: .
 Export-Package: org.hamcrest,

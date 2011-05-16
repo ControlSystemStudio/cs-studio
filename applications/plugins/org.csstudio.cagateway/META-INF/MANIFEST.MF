@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.identity;bundle-version="3.1.100",
  org.remotercp.common;bundle-version="1.0.0",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
+ org.slf4j;bundle-version="1.6.1",
  org.csstudio.remote;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

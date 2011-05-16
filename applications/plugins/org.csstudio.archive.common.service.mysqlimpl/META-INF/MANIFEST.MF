@@ -19,7 +19,7 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
  org.csstudio.platform.libs.jdbc.mysql;bundle-version="5.1.14",
  com.google.inject;bundle-version="2.0.0",
  org.csstudio.archive.common.requesttype;bundle-version="1.0.0",
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
- org.csstudio.platform.libs.slf4j-log4j12;bundle-version="1.6.1"
+ org.slf4j;bundle-version="1.6.1",
+ org.slf4j-log4j12;bundle-version="1.6.1"
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Bundle-ClassPath: .

@@ -13,7 +13,7 @@ Require-Bundle: org.csstudio.domain.desy;bundle-version="1.0.0";visibility:=reex
  com.google.common,
  org.csstudio.utility.pvmanager;bundle-version="0.2.0",
  javax.annotation,
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1"
+ org.slf4j;bundle-version="1.6.1"
 Export-Package: org.csstudio.archive.common.service,
  org.csstudio.archive.common.service.channel,
  org.csstudio.archive.common.service.channelgroup,
