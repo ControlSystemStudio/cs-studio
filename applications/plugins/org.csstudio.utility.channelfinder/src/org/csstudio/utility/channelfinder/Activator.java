@@ -4,7 +4,7 @@ import gov.bnl.channelfinder.api.ChannelFinderClient;
 
 import java.util.prefs.Preferences;
 
-import org.csstudio.platform.security.SecureStorage;
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -74,7 +74,6 @@ public class Activator extends AbstractUIPlugin {
 				null));
 		preferences.put("username", prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Username, "", null));
-		// FIXME 3.0.0 SecureStorage dependency
 		preferences.put(
 				"password",
 				nullToEmpty(SecureStorage.retrieveSecureStorage(

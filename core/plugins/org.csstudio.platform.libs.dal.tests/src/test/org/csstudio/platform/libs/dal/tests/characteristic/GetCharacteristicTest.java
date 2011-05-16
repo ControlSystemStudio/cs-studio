@@ -81,7 +81,7 @@ public class GetCharacteristicTest extends AbstractDALBoundaryTest {
 //                System.out.println(">>>>> state " + channel.getProperty().getStateInfo());
 //                System.out.println(">>>>> getDisplayHigh(): "
 //                        + channel.getData().getMetaData().getDisplayHigh());
-                if ((channel.getData() != null) &&  (channel.getData().getMetaData() != null)) {
+                if (channel.isRunning() && (channel.getData() != null) &&  (channel.getData().getMetaData() != null)) {
                     fetchMostImportantValueOfDisplayHigh(channel.getData().getMetaData()
                                                          .getDisplayHigh());
                 }
@@ -93,7 +93,7 @@ public class GetCharacteristicTest extends AbstractDALBoundaryTest {
 //                System.out.println("##### state " + channel.getProperty().getStateInfo());
 //                System.out.println("##### getDisplayHigh(): "
 //                        + channel.getData().getMetaData().getDisplayHigh());
-                if ((channel.getData() != null) &&  (channel.getData().getMetaData() != null)) {
+                if (channel.isRunning() && (channel.getData() != null) &&  (channel.getData().getMetaData() != null)) {
                     fetchMostImportantValueOfDisplayHigh(channel.getData().getMetaData()
                                                          .getDisplayHigh());
                 }

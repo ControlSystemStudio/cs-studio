@@ -175,8 +175,8 @@ public class EpicsSystemVariableSupportUnitTest {
     public void testEpicsEnumCollection() throws TypeSupportException {
         final IAlarmSystemVariable<Collection<EpicsEnum>> cssVal =
             new EpicsSystemVariable<Collection<EpicsEnum>>("NONE",
-                                                           Lists.newArrayList(EpicsEnum.createFromState("ON"),
-                                                                              EpicsEnum.createFromState("OFF")),
+                                                           Lists.newArrayList(EpicsEnum.createFromState("ON", 1),
+                                                                              EpicsEnum.createFromState("OFF", 0)),
                 ControlSystem.EPICS_DEFAULT,
                 TimeInstantBuilder.fromNow(),
                 new EpicsAlarm(EpicsAlarmSeverity.NO_ALARM, EpicsAlarmStatus.BADSUB));

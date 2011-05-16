@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test/Demo code for logging
 Bundle-SymbolicName: org.csstudio.logging.test
 Bundle-Description: JUnit tests/demos for logging
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir, <kasemirk@ornl.gov> - SNS
 Fragment-Host: org.csstudio.logging;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

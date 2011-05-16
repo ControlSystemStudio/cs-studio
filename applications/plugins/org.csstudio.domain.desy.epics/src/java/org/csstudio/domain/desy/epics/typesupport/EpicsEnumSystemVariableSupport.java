@@ -75,13 +75,34 @@ final class EpicsEnumSystemVariableSupport extends EpicsSystemVariableSupport<Ep
                 @Override
                 @Nonnull
                 public Integer apply(@Nonnull final EpicsEnum from) {
-                    return from.getRaw();
+                    if (from.isRaw()) {
+                        return from.getRaw();
+                    }
+                    if (from.isState()) {
+                        return from.getStateIndex();
+                    }
+                    throw new IllegalStateException(EpicsEnum.class.getName() + " is neither raw nor state instance.");
+                }
+            });
+        final Collection<String> states =
+            Collections2.transform(data,
+                                   new Function<EpicsEnum, String> () {
+                @Override
+                @Nonnull
+                public String apply(@Nonnull final EpicsEnum from) {
+                    if (from.isRaw()) {
+                        return from.getRaw().toString();
+                    }
+                    if (from.isState()) {
+                        return from.getState();
+                    }
+                    throw new IllegalStateException(EpicsEnum.class.getName() + " is neither raw nor state instance.");
                 }
             });
         return ValueFactory.createEnumeratedValue(BaseTypeConversionSupport.toTimestamp(timestamp),
                                                   EpicsIValueTypeSupport.toSeverity(alarm.getSeverity()),
                                                   alarm.getStatus().toString(),
-                                                  null,
+                                                  ValueFactory.createEnumeratedMetaData(states.toArray(new String[]{})),
                                                   null,
                                                   Ints.toArray(ints));
     }

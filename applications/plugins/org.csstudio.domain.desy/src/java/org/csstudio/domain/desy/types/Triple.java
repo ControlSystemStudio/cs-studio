@@ -18,25 +18,38 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.utility.ldapupdater;
+package org.csstudio.domain.desy.types;
 
-import org.junit.Test;
+import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * Abstract base class for any kind of immutable triple.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 06.05.2010
+ * @since 15.12.2010
+ *
+ * @param <A> type of the 1st member
+ * @param <B> type of the 2nd member
+ * @param <C> type of the 3rd member
  */
-public class LdapAccessTest {
+public class Triple<A, B, C> extends Tuple<A, B> {
 
-    @Test
-    public void testLDAP() {
-        // Empty
+    private static final long serialVersionUID = 1726219158331119188L;
+    private final C _third;
+
+    /**
+     * Constructor.
+     */
+    public Triple(@Nonnull final A first,
+                             @Nonnull final B second,
+                             @Nonnull final C third) {
+        super(first, second);
+        _third = third;
+    }
+
+    @Nonnull
+    public C getThird() {
+        return _third;
     }
 }

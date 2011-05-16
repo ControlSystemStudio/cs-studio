@@ -37,7 +37,7 @@ import org.junit.rules.TemporaryFolder;
  * @author bknerr
  * @since 28.04.2011
  */
-public class SuffixBasedFileFilterTest {
+public class SuffixBasedFileFilterUnitTest {
     
     @Rule
     public TemporaryFolder _tempFolder = new TemporaryFolder();

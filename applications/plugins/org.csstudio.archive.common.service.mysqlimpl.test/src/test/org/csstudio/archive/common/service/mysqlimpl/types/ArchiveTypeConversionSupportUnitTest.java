@@ -24,9 +24,6 @@ package org.csstudio.archive.common.service.mysqlimpl.types;
 import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_ELEM_SEP;
 import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_PREFIX;
 import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_COLLECTION_SUFFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_PREFIX;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SEP;
-import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.ARCHIVE_TUPLE_SUFFIX;
 import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionEmbrace;
 import static org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport.collectionRelease;
 
@@ -170,9 +167,9 @@ public class ArchiveTypeConversionSupportUnitTest {
                     Assert.assertEquals(Integer.valueOf(3), tFromA.getRaw());
                 }
                 {
-                    final EpicsEnum t = EpicsEnum.createFromState("MyState");
+                    final EpicsEnum t = EpicsEnum.createFromStateName("MyState");
                     final String archiveString = ArchiveTypeConversionSupport.toArchiveString(t);
-                    Assert.assertTrue(archiveString.equals(EpicsEnum.STATE + EpicsEnum.SEP + "MyState"));
+                    Assert.assertTrue(archiveString.equals(t.toString()));
                     final EpicsEnum tFromA = ArchiveTypeConversionSupport.fromArchiveString(EpicsEnum.class, archiveString);
                     Assert.assertNotNull(tFromA);
                     Assert.assertEquals("MyState", tFromA.getState());
@@ -304,13 +301,13 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test
     public void testMultiScalarEnumConversion() {
         final Collection<EpicsEnum> valuesE = Lists.newArrayList(EpicsEnum.createFromRaw(1),
-                                                                 EpicsEnum.createFromState("second"));
+                                                                 EpicsEnum.createFromStateName("second"));
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesE);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX +
                                 EpicsEnum.RAW + EpicsEnum.SEP + "1" +
                                 ARCHIVE_COLLECTION_ELEM_SEP +
-                                EpicsEnum.STATE + EpicsEnum.SEP + "second"+
+                                EpicsEnum.STATE + "(0)" + EpicsEnum.SEP + "second"+
                                 ARCHIVE_COLLECTION_SUFFIX, archiveString);
             final Vector<EpicsEnum> enums =
                 (Vector<EpicsEnum>) ArchiveTypeConversionSupport.fromMultiScalarArchiveString(Vector.class, EpicsEnum.class, archiveString);
@@ -322,6 +319,7 @@ public class ArchiveTypeConversionSupportUnitTest {
 
             final EpicsEnum second = iterator.next();
             Assert.assertEquals("second", second.getState());
+            Assert.assertEquals(Integer.valueOf(0), second.getStateIndex());
 
         } catch (final TypeSupportException e) {
             Assert.fail();
