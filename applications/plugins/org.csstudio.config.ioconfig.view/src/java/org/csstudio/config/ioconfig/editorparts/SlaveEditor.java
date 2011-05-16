@@ -638,9 +638,11 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         _watchDogButton.setText("Watchdog Time 1");
         _watchDogButton.setSelection(true);
         _watchDogButton.setData(true);
+        int wdFact1 = isNew()?100:_slave.getWdFact1();
+        int wdFact2 = isNew()?10 :_slave.getWdFact2();
         _watchDogText1 = ProfibusHelper.getTextField(operationModeGroup,
                                                      _watchDogButton.getSelection(),
-                                                     Integer.toString(_slave.getWdFact1()),
+                                                     Integer.toString(wdFact1),
                                                      Ranges.TTR,
                                                      ProfibusHelper.VL_TYP_U32);
         _watchDogText1.addModifyListener(getMLSB());
@@ -651,7 +653,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         watchdogLabel2.setText("Watchdog Time 2");
         _watchDogText2 = ProfibusHelper.getTextField(operationModeGroup,
                                                      _watchDogButton.getSelection(),
-                                                     Integer.toString(_slave.getWdFact2()),
+                                                     Integer.toString(wdFact2),
                                                      Ranges.TTR,
                                                      ProfibusHelper.VL_TYP_U32);
         _watchDogText2.addModifyListener(getMLSB());
@@ -659,7 +661,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor {
         Label watchdogTotal = new Label(operationModeGroup, SWT.NONE);
         watchdogTotal.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         watchdogTotal.setText("Watchdog Total");
-        String total = Integer.toString(_slave.getWdFact1() * _slave.getWdFact2() * 10);
+        String total = Integer.toString(wdFact1 * wdFact2 * 10);
         _watchDogTotal = ProfibusHelper.getTextField(operationModeGroup, total);
         
         Label watchdogTotalEgu = new Label(operationModeGroup, SWT.NONE);

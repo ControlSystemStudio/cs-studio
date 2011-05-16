@@ -110,4 +110,46 @@ public class NamedDBClass extends DBClass {
         }
         return sb.toString();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + getId();
+        result = prime * result + ( (_sortIndex == null) ? 0 : _sortIndex.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(@CheckForNull Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null) {
+            return false;
+        }
+        if(getClass() != obj.getClass()) {
+            return false;
+        }
+        NamedDBClass other = (NamedDBClass) obj;
+        if(getId() != other.getId()) {
+            return false;
+        }
+        if(_sortIndex == null) {
+            if(other._sortIndex != null) {
+                return false;
+            }
+        } else if(!_sortIndex.equals(other._sortIndex)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

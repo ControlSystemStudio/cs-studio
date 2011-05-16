@@ -53,6 +53,8 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 @Table(name = "ddb_Profibus_Master")
 public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The highest accept station address.
      */
@@ -352,10 +354,11 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     }
 
     @Override
-    public MasterDBO copyThisTo(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+    @Nonnull
+    public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
         MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode);
         for (SlaveDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
