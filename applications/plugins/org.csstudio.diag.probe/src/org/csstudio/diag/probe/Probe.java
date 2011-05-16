@@ -13,13 +13,10 @@ import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.auth.security.SecurityFacade;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.util.swt.meter.MeterWidget;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -44,7 +41,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -209,7 +205,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
      *  @param pv_name The PV to 'probe'
      *  @return Returns <code>true</code> when successful.
      */
-    public static boolean activateWithPV(final IProcessVariable pv_name)
+    public static boolean activateWithPV(final ProcessVariable pv_name)
     {
         try
         {
@@ -266,16 +262,16 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     {
         createGUI(parent);
 
-        // Enable 'Drop'
-        new ProcessVariableDropTarget(cbo_name)
-        {
-            @Override
-            public void handleDrop(final IProcessVariable name,
-                                   final DropTargetEvent event)
-            {
-                setPVName(name.getName());
-            }
-        };
+        // TODO Enable 'Drop'
+//        new ProcessVariableDropTarget(cbo_name)
+//        {
+//            @Override
+//            public void handleDrop(final IProcessVariable name,
+//                                   final DropTargetEvent event)
+//            {
+//                setPVName(name.getName());
+//            }
+//        };
 
         // In principle, this could allow 'dragging' of PV names.
         // In practice, however, any mouse click & drag only selects
@@ -283,7 +279,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         // initiate a 'drag'.
         // Maybe it works on some OS? Maybe there's another magic
         // modifier key to force a 'drag'?
-        new ProcessVariableDragSource(cbo_name, this);
+//        new ProcessVariableDragSource(cbo_name, this);
 
         makeContextMenu();
     }
@@ -883,8 +879,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 	@Override
     public ISelection getSelection()
     {
-		return new StructuredSelection(
-                        CentralItemFactory.createProcessVariable(cbo_name.getText()));
+		return new StructuredSelection(new ProcessVariable(cbo_name.getText()));
     }
 
     /** ISelectionProvider */
