@@ -68,7 +68,6 @@ import org.epics.css.dal.ResponseListener;
 import org.epics.css.dal.SequencePropertyCharacteristics;
 import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.impl.RequestImpl;
 import org.epics.css.dal.impl.ResponseImpl;
 import org.epics.css.dal.proxy.AbstractPropertyProxyImpl;
@@ -145,7 +144,11 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			ConnectionState cs = getConnectionState();
 			if (cs == ConnectionState.CONNECTING) {
 				//abortConnection = true;
-				setConnectionState(ConnectionState.CONNECTION_FAILED);
+				setConnectionState(
+						ConnectionState.CONNECTION_FAILED, 
+						new RemoteException(
+								PropertyProxyImpl.this, 
+								"Timeout '"+Plugs.getInitialConnectionTimeout(plug.getConfiguration())+"ms' while connecting!"));
 			}
 		}
 	}
@@ -170,8 +173,8 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			this.type = type;
 			this.dataType = dataType;
 			setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.NO_VALUE)));
-			setConnectionState(ConnectionState.READY);
-			setConnectionState(ConnectionState.CONNECTING);
+			setConnectionState(ConnectionState.READY,null);
+			setConnectionState(ConnectionState.CONNECTING,null);
 			// create channel
 			try {
 				this.channel = plug.getContext().createChannel(name, this);
@@ -191,7 +194,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	public synchronized void destroy() {
 		
 		if (connectionStateMachine.isConnected()) {
-			setConnectionState(ConnectionState.DISCONNECTING);
+			setConnectionState(ConnectionState.DISCONNECTING,null);
 		}
 		
 		super.destroy();
@@ -209,9 +212,9 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		channel.dispose();
 		
 		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
-			setConnectionState(ConnectionState.DISCONNECTED);
+			setConnectionState(ConnectionState.DISCONNECTED,null);
 		}
-		setConnectionState(ConnectionState.DESTROYED);
+		setConnectionState(ConnectionState.DESTROYED,null);
 	}
 
 	/*
@@ -919,9 +922,9 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 					return;
 				} 
 				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
-					setConnectionState(ConnectionState.DESTROYED);
+					setConnectionState(ConnectionState.DESTROYED,null);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
-					setConnectionState(ConnectionState.CONNECTED);
+					setConnectionState(ConnectionState.CONNECTED,null);
 					if (plug.isInitializeCharacteristicsOnConnect()) {
 						synchronized (getCharacteristics()) {
 							if (getCharacteristics().size() == 0) {
@@ -930,9 +933,9 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 						}
 					}
 				} else if (c == gov.aps.jca.Channel.ConnectionState.DISCONNECTED) {
-					setConnectionState(ConnectionState.CONNECTION_LOST);
+					setConnectionState(ConnectionState.CONNECTION_LOST,null);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.NEVER_CONNECTED) {
-					setConnectionState(ConnectionState.CONNECTING);
+					setConnectionState(ConnectionState.CONNECTING,null);
 				}		
 			}
 			
@@ -950,8 +953,8 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
 	 */
 	@Override
-	public void setConnectionState(ConnectionState s) {
-		super.setConnectionState(s);
+	public void setConnectionState(ConnectionState s, Throwable error) {
+		super.setConnectionState(s, error);
 		if (s == ConnectionState.DESTROYED) {
 			if (getPlug().getMaxThreads() != 0 && !getPlug().isUseCommonExecutor()) {
 				getExecutor().shutdown();

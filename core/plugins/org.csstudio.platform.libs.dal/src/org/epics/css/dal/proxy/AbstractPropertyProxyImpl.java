@@ -198,7 +198,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 		if (metaDataNotSet && condition.containsAnyOfStates(DynamicValueState.HAS_METADATA)) {
 			metaDataNotSet=false;
 			if (connectionStateMachine.requestOperationalState(getCondition().getStates())) {
-				fireConnectionState(ConnectionState.OPERATIONAL);
+				fireConnectionState(ConnectionState.OPERATIONAL,null);
 			}
 		}
 	}
@@ -245,7 +245,7 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 			getCondition().getStates().remove(DynamicValueState.NO_VALUE);
 			updateConditionWith(null, DynamicValueState.HAS_LIVE_DATA);
 			if (connectionStateMachine.requestOperationalState(getCondition().getStates())) {
-				fireConnectionState(ConnectionState.OPERATIONAL);
+				fireConnectionState(ConnectionState.OPERATIONAL,null);
 			}
 		}
 	}	

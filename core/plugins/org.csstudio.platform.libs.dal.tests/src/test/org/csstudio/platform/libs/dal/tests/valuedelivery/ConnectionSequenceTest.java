@@ -100,16 +100,27 @@ public class ConnectionSequenceTest extends AbstractDalBoundaryTest {
     }
     
     public void testConnectConstantPV() throws Exception {
-        registerChannelListenerForPV(CONSTANT_PV);
-        Thread.sleep(SLEEP_TIME_MSEC);
-        deregisterListenerForPV(CONSTANT_PV);
-        
-        assertTrue(hasConnectionState(ConnectionState.CONNECTING));
-        assertTrue(hasConnectionState(ConnectionState.CONNECTED));
-        assertTrue(hasConnectionState(ConnectionState.OPERATIONAL));
-        Result result = getResultFor(ConnectionState.OPERATIONAL);
-        assertTrue(result.condition.isWarning());
-        assertEquals("66.0", result.anyValue.toString());
+    	try {
+	        registerChannelListenerForPV(CONSTANT_PV);
+	        Thread.sleep(SLEEP_TIME_MSEC);
+	        deregisterListenerForPV(CONSTANT_PV);
+	        
+	        assertTrue(hasConnectionState(ConnectionState.CONNECTING));
+	        assertTrue(hasConnectionState(ConnectionState.CONNECTED));
+	        assertTrue(hasConnectionState(ConnectionState.OPERATIONAL));
+	        
+	        
+	        for (Result r : _results) {
+				System.out.println("R "+r.connectionState+" "+r.anyValue);
+			}
+	        
+	        Result result = getResultFor(ConnectionState.OPERATIONAL);
+	        assertTrue(result.condition.isWarning());
+	        assertEquals("66.000000", result.anyValue.toString());
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		fail(e.toString());
+    	}
     }
     
     public void testConnectPassivePV() throws Exception {
