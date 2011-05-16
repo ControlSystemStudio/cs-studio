@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Iterables (Guava: Google Core Libraries for Java - r08)
+Iterables (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Iterables (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Iterables (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Iterables (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -1425,9 +1425,8 @@ public static &lt;T&gt; T <B>getLast</B>(<A HREF="http://download.oracle.com/jav
 <A NAME="skip(java.lang.Iterable, int)"><!-- --></A><H3>
 skip</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>skip</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable,
-                                        int&nbsp;numberToSkip)</PRE>
+public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>skip</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable,
+                                   int&nbsp;numberToSkip)</PRE>
 <DL>
 <DD>Returns a view of <code>iterable</code> that skips its first
  <code>numberToSkip</code> elements. If <code>iterable</code> contains fewer than
@@ -1457,9 +1456,8 @@ skip</H3>
 <A NAME="limit(java.lang.Iterable, int)"><!-- --></A><H3>
 limit</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>limit</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable,
-                                         int&nbsp;limitSize)</PRE>
+public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>limit</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable,
+                                    int&nbsp;limitSize)</PRE>
 <DL>
 <DD>Creates an iterable with the first <code>limitSize</code> elements of the given
  iterable. If the original iterable does not contain that many elements, the
@@ -1480,8 +1478,7 @@ limit</H3>
 <A NAME="consumingIterable(java.lang.Iterable)"><!-- --></A><H3>
 consumingIterable</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>consumingIterable</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable)</PRE>
+public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt; <B>consumingIterable</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;T&gt;&nbsp;iterable)</PRE>
 <DL>
 <DD>Returns a view of the supplied iterable that wraps each generated
  <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util"><CODE>Iterator</CODE></A> through <A HREF="../../../../com/google/common/collect/Iterators.html#consumingIterator(java.util.Iterator)"><CODE>Iterators.consumingIterator(Iterator)</CODE></A>.

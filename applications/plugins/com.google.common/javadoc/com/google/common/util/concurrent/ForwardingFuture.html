@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-ForwardingFuture (Guava: Google Core Libraries for Java - r08)
+ForwardingFuture (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ ForwardingFuture (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ForwardingFuture (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="ForwardingFuture (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -53,8 +53,8 @@ function windowTitle()
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingBlockingQueue.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.SimpleForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?com/google/common/util/concurrent/ForwardingFuture.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="ForwardingFuture.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -74,7 +74,7 @@ function windowTitle()
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>
@@ -98,7 +98,7 @@ Class ForwardingFuture&lt;V&gt;</H2>
 <DT><B>All Implemented Interfaces:</B> <DD><A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent">Future</A>&lt;V&gt;</DD>
 </DL>
 <DL>
-<DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture</A></DD>
+<DT><B>Direct Known Subclasses:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent">ForwardingFuture.SimpleForwardingFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture</A></DD>
 </DL>
 <HR>
 <DL>
@@ -106,10 +106,12 @@ Class ForwardingFuture&lt;V&gt;</H2>
 </PRE>
 
 <P>
-A <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>Future</CODE></A> which forwards all its method calls to another future.
+A <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingFuture.SimpleForwardingFuture</CODE></A> which forwards all its method calls to another future.
  Subclasses should override one or more methods to modify the behavior of
- the backing collection as desired per the <a
+ the backing future as desired per the <a
  href="http://en.wikipedia.org/wiki/Decorator_pattern">decorator pattern</a>.
+
+ <p>Most subclasses can just use <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingFuture.SimpleForwardingFuture</CODE></A>.
 <P>
 
 <P>
@@ -122,7 +124,25 @@ A <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Fut
 <HR>
 
 <P>
+<!-- ======== NESTED CLASS SUMMARY ======== -->
 
+<A NAME="nested_class_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Nested Class Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;class</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent">ForwardingFuture.SimpleForwardingFuture</A>&lt;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="type parameter in ForwardingFuture.SimpleForwardingFuture">V</A>&gt;</B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A simplified version of <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.html" title="class in com.google.common.util.concurrent"><CODE>ForwardingFuture</CODE></A> where subclasses
+ can pass in an already constructed <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>Future</CODE></A> as the delegate.</TD>
+</TR>
+</TABLE>
+&nbsp;
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 
 <A NAME="constructor_summary"><!-- --></A>
@@ -429,8 +449,8 @@ public <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFutur
 
 <TR>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingBlockingQueue.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
-&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.SimpleForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../../../com/google/common/util/concurrent/ForwardingFuture.SimpleForwardingFuture.html" title="class in com.google.common.util.concurrent"><B>NEXT CLASS</B></A></FONT></TD>
 <TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
   <A HREF="../../../../../index.html?com/google/common/util/concurrent/ForwardingFuture.html" target="_top"><B>FRAMES</B></A>  &nbsp;
 &nbsp;<A HREF="ForwardingFuture.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
@@ -450,7 +470,7 @@ public <A HREF="../../../../../com/google/common/util/concurrent/ForwardingFutur
 </TR>
 <TR>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
-  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+  SUMMARY:&nbsp;<A HREF="#nested_class_summary">NESTED</A>&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
 <TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
 DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
 </TR>

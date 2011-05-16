@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Ascii (Guava: Google Core Libraries for Java - r08)
+Ascii (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Ascii (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Ascii (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Ascii (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -95,14 +95,21 @@ Class Ascii</H2>
 </PRE>
 <HR>
 <DL>
-<DT><PRE><FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-<A HREF="../../../../com/google/common/annotations/GwtCompatible.html" title="annotation in com.google.common.annotations">@GwtCompatible</A>
+<DT><PRE><FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/GwtCompatible.html" title="annotation in com.google.common.annotations">@GwtCompatible</A>
 </FONT>public final class <B>Ascii</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
 </PRE>
 
 <P>
-Static methods pertaining to ASCII characters (those in the range of values <code>0x00</code> through
- <code>0x7F</code>), and to strings containing such characters.
+Static methods pertaining to ASCII characters (those in the range of values
+ <code>0x00</code> through <code>0x7F</code>), and to strings containing such
+ characters.
+
+ <p>ASCII utilities also exist in other classes of this package:
+ <ul>
+ <li><A HREF="../../../../com/google/common/base/Charsets.html#US_ASCII"><CODE>Charsets.US_ASCII</CODE></A> specifies the <code>Charset</code> of ASCII characters.
+ <li><A HREF="../../../../com/google/common/base/CharMatcher.html#ASCII"><CODE>CharMatcher.ASCII</CODE></A> matches ASCII characters and provides text processing methods
+     which operate only on the ASCII characters of a string.
+ </ul>
 <P>
 
 <P>
@@ -333,6 +340,22 @@ Static methods pertaining to ASCII characters (those in the range of values <cod
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Line Feed ('\n'): A format effector which controls the movement of
  the printing position to the next printing line.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../com/google/common/base/Ascii.html#MAX">MAX</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The maximum value of an ASCII character.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../com/google/common/base/Ascii.html#MIN">MIN</A></B></CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The minimum value of an ASCII character.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -1170,6 +1193,36 @@ public static final byte <B>DEL</B></PRE>
 <DT><B>Since:</B></DT>
   <DD>8</DD>
 <DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#com.google.common.base.Ascii.DEL">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="MIN"><!-- --></A><H3>
+MIN</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
+</FONT>public static final int <B>MIN</B></PRE>
+<DL>
+<DD>The minimum value of an ASCII character.
+<P>
+<DL>
+<DT><B>Since:</B></DT>
+  <DD>9</DD>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#com.google.common.base.Ascii.MIN">Constant Field Values</A></DL>
+</DL>
+<HR>
+
+<A NAME="MAX"><!-- --></A><H3>
+MAX</H3>
+<PRE>
+<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
+</FONT>public static final int <B>MAX</B></PRE>
+<DL>
+<DD>The maximum value of an ASCII character.
+<P>
+<DL>
+<DT><B>Since:</B></DT>
+  <DD>9</DD>
+<DT><B>See Also:</B><DD><A HREF="../../../../constant-values.html#com.google.common.base.Ascii.MAX">Constant Field Values</A></DL>
 </DL>
 
 <!-- ============ METHOD DETAIL ========== -->

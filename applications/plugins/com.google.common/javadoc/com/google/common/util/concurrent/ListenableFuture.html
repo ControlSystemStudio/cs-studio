@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-ListenableFuture (Guava: Google Core Libraries for Java - r08)
+ListenableFuture (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ ListenableFuture (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="ListenableFuture (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="ListenableFuture (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -96,7 +96,7 @@ Interface ListenableFuture&lt;V&gt;</H2>
 <DT><B>All Known Subinterfaces:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/CheckedFuture.html" title="interface in com.google.common.util.concurrent">CheckedFuture</A>&lt;V,X&gt;</DD>
 </DL>
 <DL>
-<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/AbstractCheckedFuture.html" title="class in com.google.common.util.concurrent">AbstractCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/AbstractListenableFuture.html" title="class in com.google.common.util.concurrent">AbstractListenableFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ListenableFutureTask.html" title="class in com.google.common.util.concurrent">ListenableFutureTask</A>, <A HREF="../../../../../com/google/common/util/concurrent/ValueFuture.html" title="class in com.google.common.util.concurrent">ValueFuture</A></DD>
+<DT><B>All Known Implementing Classes:</B> <DD><A HREF="../../../../../com/google/common/util/concurrent/AbstractCheckedFuture.html" title="class in com.google.common.util.concurrent">AbstractCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/AbstractListenableFuture.html" title="class in com.google.common.util.concurrent">AbstractListenableFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent">ForwardingCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingCheckedFuture.SimpleForwardingCheckedFuture.html" title="class in com.google.common.util.concurrent">ForwardingCheckedFuture.SimpleForwardingCheckedFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ForwardingListenableFuture.SimpleForwardingListenableFuture.html" title="class in com.google.common.util.concurrent">ForwardingListenableFuture.SimpleForwardingListenableFuture</A>, <A HREF="../../../../../com/google/common/util/concurrent/ListenableFutureTask.html" title="class in com.google.common.util.concurrent">ListenableFutureTask</A>, <A HREF="../../../../../com/google/common/util/concurrent/SettableFuture.html" title="class in com.google.common.util.concurrent">SettableFuture</A></DD>
 </DL>
 <HR>
 <DL>
@@ -105,11 +105,14 @@ Interface ListenableFuture&lt;V&gt;</H2>
 </PRE>
 
 <P>
-<p>This interface defines a future that has listeners attached to it, which
- is useful for asynchronous workflows.  Each listener has an associated
- executor, and is invoked using this executor once the <code>Future</code>'s
- computation is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A>.  The listener will be
- executed even if it is added after the computation is complete.
+A <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true" title="class or interface in java.util.concurrent"><CODE>Future</CODE></A> that accepts completion listeners.  Each listener has an
+ associated executor, and is invoked using this executor once the future's
+ computation is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A>.  If the computation has
+ already completed when the listener is added, the listener will execute
+ immediately.
+
+ <p>Common <code>ListenableFuture</code> implementations include <A HREF="../../../../../com/google/common/util/concurrent/SettableFuture.html" title="class in com.google.common.util.concurrent"><CODE>SettableFuture</CODE></A> and the futures returned by a <CODE>ListeningExecutorService</CODE> (typically <A HREF="../../../../../com/google/common/util/concurrent/ListenableFutureTask.html" title="class in com.google.common.util.concurrent"><CODE>ListenableFutureTask</CODE></A>
+ instances).
 
  <p>Usage:
  <pre>   <code>final ListenableFuture&lt;?&gt; future = myService.async(myRequest);
@@ -122,7 +125,7 @@ Interface ListenableFuture&lt;V&gt;</H2>
          System.out.println("Error: " + e.message());
        }
      }
-   }, exec);</code></pre>
+   }, executor);</code></pre>
 <P>
 
 <P>
@@ -148,10 +151,11 @@ Interface ListenableFuture&lt;V&gt;</H2>
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../../com/google/common/util/concurrent/ListenableFuture.html#addListener(java.lang.Runnable, java.util.concurrent.Executor)">addListener</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang">Runnable</A>&nbsp;listener,
-            <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</CODE>
+            <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;executor)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds a listener and executor to the ListenableFuture.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Registers a listener to be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">run</A> on
+ the given executor.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.util.concurrent.Future"><!-- --></A>
@@ -180,27 +184,30 @@ Interface ListenableFuture&lt;V&gt;</H2>
 addListener</H3>
 <PRE>
 void <B>addListener</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang">Runnable</A>&nbsp;listener,
-                 <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;exec)</PRE>
+                 <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true" title="class or interface in java.util.concurrent">Executor</A>&nbsp;executor)</PRE>
 <DL>
-<DD><p>Adds a listener and executor to the ListenableFuture.
- The listener will be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">passed
- to the executor</A> for execution when the <code>Future</code>'s computation is
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A>.
+<DD>Registers a listener to be <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Executor.html?is-external=true#execute(java.lang.Runnable)" title="class or interface in java.util.concurrent">run</A> on
+ the given executor.  The listener will run when the <code>Future</code>'s
+ computation is <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/Future.html?is-external=true#isDone()" title="class or interface in java.util.concurrent">complete</A> or, if the computation
+ is already complete, immediately.
 
- <p>There is no guaranteed ordering of execution of listeners, they may get
- called in the order they were added and they may get called out of order,
- but any listener added through this method is guaranteed to be called once
- the computation is complete.
+ <p>There is no guaranteed ordering of execution of listeners, but any
+ listener added through this method is guaranteed to be called once the
+ computation is complete.
+
+ <p>Listeners cannot throw checked exceptions and should not throw <code>RuntimeException</code> unless their executors are prepared to handle it.
+ Listeners that will execute in <A HREF="../../../../../com/google/common/util/concurrent/MoreExecutors.html#sameThreadExecutor()"><CODE>MoreExecutors.sameThreadExecutor()</CODE></A>
+ should take special care, since they may run during the call to <code>addListener</code> or during the call that sets the future's value.
 <P>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>listener</CODE> - the listener to run when the computation is complete.<DD><CODE>exec</CODE> - the executor to run the listener in.
+<DT><B>Parameters:</B><DD><CODE>listener</CODE> - the listener to run when the computation is complete<DD><CODE>executor</CODE> - the executor to run the listener in
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang">NullPointerException</A></CODE> - if the executor or listener was null.
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/NullPointerException.html?is-external=true" title="class or interface in java.lang">NullPointerException</A></CODE> - if the executor or listener was null
 <DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/util/concurrent/RejectedExecutionException.html?is-external=true" title="class or interface in java.util.concurrent">RejectedExecutionException</A></CODE> - if we tried to execute the listener
- immediately but the executor rejected it.</DL>
+         immediately but the executor rejected it.</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Iterators (Guava: Google Core Libraries for Java - r08)
+Iterators (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Iterators (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Iterators (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Iterators (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -1518,9 +1518,8 @@ skip</H3>
 <A NAME="limit(java.util.Iterator, int)"><!-- --></A><H3>
 limit</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt; <B>limit</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt;&nbsp;iterator,
-                                         int&nbsp;limitSize)</PRE>
+public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt; <B>limit</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt;&nbsp;iterator,
+                                    int&nbsp;limitSize)</PRE>
 <DL>
 <DD>Creates an iterator returning the first <code>limitSize</code> elements of the
  given iterator. If the original iterator does not contain that many
@@ -1541,8 +1540,7 @@ limit</H3>
 <A NAME="consumingIterator(java.util.Iterator)"><!-- --></A><H3>
 consumingIterator</H3>
 <PRE>
-<FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
-</FONT>public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt; <B>consumingIterator</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt;&nbsp;iterator)</PRE>
+public static &lt;T&gt; <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt; <B>consumingIterator</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Iterator.html?is-external=true" title="class or interface in java.util">Iterator</A>&lt;T&gt;&nbsp;iterator)</PRE>
 <DL>
 <DD>Returns a view of the supplied <code>iterator</code> that removes each element
  from the supplied <code>iterator</code> as it is returned.

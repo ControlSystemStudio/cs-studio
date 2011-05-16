@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-InternetDomainName (Guava: Google Core Libraries for Java - r08)
+InternetDomainName (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ InternetDomainName (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="InternetDomainName (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="InternetDomainName (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -97,40 +97,42 @@ Class InternetDomainName</H2>
 <DL>
 <DT><PRE><FONT SIZE="-1"><A HREF="../../../../com/google/common/annotations/Beta.html" title="annotation in com.google.common.annotations">@Beta</A>
 <A HREF="../../../../com/google/common/annotations/GwtCompatible.html" title="annotation in com.google.common.annotations">@GwtCompatible</A>(<A HREF="../../../../com/google/common/annotations/GwtCompatible.html#emulated()">emulated</A>=true)
-</FONT>public final class <B>InternetDomainName</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
+</FONT>public class <B>InternetDomainName</B><DT>extends <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</A></DL>
 </PRE>
 
 <P>
-An immutable well-formed internet domain name, as defined by
- <a href="http://www.ietf.org/rfc/rfc1035.txt">RFC 1035</a>.
- Examples include <code>com</code> and <code>foo.co.uk</code>. Only syntactic analysis
- is performed; no DNS lookups or other network interactions take place. Thus
- there is no guarantee that the domain actually exists on the internet.
- Invalid domain names throw <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang"><CODE>IllegalArgumentException</CODE></A> on construction.
+An immutable well-formed internet domain name, such as <code>com</code> or <code>foo.co.uk</code>. Only syntactic analysis is performed; no DNS lookups or other
+ network interactions take place. Thus there is no guarantee that the domain
+ actually exists on the internet.
 
  <p>One common use of this class is to determine whether a given string is
  likely to represent an addressable domain on the web -- that is, for a
- candidate string "xxx", might browsing to "http://xxx/" result in a webpage
- being displayed? In the past, this test was frequently done by determining
- whether the domain ended with a <A HREF="../../../../com/google/common/net/InternetDomainName.html#isPublicSuffix()">public suffix</A>
- but was not itself a public suffix. However, this test is no longer accurate;
- there are many domains which are both public suffixes and addressable as
- hosts. "uk.com" is one example. As a result, the only useful test to
- determine if a domain is a plausible web host is <A HREF="../../../../com/google/common/net/InternetDomainName.html#hasPublicSuffix()"><CODE>hasPublicSuffix()</CODE></A>.
- This will return <code>true</code> for many domains which (currently) are not
- hosts, such as "com"), but given that any public suffix may become
- a host without warning, it is better to err on the side of permissiveness
- and thus avoid spurious rejection of valid sites.
+ candidate string <code>"xxx"</code>, might browsing to <code>"http://xxx/"</code>
+ result in a webpage being displayed? In the past, this test was frequently
+ done by determining whether the domain ended with a <A HREF="../../../../com/google/common/net/InternetDomainName.html#isPublicSuffix()">public suffix</A> but was not itself a public suffix. However,
+ this test is no longer accurate. There are many domains which are both public
+ suffixes and addressable as hosts; <code>"uk.com"</code> is one example. As a
+ result, the only useful test to determine if a domain is a plausible web host
+ is <A HREF="../../../../com/google/common/net/InternetDomainName.html#hasPublicSuffix()"><CODE>hasPublicSuffix()</CODE></A>. This will return <code>true</code> for many domains
+ which (currently) are not hosts, such as <code>"com"</code>), but given that any
+ public suffix may become a host without warning, it is better to err on the
+ side of permissiveness and thus avoid spurious rejection of valid sites.
 
- <p><A HREF="../../../../com/google/common/net/InternetDomainName.html#equals(java.lang.Object)">Equality</A> of domain names is case-insensitive
- with respect to ASCII characters, so for convenience, the <A HREF="../../../../com/google/common/net/InternetDomainName.html#name()"><CODE>name()</CODE></A> and
- <A HREF="../../../../com/google/common/net/InternetDomainName.html#parts()"><CODE>parts()</CODE></A> methods return string with all ASCII characters converted to
- lowercase.
+ <p>During construction, names are normalized in two ways:
+ <ol>
+ <li>ASCII uppercase characters are converted to lowercase.
+ <li>Unicode dot separators other than the ASCII period (<code>'.'</code>) are
+ converted to the ASCII period.
+ </ol>
+ The normalized values will be returned from <A HREF="../../../../com/google/common/net/InternetDomainName.html#name()"><CODE>name()</CODE></A> and
+ <A HREF="../../../../com/google/common/net/InternetDomainName.html#parts()"><CODE>parts()</CODE></A>, and will be reflected in the result of
+ <A HREF="../../../../com/google/common/net/InternetDomainName.html#equals(java.lang.Object)"><CODE>equals(Object)</CODE></A>.
 
  <p><a href="http://en.wikipedia.org/wiki/Internationalized_domain_name">
- internationalized domain names</a> such as <code>网络.cn</code> are
- supported, but with much weaker syntactic validation (resulting in false
- positive reports of validity).
+ internationalized domain names</a> such as <code>网络.cn</code> are supported, as
+ are the equivalent <a
+ href="http://en.wikipedia.org/wiki/Internationalized_domain_name">IDNA
+ Punycode-encoded</a> versions.
 <P>
 
 <P>
@@ -175,7 +177,8 @@ An immutable well-formed internet domain name, as defined by
 <TD><CODE><B><A HREF="../../../../com/google/common/net/InternetDomainName.html#fromLenient(java.lang.String)">fromLenient</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;domain)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A factory method for creating <code>InternetDomainName</code> objects.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns an instance of <A HREF="../../../../com/google/common/net/InternetDomainName.html" title="class in com.google.common.net"><CODE>InternetDomainName</CODE></A> after lenient
+ validation.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -234,7 +237,8 @@ An immutable well-formed internet domain name, as defined by
 <TD><CODE><B><A HREF="../../../../com/google/common/net/InternetDomainName.html#isValidLenient(java.lang.String)">isValidLenient</A></B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Indicates whether the argument is a syntactically valid domain name.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Indicates whether the argument is a syntactically valid domain name after
+ lenient validation.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -316,16 +320,24 @@ fromLenient</H3>
 <PRE>
 public static <A HREF="../../../../com/google/common/net/InternetDomainName.html" title="class in com.google.common.net">InternetDomainName</A> <B>fromLenient</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;domain)</PRE>
 <DL>
-<DD>A factory method for creating <code>InternetDomainName</code> objects. Only
- lenient validation of the domain is performed. Specifically,
- validation against
- <a href="http://www.ietf.org/rfc/rfc3490.txt">RFC 3490</a>
- ("Internationalizing Domain Names in Applications") is not performed.
+<DD>Returns an instance of <A HREF="../../../../com/google/common/net/InternetDomainName.html" title="class in com.google.common.net"><CODE>InternetDomainName</CODE></A> after lenient
+ validation.  Specifically, validation against <a
+ href="http://www.ietf.org/rfc/rfc3490.txt">RFC 3490</a>
+ ("Internationalizing Domain Names in Applications") is skipped, while
+ validation against <a
+ href="http://www.ietf.org/rfc/rfc1035.txt">RFC 1035</a> is relaxed in
+ the following ways:
+ <ul>
+ <li>Any part containing non-ASCII characters is considered valid.
+ <li>Underscores ('_') are permitted wherever dashes ('-') are permitted.
+ <li>Parts other than the final part may start with a digit.
+ </ul>
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>domain</CODE> - A domain name (not IP address)
 <DT><B>Throws:</B>
-<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - If name is not syntactically valid<DT><B>Since:</B></DT>
+<DD><CODE><A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang">IllegalArgumentException</A></CODE> - if <code>name</code> is not syntactically valid
+     according to <A HREF="../../../../com/google/common/net/InternetDomainName.html#isValidLenient(java.lang.String)"><CODE>isValidLenient(java.lang.String)</CODE></A><DT><B>Since:</B></DT>
   <DD>8 (previously named <code>from</code>)</DD>
 </DL>
 </DD>
@@ -544,7 +556,8 @@ child</H3>
 public <A HREF="../../../../com/google/common/net/InternetDomainName.html" title="class in com.google.common.net">InternetDomainName</A> <B>child</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;leftParts)</PRE>
 <DL>
 <DD>Creates and returns a new <code>InternetDomainName</code> by prepending the
- argument and a dot to the current name. For example, <code>InternetDomainName.from("foo.com").child("www.bar")</code> returns a new <code>InternetDomainName</code> with the value <code>www.bar.foo.com</code>.
+ argument and a dot to the current name. For example, <code>InternetDomainName.fromLenient("foo.com").child("www.bar")</code> returns a new
+ <code>InternetDomainName</code> with the value <code>www.bar.foo.com</code>.
 <P>
 <DD><DL>
 
@@ -560,21 +573,21 @@ isValidLenient</H3>
 <PRE>
 public static boolean <B>isValidLenient</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</A>&nbsp;name)</PRE>
 <DL>
-<DD>Indicates whether the argument is a syntactically valid domain name. Only
- lenient validation is done, as described in <A HREF="../../../../com/google/common/net/InternetDomainName.html#fromLenient(java.lang.String)"><CODE>fromLenient(String)</CODE></A>.
+<DD>Indicates whether the argument is a syntactically valid domain name after
+ lenient validation. Specifically, validation against <a
+ href="http://www.ietf.org/rfc/rfc3490.txt">RFC 3490</a>
+ ("Internationalizing Domain Names in Applications") is skipped.
 
- <p>This method is intended for the case where a <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> must be
- validated as a valid domain name, but no further work with that
- <A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><CODE>String</CODE></A> as an <A HREF="../../../../com/google/common/net/InternetDomainName.html" title="class in com.google.common.net"><CODE>InternetDomainName</CODE></A> will be required. Code like
- the following will unnecessarily repeat the work of validation:
- <pre>   <code>if (InternetDomainName.isValid(name)) {
-     domainName = InternetDomainName.from(name);
+ <p>The follow two code snippets are equivalent:
+
+ <pre>   <code>if (InternetDomainName.isValidLenient(name)) {
+     domainName = InternetDomainName.fromLenient(name);
    } else {
      domainName = DEFAULT_DOMAIN;
    }</code></pre>
 
- Such code could instead be written as follows: <pre>   <code>try {
-     domainName = InternetDomainName.from(name);
+ <pre>   <code>try {
+     domainName = InternetDomainName.fromLenient(name);
    } catch (IllegalArgumentException e) {
      domainName = DEFAULT_DOMAIN;
    }</code></pre>

@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-Multimaps (Guava: Google Core Libraries for Java - r08)
+Multimaps (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ Multimaps (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="Multimaps (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="Multimaps (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -151,7 +151,7 @@ Provides static methods acting on or generating a <code>Multimap</code>.
       <A HREF="../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super V,K&gt;&nbsp;keyFunction)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an index <code>ImmutableMultimap</code> that contains the results of
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates an index <code>ImmutableListMultimap</code> that contains the results of
  applying a specified function to each item in an <code>Iterable</code> of
  values.</TD>
 </TR>
@@ -1111,14 +1111,15 @@ index</H3>
 public static &lt;K,V&gt; <A HREF="../../../../com/google/common/collect/ImmutableListMultimap.html" title="class in com.google.common.collect">ImmutableListMultimap</A>&lt;K,V&gt; <B>index</B>(<A HREF="http://download.oracle.com/javase/6/docs/api/java/lang/Iterable.html?is-external=true" title="class or interface in java.lang">Iterable</A>&lt;V&gt;&nbsp;values,
                                                      <A HREF="../../../../com/google/common/base/Function.html" title="interface in com.google.common.base">Function</A>&lt;? super V,K&gt;&nbsp;keyFunction)</PRE>
 <DL>
-<DD>Creates an index <code>ImmutableMultimap</code> that contains the results of
+<DD>Creates an index <code>ImmutableListMultimap</code> that contains the results of
  applying a specified function to each item in an <code>Iterable</code> of
  values. Each value will be stored as a value in the resulting multimap,
  yielding a multimap with the same size as the input iterable. The key used
  to store that value in the multimap will be the result of calling the
  function on that value. The resulting multimap is created as an immutable
- snapshot, it does <em>not</em> reflect subsequent changes on the input
- iterable.
+ snapshot. In the returned multimap, keys appear in the order they are first 
+ encountered, and the values corresponding to each key appear in the same 
+ order as they are encountered.
 
  <p>For example, <pre>   <code>List&lt;String&gt; badGuys =
        Arrays.asList("Inky", "Blinky", "Pinky", "Pinky", "Clyde");
@@ -1127,14 +1128,14 @@ public static &lt;K,V&gt; <A HREF="../../../../com/google/common/collect/Immutab
        Multimaps.index(badGuys, stringLengthFunction);
    System.out.println(index);</code></pre>
 
- prints <pre>   <code>{4=[Inky], 5=[Pinky, Pinky, Clyde], 6=[Blinky]}</code></pre>
+ prints <pre>   <code>{4=[Inky], 6=[Blinky], 5=[Pinky, Pinky, Clyde]}</code></pre>
 
  The returned multimap is serializable if its keys and values are all
  serializable.
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>values</CODE> - the values to use when constructing the <code>ImmutableMultimap</code><DD><CODE>keyFunction</CODE> - the function used to produce the key for each value
-<DT><B>Returns:</B><DD><code>ImmutableMultimap</code> mapping the result of evaluating the
+<DT><B>Parameters:</B><DD><CODE>values</CODE> - the values to use when constructing the <code>ImmutableListMultimap</code><DD><CODE>keyFunction</CODE> - the function used to produce the key for each value
+<DT><B>Returns:</B><DD><code>ImmutableListMultimap</code> mapping the result of evaluating the
      function <code>keyFunction</code> on each value in the input collection to
      that value
 <DT><B>Throws:</B>

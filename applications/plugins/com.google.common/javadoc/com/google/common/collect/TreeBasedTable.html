@@ -4,7 +4,7 @@
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>
-TreeBasedTable (Guava: Google Core Libraries for Java - r08)
+TreeBasedTable (Guava: Google Core Libraries for Java - r09)
 </TITLE>
 
 
@@ -14,7 +14,7 @@ TreeBasedTable (Guava: Google Core Libraries for Java - r08)
 function windowTitle()
 {
     if (location.href.indexOf('is-external=true') == -1) {
-        parent.document.title="TreeBasedTable (Guava: Google Core Libraries for Java - r08)";
+        parent.document.title="TreeBasedTable (Guava: Google Core Libraries for Java - r09)";
     }
 }
 </SCRIPT>
@@ -111,10 +111,6 @@ Implementation of <code>Table</code> whose row keys and column keys are ordered
 
  <p>The <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#rowKeySet()"><CODE>rowKeySet()</CODE></A> method returns a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/SortedSet.html?is-external=true" title="class or interface in java.util"><CODE>SortedSet</CODE></A> and the <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#rowMap()"><CODE>rowMap()</CODE></A> method returns a <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/SortedMap.html?is-external=true" title="class or interface in java.util"><CODE>SortedMap</CODE></A>, instead of the <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Set.html?is-external=true" title="class or interface in java.util"><CODE>Set</CODE></A> and
  <A HREF="http://download.oracle.com/javase/6/docs/api/java/util/Map.html?is-external=true" title="class or interface in java.util"><CODE>Map</CODE></A> specified by the <A HREF="../../../../com/google/common/collect/Table.html" title="interface in com.google.common.collect"><CODE>Table</CODE></A> interface.
-
- <p>Note that the column keys as returned by <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#columnKeySet()"><CODE>columnKeySet()</CODE></A> and
- <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#columnMap()"><CODE>columnMap()</CODE></A> are <i>not</i> sorted. Sorted column keys can be
- observed in <A HREF="../../../../com/google/common/collect/Table.html#row(R)"><CODE>Table.row(Object)</CODE></A> and the values of <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#rowMap()"><CODE>rowMap()</CODE></A>.
 
  <p>The views returned by <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#column(C)"><CODE>column(C)</CODE></A>, <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#columnKeySet()"><CODE>columnKeySet()</CODE></A>, and <A HREF="../../../../com/google/common/collect/TreeBasedTable.html#columnMap()"><CODE>columnMap()</CODE></A> have iterators that don't support <code>remove()</code>. Otherwise,
  all optional operations are supported. Null row keys, columns keys, and
