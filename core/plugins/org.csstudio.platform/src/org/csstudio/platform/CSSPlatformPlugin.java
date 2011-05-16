@@ -24,14 +24,9 @@ package org.csstudio.platform;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 import org.csstudio.platform.internal.PluginCustomizationExporter;
-import org.csstudio.platform.internal.management.ManagementServiceImpl;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.management.IManagementCommandService;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
