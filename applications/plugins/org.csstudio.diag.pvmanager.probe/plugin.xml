@@ -61,7 +61,7 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.csstudio.ui.menu.popup.iprocessvariable">
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.diag.pvmanager.probe.OpenProbe"
                icon="icons/probe.png"
