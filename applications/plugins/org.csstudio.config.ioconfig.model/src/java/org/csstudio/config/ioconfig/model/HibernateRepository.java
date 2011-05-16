@@ -361,8 +361,8 @@ public class HibernateRepository implements IRepository {
     @Nonnull
     public final String getEpicsAddressString(@Nonnull final String ioName) throws PersistenceException {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
-        String doInDevDBHibernateEager = HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
-        return doInDevDBHibernateEager;
+        String epicsAddressString = HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        return epicsAddressString==null?"":epicsAddressString;
     }
     
     /**
@@ -383,7 +383,8 @@ public class HibernateRepository implements IRepository {
                 return ioNames;
             }
         };
-        return HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        List<String> ioNameList = HibernateManager.getInstance().doInDevDBHibernateEager(hibernateCallback);
+        return ioNameList==null?new ArrayList<String>():ioNameList;
     }
     
     /**

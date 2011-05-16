@@ -40,6 +40,8 @@ import javax.persistence.Transient;
 @Table(name = "ddb_Facility")
 public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default Constructor needed by Hibernate.
      */

@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="org.eclipse.csstudio.ui.systemActions"
+            id="org.csstudio.auth.ui.systemActions"
             label="System Actions"
             visible="true">         
          <action

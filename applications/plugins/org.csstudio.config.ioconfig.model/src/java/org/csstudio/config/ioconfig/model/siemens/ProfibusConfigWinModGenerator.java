@@ -178,10 +178,10 @@ public class ProfibusConfigWinModGenerator {
 			.append(LINE_END);
 		}
 		Map<Short, ChannelStructureDBO> channelStructsAsMap = module.getChildrenAsMap();
-		Set<Short> keySet = channelStructsAsMap.keySet();
-		for (Short key : keySet) {
-			createChannel(channelStructsAsMap.get(key));
-		}
+		Set<Entry<Short, ChannelStructureDBO>> entrySet = channelStructsAsMap.entrySet();
+		for (Entry<Short, ChannelStructureDBO> entry : entrySet) {
+		    createChannel(entry.getValue());
+        }
     }
 
 	/**
