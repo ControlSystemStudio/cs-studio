@@ -143,14 +143,8 @@ public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> 
         this.setParent(module);
     }
 
-//    @Transient
-//    @SuppressWarnings("unchecked")
-//    public Map<Short, ChannelDBO> getChannelsAsMap() throws PersistenceException {
-//        return (Map<Short, ChannelDBO>) getChildrenAsMap();
-//    }
-
     @Transient
-    @Nonnull 
+    @CheckForNull 
     public ChannelDBO getFirstChannel() throws PersistenceException {
         TreeMap<Short, ChannelDBO> treeMap = (TreeMap<Short, ChannelDBO>) getChildrenAsMap();
         return treeMap.get(treeMap.firstKey());

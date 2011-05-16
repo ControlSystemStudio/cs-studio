@@ -354,10 +354,11 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     }
 
     @Override
-    public MasterDBO copyThisTo(final ProfibusSubnetDBO parentNode) throws PersistenceException {
+    @Nonnull
+    public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode) throws PersistenceException {
         MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode);
         for (SlaveDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;

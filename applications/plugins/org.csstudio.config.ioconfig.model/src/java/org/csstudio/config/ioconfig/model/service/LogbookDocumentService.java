@@ -29,7 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -64,23 +66,21 @@ public class LogbookDocumentService implements DocumentService {
                 }
                 createTempFile = File.createTempFile("ddbDoc", "." + mimeType);
                 Helper.writeDocumentFile(createTempFile, firstElement);
-                if( (createTempFile != null) && createTempFile.isFile()) {
-                    if(Desktop.isDesktopSupported()) {
-                        if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                            CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
-                            Desktop.getDesktop().open(createTempFile);
-                        }
-                    }
+                if( canOpenDocument(createTempFile)) {
+                        CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
+                        Desktop.getDesktop().open(createTempFile);
                 }
             } catch (IOException e) {
                 throw new PersistenceException(e);
             }
         }
     }
+
+    private boolean canOpenDocument(@CheckForNull File createTempFile) {
+        return (createTempFile != null) && createTempFile.isFile()
+                && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
+    }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
         // TODO Implement save Document as File!
@@ -93,10 +93,11 @@ public class LogbookDocumentService implements DocumentService {
     @Nonnull
     List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
         List<IDocument> docList = new ArrayList<IDocument>();
-        AbstractNodeDBO load = Repository.load(AbstractNodeDBO.class, nodeId);
+        AbstractNodeDBO<?, ?> load = Repository.load(AbstractNodeDBO.class, nodeId);
         while (load != null) {
-            if(load.getDocuments() != null) {
-                docList.addAll(load.getDocuments());
+            Set<DocumentDBO> documents = load.getDocuments();
+            if(documents != null) {
+                docList.addAll(documents);
             }
             load = load.getParent();
         }

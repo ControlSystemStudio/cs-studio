@@ -223,11 +223,10 @@ public final class HibernateManager extends Observable {
                 // sec
                 .setProperty("c3p0.max_statements", "1")
 //                .setProperty("hibernate.hbm2ddl.auto", "update")
-//                .setProperty("hibernate.hbm2ddl.auto", "validate")
                 .setProperty("hibernate.show_sql", "false");
-        //                .setProperty("hibernate.format_sql", "true")
-        //                .setProperty("hibernate.use_sql_comments", "true")
-        //			.setProperty("hibernate.cache.use_second_level_cache", "true");
+//                .setProperty("hibernate.format_sql", "true")
+//                .setProperty("hibernate.use_sql_comments", "true")
+//	              .setProperty("hibernate.cache.use_second_level_cache", "true");
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
     }
     

@@ -278,11 +278,11 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *
      * @return Documents for the Node.
      */
-    @Override
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     //    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     @Nonnull
+    @Override
     public Set<DocumentDBO> getDocuments() {
         return _documents;
     }

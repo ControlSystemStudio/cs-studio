@@ -24,6 +24,9 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * @author hrickens
  * @author $Author: hrickens $
@@ -121,7 +124,7 @@ public enum DataType {
      * @param sizeOfBit The size in bit.
      * @param desc The long description.
      */
-    private DataType(final int sizeOfBit, final String type, final String desc, DataType...structure){
+    private DataType(final int sizeOfBit, @Nonnull final String type, @Nonnull final String desc, @Nonnull DataType...structure){
         this(sizeOfBit,type, desc, null, null, structure);
     }
 
@@ -131,7 +134,7 @@ public enum DataType {
      * @param sizeOfBit The size in bit.
      * @param desc The long description.
      */
-    private DataType(final int sizeOfBit,final String type, final String desc, Long low, Long high, DataType...structure){
+    private DataType(final int sizeOfBit, @Nonnull final String type, @Nonnull final String desc, @CheckForNull Long low, @CheckForNull Long high, @Nonnull DataType...structure){
         _size = sizeOfBit;
         _type = type;
         _desc = desc;
@@ -153,6 +156,7 @@ public enum DataType {
      * 
      * @return Data Type Name.
      */
+    @Nonnull
     public String getType() {
         return _type;
     }
@@ -180,6 +184,7 @@ public enum DataType {
      * Get the Size as String with unit.
      * @return The size.
      */
+    @Nonnull 
     public String getSize(){
         if(_size%1024==0) {
             return _size/1024+" kByte";
@@ -193,6 +198,7 @@ public enum DataType {
      * 
      * @return the long description.
      */
+    @Nonnull 
     public String getDescription(){
         return _desc;
     }
@@ -201,6 +207,7 @@ public enum DataType {
      * 
      * @return all names.
      */
+    @Nonnull 
     public static String[] getNames(){
         String[] names = new String[DataType.values().length];
         for (int i = 0; i < DataType.values().length; i++) {
@@ -213,6 +220,7 @@ public enum DataType {
      * 
      * @return the Data-Type structure.
      */
+    @Nonnull 
     public DataType[] getStructure() {
         return _structure;
     }
@@ -221,6 +229,7 @@ public enum DataType {
      * 
      * @return the default low range.
      */
+    @Nonnull 
     public  String getDefaultLow(){
      return _low;   
     }
@@ -229,6 +238,7 @@ public enum DataType {
      * 
      * @return the default high range.
      */
+    @Nonnull 
     public  String getDefaultHigh(){
         return _high;   
        }
