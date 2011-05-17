@@ -111,7 +111,6 @@ public class AdaptableProcessVariablePopupTestView extends ViewPart {
 		pvViewer.setLabelProvider(new ViewLabelProvider());
 		pvViewer.setSorter(new NameSorter());
 		pvViewer.setInput(getViewSite());
-		getSite().setSelectionProvider(pvViewer);
 		
 		hookContextMenu();
 	}

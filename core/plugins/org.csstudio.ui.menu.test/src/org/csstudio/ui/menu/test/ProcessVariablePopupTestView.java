@@ -80,7 +80,6 @@ public class ProcessVariablePopupTestView extends ViewPart {
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
-			System.out.println("Generated");
 			return new CustomProcessVariable[] { new CustomProcessVariable("sim://gaussianWaveform()"),
 					new CustomProcessVariable("sim://noise"),
 					new CustomProcessVariable("sim://ramp(1,10,1,0.1)") };
@@ -123,7 +122,6 @@ public class ProcessVariablePopupTestView extends ViewPart {
 		pvViewer.setLabelProvider(new ViewLabelProvider());
 		pvViewer.setSorter(new NameSorter());
 		pvViewer.setInput(getViewSite());
-		getSite().setSelectionProvider(pvViewer);
 		
 		hookContextMenu();
 	}
