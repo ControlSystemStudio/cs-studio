@@ -28,11 +28,11 @@ public class OpenWaterfall extends AbstractHandler implements IHandler {
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
-			WaterfallView waterfall = (WaterfallView) page
-					.showView(WaterfallView.ID);
 			ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
 			
 			if (pvs.length > 0) {
+				WaterfallView waterfall = (WaterfallView) page
+				.showView(WaterfallView.ID);
 				waterfall.setPVName(pvs[0].getName());
 			}
 
