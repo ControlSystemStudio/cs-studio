@@ -10,5 +10,5 @@ Export-Package: org.joda.time,
  org.joda.time.field,
  org.joda.time.format,
  org.joda.time.tz
-Bundle-RequiredExecutionEnvironment: J2SE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
