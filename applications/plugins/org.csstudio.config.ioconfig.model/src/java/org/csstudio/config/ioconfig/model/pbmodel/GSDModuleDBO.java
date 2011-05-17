@@ -34,6 +34,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -330,18 +333,17 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
     }
 
     /**
-     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
+     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_MCPROTOTYPE liegen auf einer anderen DB.
      *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
-     *  -  Für MIME_FILES ist das Grand: select.
-     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
+     *  -  Für MIME_FILES ist das Grant: select.
+     *  -  Für MIME_FILES_DDB_MCPROTOTYPE ist das Grant: select, insert, update, delete.
      *
      * @return Documents for the Node.
      */
     @Override
-    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
-//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
-//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+    @JoinTable(name = "MIME_FILES_DDB_MCPROTOTYPE_LNK", joinColumns = @JoinColumn(name = "prototype_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id"))
+    @Nonnull
     public Set<DocumentDBO> getDocuments() {
         return _documents;
     }
@@ -351,7 +353,7 @@ public class GSDModuleDBO extends DBClass implements Comparable<GSDModuleDBO>, I
      */
     @Override
     @Transient
-    public void setDocuments(final Set<DocumentDBO> documents) {
+    public void setDocuments(@Nonnull final Set<DocumentDBO> documents) {
         _documents = documents;
 
     }

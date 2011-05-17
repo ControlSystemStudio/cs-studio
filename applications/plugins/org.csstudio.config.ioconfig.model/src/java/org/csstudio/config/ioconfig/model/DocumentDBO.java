@@ -413,5 +413,15 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         }
         return true;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getSubject()).append(".").append(getMimeType()).append(" : ").append(getDesclong());
+        return sb.toString();
+    }
 }
