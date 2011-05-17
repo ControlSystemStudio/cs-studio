@@ -16,17 +16,17 @@ package org.csstudio.utility.ldapUpdater.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
- * TODO (bknerr) : 
- * 
+ * TODO (bknerr) :
+ *
  * @author bknerr
  * @since 27.04.2011
  */
 public interface ILdapServiceProvider {
-    
+
     @Nonnull
     ILdapService getLdapService() throws OsgiServiceUnavailableException;
 }
