@@ -44,12 +44,12 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  */
 
-public class ProcessVariablePopupTestView extends ViewPart {
+public class AdaptableProcessVariablePopupTestView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.csstudio.ui.menu.test.ProcessVariablePopupTestView";
+	public static final String ID = "org.csstudio.ui.menu.test.AdaptableProcessVariablePopupTestView";
 
 	private TableViewer pvViewer;
 
@@ -63,24 +63,12 @@ public class ProcessVariablePopupTestView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
-	class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			return new ProcessVariable[] { new ProcessVariable("sim://gaussianWaveform()"),
-					new ProcessVariable("sim://noise"),
-					new ProcessVariable("sim://ramp(1,10,1,0.1)") };
-		}
-	}
 	class ToPvContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
-			System.out.println("Generated");
 			return new CustomProcessVariable[] { new CustomProcessVariable("sim://gaussianWaveform()"),
 					new CustomProcessVariable("sim://noise"),
 					new CustomProcessVariable("sim://ramp(1,10,1,0.1)") };
@@ -104,7 +92,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public ProcessVariablePopupTestView() {
+	public AdaptableProcessVariablePopupTestView() {
 	}
 
 	/**
@@ -119,7 +107,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
 		pvViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		Table pvTable = pvViewer.getTable();
 		pvTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		pvViewer.setContentProvider(new ViewContentProvider());
+		pvViewer.setContentProvider(new ToPvContentProvider());
 		pvViewer.setLabelProvider(new ViewLabelProvider());
 		pvViewer.setSorter(new NameSorter());
 		pvViewer.setInput(getViewSite());
@@ -143,7 +131,7 @@ public class ProcessVariablePopupTestView extends ViewPart {
 				} catch(Exception ed) {
 					
 				}
-				ProcessVariablePopupTestView.this.fillContextMenu(manager);
+				AdaptableProcessVariablePopupTestView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(pvViewer.getControl());
