@@ -2,6 +2,19 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.trends.databrowser.model.PVItem"
+            class="org.csstudio.trends.databrowser.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
@@ -87,33 +100,6 @@
       </perspective>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.trends.popupactions"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="%CSS"
-               path="additions">
-            <groupMarker
-                  name="content">
-            </groupMarker>
-            <separator
-                  name="additions">
-            </separator>
-         </menu>
-         <action
-               class="org.csstudio.trends.databrowser.OpenDataBrowserPopupAction"
-               icon="icons/databrowser.png"
-               id="org.csstudio.trends.databrowser.OpenDataBrowserPopupAction"
-               label="%Databrowser"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopmenuTooltip">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.trends"
@@ -156,5 +142,27 @@
             content="intro/firststeps.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+            id="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+            name="%Databrowser">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+               icon="icons/databrowser.png"
+               label="%Databrowser"
+               style="push"
+               tooltip="%PopmenuTooltip">
+         </command>
+      </menuContribution>
    </extension>
 </plugin>
