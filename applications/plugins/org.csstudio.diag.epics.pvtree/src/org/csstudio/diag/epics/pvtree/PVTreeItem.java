@@ -4,6 +4,7 @@
 package org.csstudio.diag.epics.pvtree;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.data.values.ISeverity;
@@ -94,7 +95,15 @@ class PVTreeItem
         {
             try
             {
-                type = pv.getValue().format();
+                final String type_txt = pv.getValue().format();
+                // type should be a text.
+                // If it starts with a number, it's probably not an
+                // EPICS record type but a simulated PV
+                final char first_char = type_txt.charAt(0);
+                if (first_char >= 'a' && first_char <= 'z')
+                    type = type_txt;
+                else
+                    type = Messages.UnkownPVType;
                 updateType();
             }
             catch (Exception e)
@@ -373,8 +382,9 @@ class PVTreeItem
                 model.itemChanged(PVTreeItem.this);
 
                 links_to_read.clear();
-                links_to_read.addAll(model.getFieldInfo().get(type));
-
+                final List<String> fields = model.getFieldInfo().get(type);
+                if (fields != null)
+                    links_to_read.addAll(fields);
                 if (links_to_read.size() <= 0)
                 {
                     Plugin.getLogger().log(Level.FINE,
