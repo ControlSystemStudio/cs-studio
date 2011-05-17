@@ -40,8 +40,8 @@ import org.csstudio.domain.desy.regexp.SimplePattern;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.platform.util.StringUtil;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -132,7 +132,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             // databrowser does not supply then the matching regexp to the interface.
             // We are forced to handle that here, where are not supposed to know that in the first place.
             // Any other app using this interface should better know this detail, too...
-            final Pattern pattern = Pattern.compile(StringUtil.isBlank(regExp) ? ".*" : regExp);
+            final Pattern pattern = Pattern.compile(Strings.isNullOrEmpty(regExp) ? ".*" : regExp);
 
             final IArchiveReaderFacade service = Activator.getDefault().getArchiveReaderService();
             final Collection<String> names = service.getChannelsByNamePattern(pattern);

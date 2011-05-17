@@ -167,8 +167,8 @@ public class EquidistantTimeBinsIterator<V> implements ValueIterator {
     private SampleAndWindow<V> findFirstSampleAndItsWindow(@Nonnull final String name,
                                                            @Nonnull final TimeInstant startTime,
                                                            @Nonnull final ReadableDuration windowLength,
-                                                           @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter) throws ArchiveServiceException,
-                                                                              OsgiServiceUnavailableException {
+                                                           @CheckForNull final Iterator<IArchiveSample<V, ISystemVariable<V>>> samplesIter)
+                                                           throws ArchiveServiceException, OsgiServiceUnavailableException {
 
         final IArchiveSample<V, ISystemVariable<V>> lastSampleBeforeStartTime = retrieveLastSampleBeforeInterval(name, startTime);
 

@@ -54,7 +54,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.domain.desy.net.IpAddress;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
@@ -100,7 +100,7 @@ public class LdapFacadeImpl implements ILdapFacade {
         _serviceProvider = provider;
     }
     @Nonnull
-    private ILdapService getLdapService() throws org.csstudio.platform.service.osgi.OsgiServiceUnavailableException {
+    private ILdapService getLdapService() throws org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException {
         return _serviceProvider.getLdapService();
     }
 

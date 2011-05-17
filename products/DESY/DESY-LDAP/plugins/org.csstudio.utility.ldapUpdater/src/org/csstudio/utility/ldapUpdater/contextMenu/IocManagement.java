@@ -26,10 +26,10 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;

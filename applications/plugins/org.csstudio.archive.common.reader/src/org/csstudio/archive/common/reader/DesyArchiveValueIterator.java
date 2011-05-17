@@ -28,18 +28,17 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.util.ArchiveSampleToIValueFunction;
 import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
@@ -76,7 +75,9 @@ public class DesyArchiveValueIterator implements ValueIterator {
     DesyArchiveValueIterator(@Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
                              @Nonnull final TimeInstant end,
-                             @Nullable final IArchiveRequestType type) throws ArchiveServiceException, OsgiServiceUnavailableException {
+                             @Nullable final IArchiveRequestType type)
+                             throws ArchiveServiceException,
+                             OsgiServiceUnavailableException {
 
         _channelName = channelName;
         _start = start;

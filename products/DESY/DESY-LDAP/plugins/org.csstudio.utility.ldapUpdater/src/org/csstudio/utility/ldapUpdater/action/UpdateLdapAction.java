@@ -37,11 +37,11 @@ import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;

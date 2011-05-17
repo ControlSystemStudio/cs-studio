@@ -16,7 +16,7 @@ package org.csstudio.utility.ldapUpdater.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
