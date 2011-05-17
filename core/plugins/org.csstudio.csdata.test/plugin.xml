@@ -5,13 +5,13 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="Sample Category"
-            id="org.csstudio.model.test">
+            name="Test"
+            id="org.csstudio.test">
       </category>
       <view
             name="Drag&apos;n&apos;Drop Test View"
-            icon="icons/sample.gif"
-            category="org.csstudio.model.test"
+            icon="icons/test.png"
+            category="org.csstudio.test"
             class="org.csstudio.csdata.test.DnDTestView"
             id="org.csstudio.model.test.DnDTestView">
       </view>
