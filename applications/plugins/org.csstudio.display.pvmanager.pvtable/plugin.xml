@@ -7,7 +7,7 @@
       <editor
             name="PVTable Editor"
             extensions="css-pvtable"
-            icon="icons/sample.gif"
+            icon="icons/pvtable.png"
             class="org.csstudio.display.pvmanager.pvtable.editors.PVTableEditor"
             id="org.csstudio.display.pvmanager.pvtable.editors.PVTableEditor">
       </editor>
@@ -18,11 +18,13 @@
             locationURI="menu:display">
          <command
                commandId="org.csstudio.display.pvmanager.open.empty.pvtable"
+               icon="icons/pvtable.png"
                label="Open Empty PVTable"
                style="push">
          </command>
          <command
                commandId="org.csstudio.display.pvmanager.open.new.pvtable"
+               icon="icons/pvtable.png"
                label="Open New PVTable"
                style="push">
          </command>
