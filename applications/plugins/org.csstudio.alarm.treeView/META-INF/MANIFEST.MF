@@ -13,21 +13,20 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.alarm.table,
  org.csstudio.sds.ui,
- org.junit4,
- javax.annotation,
  org.csstudio.alarm.service,
  org.csstudio.utility.treemodel,
- org.csstudio.platform.libs.guava,
  org.csstudio.utility.ldap.service,
  org.csstudio.utility.ldap.service.impl,
- org.junit,
  org.csstudio.domain.desy;bundle-version="1.0.0",
  org.csstudio.domain.desy.epics;bundle-version="1.0.0",
- org.csstudio.platform.libs.mockito;bundle-version="1.8.5",
+ org.mockito;bundle-version="1.8.5",
  org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
- org.csstudio.platform.libs.slf4j;bundle-version="1.6.1",
+ org.slf4j;bundle-version="1.6.1",
  org.csstudio.auth;bundle-version="1.0.0",
- org.csstudio.auth.ui;bundle-version="1.0.0"
+ org.csstudio.auth.ui;bundle-version="1.0.0",
+ javax.annotation,
+ org.junit,
+ com.google.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.csstudio.alarm.service.declaration,org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy

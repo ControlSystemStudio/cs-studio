@@ -10,10 +10,10 @@ Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
  org.eclipse.ui,
+ org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.utility.pv;bundle-version="1.2.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.apputil,
- org.csstudio.apputil.ui,
- org.csstudio.platform;bundle-version="1.1.1",
- org.csstudio.platform.ui;bundle-version="1.1.2"
+ org.csstudio.apputil.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -21,6 +21,7 @@
    </vm>
 
    <plugins>
+      <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
@@ -70,7 +71,6 @@
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.glazedlists"/>
-      <plugin id="org.csstudio.platform.libs.guava"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jersey"/>
@@ -78,7 +78,6 @@
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.libs.log4j"/>
-      <plugin id="org.csstudio.platform.libs.slf4j"/>
       <plugin id="org.csstudio.platform.simpledal"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
@@ -113,6 +112,7 @@
       <plugin id="org.csstudio.utility.pvmanager.widgets"/>
       <plugin id="org.csstudio.utility.speech"/>
       <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.slf4j"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>

@@ -33,7 +33,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.logbook"/>
       <import plugin="org.junit4"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -42,14 +41,20 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.intro.universal"/>
       <import plugin="org.eclipse.ui.cheatsheets"/>
       <import plugin="org.csstudio.platform.ui"/>
-      <import plugin="org.csstudio.platform.workspace"/>
-      <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.startuphelper" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging.ui" version="0.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.log4j" version="1.2.16" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -95,20 +100,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.sns.ldapAuthorization.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.auth"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.auth.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

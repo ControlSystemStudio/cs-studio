@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Epics PV Plug-in
 Bundle-SymbolicName: org.csstudio.utility.pv.epics;singleton:=true
-Bundle-Version: 1.1.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.pv.epics.Activator
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime;bundle-version="3.6.0",
- org.csstudio.utility.pv;bundle-version="1.1.0",
+ org.csstudio.utility.pv;bundle-version="3.0.0",
  org.csstudio.platform.libs.epics;bundle-version="1.1.2";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.pv.epics

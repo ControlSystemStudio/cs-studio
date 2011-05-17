@@ -21,27 +21,12 @@
             primary="true"/>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.diag.probe.popupMenu"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               class="org.csstudio.diag.probe.PVpopupAction"
-               enablesFor="1"
-               icon="icons/probe.gif"
-               id="org.csstudio.diag.probe.PVpopupAction"
-               label="%Probe"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopupMenuTooltip"/>
-      </objectContribution>
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.probe.OpenProbe"
+            id="org.csstudio.diag.probe.OpenProbe"
+            name="%Probe">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -58,6 +43,16 @@
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.diag.probe.Probe">
             </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.diag.probe.OpenProbe"
+               icon="icons/probe.gif"
+               label="%Probe"
+               style="push">
          </command>
       </menuContribution>
    </extension>

@@ -42,6 +42,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 @Table(name = "ddb_Ioc")
 public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Default Constructor needed by Hibernate.
      */
@@ -82,7 +84,7 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
     public IocDBO copyThisTo(@Nonnull final FacilityDBO parentNode) throws PersistenceException {
         final IocDBO copy = (IocDBO) super.copyThisTo(parentNode);
         for (final ProfibusSubnetDBO node : getChildren()) {
-            AbstractNodeDBO childrenCopy = node.copyThisTo(copy);
+            ProfibusSubnetDBO childrenCopy = node.copyThisTo(copy);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;

@@ -7,11 +7,7 @@
  ******************************************************************************/
 package org.csstudio.diag.epics.pvtree;
 
-
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -20,7 +16,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
@@ -131,17 +126,18 @@ public class PVTreeView extends ViewPart
         viewer.setLabelProvider(new PVTreeLabelProvider());
         viewer.setInput(getViewSite());
 
-        new ProcessVariableDragSource(viewer.getTree(), viewer);
-        new ProcessVariableDropTarget(viewer.getTree())
-        {
-            /** @see org.csstudio.data.exchange.ProcessVariableDropTarget#handleDrop(java.lang.String) */
-            @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
-            {
-                setPVName(name.getName());
-            }
-        };
+        // TODO Support drag/drop?
+//        new ProcessVariableDragSource(viewer.getTree(), viewer);
+//        new ProcessVariableDropTarget(viewer.getTree())
+//        {
+//            /** @see org.csstudio.data.exchange.ProcessVariableDropTarget#handleDrop(java.lang.String) */
+//            @Override
+//            public void handleDrop(IProcessVariable name,
+//                                   DropTargetEvent event)
+//            {
+//                setPVName(name.getName());
+//            }
+//        };
 
 
         // Stop the press when we're no more
@@ -196,7 +192,7 @@ public class PVTreeView extends ViewPart
 
     private void hookContextMenu()
     {
-        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        final MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener()
         {
@@ -211,9 +207,8 @@ public class PVTreeView extends ViewPart
         getSite().registerContextMenu(menuMgr, viewer);
     }
 
-    private void fillContextMenu(IMenuManager manager)
+    private void fillContextMenu(final IMenuManager manager)
     {
-        //manager.add(new Separator());
         drillDownAdapter.addNavigationActions(manager);
         // Other plug-ins can contribute their actions here
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));

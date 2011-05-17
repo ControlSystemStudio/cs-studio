@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Test"
+            id="org.csstudio.ui.menu.test">
+      </category>
+      <view
+            name="Process Variable Popup Test"
+            icon="icons/test.png"
+            category="org.csstudio.ui.menu.test"
+            class="org.csstudio.ui.menu.test.ProcessVariablePopupTestView"
+            id="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>

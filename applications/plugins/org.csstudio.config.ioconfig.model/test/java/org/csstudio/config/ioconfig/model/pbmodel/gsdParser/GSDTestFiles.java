@@ -39,15 +39,19 @@ public enum GSDTestFiles {
     
     @Nonnull
     public String getFileAsString() throws IOException {
-        FileReader fr = new FileReader("./res-test/GSDFiles/"+_fileName);
+        FileReader fr = new FileReader("./res-test/GSDFiles/" + _fileName);
         BufferedReader bf = new BufferedReader(fr);
-        String line;
-        StringBuilder fileAsString = new StringBuilder();
-        while (null != (line = bf.readLine())) {
-            fileAsString.append(line);
-            fileAsString.append(String.format("%n"));
+        try {
+            String line;
+            StringBuilder fileAsString = new StringBuilder();
+            while (null != (line = bf.readLine())) {
+                fileAsString.append(line);
+                fileAsString.append(String.format("%n"));
+            }
+            return fileAsString.toString();
+        } finally {
+            bf.close();
         }
-        return fileAsString.toString();
     }
     
     @Nonnull

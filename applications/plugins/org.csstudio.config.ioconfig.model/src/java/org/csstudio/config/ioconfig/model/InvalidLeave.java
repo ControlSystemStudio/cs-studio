@@ -23,6 +23,9 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 
 /**
  * Invalid Leave node 
@@ -32,9 +35,12 @@ package org.csstudio.config.ioconfig.model;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-public class InvalidLeave extends AbstractNodeDBO {
+@SuppressWarnings({"unchecked", "rawtypes"})
+public final class InvalidLeave extends AbstractNodeDBO {
 
     
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructor.
      */
@@ -46,6 +52,7 @@ public class InvalidLeave extends AbstractNodeDBO {
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public NodeType getNodeType() {
         return null;
     }
@@ -54,7 +61,8 @@ public class InvalidLeave extends AbstractNodeDBO {
      * {@inheritDoc}
      */
     @Override
-    protected AbstractNodeDBO copyParameter(AbstractNodeDBO parent) throws PersistenceException {
+    @CheckForNull
+    protected AbstractNodeDBO copyParameter(@Nullable AbstractNodeDBO parent) throws PersistenceException {
         return null;
     }
     

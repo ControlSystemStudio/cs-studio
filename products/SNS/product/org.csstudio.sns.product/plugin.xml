@@ -98,6 +98,6 @@
       <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
       <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
       <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
-      <project class="org.csstudio.startuphelper.module.DefaultProject"/>
+      <project class="org.csstudio.startup.module.defauts.DefaultProject"/>
    </extension>
 </plugin>

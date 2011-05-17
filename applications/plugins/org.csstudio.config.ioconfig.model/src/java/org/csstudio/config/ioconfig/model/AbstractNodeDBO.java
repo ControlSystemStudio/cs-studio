@@ -278,11 +278,11 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      *
      * @return Documents for the Node.
      */
-    @Override
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     //    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     @Nonnull
+    @Override
     public Set<DocumentDBO> getDocuments() {
         return _documents;
     }
@@ -592,34 +592,6 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
         return compare;
     }
     
-    /**
-     * (@inheritDoc)
-     */
-    @Override
-    public boolean equals(@CheckForNull final Object obj) {
-        // TODO (hrickens) : check whether this method does what is intended - do we need hashcode as well?
-        if(super.equals(obj)) {
-            return true;
-        }
-        if(obj == null) {
-            return false;
-        }
-        if(this.getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        if(obj instanceof AbstractNodeDBO) {
-            
-            final AbstractNodeDBO<?,?> other = (AbstractNodeDBO<?,?>) obj;
-            if(getId() == other.getId()) {
-                if(getId() > 0) {
-                    return true;
-                }
-                return false;
-            }
-        }
-        return false;
-    }
     
     /**
      * @return Return only true when the node need to work a GSD-File!

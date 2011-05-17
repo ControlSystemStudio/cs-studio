@@ -72,7 +72,7 @@ class PVTreeModel implements IStructuredContentProvider, ITreeContentProvider
         if (item == null)
             return null;
         // Is it this one?
-        if (item.getName().equals(pv_name))
+        if (item.getPVName().equals(pv_name))
             return item;
         // Check each child recursively
         for (PVTreeItem child : item.getLinks())

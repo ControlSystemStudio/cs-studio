@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.csstudio.email.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Description: EMail support test
+Require-Bundle: org.junit4;bundle-version="4.5.0",
+ org.csstudio.email;bundle-version="1.0.2",
+ org.csstudio.testsuite;bundle-version="1.0.0"
+Export-Package: org.csstudio.email
+

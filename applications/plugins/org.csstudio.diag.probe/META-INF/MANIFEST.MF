@@ -15,9 +15,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help.webapp,
  org.eclipse.core.resources,
  org.eclipse.ui.views,
+ org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.utility.pv;bundle-version="1.2.0",
- org.csstudio.platform.ui,
- org.csstudio.platform,
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.apputil.ui;bundle-version="1.1.5",
  org.csstudio.auth;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

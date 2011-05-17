@@ -170,9 +170,9 @@ public class MasterEditor extends AbstractGsdNodeEditor {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        super.createPartControl(parent);
         _master = (MasterDBO) getNode();
         _gsdFile = _master.getGSDFile();
+        super.createPartControl(parent);
         String[] heads = {"Master", "GSD File List"};
         try {
             master(heads[0]);
