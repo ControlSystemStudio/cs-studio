@@ -87,7 +87,7 @@
             class="org.csstudio.nsls2.product.startupmodule.Workbench">
       </workbench>
       <project
-            class="org.csstudio.startuphelper.module.DefaultProject">
+            class="org.csstudio.startup.module.defaults.DefaultProject">
       </project>
    </extension>
    <extension

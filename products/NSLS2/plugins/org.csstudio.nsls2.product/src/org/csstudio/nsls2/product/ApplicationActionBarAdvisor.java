@@ -41,7 +41,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private IAction save_all;
 	private IAction importAction;
 	private IAction exportAction;
-	private IAction logout;
 	private IAction quit;
 	
 	private IAction new_window;
@@ -114,8 +113,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void fillMenuBar(IMenuManager menuBar) {
 		// See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
 		// for IDE example.
-//		createFileMenu(menuBar);
-//		createCSSMenu(menuBar);
 		// Placeholder for possible additions
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		createWindowMenu(menuBar);
@@ -174,7 +171,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		file_bar.add(new Separator());
 
 		user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
-		user_bar.add(logout);
 
 	}
 
