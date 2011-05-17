@@ -125,6 +125,7 @@ public class PVTreeView extends ViewPart
         viewer.setContentProvider(model);
         viewer.setLabelProvider(new PVTreeLabelProvider());
         viewer.setInput(getViewSite());
+        getSite().setSelectionProvider(viewer);
 
         // TODO Support drag/drop?
 //        new ProcessVariableDragSource(viewer.getTree(), viewer);
