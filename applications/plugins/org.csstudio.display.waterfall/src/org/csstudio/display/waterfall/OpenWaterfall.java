@@ -23,8 +23,7 @@ public class OpenWaterfall extends AbstractHandler implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
-			ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event)
-					.getActivePage().getSelection();
+			ISelection selection = HandlerUtil.getActiveMenuSelection(event);
 
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
