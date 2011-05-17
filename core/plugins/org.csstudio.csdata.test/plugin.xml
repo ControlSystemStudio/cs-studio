@@ -9,7 +9,7 @@
             id="org.csstudio.test">
       </category>
       <view
-            name="Drag&apos;n&apos;Drop Test View"
+            name="Drag&apos;n&apos;Drop Test"
             icon="icons/test.png"
             category="org.csstudio.test"
             class="org.csstudio.csdata.test.DnDTestView"
@@ -20,16 +20,23 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="test"
-               label="Test">
+            locationURI="menu:test">
             <command
                   commandId="org.csstudio.model.test.TestAdapterUtil"
+                  icon="icons/test.png"
                   label="Test adapter"
                   style="push">
             </command>
-         </menu>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/test.png"
+               label="Drag&apos;n&apos;Drop Test"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.model.test.DnDTestView">
+            </parameter>
+         </command>
       </menuContribution>
    </extension>
    <extension
