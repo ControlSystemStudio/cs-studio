@@ -24,6 +24,12 @@ package org.csstudio.utility.ldap.service;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
+/**
+ * Search parameter container for LDAP search queries. 
+ * 
+ * @author bknerr
+ * @since 17.05.2011
+ */
 public interface ILdapSearchParams {
 
     @Nonnull LdapName getSearchRoot();

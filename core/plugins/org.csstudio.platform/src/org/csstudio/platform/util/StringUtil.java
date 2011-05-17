@@ -283,39 +283,4 @@ public final class StringUtil {
         return resultString;
     }
 
-    /**
-     * Creates a list of string from the comma separated entries in the input string
-     * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
-     * added!
-     *
-     * @param commaSeparatedString a string of comma separated entries
-     * @return a list of strings, and an empty list if the string is blank
-     */
-    public static List<String> createListFrom(final String commaSeparatedString) {
-        if (StringUtil.isBlank(commaSeparatedString)) {
-            return Collections.emptyList();
-        }
-        final List<String> list = new ArrayList<String>();
-        for (final String entry : commaSeparatedString.split(",")) {
-            if (!isBlank(entry)) {
-                list.add(entry.trim());
-            }
-        }
-        return list;
-    }
-
-    /**
-     * Returns the size of the string measured in bytes.
-     * Computes the number of unicode 'code points', which is equivalent to 
-     * {@link String#getBytes()}.length, but without having to copy the string to a byte array.
-     * 
-     * @param s the string 
-     * @return the number of bytes of the unicode characters
-     */
-    public static int getSizeInBytes(final String s) {
-        if (isBlank(s)) {
-            return 0;
-        }
-        return s.codePointCount(0, s.length());
-    }
 }

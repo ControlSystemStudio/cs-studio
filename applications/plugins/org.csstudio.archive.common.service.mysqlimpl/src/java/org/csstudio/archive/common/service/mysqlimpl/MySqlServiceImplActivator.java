@@ -26,13 +26,13 @@ import java.util.Hashtable;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
-import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -43,21 +43,21 @@ import com.google.inject.Injector;
  * @author bknerr
  * @since 22.11.2010
  */
-public class Activator implements BundleActivator {
+public class MySqlServiceImplActivator implements BundleActivator {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     public static final String PLUGIN_ID = "org.csstudio.archive.common.service.mysqlimpl";
 
-    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MySqlServiceImplActivator.class);
 
-    private static Activator INSTANCE;
+    private static MySqlServiceImplActivator INSTANCE;
 
     /**
      * Don't instantiate.
      * Called by framework.
      */
-    public Activator() {
+    public MySqlServiceImplActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
@@ -70,7 +70,7 @@ public class Activator implements BundleActivator {
      * @return the instance
      */
     @Nonnull
-    public static Activator getDefault() {
+    public static MySqlServiceImplActivator getDefault() {
         return INSTANCE;
     }
 
@@ -108,10 +108,7 @@ public class Activator implements BundleActivator {
                                 propsRd);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
+
 	@Override
     public void stop(@Nonnull final BundleContext bundleContext) throws Exception {
 

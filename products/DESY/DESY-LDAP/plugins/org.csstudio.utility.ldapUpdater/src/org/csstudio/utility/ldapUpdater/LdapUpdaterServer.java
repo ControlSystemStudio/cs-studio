@@ -38,7 +38,6 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.net.HostAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.joda.time.DateTimeFieldType;
@@ -175,8 +174,7 @@ public class LdapUpdaterServer implements IApplication,
     	try {
 			sessionService.connect(username, password, server.getHostAddress());
 		} catch (final Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+		    LOG.warn("XMPP connection is not available, {}", e.toString());
 		}
     }
 

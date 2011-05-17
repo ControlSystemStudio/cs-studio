@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -156,7 +156,7 @@ public final class LDAPReader extends Job {
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 
-        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        final ILdapService service = LdapServiceImplActivator.getDefault().getLdapService();
         if (service == null) {
             return new Status(IStatus.ERROR, "LDAP service unavailable.", null);
         }

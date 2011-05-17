@@ -36,7 +36,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +114,7 @@ public class LDAPConnector {
     private Map<String, String> createContextPrefsFromLdapPrefs() {
 
         LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        LOG.debug("+ PLUGIN_ID: {}", LdapActivator.PLUGIN_ID);
+        LOG.debug("+ PLUGIN_ID: {}", LdapServiceImplActivator.PLUGIN_ID);
 
         _contextPrefs = new HashMap<String, String>();
 

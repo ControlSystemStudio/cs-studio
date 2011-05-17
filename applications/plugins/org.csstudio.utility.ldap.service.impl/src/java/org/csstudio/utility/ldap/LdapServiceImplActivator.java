@@ -29,7 +29,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
@@ -37,20 +36,22 @@ import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public final class LdapActivator extends AbstractCssPlugin {
+public final class LdapServiceImplActivator implements BundleActivator {
+    
 
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldap.service.impl";
 
-    private static final Logger LOG = LoggerFactory.getLogger(LdapActivator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LdapServiceImplActivator.class);
     
-    private static LdapActivator INSTANCE;
+    private static LdapServiceImplActivator INSTANCE;
 
     private LdapServiceTracker _ldapServiceTracker;
 
@@ -58,22 +59,19 @@ public final class LdapActivator extends AbstractCssPlugin {
      * Don't instantiate.
      * Called by framework.
      */
-    public LdapActivator() {
+    public LdapServiceImplActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
-     */
     @Override
-    protected void doStart(@Nullable final BundleContext context) throws Exception {
+    public void start(@Nullable final BundleContext context) throws Exception {
 
         // FIXME (jpenning) Hack: Find a better way to find out whether to use ldap
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
-        final String ldapURL = getCssPluginPreferences().getString(LdapPreference.URL.getKeyAsString());
+        final String ldapURL = LdapPreference.URL.getValue();
         final boolean useLDAP = ldapURL != null && ldapURL.length() > 5;
 
         if (useLDAP) {
@@ -96,19 +94,10 @@ public final class LdapActivator extends AbstractCssPlugin {
      * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
      */
     @Override
-    protected void doStop(@Nullable final BundleContext context) throws Exception {
+    public void stop(@Nullable final BundleContext context) throws Exception {
         if (_ldapServiceTracker != null) {
             _ldapServiceTracker.close();
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.AbstractCssPlugin#getPluginId()
-     */
-    @Override
-    @Nonnull
-    public String getPluginId() {
-        return PLUGIN_ID;
     }
 
     /**
@@ -117,7 +106,7 @@ public final class LdapActivator extends AbstractCssPlugin {
      * @return the instance
      */
     @Nonnull
-    public static LdapActivator getDefault() {
+    public static LdapServiceImplActivator getDefault() {
         return INSTANCE;
     }
 

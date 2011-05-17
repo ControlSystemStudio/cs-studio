@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: MySQL implementation of the archive service
 Bundle-SymbolicName: org.csstudio.archive.common.service.mysqlimpl
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.csstudio.archive.common.service.mysqlimpl.Activator
+Bundle-Activator: org.csstudio.archive.common.service.mysqlimpl.MySqlServiceImplActivator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.osgi.framework;version="1.3.0"

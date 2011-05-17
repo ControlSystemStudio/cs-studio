@@ -52,7 +52,7 @@ public final class LdapTestHelper {
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
-            return TestDataProvider.getInstance(LdapActivator.PLUGIN_ID);
+            return TestDataProvider.getInstance(LdapServiceImplActivator.PLUGIN_ID);
         } catch (final Exception e) {
             Assert.fail("Unexpected exception: " + e.getMessage());
         }
@@ -68,7 +68,7 @@ public final class LdapTestHelper {
         try {
             final Map<String, String> map = createLdapTestServicePrefs();
 
-            final ILdapService service = LdapActivator.getDefault().getLdapService();
+            final ILdapService service = LdapServiceImplActivator.getDefault().getLdapService();
             Assert.assertNotNull(service);
             Assert.assertTrue(service.reInitializeLdapConnection(map));
 

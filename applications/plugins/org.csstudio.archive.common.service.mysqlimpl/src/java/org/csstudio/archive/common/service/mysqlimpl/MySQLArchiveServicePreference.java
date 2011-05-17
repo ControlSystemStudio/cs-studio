@@ -106,7 +106,7 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     @Override
     @Nonnull
     public String getPluginID() {
-        return Activator.PLUGIN_ID;
+        return MySqlServiceImplActivator.PLUGIN_ID;
     }
 
     @Nonnull

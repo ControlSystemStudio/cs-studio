@@ -37,11 +37,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-
-import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,7 +153,7 @@ public final class LdapNameUtils {
     @CheckForNull
     public static LdapName parseSearchResult(@Nonnull final SearchResult row) throws NamingException {
 
-        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        final ILdapService service = LdapServiceImplActivator.getDefault().getLdapService();
         if (service == null) {
             throw new ServiceUnavailableException("LDAP service could not be retrieved to create Name Parser.");
         }
@@ -266,7 +263,7 @@ public final class LdapNameUtils {
      * @return true, if the forbidden substring is contained, false otherwise (even for empty and null strings)
      */
     public static boolean filterName(@Nonnull final String recordName) {
-        if (!StringUtil.hasLength(recordName)) {
+        if ("".equals(recordName)) {
             return false;
         }
         for (final String s : FORBIDDEN_SUBSTRINGS) {

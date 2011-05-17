@@ -203,35 +203,4 @@ public class StringUtilTest
             e.printStackTrace();
         }
     }
-
-    @Test
-    public final void testCreateListFromString() {
-        Assert.assertNotNull(StringUtil.createListFrom(null));
-        Assert.assertNotNull(StringUtil.createListFrom(""));
-        Assert.assertNotNull(StringUtil.createListFrom("hallo"));
-
-        Assert.assertEquals(0, StringUtil.createListFrom(null).size());
-        Assert.assertEquals(0, StringUtil.createListFrom("").size());
-        Assert.assertEquals(0, StringUtil.createListFrom("  ").size());
-        Assert.assertEquals(0, StringUtil.createListFrom(" ,  ").size());
-        Assert.assertEquals(1, StringUtil.createListFrom("hallo").size());
-        Assert.assertEquals(1, StringUtil.createListFrom("hallo ,").size());
-
-        Assert.assertEquals("hallo", StringUtil.createListFrom("hallo ,").get(0));
-        Assert.assertEquals("tut", StringUtil.createListFrom(" , hallo , tut,").get(1));
-    }
-    
-    @Test
-    public final void testSizeInBytes() {
-        Assert.assertEquals(0, StringUtil.getSizeInBytes(null));
-        Assert.assertEquals(0, StringUtil.getSizeInBytes(""));
-        
-        String normal1 = "Wir koennen spueren, wie wir die Form verlieren.";
-        Assert.assertEquals(normal1.getBytes().length, StringUtil.getSizeInBytes(normal1));
-        String normal2 = "1234567890!@#$%^&*()-_=+`~{}[]\\|'\";:,.<>/?";
-        Assert.assertEquals(normal2.getBytes().length, StringUtil.getSizeInBytes(normal2));
-        
-        String freak = "€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ";
-        Assert.assertEquals(freak.getBytes().length, StringUtil.getSizeInBytes(freak));
-    }
 }

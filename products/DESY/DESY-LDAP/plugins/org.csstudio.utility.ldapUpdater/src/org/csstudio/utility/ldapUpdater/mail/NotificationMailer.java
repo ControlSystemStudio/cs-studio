@@ -37,10 +37,11 @@ import javax.naming.directory.Attribute;
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.email.EMailSender;
 import org.csstudio.email.EmailUtils;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.treemodel.INodeComponent;
+
+import com.google.common.base.Strings;
 
 /**
  * Encapsulates LDAP Updater specific mail functionality.
@@ -114,7 +115,7 @@ public final class NotificationMailer {
        if (forbiddenRecords.length() > 0) {
            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
            String person;
-           if (attr != null && !StringUtil.hasLength((String) attr.get())) {
+           if (attr != null && !Strings.isNullOrEmpty((String) attr.get())) {
                person = (String) attr.get();
            } else {
                person = DEFAULT_RESPONSIBLE_PERSON;
