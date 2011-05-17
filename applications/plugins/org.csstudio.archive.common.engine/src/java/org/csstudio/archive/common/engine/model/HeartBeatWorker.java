@@ -23,14 +23,14 @@ package org.csstudio.archive.common.engine.model;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 
 /**
  * The worker providing the persistence of the heartbeat for this engine.

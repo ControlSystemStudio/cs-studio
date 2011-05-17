@@ -19,7 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.service;
+package org.csstudio.domain.desy.service;
+
+import javax.annotation.Nonnull;
 
 
 /**
@@ -37,7 +39,7 @@ public class ServiceUnavailableException extends Exception {
      * Constructor.
      * @param message the describing message
      */
-    public ServiceUnavailableException(final String message) {
+    public ServiceUnavailableException(@Nonnull final String message) {
         super(message);
     }
 }

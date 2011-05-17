@@ -19,9 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.platform.service.osgi;
+package org.csstudio.domain.desy.service.osgi;
 
-import javax.naming.ServiceUnavailableException;
+import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.service.ServiceUnavailableException;
 
 /**
  * Exception is thrown whenever a service cannot be tracked (by an OSGi service tracker) or is not
@@ -37,7 +39,7 @@ public class OsgiServiceUnavailableException extends ServiceUnavailableException
     /**
      * Constructor.
      */
-    public OsgiServiceUnavailableException(final String message) {
+    public OsgiServiceUnavailableException(@Nonnull final String message) {
         super(message);
     }
 

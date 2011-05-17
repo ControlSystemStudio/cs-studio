@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveEngineServiceTracker;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 

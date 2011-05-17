@@ -37,9 +37,9 @@ import org.csstudio.archivereader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.regexp.SimplePattern;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.ImmutableSet;
