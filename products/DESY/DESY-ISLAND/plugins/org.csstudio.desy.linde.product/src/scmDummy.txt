@@ -1,1 +1,0 @@
-this dummy is necessary because mercurial, cvs, etc. does not integrate empty folders.
