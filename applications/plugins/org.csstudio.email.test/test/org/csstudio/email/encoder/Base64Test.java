@@ -5,11 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.email.internal;
+package org.csstudio.email.encoder;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 
+import org.csstudio.email.encoder.Base64Encoder;
 import org.junit.Test;
 
 /** JUnit demo of the Base64Encoder.

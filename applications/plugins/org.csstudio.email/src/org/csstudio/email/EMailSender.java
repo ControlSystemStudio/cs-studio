@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.csstudio.email.internal.Base64Encoder;
+import org.csstudio.email.encoder.Base64Encoder;
 
 import sun.net.smtp.SmtpClient;
 

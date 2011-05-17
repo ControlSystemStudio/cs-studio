@@ -47,6 +47,8 @@ import org.csstudio.config.savevalue.service.SaveValueService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
+import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
@@ -299,8 +301,11 @@ public class SaveValueDialog extends Dialog {
 	 * @return <code>true</code> if the IOC was found, <code>false</code>
 	 *         otherwise.
 	 */
-	private String findIoc(final String pv) {
+	private String findIoc(String pv) {
 		LOG.debug("Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
+		if (pv.contains(".") && ProcessVariableAdressFactory.getInstance().getDefaultControlSystem() == ControlSystemEnum.EPICS) {
+		    pv = pv.substring(0, pv.indexOf("."));
+		}
 
 		final ILdapService service = Activator.getDefault().getLdapService();
 		if (service == null) {
@@ -309,7 +314,7 @@ public class SaveValueDialog extends Dialog {
 
 	    final ILdapSearchResult result =
 	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
+	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + pv,
 	                                                  SearchControls.SUBTREE_SCOPE);
 
 	    if (result == null || result.getAnswerSet().isEmpty()) {

@@ -24,7 +24,6 @@ package org.csstudio.utility.ldap.service.util;
 
 import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,9 +36,6 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,44 +119,12 @@ public final class LdapUtils {
                 final Rdn rdn = new Rdn(fieldsAndValues[i] + FIELD_ASSIGNMENT + fieldsAndValues[i + 1]);
                 rdns.add(rdn);
             } catch (final InvalidNameException e) {
-                // TODO (bknerr) :
+                // FIXME (bknerr) : what from here
                 e.printStackTrace();
             }
         }
         Collections.reverse(rdns);
         final LdapName name = new LdapName(rdns);
         return name;
-    }
-
-    /**
-     * Converts the given process variable name (<recordName>.<fieldName>) into a
-     * record name (<recordName>) which can be
-     * looked up in the LDAP directory. If the default control system is EPICS,
-     * this will truncate everything after the first dot in the PV name.
-     *
-     * @param pv
-     *            the name of the process variable.
-     * @return the name of the record in the LDAP directory.
-     */
-    @Nonnull
-    public static String pvNameToRecordName(@Nonnull final String pv) {
-        // FIXME (bknerr) : does this epics check really belong here
-        if (pv.contains(".") && isEpicsDefaultControlSystem()) {
-            return pv.substring(0, pv.indexOf("."));
-        }
-        return pv;
-    }
-
-    /**
-     * Returns <code>true</code> if EPICS is the default control system.
-     *
-     * @return <code>true</code> if EPICS is the default control system,
-     *         <code>false</code> otherwise.
-     */
-    private static boolean isEpicsDefaultControlSystem() {
-        final ControlSystemEnum controlSystem =
-            ProcessVariableAdressFactory.getInstance().getDefaultControlSystem();
-        return controlSystem == ControlSystemEnum.EPICS;
-        //              || controlSystem == ControlSystemEnum.DAL_EPICS;
     }
 }

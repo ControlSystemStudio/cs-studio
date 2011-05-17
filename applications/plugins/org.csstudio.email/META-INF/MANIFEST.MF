@@ -4,9 +4,8 @@ Bundle-Name: Email Sender
 Bundle-SymbolicName: org.csstudio.email
 Bundle-Version: 1.0.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
-Require-Bundle: org.junit4;bundle-version="4.5.0",
- org.eclipse.core.runtime;bundle-version="3.5.0",
- org.csstudio.platform;bundle-version="1.1.0"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: EMail support
-Export-Package: org.csstudio.email
+Export-Package: org.csstudio.email,
+ org.csstudio.email.encoder

@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.email.internal;
+package org.csstudio.email.encoder;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
