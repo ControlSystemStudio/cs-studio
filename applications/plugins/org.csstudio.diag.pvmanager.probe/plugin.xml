@@ -13,7 +13,7 @@
             class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
             icon="icons/probe.png"
             id="org.csstudio.diag.pvmanager.probe.MultipleView"
-            name="Probe - New instance (PVManager)">
+            name="Probe - New instance">
       </view>
       <view
             allowMultiple="false"
@@ -21,7 +21,7 @@
             class="org.csstudio.diag.pvmanager.probe.PVManagerProbe"
             icon="icons/probe.png"
             id="org.csstudio.diag.pvmanager.probe.SingleView"
-            name="Probe (PVManager)">
+            name="Probe">
       </view>
    </extension>
    <extension
@@ -35,7 +35,7 @@
       <command
             defaultHandler="org.csstudio.diag.pvmanager.probe.OpenProbe"
             id="org.csstudio.diag.pvmanager.probe.OpenProbe"
-            name="Probe (PVManager)">
+            name="Probe">
       </command>
       <command
             defaultHandler="org.csstudio.diag.pvmanager.probe.CreateNewProbe"
@@ -51,7 +51,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/probe.png"
-               label="Probe (PVManager)"
+               label="Probe"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
