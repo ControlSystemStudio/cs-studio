@@ -19,7 +19,6 @@ import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
@@ -29,7 +28,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  *  Linked from popup menu that is sensitive to {@link ProcessVariable}
  *  @author Kay Kasemir
  */
-public class OpenDataBrowserPopup extends AbstractHandler implements IHandler
+public class OpenDataBrowserPopup extends AbstractHandler
 {
     /** {@inheritDoc} */
     @Override
