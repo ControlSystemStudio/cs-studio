@@ -41,7 +41,8 @@
         -->
         <sync todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}/core"/>
-          <fileset dir="${csStudioLocation}/applications">
+          <fileset dir="${csStudioLocation}/applications"/>
+          <fileset dir="${csStudioLocation}/products/DESY/DESY-CSS">
             <exclude name="plugins/${projectDir}/build/build.xml"/>
           </fileset>          
           <fileset dir="${targetPlatformLocation}">
@@ -53,7 +54,7 @@
          copy the pde build files into the build directory 
         -->
         <copy todir="${desyBuildDirectory}">
-          <fileset dir="${csStudioLocation}/applications/plugins/${projectDir}/build" casesensitive="yes">
+          <fileset dir="${csStudioLocation}${projectPath}/${projectDir}/build" casesensitive="yes">
             <include name="build.properties"/>
             <include name="productBuild.xml"/>
           </fileset>          
