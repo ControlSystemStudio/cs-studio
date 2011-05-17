@@ -8,13 +8,13 @@
 package org.csstudio.trends.databrowser;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.trends.databrowser.archive.ChannelInfo;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /** Adapt Data Browser model items to CSS PV
  *
- *  <p>plugin.xml only registers this for PVItem,
- *  but this class handles all data browser ModelItems.
+ *  <p>plugin.xml registers this for model.PVItem and archive.ChannelInfo
  *
  *  @author Kay Kasemir
  */
@@ -30,11 +30,22 @@ public class AdapterFactory implements IAdapterFactory
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
-        final ModelItem item = (ModelItem) adaptableObject;
-        if (adapterType == String.class)
-            return item.getName();
-        else if (adapterType == ProcessVariable.class)
-            return new ProcessVariable(item.getName());
+        if (adaptableObject instanceof ModelItem)
+        {
+            final ModelItem item = (ModelItem) adaptableObject;
+            if (adapterType == String.class)
+                return item.getName();
+            else if (adapterType == ProcessVariable.class)
+                return new ProcessVariable(item.getName());
+        }
+        else if (adaptableObject instanceof ChannelInfo)
+        {
+            final ChannelInfo item = (ChannelInfo) adaptableObject;
+            if (adapterType == String.class)
+                return item.getProcessVariable().getName();
+            else if (adapterType == ProcessVariable.class)
+                return item.getProcessVariable();
+        }
         return null;
     }
 }

@@ -8,8 +8,7 @@
 package org.csstudio.trends.databrowser;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariableWithArchive;
+import org.csstudio.trends.databrowser.archive.ChannelInfo;
 import org.csstudio.trends.databrowser.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.Model;
@@ -20,7 +19,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -34,33 +33,30 @@ public class OpenDataBrowserPopup extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        // Retrieve the selection and the current page
-        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-        final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
-
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
             return null;
         final Model model = editor.getModel();
-        final double period = Preferences.getScanPeriod();
+
+        // Add received items
+        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
         try
         {
-            // Add received PVs
-            for (ProcessVariable pv : pvs)
-            {
-                final PVItem item = new PVItem(pv.getName(), period);
-                if (pv instanceof IProcessVariableWithArchive)
-                {   // Use received archive
-                    final IArchiveDataSource archive =
-                        ((IProcessVariableWithArchive) pv).getArchiveDataSource();
-                    item.addArchiveDataSource(new ArchiveDataSource(archive));
+            if (selection.getFirstElement() instanceof ChannelInfo)
+            {   // Received items are from search dialog
+                final Object channels[] = selection.toArray();
+                for (Object channel : channels)
+                {
+                    final ChannelInfo info = (ChannelInfo) channel;
+                    add(model, info.getProcessVariable(), info.getArchiveDataSource());
                 }
-                else
-                    item.useDefaultArchiveDataSources();
-                // Add items to new axes
-                item.setAxis(model.addAxis());
-                model.addItem(item);
+            }
+            else
+            {   // Add received PVs with default archive data sources
+                final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+                for (ProcessVariable pv : pvs)
+                    add(model, pv, null);
             }
         }
         catch (Exception ex)
@@ -70,5 +66,25 @@ public class OpenDataBrowserPopup extends AbstractHandler
                     NLS.bind(Messages.ErrorFmt, ex.getMessage()));
         }
         return null;
+    }
+
+    /** Add item
+     *  @param model Model to which to add the item
+     *  @param pv PV to add
+     *  @param archive Archive to use or <code>null</code>
+     *  @throws Exception on error
+     */
+    private void add(final Model model, final ProcessVariable pv,
+            final ArchiveDataSource archive) throws Exception
+    {
+        final double period = Preferences.getScanPeriod();
+        final PVItem item = new PVItem(pv.getName(), period);
+        if (archive == null)
+            item.useDefaultArchiveDataSources();
+        else
+            item.addArchiveDataSource(archive);
+        // Add item to new axes
+        item.setAxis(model.addAxis());
+        model.addItem(item);
     }
 }

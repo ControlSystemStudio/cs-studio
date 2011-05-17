@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.preferences.Preferences;
@@ -403,7 +402,7 @@ public class PVItem extends ModelItem implements PVListener
         XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
-        for (IArchiveDataSource archive : archives)
+        for (ArchiveDataSource archive : archives)
         {
             XMLWriter.start(writer, 3, Model.TAG_ARCHIVE);
             writer.println();

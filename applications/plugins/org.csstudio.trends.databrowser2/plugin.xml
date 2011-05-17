@@ -13,6 +13,16 @@
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.trends.databrowser.archive.ChannelInfo"
+            class="org.csstudio.trends.databrowser.AdapterFactory">
+         <adapter
+               type="java.lang.String">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.help.toc">
