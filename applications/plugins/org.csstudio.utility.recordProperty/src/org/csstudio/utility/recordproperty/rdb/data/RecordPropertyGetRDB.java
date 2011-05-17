@@ -24,6 +24,7 @@ import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -337,10 +338,14 @@ public class RecordPropertyGetRDB {
 	            _log.error(this, "LDAP service unavailable."); //$NON-NLS-1$
 	            return;
 	        }
-
+	        String pvName = _record;
+	        if (pvName.contains(".") && ProcessVariableAdressFactory.getInstance().getDefaultControlSystem() == ControlSystemEnum.EPICS) {
+	            pvName = pvName.substring(0, pvName.indexOf("."));
+	        }
+	        
 	        final ILdapSearchResult result =
 	            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-	                                                      RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
+	                                                      RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + pvName,
 	                                                      SearchControls.SUBTREE_SCOPE);
 	        if (!result.getAnswerSet().isEmpty()) {
 	            final SearchResult row = result.getAnswerSet().iterator().next();
