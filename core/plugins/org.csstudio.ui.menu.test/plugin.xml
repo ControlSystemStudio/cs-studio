@@ -45,5 +45,32 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:test">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/test.png"
+               label="Process Variable Popup Test"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/test.png"
+               label="Adaptable to Process Variable Popup Test"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.ui.menu.test.AdaptableProcessVariablePopupTestView">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
 
 </plugin>
