@@ -17,12 +17,14 @@ import org.csstudio.trends.databrowser.archive.ChannelInfo;
 import org.csstudio.trends.databrowser.archive.SearchJob;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.ui.TableHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -263,7 +265,19 @@ public class SearchView extends ViewPart
 
         // TODO Channel Table: Allow dragging of PVs with archive
         final Table table = channel_table.getTable();
-        // new ProcessVariableWithArchiveDragSource(table, channel_table);
+        new ControlSystemDragSource(table)
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection selection = (IStructuredSelection) channel_table.getSelection();
+                // TODO Allow transfer of fill selection: ChannelInfo[],
+                // not just ChannelInfo
+                if (selection.size() == 1)
+                    return ((ChannelInfo)selection.getFirstElement()).getProcessVariable();
+                return selection.toArray();
+            }
+        };
 
         // Add context menu for object contributions
         final MenuManager menu = new MenuManager();

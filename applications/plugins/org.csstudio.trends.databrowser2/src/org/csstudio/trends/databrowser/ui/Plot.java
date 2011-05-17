@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser.ui;
 
 import java.util.List;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAxisListener;
@@ -22,14 +23,15 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser.Messages;
+import org.csstudio.trends.databrowser.archive.ChannelInfo;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -172,48 +174,29 @@ public class Plot
      */
     private void hookDragAndDrop(final Canvas canvas)
     {
-        // TODO Allow drag & drop of names into the plot
-//      new TextAsPVDropTarget(canvas)
-//      {
-//          @Override
-//          public void handleDrop(final String name)
-//          {
-//              if (listener != null)
-//                  listener.droppedPVName(name);
-//          }
-//      };
+        new ControlSystemDropTarget(canvas, ChannelInfo.class, ProcessVariable.class)
+        {
+            // TODO Allow drag & drop of names into the plot
+            @Override
+            public void handleDrop(final Object item)
+            {
+                if (listener == null)
+                    return;
 
-//        new ProcessVariableOrArchiveDataSourceDropTarget(canvas)
-//        {
-//
-//            @Override
-//            public void handleDrop(final IProcessVariable name,
-//                    final IArchiveDataSource archive, final DropTargetEvent event)
-//            {
-//                if (listener != null)
-//                    listener.droppedPVName(name.getName(), archive);
-//            }
-//
-//            @Override
-//            public void handleDrop(final IArchiveDataSource archive, final DropTargetEvent event)
-//            {
-//                if (listener != null)
-//                    listener.droppedPVName(null, archive);
-//            }
-//
-//            @Override
-//            public void handleDrop(final IProcessVariable name, final DropTargetEvent event)
-//            {
-//                handleDrop(name, null, event);
-//            }
-//
-//            @Override
-//            public void handleDrop(final String name, final DropTargetEvent event)
-//            {
-//                if (listener != null)
-//                    listener.droppedName(name);
-//            }
-//        };
+                if (item instanceof ProcessVariable)
+                {
+                  listener.droppedPVName(((ProcessVariable)item).getName(), null);
+                }
+                else if (item instanceof String)
+                    listener.droppedName(item.toString());
+                else if (item instanceof ChannelInfo)
+                {
+                    final ChannelInfo channel = (ChannelInfo) item;
+                    listener.droppedPVName(channel.getProcessVariable().getName(),
+                                channel.getArchiveDataSource());
+                }
+            }
+        };
     }
 
     /** @return Draw2D Figure */

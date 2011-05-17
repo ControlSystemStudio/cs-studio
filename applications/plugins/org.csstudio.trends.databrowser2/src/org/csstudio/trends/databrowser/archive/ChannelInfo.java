@@ -7,14 +7,19 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.archive;
 
+import java.io.Serializable;
+
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 
 /** Archive search result, information about one channel
  *  @author Kay Kasemir
  */
-public class ChannelInfo
+public class ChannelInfo implements Serializable
 {
+    /** Default ID for Serializable */
+    private static final long serialVersionUID = 1L;
+
     final private ProcessVariable name;
     final private ArchiveDataSource archive;
 
