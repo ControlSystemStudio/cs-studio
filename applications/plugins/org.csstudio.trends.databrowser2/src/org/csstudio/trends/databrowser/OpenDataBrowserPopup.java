@@ -7,38 +7,47 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.IProcessVariableWithArchive;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.csstudio.trends.databrowser.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.preferences.Preferences;
+import org.csstudio.ui.util.AdapterUtil;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-/** Object contribution registered in plugin.xml for context menus with 
- *  IProcessVariable in the current selection.
+/** Command handler for opening Data Browser on the current selection.
+ *  Linked from popup menu that is sensitive to {@link ProcessVariable}
  *  @author Kay Kasemir
  */
-public class OpenDataBrowserPopupAction extends ProcessVariablePopupAction
+public class OpenDataBrowserPopup extends AbstractHandler
 {
     /** {@inheritDoc} */
     @Override
-    public void handlePVs(final IProcessVariable pvNames[])
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
+        // Retrieve the selection and the current page
+        final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+        final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
+
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
-            return;
+            return null;
         final Model model = editor.getModel();
         final double period = Preferences.getScanPeriod();
         try
         {
             // Add received PVs
-            for (IProcessVariable pv : pvNames)
+            for (ProcessVariable pv : pvs)
             {
                 final PVItem item = new PVItem(pv.getName(), period);
                 if (pv instanceof IProcessVariableWithArchive)
@@ -60,5 +69,6 @@ public class OpenDataBrowserPopupAction extends ProcessVariablePopupAction
                     Messages.Error,
                     NLS.bind(Messages.ErrorFmt, ex.getMessage()));
         }
+        return null;
     }
 }
