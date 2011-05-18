@@ -68,10 +68,10 @@ abstract class AbstractDalBoundaryTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         
-        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", EPICS_CHANNEL_ADDR);
+        //System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", EPICS_CHANNEL_ADDR);
         
         // do not multicast
-        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "NO");
+        //System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "NO");
         
         // use common executor
         System.setProperty(EPICSPlug.PROPERTY_USE_COMMON_EXECUTOR, "TRUE");
@@ -113,7 +113,7 @@ abstract class AbstractDalBoundaryTest extends TestCase {
     
     protected final void registerChannelListenerForPV(final String name) throws InstantiationException,
                                                                         CommonException {
-        registerChannelListenerForPV(name, String.class);
+        registerChannelListenerForPV(name, Double.class);
     }
     
     protected final void registerChannelListenerForPV(final String name, final Class<?> type) throws InstantiationException,
@@ -158,11 +158,13 @@ abstract class AbstractDalBoundaryTest extends TestCase {
         
         public void channelDataUpdate(final AnyDataChannel channel) {
             _dataResult = new Result("channelDataUpdate", channel);
+        	//Thread.dumpStack();
         }
         
         public void channelStateUpdate(final AnyDataChannel channel) {
             _stateResult = new Result("channelStateUpdate", channel);
-            System.out.println("channelStateUpdate " + _stateResult.severityInfo);
+        	//Thread.dumpStack();
+            //System.out.println("channelStateUpdate " + _stateResult.severityInfo);
         }
         
     }
@@ -181,11 +183,11 @@ abstract class AbstractDalBoundaryTest extends TestCase {
             this.connectionState = channel.getProperty().getConnectionState();
             this.condition = channel.getProperty().getCondition();
             this.isMetaDataInitialized = channel.getProperty().isMetaDataInitialized();
-            if (connectionState == ConnectionState.OPERATIONAL) {
-                anyValue = channel.getData().anyValue();
-                alarmHigh = channel.getData().getMetaData().getAlarmHigh();
-                severityInfo = channel.getData().getSeverity().getSeverityInfo();
-            }
+            this.anyValue = channel.getData().anyValue();
+            this.alarmHigh = channel.getData().getMetaData().getAlarmHigh();
+            this.severityInfo = channel.getData().getSeverity().getSeverityInfo();
+            
+            System.err.println("R "+calledMethod+" "+connectionState+" "+isMetaDataInitialized+" "+severityInfo+" "+anyValue);
         }
     }
     

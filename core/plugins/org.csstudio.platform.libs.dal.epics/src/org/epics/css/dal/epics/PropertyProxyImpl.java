@@ -480,107 +480,20 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 //			System.out.println(">>> "+name+" Creating characteristics from DBR");
 
-			if (dbr.isCTRL())
-			{
-				CTRL gr = (CTRL)dbr;
-				updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
-				
-				// Integer -> Long needed here
-				if (dbr.isINT())
-				{
-					updateCharacteristic(NumericPropertyCharacteristics.C_MINIMUM, new Long(gr.getLowerCtrlLimit().longValue()));
-					updateCharacteristic(NumericPropertyCharacteristics.C_MAXIMUM, new Long(gr.getUpperCtrlLimit().longValue()));
-
-					updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
-					updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
-					
-					updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
-					updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
-					
-					updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
-					updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
-					
-										
-				}
-				else
-				{
-					updateCharacteristic(NumericPropertyCharacteristics.C_MINIMUM, gr.getLowerCtrlLimit());
-					updateCharacteristic(NumericPropertyCharacteristics.C_MAXIMUM, gr.getUpperCtrlLimit());
-
-					updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN, gr.getLowerDispLimit());
-					updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX, gr.getUpperDispLimit());
-
-					updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN, gr.getLowerWarningLimit());
-					updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
-
-					updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
-					updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
-				}
-				
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_MINIMUM));
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_MAXIMUM));
-				
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MIN));
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MAX));
-				
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MAX));
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MIN));
-				
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MAX));
-				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MIN));
-				
-//				int resolution = ((Number) characteristics.get(NumericPropertyCharacteristics.C_RESOLUTION)).intValue();
-//				characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createNumericMetaData(
-//						gr.getLowerDispLimit().doubleValue(), gr.getUpperDispLimit().doubleValue(), 
-//						gr.getLowerWarningLimit().doubleValue(), gr.getUpperWarningLimit().doubleValue(), 
-//						gr.getLowerAlarmLimit().doubleValue(), gr.getUpperAlarmLimit().doubleValue(), 
-//						resolution, gr.getUnits()));
-				
-			} else {
-				updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, "N/A");
-			}
-			
-			if (dbr.isPRECSION())
-			{
-				short precision = ((PRECISION)dbr).getPrecision();
-				updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%."  + precision + "f");
-			}
-			else if (dbr.isSTRING())
-				updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%s");
-			else
-				updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%d");
-			
-			if (dbr.isLABELS())
-			{
-				String[] labels = ((LABELS)dbr).getLabels();
-				updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, labels);
-				updateCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, labels);
-
-				// create array of values (Long values)
-				Object[] values = new Object[labels.length];
-				for (int i = 0; i < values.length; i++)
-					values[i] = new Long(i);
-				
-				updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
-				
-//				updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
-
-			}
 			
 			updateCharacteristic(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
 			updateCharacteristic(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
 			updateCharacteristic(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
 			updateCharacteristic(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
 			
+			updateCharacteristicsWithDBR(dbr,false);
+
 			DynamicValueCondition condition=null;
 			if(dbr.isSTS()) {
-				condition = deriveConditionWithDBR((STS)dbr);			
+				condition = deriveNewConditionWithDBR((STS)dbr);			
 			}
 			
 			createSpecificCharacteristics(dbr);
-
-			updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(getCharacteristics()));
 
 			if (condition==null) {
 				updateConditionWith(DynamicValueCondition.METADATA_AVAILABLE_MESSAGE, DynamicValueState.HAS_METADATA);
@@ -596,6 +509,105 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 	}
 	
+	protected void updateCharacteristicsWithDBR(DBR dbr, boolean changeOnly)
+	{
+		synchronized (getCharacteristics()) {
+	
+			boolean change = false;
+			
+			if (dbr.isCTRL())
+			{
+				CTRL gr = (CTRL)dbr;
+				change |= updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
+				
+				// Integer -> Long needed here
+				if (dbr.isINT())
+				{
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_MINIMUM, new Long(gr.getLowerCtrlLimit().longValue()));
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_MAXIMUM, new Long(gr.getUpperCtrlLimit().longValue()));
+
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
+					
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
+					
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
+					
+										
+				}
+				else
+				{
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_MINIMUM, gr.getLowerCtrlLimit());
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_MAXIMUM, gr.getUpperCtrlLimit());
+
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN, gr.getLowerDispLimit());
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX, gr.getUpperDispLimit());
+
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN, gr.getLowerWarningLimit());
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX, gr.getUpperWarningLimit());
+
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
+				}
+				
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_MINIMUM));
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_MAXIMUM));
+				
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MIN));
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MAX));
+				
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MAX));
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MIN));
+				
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MAX));
+				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MIN));
+				
+			} else {
+				if (!changeOnly) {
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, "N/A");
+				}
+			}
+			
+			if (!changeOnly) {
+				if (dbr.isPRECSION())
+				{
+					short precision = ((PRECISION)dbr).getPrecision();
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%."  + precision + "f");
+				} else if (dbr.isSTRING()) {
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%s");
+				} else {
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%d");
+				}
+				
+				if (dbr.isLABELS())
+				{
+					String[] labels = ((LABELS)dbr).getLabels();
+					change |= updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, labels);
+					change |= updateCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, labels);
+
+					// create array of values (Long values)
+					Object[] values = new Object[labels.length];
+					for (int i = 0; i < values.length; i++) {
+						values[i] = new Long(i);
+					}
+					
+					change |= updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
+					
+//					updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
+
+				}
+			}
+			
+			if (change) {
+				updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(getCharacteristics()));
+			}
+
+		}
+	}
+
 	protected void createSpecificCharacteristics(DBR dbr) {
 		// specific proxy implementation may override this and provide own characteristic initialization
 	}
@@ -834,7 +846,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			return;
 		}
 		STS sts= (STS)dbr;
-		DynamicValueCondition cond= deriveConditionWithDBR(sts);
+		DynamicValueCondition cond= deriveNewConditionWithDBR(sts);
 		setCondition(cond);
 		if (plug.isDbrUpdatesCharacteristics()) {
 			synchronized (getCharacteristics()) {
@@ -847,6 +859,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				updateCharacteristic(
 						CharacteristicInfo.C_TIMESTAMP.getName()
 						,getLocalProxyCharacteristic(CharacteristicInfo.C_TIMESTAMP.getName()));
+				updateCharacteristicsWithDBR(dbr,true);
 			}
 		}
 	}
@@ -855,45 +868,48 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * Creates copy of current condition condition .
 	 * 
 	 * @param dbr status DBR.
-	 * @param notify if true the listeners will be notified about the change 
-	 * 			of condition otherwise the condition will be created and returned
 	 */
-	private DynamicValueCondition deriveConditionWithDBR(STS dbr) {
+	private DynamicValueCondition deriveNewConditionWithDBR(STS dbr) {
 
 		Status st = dbr.getStatus();
 		Severity se = dbr.getSeverity();
+		EnumSet<DynamicValueState> states = getCondition().getStates();
+		
+		boolean change= 
+			(se == Severity.NO_ALARM && !states.contains(DynamicValueState.NORMAL)) ||
+			(se == Severity.MINOR_ALARM && !states.contains(DynamicValueState.WARNING)) ||
+			(se == Severity.MAJOR_ALARM && !states.contains(DynamicValueState.ALARM)) ||
+			(se == Severity.INVALID_ALARM && !states.contains(DynamicValueState.ERROR));
+		
+		if (!change) {
+			return null;
+		}
 
 		condDesc = st.getName();
-		
-		EnumSet<DynamicValueState> states = EnumSet.copyOf(getCondition().getStates());
-		boolean change=false;
+		states = EnumSet.copyOf(getCondition().getStates());
 		
 		if (se == Severity.NO_ALARM) {
-			change |= states.add(DynamicValueState.NORMAL);
-			change |= states.remove(DynamicValueState.WARNING);
-			change |= states.remove(DynamicValueState.ALARM);
-			change |= states.remove(DynamicValueState.ERROR);
+			states.add(DynamicValueState.NORMAL);
+			states.remove(DynamicValueState.WARNING);
+			states.remove(DynamicValueState.ALARM);
+			states.remove(DynamicValueState.ERROR);
 		} else if (se == Severity.MINOR_ALARM) {
-			change |= states.remove(DynamicValueState.NORMAL);
-			change |= states.add(DynamicValueState.WARNING);
-			change |= states.remove(DynamicValueState.ALARM);
-			change |= states.remove(DynamicValueState.ERROR);
+			states.remove(DynamicValueState.NORMAL);
+			states.add(DynamicValueState.WARNING);
+			states.remove(DynamicValueState.ALARM);
+			states.remove(DynamicValueState.ERROR);
 		} else if (se == Severity.MAJOR_ALARM) {
-			change |= states.remove(DynamicValueState.NORMAL);
-			change |= states.remove(DynamicValueState.WARNING);
-			change |= states.add(DynamicValueState.ALARM);
-			change |= states.remove(DynamicValueState.ERROR);
+			states.remove(DynamicValueState.NORMAL);
+			states.remove(DynamicValueState.WARNING);
+			states.add(DynamicValueState.ALARM);
+			states.remove(DynamicValueState.ERROR);
 		} else if (se == Severity.INVALID_ALARM) {
-			change |= states.remove(DynamicValueState.NORMAL);
-			change |= states.remove(DynamicValueState.WARNING);
-			change |= states.remove(DynamicValueState.ALARM);
-			change |= states.add(DynamicValueState.ERROR);
+			states.remove(DynamicValueState.NORMAL);
+			states.remove(DynamicValueState.WARNING);
+			states.remove(DynamicValueState.ALARM);
+			states.add(DynamicValueState.ERROR);
 		}
 		
-		if (!change && equal(condDesc, getCondition().getDescription())) {
-			return getCondition();
-		}
-
 		Timestamp timestamp = null;
 		//((TIME)dbr).getTimeStamp() != null - could happen
 		if (dbr instanceof TIME && ((TIME)dbr).getTimeStamp() != null) {

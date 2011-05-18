@@ -441,23 +441,23 @@ public abstract class AbstractPropertyProxyImpl<T,P extends AbstractPlug,M exten
 	 *    
 	 * @param chName characteristic name
 	 * @param newValue new value to be stores in characteristic cache
-	 * @return old returns value that was previously associated with this characteristic name.
+	 * @return true if characteristics value in property has changed by this operation
 	 */
-	public Object updateCharacteristic(String chName, Object newValue)
+	public boolean updateCharacteristic(String chName, Object newValue)
 	{
 		if (chName==null || (newValue==null && characteristics==null)) {
-			return null;
+			return false;
 		}
 		Object old = getCharacteristics().put(chName, newValue);
 		if (newValue!=null) {
 			if (newValue.equals(old)) {
-				return old;
+				return false;
 			}
 		} else if (old==null) {
-			return old;
+			return false;
 		}
 		fireCharacteristicsChanged(new PropertyChangeEvent(this,chName,old,newValue));
-		return old;
+		return true;
 	}
 
 	

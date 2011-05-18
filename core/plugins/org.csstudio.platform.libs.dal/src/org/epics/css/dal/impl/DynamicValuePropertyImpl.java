@@ -128,7 +128,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		}
 	};
 	public boolean isMetaDataInitialized() {
-		return condition!=null 
+		return condition!=null && isConnected() 
 		? condition.containsAnyOfStates(DynamicValueState.HAS_METADATA) 
 				: false;
 	}
