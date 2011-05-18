@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.archivereader.ArchiveReader;
@@ -271,9 +272,12 @@ public class SearchView extends ViewPart
             public Object getSelection()
             {
                 final IStructuredSelection selection = (IStructuredSelection) channel_table.getSelection();
-                // TODO Allow transfer of array
-                // return selection.toArray();
-                return selection.getFirstElement();
+                // To allow transfer of array, the data must be
+                // of the actual array type, not Object[]
+                final Object[] objs = selection.toArray();
+                final ChannelInfo[] channels = Arrays.copyOf(objs, objs.length, ChannelInfo[].class);
+                return channels;
+                // return selection.getFirstElement();
             }
         };
 
