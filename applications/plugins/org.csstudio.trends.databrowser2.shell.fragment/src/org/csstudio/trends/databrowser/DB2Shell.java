@@ -2,10 +2,12 @@ package org.csstudio.trends.databrowser;
 
 import java.util.logging.Level;
 
-import org.csstudio.trends.databrowser.editor.DataBrowserEditor;
-import org.csstudio.trends.databrowser.model.Model;
-import org.csstudio.trends.databrowser.ui.Controller;
-import org.csstudio.trends.databrowser.ui.Plot;
+import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
+import org.csstudio.trends.databrowser2.model.Model;
+import org.csstudio.trends.databrowser2.ui.Controller;
+import org.csstudio.trends.databrowser2.ui.Plot;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

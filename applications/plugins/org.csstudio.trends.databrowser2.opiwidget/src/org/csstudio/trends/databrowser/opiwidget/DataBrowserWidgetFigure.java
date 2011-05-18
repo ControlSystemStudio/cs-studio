@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
-import org.csstudio.trends.databrowser.ui.Plot;
+import org.csstudio.trends.databrowser2.ui.Plot;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.TextUtilities;
