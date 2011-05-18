@@ -34,6 +34,7 @@ import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.LdapIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 
 /**
  * Keeps track of the connections to the IOCs. Also provides statistical
@@ -186,8 +187,9 @@ public enum IocConnectionManager {
 	 * @param iocHostname
 	 *            the hostname of the IOC.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	public void refreshIocNameDefinition(final String iocHostname) throws NamingException {
+	public void refreshIocNameDefinition(final String iocHostname) throws NamingException, LdapServiceException {
 
 		// XXX: Why does this method have its own logic for finding the
 		// IocConnection object?
@@ -199,7 +201,7 @@ public enum IocConnectionManager {
 				 * in case that the IOC name was not properly stored in LDAP we need a way to reset the name
 				 */
 				final String[] iocNames =
-				    LdapSupport.INSTANCE.getLogicalIocName(thisContent.getIocInetAddress(),
+				    LdapServiceFacadeImpl.INSTANCE.getLogicalIocName(thisContent.getIocInetAddress(),
 				                                           iocHostname);
 				/*
 				 * these methods are synchronized in the subclass IocNameDefinitions

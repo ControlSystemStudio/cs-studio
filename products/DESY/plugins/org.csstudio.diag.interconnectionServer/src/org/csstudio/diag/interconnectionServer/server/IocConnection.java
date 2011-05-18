@@ -27,11 +27,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeSource;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeUtil;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+
 
 /**
  * Information about a connection to an IOC. Instances of this class track the
@@ -40,6 +42,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author Matthias Clausen, Joerg Rathlev
  */
 public class IocConnection {
+    
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(IocConnection.class);
 
 	private final String host;
 	private final int port;
@@ -437,7 +441,13 @@ public class IocConnection {
 			/*
 	    	 * new IOC - ask LDAP for logical name
 	    	 */
-	    	final String[] iocNames = LdapSupport.INSTANCE.getLogicalIocName(iocInetAddress, iocName);
+	    	String[] iocNames = null;
+            try {
+                iocNames = LdapServiceFacadeImpl.INSTANCE.getLogicalIocName(iocInetAddress, iocName);
+            } catch (LdapServiceException e) {
+                LOG.error("LDAP Service exception: logical name could not be retrieved.");
+                iocNames = new String[] {"???", "??"};
+            }
 	    	_logicalIocName = iocNames[0];
 	    	/*
 	    	 * save ldapIocName
