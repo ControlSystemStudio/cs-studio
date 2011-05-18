@@ -9,6 +9,7 @@ import static org.csstudio.sds.cosyrules.color.MaintenanceRulePreference.MAINTEN
 
 import org.csstudio.sds.model.IRule;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * @author hrickens
@@ -61,6 +62,11 @@ public class MaintenanceRule implements IRule {
                     iPath = _dispayPath.append(sb.toString());
                 } else {
                     iPath = _dispayPath.append(_preFileName + rtyp + ".css-sds");
+                }
+                IPath location = Platform.getLocation();
+                IPath append = location.append(iPath);
+                if(!append.toFile().isFile()) {
+                    iPath = _defaultPath;
                 }
             }
         }
