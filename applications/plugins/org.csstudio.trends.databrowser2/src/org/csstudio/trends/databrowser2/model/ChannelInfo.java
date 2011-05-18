@@ -69,6 +69,6 @@ public class ChannelInfo implements Serializable
     @Override
     public String toString()
     {
-        return name + "[" + archive.getName() + "]";
+        return name + " [" + archive.getName() + "]";
     }
 }

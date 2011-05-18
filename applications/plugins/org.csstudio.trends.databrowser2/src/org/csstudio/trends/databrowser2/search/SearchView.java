@@ -263,7 +263,7 @@ public class SearchView extends ViewPart
             }
         });
 
-        // TODO Channel Table: Allow dragging of PVs with archive
+        // Channel Table: Allow dragging of PVs with archive
         final Table table = channel_table.getTable();
         new ControlSystemDragSource(table)
         {
@@ -271,11 +271,9 @@ public class SearchView extends ViewPart
             public Object getSelection()
             {
                 final IStructuredSelection selection = (IStructuredSelection) channel_table.getSelection();
-                // TODO Allow transfer of fill selection: ChannelInfo[],
-                // not just ChannelInfo
-                if (selection.size() == 1)
-                    return selection.getFirstElement();
-                return selection.toArray();
+                // TODO Allow transfer of array
+                // return selection.toArray();
+                return selection.getFirstElement();
             }
         };
 

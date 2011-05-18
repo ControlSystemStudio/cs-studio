@@ -23,6 +23,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -174,27 +175,34 @@ public class Plot
      */
     private void hookDragAndDrop(final Canvas canvas)
     {
-        new ControlSystemDropTarget(canvas, ChannelInfo.class, ProcessVariable.class)
+        // TODO Allow dropped arrays
+        new ControlSystemDropTarget(canvas, ChannelInfo.class, ProcessVariable.class,
+                ArchiveDataSource.class, String.class)
         {
-            // TODO Allow drag & drop of names into the plot
             @Override
             public void handleDrop(final Object item)
             {
                 if (listener == null)
                     return;
 
-                if (item instanceof ProcessVariable)
+                if (item instanceof ChannelInfo)
                 {
-                  listener.droppedPVName(((ProcessVariable)item).getName(), null);
+                    final ChannelInfo channel = (ChannelInfo) item;
+                    listener.droppedPVName(channel.getProcessVariable(),
+                                channel.getArchiveDataSource());
+                }
+                else if (item instanceof ProcessVariable)
+                {
+                    final ProcessVariable pv = (ProcessVariable) item;
+                    listener.droppedPVName(pv, null);
+                }
+                else if (item instanceof ArchiveDataSource)
+                {
+                    final ArchiveDataSource archive = (ArchiveDataSource) item;
+                    listener.droppedPVName(null, archive);
                 }
                 else if (item instanceof String)
                     listener.droppedName(item.toString());
-                else if (item instanceof ChannelInfo)
-                {
-                    final ChannelInfo channel = (ChannelInfo) item;
-                    listener.droppedPVName(channel.getProcessVariable().getName(),
-                                channel.getArchiveDataSource());
-                }
             }
         };
     }

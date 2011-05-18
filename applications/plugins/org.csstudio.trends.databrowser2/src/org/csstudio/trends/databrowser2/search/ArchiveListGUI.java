@@ -17,6 +17,7 @@ import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveAction;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -99,8 +100,15 @@ public abstract class ArchiveListGUI
         if (urls.getEnabled())
             connectToArchiveServer(urls.getText());
 
-        // TODO Archive table: Allow dragging of archive data sources and PVs
-        // new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
+        // TODO Archive table: Allow dragging of multiple archive data sources
+        new ControlSystemDragSource(archive_table.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return ((IStructuredSelection)archive_table.getSelection()).getFirstElement();
+            }
+        };
     }
 
     /** Set initial focus */

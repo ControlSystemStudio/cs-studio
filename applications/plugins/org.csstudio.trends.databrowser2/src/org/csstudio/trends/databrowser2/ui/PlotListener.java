@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.ui;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 
 /** Interface used by Plot to send events in response to user input:
@@ -45,6 +46,6 @@ public interface PlotListener
      *  @param name PV name or <code>null</code>
      *  @param archive Archive data source or <code>null</code>
      */
-    public void droppedPVName(String name, ArchiveDataSource archive);
+    public void droppedPVName(ProcessVariable name, ArchiveDataSource archive);
 
 }

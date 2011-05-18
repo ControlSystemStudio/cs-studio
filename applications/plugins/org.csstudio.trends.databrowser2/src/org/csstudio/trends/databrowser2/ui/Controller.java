@@ -13,6 +13,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
@@ -211,7 +212,7 @@ public class Controller implements ArchiveFetchJobListener
             }
 
             @Override
-            public void droppedPVName(final String name, final ArchiveDataSource archive)
+            public void droppedPVName(final ProcessVariable name, final ArchiveDataSource archive)
             {
                 if (name == null)
                 {
@@ -230,7 +231,7 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                    final ModelItem item = model.getItem(name);
+                    final ModelItem item = model.getItem(name.getName());
                     if (item == null)
                     {
                         final OperationsManager operations_manager = plot.getOperationsManager();
@@ -242,7 +243,7 @@ public class Controller implements ArchiveFetchJobListener
 
                         // Add new PV
                         AddModelItemCommand.forPV(shell, operations_manager,
-                                model, name, Preferences.getScanPeriod(),
+                                model, name.getName(), Preferences.getScanPeriod(),
                                 axis, archive);
                         return;
                     }

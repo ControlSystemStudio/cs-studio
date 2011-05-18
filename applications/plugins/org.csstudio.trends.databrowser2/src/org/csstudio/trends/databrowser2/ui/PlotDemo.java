@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.ui;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -74,7 +75,7 @@ public class PlotDemo
         }
 
         @Override
-        public void droppedPVName(final String name, final ArchiveDataSource archive)
+        public void droppedPVName(final ProcessVariable name, final ArchiveDataSource archive)
         {
             System.out.println("PV Name dropped: " + name);
         }
