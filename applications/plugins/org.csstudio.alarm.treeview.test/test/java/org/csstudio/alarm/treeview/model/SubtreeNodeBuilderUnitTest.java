@@ -20,10 +20,13 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.treeview.model;
 
 import junit.framework.Assert;
 
+import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.alarm.treeView.model.SubtreeNode.Builder;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Test;
 

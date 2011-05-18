@@ -20,13 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.treeview.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.junit.Test;
 

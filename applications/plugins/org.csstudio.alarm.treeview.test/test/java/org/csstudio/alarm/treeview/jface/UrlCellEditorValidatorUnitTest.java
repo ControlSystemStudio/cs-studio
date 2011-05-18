@@ -1,8 +1,9 @@
-package org.csstudio.alarm.treeView.jface;
+package org.csstudio.alarm.treeview.jface;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.csstudio.alarm.treeView.jface.UrlCellEditorValidator;
 import org.junit.Assert;
 import org.junit.Test;
 

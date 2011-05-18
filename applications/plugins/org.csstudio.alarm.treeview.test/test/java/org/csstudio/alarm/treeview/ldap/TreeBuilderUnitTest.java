@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.ldap;
+package org.csstudio.alarm.treeview.ldap;
 
 import static org.junit.Assert.assertEquals;
 

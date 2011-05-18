@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.treeview.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -29,6 +29,12 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode;
+import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode.Builder;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;

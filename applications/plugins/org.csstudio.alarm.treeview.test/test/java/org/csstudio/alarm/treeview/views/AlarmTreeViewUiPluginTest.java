@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView.views;
+package org.csstudio.alarm.treeview.views;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
@@ -42,9 +42,9 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.actions.AcknowledgeSecureAction;
 import org.csstudio.alarm.treeView.views.actions.CreateComponentAction;
 import org.csstudio.alarm.treeView.views.actions.CreateRecordAction;
@@ -56,6 +56,7 @@ import org.csstudio.alarm.treeView.views.actions.RunCssDisplayAction;
 import org.csstudio.alarm.treeView.views.actions.SaveAsXmlAction;
 import org.csstudio.alarm.treeView.views.actions.ShowHelpGuidanceAction;
 import org.csstudio.alarm.treeView.views.actions.ShowHelpPageAction;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.LdapTestTreeBuilder;

@@ -21,12 +21,12 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import static org.csstudio.utility.ldap.service.util.LdapNameUtils.parseSearchResult;
+import static org.csstudio.utility.ldap.service.util.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
-import static org.csstudio.utility.ldap.utils.LdapNameUtils.parseSearchResult;
-import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -44,16 +44,16 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;

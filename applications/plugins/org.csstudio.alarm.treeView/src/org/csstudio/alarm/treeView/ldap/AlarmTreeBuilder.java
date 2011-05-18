@@ -21,11 +21,11 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -39,7 +39,6 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
@@ -48,6 +47,7 @@ import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;

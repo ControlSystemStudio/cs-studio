@@ -33,7 +33,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.jobs.RetrieveInitialStateJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
@@ -44,9 +43,10 @@ import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.alarm.treeView.views.MessageArea;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.auth.ui.security.AbstractUserDependentAction;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -231,7 +231,7 @@ public final class AlarmTreeViewActionFactory {
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
             if (model != null) {
-                final Bundle bundle = Platform.getBundle(LdapActivator.PLUGIN_ID);
+                final Bundle bundle = Platform.getBundle(LdapServiceImplActivator.PLUGIN_ID);
                 final File loc = FileLocator.getBundleFile(bundle);
                 final String dtdFilePath = new File(loc, "./res/dtd/epicsAlarmCfg.dtd").toString();
 
