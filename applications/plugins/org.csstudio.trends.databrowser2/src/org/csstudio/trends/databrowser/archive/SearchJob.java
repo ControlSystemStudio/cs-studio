@@ -27,7 +27,7 @@ abstract public class SearchJob extends Job
     final private ArchiveDataSource archives[];
     final private String pattern;
     final boolean pattern_is_glob;
-    
+
     /** Create job that connects to given URL, then notifies view when done. */
     public SearchJob(final ArchiveReader reader, final ArchiveDataSource archives[],
             final String pattern, final boolean pattern_is_glob)
@@ -56,7 +56,7 @@ abstract public class SearchJob extends Job
                 else
                     names = reader.getNamesByRegExp(archive.getKey(), pattern);
                 for (String name : names)
-                    channels.add(new ChannelInfo(archive, name));
+                    channels.add(new ChannelInfo(name, archive));
                 monitor.worked(1);
             }
             catch (final Exception ex)

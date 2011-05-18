@@ -7,57 +7,37 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.archive;
 
-import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariableWithArchive;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 
 /** Archive search result, information about one channel
  *  @author Kay Kasemir
  */
-public class ChannelInfo implements IProcessVariableWithArchive
+public class ChannelInfo
 {
+    final private ProcessVariable name;
     final private ArchiveDataSource archive;
-    final private String name;
 
     /** Initialize
      *  @param archive IArchiveDataSource for channel
      *  @param name    Channel name
      */
-    public ChannelInfo(final ArchiveDataSource archive, final String name)
+    public ChannelInfo(final String name, final ArchiveDataSource archive)
     {
+        this.name = new ProcessVariable(name);
         this.archive = archive;
-        this.name = name;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariableWithArchive.TYPE_ID;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName()
+    /** @return ProcessVariable */
+    public ProcessVariable getProcessVariable()
     {
         return name;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /** @return ArchiveDataSource */
     public ArchiveDataSource getArchiveDataSource()
     {
         return archive;
-    }
-
-    /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(final Class adapter)
-    {
-        if (adapter == IArchiveDataSource.class)
-            return getArchiveDataSource();
-        return null;
     }
 
     /** {@inheritDoc} */

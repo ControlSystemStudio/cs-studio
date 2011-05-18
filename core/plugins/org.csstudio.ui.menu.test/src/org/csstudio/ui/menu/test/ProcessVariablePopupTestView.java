@@ -2,15 +2,28 @@ package org.csstudio.ui.menu.test;
 
 
 import org.csstudio.csdata.ProcessVariable;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 
 
 /**
@@ -38,8 +51,8 @@ public class ProcessVariablePopupTestView extends ViewPart {
 	 */
 	public static final String ID = "org.csstudio.ui.menu.test.ProcessVariablePopupTestView";
 
-	private TableViewer viewer;
-	private Action doubleClickAction;
+	private TableViewer pvViewer;
+	private Table toPvTable;
 
 	/*
 	 * The content provider class is responsible for
@@ -60,6 +73,17 @@ public class ProcessVariablePopupTestView extends ViewPart {
 			return new ProcessVariable[] { new ProcessVariable("sim://gaussianWaveform()"),
 					new ProcessVariable("sim://noise"),
 					new ProcessVariable("sim://ramp(1,10,1,0.1)") };
+		}
+	}
+	class ToPvContentProvider implements IStructuredContentProvider {
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		}
+		public void dispose() {
+		}
+		public Object[] getElements(Object parent) {
+			return new CustomProcessVariable[] { new CustomProcessVariable("sim://gaussianWaveform()"),
+					new CustomProcessVariable("sim://noise"),
+					new CustomProcessVariable("sim://ramp(1,10,1,0.1)") };
 		}
 	}
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -88,62 +112,84 @@ public class ProcessVariablePopupTestView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-		getSite().setSelectionProvider(viewer);
+		parent.setLayout(new GridLayout(2, false));
 		
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "org.csstudio.ui.menu.test.viewer");
+		Label lblProcessVariables = new Label(parent, SWT.NONE);
+		lblProcessVariables.setText("ProcessVariable:");
+		
+		Label lblAdaptableToProcessvariable = new Label(parent, SWT.NONE);
+		lblAdaptableToProcessvariable.setText("Adaptable to ProcessVariable:");
+		pvViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		Table pvTable = pvViewer.getTable();
+		pvTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		pvViewer.setContentProvider(new ViewContentProvider());
+		pvViewer.setLabelProvider(new ViewLabelProvider());
+		pvViewer.setSorter(new NameSorter());
+		pvViewer.setInput(getViewSite());
+		
+		TableViewer toPvViewer = new TableViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		toPvTable = toPvViewer.getTable();
+		toPvTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		toPvViewer.setContentProvider(new ToPvContentProvider());
+		toPvViewer.setLabelProvider(new ViewLabelProvider());
+		toPvViewer.setSorter(new NameSorter());
+		toPvViewer.setInput(getViewSite());
+		MenuManager menuMgr = new MenuManager();
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				// After a right click command changes the active view,
+				// another right click does not change it anymore (bug in Eclipse?)
+				// so we forcefully change it before the menu is about to show.
+				try {
+					getSite().getPage().showView(ID);
+				} catch(Exception ed) {
+					
+				}
+				ProcessVariablePopupTestView.this.fillContextMenu(manager);
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(toPvViewer.getControl());
+		toPvViewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, toPvViewer);
+		
 		hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
 	}
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
+				// After a right click command changes the active view,
+				// another right click does not change it anymore (bug in Eclipse?)
+				// so we forcefully change it before the menu is about to show.
+				try {
+					getSite().getPage().showView(ID);
+				} catch(Exception ed) {
+					
+				}
 				ProcessVariablePopupTestView.this.fillContextMenu(manager);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-	}
-
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
+		Menu menu = menuMgr.createContextMenu(pvViewer.getControl());
+		pvViewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuMgr, pvViewer);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
-	
-	private void fillLocalToolBar(IToolBarManager manager) {
-	}
-
-	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
-	}
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		pvViewer.getControl().setFocus();
 	}
 }

@@ -24,8 +24,7 @@ public class OpenProbe extends AbstractHandler implements IHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			// Retrieve the selection and the current page
-			ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event)
-					.getActivePage().getSelection();
+			ISelection selection = HandlerUtil.getActiveMenuSelection(event);
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();

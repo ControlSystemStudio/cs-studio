@@ -13,8 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ecf;bundle-version="[2.0.0,4.0.0)",
  org.remotercp.util;bundle-version="[1.0.0,2.0.0)",
  org.csstudio.platform.libs.jms;bundle-version="1.1.1",
- org.csstudio.platform.libs.mockito;bundle-version="1.0.0",
- org.csstudio.remote;bundle-version="1.0.0"
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.mockito;bundle-version="1.8.5"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: org.csstudio.diag.icsiocmonitor.service;version="[1.1.0,2.0.0)",

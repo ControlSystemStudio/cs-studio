@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
@@ -212,22 +211,21 @@ public class Controller implements ArchiveFetchJobListener
             }
 
             @Override
-            public void droppedPVName(final String name, final IArchiveDataSource archive)
+            public void droppedPVName(final String name, final ArchiveDataSource archive)
             {
                 if (name == null)
                 {
                     if (archive == null)
                         return;
                     // Received only an archive. Add to all PVs
-                    final ArchiveDataSource arch = new ArchiveDataSource(archive);
                     for (int i=0; i<model.getItemCount(); ++i)
                     {
                         if (! (model.getItem(i) instanceof PVItem))
                             continue;
                         final PVItem pv = (PVItem) model.getItem(i);
-                        if (pv.hasArchiveDataSource(arch))
+                        if (pv.hasArchiveDataSource(archive))
                             continue;
-                        new AddArchiveCommand(plot.getOperationsManager(), pv, arch);
+                        new AddArchiveCommand(plot.getOperationsManager(), pv, archive);
                     }
                 }
                 else
@@ -257,7 +255,7 @@ public class Controller implements ArchiveFetchJobListener
                     // Add archive to existing PV
                     if (item instanceof PVItem)
                         new AddArchiveCommand(plot.getOperationsManager(),
-                                (PVItem) item, new ArchiveDataSource(archive));
+                                (PVItem) item, archive);
                 }
             }
         });

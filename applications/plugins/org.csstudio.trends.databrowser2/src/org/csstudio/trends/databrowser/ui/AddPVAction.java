@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
+import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
@@ -59,7 +59,7 @@ public class AddPVAction extends Action
      *  @param archive Archive data source for the new PV
      *  @return <code>true</code> if PV name was added, <code>false</code> if canceled by user
      */
-    public boolean runWithSuggestedName(final String name, final IArchiveDataSource archive)
+    public boolean runWithSuggestedName(final String name, final ArchiveDataSource archive)
     {
         // Prompt for PV name
         final String existing_names[] = new String[model.getItemCount()];

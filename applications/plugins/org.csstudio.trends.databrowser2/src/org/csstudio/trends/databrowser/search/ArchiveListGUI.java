@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.platform.ui.internal.dataexchange.ArchiveDataSourceDragSource;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ConnectJob;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
@@ -100,8 +99,8 @@ public abstract class ArchiveListGUI
         if (urls.getEnabled())
             connectToArchiveServer(urls.getText());
 
-        // Archive table: Allow dragging of archive data sources and PVs
-        new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
+        // TODO Archive table: Allow dragging of archive data sources and PVs
+        // new ArchiveDataSourceDragSource(archive_table.getTable(), archive_table);
     }
 
     /** Set initial focus */

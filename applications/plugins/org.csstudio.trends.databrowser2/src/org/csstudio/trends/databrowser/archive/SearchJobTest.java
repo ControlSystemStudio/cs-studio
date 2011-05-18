@@ -54,7 +54,7 @@ public class SearchJobTest
             {
                 System.out.println("Found these channels:");
                 for (final ChannelInfo channel : channels) {
-                    System.out.println(channel.getArchiveDataSource().getName() + " - " + channel.getName());
+                    System.out.println(channel.getArchiveDataSource().getName() + " - " + channel.getProcessVariable().getName());
                 }
                 done.release();
             }

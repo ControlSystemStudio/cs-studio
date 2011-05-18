@@ -16,9 +16,6 @@ import java.util.logging.Level;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IArchiveDataSource;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.preferences.Preferences;
@@ -37,7 +34,7 @@ import org.w3c.dom.Element;
  *
  *  @author Kay Kasemir
  */
-public class PVItem extends ModelItem implements PVListener, IProcessVariableWithSamples
+public class PVItem extends ModelItem implements PVListener
 {
     /** Historic and 'live' samples for this PV */
     final private PVSamples samples = new PVSamples();
@@ -74,25 +71,6 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         super(name);
         pv = PVFactory.createPV(name);
         this.period = period;
-    }
-
-    /** IProcessVariable
-     *  {@inheritDoc}
-     */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
-    }
-
-    /** IProcessVariable
-     *  {@inheritDoc}
-     */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(Class adapter)
-    {
-        return null;
     }
 
     /** Set new item name, which changes the underlying PV name
@@ -325,24 +303,6 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         return samples;
     }
 
-    /** Get sample for IProcessVariableWithSamples
-     *  {@inheritDoc}
-     */
-    @Override
-    public IValue getSample(final int index)
-    {
-        return samples.getSample(index).getValue();
-    }
-
-    /** Get sample count for IProcessVariableWithSamples
-     *  {@inheritDoc}
-     */
-    @Override
-    public int size()
-    {
-        return samples.getSize();
-    }
-
     // PVListener
     @Override
     public void pvDisconnected(final PV pv)
@@ -442,7 +402,7 @@ public class PVItem extends ModelItem implements PVListener, IProcessVariableWit
         XMLWriter.XML(writer, 3, Model.TAG_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, Model.TAG_REQUEST, getRequestType().name());
-        for (IArchiveDataSource archive : archives)
+        for (ArchiveDataSource archive : archives)
         {
             XMLWriter.start(writer, 3, Model.TAG_ARCHIVE);
             writer.println();
