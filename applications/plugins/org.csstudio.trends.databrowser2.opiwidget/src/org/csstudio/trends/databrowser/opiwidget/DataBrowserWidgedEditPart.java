@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.trends.databrowser.ui.Controller;
+import org.csstudio.trends.databrowser2.ui.Controller;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 
