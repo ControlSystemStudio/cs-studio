@@ -13,14 +13,13 @@ import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.ITimestamp.Format;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.osgi.util.NLS;
 
 /** Alarm tree 'leaf' that has time of alarm, tool tip info,
  *  CSS PV name
  *  @author Kay Kasemir
  */
-public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
+public class AlarmTreeLeaf extends AlarmTreeItem
 {
     /** Description of alarm */
     private String description = ""; //$NON-NLS-1$
@@ -37,21 +36,6 @@ public class AlarmTreeLeaf extends AlarmTreeItem implements IProcessVariable
     public AlarmTreeLeaf(final AlarmTreeItem parent, final String name, final int id)
     {
         super(parent, name, id);
-    }
-
-    /** @see IProcessVariable */
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
-    }
-
-    /** @see IProcessVariable */
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(Class adapter)
-    {
-        return null;
     }
 
     /** @param description New description */
