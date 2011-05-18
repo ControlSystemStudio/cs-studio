@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.csstudio.ui.util.Activator;
+import org.csstudio.ui.util.ReflectUtil;
 import org.osgi.framework.Bundle;
 
 /**
@@ -72,10 +74,23 @@ public class ObjectInputStreamWithOsgiClassResolution extends ObjectInputStream 
     	// Look if it's already resolved
     	Class<?> clazz = resolvedClasses.get(className);
     	if (clazz == null) {
+    		// If it's an array, resolve the class
+    		String classNameToResolve = className;
+    		if (ReflectUtil.isArray(className)) {
+    			classNameToResolve = ReflectUtil.getComponentType(className);
+    		}
     		
-    		// Resolve it and cache it
-    		clazz = findClass(className);
-    		if (clazz != null) {
+    		// Resolve it
+    		clazz = findClass(classNameToResolve);
+    		
+    		// If found, cache it
+    		if (clazz == null)
+    			return null;
+    		
+   			resolvedClasses.put(classNameToResolve, clazz);
+    		
+    		if (ReflectUtil.isArray(className)) {
+    			clazz = Array.newInstance(clazz, 0).getClass();
     			resolvedClasses.put(className, clazz);
     		}
     	}
