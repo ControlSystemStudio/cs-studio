@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy;
 
+import java.util.Iterator;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -50,7 +52,9 @@ public class StringsTest {
         Assert.assertEquals(1, Iterables.size(Strings.createListFrom("hallo ,")));
 
         Assert.assertEquals("hallo", Strings.createListFrom("hallo ,").iterator().next());
-        Assert.assertEquals("tut", Strings.createListFrom(" , hallo , tut,").iterator().next());
+        Iterator<String> it = Strings.createListFrom(" , hallo , tut,").iterator();
+        Assert.assertEquals("hallo", it.next());
+        Assert.assertEquals("tut", it.next());
     }
     
     @Test
