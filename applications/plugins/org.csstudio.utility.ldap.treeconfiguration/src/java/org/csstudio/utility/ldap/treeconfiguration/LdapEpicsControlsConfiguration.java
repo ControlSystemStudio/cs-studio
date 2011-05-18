@@ -23,6 +23,7 @@
  */
 package org.csstudio.utility.ldap.treeconfiguration;
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
@@ -193,5 +194,10 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
     @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type
+    }
+    
+    @Nonnull
+    public static String getDtdFilePath() throws IOException {
+        return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsControls.dtd");
     }
 }

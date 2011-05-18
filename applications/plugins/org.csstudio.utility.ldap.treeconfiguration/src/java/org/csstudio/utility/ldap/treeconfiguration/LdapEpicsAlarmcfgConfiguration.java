@@ -23,12 +23,18 @@ package org.csstudio.utility.ldap.treeconfiguration;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 
 import com.google.common.collect.ImmutableSet;
@@ -121,7 +127,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     /**
      * The name of this object class in the directory.
      */
-    private final String _description;
+    private final String _objectClass;
 
     /**
      * The name of the attribute to use for the RDN of entries of this class in
@@ -143,7 +149,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     /**
      * Creates a new object class.
      *
-     * @param description
+     * @param objectClass
      *            the name of this object class in the directory.
      * @param nodeName
      *            the name of the attribute to use for the RDN.
@@ -151,10 +157,10 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      *            the value for the epicsCssType attribute in the directory.
      *
      */
-    private LdapEpicsAlarmcfgConfiguration(@Nonnull final String description,
+    private LdapEpicsAlarmcfgConfiguration(@Nonnull final String objectClass,
                                            @Nonnull final String nodeName,
                                            @Nonnull final ImmutableSet<String> attributes) {
-        _description = description;
+        _objectClass = objectClass;
         _nodeName = nodeName;
         _attributes = attributes;
     }
@@ -167,7 +173,6 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     public LdapEpicsAlarmcfgConfiguration getRoot() {
         return UNIT;
     }
-
     
     /**
      * {@inheritDoc}
@@ -175,7 +180,12 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     @Override
     @Nonnull
     public String getDescription() {
-        return _description;
+        return _objectClass;
+    }
+
+    @Nonnull
+    public String getObjectClass() {
+        return _objectClass;
     }
 
     /**
@@ -214,6 +224,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getUnitTypeValue() {
         return "EpicsAlarmcfg";
     }
@@ -226,5 +237,10 @@ public enum LdapEpicsAlarmcfgConfiguration implements ILdapTreeNodeConfiguration
     @Nonnull
     public ImmutableSet<String> getAttributes() {
         return _attributes;
+    }
+    
+    @Nonnull
+    public static String getDtdFilePath() throws IOException {
+        return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsAlarmCfg.dtd");
     }
 }

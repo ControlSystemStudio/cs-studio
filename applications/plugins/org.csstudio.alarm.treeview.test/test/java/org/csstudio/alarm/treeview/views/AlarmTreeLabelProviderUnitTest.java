@@ -27,10 +27,10 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.model.Alarm;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.TreeNodeSource;
-import org.csstudio.alarm.treeView.views.AlarmTreeLabelProvider;
+import org.csstudio.alarm.treeview.model.Alarm;
+import org.csstudio.alarm.treeview.model.ProcessVariableNode;
+import org.csstudio.alarm.treeview.model.TreeNodeSource;
+import org.csstudio.alarm.treeview.views.AlarmTreeLabelProvider;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.junit.Assert;
 import org.junit.Before;

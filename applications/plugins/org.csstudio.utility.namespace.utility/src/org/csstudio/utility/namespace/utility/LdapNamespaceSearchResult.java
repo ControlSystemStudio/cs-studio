@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,42 +19,55 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.utility.namespace.utility;
 
-package org.csstudio.alarm.treeview.model;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-
-import org.csstudio.alarm.treeview.model.Alarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.junit.Test;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * @author Joerg Rathlev
+ * TODO (bknerr) : 
+ * 
+ * @author bknerr
+ * @since 18.05.2011
  */
-public class AlarmUnitTest {
+public class LdapNamespaceSearchResult extends NameSpaceSearchResult {
+    
+    private List<ControlSystemItem> _csiResult = Collections.emptyList();
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ControlSystemItem> getCSIResultList() {
+        return _csiResult;
+    }
+    
 
-	private final Date t1 = new Date(0);
-	private final Date t2 = new Date(1);
-
-	@Test
-	public void testAlarm() throws Exception {
-		final Alarm alarm = new Alarm("foo", EpicsAlarmSeverity.MINOR, t1);
-		assertEquals("foo", alarm.getObjectName());
-		assertEquals(EpicsAlarmSeverity.MINOR, alarm.getSeverity());
-	}
-
-	@Test
-	public void testEventtimeComparison() throws Exception {
-		final Alarm a1 = new Alarm("foo", EpicsAlarmSeverity.MINOR, t1);
-		final Alarm a2 = new Alarm("foo", EpicsAlarmSeverity.MINOR, t2);
-
-		assertTrue(a2.occuredAfter(a1));
-
-		assertTrue(a1.occuredAfter(null));
-		assertTrue(a2.occuredAfter(null));
-	}
+    /**
+     * Copies the list of {@link ControlSystemItem}.
+     * {@inheritDoc}
+     */
+    @Override
+    public final void setCSIResultList(final List<ControlSystemItem> resultList) {
+        _csiResult = new ArrayList<ControlSystemItem>(resultList);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public NameSpaceSearchResult getNew() {
+        return new LdapNamespaceSearchResult();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyView() {
+        setChanged();
+        notifyObservers();
+    }
+    
 }

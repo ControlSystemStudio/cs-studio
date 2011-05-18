@@ -42,25 +42,26 @@ import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.views.AlarmTreeView;
-import org.csstudio.alarm.treeView.views.actions.AcknowledgeSecureAction;
-import org.csstudio.alarm.treeView.views.actions.CreateComponentAction;
-import org.csstudio.alarm.treeView.views.actions.CreateRecordAction;
-import org.csstudio.alarm.treeView.views.actions.CssStripChartAction;
-import org.csstudio.alarm.treeView.views.actions.DeleteNodeAction;
-import org.csstudio.alarm.treeView.views.actions.RenameAction;
-import org.csstudio.alarm.treeView.views.actions.RunCssAlarmDisplayAction;
-import org.csstudio.alarm.treeView.views.actions.RunCssDisplayAction;
-import org.csstudio.alarm.treeView.views.actions.SaveAsXmlAction;
-import org.csstudio.alarm.treeView.views.actions.ShowHelpGuidanceAction;
-import org.csstudio.alarm.treeView.views.actions.ShowHelpPageAction;
+import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeview.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeview.views.AlarmTreeView;
+import org.csstudio.alarm.treeview.views.actions.AcknowledgeSecureAction;
+import org.csstudio.alarm.treeview.views.actions.CreateComponentAction;
+import org.csstudio.alarm.treeview.views.actions.CreateRecordAction;
+import org.csstudio.alarm.treeview.views.actions.CssStripChartAction;
+import org.csstudio.alarm.treeview.views.actions.DeleteNodeAction;
+import org.csstudio.alarm.treeview.views.actions.RenameAction;
+import org.csstudio.alarm.treeview.views.actions.RunCssAlarmDisplayAction;
+import org.csstudio.alarm.treeview.views.actions.RunCssDisplayAction;
+import org.csstudio.alarm.treeview.views.actions.SaveAsXmlAction;
+import org.csstudio.alarm.treeview.views.actions.ShowHelpGuidanceAction;
+import org.csstudio.alarm.treeview.views.actions.ShowHelpPageAction;
 import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.LdapTestTreeBuilder;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.jobs.Job;
@@ -390,6 +391,8 @@ public class AlarmTreeViewUiPluginTest {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created:\n" + e.getMessage());
+        } catch (LdapServiceException e) {
+            Assert.fail("LDAP service exception:\n" + e.getMessage());
         }
         try {
             LDAP_SERVICE.lookup(name);

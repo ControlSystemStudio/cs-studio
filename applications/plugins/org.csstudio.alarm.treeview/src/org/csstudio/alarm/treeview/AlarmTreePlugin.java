@@ -16,7 +16,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.treeView;
+package org.csstudio.alarm.treeview;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -43,7 +43,7 @@ public final class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * The plug-in id.
      */
-    public static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
+    public static final String PLUGIN_ID = "import org.csstudio.alarm.treeview.";
 
     /**
      * The service tracker reference for the LDAP service.

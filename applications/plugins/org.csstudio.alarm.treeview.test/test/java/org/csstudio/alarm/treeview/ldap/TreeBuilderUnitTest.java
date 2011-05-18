@@ -27,11 +27,11 @@ import static org.junit.Assert.assertEquals;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
-import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.alarm.treeview.model.IAlarmProcessVariableNode;
+import org.csstudio.alarm.treeview.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeview.model.ProcessVariableNode;
+import org.csstudio.alarm.treeview.model.SubtreeNode;
+import org.csstudio.alarm.treeview.model.TreeNodeSource;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Before;
 import org.junit.Test;
