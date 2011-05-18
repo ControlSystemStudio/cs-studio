@@ -55,4 +55,14 @@
             file="toc.xml">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.alarm.beast.msghist.model.PVMessage"
+            class="org.csstudio.alarm.beast.msghist.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>
