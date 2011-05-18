@@ -138,7 +138,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 	 *
 	 * @param s new connection state.
 	 */
-	public void setConnectionState(ConnectionState s)
+	public void setConnectionState(ConnectionState s, Throwable error)
 	{
 		if (connectionStateMachine.requestNextConnectionState(s)) {
 			if (connectionStateMachine.getConnectionState()==ConnectionState.CONNECTED) {
@@ -146,10 +146,18 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 				getConnectionInfo();
 			}
 			handleConnectionState(s);
-			fireConnectionState(s);
+			fireConnectionState(s,error);
 		}
 	}
-
+	/**
+	 * Intended for only within plug.
+	 *
+	 * @param s new connection state.
+	 */
+	public void setConnectionState(ConnectionState s)
+	{
+		setConnectionState(s, null);
+	}
 	/**
 	 * This method is called after connection state was changed but change was not jet 
 	 * fired to listeners. 
@@ -163,7 +171,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 	/**
 	 * Fires new connection event.
 	 */
-	protected void fireConnectionState(ConnectionState c)
+	protected void fireConnectionState(ConnectionState c, Throwable error)
 	{
 		if (proxyListeners == null) {
 			return;
@@ -171,7 +179,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 
 		ProxyListener<?>[] l = (ProxyListener<?>[])proxyListeners.toArray();
 		ProxyEvent<Proxy<?>> e = new ProxyEvent<Proxy<?>>(this, null,
-			    c, null);
+			    c, error);
 
 		for (int i = 0; i < l.length; i++) {
 			try {

@@ -14,11 +14,11 @@ public final class LongAnyDataImpl extends AbstractAnyDataImpl<Long> {
 	}
 
 	public Object[] anySeqValue() {
-		return new Object[]{response.getNumber()};
+		return new Object[]{response.getValue()};
 	}
 
 	public Object anyValue() {
-		return response.getNumber();
+		return response.getValue();
 	}
 
 	public double[] doubleSeqValue() {
