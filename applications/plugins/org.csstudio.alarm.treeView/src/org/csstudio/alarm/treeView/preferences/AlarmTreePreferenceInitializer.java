@@ -23,7 +23,7 @@
 
 import java.util.List;
 
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;

@@ -23,7 +23,7 @@ package org.csstudio.alarm.treeView.preferences;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.domain.desy.preferences.AbstractPreference;
 
 /**

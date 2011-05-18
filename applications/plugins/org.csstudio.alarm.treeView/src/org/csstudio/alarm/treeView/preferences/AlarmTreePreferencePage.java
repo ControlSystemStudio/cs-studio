@@ -23,7 +23,7 @@
 
 import javax.annotation.CheckForNull;
 
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;

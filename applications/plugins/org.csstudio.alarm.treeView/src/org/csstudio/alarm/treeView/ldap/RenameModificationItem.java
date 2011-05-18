@@ -27,10 +27,10 @@ import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**

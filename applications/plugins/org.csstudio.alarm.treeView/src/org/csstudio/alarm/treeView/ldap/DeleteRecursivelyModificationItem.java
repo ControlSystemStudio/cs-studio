@@ -25,9 +25,9 @@ import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
+import org.csstudio.alarm.treeview.AlarmTreePlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.CreateContentModelException;
