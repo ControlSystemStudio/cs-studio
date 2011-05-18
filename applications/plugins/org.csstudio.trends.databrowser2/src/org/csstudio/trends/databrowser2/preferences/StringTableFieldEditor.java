@@ -10,9 +10,9 @@ package org.csstudio.trends.databrowser2.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.swt.stringtable.RowEditDialog;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.osgi.util.NLS;
@@ -30,21 +30,21 @@ public class StringTableFieldEditor extends FieldEditor
     final private boolean editable[];
     final private int columnsMinWidth[];
     final private RowEditDialog rowEditDialog;
-    
+
     private StringTableEditor tableEditor;
     private List<String[]> items;
-    
-    /** Creates an editable table.  The size of headers array implies the number of columns. 
+
+    /** Creates an editable table.  The size of headers array implies the number of columns.
      *  @param parent SWT parent
      *  @param preference Name of preference setting
      *  @param label_text Table title
      *  @param table_headers Contains the header for each column
      *  @param edit_flags Whether it is editable for each column. The size must be same as headers.
      *  @param column_widths Table column widths
-     *  @param row_edit_dialog Editor for selected row  
+     *  @param row_edit_dialog Editor for selected row
      */
-    public StringTableFieldEditor(final Composite parent, final String preference, 
-            final String label_text, final String table_headers[], 
+    public StringTableFieldEditor(final Composite parent, final String preference,
+            final String label_text, final String table_headers[],
             final boolean edit_flags[], final int column_widths[],
             final RowEditDialog row_edit_dialog)
     {
@@ -52,8 +52,8 @@ public class StringTableFieldEditor extends FieldEditor
         this.headers = table_headers;
         this.editable = edit_flags;
         this.columnsMinWidth = column_widths;
-        this.rowEditDialog = row_edit_dialog;     
-        this.items = new ArrayList<String[]>();     
+        this.rowEditDialog = row_edit_dialog;
+        this.items = new ArrayList<String[]>();
         createControl(parent);
     }
 
@@ -63,7 +63,7 @@ public class StringTableFieldEditor extends FieldEditor
     {
         getLabelControl(parent);
         GridData gd = new GridData();
-        gd.horizontalSpan = numColumns;     
+        gd.horizontalSpan = numColumns;
         getLabelControl().setLayoutData(gd);
         tableEditor = new StringTableEditor(
                 parent, headers, editable, items, rowEditDialog, columnsMinWidth);
@@ -75,7 +75,7 @@ public class StringTableFieldEditor extends FieldEditor
         gd.verticalAlignment = SWT.FILL;
         tableEditor.setLayoutData(gd);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected void adjustForNumColumns(final int numColumns)
@@ -100,7 +100,7 @@ public class StringTableFieldEditor extends FieldEditor
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(getPage().getShell(), Messages.Error, 
+            MessageDialog.openError(getPage().getShell(), Messages.Error,
                    NLS.bind(Messages.ErrorFmt, ex.getMessage()));
         }
     }
@@ -118,7 +118,7 @@ public class StringTableFieldEditor extends FieldEditor
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(getPage().getShell(), Messages.Error, 
+            MessageDialog.openError(getPage().getShell(), Messages.Error,
                    NLS.bind(Messages.ErrorFmt, ex.getMessage()));
         }
     }
@@ -136,7 +136,7 @@ public class StringTableFieldEditor extends FieldEditor
     {
         return 1;
     }
-    
+
     /**Flatten a string table to a single line string.
      * @param string_table
      * @return flattened preference value
@@ -153,12 +153,12 @@ public class StringTableFieldEditor extends FieldEditor
             {
                 if (c > 0)
                     result.append(Preferences.COMPONENT_SEPARATOR);
-                result.append(components[c]);           
+                result.append(components[c]);
             }
         }
         return result.toString();
     }
-    
+
     /** Decode
      *  @param flattened_preference String stored in preferences
      *  @return String table
