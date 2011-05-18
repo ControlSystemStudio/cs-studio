@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.INode;
+import org.csstudio.config.ioconfig.model.INodeWithPrototype;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.service.NodeNotFoundException;
 import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
@@ -247,6 +248,10 @@ public class DocumentContent {
      */
     private void addDocuments(final Collection<HierarchyDocument> all, final INode iNode) {
         Set<DocumentDBO> documents = iNode.getDocuments();
+        if(iNode instanceof INodeWithPrototype) {
+            INodeWithPrototype new_name = (INodeWithPrototype) iNode;
+            documents.addAll(new_name.getPrototypeDocuments());
+        } 
         for (DocumentDBO document : documents) {
             all.add(new HierarchyDocument(iNode, document));
         }

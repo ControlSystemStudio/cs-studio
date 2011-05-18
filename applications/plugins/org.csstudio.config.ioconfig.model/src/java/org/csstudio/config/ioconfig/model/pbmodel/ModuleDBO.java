@@ -39,6 +39,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.INodeWithPrototype;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
@@ -55,7 +57,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Module")
-public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
+public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> implements INodeWithPrototype {
     
     private static final long serialVersionUID = 1L;
 
@@ -425,6 +427,16 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> {
             sb.append(getName());
         }
         return sb.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Set<DocumentDBO> getPrototypeDocuments() {
+        GSDModuleDBO gsdModule = getGSDModule();
+        return gsdModule==null?  new HashSet<DocumentDBO>():gsdModule.getDocuments();
     }
     
 }
