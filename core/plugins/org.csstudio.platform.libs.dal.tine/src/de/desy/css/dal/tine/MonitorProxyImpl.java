@@ -210,9 +210,9 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		int statusCode = this.tLink.getLinkStatus();
 		Exception e = null;
         if (statusCode > 0 || linkStatus > 0) {
-        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST);
         	e = new RemoteException(this.proxy,this.tLink.getLastError());
         	this.normal=false;
+        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
         } else {
         	this.proxy.setConnectionState(ConnectionState.CONNECTED);
         }

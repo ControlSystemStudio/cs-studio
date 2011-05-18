@@ -273,11 +273,15 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     /**
      *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
      *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
-     *  -  Für MIME_FILES ist das Grand: select.
-     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
+     *  -  Für MIME_FILES ist das Grant: select.
+     *  -  Für MIME_FILES_DDB_NODE ist das Grant: select, insert, update, delete.
      *
+     *  Beim erstellen sind leider die Columname vertauscht worden.
+     *  In der Column docs_id stehen die node_id und
+     *  in der id stehen die doc_ids 
      * @return Documents for the Node.
      */
+    // TODO (hrickens) [17.05.2011]: Spalten namen sind Vertausch.
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
     //    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
