@@ -5,14 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb.engineconfig.test;
+package org.csstudio.archive.rdb.testsuite;
 
 import static org.junit.Assert.assertEquals;
 
 import java.sql.Statement;
 
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.junit.Test;

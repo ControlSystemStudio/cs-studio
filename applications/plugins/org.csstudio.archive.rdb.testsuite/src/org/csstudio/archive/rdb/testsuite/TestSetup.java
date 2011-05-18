@@ -5,9 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb;
+package org.csstudio.archive.rdb.testsuite;
 
 import java.util.logging.Level;
+
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.csstudio.testsuite.util.TestProviderException;
 

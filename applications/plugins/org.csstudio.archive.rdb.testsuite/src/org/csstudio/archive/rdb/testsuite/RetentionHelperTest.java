@@ -5,12 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb.engineconfig.test;
+package org.csstudio.archive.rdb.testsuite;
 
 import static org.junit.Assert.assertEquals;
 
 import org.csstudio.archive.rdb.Retention;
-import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.archive.rdb.engineconfig.RetentionHelper;
 import org.csstudio.archive.rdb.internal.SQL;
 import org.csstudio.platform.utility.rdb.RDBUtil;

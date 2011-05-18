@@ -5,14 +5,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.rdb;
+package org.csstudio.archive.rdb.testsuite;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.archive.rdb.TestSetup.TestType;
+import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.rdb.SampleIterator;
 import org.csstudio.archive.rdb.internal.TimestampUtil;
+import org.csstudio.archive.rdb.testsuite.TestSetup.TestType;
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
