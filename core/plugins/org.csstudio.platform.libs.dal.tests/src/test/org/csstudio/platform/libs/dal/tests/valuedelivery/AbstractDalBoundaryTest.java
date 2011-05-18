@@ -8,9 +8,15 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
+import org.epics.css.dal.DynamicValueEvent;
+import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueProperty;
+import org.epics.css.dal.context.ConnectionEvent;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.context.LinkAdapter;
+import org.epics.css.dal.context.LinkListener;
 import org.epics.css.dal.epics.EPICSPlug;
 import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.simple.AnyData;
@@ -61,10 +67,10 @@ abstract class AbstractDalBoundaryTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         
-        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", EPICS_CHANNEL_ADDR);
+        //System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", EPICS_CHANNEL_ADDR);
         
         // do not multicast
-        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "NO");
+        //System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "NO");
         
         // use common executor
         System.setProperty(EPICSPlug.PROPERTY_USE_COMMON_EXECUTOR, "TRUE");
@@ -117,8 +123,16 @@ abstract class AbstractDalBoundaryTest extends TestCase {
         ConnectItem item = new ConnectItem();
         item.channelListener = channelListener;
         item.connectionParameters = cp;
+        item.dvListener= new DynamicValueAdapter() {
+        	@Override
+        	public void conditionChange(DynamicValueEvent event) {
+        		System.out.println(event);
+        		//System.out.println(event.getError());
+        	}
+        };
         _name2connectItem.put(name, item);
         getBroker().registerListener(item.connectionParameters, item.channelListener);
+        getBroker().registerListener(item.connectionParameters, item.dvListener);
     }
     
     protected void deregisterListenerForPV(final String name) throws InstantiationException,
@@ -127,6 +141,7 @@ abstract class AbstractDalBoundaryTest extends TestCase {
         assertNotNull("error deregistering pv " + name, item);
         
         getBroker().deregisterListener(item.connectionParameters, item.channelListener);
+        getBroker().deregisterListener(item.connectionParameters, item.dvListener);
     }
     
     protected SimpleDALBroker getBroker() {
@@ -144,6 +159,7 @@ abstract class AbstractDalBoundaryTest extends TestCase {
     }
     
     private static class ConnectItem {
+    	public DynamicValueListener dvListener= null;
         public ChannelListener channelListener = null;
         public ConnectionParameters connectionParameters = null;
     }
@@ -168,7 +184,7 @@ abstract class AbstractDalBoundaryTest extends TestCase {
         
         public void channelStateUpdate(final AnyDataChannel channel) {
             int currentCallNumber = traceCallbackStart("STATE", channel);
-            
+
             _results.add(new Result("channelStateUpdate", channel));
             //            printChannel("channelStateUpdate", channel);
             if (channel.getProperty().isOperational()) {

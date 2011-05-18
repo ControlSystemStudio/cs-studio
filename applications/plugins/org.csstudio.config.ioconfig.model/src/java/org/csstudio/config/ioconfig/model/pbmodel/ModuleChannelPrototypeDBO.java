@@ -93,7 +93,6 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
      * The Byte ordering.
      */
     private Integer _byteOrdering;
-    
 
     /**
      * Default Constructor. Need by Hibernate.
@@ -203,31 +202,6 @@ public class ModuleChannelPrototypeDBO extends DBClass implements Comparable<Mod
     public void setByteOrdering(Integer byteOrdering) {
         _byteOrdering = byteOrdering;
     }
-
-    // TODO (hrickens) : Prototype mit Dokumenten verbindne.
-//    /**
-//     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
-//     *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
-//     *  -  Für MIME_FILES ist das Grand: select.
-//     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
-//     *
-//     * @return Documents for the Node.
-//     */
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
-//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
-////    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
-//    public Set<DocumentDBO> getDocuments() {
-//        return _documents;
-//    }
-//
-//    /**
-//     *
-//     * @param documents set the Documents for this node.
-//     */
-//    public void setDocuments(final Set<DocumentDBO> documents) {
-//        _documents = documents;
-//    }
-    
 
     // Transients
 

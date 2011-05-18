@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.ModelItem;
 import org.csstudio.trends.databrowser.model.PlotSampleArray;
 import org.csstudio.trends.databrowser.model.PlotSamples;
@@ -74,7 +74,7 @@ public class PlotDemo
         }
 
         @Override
-        public void droppedPVName(final String name, final IArchiveDataSource archive)
+        public void droppedPVName(final String name, final ArchiveDataSource archive)
         {
             System.out.println("PV Name dropped: " + name);
         }

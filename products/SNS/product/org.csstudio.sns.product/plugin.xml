@@ -35,7 +35,7 @@
             name="Css">
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif"/>
+               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif"/>
          <property
                name="aboutImage"
                value="icons/about.gif"/>
@@ -98,6 +98,6 @@
       <startupParameters class="org.csstudio.sns.product.startupmodule.StartupParameters"/>
       <workspace class="org.csstudio.sns.product.startupmodule.WorkspacePrompt"/>
       <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
-      <project class="org.csstudio.startup.module.defauts.DefaultProject"/>
+      <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
 </plugin>

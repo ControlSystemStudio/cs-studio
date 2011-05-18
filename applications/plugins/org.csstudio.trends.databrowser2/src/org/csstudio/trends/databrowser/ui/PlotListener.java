@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
-import org.csstudio.platform.model.IArchiveDataSource;
+import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 
 /** Interface used by Plot to send events in response to user input:
  *  Zoom changed, scrolling turned on/off
@@ -22,7 +22,7 @@ public interface PlotListener
 
     /** Called when the user requests time config dialog. */
     public void timeConfigRequested();
-    
+
     /** Called when the user enables/disables scrolling
      *  @param start_ms New time axis start time in ms since 1970
      *  @param end_ms ... end time ...
@@ -35,7 +35,7 @@ public interface PlotListener
      *  @param upper Upper range limit
      */
     public void valueAxisChanged(int index, double lower, double upper);
-    
+
     /** Received a name, presumably a PV name via drag & drop
      *  @param name PV(?) name
      */
@@ -45,6 +45,6 @@ public interface PlotListener
      *  @param name PV name or <code>null</code>
      *  @param archive Archive data source or <code>null</code>
      */
-    public void droppedPVName(String name, IArchiveDataSource archive);
+    public void droppedPVName(String name, ArchiveDataSource archive);
 
 }

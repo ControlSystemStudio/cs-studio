@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.archivereader.ArchiveReader;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableWithArchiveDragSource;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ChannelInfo;
@@ -19,6 +18,7 @@ import org.csstudio.trends.databrowser.archive.SearchJob;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.ui.TableHelper;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
@@ -211,7 +212,7 @@ public class SearchView extends ViewPart
             public void update(final ViewerCell cell)
             {
                 final ChannelInfo channel = (ChannelInfo) cell.getElement();
-                cell.setText(channel.getName());
+                cell.setText(channel.getProcessVariable().getName());
             }
         });
         col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
@@ -260,11 +261,13 @@ public class SearchView extends ViewPart
             }
         });
 
-        // Channel Table: Allow dragging of PVs with archive
+        // TODO Channel Table: Allow dragging of PVs with archive
         final Table table = channel_table.getTable();
-        new ProcessVariableWithArchiveDragSource(table, channel_table);
+        // new ProcessVariableWithArchiveDragSource(table, channel_table);
+
         // Add context menu for object contributions
         final MenuManager menu = new MenuManager();
+        menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         table.setMenu(menu.createContextMenu(table));
         getSite().registerContextMenu(menu, channel_table);
     }

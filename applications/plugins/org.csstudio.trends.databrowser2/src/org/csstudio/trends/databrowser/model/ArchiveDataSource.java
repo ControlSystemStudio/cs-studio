@@ -7,23 +7,22 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.model;
 
-import org.csstudio.platform.model.AbstractControlSystemItem;
-import org.csstudio.platform.model.IArchiveDataSource;
-
 /** Archive data source
  *  @author Kay Kasemir
  */
-public class ArchiveDataSource extends AbstractControlSystemItem implements
-        IArchiveDataSource
+public class ArchiveDataSource
 {
     /** URL of the archive data server. */
-    private String url;
+    final private String url;
 
     /** Key of the archive under the url. */
-    private int key;
+    final private int key;
+
+    /** Archive name, derived from key. */
+    final private String name;
 
     /** Description of the data source. */
-    private String description;
+    final private String description;
 
     /** Initialize
      *  @param url Data server URL.
@@ -44,37 +43,28 @@ public class ArchiveDataSource extends AbstractControlSystemItem implements
     public ArchiveDataSource(final String url, final int key, final String name,
             final String description)
     {
-        super(name);
         this.url = url;
         this.key = key;
+        this.name = name;
         this.description = description;
     }
 
-    /** Initialize this IArchiveDataSource from generic interface */
-    public ArchiveDataSource(final IArchiveDataSource archive)
-    {
-        this(archive.getUrl(), archive.getKey(), archive.getName());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String getTypeId()
-    {
-        return TYPE_ID;
-    }
-
-    /** {@inheritDoc} */
-    @Override
+    /** @return URL of the archive data server. */
     public final String getUrl()
     {
         return url;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /** @return Key of the archive under the url. */
     public final int getKey()
     {
         return key;
+    }
+
+    /** @return Archive name, derived from key. */
+    public String getName()
+    {
+        return name;
     }
 
     /** @return Description */

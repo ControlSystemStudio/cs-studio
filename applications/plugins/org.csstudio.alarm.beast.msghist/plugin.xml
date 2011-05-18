@@ -17,9 +17,14 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
+      <!-- MsgHist could be the _only_ entry in the alarm menu.
+           To support that case, it cannot use ?after=... modifiers,
+           because those fail if the modifier cannot be resolved,
+           and then this menu entry does not show.
+       -->
       <menuContribution
             allPopups="false"
-            locationURI="menu:alarm?after=org.csstudio.alarm.beast.annunciator">
+            locationURI="menu:alarm">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/msg_hist.gif"

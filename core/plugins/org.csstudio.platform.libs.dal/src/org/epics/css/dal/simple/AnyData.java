@@ -176,14 +176,14 @@ public interface AnyData
     public Number[] numberSeqValue();
 
     /**
-     * Return 
-     * @return value of this data object.
+     * Returns value of AnyData as Java Object, as it is without any data type conversion. 
+     * @return value of this data as Java Object, as it is without any data type conversion.
      */
     public Object anyValue();
     
     /**
-     * Return 
-     * @return value of this data object.
+     * Returns value of AnyData as array of Java Objects, as it is without any data type conversion. 
+     * @return value of this data as array of Java Objects, as it is without any data type conversion.
      */
     public Object[] anySeqValue();
     

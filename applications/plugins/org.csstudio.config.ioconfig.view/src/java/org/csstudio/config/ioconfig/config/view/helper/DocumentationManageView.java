@@ -211,19 +211,18 @@ public class DocumentationManageView extends Composite {
      * @since 12.05.2011
      */
     private final class RemoveSelectionListener implements SelectionListener {
-        private final TableViewer _targetTableViewer;
 
         /**
          * Constructor.
          * @param docAvailableTableViewer
          */
-        public RemoveSelectionListener(@Nonnull TableViewer targetTableViewer) {
-            _targetTableViewer = targetTableViewer;
+        public RemoveSelectionListener() {
+            // Constructor.
         }
 
         @SuppressWarnings("unchecked")
         private void doRemoveDoc() {
-            IStructuredSelection sSelect = (IStructuredSelection) _targetTableViewer
+            IStructuredSelection sSelect = (IStructuredSelection) _docAvailableTableViewer
                     .getSelection();
             getDocumentResorce().addAll(sSelect.toList());
             getDocumentAvailable().removeAll(sSelect.toList());
@@ -250,18 +249,17 @@ public class DocumentationManageView extends Composite {
      * @since 12.05.2011
      */
     private final class AddDocSelectionListener implements SelectionListener {
-        private final TableViewer _targetTableViewer;
 
         /**
          * Constructor.
          */
-        public AddDocSelectionListener(@Nonnull TableViewer targetTableViewer) {
-            _targetTableViewer = targetTableViewer;
+        public AddDocSelectionListener() {
+            // Constructor.
         }
 
         @SuppressWarnings("unchecked")
         private void doAddDoc() {
-            IStructuredSelection sSelect = (IStructuredSelection) _targetTableViewer
+            IStructuredSelection sSelect = (IStructuredSelection) _docResorceTableViewer
                     .getSelection();
             getDocumentResorce().removeAll(sSelect.toList());
             getDocumentAvailable().addAll(sSelect.toList());
@@ -502,7 +500,7 @@ public class DocumentationManageView extends Composite {
         removeButton.setText("<");
         removeButton.setToolTipText("Remove all selceted Documents");
         removeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-        removeButton.addSelectionListener(new RemoveSelectionListener(_docAvailableTableViewer));
+        removeButton.addSelectionListener(new RemoveSelectionListener());
     }
 
     /**
@@ -513,7 +511,7 @@ public class DocumentationManageView extends Composite {
         addButton.setText(">");
         addButton.setToolTipText("Add all selceted Documents");
         addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-        addButton.addSelectionListener(new AddDocSelectionListener(_docResorceTableViewer));
+        addButton.addSelectionListener(new AddDocSelectionListener());
     }
 
     /**
@@ -563,10 +561,10 @@ public class DocumentationManageView extends Composite {
         final Text search = new Text(searchGroup, SWT.SINGLE | SWT.SEARCH | SWT.LEAD | SWT.BORDER);
         search.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         search.setMessage("Filter");
-        search.addModifyListener(new FilterModifyListener(search, filter, _docResorceTableViewer));
         
         _docResorceTableViewer = DocumentTableViewerBuilder.crateDocumentTable(searchGroup, false);
         
+        search.addModifyListener(new FilterModifyListener(search, filter, _docResorceTableViewer));
         try {
             _documentResorce = Repository.loadDocument(false);
         } catch (PersistenceException e) {

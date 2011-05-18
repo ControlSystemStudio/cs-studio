@@ -16,6 +16,8 @@ public class Messages extends NLS
     public static String PV;
     public static String PV_Label;
     public static String PV_TT;
+    public static String UnkownPVType;
+
     static
     {
         // initialize resource bundle

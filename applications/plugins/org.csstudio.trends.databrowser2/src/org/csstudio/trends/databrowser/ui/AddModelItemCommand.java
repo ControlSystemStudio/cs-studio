@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
-import org.csstudio.platform.model.IArchiveDataSource;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
@@ -48,7 +47,7 @@ public class AddModelItemCommand implements IUndoableCommand
             final String pv_name,
             final double period,
             final AxisConfig axis,
-            final IArchiveDataSource archive)
+            final ArchiveDataSource archive)
     {
         // Create item
         final PVItem item;
@@ -56,7 +55,7 @@ public class AddModelItemCommand implements IUndoableCommand
         {
             item = new PVItem(pv_name, period);
             if (archive != null)
-                item.addArchiveDataSource(new ArchiveDataSource(archive));
+                item.addArchiveDataSource(archive);
             else
                 item.useDefaultArchiveDataSources();
             item.setAxis(axis);

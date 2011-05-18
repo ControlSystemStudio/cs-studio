@@ -6,12 +6,12 @@
          point="org.eclipse.ui.views">
       <category
             name="Test"
-            id="org.csstudio.ui.menu.test">
+            id="org.csstudio.test">
       </category>
       <view
             name="Process Variable Popup Test"
             icon="icons/test.png"
-            category="org.csstudio.ui.menu.test"
+            category="org.csstudio.test"
             class="org.csstudio.ui.menu.test.ProcessVariablePopupTestView"
             id="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
       </view>
@@ -27,6 +27,33 @@
                id="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.ui.menu.test.CustomProcessVariable"
+            class="org.csstudio.ui.menu.test.CustomProcessAdapter">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:test">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/test.png"
+               label="Process Variable Popup Test"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.ui.menu.test.ProcessVariablePopupTestView">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

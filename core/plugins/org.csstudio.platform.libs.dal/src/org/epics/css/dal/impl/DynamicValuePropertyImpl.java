@@ -112,9 +112,9 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			//ConnectionState cs = e.getConnectionState();
 			if (e.getConnectionState()==ConnectionState.OPERATIONAL 
 					&& getConnectionState()==ConnectionState.CONNECTING) {
-				setConnectionState(ConnectionState.CONNECTED);
+				setConnectionState(ConnectionState.CONNECTED, null);
 			}
-			setConnectionState(e.getConnectionState());
+			setConnectionState(e.getConnectionState(),e.getError());
 		}
 		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T,?>> e) {
 			DynamicValueCondition oldCond = condition;
@@ -128,7 +128,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		}
 	};
 	public boolean isMetaDataInitialized() {
-		return condition!=null 
+		return condition!=null && isConnected() 
 		? condition.containsAnyOfStates(DynamicValueState.HAS_METADATA) 
 				: false;
 	}
@@ -139,6 +139,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	protected Response<T> lastValueResponse = null;
 	private int suspended = 0;
 	protected ConnectionStateMachine connectionStateMachine = new ConnectionStateMachine();
+	private ConnectionEvent<Linkable> lastConnectionEvent;
 
 	private class ResponseForwarder<F extends Object> implements ResponseListener<F>
 	{
@@ -208,7 +209,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	{
 		super(valClass, name);
 		this.propertyContext = propertyContext;
-		setConnectionState(ConnectionState.READY);
+		setConnectionState(ConnectionState.READY, null);
 	}
 
 	/* (non-Javadoc)
@@ -410,6 +411,9 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	 */
 	public Response<T> getLatestValueResponse()
 	{
+		if (lastResponse==null && proxy!=null && proxy.getLatestValueResponse()!=null ){
+			updateLastValueCache(proxy.getLatestValueResponse(), true, true);
+		}
 		return lastValueResponse;
 	}
 
@@ -419,6 +423,48 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	public void addLinkListener(LinkListener<? extends Linkable> l)
 	{
 		linkListeners.add(l);
+		if (lastConnectionEvent!=null && l!=null) {
+			ConnectionEvent e= lastConnectionEvent;
+			ConnectionState connectionState= e.getState();
+
+			if (connectionState == ConnectionState.CONNECTED) {
+				try {
+					l.connected(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.CONNECTION_FAILED) {
+				try {
+					l.connectionFailed(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.CONNECTION_LOST) {
+				try {
+					l.connectionLost(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.DISCONNECTED) {
+				try {
+					l.disconnected(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.DESTROYED) {
+				try {
+					l.destroyed(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			} else if (connectionState == ConnectionState.OPERATIONAL) {
+				try {
+					l.operational(e);
+				} catch (Exception ex) {
+					Logger.getLogger(DynamicValuePropertyImpl.class).warn("Exception in event handler, continuing.", ex);
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -522,7 +568,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	/**
 	 * @param connectionState The connectionState to set.
 	 */
-	protected void setConnectionState(ConnectionState connectionState)
+	protected void setConnectionState(ConnectionState connectionState, Throwable error)
 	{
 		boolean change= false;
 	
@@ -539,7 +585,8 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		
 		LinkListener<Linkable>[] l = (LinkListener<Linkable>[])linkListeners.toArray();
 
-		ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState);
+		ConnectionEvent<Linkable> e = new ConnectionEvent<Linkable>(this, connectionState, error);
+		lastConnectionEvent= e;
 
 		if (connectionState == ConnectionState.CONNECTED) {
 			
@@ -621,7 +668,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 				this.directoryProxy.removeProxyListener(proxyListener);
 			}
 		} else {
-			setConnectionState(ConnectionState.CONNECTING);
+			setConnectionState(ConnectionState.CONNECTING, null);
 		}
 
 		super.initialize(proxy, dirProxy);
@@ -894,7 +941,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	@Override
 	public Proxy<?>[] releaseProxy(boolean destroy) {
 		if (connectionStateMachine.isConnected()) {
-			setConnectionState(ConnectionState.DISCONNECTING);
+			setConnectionState(ConnectionState.DISCONNECTING, null);
 		}
 
 		if (this.proxy != null) {
@@ -905,11 +952,11 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		}
 		Proxy<?>[] p= super.releaseProxy(destroy);
 		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
-			setConnectionState(ConnectionState.DISCONNECTED);
+			setConnectionState(ConnectionState.DISCONNECTED, null);
 		}
 
 		if (destroy) {
-			setConnectionState(ConnectionState.DESTROYED);
+			setConnectionState(ConnectionState.DESTROYED, null);
 			linkListeners.clear();
 			responseListeners.clear();
 		}

@@ -192,7 +192,7 @@ public class PVTreeView extends ViewPart
 
     private void hookContextMenu()
     {
-        final MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        final MenuManager menuMgr = new MenuManager();
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener()
         {
@@ -202,7 +202,7 @@ public class PVTreeView extends ViewPart
                 PVTreeView.this.fillContextMenu(manager);
             }
         });
-        Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        final Menu menu = menuMgr.createContextMenu(viewer.getControl());
         viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, viewer);
     }
