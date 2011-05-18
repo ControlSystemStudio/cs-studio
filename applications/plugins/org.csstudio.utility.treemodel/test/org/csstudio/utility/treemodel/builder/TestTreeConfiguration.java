@@ -47,7 +47,10 @@ import com.google.common.collect.Sets;
 public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConfiguration> {
 
     /**
-     * The root for any tree structure. This node type does not have a pendant in LDAP, hence 'virtual'.
+     * The root for any tree structure. This node type does not have a pendant in any tree, 
+     * hence 'virtual' - is used as 'starting point' to have access to common tree configuration
+     * methods like {@link ITreeNodeConfiguration#getRoot()}. Why - enum cannot extend another
+     * class (and abstract delegator pattern oder forwarding pattern is a bit oversized).
      */
     VIRTUAL_ROOT("vroot",
                  "virtual tree configuration"),
@@ -122,13 +125,20 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      *            the name of the attribute to use for the RDN.
      * @param description
      *            the description of this tree component.
-      *
-      * CHECKSTYLE:Jsr305Annotations:OFF
      */
-    private TestTreeConfiguration(final String nodeTypeName,
-                                 final String description) {
+    private TestTreeConfiguration(@Nonnull final String nodeTypeName,
+                                  @Nonnull final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TestTreeConfiguration getRoot() {
+        return UNIT;
     }
 
     /**
@@ -136,7 +146,7 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
      */
     @Override
     @Nonnull
-    public String getObjectClass() {
+    public String getDescription() {
         return _description;
     }
 
@@ -170,15 +180,6 @@ public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConf
     @CheckForNull
     private static TestTreeConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
         return CACHE_BY_NAME.get(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getUnitTypeValue() {
-        return "TestOu";
     }
 
     /**

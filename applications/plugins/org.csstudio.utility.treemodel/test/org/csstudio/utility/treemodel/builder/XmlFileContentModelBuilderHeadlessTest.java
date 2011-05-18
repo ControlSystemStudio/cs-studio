@@ -68,7 +68,8 @@ public class XmlFileContentModelBuilderHeadlessTest {
     @Test
     public void testValid() {
         try {
-            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfiguration.VIRTUAL_ROOT);
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, 
+                                                          TestTreeConfiguration.VIRTUAL_ROOT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {
