@@ -35,6 +35,7 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.internal.localization.Messages;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -125,8 +126,7 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
         ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
         try {
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference
-                        .getFacilityNames());
+                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
             } else {
                 model = _alarmConfigService.retrieveInitialContentModelFromFile(_resource
                         .getFilepath());
@@ -137,6 +137,8 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
         } catch (FileNotFoundException e) {
             LOG.error("Resource not found: " + _resource.getFilepath(), e);
             throw new AlarmConnectionException(Messages.ResourceNotFound + ": " + _resource.getFilepath(), e);
+        } catch (LdapServiceException e) {
+            throw new AlarmConnectionException(Messages.LdapServiceError, e);
         }
         return model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
     }

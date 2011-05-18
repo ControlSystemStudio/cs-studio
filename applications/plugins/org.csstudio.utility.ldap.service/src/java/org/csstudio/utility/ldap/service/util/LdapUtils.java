@@ -22,9 +22,8 @@
 package org.csstudio.utility.ldap.service.util;
 
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
 
 import java.util.ArrayList;
 import java.util.Collections;

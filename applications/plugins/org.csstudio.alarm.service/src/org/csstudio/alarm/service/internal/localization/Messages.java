@@ -57,5 +57,6 @@ public final class Messages extends NLS {
     // CHECKSTYLE:OFF
     public static String CouldNotCreateContentModel;
     public static String ResourceNotFound;
+    public static String LdapServiceError;
     
 }

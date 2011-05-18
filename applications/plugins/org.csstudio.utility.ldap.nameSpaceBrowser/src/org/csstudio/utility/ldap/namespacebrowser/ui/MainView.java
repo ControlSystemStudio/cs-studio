@@ -21,8 +21,8 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.ui;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;

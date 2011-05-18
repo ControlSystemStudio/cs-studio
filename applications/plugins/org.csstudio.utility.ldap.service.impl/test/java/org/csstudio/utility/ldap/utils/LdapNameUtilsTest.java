@@ -33,6 +33,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;

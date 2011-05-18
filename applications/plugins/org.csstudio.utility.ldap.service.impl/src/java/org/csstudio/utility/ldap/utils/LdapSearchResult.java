@@ -21,9 +21,7 @@
  */
 package org.csstudio.utility.ldap.utils;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -32,53 +30,24 @@ import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.namespace.utility.ControlSystemItem;
-import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 
 /**
- *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 08.04.2010
  */
-public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSearchResult {
+public class LdapSearchResult implements ILdapSearchResult {
 
-    private Set<SearchResult> _answerSet = Collections.emptySet();
+    private Set<SearchResult> _answerSet;
 
     private ILdapSearchParams _searchParams;
-
-    private List<ControlSystemItem> _csiResult;
 
     /**
      * Constructor.
      */
     public LdapSearchResult() {
-        // Empty
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public List<ControlSystemItem> getCSIResultList() {
-        // FIXME (bknerr) : obsolete probably
-        //return Collections.emptyList();
-        return _csiResult;
-    }
-
-
-    @Override
-    @Nonnull
-    public NameSpaceSearchResult getNew() {
-        return new LdapSearchResult();
-    }
-
-    @Override
-    public void notifyView() {
-        setChanged();
-        notifyObservers();
+        _answerSet = Collections.emptySet();
     }
 
     /**
@@ -89,9 +58,6 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
                           @Nonnull final Set<SearchResult> answerSet) {
         _searchParams = searchParams;
         _answerSet = answerSet;
-
-        // FIXME (bknerr) : probably not necessary anymore
-        notifyView();
     }
 
     /**
@@ -112,12 +78,4 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
         return _searchParams;
     }
 
-    /**
-     * Copies the list of {@link ControlSystemItem}.
-     * {@inheritDoc}
-     */
-    @Override
-    public final void setCSIResultList(@Nonnull final List<ControlSystemItem> resultList) {
-        _csiResult = new ArrayList<ControlSystemItem>(resultList);
-    }
 }

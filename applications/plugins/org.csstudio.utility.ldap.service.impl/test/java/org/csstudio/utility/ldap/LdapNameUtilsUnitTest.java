@@ -23,12 +23,12 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.InvalidNameException;
@@ -36,9 +36,9 @@ import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
 
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

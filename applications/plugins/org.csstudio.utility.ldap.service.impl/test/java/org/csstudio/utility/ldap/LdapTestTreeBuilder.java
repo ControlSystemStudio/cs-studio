@@ -21,12 +21,12 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
 
 import javax.annotation.Nonnull;

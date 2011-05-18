@@ -30,6 +30,7 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * 
  * @author bknerr
  * @since 17.05.2011
+ * @param <T> the type of the tree configuration
  */
 public interface ILdapTreeNodeConfiguration<T extends Enum<T>> extends ITreeNodeConfiguration<T>{
     

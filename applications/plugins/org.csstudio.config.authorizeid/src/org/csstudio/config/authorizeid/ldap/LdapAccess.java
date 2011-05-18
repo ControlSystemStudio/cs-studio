@@ -39,10 +39,10 @@ import org.csstudio.config.authorizeid.GroupRoleTableEntry;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 public final class LdapAccess {

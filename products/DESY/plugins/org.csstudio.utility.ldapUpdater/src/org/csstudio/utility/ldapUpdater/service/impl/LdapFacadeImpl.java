@@ -23,10 +23,6 @@
  */
 package org.csstudio.utility.ldapUpdater.service.impl;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
@@ -36,6 +32,10 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_IP_ADDRESS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -55,16 +55,17 @@ import javax.naming.ldap.LdapName;
 
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.Record;
 import org.csstudio.utility.ldapUpdater.service.ILdapFacade;
 import org.csstudio.utility.ldapUpdater.service.ILdapServiceProvider;
 import org.csstudio.utility.ldapUpdater.service.LdapFacadeException;
@@ -173,6 +174,8 @@ public class LdapFacadeImpl implements ILdapFacade {
                 throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC " + fullIocName, e);
             } catch (final CreateContentModelException e) {
                 throw new LdapFacadeException("Content model could not be created on record retrieval for IOC " + fullIocName, e);
+            } catch (final LdapServiceException e) {
+                throw new LdapFacadeException("Ldap Service exception. " + fullIocName, e);
             }
         }
         return Collections.emptyMap();
@@ -201,7 +204,9 @@ public class LdapFacadeImpl implements ILdapFacade {
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC", e);
         } catch (final CreateContentModelException e) {
-            throw new LdapFacadeException("Conten model creation on removing IOC from LDAP failed.", e);
+            throw new LdapFacadeException("Conten modelt creation on removing IOC from LDAP failed.", e);
+        } catch (final LdapServiceException e) {
+            throw new LdapFacadeException("LDAP service exception.", e);
         }
     }
 
@@ -271,6 +276,8 @@ public class LdapFacadeImpl implements ILdapFacade {
             return getLdapService().getLdapContentModelBuilder(model);
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on getting content model builder.", e);
+        } catch (final LdapServiceException e) {
+            throw new LdapFacadeException("LDAP service exception.", e);
         }
     }
     /**
@@ -285,6 +292,8 @@ public class LdapFacadeImpl implements ILdapFacade {
             return getLdapService().getLdapContentModelBuilder(objectClassRoot, result);
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on getting content model builder.", e);
+        } catch (final LdapServiceException e) {
+            throw new LdapFacadeException("LDAP service exception.", e);
         }
     }
 
@@ -329,6 +338,8 @@ public class LdapFacadeImpl implements ILdapFacade {
             throw new LdapFacadeException("Content model could not be created to retrieve IOCs.", e);
         } catch (final OsgiServiceUnavailableException e) {
             throw new LdapFacadeException("Service unavailable on retrieving IOCs.", e);
+        } catch (final LdapServiceException e) {
+            throw new LdapFacadeException("LDAP service exception.", e);
         }
     }
     /**
@@ -358,6 +369,8 @@ public class LdapFacadeImpl implements ILdapFacade {
                     throw new LdapFacadeException("Service unavailable on retrieving LDAP records for IOC", e);
                 } catch (final CreateContentModelException e) {
                     throw new LdapFacadeException("Content model could not be created for IOC " + iocLdapName.toString(), e);
+                } catch (final LdapServiceException e) {
+                    throw new LdapFacadeException("LDAP service exception for " + iocLdapName.toString(), e);
                 }
             }
             return null;

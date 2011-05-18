@@ -27,10 +27,12 @@ import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.LdapServiceImplActivator;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapSearchParams;
+import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -48,9 +50,9 @@ import org.slf4j.LoggerFactory;
  * @version $Revision$
  * @since 08.04.2010
  */
-public final class LDAPReader extends Job {
+public final class LDAPReaderJob extends Job implements ILdapReaderJob {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LDAPReader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LDAPReaderJob.class);
     
     private final ILdapSearchParams _searchParams;
 
@@ -66,9 +68,9 @@ public final class LDAPReader extends Job {
      */
     public static class Builder {
 
-        private final LdapSearchParams _searchParams;
-        private ILdapSearchResult _searchResult;
-        private ILdapReadCompletedCallback _callBack;
+        final LdapSearchParams _searchParams;
+        ILdapSearchResult _searchResult;
+        ILdapReadCompletedCallback _callBack;
 
         /**
          * Constructor with required parameters.
@@ -79,6 +81,7 @@ public final class LDAPReader extends Job {
         public Builder(@Nonnull final LdapName searchRoot,
                        @Nonnull final String filter) {
             _searchParams = new LdapSearchParams(searchRoot, filter);
+            _searchResult = new LdapSearchResult();
         }
 
         /**
@@ -89,17 +92,6 @@ public final class LDAPReader extends Job {
         @Nonnull
         public Builder setScope(final int scope) {
             _searchParams.setScope(scope);
-            return this;
-        }
-
-        /**
-         * Setter.
-         * @param result reference to an existing search result
-         * @return the builder for chaining
-         */
-        @Nonnull
-        public Builder setSearchResult(@Nonnull final ILdapSearchResult result) {
-            _searchResult = result;
             return this;
         }
 
@@ -119,19 +111,18 @@ public final class LDAPReader extends Job {
          * @return the LDAP reader job
          */
         @Nonnull
-        public LDAPReader build() {
-            return new LDAPReader(this);
+        public LDAPReaderJob build() {
+            return new LDAPReaderJob(this);
         }
     }
 
 
-    LDAPReader(@Nonnull final Builder builder){
+    LDAPReaderJob(@Nonnull final Builder builder){
         super("LDAPReader");
         _searchParams = builder._searchParams;
         _searchResult = builder._searchResult;
         setJobCompletedCallBack(builder._callBack);
     }
-
 
 
     private void setJobCompletedCallBack(@CheckForNull final ILdapReadCompletedCallback callBack) {
@@ -173,5 +164,16 @@ public final class LDAPReader extends Job {
 
         monitor.done();
         return Status.OK_STATUS;
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ILdapSearchResult getSearchResult() {
+        return _searchResult;
     }
 }

@@ -22,8 +22,8 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.service.util.LdapUtils.any;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -51,12 +51,14 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LDAPReader;
+import org.csstudio.utility.ldap.reader.LDAPReaderJob;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.utils.LdapSearchParams;
 import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -150,18 +152,16 @@ public final class LdapServiceImpl implements ILdapService {
      */
     @Override
     @CheckForNull
-    public Job createLdapReaderJob(@Nonnull final ILdapSearchParams params,
-                                   @Nullable final ILdapSearchResult result,
-                                   @Nullable final ILdapReadCompletedCallback callBack) {
+    public ILdapReaderJob createLdapReaderJob(@Nonnull final ILdapSearchParams params,
+                                              @Nullable final ILdapReadCompletedCallback callBack) {
 
-            final LDAPReader ldapr =
-                new LDAPReader.Builder(params.getSearchRoot(), params.getFilter()).
-                                       setScope(params.getScope()).
-                                       setSearchResult(result).
-                                       setJobCompletedCallBack(callBack).
-                                       build();
-
-            return ldapr;
+        final LDAPReaderJob ldapr =
+            new LDAPReaderJob.Builder(params.getSearchRoot(), params.getFilter()).
+            setScope(params.getScope()).
+            setJobCompletedCallBack(callBack).
+            build();
+        
+        return ldapr;
     }
 
     /**
@@ -257,11 +257,12 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      * @throws InvalidNameException
      * @throws CreateContentModelException
+     * @throws LdapServiceException 
      */
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
         boolean removeComponent(@Nonnull final T configurationRoot,
-                                @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException {
+                                @Nonnull final LdapName component) throws InvalidNameException, CreateContentModelException, LdapServiceException {
 
         LOG.debug("Remove entry incl. subtree:\n{}", component.toString());
 
@@ -278,7 +279,7 @@ public final class LdapServiceImpl implements ILdapService {
         }
 
         final LdapContentModelBuilder<T> builder =
-            new LdapContentModelBuilder<T>(configurationRoot, result);
+            new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
@@ -395,32 +396,35 @@ public final class LdapServiceImpl implements ILdapService {
 
     /**
      * {@inheritDoc}
-     * @throws NamingException
      */
     @Override
-    @CheckForNull
-    public NameParser getLdapNameParser() throws NamingException {
+    @Nonnull
+    public NameParser getLdapNameParser() throws LdapServiceException {
         final DirContext context = DirContextHolder.INSTANCE.get();
         if(context == null) {
-            LOG.error("LDAP context is null.");
-            return null;
+            throw new LdapServiceException("LDAP context ist null. Parser couldn't be created.", null);
         }
-        return context.getNameParser(new CompositeName());
+        try {
+            return context.getNameParser(new CompositeName());
+        } catch (NamingException e) {
+            throw new LdapServiceException("Parser couldn't be created from context.", e);
+        }
     }
 
     @Override
     @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                                           @Nonnull final ILdapSearchResult searchResult) {
-        return new LdapContentModelBuilder<T>(objectClassRoot, searchResult);
+                                                           @Nonnull final ILdapSearchResult searchResult) throws LdapServiceException {
+        
+        return new LdapContentModelBuilder<T>(objectClassRoot, searchResult, getLdapNameParser());
     }
     
     @Override
     @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
-        return new LdapContentModelBuilder<T>(model);
+    ILdapContentModelBuilder<T> getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws LdapServiceException {
+        return new LdapContentModelBuilder<T>(model, getLdapNameParser());
     }
 
     /**
@@ -430,9 +434,24 @@ public final class LdapServiceImpl implements ILdapService {
     @Nonnull
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
     ContentModel<T> getLdapContentModelForSearchResult(@Nonnull final T configurationRoot, 
-                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException {
-        LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result);
+                                                       @Nonnull final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
+        LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         return builder.getModel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public LdapName parseSearchResult(@Nonnull final SearchResult row) throws LdapServiceException {
+        final NameParser parser = getLdapNameParser();
+        final String nameInNamespace = row.getNameInNamespace();
+        try {
+            return (LdapName) parser.parse(nameInNamespace);
+        } catch (NamingException e) {
+            throw new LdapServiceException(nameInNamespace + "could not be parsed.", e);
+        }
     }
 }

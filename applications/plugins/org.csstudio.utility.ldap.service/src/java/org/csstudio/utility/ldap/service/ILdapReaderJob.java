@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,22 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.treeconfiguration;
+package org.csstudio.utility.ldap.service;
+
+import javax.annotation.Nonnull;
 
 /**
- * Dedicated field and attribute names and values for the EpicsAlarmcfg LDPA tree.
- *
+ * Reader job interface. 
+ * 
  * @author bknerr
- * @author $Author: bknerr $
- * @version $Revision: 1.7 $
- * @since 13.09.2010
+ * @since 18.05.2011
  */
-public final class LdapEpicsAlarmCfgFieldsAndAttributes {
-
-    /**
-     * Don't instantiate.
-     */
-    private LdapEpicsAlarmCfgFieldsAndAttributes() {
-        // EMPTY
-    }
+public interface ILdapReaderJob {
+    @Nonnull
+    ILdapSearchResult getSearchResult();
+    
+    void schedule();
+    
+    void join() throws InterruptedException;
 }

@@ -21,10 +21,10 @@
  */
 package org.csstudio.config.savevalue.ui;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
@@ -51,8 +51,9 @@ import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -333,7 +334,7 @@ public class SaveValueDialog extends Dialog {
 	        }
 
 	        final SearchResult row = result.getAnswerSet().iterator().next();
-	        final LdapName ldapName = LdapNameUtils.parseSearchResult(row);
+	        final LdapName ldapName = service.parseSearchResult(row);
 	        if (ldapName != null) {
 	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, IOC.getNodeTypeName());
 	            if (iocName != null) {
@@ -343,9 +344,9 @@ public class SaveValueDialog extends Dialog {
 	        }
 	        LOG.error("IOC name could not be parsed out of search result: " + row.getNameInNamespace()); //$NON-NLS-1$
 
-	    } catch (final NamingException e) {
+	    } catch (LdapServiceException e) {
 	        return Messages.SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE + "\n" + e.getLocalizedMessage();
-	    }
+        }
 	    return Messages.SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE;
 	}
 

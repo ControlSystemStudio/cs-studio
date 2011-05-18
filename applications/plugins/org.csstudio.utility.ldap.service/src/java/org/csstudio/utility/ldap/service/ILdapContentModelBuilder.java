@@ -12,6 +12,7 @@ import org.csstudio.utility.treemodel.builder.IContentModelBuilder;
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 07.09.2010
+ * @param <T> the tree configuration type for this content model builder
  */
 public interface ILdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>>
     extends IContentModelBuilder<T> {

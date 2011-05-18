@@ -31,12 +31,12 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 import org.csstudio.utility.ldapUpdater.files.BootFileContentParser;
 import org.csstudio.utility.ldapUpdater.files.FileBySuffixCollector;
 import org.csstudio.utility.ldapUpdater.mail.NotificationMailer;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.Record;
 import org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;

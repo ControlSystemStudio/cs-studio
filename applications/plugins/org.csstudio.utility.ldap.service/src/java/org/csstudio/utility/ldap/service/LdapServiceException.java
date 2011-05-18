@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,25 +19,25 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.treeconfiguration;
+package org.csstudio.utility.ldap.service;
 
- /**
-  * Dedicated field and attribute names and values for the EpicsAuthorizeId LDPA tree.
-  *
-  * @author bknerr
-  * @author $Author: bknerr $
-  * @version $Revision: 1.7 $
-  * @since 13.09.2010
-  */
-public final class LdapEpicsAuthorizeIdFieldsAndAttributes {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-    public static final String ATTR_EAIN_FIELD_NAME = "eain";
-    public static final String ATTR_EAIG_FIELD_NAME = "eaig";
+/**
+ * Dedicated service exception.
+ * 
+ * @author bknerr
+ * @since 18.05.2011
+ */
+public class LdapServiceException extends Exception {
+    
+    private static final long serialVersionUID = -5731228959253970022L;
 
     /**
-     * Don't instantiate.
+     * Constructor.
      */
-    private LdapEpicsAuthorizeIdFieldsAndAttributes() {
-        // EMPTY
+    public LdapServiceException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
     }
 }

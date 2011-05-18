@@ -32,11 +32,11 @@ import javax.annotation.Nullable;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.domain.desy.net.IpAddress;
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.Record;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
