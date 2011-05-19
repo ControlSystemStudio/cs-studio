@@ -1,12 +1,17 @@
 package org.csstudio.platform.libs.dal.tango;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.epics.css.dal.context.AbstractApplicationContext;
+import org.epics.css.dal.spi.LinkPolicy;
+import org.epics.css.dal.spi.PropertyFactory;
+import org.epics.css.dal.spi.PropertyFactoryService;
+import org.epics.css.dal.tango.PropertyFactoryImpl;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractUIPlugin implements PropertyFactoryService {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.platform.libs.dal.tango";
@@ -45,6 +50,18 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy) {
+		PropertyFactoryImpl pf= new PropertyFactoryImpl();
+		pf.initialize(ctx, linkPolicy);
+		return pf;
+	}
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy, String plugName) {
+		// not required
+		return null;
 	}
 
 }
