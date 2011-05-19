@@ -16,6 +16,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
@@ -157,7 +158,7 @@ public class GUI implements AlarmClientModelListener
             @Override
             public Object getSelection()
             {
-                return getAlarmPVs((IStructuredSelection)active_table_viewer.getSelection());
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)active_table_viewer.getSelection());
             }
         };
         new ControlSystemDragSource(acknowledged_table_viewer.getTable())
@@ -165,26 +166,9 @@ public class GUI implements AlarmClientModelListener
             @Override
             public Object getSelection()
             {
-                return getAlarmPVs((IStructuredSelection)acknowledged_table_viewer.getSelection());
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)acknowledged_table_viewer.getSelection());
             }
         };
-    }
-
-    /** @param selection Selection that might contain alarm tree PVs
-     *  @return All selected alarm tree PVs
-     */
-    private AlarmTreePV[] getAlarmPVs(final IStructuredSelection selection)
-    {
-        if (selection.isEmpty())
-            return null;
-        final List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
-        final Object[] sel = selection.toArray();
-        for (Object obj : sel)
-            if (obj instanceof AlarmTreePV)
-                pvs.add((AlarmTreePV) obj);
-        if (pvs.size() <= 0)
-            return null;
-        return pvs.toArray(new AlarmTreePV[pvs.size()]);
     }
 
     /** @return Provider for selected active alarms */
