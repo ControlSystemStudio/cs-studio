@@ -42,6 +42,7 @@ org.csstudio.ui.util
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
+org.csstudio.utility.channel.legacy
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
@@ -60,7 +61,6 @@ org.csstudio.utility.pvmanager.widgets
 org.csstudio.platform
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.dal
-org.csstudio.platform.libs.dal.epics
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.glazedlists
