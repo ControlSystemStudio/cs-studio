@@ -8,7 +8,6 @@
 package org.csstudio.logging;
 
 /** Description of a JMS 'LOG' message
- *  and routines to convert to/from a JMS MapMessage.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
