@@ -5,16 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.jms2rdb.perftest;
+package org.csstudio.sns.jms2rdb;
 
 import static org.junit.Assert.assertTrue;
 
-import java.net.InetAddress;
-import java.util.Calendar;
-
-import org.apache.log4j.Level;
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 import org.junit.Test;
 
@@ -63,20 +58,12 @@ public class RDBPerfUnitTest
         System.out.println("URL    : " + url);
         System.out.println("Runtime: " + SECONDS + " seconds");
 
-        final String host = InetAddress.getLocalHost().getHostName();
-        final String user = System.getProperty("user.name");
         final long end = System.currentTimeMillis() + SECONDS*1000;
         int count = 0;
         while (System.currentTimeMillis() < end)
         {
             ++count;
-            final Calendar now = Calendar.getInstance();
-            final JMSLogMessage msg = new JMSLogMessage(
-                    Integer.toString(count),
-                    Level.INFO.toString(), now, now,
-                    "RDBPerfTest", "run", "RDBPerfTest.java", "JMSLogTool",
-                    host, user);
-            rdb_writer.write(msg);
+            rdb_writer.write(Integer.toString(count));
         }
         rdb_writer.close();
 

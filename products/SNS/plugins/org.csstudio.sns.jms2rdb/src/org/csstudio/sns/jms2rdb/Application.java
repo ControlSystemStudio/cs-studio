@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.httpd.HttpServiceHelper;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.httpd.MainServlet;
 import org.csstudio.sns.jms2rdb.httpd.StopServlet;
 import org.eclipse.core.runtime.Platform;

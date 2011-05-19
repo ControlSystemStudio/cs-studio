@@ -5,21 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.jms2rdb.perftest;
+package org.csstudio.sns.jms2rdb;
+
+import java.net.InetAddress;
+import java.util.Date;
 
 import javax.jms.Connection;
+import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 
-/** Receives and counts JMS messages.
+/** Thread that sends as many JMS messages as possible.
  *  <p>
  *  Uses CSS 'log' message format.
  *
@@ -27,19 +29,20 @@ import org.csstudio.platform.logging.JMSLogMessage;
  *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
-public class Receiver implements ExceptionListener, MessageListener
+public class Sender implements ExceptionListener, Runnable
 {
     final private Session session;
-    final private MessageConsumer consumer;
+    final private MessageProducer producer;
+    final private Thread thread;
+    private boolean run;
     private int count;
-    private int next_num;
 
     /** Create and start the sender
      *  @param connection
      *  @param topic_name
      *  @throws Exception
      */
-    public Receiver(final Connection connection, final String topic_name)
+    public Sender(final Connection connection, final String topic_name)
         throws Exception
     {
         connection.setExceptionListener(this);
@@ -47,35 +50,41 @@ public class Receiver implements ExceptionListener, MessageListener
         session = connection.createSession(/* transacted */false,
                                            Session.AUTO_ACKNOWLEDGE);
         final Topic topic = session.createTopic(topic_name);
-        consumer = session.createConsumer(topic);
-        consumer.setMessageListener(this);
+        producer = session.createProducer(topic);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
+        run = true;
         count = 0;
-        next_num = -1;
+        thread = new Thread(this, "Sender");
     }
 
-    /** Invoked by JMS for each received message.
-     *  Counts JMSLogMessage instances
-     */
-    @Override
-    public void onMessage(final Message msg)
+    public void start()
     {
-        if (! (msg instanceof MapMessage))
-        {
-            System.out.println("Received unknown " + msg.getClass().getName());
-            return;
-        }
-        final MapMessage map = (MapMessage) msg;
+        thread.start();
+    }
+
+    /** @see Runnable */
+    @Override
+    public void run()
+    {
         try
         {
-            final JMSLogMessage log_msg = JMSLogMessage.fromMapMessage(map);
-            final int num = Integer.parseInt(log_msg.getText());
-            if (next_num > 0  &&  num != next_num)
+            final String host = InetAddress.getLocalHost().getHostName();
+            final String user = System.getProperty("user.name");
+            while (run)
             {
-                System.out.println("Expected " + next_num + ", got " + num);
+                ++count;
+                final MapMessage map = session.createMapMessage();
+                map.setString(JMSLogMessage.TEXT, Integer.toString(count));
+                map.setString(JMSLogMessage.SEVERITY, "INFO");
+                map.setString(JMSLogMessage.CREATETIME, new Date().toString());
+                map.setString(JMSLogMessage.NAME, "run");
+                map.setString(JMSLogMessage.CLASS, "Sender.java");
+                map.setString(JMSLogMessage.APPLICATION_ID, "JMSPerfTest");
+                map.setString(JMSLogMessage.HOST, host);
+                map.setString(JMSLogMessage.USER, user);
+                producer.send(map);
             }
-            next_num = num+1;
-            ++count;
         }
         catch (Exception ex)
         {
@@ -83,12 +92,14 @@ public class Receiver implements ExceptionListener, MessageListener
         }
     }
 
-    /** Stop the receiver
+    /** Stop the sender (blocks until done)
      *  @throws Exception
      */
     public void shutdown() throws Exception
     {
-        consumer.close();
+        run = false;
+        thread.join();
+        producer.close();
         session.close();
     }
 
@@ -99,7 +110,7 @@ public class Receiver implements ExceptionListener, MessageListener
         ex.printStackTrace();
     }
 
-    /** @return Number of received MapMessage messages */
+    /** @return Number of messages sent */
     public int getMessageCount()
     {
         return count;

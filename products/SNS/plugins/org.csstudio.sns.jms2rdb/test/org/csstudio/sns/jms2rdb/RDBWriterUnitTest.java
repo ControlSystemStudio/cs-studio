@@ -5,12 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.jms2rdb.rdb;
-
-import java.util.Calendar;
+package org.csstudio.sns.jms2rdb;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 import org.junit.Test;
 
 /** JUnit test of the {@link RDBWriter}
@@ -35,9 +33,7 @@ public class RDBWriterUnitTest
         }
 
         final RDBWriter rdb = new RDBWriter(url, schema);
-
-        final Calendar time = Calendar.getInstance();
-        rdb.write(new JMSLogMessage("Testing...", "OK", time, time, "Demo", "demo", "Demo.java", "Test", "localhost", "user"));
+        rdb.write("Testing...");
 
         rdb.close();
     }
