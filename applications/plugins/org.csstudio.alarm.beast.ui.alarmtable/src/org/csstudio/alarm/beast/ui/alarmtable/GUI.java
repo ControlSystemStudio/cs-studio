@@ -150,27 +150,41 @@ public class GUI implements AlarmClientModelListener
 
         connectContextMenu(active_table_viewer, site);
         connectContextMenu(acknowledged_table_viewer, site);
-        // TODO Allow 'drag' of alarm info as text
+
+        // Allow 'drag' of alarm info as text
         new ControlSystemDragSource(active_table_viewer.getTable())
         {
             @Override
             public Object getSelection()
             {
-                final Object[] sel = ((IStructuredSelection)active_table_viewer.getSelection()).toArray();
-                final List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
-                for (Object obj : sel)
-                    if (obj instanceof AlarmTreePV)
-                        pvs.add((AlarmTreePV) obj);
-                if (pvs.size() <= 0)
-                    return null;
-                if (pvs.size() == 1)
-                    return pvs.get(0);
-                return pvs.toArray(new AlarmTreePV[pvs.size()]);
+                return getAlarmPVs((IStructuredSelection)active_table_viewer.getSelection());
             }
         };
+        new ControlSystemDragSource(acknowledged_table_viewer.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return getAlarmPVs((IStructuredSelection)acknowledged_table_viewer.getSelection());
+            }
+        };
+    }
 
-        // TODO Allow 'drag' of alarm info as text
-        // new AlarmPVDragSource(acknowledged_table_viewer.getTable(), getSelectedAckAlarms());
+    /** @param selection Selection that might contain alarm tree PVs
+     *  @return All selected alarm tree PVs
+     */
+    private AlarmTreePV[] getAlarmPVs(final IStructuredSelection selection)
+    {
+        if (selection.isEmpty())
+            return null;
+        final List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+        final Object[] sel = selection.toArray();
+        for (Object obj : sel)
+            if (obj instanceof AlarmTreePV)
+                pvs.add((AlarmTreePV) obj);
+        if (pvs.size() <= 0)
+            return null;
+        return pvs.toArray(new AlarmTreePV[pvs.size()]);
     }
 
     /** @return Provider for selected active alarms */

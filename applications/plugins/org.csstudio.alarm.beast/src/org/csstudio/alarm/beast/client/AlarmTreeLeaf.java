@@ -124,6 +124,6 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     @Override
     public String toString()
     {
-        return getVerboseDescription();
+        return getVerboseDescription() + "\n";
     }
 }

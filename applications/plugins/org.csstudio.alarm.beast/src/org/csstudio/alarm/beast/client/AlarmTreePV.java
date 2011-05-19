@@ -269,13 +269,4 @@ public class AlarmTreePV extends AlarmTreeLeaf
                     getCurrentMessage()
                 });
     }
-
-    /** {@inheritDoc} */
-    @SuppressWarnings("nls")
-    @Override
-    public String toString()
-    {
-        return "PV " + super.toString() +
-           (enabled ? "" : " {disabled}");
-    }
 }
