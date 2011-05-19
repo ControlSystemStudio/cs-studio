@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.csstudio.multichannelviewer.model.IChannelGroup;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -62,7 +61,7 @@ public class ChannelGroupLabelProvider extends LabelProvider implements
 
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		Channel channel = ((ICSSChannel) element).getChannel();
+		Channel channel = (Channel) element;
 		if (columnIndex == 0) {
 			return channel.getName();
 		} else if (columnIndex == 1) {
@@ -94,20 +93,20 @@ public class ChannelGroupLabelProvider extends LabelProvider implements
 	}
 
 	private Collection<String> getAllTagNames(
-			Collection<ICSSChannel> channelItems) {
+			Collection<Channel> channelItems) {
 		Collection<String> tagNames = new HashSet<String>();
-		for (ICSSChannel channelItem : channelItems) {
-			tagNames.addAll(getTagNames(channelItem.getChannel()));
+		for (Channel channel : channelItems) {
+			tagNames.addAll(getTagNames(channel));
 		}
 		return tagNames;
 
 	}
 
 	private Collection<String> getAllPropertyNames(
-			Collection<ICSSChannel> channelItems) {
+			Collection<Channel> channelItems) {
 		Collection<String> propertyNames = new HashSet<String>();
-		for (ICSSChannel channelItem : channelItems) {
-			propertyNames.addAll(getPropertyNames(channelItem.getChannel()));
+		for (Channel channel : channelItems) {
+			propertyNames.addAll(getPropertyNames(channel));
 		}
 		return propertyNames;
 	}

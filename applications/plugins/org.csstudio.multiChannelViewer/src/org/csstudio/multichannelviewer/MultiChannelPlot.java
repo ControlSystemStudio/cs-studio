@@ -1,5 +1,7 @@
 package org.csstudio.multichannelviewer;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -7,7 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.csstudio.utility.pvmanager.jfreechart.widgets.XYChartWidget;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -62,15 +63,15 @@ public class MultiChannelPlot extends EditorPart {
 		chart.setTitle("MultiChannel Plot");
 		chart.setYAxisLabel("PV Value");
 
-		channels.addEventListListener(new ListEventListener<ICSSChannel>() {
+		channels.addEventListListener(new ListEventListener<Channel>() {
 
 			@Override
-			public void listChanged(ListEvent<ICSSChannel> listChanges) {
+			public void listChanged(ListEvent<Channel> listChanges) {
 				chart.setXAxisLabel("Channels sorted by "
 						+ channels.getComparator().toString());
 				List<String> pvNames = new ArrayList<String>();
-				for (ICSSChannel channel : channels.getList()) {
-					// pvNames.add(channel.getChannel().getName());
+				for (Channel channel : channels.getList()) {
+					// pvNames.add(channel.getName());
 					pvNames.add("sim://gaussian(50, 20, 0.1)");
 				}
 				chart.setChannelNames(pvNames);

@@ -1,12 +1,13 @@
 package org.csstudio.multichannelviewer.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.csstudio.multichannelviewer.MultiChannelPlot;
 import org.csstudio.multichannelviewer.PerspectiveFactory;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
@@ -40,13 +41,13 @@ public class OpenMultiChannelPlot implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {
-		Collection<ICSSChannel> channels = new ArrayList<ICSSChannel>();
+		Collection<Channel> channels = new ArrayList<Channel>();
 		// Open the editor
 		try {
 			if (selection != null & selection instanceof IStructuredSelection) {
 				IStructuredSelection strucSelection = (IStructuredSelection) selection;
 				channels.clear();
-				for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
+				for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 						.hasNext();) {
 					channels.add(iterator.next());
 				}
