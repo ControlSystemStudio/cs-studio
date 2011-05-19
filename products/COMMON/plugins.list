@@ -29,6 +29,7 @@ org.csstudio.display.pvtable
 org.csstudio.domain.desy
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.multiChannelViewer
