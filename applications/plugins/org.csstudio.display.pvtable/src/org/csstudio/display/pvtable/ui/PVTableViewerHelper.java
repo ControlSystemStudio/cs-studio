@@ -10,14 +10,14 @@ package org.csstudio.display.pvtable.ui;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Plugin;
 import org.csstudio.display.pvtable.model.PVListEntry;
 import org.csstudio.display.pvtable.model.PVListModel;
 import org.csstudio.display.pvtable.model.PVListModelListener;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -157,14 +156,30 @@ public class PVTableViewerHelper
         makeContextMenu(site);
 
         // Drag and drop
-        new ProcessVariableDragSource(table_viewer.getTable(), table_viewer);
-        new ProcessVariableDropTarget(table_viewer.getTable())
+        new ControlSystemDragSource(table_viewer.getTable())
         {
             @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
+            public Object getSelection()
             {
-                getPVListModel().addPV(name.getName());
+                final Object[] obj = ((IStructuredSelection)table_viewer.getSelection()).toArray();
+                final ProcessVariable[] pvs = new ProcessVariable[obj.length];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(((PVListEntry)obj[i]).getName());
+                return pvs;
+            }
+        };
+
+        new ControlSystemDropTarget(table_viewer.getTable(), ProcessVariable[].class, String.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                if (item instanceof ProcessVariable[])
+                {
+                    final ProcessVariable[] pvs = (ProcessVariable[]) item;
+                    for (ProcessVariable pv : pvs)
+                        getPVListModel().addPV(pv.getName());
+                }
             }
         };
 
