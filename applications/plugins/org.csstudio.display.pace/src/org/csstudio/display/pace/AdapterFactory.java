@@ -29,7 +29,7 @@ public class AdapterFactory implements IAdapterFactory
         if (adaptableObject instanceof Cell)
         {
             final Cell cell = (Cell) adaptableObject;
-            return cell.getName();
+            return new ProcessVariable(cell.getName());
         }
         return null;
     }
