@@ -17,6 +17,15 @@
       </view>
    </extension>
    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.diag.pvutil.OpenPVUtil"
+            id="org.csstudio.diag.pvutil.OpenPVUtil"
+            name="Open PV Util">
+            commandId>
+      </command>
+   </extension>
+   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -32,27 +41,33 @@
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.diag.pvutil.OpenPVUtil"
+               icon="icons/pvu.jpg"
+               label="PV Utility"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.csstudio.pvutil.OpenViewWithPVPopupAction"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.pvutil.popmenu"
-               label="CSS"
-               path="additions">
-         </menu>
-         <action
-               class="org.csstudio.diag.pvutil.view.PVpopupAction"
-               enablesFor="1"
-               icon="icons/pvu.jpg"
-               id="org.csstudio.pvutil.view.PVpopupAction"
-               label="PV Utility"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PopupMenuTooltip">
-         </action>
-      </objectContribution>
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.diag.pvutil.model.PV"
+            class="org.csstudio.diag.pvutil.PVAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.diag.pvutil.model.FEC"
+            class="org.csstudio.diag.pvutil.DeviceAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.Device">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>

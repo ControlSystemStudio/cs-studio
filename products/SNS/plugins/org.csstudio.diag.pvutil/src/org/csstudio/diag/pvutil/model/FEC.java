@@ -7,14 +7,13 @@
  ******************************************************************************/
 package org.csstudio.diag.pvutil.model;
 
-import org.csstudio.platform.model.IFrontEndControllerName;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** One Front-End-Controller (FEC) in the PVUtilDataAPI.
  *  @see PVUtilDataAPI
  *  @author Dave Purcell
  */
-public class FEC extends PlatformObject implements IFrontEndControllerName
+public class FEC extends PlatformObject
 {
     final private String fec_nm;
 
@@ -29,15 +28,8 @@ public class FEC extends PlatformObject implements IFrontEndControllerName
         return "Name: " + fec_nm; //$NON-NLS-1$
     }
 
-    @Override
     public String getName()
     {
     	return fec_nm;
     }
-
-    // IFrontEndControllerName
-	@Override
-    public String getTypeId() {
-		return IFrontEndControllerName.TYPE_ID;
-	}
 }
