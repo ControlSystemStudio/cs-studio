@@ -10,6 +10,7 @@ package org.csstudio.ui.util.dnd;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -115,9 +116,14 @@ abstract public class ControlSystemDragSource {
             			if (transfer instanceof SerializableItemTransfer) {
             				SerializableItemTransfer objectTransfer = (SerializableItemTransfer) transfer;
             				event.data = AdapterUtil.convert(selection, objectTransfer.getClassName());
+            				return;
             			} else if (transfer instanceof TextTransfer) {
             				// TextTransfer needs String
-            				event.data = selection.toString();
+            			    if (selection.getClass().isArray())
+            			        event.data = Arrays.toString((Object[]) selection);
+            			    else
+            			        event.data = selection.toString();
+            				return;
             			}
             		}
             	}
