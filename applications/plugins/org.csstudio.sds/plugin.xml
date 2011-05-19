@@ -163,6 +163,16 @@
                type="org.eclipse.swt.graphics.RGB">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.internal.rules.AliasRule"
+            compatibleProperties="sds.map"
+            name="AliasRule"
+            ruleId="org.csstudio.sds.AliasRule">
+         <parameterDescription
+               name="channel"
+               type="java.lang.String">
+         </parameterDescription>
+      </rule>
    </extension>
    <extension
          point="org.csstudio.sds.widgetModelInitializers">
