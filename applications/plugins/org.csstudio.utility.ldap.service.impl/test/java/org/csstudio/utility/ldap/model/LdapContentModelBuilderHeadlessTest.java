@@ -38,14 +38,14 @@ import javax.naming.directory.SearchControls;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.LdapTestHelper;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
-import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -86,8 +86,8 @@ public class LdapContentModelBuilderHeadlessTest {
                                                                                    SearchControls.SUBTREE_SCOPE);
         try {
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(VIRTUAL_ROOT, searchResult);
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                        service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 MODEL_ONE = builder.getModel();
@@ -103,8 +103,8 @@ public class LdapContentModelBuilderHeadlessTest {
                                                                      any(RECORD.getNodeTypeName()),
                                                                      SearchControls.SUBTREE_SCOPE);
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(VIRTUAL_ROOT, searchResult);
+                final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 MODEL_TWO = builder.getModel();
@@ -112,6 +112,8 @@ public class LdapContentModelBuilderHeadlessTest {
                 Assert.fail("Model setup failed. Search result is null.");
             }
         } catch (final CreateContentModelException e) {
+            Assert.fail("Exception when reading model from search result.");
+        } catch (LdapServiceException e) {
             Assert.fail("Exception when reading model from search result.");
         }
     }

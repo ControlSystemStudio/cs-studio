@@ -29,9 +29,10 @@ import javax.annotation.Nonnull;
 
 import junit.framework.Test;
 
-import org.csstudio.platform.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 /**
  * Class that collects all tests (class files that end on *&lt;testFilter&gt;.class) in the specified
@@ -70,7 +71,7 @@ public final class CssTestSuite {
 	public static Test suite() {
 
     	String filter = System.getProperty("testFilter");
-    	if (StringUtil.isBlank(filter)) {
+    	if (Strings.isNullOrEmpty(filter)) {
     	    LOG.info("No test class filter has been set in the jvm arguments of the lauch configuration.\nDefault is {} (for all classes *{}.java).", 
     	             TestSuiteFactory.COMMON_TEST_SUFFIX,
     	             TestSuiteFactory.COMMON_TEST_SUFFIX);

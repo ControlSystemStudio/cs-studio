@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.csstudio.trends.databrowser.model.PVItem"
-            class="org.csstudio.trends.databrowser.AdapterFactory">
+            adaptableType="org.csstudio.trends.databrowser2.model.PVItem"
+            class="org.csstudio.trends.databrowser2.AdapterFactory">
          <adapter
                type="java.lang.String">
          </adapter>
@@ -14,8 +14,8 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="org.csstudio.trends.databrowser.archive.ChannelInfo"
-            class="org.csstudio.trends.databrowser.AdapterFactory">
+            adaptableType="org.csstudio.trends.databrowser2.model.ChannelInfo"
+            class="org.csstudio.trends.databrowser2.AdapterFactory">
          <adapter
                type="java.lang.String">
          </adapter>
@@ -34,7 +34,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.csstudio.trends.databrowser.editor.DataBrowserEditor"
+            class="org.csstudio.trends.databrowser2.editor.DataBrowserEditor"
             default="true"
             extensions="plt,css-plt"
             icon="icons/databrowser.png"
@@ -50,7 +50,7 @@
       </category>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.search.SearchView"
+            class="org.csstudio.trends.databrowser2.search.SearchView"
             icon="icons/search.gif"
             id="org.csstudio.trends.databrowser.archiveview.ArchiveView"
             name="%SearchView"
@@ -58,7 +58,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.sampleview.SampleView"
+            class="org.csstudio.trends.databrowser2.sampleview.SampleView"
             icon="icons/inspect.gif"
             id="org.csstudio.trends.databrowser.sample_view"
             name="%SampleView"
@@ -66,7 +66,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.exportview.ExportView"
+            class="org.csstudio.trends.databrowser2.exportview.ExportView"
             icon="icons/export.png"
             id="org.csstudio.trends.databrowser.exportview.ExportView"
             name="%ExportView"
@@ -74,7 +74,7 @@
       </view>
       <view
             category="org.csstudio"
-            class="org.csstudio.trends.databrowser.waveformview.WaveformView"
+            class="org.csstudio.trends.databrowser2.waveformview.WaveformView"
             icon="icons/wavesample.gif"
             id="org.csstudio.trends.databrowser.waveformview.WaveformView"
             name="%WaveformView"
@@ -84,7 +84,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.trends.databrowser.Perspective"
+            class="org.csstudio.trends.databrowser2.Perspective"
             icon="icons/databrowser.png"
             id="org.csstudio.trends.databrowser.Perspective"
             name="%Databrowser">
@@ -94,7 +94,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.trends"
-            class="org.csstudio.trends.databrowser.preferences.PreferencePage"
+            class="org.csstudio.trends.databrowser2.preferences.PreferencePage"
             id="org.csstudio.trends.databrowser.preferences"
             name="%Databrowser">
       </page>
@@ -137,12 +137,12 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
+            defaultHandler="org.csstudio.trends.databrowser2.OpenDataBrowserPopup"
             id="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
             name="%Databrowser">
       </command>
       <command
-            defaultHandler="org.csstudio.trends.databrowser.NewDataBrowserHandler"
+            defaultHandler="org.csstudio.trends.databrowser2.NewDataBrowserHandler"
             id="org.csstudio.trends.databrowser.NewDataBrowserHandler"
             name="%Databrowser">
       </command>
@@ -154,7 +154,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
          <command
                commandId="org.csstudio.trends.databrowser.OpenDataBrowserPopup"
-               icon="icons/databrowser.png"
+               icon="icons/new_databrowser.png"
                label="%Databrowser"
                style="push"
                tooltip="%PopmenuTooltip">

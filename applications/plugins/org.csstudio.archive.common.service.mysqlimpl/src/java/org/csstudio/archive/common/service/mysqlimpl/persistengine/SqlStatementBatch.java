@@ -29,7 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.desy.Strings;
 
 /**
  * TODO (bknerr) :
@@ -51,7 +51,7 @@ public enum SqlStatementBatch {
     public void submitStatement(@Nonnull final String statement) {
         _statements.add(statement); // non blocking add
         synchronized (this) {
-            _sizeInBytes += StringUtil.getSizeInBytes(statement);
+            _sizeInBytes += Strings.getSizeInBytes(statement);
         }
     }
 
@@ -66,7 +66,7 @@ public enum SqlStatementBatch {
         if (polled == null) {
             return null;
         }
-        _sizeInBytes -= StringUtil.getSizeInBytes(polled);
+        _sizeInBytes -= Strings.getSizeInBytes(polled);
         return polled;
     }
 

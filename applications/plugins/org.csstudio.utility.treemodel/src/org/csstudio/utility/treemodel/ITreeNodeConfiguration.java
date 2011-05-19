@@ -39,13 +39,20 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface ITreeNodeConfiguration<T extends Enum<T>> {
 
-
     /**
-     * Returns the object class description of this tree node configuration type .
-     * @return the object class description.
+     * Returns the real root element of the tree node configuration.
+     * @return
      */
     @Nonnull
-    String getObjectClass();
+    T getRoot();
+    
+    /**
+     * Returns the explaining description of the tree node.
+     * @return returns the description
+     *
+     */
+    @Nonnull
+    String getDescription();
 
     /**
      * Returns the name of the tree node (the e.g. last RDN in LdapName).
@@ -56,20 +63,13 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
     String getNodeTypeName();
 
     /**
-     * Returns the root value (e.g. 'EpicsAlarmcfg' or 'EpicsControls') for the root type (typically 'ou').
-     * @return the root value.
-     */
-    @Nonnull
-    String getUnitTypeValue();
-
-    /**
      * The tree items a tree item can contain.
      */
     @Nonnull
     ImmutableSet<T> getNestedContainerTypes();
 
     /**
-     * Returns the object class of an LDAP rdn attribute (efan, eren, ...).
+     * Returns the node type definition for the given name. 
      *
      * @param nodeTypeName
      *            the rdn

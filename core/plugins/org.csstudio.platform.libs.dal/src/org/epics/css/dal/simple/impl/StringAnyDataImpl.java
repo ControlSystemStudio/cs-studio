@@ -4,7 +4,7 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	
-	public static final String UNINITIALIZED_STRING_VALUE = "NaN";
+	public static final String UNINITIALIZED_STRING_VALUE = "";
 	public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
 	
 	public StringAnyDataImpl(DynamicValueProperty<String> property, long beamID) {
@@ -15,11 +15,11 @@ public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	}
 
 	public Object[] anySeqValue() {
-		return new Object[]{response.getNumber()};
+		return new Object[]{response.getValue()};
 	}
 
 	public Object anyValue() {
-		return response.getNumber();
+		return response.getValue();
 	}
 
 	public double[] doubleSeqValue() {

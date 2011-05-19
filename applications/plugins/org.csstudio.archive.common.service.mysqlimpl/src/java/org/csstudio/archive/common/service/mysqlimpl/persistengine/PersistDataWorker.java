@@ -31,13 +31,13 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
+import org.csstudio.domain.desy.Strings;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.collect.Lists;
 
@@ -149,7 +149,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     private boolean stmtSizeConditionNotMet(@Nonnull final String stmtStr,
                                             @Nonnull final int numOfStmtsInBatch) {
-        final int sizeInBytes = StringUtil.getSizeInBytes(stmtStr);
+        final int sizeInBytes = Strings.getSizeInBytes(stmtStr);
         _totalSizeOfBatchInBytes += sizeInBytes;
         if (numOfStmtsInBatch < 100 && _totalSizeOfBatchInBytes < _maxBatchSizeInBytes) {
             return true;

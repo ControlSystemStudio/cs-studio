@@ -29,9 +29,9 @@ import java.io.OutputStream;
 
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**

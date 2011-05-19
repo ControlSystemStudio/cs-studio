@@ -29,6 +29,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
+import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -38,8 +39,8 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
@@ -66,25 +67,32 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
     
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
+    private final NameParser _parser;
 
     /**
      * Constructor.
      * @param searchResult the search result to build the model from
      * @param objectClassRoot the model type
+     * @param nameParser 
      */
     public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult) {
+                                   @Nonnull final ILdapSearchResult searchResult, 
+                                   @Nonnull final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
+        _parser = parser;
     }
 
     /**
      * Constructor for builder that enriches an already existing model.
      * @param model the already filled model
+     * @param nameParser 
      */
-    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
+    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model, 
+                                   @Nonnull final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
+        _parser = parser;
     }
 
     @Override
@@ -105,7 +113,8 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         try {
             return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
                                                  : model,
-                                   _searchResult);
+                                   _searchResult,
+                                   _parser);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating content model from LDAP.", e);
         }
@@ -116,11 +125,13 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Adds a given search result to the current LDAP content model.
      *
      * @param searchResult the search result .
+     * @param parser 
      * @return the enriched model
      */
     @Nonnull
     private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final ILdapSearchResult searchResult) {
+                                            @Nullable final ILdapSearchResult searchResult, 
+                                            @Nonnull final NameParser parser) {
 
         if (searchResult != null) {
             final ISubtreeNodeComponent<T> root = model.getVirtualRoot();
@@ -129,7 +140,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             try {
                 for (final SearchResult row : answerSet) {
                     final Attributes attributes = row.getAttributes();
-                    final LdapName parsedName = LdapNameUtils.parseSearchResult(row);
+                    final LdapName parsedName = (LdapName) parser.parse(row.getNameInNamespace());
                     final LdapName nameWithoutRoot = LdapNameUtils.removeRdns(parsedName,
                                                                               LdapFieldsAndAttributes.LDAP_ROOT.getRdns());
                     createLdapComponent(model,

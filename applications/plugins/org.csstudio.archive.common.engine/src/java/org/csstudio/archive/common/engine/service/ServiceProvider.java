@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 
 /**
  * Implementation of the service provider encapsulating all OSGi services for this application.

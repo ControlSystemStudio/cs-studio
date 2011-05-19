@@ -61,7 +61,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     	}
     	return transfers;
     }
-    
+
     public static Collection<Transfer> getTransfers(Collection<String> classeNames) {
     	Collection<Transfer> transfers = new ArrayList<Transfer>();
     	for (String className : classeNames) {
@@ -69,7 +69,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     	}
     	return transfers;
     }
-    
+
     public static SerializableItemTransfer getTransfer(Class<? extends Serializable> clazz) {
     	return getTransfer(clazz.getName());
     }
@@ -109,7 +109,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     {
         return new String[] { typeName };
     }
-    
+
     public String getClassName() {
 		return className;
 	}
@@ -139,7 +139,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         }
         catch (IOException ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.FINE, "Serialization failed", ex);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Serialization failed", ex);
         }
     }
 
@@ -155,7 +155,7 @@ public class SerializableItemTransfer extends ByteArrayTransfer
         final byte[] buffer = (byte[]) super.nativeToJava(transferData);
         if (buffer == null)
             return null;
-        
+
 
         final Object obj;
         try

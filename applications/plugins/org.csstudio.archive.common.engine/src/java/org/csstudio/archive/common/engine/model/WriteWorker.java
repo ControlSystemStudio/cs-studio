@@ -36,11 +36,11 @@ import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.util.DataRescueException;
 import org.csstudio.domain.desy.calc.CumulativeAverageCache;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

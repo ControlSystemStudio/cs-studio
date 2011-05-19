@@ -24,7 +24,7 @@ package org.csstudio.archive.common.engine.service;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 
 /**
  * Interface defining available services for this application.
@@ -33,5 +33,6 @@ import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
  * @since Mar 23, 2011
  */
 public interface IServiceProvider {
-    @Nonnull IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException;
+    @Nonnull
+    IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException;
 }

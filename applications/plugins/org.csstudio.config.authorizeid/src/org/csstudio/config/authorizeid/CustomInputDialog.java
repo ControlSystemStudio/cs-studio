@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -330,6 +331,8 @@ public class CustomInputDialog extends Dialog {
                         _eairCombo.select(selIndex);
                     }
                 } catch (final NamingException e) {
+                    LOG.error("Could not parse first selected element into valid LDAP name", e);
+                } catch (LdapServiceException e) {
                     LOG.error("Could not parse first selected element into valid LDAP name", e);
                 }
             }

@@ -38,9 +38,10 @@ import javax.naming.ldap.LdapName;
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.service.LdapServiceException;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -86,8 +87,8 @@ public class LdapNameUtilsHeadlessTest {
     @Test
     public void testLdapNameParsing() {
         try {
-            LdapNameUtils.parseSearchResult(RESULT);
-        } catch (final NamingException e) {
+            LdapTestHelper.LDAP_SERVICE.parseSearchResult(RESULT);
+        } catch (LdapServiceException e) {
             Assert.fail();
         }
     }

@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.naming.Context;
 
 import org.csstudio.domain.desy.preferences.AbstractPreference;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapServiceImplActivator;
 
 /**
  * Preferences (mimicked enum with inheritance).
@@ -93,6 +93,6 @@ public final class LdapPreference<T> extends AbstractPreference<T> {
     @Override
     @Nonnull
     public String getPluginID() {
-        return LdapActivator.PLUGIN_ID;
+        return LdapServiceImplActivator.PLUGIN_ID;
     }
 }

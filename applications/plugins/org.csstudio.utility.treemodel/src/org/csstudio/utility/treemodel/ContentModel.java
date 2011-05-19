@@ -55,7 +55,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     /**
      * A type object to give access to the type specific functionality of the tree components.
      */
-    private final T _configurationRoot;
+    private final T _virtualConfigurationRoot;
 
     /**
      * The virtual tree root.
@@ -70,12 +70,12 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     /**
      * Constructor.
-     * @param configurationRoot .
+     * @param virtualConfigurationRoot .
      * @throws InvalidNameException
      */
-    public ContentModel(@Nonnull final T configurationRoot) throws InvalidNameException {
-        _configurationRoot = configurationRoot;
-        initFields(_configurationRoot);
+    public ContentModel(@Nonnull final T virtualConfigurationRoot) throws InvalidNameException {
+        _virtualConfigurationRoot = virtualConfigurationRoot;
+        initFields(_virtualConfigurationRoot);
     }
 
     /**

@@ -21,12 +21,8 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 	
 	public AbstractAnyDataImpl(DynamicValueProperty<T> property, long beamID) {
 		this.property = property;
-		Response<T> r= property.getLatestValueResponse();
-		if (r==null || r.getValue()==null) {
-			response= new ResponseImpl<T>(property, null, confirmValue(this.property.getLatestReceivedValue()), "value", false, null, property.getCondition(), null, true);
-		} else {
-			this.response = r; 
-		}
+		//Response<T> r= property.getLatestValueResponse();
+		response= new ResponseImpl<T>(property, null, confirmValue(this.property.getLatestReceivedValue()), "value", false, null, property.getCondition(), null, true);
 		
 		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();

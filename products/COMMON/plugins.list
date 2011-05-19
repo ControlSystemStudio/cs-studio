@@ -26,6 +26,7 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.display.channelfinderviewer
 org.csstudio.display.pvtable
+org.csstudio.domain.desy
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
@@ -94,5 +95,6 @@ org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
 org.csstudio.workspace
+org.joda.time
 org.slf4j
 

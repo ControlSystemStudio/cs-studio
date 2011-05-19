@@ -29,15 +29,15 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterActivator;
 import org.csstudio.utility.ldapUpdater.LdapUpdaterUtil;
+import org.csstudio.utility.ldapUpdater.model.IOC;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterFileService;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.LdapUpdaterServiceException;

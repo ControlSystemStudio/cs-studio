@@ -48,6 +48,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -345,7 +346,7 @@ public class ChangelogViewPart extends ViewPart {
 				                                              SearchControls.SUBTREE_SCOPE);
 
                 try {
-                    final ILdapContentModelBuilder builder =
+                    final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
                         service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
                     builder.build();
                     final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -354,6 +355,7 @@ public class ChangelogViewPart extends ViewPart {
 
                     Collections.sort(iocNames);
                     Display.getDefault().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             _iocText.setItems(iocNames.toArray(new String[iocNames.size()]));
                         }
@@ -361,6 +363,10 @@ public class ChangelogViewPart extends ViewPart {
 
                 } catch (final CreateContentModelException e) {
                     LOG.error("Content model could not be constructed due to invalid LDAP name for root component.", e); //$NON-NLS-1$
+                    monitor.done();
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
+                } catch (LdapServiceException e) {
+                    LOG.error("Content model could not be constructed due LDAP service exception.", e); //$NON-NLS-1$
                     monitor.done();
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
                 }

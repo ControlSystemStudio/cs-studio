@@ -36,12 +36,12 @@ import java.sql.SQLException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistDataWorker;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.csstudio.platform.util.StringUtil;
 
+import com.google.common.base.Strings;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 /**
@@ -110,7 +110,7 @@ public enum ArchiveConnectionHandler {
 
         final MysqlDataSource ds = new MysqlDataSource();
         String hosts = _prefHost;
-        if (!StringUtil.isBlank(_prefFailoverHost)) {
+        if (!Strings.isNullOrEmpty(_prefFailoverHost)) {
             hosts += "," + _prefFailoverHost;
         }
         ds.setServerName(hosts);
@@ -166,7 +166,7 @@ public enum ArchiveConnectionHandler {
         } catch (final Exception e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
-        if (connection == null || StringUtil.isBlank(_prefDatabaseName)) {
+        if (connection == null || Strings.isNullOrEmpty(_prefDatabaseName)) {
             throw new ArchiveConnectionException("Connection could not be established or database name is not set.", null);
         }
         return connection;

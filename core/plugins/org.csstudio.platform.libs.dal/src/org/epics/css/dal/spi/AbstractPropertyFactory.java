@@ -270,13 +270,13 @@ public abstract class AbstractPropertyFactory extends AbstractFactorySupport
 				property.addLinkListener(l);
 			}
 			
-			if (!newProp && property.isConnected()) {
+			/*if (!newProp && property.isConnected()) {
 				l.connected(new ConnectionEvent(property, ConnectionState.CONNECTED));
 			} else if (!newProp && property.isConnectionFailed()) {
 				l.connectionFailed(new ConnectionEvent(property,
 				        ConnectionState.CONNECTION_FAILED));
-			} else 
-			{
+			} else*/
+			if (newProp) {
 				try {
 					connect(name.getRemoteName(),type, impClass, property);
 				} catch (ConnectionException e) {

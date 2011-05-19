@@ -54,6 +54,7 @@
       <plugin id="org.csstudio.diag.probe"/>
       <plugin id="org.csstudio.display.channelfinderviewer"/>
       <plugin id="org.csstudio.display.pvtable"/>
+      <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.email"/>
       <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.logbook"/>
@@ -112,7 +113,6 @@
       <plugin id="org.csstudio.utility.pvmanager.widgets"/>
       <plugin id="org.csstudio.utility.speech"/>
       <plugin id="org.csstudio.workspace"/>
-      <plugin id="org.slf4j"/>
       <plugin id="org.eclipse.compare"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
@@ -239,10 +239,12 @@
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
+      <plugin id="org.slf4j"/>
    </plugins>
 
 

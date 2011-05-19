@@ -87,10 +87,10 @@ public class BundleTestCollector {
      * @return list of test classes that match the bundle prefixes and filters passed in
      */
     @Nonnull
-    public List<Test> collectTests(@Nonnull final List<String> bundleNames,
-                                   @Nonnull final List<String> bundlesBlackList,
-                                   @Nonnull final List<String> packageBlackList,
-                                   @Nonnull final List<String> testClassFilters,
+    public List<Test> collectTests(@Nonnull final Iterable<String> bundleNames,
+                                   @Nonnull final Iterable<String> bundlesBlackList,
+                                   @Nonnull final Iterable<String> packageBlackList,
+                                   @Nonnull final Iterable<String> testClassFilters,
                                    @Nonnull final String commonSuffix) {
 
         final List<Test> tests = new ArrayList<Test>();
@@ -116,9 +116,9 @@ public class BundleTestCollector {
 
     @Nonnull
     private List<Class<?>> getTestClassesInBundle(@Nonnull final Bundle bundle,
-                                                  @Nonnull final List<String> bundleNames,
-                                                  @Nonnull final List<String> packageBlackList,
-                                                  @Nonnull final List<String> testClassFilters,
+                                                  @Nonnull final Iterable<String> bundleNames,
+                                                  @Nonnull final Iterable<String> packageBlackList,
+                                                  @Nonnull final Iterable<String> testClassFilters,
                                                   @Nonnull final String commonFilterSuffix) {
 
         final Enumeration<?> allClassNames = bundle.findEntries("/", "*.class", true); //$NON-NLS-1$
@@ -155,9 +155,9 @@ public class BundleTestCollector {
     }
 
 
-    private boolean checkForValidTest(@Nonnull final List<String> testClassFilters,
+    private boolean checkForValidTest(@Nonnull final Iterable<String> testClassFilters,
                                       @Nonnull final String commonFilterSuffix,
-                                      @Nonnull final List<String> blackList,
+                                      @Nonnull final Iterable<String> blackList,
                                       @Nonnull final Class<?> testClass) {
         final String className = testClass.getName();
 
@@ -184,7 +184,7 @@ public class BundleTestCollector {
         return false;
     }
 
-    private boolean isBlacklistedOrAbstract(@Nonnull final List<String> blackList,
+    private boolean isBlacklistedOrAbstract(@Nonnull final Iterable<String> blackList,
                                             @Nonnull final Class<?> testClass,
                                             @Nonnull final String className) {
         if (isClassBlackListed(className, blackList)) {
@@ -203,7 +203,7 @@ public class BundleTestCollector {
      * @return
      */
     private boolean isClassBlackListed(@Nonnull final String className,
-                                       @Nonnull final List<String> packageBlackList) {
+                                       @Nonnull final Iterable<String> packageBlackList) {
 
         for (final String badPackage : packageBlackList) {
             if (className.startsWith(badPackage)) {
@@ -340,8 +340,8 @@ public class BundleTestCollector {
      * @return true if the bundle name matches any of the bundles' prefixes
      */
     private static boolean isBundleValid(@Nonnull final Bundle bundle,
-                                         @Nonnull final List<String> bundles,
-                                         @Nonnull final List<String> blackList) {
+                                         @Nonnull final Iterable<String> bundles,
+                                         @Nonnull final Iterable<String> blackList) {
         final String symbolicName = bundle.getSymbolicName();
 
         for (final String bundlePrefix : bundles) {
@@ -367,7 +367,7 @@ public class BundleTestCollector {
      * @return the index in the testClassPathName where package root begins, -1 if it is not contained
      */
     private static int getPackageRoot(@Nonnull final String testClassPath,
-                                      @Nonnull final List<String> bundleRoots) {
+                                      @Nonnull final Iterable<String> bundleRoots) {
 
         for(final String root : bundleRoots) {
             final int res = testClassPath.indexOf(root);

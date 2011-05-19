@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: LDAP Service
 Bundle-SymbolicName: org.csstudio.utility.ldap.service
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.csstudio.platform;bundle-version="1.1.0",
- org.csstudio.platform.simpledal;bundle-version="1.0.0",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.utility.treemodel;bundle-version="1.3.0",
+ org.csstudio.utility.ldap.treeconfiguration;bundle-version="1.0.0",
  javax.annotation;bundle-version="1.3.0",
  com.google.common,
  org.slf4j;bundle-version="1.6.1"
@@ -14,3 +14,4 @@ Export-Package: org.csstudio.utility.ldap.service,
 Import-Package: org.osgi.framework,
  org.osgi.util.tracker;version="1.4.0"
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

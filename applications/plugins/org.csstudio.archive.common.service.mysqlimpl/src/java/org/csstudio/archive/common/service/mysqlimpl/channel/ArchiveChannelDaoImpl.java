@@ -54,9 +54,9 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.util.StringUtil;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -126,9 +126,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                  null;
 
         String dispHi = result.getString(TAB + ".display_high");
-        dispHi = StringUtil.isBlank(dispHi) ? null : dispHi;
+        dispHi = Strings.isNullOrEmpty(dispHi) ? null : dispHi;
         String dispLo = result.getString(TAB + ".display_low");
-        dispLo = StringUtil.isBlank(dispLo) ? null : dispLo;
+        dispLo = Strings.isNullOrEmpty(dispLo) ? null : dispLo;
 
         final ArchiveControlSystemId csId = new ArchiveControlSystemId(result.getLong(CS_TAB + ".id"));
         final String csName = result.getString(CS_TAB + ".name");

@@ -9,7 +9,7 @@ package org.csstudio.trends.databrowser.opiwidget;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.trends.databrowser.editor.DataBrowserEditor;
+import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;

@@ -27,8 +27,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.Record;
 
 /**
  * TODO (bknerr) :

@@ -28,12 +28,58 @@ import static org.csstudio.ui.util.ReflectUtil.*;
 
 /**
  * General purpose utility to allowing Drag-and-Drop "Drag" of any
- * adaptable or serializable object.
+ * adaptable or {@link Serializable} object.
+ *
+ * <p>As an example, assume a TableViewer or TreeViewer where the input
+ * contains Serializable objects like ProcessVariable.
+ * This would allow dragging the first of the
+ * currently selected elements:
+ * <pre>
+ * ...Viewer viewer = ...
+ * new ControlSystemDragSource(viewer.getControl())
+ * {
+ *     public Object getSelection()
+ *     {
+ *         final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+ *         return selection.getFirstElement();
+ *      }
+ * };
+ * </pre>
+ *
+ * <p>In principle this would allow dagging any number of selected PVs
+ * out of the viewer:
+ * <pre>
+ * new ControlSystemDragSource(viewer.getControl())
+ * {
+ *     public Object getSelection()
+ *     {
+ *         final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+ *         final Object[] objs = selection.toArray();
+ *         return objs;
+ *      }
+ * };
+ * </pre>
+ *
+ * <p>.. but note that it will fail. The data needs to be serialized as the actual array
+ * type, not an Object array:
+ * <pre>
+ * new ControlSystemDragSource(viewer.getControl())
+ * {
+ *     public Object getSelection()
+ *     {
+ *         final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+ *         final Object[] objs = selection.toArray();
+ *         final ProcessVariable[] pvs = Arrays.copyOf(objs, objs.length, ProcessVariable[].class);
+ *         return pvs;
+ *      }
+ * };
+ * </pre>
  *
  *
  * @author Gabriele Carcassi
  * @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class ControlSystemDragSource {
     final private DragSource source;
 
@@ -49,17 +95,17 @@ abstract public class ControlSystemDragSource {
         	@Override
         	public void dragStart(DragSourceEvent event) {
         		Object selection = getSelection();
-        		
+
         		// No selection, don't start the drag
         		if (selection == null) {
         			event.doit = false;
         			return;
         		}
-        		
+
         		// Calculate the transfer types:
         		source.setTransfer(supportedTransfers(selection));
         	}
-        	
+
             @Override
             public void dragSetData(final DragSourceEvent event)
             {   // Drag has been performed, provide data
@@ -78,7 +124,7 @@ abstract public class ControlSystemDragSource {
             }
         });
     }
-    
+
     private static Collection<String> toArrayClasses(Collection<String> classes) {
     	Collection<String> arrayClasses = new ArrayList<String>();
     	for (String clazz : classes) {
@@ -86,11 +132,11 @@ abstract public class ControlSystemDragSource {
     	}
     	return arrayClasses;
     }
-    
+
     private static String toArrayClass(String className) {
 		return "[L" + className + ";";
     }
-    
+
     private static List<String> arrayClasses(String[] classes) {
     	List<String> arrayClasses = new ArrayList<String>();
     	for (String clazz : classes) {
@@ -100,7 +146,7 @@ abstract public class ControlSystemDragSource {
     	}
     	return arrayClasses;
     }
-    
+
     private static List<String> simpleClasses(String[] classes) {
     	List<String> arrayClasses = new ArrayList<String>();
     	for (String clazz : classes) {
@@ -110,7 +156,7 @@ abstract public class ControlSystemDragSource {
     	}
     	return arrayClasses;
     }
-    
+
     private static List<Transfer> supportedSingleTransfers(Class<?> clazz) {
     	if (clazz.isArray())
     		throw new RuntimeException("Something wrong: you are asking for single transfers for an array");
@@ -125,7 +171,7 @@ abstract public class ControlSystemDragSource {
 		supportedTransfers.add(TextTransfer.getInstance());
 		return supportedTransfers;
     }
-    
+
     private static List<Transfer> supportedArrayTransfers(Class<?> arrayClass) {
     	if (!arrayClass.isArray())
     		throw new RuntimeException("Something wrong: you are asking for array transfers for an single object");
@@ -139,14 +185,14 @@ abstract public class ControlSystemDragSource {
 		supportedTransfers.add(TextTransfer.getInstance());
 		return supportedTransfers;
     }
-    
+
     private static Transfer[] supportedTransfers(Object selection) {
     	Class<?> singleClass;
     	Class<?> arrayClass;
     	if (selection instanceof Object[]) {
     		// Selection is an array
     		arrayClass = selection.getClass();
-    		
+
     		if (Array.getLength(selection) == 0) {
     			// if empty, no transfers
     			return new Transfer[0];
@@ -163,7 +209,7 @@ abstract public class ControlSystemDragSource {
     		singleClass = selection.getClass();
     		arrayClass = Array.newInstance(selection.getClass(), 0).getClass();
     	}
-    	
+
 		Set<Transfer> supportedTransfers = new HashSet<Transfer>();
 		// Add single type support, if needed
 		if (singleClass != null) {
@@ -177,8 +223,8 @@ abstract public class ControlSystemDragSource {
     /** To be implemented by derived class:
      *  Provide the control system items that should be 'dragged'
      *  from this drag source
+     *
      *  @return the selection (can be single object or array)
      */
     abstract public Object getSelection();
-	
 }

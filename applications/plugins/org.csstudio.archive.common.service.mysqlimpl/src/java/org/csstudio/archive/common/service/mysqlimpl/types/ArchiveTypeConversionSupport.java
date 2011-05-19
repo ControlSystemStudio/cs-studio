@@ -37,7 +37,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-import org.csstudio.platform.util.StringUtil;
 import org.epics.pvmanager.TypeSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 
@@ -296,7 +296,7 @@ public abstract class ArchiveTypeConversionSupport<T> extends AbstractTypeSuppor
                                                            @CheckForNull final String low,
                                                            @CheckForNull final String high) throws TypeSupportException {
         // CHECKSTYLE ON : ParameterNumber
-        if (StringUtil.isBlank(low) || StringUtil.isBlank(high)) {
+        if (Strings.isNullOrEmpty(low) || Strings.isNullOrEmpty(high)) {
             return new ArchiveChannel(id,
                                       name,
                                       datatype,

@@ -36,10 +36,10 @@ import org.csstudio.domain.desy.file.AbstractLineBasedFileContentParser;
 import org.csstudio.domain.desy.net.IpAddress;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
+import org.csstudio.utility.ldapUpdater.model.IOC;
+import org.csstudio.utility.ldapUpdater.model.Record;
 
 import com.google.common.collect.Maps;
 

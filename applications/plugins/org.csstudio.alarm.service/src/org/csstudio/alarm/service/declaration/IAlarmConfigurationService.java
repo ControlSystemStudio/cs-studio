@@ -29,6 +29,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -51,10 +52,11 @@ public interface IAlarmConfigurationService {
      * @param facilityNames the list of the simple names of the facilities.
      * @return the content model
      * @throws CreateContentModelException
+     * @throws LdapServiceException 
      */
     @Nonnull
     ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames)
-        throws CreateContentModelException;
+        throws CreateContentModelException, LdapServiceException;
 
 
     /**

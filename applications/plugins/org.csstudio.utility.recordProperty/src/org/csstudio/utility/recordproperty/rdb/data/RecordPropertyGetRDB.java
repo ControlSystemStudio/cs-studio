@@ -1,9 +1,9 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
-import static org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,6 +24,7 @@ import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
 import org.csstudio.config.savevalue.service.SaveValueServiceException;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -32,14 +33,17 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
-import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.service.util.LdapNameUtils;
 import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
 import org.csstudio.utility.recordproperty.rdb.config.OracleSettings;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -90,8 +94,7 @@ public class RecordPropertyGetRDB {
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
-
+	private static final Logger LOG = LoggerFactory.getLogger(RecordPropertyGetRDB.class);
 
 	/**
 	 * Gets all possible data that can be collected.
@@ -319,8 +322,7 @@ public class RecordPropertyGetRDB {
 					.createProcessVariableAdress("dal-epics://" + _record + "."
 							+ fieldName), ValueType.STRING);
 		} catch (final ConnectionException e) {
-			CentralLogger.getInstance().getLogger(this).info(
-					"Field value not found: " + _record + "." + fieldName);
+		    LOG.info("Field value not found: {}.{}", _record,  fieldName);
 			e.printStackTrace();
 		}
 	}
@@ -334,36 +336,38 @@ public class RecordPropertyGetRDB {
 		try {
 	        final ILdapService service = Activator.getDefault().getLdapService();
 	        if (service == null) {
-	            _log.error(this, "LDAP service unavailable."); //$NON-NLS-1$
+	            LOG.error("LDAP service unavailable."); //$NON-NLS-1$
 	            return;
 	        }
-
+	        String pvName = _record;
+	        if (pvName.contains(".") && ProcessVariableAdressFactory.getInstance().getDefaultControlSystem() == ControlSystemEnum.EPICS) {
+	            pvName = pvName.substring(0, pvName.indexOf("."));
+	        }
+	        
 	        final ILdapSearchResult result =
 	            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
-	                                                      RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
+	                                                      RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + pvName,
 	                                                      SearchControls.SUBTREE_SCOPE);
 	        if (!result.getAnswerSet().isEmpty()) {
 	            final SearchResult row = result.getAnswerSet().iterator().next();
 	            LdapName ldapName;
 	            try {
-	                ldapName = LdapNameUtils.parseSearchResult(row);
-	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, IOC.getNodeTypeName());
-	                if (iocName == null) {
-	                    _log.error(this, "No IOC was found for PV: " + _record); //$NON-NLS-1$
-	                    _nameIOC = "";
+	                ldapName = service.parseSearchResult(row);
+	                _nameIOC = LdapNameUtils.getValueOfRdnType(ldapName, IOC.getNodeTypeName());
+	                if (_nameIOC == null) {
+	                    LOG.error("No IOC was found for PV: " + _record); //$NON-NLS-1$
 	                }
-	                _nameIOC = iocName;
-	            } catch (final NamingException e) {
-	                _log.error("Naming exception while parsing the search result for " + _record + " from LDAP.", e);
-	                _nameIOC = "";
-	            }
+	            } catch (LdapServiceException e) {
+	                LOG.error("Naming exception while parsing the search result for " + _record + " from LDAP.", e);
+                }
+	            _nameIOC = "";
 	        }
 
 			final IPreferencesService prefs = Platform.getPreferencesService();
 			final String registryHost = prefs.getString(
 					"org.csstudio.config.savevalue.ui", "RmiRegistryServer",
 					null, null);
-			_log.info(this, "Connecting to RMI registry."); //$NON-NLS-1$
+			LOG.info("Connecting to RMI registry."); //$NON-NLS-1$
 			reg = LocateRegistry.getRegistry(registryHost);
 
 			final ChangelogService cs = (ChangelogService) reg
@@ -371,14 +375,13 @@ public class RecordPropertyGetRDB {
 			_entryRMI = cs.readChangelog(_nameIOC);
 
 		} catch (final RemoteException e) {
-			_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+			LOG.error("Could not connect to RMI registry", e); //$NON-NLS-1$
 
 		} catch (final NotBoundException e) {
-			_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
+			LOG.error("Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
 
 		} catch (final SaveValueServiceException e) {
-			_log.error(this,
-					"Server reported an error reading the changelog", e); //$NON-NLS-1$
+			LOG.error("Server reported an error reading the changelog", e); //$NON-NLS-1$
 
 		}
 	}

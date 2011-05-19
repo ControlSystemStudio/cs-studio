@@ -29,7 +29,7 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.desy.Strings;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.csstudio.testsuite.util.TestProviderException;
 
@@ -95,10 +95,10 @@ public final class TestSuiteFactory {
 
         final BundleTestCollector testCollector = new BundleTestCollector();
 
-        final List<Test> tests = testCollector.collectTests(StringUtil.createListFrom(BUNDLES),
-                                                            StringUtil.createListFrom(BUNDLES_BLACKLIST),
-                                                            StringUtil.createListFrom(PACKAGE_BLACKLIST),
-                                                            StringUtil.createListFrom(classFilter),
+        final List<Test> tests = testCollector.collectTests(Strings.createListFrom(BUNDLES),
+                                                            Strings.createListFrom(BUNDLES_BLACKLIST),
+                                                            Strings.createListFrom(PACKAGE_BLACKLIST),
+                                                            Strings.createListFrom(classFilter),
                                                             commonFilterSuffix);
 
         for (final Test test : tests) {

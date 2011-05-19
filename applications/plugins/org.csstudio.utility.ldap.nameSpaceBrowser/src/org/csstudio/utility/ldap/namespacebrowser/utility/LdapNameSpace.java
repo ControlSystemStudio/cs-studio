@@ -24,6 +24,10 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_SEPARATOR;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,17 +41,18 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
+import org.csstudio.utility.namespace.utility.LdapNamespaceSearchResult;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -58,16 +63,15 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
  */
 public class LdapNameSpace extends NameSpace {
     
+    private static final Logger LOG = LoggerFactory.getLogger(LdapNameSpace.class);
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapNameSpace.class);
-
-    private LdapSearchResult _resultList = new LdapSearchResult();
+    private NameSpaceSearchResult _resultList;
 
     /**
      * Constructor.
      */
     public LdapNameSpace() {
-        // Empty
+        _resultList = new LdapNamespaceSearchResult();
     }
     
     
@@ -77,42 +81,39 @@ public class LdapNameSpace extends NameSpace {
 	 */
 	@Override
 	public void start() {
-		try{
-            final NameSpaceSearchResult nameSpaceResultList = getSearchResult();
-            if (nameSpaceResultList instanceof LdapSearchResult) {
-                final ILdapService service = Activator.getDefault().getLdapService();
-                if (service == null) {
-                    LOG.error("LDAP service unavailable.");
-                    return;
-                }
-                final NameParser parser = service.getLdapNameParser();
+		try {
+		    final ILdapService service = Activator.getDefault().getLdapService();
+		    if (service == null) {
+		        LOG.error("LDAP service unavailable.");
+		        return;
+		    }
+		    final NameParser parser = service.getLdapNameParser();
+		    
+		    final LdapName searchRoot = (LdapName) parser.parse(getName());
+		    
+		    ILdapSearchResult result;
+		    if(getSelection().endsWith(FIELD_ASSIGNMENT + FIELD_WILDCARD + FIELD_SEPARATOR)) {
+		        result = service.retrieveSearchResultSynchronously(searchRoot,
+		                                                           getFilter(),
+		                                                           SearchControls.SUBTREE_SCOPE);
+		    } else {
+		        result = service.retrieveSearchResultSynchronously(searchRoot,
+		                                                           getFilter(),
+		                                                           SearchControls.ONELEVEL_SCOPE);
+		    }
+		    if (result != null) {
+		        NameSpaceSearchResult searchResult = (NameSpaceSearchResult) getSearchResult();
+		        searchResult.setCSIResultList(createCSIResultList(result));
+		        searchResult.notifyView();
+		    }
 
-                final LdapName searchRoot = (LdapName) parser.parse(getName());
 
-                ILdapSearchResult result;
-                if(getSelection().endsWith("=*,")) {
-                    result = service.retrieveSearchResultSynchronously(searchRoot,
-                                                                       getFilter(),
-                                                                       SearchControls.SUBTREE_SCOPE);
-                } else {
-                    result = service.retrieveSearchResultSynchronously(searchRoot,
-                                                                       getFilter(),
-                                                                       SearchControls.ONELEVEL_SCOPE);
-                }
-                if (result != null) {
-                    NameSpaceSearchResult searchResult = getSearchResult();
-                    searchResult.setCSIResultList(createCSIResultList(result));
-                    searchResult.notifyView();
-                }
-
-            } else{
-                // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof LdapSearchResult' nicht stimmt.
-                LOG.error("CSSView.exp.IAE.2"); //$NON-NLS-1$
-            }
         } catch (final IllegalArgumentException e) {
             LOG.error("CSSView.exp.IAE.1", e);
         } catch (final NamingException ne) {
             LOG.error("Error while parsing search root " + getName() + " as LDAP name.", ne);
+        } catch (final LdapServiceException e) {
+            LOG.error("Error while parsing search root " + getName() + " as LDAP name.", e);
         }
 	}
 
@@ -159,7 +160,7 @@ public class LdapNameSpace extends NameSpace {
 
     @Override
     @CheckForNull
-    public LdapSearchResult getSearchResult() {
+    public NameSpaceSearchResult getSearchResult() {
         return _resultList;
     }
 
@@ -167,6 +168,7 @@ public class LdapNameSpace extends NameSpace {
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public NameSpace createNew() {
         return new LdapNameSpace();
     }

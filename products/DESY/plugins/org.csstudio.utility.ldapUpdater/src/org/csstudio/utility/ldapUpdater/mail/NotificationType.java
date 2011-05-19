@@ -23,7 +23,7 @@ package org.csstudio.utility.ldapUpdater.mail;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldapUpdater.UpdaterLdapConstants;
 
 /**
