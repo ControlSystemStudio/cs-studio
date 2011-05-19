@@ -2,11 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: LDAP Authorization Plug-in
 Bundle-SymbolicName: org.csstudio.sns.ldapAuthorization;singleton:=true
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Authorization support based on LDAP
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform,
  org.csstudio.auth;bundle-version="1.0.0"
 Export-Package: org.csstudio.sns.ldapauthorization
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
