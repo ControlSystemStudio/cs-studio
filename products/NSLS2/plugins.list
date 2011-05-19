@@ -23,6 +23,7 @@ org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.logging.ui
 org.csstudio.multiChannelViewer
+org.csstudio.openfile
 org.csstudio.opibuilder
 org.csstudio.opibuilder.adl2boy
 org.csstudio.opibuilder.converter
