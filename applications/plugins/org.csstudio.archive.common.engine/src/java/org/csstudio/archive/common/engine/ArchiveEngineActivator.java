@@ -56,7 +56,6 @@ public class ArchiveEngineActivator extends Plugin {
 
         _archiveEngineServiceTracker = new ArchiveEngineServiceTracker(context);
         _archiveEngineServiceTracker.open();
-
     }
 
     /**
