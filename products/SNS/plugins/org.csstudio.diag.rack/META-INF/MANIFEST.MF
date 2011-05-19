@@ -3,18 +3,16 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Rack Plug-in
 Bundle-SymbolicName: org.csstudio.diag.rack;singleton:=true
 Bundle-Description: Display rack profiles, i.e. devices in rack layout
-Bundle-Version: 1.0.1.qualifier
-Require-Bundle: org.eclipse.swt,
- org.eclipse.jface,
+Bundle-Version: 3.0.0.qualifier
+Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.platform,
- org.csstudio.platform.ui,
  org.eclipse.ui.views,
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.utility.pv,
  org.csstudio.platform.utility.rdb,
- org.csstudio.apputil.ui,
- org.junit4
+ org.csstudio.apputil.ui
 Export-Package: org.csstudio.diag.rack.gui,
  org.csstudio.diag.rack.model,
  org.csstudio.diag.rack.view
