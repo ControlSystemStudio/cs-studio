@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.diag.pvfields.model;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.eclipse.core.runtime.PlatformObject;
-
 /** Information about a PV.
  *  <p>
  *  Meant to be derived, and derived class must implement start(), stop(), getCurrentValue()
@@ -17,7 +14,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *  @author Dave Purcell
  *  @author Kay Kasemir
  */
-public class PVInfo extends PlatformObject  implements IProcessVariable
+public class PVInfo
 {
     final private String pv_name, pv_type, field_name, field_type, orig_value;
     final private String fec, date, file_name;
@@ -56,9 +53,7 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
      *  Obviously, it can also just return the name of the control system item.
      *
      *  @return Possibly a PV name that we extracted from the value
-     *  @see IProcessVariable
 	*/
-    @Override
     public String getName()
     {
         return pv_name;
@@ -139,13 +134,6 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     public void stop()
     {
     	// NOP
-    }
-
-    // @see IProcessVariable
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
     }
 
     /** @return String for first Column in table */

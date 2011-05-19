@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SNS Plugin for PVFields RDB Data
 Bundle-SymbolicName: org.csstudio.diag.pvfields.sns;singleton:=true
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Require-Bundle: org.junit4,
+ org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.help,
- org.csstudio.platform.utility.rdb;bundle-version="1.2.0",
  org.csstudio.diag.pvfields;bundle-version="1.0.1",
- org.csstudio.utility.pv;bundle-version="1.2.0",
- org.csstudio.platform;bundle-version="1.1.1"
+ org.csstudio.platform.utility.rdb;bundle-version="1.2.0",
+ org.csstudio.utility.pv;bundle-version="1.2.0"
 Bundle-Vendor: Dave Purcell - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: SNS Database implementation for PV Fields tool

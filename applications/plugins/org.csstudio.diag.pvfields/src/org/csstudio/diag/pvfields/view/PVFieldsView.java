@@ -10,15 +10,14 @@ package org.csstudio.diag.pvfields.view;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.Activator;
 import org.csstudio.diag.pvfields.gui.GUI;
 import org.csstudio.diag.pvfields.model.PVFieldsModel;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -28,6 +27,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -151,34 +151,34 @@ public class PVFieldsView  extends ViewPart
         field_value_helper.loadSettings();
 
 
-        // Enable 'Drop' on to combo box (entry box)
-        new ProcessVariableDropTarget(cbo_name.getCombo())
-        {
-            @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
-            {
-                setPVName(name.getName());
-            }
-        };
+        // TODO Enable 'Drop' on to combo box (entry box)
+//        new ProcessVariableDropTarget(cbo_name.getCombo())
+//        {
+//            @Override
+//            public void handleDrop(IProcessVariable name,
+//                                   DropTargetEvent event)
+//            {
+//                setPVName(name.getName());
+//            }
+//        };
 
         final Table fields_table = gui.getFieldsTable().getTable();
 
-        // Enable 'Drop' on to table.
-        new ProcessVariableDropTarget(fields_table)
-        {
-            @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
-            {
-                setPVName(name.getName());
-             }
-        };
+        // TODO Enable 'Drop' on to table.
+//        new ProcessVariableDropTarget(fields_table)
+//        {
+//            @Override
+//            public void handleDrop(IProcessVariable name,
+//                                   DropTargetEvent event)
+//            {
+//                setPVName(name.getName());
+//             }
+//        };
 
         // Add empty context menu so that other CSS apps can
         // add themselves to it
-        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-        menuMgr.setRemoveAllWhenShown(true);
+        final MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         Menu menu = menuMgr.createContextMenu(fields_viewer.getControl());
         fields_viewer.getControl().setMenu(menu);
         getSite().registerContextMenu(menuMgr, fields_viewer);
@@ -191,7 +191,7 @@ public class PVFieldsView  extends ViewPart
          *  @param pv_name The PV to 'probe'
          *  @return Returns <code>true</code> when successful.
          */
-        public static boolean activateWithPV(IProcessVariable pv_name)
+        public static boolean activateWithPV(ProcessVariable pv_name)
         {
             try
             {
@@ -208,7 +208,6 @@ public class PVFieldsView  extends ViewPart
             }
             return false;
         }
-
 
         // ViewPart interface
         @Override
