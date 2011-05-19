@@ -16,6 +16,7 @@ org.csstudio.archivereader/**
 org.csstudio.archivereader.channelarchiver/**
 org.csstudio.archivereader.rdb/**
 org.csstudio.basic.epics.product/**
+org.csstudio.csdata/**
 org.csstudio.data/**
 org.csstudio.debugging.jmsmonitor/**
 org.csstudio.debugging.rdbshell/**
@@ -33,6 +34,7 @@ org.csstudio.display.pvtable/**
 org.csstudio.display.rdbtable/**
 org.csstudio.email/**
 org.csstudio.email.ui/**
+org.csstudio.java/**
 org.csstudio.logbook/**
 org.csstudio.logbook.sns/**
 org.csstudio.logbook.ui/**
@@ -69,12 +71,12 @@ org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
 org.csstudio.startup/**
-org.csstudio.startuphelper/**
 org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**
 org.csstudio.swt.xygraph/**
 org.csstudio.trends.databrowser2/**
 org.csstudio.trends.databrowser2.opiwidget/**
+org.csstudio.ui.util/**
 org.csstudio.utility.adlParser/**
 org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**
