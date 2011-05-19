@@ -1,5 +1,6 @@
 package org.csstudio.utility.channel;
 
+import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 import gov.bnl.channelfinder.api.Tag;
 
@@ -18,9 +19,9 @@ public class CSSChannelUtils {
 	 * @param channels
 	 * @return
 	 */
-	public static Collection<String> getCSSChannelNames(Collection<ICSSChannel> channels){
+	public static Collection<String> getCSSChannelNames(Collection<Channel> channels){
 		Collection<String> names = new HashSet<String>();
-		for (ICSSChannel channel : channels) {
+		for (Channel channel : channels) {
 			names.add(channel.getName());
 		}
 		return Collections.unmodifiableCollection(names);
@@ -31,10 +32,10 @@ public class CSSChannelUtils {
 	 * @param cssChannels
 	 * @return
 	 */
-	public static Collection<String> getCSSChannelTagNames(Collection<ICSSChannel> cssChannels){
+	public static Collection<String> getCSSChannelTagNames(Collection<Channel> cssChannels){
 		Collection<String> tags = new HashSet<String>();
-		for (ICSSChannel icssChannel : cssChannels) {
-			for (Tag tag : icssChannel.getChannel().getTags()) {
+		for (Channel channel : cssChannels) {
+			for (Tag tag : channel.getTags()) {
 				tags.add(tag.getName());
 			}
 		} 
@@ -46,10 +47,10 @@ public class CSSChannelUtils {
 	 * @param cssChannels
 	 * @return
 	 */
-	public static Collection<String> getCSSChannelPropertyNames(Collection<ICSSChannel> cssChannels){
+	public static Collection<String> getCSSChannelPropertyNames(Collection<Channel> cssChannels){
 		Collection<String> properties = new HashSet<String>();
-		for (ICSSChannel icssChannel : cssChannels) {
-			for (Property property : icssChannel.getChannel().getProperties()) {
+		for (Channel channel : cssChannels) {
+			for (Property property : channel.getProperties()) {
 				properties.add(property.getName());
 			}
 		} 

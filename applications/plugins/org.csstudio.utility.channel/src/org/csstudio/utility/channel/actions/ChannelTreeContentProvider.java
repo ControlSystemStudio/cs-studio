@@ -7,7 +7,6 @@ import gov.bnl.channelfinder.api.Channel;
 
 import java.util.Collection;
 
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -65,8 +64,8 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 		if(parentElement instanceof ChannelTreeModel){
 			//return ((ChannelModel) parentElement).channelInfo.get("name").toArray();
 			return ((ChannelTreeModel) parentElement).getChild().toArray();
-		}else if (parentElement instanceof ICSSChannel){
-			Channel channel = ((ICSSChannel) parentElement).getChannel();
+		}else if (parentElement instanceof Channel){
+			Channel channel = (Channel) parentElement;
 			Object[] array = new Object[4];
 			array[0] = channel.getName();
 			array[1] = channel.getOwner();
@@ -105,7 +104,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 	public boolean hasChildren(Object element) {
 		if (element instanceof ChannelTreeModel) {
 			return (((ChannelTreeModel) element).getChild().size() > 0);
-		} else if (element instanceof ICSSChannel) {
+		} else if (element instanceof Channel) {
 			return true;
 		} else if (element instanceof Collection<?>) {
 			return !((Collection<?>) element).isEmpty();
