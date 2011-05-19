@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.rdb;
 
-import org.csstudio.platform.security.SecureStorage;
+import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -47,7 +47,7 @@ public class RDBArchivePreferences
     public static String getPassword()
     {
         // Try 'secure' preference file
-        final String password = SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);    
+        final String password = SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);
         if (password != null)
             return password;
         // Fall back to plain prefs
@@ -80,7 +80,7 @@ public class RDBArchivePreferences
             return 30*60;
         return prefs.getInt(Activator.ID, SQL_TIMEOUT, 30*60, null);
     }
-    
+
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>
