@@ -1,5 +1,5 @@
 com.google.common
-avax.annotation
+javax.annotation
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.auth
