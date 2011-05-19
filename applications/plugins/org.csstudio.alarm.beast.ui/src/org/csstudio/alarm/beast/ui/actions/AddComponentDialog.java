@@ -53,9 +53,14 @@ public class AddComponentDialog extends TitleAreaDialog
             final AlarmTreeItem parent)
     {
         super(shell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);
         this.model = model;
         this.parent_item = parent;
+    }
+
+    @Override
+    protected boolean isResizable()
+    {
+        return true;
     }
 
     /** @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell) */

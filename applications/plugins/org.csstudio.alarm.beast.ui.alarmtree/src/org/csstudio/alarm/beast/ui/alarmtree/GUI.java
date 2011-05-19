@@ -13,7 +13,6 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
-import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
@@ -94,8 +93,8 @@ public class GUI implements AlarmClientModelListener
         });
 
         connectContextMenu(site);
-        // Allow 'drag' of alarm info as text
-        new AlarmPVDragSource(tree_viewer.getTree(), tree_viewer);
+        // TODO Allow 'drag' of alarm info as text
+        // new AlarmPVDragSource(tree_viewer.getTree(), tree_viewer);
     }
 
     /** Create the GUI elements */

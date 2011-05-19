@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.Messages;
@@ -24,6 +23,7 @@ import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -150,9 +150,27 @@ public class GUI implements AlarmClientModelListener
 
         connectContextMenu(active_table_viewer, site);
         connectContextMenu(acknowledged_table_viewer, site);
-        // Allow 'drag' of alarm info as text
-        new AlarmPVDragSource(active_table_viewer.getTable(), getSelectedAlarms());
-        new AlarmPVDragSource(acknowledged_table_viewer.getTable(), getSelectedAckAlarms());
+        // TODO Allow 'drag' of alarm info as text
+        new ControlSystemDragSource(active_table_viewer.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final Object[] sel = ((IStructuredSelection)active_table_viewer.getSelection()).toArray();
+                final List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+                for (Object obj : sel)
+                    if (obj instanceof AlarmTreePV)
+                        pvs.add((AlarmTreePV) obj);
+                if (pvs.size() <= 0)
+                    return null;
+                if (pvs.size() == 1)
+                    return pvs.get(0);
+                return pvs.toArray(new AlarmTreePV[pvs.size()]);
+            }
+        };
+
+        // TODO Allow 'drag' of alarm info as text
+        // new AlarmPVDragSource(acknowledged_table_viewer.getTable(), getSelectedAckAlarms());
     }
 
     /** @return Provider for selected active alarms */

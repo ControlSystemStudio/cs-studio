@@ -19,7 +19,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 
 /** Information about an alarm update
  *  @author Kay Kasemir
@@ -51,7 +51,7 @@ public class AlarmUpdateInfo
                 message.getString(JMSAlarmMessage.CURRENT_SEVERITY));
         final String current_message = message.getString(JMSAlarmMessage.CURRENT_STATUS);
         final String value = message.getString(JMSAlarmMessage.VALUE);
-        final String timetext = message.getString(JMSLogMessage.EVENTTIME);
+        final String timetext = message.getString(JMSAlarmMessage.EVENTTIME);
         Date time;
         try
         {

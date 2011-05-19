@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 /** Adapt alarm model item to CSS data types
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AdapterFactory implements IAdapterFactory
 {
     @Override
@@ -29,6 +30,7 @@ public class AdapterFactory implements IAdapterFactory
         final AlarmTreeLeaf leaf = (AlarmTreeLeaf) adaptableObject;
         if (adapterType == ProcessVariable.class)
             return new ProcessVariable(leaf.getName());
-        return leaf.getName();
+        // Else: provide String
+        return leaf.getVerboseDescription() + "\n";
     }
 }

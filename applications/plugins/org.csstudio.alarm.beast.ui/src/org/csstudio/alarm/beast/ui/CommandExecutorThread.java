@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import java.io.File;
 
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 
 /** Thread for executing a (system) command.
  *  On Unix, that could be anything in the PATH.
@@ -24,7 +24,7 @@ import org.csstudio.platform.util.StringUtil;
  *  finishes, and calls back in case of an error.
  *  When the command finishes right away OK or runs longer,
  *  we leave it be.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
@@ -45,7 +45,7 @@ abstract public class CommandExecutorThread extends Thread
         /** Command ended with an error code within the wait period */
         FINISHED_ERROR
     }
-    
+
     /**  Directory where to run the command */
     final private String dir_name;
 
@@ -54,7 +54,7 @@ abstract public class CommandExecutorThread extends Thread
 
     /**  Time to wait for completion in seconds */
     final private int wait;
-    
+
     /** Command to run. Format depends on OS */
     private CommandState state = CommandState.UNKNOWN;
 
@@ -71,7 +71,7 @@ abstract public class CommandExecutorThread extends Thread
         this.dir_name = dir_name;
         this.wait = wait;
     }
-    
+
     /** @return Command state */
     public CommandState getCommandState()
     {
@@ -95,7 +95,7 @@ abstract public class CommandExecutorThread extends Thread
         final Process process;
         try
         {
-   	     	final String[] cmd = StringUtil.splitIgnoreInQuotes(command, ' ', true);
+   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = new ProcessBuilder(cmd).directory(dir).start();
         }
         catch (Throwable ex)
@@ -108,7 +108,7 @@ abstract public class CommandExecutorThread extends Thread
         new StreamSwallowThread(process.getInputStream()).start();
         final StreamStringReaderThread stderr = new StreamStringReaderThread(process.getErrorStream());
         stderr.start();
-        
+
         // Could use process.waitFor() to wait for the command to exit,
         // but that can take a long time, and then the user has probably
         // forgotten about the command and no longer needs to know the result.

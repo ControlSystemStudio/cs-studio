@@ -10,7 +10,7 @@
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
          <adapter
-               type="java.lank.String">
+               type="java.lang.String">
          </adapter>
       </factory>
    </extension>
