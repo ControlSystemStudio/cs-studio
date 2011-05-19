@@ -3,11 +3,12 @@ package org.csstudio.multichannelviewer;
 import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelPropertyNames;
 import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.List;
 
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,7 @@ import ca.odell.glazedlists.event.ListEvent;
 import ca.odell.glazedlists.event.ListEventListener;
 
 public class ChannelsListView extends MultiChannelPlotAwareView implements
-		ListEventListener<ICSSChannel> {
+		ListEventListener<Channel> {
 
 	public static final String ID = "org.csstudio.multichannelviewer.ChannelListView";
 
@@ -120,7 +121,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 
 	private void createTableColumn(TableViewer viewer, String text,
 			String tooltip, int index, int width,
-			final IDirectionalComparator<ICSSChannel> comparator) {
+			final IDirectionalComparator<Channel> comparator) {
 		final int col = index;
 		final TableColumn tvc = new TableColumn(viewer.getTable(), SWT.NONE);
 		tvc.setText(text);
@@ -138,7 +139,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 	}
 
 	private void sortColumn(int col,
-			IDirectionalComparator<ICSSChannel> comparator) {
+			IDirectionalComparator<Channel> comparator) {
 		int dir = SWT.UP;
 		int current = viewer.getTable().getSortDirection();
 		TableColumn tc = viewer.getTable().getColumn(col);
@@ -159,7 +160,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 	}
 
 	@Override
-	public void listChanged(ListEvent<ICSSChannel> listChanges) {
+	public void listChanged(ListEvent<Channel> listChanges) {
 		// TODO move this to the channelsGroup and provide a separate event.
 		if (viewer.getTable().getColumnCount() != channelsGroup
 				.getUniqueColCount()) {
@@ -172,7 +173,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 			viewer.getTable().setRedraw(false);
 			// get the list PRIOR to looping, otherwise it won't be the same
 			// list as it's modified continuously
-			final List<ICSSChannel> changeList = listChanges.getSourceList();
+			final List<Channel> changeList = listChanges.getSourceList();
 
 			while (listChanges.next()) {
 				int sourceIndex = listChanges.getIndex();
@@ -188,7 +189,7 @@ public class ChannelsListView extends MultiChannelPlotAwareView implements
 							channelsGroup.getElementAtIndex(sourceIndex), true);
 					break;
 				case ListEvent.INSERT:
-					final ICSSChannel obj = changeList.get(sourceIndex);
+					final Channel obj = changeList.get(sourceIndex);
 					viewer.insert(obj, sourceIndex);
 					break;
 				case ListEvent.UPDATE:

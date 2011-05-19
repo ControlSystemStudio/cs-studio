@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.csstudio.utility.channel.ICSSChannel;
-import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -59,9 +57,9 @@ public class AddTagsJobUnitTest {
 
 	@Test
 	public void addTagsJobTest() {
-		Collection<ICSSChannel> channels = new ArrayList<ICSSChannel>();
-		channels.add(CSSChannelFactory.getInstance().getCSSChannel(ch1.build()));
-		channels.add(CSSChannelFactory.getInstance().getCSSChannel(ch2.build()));
+		Collection<Channel> channels = new ArrayList<Channel>();
+		channels.add(ch1.build());
+		channels.add(ch2.build());
 		Job job = new AddTagsJob("addTags", channels, tag("cssUnitTestTag",
 				"tagOwner"));
 		job.schedule();

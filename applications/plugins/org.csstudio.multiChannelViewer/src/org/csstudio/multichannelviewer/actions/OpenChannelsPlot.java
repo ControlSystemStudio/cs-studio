@@ -1,11 +1,12 @@
 package org.csstudio.multichannelviewer.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.Iterator;
 
 import org.csstudio.multichannelviewer.ChannelsPlot;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
 import org.csstudio.multichannelviewer.model.IChannelGroup;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,7 +39,7 @@ public class OpenChannelsPlot implements IObjectActionDelegate{
 				& (selection instanceof IStructuredSelection)) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			channels = new CSSChannelGroup("New Channel Group");
-			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
+			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
 				channels.addChannel(iterator.next());
 			}

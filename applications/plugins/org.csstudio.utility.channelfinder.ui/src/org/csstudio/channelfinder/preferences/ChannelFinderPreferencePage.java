@@ -1,21 +1,17 @@
 package org.csstudio.channelfinder.preferences;
 
-import gov.bnl.channelfinder.api.ChannelFinderClient;
-
-import java.util.prefs.Preferences;
-
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.*;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.auth.security.SecureStorage;
 import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.PreferenceConstants;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * This class represents a preference page that is contributed to the

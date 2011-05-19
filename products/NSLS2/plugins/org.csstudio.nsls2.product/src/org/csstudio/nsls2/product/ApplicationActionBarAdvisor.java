@@ -34,24 +34,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
 	private IAction create_new;
-	private IAction close;
-	private IAction close_all;
 	private IAction save;
-	private IAction save_as;
-	private IAction save_all;
-	private IAction importAction;
-	private IAction exportAction;
-	private IAction logout;
-	private IAction quit;
-	
-	private IAction new_window;
-	private IContributionItem open_windows;
 	private IAction intro;
 	private IAction help;
-	private IAction cheat;
 	private IAction about;
-	private IContributionItem menu_perspectives;
-	private IContributionItem menu_views;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -61,33 +47,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	protected void makeActions(IWorkbenchWindow window) {
 		create_new = ActionFactory.NEW.create(window);
 		register(create_new);
-
-		close = ActionFactory.CLOSE.create(window);
-		register(close);
-
-		close_all = ActionFactory.CLOSE_ALL.create(window);
-		register(close_all);
-
+		
 		save = ActionFactory.SAVE.create(window);
 		register(save);
-
-		save_as = ActionFactory.SAVE_AS.create(window);
-		register(save_as);
-
-		save_all = ActionFactory.SAVE_ALL.create(window);
-		register(save_all);
-
-		importAction = ActionFactory.IMPORT.create(window);
-		register(importAction);
-
-		exportAction = ActionFactory.EXPORT.create(window);
-		register(exportAction);
-
-		quit = ActionFactory.QUIT.create(window);
-		register(quit);
-
-		new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
-		register(new_window);
 
 		help = ActionFactory.HELP_CONTENTS.create(window);
 		register(help);
@@ -97,67 +59,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 				Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
 		register(about);
 
-		new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
-		register(new_window);
-
-		open_windows = ContributionItemFactory.OPEN_WINDOWS.create(window);
-
-		menu_perspectives = ContributionItemFactory.PERSPECTIVES_SHORTLIST
-				.create(window);
-		menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
-
 		intro = ActionFactory.INTRO.create(window);
 		register(intro);
 
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
-		// See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
-		// for IDE example.
-//		createFileMenu(menuBar);
-//		createCSSMenu(menuBar);
-		// Placeholder for possible additions
 		menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		createWindowMenu(menuBar);
-		createHelpMenu(menuBar);
-	}
-
-	/** Create the window menu. */
-	private void createWindowMenu(IMenuManager menubar) {
-		final MenuManager menu_window = new MenuManager(Messages.Menu_Window,
-				IWorkbenchActionConstants.M_WINDOW);
-		menu_window.add(new_window);
-		menu_window.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
-		final MenuManager persp_sub = new MenuManager(
-				Messages.Menu_Perspectives);
-		persp_sub.add(menu_perspectives);
-		menu_window.add(persp_sub);
-
-		final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
-		view_sub.add(menu_views);
-		menu_window.add(view_sub);
-		menu_window.add(open_windows);
-		menubar.add(menu_window);
-	}
-
-	/** Create the help menu. */
-	private void createHelpMenu(IMenuManager menubar) {
-		final MenuManager menu_help = new MenuManager(Messages.Menu_Help,
-				IWorkbenchActionConstants.M_HELP);
-		menu_help.add(intro);
-		menu_help.add(new Separator());
-		menu_help.add(help);
-		// menu_help.add(cheat);
-		menu_help.add(new Separator());
-		menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_START));
-		menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_END));
-		menu_help.add(new Separator());
-		menu_help.add(about);
-		menu_help.add(new Separator());
-		menu_help.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		menu_help.add(new Separator());
-		menubar.add(menu_help);
 	}
 
 	@Override
@@ -174,7 +82,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		file_bar.add(new Separator());
 
 		user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
-		user_bar.add(logout);
 
 	}
 
