@@ -3,18 +3,19 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Message History
 Bundle-SymbolicName: org.csstudio.alarm.beast.msghist;singleton:=true
 Bundle-Description: Table viewer for CSS Message log
-Bundle-Version: 2.5.2.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.eclipse.jface,
  org.eclipse.core.runtime,
  org.eclipse.ui,
+ org.eclipse.ui.views;bundle-version="3.5.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.csdata;bundle-version="3.0.0",
  org.csstudio.apputil,
  org.csstudio.apputil.ui;bundle-version="1.1.8",
  org.csstudio.platform.utility.rdb,
- org.csstudio.platform,
- org.csstudio.platform.ui,
  org.csstudio.auth;bundle-version="1.0.0",
  org.csstudio.auth.ui;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

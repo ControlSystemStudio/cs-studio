@@ -175,9 +175,9 @@ public class Plot
      */
     private void hookDragAndDrop(final Canvas canvas)
     {
-        // TODO Allow dropped arrays
-        new ControlSystemDropTarget(canvas, ChannelInfo.class, ProcessVariable.class,
-                ArchiveDataSource.class, String.class)
+        // Allow dropped arrays
+        new ControlSystemDropTarget(canvas, ChannelInfo[].class, ProcessVariable[].class,
+                ArchiveDataSource[].class, String.class)
         {
             @Override
             public void handleDrop(final Object item)
@@ -185,21 +185,24 @@ public class Plot
                 if (listener == null)
                     return;
 
-                if (item instanceof ChannelInfo)
+                if (item instanceof ChannelInfo[])
                 {
-                    final ChannelInfo channel = (ChannelInfo) item;
-                    listener.droppedPVName(channel.getProcessVariable(),
+                    final ChannelInfo[] channels = (ChannelInfo[]) item;
+                    for (ChannelInfo channel : channels)
+                        listener.droppedPVName(channel.getProcessVariable(),
                                 channel.getArchiveDataSource());
                 }
-                else if (item instanceof ProcessVariable)
+                else if (item instanceof ProcessVariable[])
                 {
-                    final ProcessVariable pv = (ProcessVariable) item;
-                    listener.droppedPVName(pv, null);
+                    final ProcessVariable[] pvs = (ProcessVariable[]) item;
+                    for (ProcessVariable pv : pvs)
+                        listener.droppedPVName(pv, null);
                 }
-                else if (item instanceof ArchiveDataSource)
+                else if (item instanceof ArchiveDataSource[])
                 {
-                    final ArchiveDataSource archive = (ArchiveDataSource) item;
-                    listener.droppedPVName(null, archive);
+                    final ArchiveDataSource[] archives = (ArchiveDataSource[]) item;
+                    for (ArchiveDataSource archive : archives)
+                        listener.droppedPVName(null, archive);
                 }
                 else if (item instanceof String)
                     listener.droppedName(item.toString());

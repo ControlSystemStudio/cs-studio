@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.preferences;
 
-import org.csstudio.platform.ui.swt.stringtable.RowEditDialog;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Text;
 public class ArchiveDataSourceEditor extends RowEditDialog
 {
     private Text name, key, url;
-    
+
     /** Initialize */
     public ArchiveDataSourceEditor(final Shell shell)
     {
@@ -39,7 +39,7 @@ public class ArchiveDataSourceEditor extends RowEditDialog
         super.configureShell(newShell);
         newShell.setText(Messages.PrefPage_Archives);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected Control createDialogArea(Composite parent)
@@ -48,14 +48,14 @@ public class ArchiveDataSourceEditor extends RowEditDialog
         final Composite composite = new Composite(parent_composite, SWT.NONE);
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         composite.setLayout(new GridLayout(2, false));
-     
+
         // Name: __name____
         Label l = new Label(composite, 0);
         l.setText(Messages.NameLbl);
         l.setLayoutData(new GridData(0, 0, false, false));
         name = new Text(composite, SWT.BORDER);
         name.setText(rowData[0]);
-        name.setLayoutData(new GridData(SWT.FILL, 0, true, false));        
+        name.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // Key: __key____
         l = new Label(composite, 0);
@@ -63,7 +63,7 @@ public class ArchiveDataSourceEditor extends RowEditDialog
         l.setLayoutData(new GridData(0, 0, false, false));
         key = new Text(composite, SWT.BORDER);
         key.setText(rowData[1]);
-        key.setLayoutData(new GridData(SWT.FILL, 0, true, false));        
+        key.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // URL: __url____
         l = new Label(composite, 0);
@@ -74,8 +74,8 @@ public class ArchiveDataSourceEditor extends RowEditDialog
         url.setText(rowData[2]);
         final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.widthHint = 500;
-        url.setLayoutData(gd);        
-        
+        url.setLayoutData(gd);
+
         return parent_composite;
     }
 
@@ -88,5 +88,5 @@ public class ArchiveDataSourceEditor extends RowEditDialog
         rowData[1] = key == null ? "" : key.getText().trim();
         rowData[2] = url == null ? "" : url.getText().trim();
         super.okPressed();
-    }   
+    }
 }

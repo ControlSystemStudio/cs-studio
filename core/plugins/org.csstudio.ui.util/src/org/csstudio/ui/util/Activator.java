@@ -1,23 +1,29 @@
 package org.csstudio.ui.util;
 
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+@SuppressWarnings("nls")
 public class Activator extends Plugin implements BundleActivator {
 
-	// The shared instance
+    /** Plugin ID defined in MANIFEST.MF */
+    final public static String ID = "org.csstudio.ui.util";
+
+    // The shared instance
 	private static Activator plugin;
-	
+
 	private BundleContext context;
-    
+
 	/**
 	 * The constructor
 	 */
 	public Activator() {
 		plugin = this;
 	}
-	
+
 	@Override
     public void start(BundleContext context) throws Exception
     {
@@ -29,10 +35,10 @@ public class Activator extends Plugin implements BundleActivator {
 	@Override
     public void stop(BundleContext context) throws Exception
     {
-		setPlugin(this);	
+		setPlugin(this);
 	    super.stop(context);
     }
-	
+
 	public BundleContext getContext() {
 		return context;
 	}
@@ -47,5 +53,14 @@ public class Activator extends Plugin implements BundleActivator {
 	public static Activator getDefault()
     {
 		return plugin;
+	}
+
+	/** Obtain image descriptor for image in plugin
+	 *  @param path Path to image within plugin
+	 *  @return {@link ImageDescriptor}
+	 */
+	public static ImageDescriptor getImageDescriptor(final String path)
+	{
+	    return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
 	}
 }

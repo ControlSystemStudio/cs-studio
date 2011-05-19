@@ -15,6 +15,7 @@ import org.csstudio.alarm.beast.msghist.model.ModelListener;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -40,6 +41,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** SWT GUI for Model: Table of messages
@@ -302,6 +304,7 @@ public class GUI implements ModelListener
         final MenuManager manager = new MenuManager();
         manager.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, "Show Detail"));
         manager.add(new ExportAction(table.getShell(), model));
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
         table.setMenu(manager.createContextMenu(table));
 

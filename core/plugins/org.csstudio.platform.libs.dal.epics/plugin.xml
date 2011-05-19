@@ -6,7 +6,8 @@
       <plug
             id="EPICS"
             name="EPICS plug"
-            propertyFactoryClass="org.epics.css.dal.epics.PropertyFactoryImpl"/>
+            propertyFactoryClass="org.epics.css.dal.epics.PropertyFactoryImpl"
+            propertyFactoryService="org.csstudio.platform.libs.dal.epics.Activator"/>
    </extension>
 
 </plugin>
