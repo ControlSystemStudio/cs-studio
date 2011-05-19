@@ -15,7 +15,6 @@ import org.csstudio.apputil.macros.MacroUtil;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.display.pace.Messages;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -35,7 +34,7 @@ import org.csstudio.utility.pv.PVListener;
  *
  *   reviewed by Delphy 01/29/09
  */
-public class Cell implements PVListener, IProcessVariable
+public class Cell implements PVListener
 {
     /** Date format used for updating the last_date_pv */
     final private static DateFormat date_format =
@@ -291,18 +290,7 @@ public class Cell implements PVListener, IProcessVariable
         instance.getModel().fireCellUpdate(this);
     }
 
-    // IProcessVariable
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Object getAdapter(final Class adapter)
-    {
-        return null;
-    }
-
-    /** @return PV name
-     *  @see IProcessVariable
-     */
-    @Override
+    /** @return PV name */
     public String getName()
     {
         return pv_name;
@@ -314,13 +302,6 @@ public class Cell implements PVListener, IProcessVariable
         if (last_comment_pv == null)
             return ""; //$NON-NLS-1$
         return last_comment_pv.getName();
-    }
-
-    // IProcessVariable
-    @Override
-    public String getTypeId()
-    {
-        return IProcessVariable.TYPE_ID;
     }
 
     /** @return String representation for debugging */
