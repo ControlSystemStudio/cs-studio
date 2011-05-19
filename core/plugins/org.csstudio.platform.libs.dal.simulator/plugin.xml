@@ -6,7 +6,9 @@
       <plug
             id="Simulator"
             name="Simulator Plug"
-            propertyFactoryClass="org.epics.css.dal.simulation.PropertyFactoryImpl">
+            propertyFactoryClass="org.epics.css.dal.simulation.PropertyFactoryImpl"
+            propertyFactoryService="org.csstudio.platform.libs.dal.simulator.Activator"
+            propertyFactoryServiceClass="org.csstudio.platform.libs.dal.simulator.Activator">
       </plug>
    </extension>
 
