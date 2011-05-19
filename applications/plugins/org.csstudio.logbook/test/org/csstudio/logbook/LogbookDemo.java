@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 import org.junit.Test;
 
-/** JUnit Plug-in test, requires exactly one plugin that provides the
+/** JUnit Plug-in demo, requires exactly one plugin that provides the
  *  ILogbookFactory extension point to be loaded.
  *
  *  Should run via "Run As/JUnit Plug-in Test",
@@ -33,7 +33,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LogbookTest
+public class LogbookDemo
 {
     private File createImage() throws Exception
     {
