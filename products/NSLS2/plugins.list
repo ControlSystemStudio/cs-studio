@@ -75,10 +75,11 @@ org.csstudio.platform.libs.log4j
 org.csstudio.platform.ui
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.rdb
-org.csstudio.platform.workspace
+org.csstudio.remote
 org.csstudio.startup
 org.csstudio.startuphelper
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
+org.csstudio.workspace
 
