@@ -14,6 +14,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.pvfields.Activator;
 import org.csstudio.diag.pvfields.gui.GUI;
 import org.csstudio.diag.pvfields.model.PVFieldsModel;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -48,18 +49,18 @@ public class PVFieldsView  extends ViewPart
     private PVFieldsModel model = null;
     private GUI gui;
     private IMemento memento;
-	private ComboViewer cbo_name;
+    private ComboViewer cbo_name;
     private ComboHistoryHelper pv_name_helper;
-	private ComboViewer field_value;
+    private ComboViewer field_value;
     private ComboHistoryHelper field_value_helper;
 
     public PVFieldsView()
     {
-    	try
-    	{
-    		model = new PVFieldsModel();
-    	}
-    	catch (Exception ex)
+        try
+        {
+            model = new PVFieldsModel();
+        }
+        catch (Exception ex)
         {
             Activator.getLogger().log(Level.SEVERE, "PV Field Model Exception ", ex); //$NON-NLS-1$
         }
@@ -102,28 +103,27 @@ public class PVFieldsView  extends ViewPart
         pv_name_helper = new ComboHistoryHelper(
                 Activator.getDefault().getDialogSettings(),
                 PV_LIST_TAG, cbo_name.getCombo(),10,true)
-		{
-		    @Override
-		    public void newSelection(String pv_name)
-		    {
-		        setPVName(pv_name);
-		        pv_name_helper.addEntry(pv_name);
-		    }
-		};
+        {
+            @Override
+            public void newSelection(String pv_name)
+            {
+                setPVName(pv_name);
+                pv_name_helper.addEntry(pv_name);
+            }
+        };
 
-		field_value_helper = new ComboHistoryHelper(
+        field_value_helper = new ComboHistoryHelper(
                 Activator.getDefault().getDialogSettings(),
                 FIELD_LIST_TAG, field_value.getCombo(),10,true)
-		{
-		    @Override
-		    public void newSelection(String field_value)
-		    {
-		        field_value_helper.addEntry(field_value);
-		    }
-		};
+        {
+            @Override
+            public void newSelection(String field_value)
+            {
+                field_value_helper.addEntry(field_value);
+            }
+        };
 
-
-		if (memento != null)
+        if (memento != null)
         {
             String pv_name = memento.getString(PV_TAG);
             String field = memento.getString(FIELD_TAG);
@@ -133,7 +133,6 @@ public class PVFieldsView  extends ViewPart
                 setPVName(pv_name);
         }
 
-
         // Stop the press when we're no more
         cbo_name.getCombo().addDisposeListener(new DisposeListener()
         {
@@ -141,7 +140,7 @@ public class PVFieldsView  extends ViewPart
             public void widgetDisposed(DisposeEvent e)
             {
                 pv_name_helper.saveSettings();
-            	field_value_helper.saveSettings();
+                field_value_helper.saveSettings();
             }
         });
 
@@ -150,30 +149,27 @@ public class PVFieldsView  extends ViewPart
         pv_name_helper.loadSettings();
         field_value_helper.loadSettings();
 
-
-        // TODO Enable 'Drop' on to combo box (entry box)
-//        new ProcessVariableDropTarget(cbo_name.getCombo())
-//        {
-//            @Override
-//            public void handleDrop(IProcessVariable name,
-//                                   DropTargetEvent event)
-//            {
-//                setPVName(name.getName());
-//            }
-//        };
+        // Enable 'Drop' on to combo box (entry box)
+        new ControlSystemDropTarget(cbo_name.getCombo(), ProcessVariable.class, String.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                PVFieldsView.this.handleDrop(item);
+            }
+        };
 
         final Table fields_table = gui.getFieldsTable().getTable();
 
-        // TODO Enable 'Drop' on to table.
-//        new ProcessVariableDropTarget(fields_table)
-//        {
-//            @Override
-//            public void handleDrop(IProcessVariable name,
-//                                   DropTargetEvent event)
-//            {
-//                setPVName(name.getName());
-//             }
-//        };
+        // Enable 'Drop' on to table.
+        new ControlSystemDropTarget(fields_table, ProcessVariable.class, String.class)
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                PVFieldsView.this.handleDrop(item);
+            }
+        };
 
         // Add empty context menu so that other CSS apps can
         // add themselves to it
@@ -184,46 +180,57 @@ public class PVFieldsView  extends ViewPart
         getSite().registerContextMenu(menuMgr, fields_viewer);
     }
 
-        /** Create or re-display a probe view with the given PV name.
-         *  <p>
-         *  Invoked by the PVpopupAction.
-         *
-         *  @param pv_name The PV to 'probe'
-         *  @return Returns <code>true</code> when successful.
-         */
-        public static boolean activateWithPV(ProcessVariable pv_name)
-        {
-            try
-            {
-                IWorkbench workbench = PlatformUI.getWorkbench();
-                IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-                IWorkbenchPage page = window.getActivePage();
-                PVFieldsView pvFields = (PVFieldsView) page.showView(PVFieldsView.ID);
-                pvFields.setPVName(pv_name.getName());
-                return true;
-            }
-            catch (Exception e)
-            {
-                Activator.getLogger().log(Level.SEVERE, "PVFieldsView activation error", e); //$NON-NLS-1$
-            }
-            return false;
-        }
+    /** Set PV name from dropped item, if possible
+     *  @param item ProcessVariable or String
+     */
+    private void handleDrop(final Object item)
+    {
+        if (item instanceof ProcessVariable)
+            setPVName(((ProcessVariable)item).getName());
+        else if (item instanceof String)
+            setPVName(item.toString().trim());
+    }
 
-        // ViewPart interface
-        @Override
-        public void setFocus()
+    /** Create or re-display a probe view with the given PV name.
+     *  <p>
+     *  Invoked by the PVpopupAction.
+     *
+     *  @param pv_name The PV to 'probe'
+     *  @return Returns <code>true</code> when successful.
+     */
+    public static boolean activateWithPV(ProcessVariable pv_name)
+    {
+        try
         {
-        	if (gui != null)
-        		gui.getPVViewer().getCombo().setFocus();
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            IWorkbenchPage page = window.getActivePage();
+            PVFieldsView pvFields = (PVFieldsView) page.showView(PVFieldsView.ID);
+            pvFields.setPVName(pv_name.getName());
+            return true;
         }
+        catch (Exception e)
+        {
+            Activator.getLogger().log(Level.SEVERE, "PVFieldsView activation error", e); //$NON-NLS-1$
+        }
+        return false;
+    }
 
-        private void setPVName(final String pv_name)
-        {
-        	String field = gui.getFieldValue().trim();
-            field_value_helper.addEntry(field);
-            if (field.length() <= 0)
-            	field = null;
-        	gui.setPVName(pv_name,field);
-            pv_name_helper.addEntry(pv_name);
-        }
+    // ViewPart interface
+    @Override
+    public void setFocus()
+    {
+        if (gui != null)
+            gui.getPVViewer().getCombo().setFocus();
+    }
+
+    private void setPVName(final String pv_name)
+    {
+        String field = gui.getFieldValue().trim();
+        field_value_helper.addEntry(field);
+        if (field.length() <= 0)
+            field = null;
+        gui.setPVName(pv_name,field);
+        pv_name_helper.addEntry(pv_name);
+    }
 }
