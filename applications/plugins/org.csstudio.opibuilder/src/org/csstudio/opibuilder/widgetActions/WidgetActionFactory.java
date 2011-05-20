@@ -76,7 +76,7 @@ public class WidgetActionFactory {
 		Assert.isNotNull(actionType);
 		switch (actionType) {
 		case OPEN_DISPLAY:
-			return new OpenOPIInEditorAction();		
+			return new OpenDisplayAction();		
 		case OPEN_OPI_IN_VIEW:
 			return new OpenOPIInViewAction();
 		case WRITE_PV:
