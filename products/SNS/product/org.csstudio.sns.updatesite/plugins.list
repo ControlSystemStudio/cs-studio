@@ -17,6 +17,7 @@ org.csstudio.archivereader.channelarchiver/**
 org.csstudio.archivereader.rdb/**
 org.csstudio.basic.epics.product/**
 org.csstudio.csdata/**
+org.csstudio.csdata.clipboard/**
 org.csstudio.data/**
 org.csstudio.debugging.jmsmonitor/**
 org.csstudio.debugging.rdbshell/**
