@@ -15,10 +15,10 @@
     
     <p>There are several different type of widget properties, 
     such as Boolean, Double, Color, Font and so on.
-    The method  <code>widgetController.setPropertyValue(prop_id, value)</code> only accepts certain 
+    The method  <code>widget.setPropertyValue(prop_id, value)</code> only accepts certain 
     value types corresponding to the property type. Here is the list of the acceptable value types for
     each type of property. <b>Property Value Type</b> is the type of the object returned from
-    <code>widgetController.getPropertyValue(prop_id)</code>.
+    <code>widget.getPropertyValue(prop_id)</code>.
     </p>
     
     <table BORDER="1" WIDTH="80%" CELLPADDING="3" CELLSPACING="0">
@@ -83,8 +83,8 @@ Boolean Property</H3>
 <B>Property Value Type</B><DD>Boolean</DD><br>
 <B>Examples:</B>
 	<pre class="example_code">
-	widgetController.setPropertyValue("enable", false); 
-	widgetController.setPropertyValue("visible", true); 	</pre>
+	widget.setPropertyValue("enable", false); 
+	widget.setPropertyValue("visible", true); 	</pre>
 
 </DL>
 <HR>
@@ -97,7 +97,7 @@ Integer Property</H3>
 <B>Property Value Type</B><DD>Integer</DD><br>
 <B>Examples:</B>
 	<pre class="example_code">
-	widgetController.setPropertyValue("x", 10); </pre>
+	widget.setPropertyValue("x", 10); </pre>
 
 </DL>
 <HR>
@@ -111,7 +111,7 @@ Double Property</H3>
 <B>Property Value Type</B><DD>Double</DD><br>
 <B>Examples:</B>
 	<pre class="example_code">
-	widgetController.setPropertyValue("fill_level", 35.6);</pre>
+	widget.setPropertyValue("fill_level", 35.6);</pre>
 
 </DL>
 <HR>
@@ -125,7 +125,7 @@ Combo Property</H3>
 <B>Examples:</B>
 	<pre class="example_code">
 	//set border style to line style
-	widgetController.setPropertyValue("border_style", 1); </pre>
+	widget.setPropertyValue("border_style", 1); </pre>
 
 </DL>
 
@@ -141,7 +141,7 @@ String Property</H3>
 <B>Property Value Type</B><DD>String</DD><br>
 <B>Examples:</B>
 	<pre class="example_code">
-	widgetController.setPropertyValue("text", "Hello, World!");</pre>
+	widget.setPropertyValue("text", "Hello, World!");</pre>
 
 </DL>
 <HR>
@@ -159,8 +159,8 @@ Color Property</H3>
 	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 	
 	var ORANGE = ColorFontUtil.getColorFromRGB(255,255,0);
-	widgetController.setPropertyValue("foreground_color",ORANGE);
-	widgetController.setPropertyValue("background_color", "Major"); //"Major" is a color macro	
+	widget.setPropertyValue("foreground_color",ORANGE);
+	widget.setPropertyValue("background_color", "Major"); //"Major" is a color macro	
 </pre>
 
 </DL>
@@ -178,7 +178,7 @@ Font Property</H3>
 	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 		
 	var bigFont = ColorFontUtil.getFont("Times New Roman", 20, 1);
-	widgetController.setPropertyValue("font", bigFont);	
+	widget.setPropertyValue("font", bigFont);	
 </pre>
 
 </DL>
@@ -195,8 +195,8 @@ Macros Property</H3>
 	<pre class="example_code">
 	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 	var macroInput = DataUtil.createMacrosInput(true);
-	macroInput.put("pv", PVUtil.getString(pvArray[0]));
-	widgetController.setPropertyValue("macros", macroInput);
+	macroInput.put("pv", PVUtil.getString(pvs[0]));
+	widget.setPropertyValue("macros", macroInput);
 </pre>
 
 </DL>
@@ -214,13 +214,13 @@ File Path Property</H3>
 <B>Examples:</B>
 	<pre class="example_code">
 	//load image from relative path
-	widgetController.getWidgetModel().setPropertyValue("image_file", "../pictures/fish.gif");
+	widget.getWidgetModel().setPropertyValue("image_file", "../pictures/fish.gif");
 	//load image from url
-	widgetController.getWidgetModel().setPropertyValue("image_file", "http://neutrons.ornl.gov/images/sns_aerial.jpg");
+	widget.getWidgetModel().setPropertyValue("image_file", "http://neutrons.ornl.gov/images/sns_aerial.jpg");
 	//load image from absolute workspace path
-	widgetController.getWidgetModel().setPropertyValue("image_file", "/BOY Examples/widgets/DynamicSymbols/Scared.jpg");
+	widget.getWidgetModel().setPropertyValue("image_file", "/BOY Examples/widgets/DynamicSymbols/Scared.jpg");
 	//load image from local file system
-	widgetController.getWidgetModel().setPropertyValue("image_file", "C:\\Users\\5hz\\Pictures\\me.gif");	
+	widget.getWidgetModel().setPropertyValue("image_file", "C:\\Users\\5hz\\Pictures\\me.gif");	
 </pre>
 </DL>
 <HR>
@@ -238,7 +238,7 @@ PointList Property</H3>
 	
 	var jsArray = new Array(20,260,34,56,320,230);
 	//set the points for a polygon/polyline widget
-	widgetController.setPropertyValue("points", DataUtil.toJavaIntArray(jsArray));	</pre>
+	widget.setPropertyValue("points", DataUtil.toJavaIntArray(jsArray));	</pre>
 
 </DL>
 <HR>
@@ -248,32 +248,14 @@ PointList Property</H3>
 ColorMap Property</H3>
 <DD>
 <DL>
-<DT><B>Acceptable Value Type</B></DT><DD>org.csstudio.opibuilder.datadefinition.ColorMap</DD><br>
-<B>Property Value Type</B><DD>org.csstudio.opibuilder.datadefinition.ColorMap</DD><br>
+<DT><B>Acceptable Value Type</B></DT><DD>String, 
+which must be one of "JET", "GrayScale", "ColorSpectrum", "Hot", "Cool" and "Shaded". </DD><br>
+<B>Property Value Type</B><DD>org.csstudio.swt.widgets.datadefinition.ColorMap</DD><br>
 <B>Examples:</B>
 	<pre class="example_code">
-	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
-	importPackage(Packages.org.csstudio.opibuilder.datadefinition);
-	
-	var value = PVUtil.getString(pvArray[0]);
-	var colorMap;
-	if(value == "Cool")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Cool, true, true);
-	else if(value == "Hot")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Hot, true, true);
-	else if(value == "JET")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.JET, true, true);
-	else if(value == "GrayScale")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.GrayScale, true, true);
-	else if(value == "ColorSpectrum")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.ColorSpectrum, true, true);
-	else if(value == "Shaded")
-		colorMap = new ColorMap(ColorMap.PredefinedColorMap.Shaded, true, true);	
-	
-	//set colormap of IntensityGraph			
-	widgetController.getChild("IntensityGraph").setPropertyValue(
-			"color_map", colorMap);	</pre>
-
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);	
+	var value = PVUtil.getString(pvs[0]);			
+	widget.setPropertyValue("color_map", value);	</pre>
 </DL>
 <HR>
 

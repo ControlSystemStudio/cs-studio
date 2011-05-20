@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Scaled Widgets
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Scaled Widgets
+    </h2>
+    
+    <p>
+    Scaled widgets are those widgets with a scale and a mark or ramp. For example: 
+    <a href="Thermometer.html">Thermometer</a>,
+    <a href="Gauge.html">Gauge</a>, <a href="Knob.html">Knob</a>, 
+    <a href="ProgressBar.html">Progress Bar</a>, 
+    <a href="ScaledSlider.html">Scaled Slider</a>, 
+    <a href="Tank.html">Tank</a> and <a href="Meter.html">Meter</a>. Scaled widgets can only display numeric value.
+    </p>
+    
+    <h3>Properties Common to Most of Scaled Widgets</h3>
+    <ul>   
+    <li>Minimum (minimum)<dl><dd>Lower limit of the widget.</dd></dl></li>
+    <li>Maximum (maximum)<dl><dd>Upper limit of the widget.</dd></dl></li>
+	<li>Limits From PV(limits_from_pv) 
+		<dl><dd>Load the Maximum, Minimum, HIHI, HI, LOLO, LO limits from PV. </dd></dl></li>
+    <li>Show Scale (show_scale) <dl><dd>Show the scale.</dd></dl></li>
+    <li>Show Minor Ticks (show_minor_ticks) <dl><dd>Show minor ticks of the scale.</dd></dl></li>
+    <li>Major Tick Step Hint (major_tick_step_hint)
+    	<dl><dd>The minimum space (in pixels) between major ticks.</dd></dl></li>
+    <li>Log Scale (log_scale) <dl><dd>Scale in log.</dd></dl></li>
+    <li>Scale Font (scale_font) <dl><dd>Font of the scale.</dd></dl></li>
+    <li>Scale Format (scale_format) <dl><dd>The format pattern used to format the numeric value
+    on scale. For example, <code>#.00</code> formats the number 1234 as <code>1234.00</code>, <code>#.##</code>
+    formats the number 12.3456 as <code>12.35</code>, <code>0.###E0</code> formats the number 1234 as <code>1.234E3</code>. 
+    If it is an empty string, the axis will be automatically formatted. 
+    Refer to <a href="http://download.oracle.com/javase/1.5.0/docs/api/java/text/DecimalFormat.html">http://download.oracle.com/javase/1.5.0/docs/api/java/text/DecimalFormat.html</a> 
+    for more details.  </dd></dl></li>
+    <li>Value Label Format (value_label_format) <dl><dd>The format pattern of value label.</dd></dl></li>
+    <li>Transparent Background (transparent_background)<dl><dd>Make background transparent.</dd></dl></li>
+        
+    <li>Show Markers or Show Ramps (show_markers) <dl><dd>Show alarm markers 
+    or ramp for widgets with round scale.</dd></dl></li>
+
+    <li>Level LOLO (level_lolo) <dl><dd>The low low alarm level of mark or ramp.</dd></dl></li>
+    <li>Level LO (level_lo) <dl><dd>The low alarm level of mark or ramp.</dd></dl></li>
+    <li>Level HI (level_hi) <dl><dd>The high alarm level of mark or ramp.</dd></dl></li>
+    <li>Level HIHI (level_hihi) <dl><dd>The high high alarm level of mark or ramp.</dd></dl></li>
+   
+    <li>Color LOLO (color_lolo) <dl><dd>The low low alarm color of mark or ramp.</dd></dl></li>
+    <li>Color LO (color_lo) <dl><dd>The low alarm color of mark or ramp.</dd></dl></li>
+    <li>Color HI (color_hi) <dl><dd>The high alarm color of mark or ramp.</dd></dl></li>
+    <li>Color HIHI (color_hihi) <dl><dd>The high high alarm color of mark or ramp.</dd></dl></li>
+    
+    <li>Show LOLO (show_lolo) <dl><dd>Show low low alarm mark.</dd></dl></li>
+    <li>Show LO (show_lo) <dl><dd>Show low alarm mark.</dd></dl></li>
+    <li>Show HI (show_hi) <dl><dd>Show high alarm mark.</dd></dl></li>
+    <li>Show HIHI (show_hihi) <dl><dd>Show high high alarm mark.</dd></dl></li>
+   
+   
+    <li>Effect 3D (effect_3D) <dl><dd> Draw widget with advanced graphics to make 3D effect.
+    In some platforms, advance graphics may not be available, in which case the widget will not be drawn 
+	with advanced graphics even this is set to yes. The advance graphics function can also be disabled 
+	from <a href="../PreferencePage.html">Preference Settings</a>.</dd></dl></li>
+    <li>Ramp Gradient (ramp_gradient)<dl><dd>If the widget has a ramp, make it gradient. This also
+    uses advanced graphics.</dd></dl></li>
+     
+    </ul>
+<h3>See Also</h3>
+   <ul>
+   <li><a href="PVWidgets.html">Properties Common to PV Widgets</a></li>
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+<br>
+
+</body>
+</html>

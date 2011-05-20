@@ -1,0 +1,126 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="../default.css" type="text/css" />
+    <title>
+      Intensity Graph
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Intensity Graph
+    </h2>
+
+    <p>
+      Intensity Graph has the capability to display 2D array in colors
+      based on its color map which is a map of value and color.
+      For example, it could be used to display video image, 
+      temperature pattern or terrain in an intuitive fashion. 
+	  The input data must be a 1D array of long or double value, 
+	  in which the data is arranged in row by row so it can be converted to a 2D array.
+	  For example, for a N rows by M columns 2D data, the input data should like this:
+	  </p> 
+	  <pre class="example_code">
+InputData = P11, P12,...P1M, P21, P22, ... P2M, ... PN1, PN2, ...PNM</pre>      
+   	<p>The widget can also output profile data of the image to PVs.</p>
+
+<p>
+	<img src="img/IntensityGraph.gif" alt=""></p>
+<h3>
+  Operations
+</h3>
+<p>Drag a rectangle on the graph will zoom in to the rectangle. Double click
+will return to unzoomed state.</p>
+
+
+<h3>
+  Special Properties
+</h3>
+<h4>Graph properties</h4>
+<ul> <li>Data Height (data_height)<dl> <dd>Number of rows of the input data.</dd></dl></li>
+	<li>Data Width (data_width)<dl> <dd>Number of columns of the input data.</dd></dl></li>
+	<li>Maximum (maximum) <dl> <dd>The upper limit of the value in the input data array.</dd></dl></li>
+	<li>Minimum (minimum) <dl> <dd>The lower limit of the value in the input data array.</dd></dl></li>
+	
+	<li><a name="colorMap"></a>Color Map (color_map)<dl> <dd>Color map of the graph. Color map is a map of double values 
+	and colors.	In the color map dialog, you can either select a predefined color map or 
+	create your own color map. If <code>Interpolate</code>	is selected, 
+	it will interpolate the color map in linear. If <code>Auto Scale</code> is selected,
+	it will scale the color map value range to the data range which is specified by <code>Maximum</code>
+	and <code>Minimum</code> properties.<br><img src = "img/ColorMap.gif" alt = "Color Map Configuration Dialog">
+	</dd></dl></li>
+	<li>Show Ramp (show_ramp)<dl> <dd>Show the color map ramp.</dd></dl></li>
+	<li>Graph Area Height (graph_area_height)<dl> <dd>Height of the graph area which does not include
+	its axes and color ramp. The widget size will adjust automatically afte this property is set.</dd></dl></li>
+	<li>Graph Area Width (graph_area_Width)<dl> <dd>Width of the graph area which does not include
+	its axes and color ramp. The widget size will adjust automatically afte this property is set.</dd></dl></li>
+	
+	
+	<li>Horizon Profile X PV (horizon_profile_x_pv_name)<dl> <dd>
+	The output PV to which the horizontal profile data on X axis will be written. 
+	</dd></dl></li>
+	<li>Horizon Profile Y PV (horizon_profile_y_pv_name)<dl> <dd>
+	The output PV to which the horizontal profile data on Y axis will be written. 
+	</dd></dl></li>
+	<li>Vertical Profile X PV (vertical_profile_x_pv_name)<dl> <dd>
+	The output PV to which the vertical profile data on X axis will be written. 
+	</dd></dl></li>
+	<li>Vertical Profile Y PV (vertical_profile_x_pv_name)<dl> <dd>
+	The output PV to which the horizontal profile data on Y axis will be written. 
+	</dd></dl></li>
+	
+	<li>Crop Left (crop_left)<dl> <dd>Cropped data on left.</dd></dl></li>
+	<li>Crop Right (crop_right)<dl> <dd>Cropped data on right.</dd></dl></li>
+	<li>Crop Bottom (crop_bottom)<dl> <dd>Cropped data on bottom.</dd></dl></li>
+	<li>Crop Top (crop_top)<dl> <dd>Cropped data on top.</dd></dl></li>
+
+</ul>
+
+<h4>Axis Properties</h4>
+<p>The property id for axis has a prefix of <code>x_axis_</code> or <code>y_axis_</code>.
+For example, the property id
+of <code>Axis Color</code> property for X Axis (0) is <code>x_axis_axis_color</code>. </p>
+<ul>
+
+
+	<li>Axis Color (axis_color) <dl> <dd>Color of the axis.</dd></dl></li>
+	<li>Axis Title (axis_title) <dl> <dd>Title of the axis.</dd></dl></li>
+	<li>Maximum (maximum) <dl> <dd>Upper range of the axis.</dd></dl></li>
+	<li>Minimum (minimum) <dl> <dd>Lower range of the axis.</dd></dl></li>
+	<li>Scale Font (scale_font) <dl> <dd>Font of the scale.</dd></dl></li>	
+	<li>Show Minor Ticks (show_minor_ticks) <dl> <dd>Show minor ticks on axis.</dd></dl></li>	
+	 <li>Major Tick Step Hint (major_tick_step_hint)
+    	<dl><dd>The minimum space (in pixels) between major ticks.</dd></dl></li>
+	<li>Title Font (title_font) <dl> <dd>Font of the axis title.</dd></dl></li>	
+    <li>Visible (visible) <dl> <dd>If the axis is visible.</dd></dl></li>
+	
+</ul>
+
+
+<h3>
+  Special Methods
+</h3>
+<p><a href="../script/AccessWidget.html#setValue(java.lang.Object)">setValue</a> method accepts 1D double array. 
+Its <a href="../script/AccessWidget.html#getValue()">getValue</a> method returns double array.</p>
+
+<h3>
+  See Also
+</h3>
+<ul>  
+<li>
+<a href="PVWidgets.html">
+  Properties Common to PV Widgets
+</a>
+</li>
+<li>
+<a href="../Widget Properties.html">
+  Properties Common to All Widgets
+</a>
+</li>
+</ul>
+
+<br>
+
+</body>
+</html>

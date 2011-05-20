@@ -16,12 +16,13 @@ body {
 
 .header {
     padding: 20px 0px 0px 30px;
-	height: 84px;
+	height: 64px;
 	text-align: left;
 }
 
 .header h1 {
     color: #05f0b4;
+    height: 64px;
 	margin: 0px;
 }
 
