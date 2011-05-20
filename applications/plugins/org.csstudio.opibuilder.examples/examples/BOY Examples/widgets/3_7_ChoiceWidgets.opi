@@ -9,7 +9,7 @@
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
-  <name>Combo Box</name>
+  <name>Choice Widgets</name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
   <background_color>
@@ -32,74 +32,6 @@
     <vertical_alignment>1</vertical_alignment>
     <auto_size>false</auto_size>
     <scripts />
-    <height>75</height>
-    <name>Label_4</name>
-    <transparent>false</transparent>
-    <background_color>
-      <color red="255" green="255" blue="223" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="203" />
-    </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
-    <text>-Items(items). The predefined items of the combo.&#xD;
--Items From PV(items_from_pv). Load items from enum PV if true. The items property will be ignored.</text>
-    <font>
-      <fontdata fontName="Arial" height="10" style="0" />
-    </font>
-    <width>745</width>
-    <border_style>1</border_style>
-    <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
-    <y>191</y>
-    <tooltip />
-    <x>23</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>true</auto_size>
-    <scripts />
-    <height>16</height>
-    <name>Label_5</name>
-    <transparent>false</transparent>
-    <background_color>
-      <color red="0" green="255" blue="128" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
-    <text>Special Properties</text>
-    <font>
-      <fontdata fontName="Arial" height="10" style="1" />
-    </font>
-    <width>117</width>
-    <border_style>0</border_style>
-    <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
-    <y>182</y>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>359</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
-    <scripts />
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
@@ -111,7 +43,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Combo Box</text>
+    <text>Choice Widgets</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
@@ -194,46 +126,6 @@ $(pv_value)</tooltip>
     <tooltip />
     <x>311</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <scripts />
-    <height>27</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Combo Box</name>
-    <pv_name>loc://comboInput</pv_name>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <widget_type>Combo Box</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="0" />
-    </font>
-    <width>114</width>
-    <border_style>0</border_style>
-    <rules />
-    <items>
-      <s>Apple</s>
-      <s>Orange</s>
-      <s>Pineapple</s>
-      <s>Banana</s>
-    </items>
-    <border_width>1</border_width>
-    <items_from_pv>false</items_from_pv>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="false" />
-    <y>320</y>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>157</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
@@ -250,9 +142,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Combo box can be used to read or write an enum PV or String PV. &#xD;
-For an enum PV, it acts like set one of the enumeration value of the PV. &#xD;
-For an String PV, it acts like write the String value to the PV.</text>
+    <text>Choice widgets are those widgets that are able to display PV value as a particular state among multiple states. It will use PV's string value to match the state. If no matched state was found, no state will be chosen.</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
@@ -303,121 +193,354 @@ For an String PV, it acts like write the String value to the PV.</text>
 $(pv_value)</tooltip>
     <x>371</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
-    <height>20</height>
-    <name>Label</name>
-    <transparent>true</transparent>
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </font>
+    <width>79</width>
+    <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
+    <image>../pictures/home-16x16.png</image>
+    <rules />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>568</y>
+    <actions hook="true">
+      <action type="OPEN_DISPLAY">
+        <path>../10_widgets.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>true</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.radioBox" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>100</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Radio Box</name>
+    <pv_name>loc://myChoice</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
+    <widget_type>Radio Box</widget_type>
     <enabled>true</enabled>
-    <text>Choose:</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <fontdata fontName="Verdana" height="9" style="0" />
     </font>
-    <width>150</width>
+    <width>100</width>
     <border_style>0</border_style>
+    <selected_color>
+      <color red="0" green="0" blue="0" />
+    </selected_color>
     <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
     <border_width>1</border_width>
+    <horizontal>false</horizontal>
+    <items_from_pv>false</items_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>322</y>
-    <tooltip />
-    <x>90</x>
+    <y>205</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>294</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
-    <height>20</height>
-    <name>Label_8</name>
-    <transparent>true</transparent>
+    <height>27</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Combo Box</name>
+    <pv_name>loc://myChoice</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
+    <widget_type>Combo Box</widget_type>
     <enabled>true</enabled>
-    <text>You choosed:</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
-    <width>99</width>
+    <width>100</width>
     <border_style>0</border_style>
     <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
     <border_width>1</border_width>
+    <items_from_pv>false</items_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>320</y>
-    <tooltip />
-    <x>351</x>
+    <y>265</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>576</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+  <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
+    <scripts />
+    <height>100</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Choice Button</name>
+    <pv_name>loc://myChoice</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Choice Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Verdana" height="9" style="0" />
+    </font>
+    <width>89</width>
+    <border_style>0</border_style>
+    <selected_color>
+      <color red="255" green="255" blue="255" />
+    </selected_color>
+    <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
+    <border_width>1</border_width>
+    <horizontal>false</horizontal>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>205</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>23</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
+    <vertical_alignment>0</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Text Update</name>
+    <name>Text Input</name>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
-    <transparent>true</transparent>
-    <pv_name>loc://comboInput</pv_name>
+    <transparent>false</transparent>
+    <selector_type>0</selector_type>
+    <pv_name>loc://myChoice</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Text Update</widget_type>
+    <widget_type>Text Input</widget_type>
     <enabled>true</enabled>
-    <text>######</text>
+    <text />
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
     <width>100</width>
-    <border_style>0</border_style>
+    <border_style>3</border_style>
     <rules />
     <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>320</y>
+    <y>217</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>449</x>
+    <x>689</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.radioBox" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>62</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Radio Box_1</name>
+    <pv_name>loc://myChoice</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="128" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="64" blue="128" />
+    </foreground_color>
+    <widget_type>Radio Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Verdana" height="9" style="0" />
+    </font>
+    <width>182</width>
+    <border_style>0</border_style>
+    <selected_color>
+      <color red="255" green="0" blue="0" />
+    </selected_color>
+    <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
+    <border_width>1</border_width>
+    <horizontal>true</horizontal>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>224</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>377</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <scripts />
     <height>27</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Combo Box_1</name>
+    <pv_name>loc://myChoice</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="196" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Combo Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
+    <border_width>1</border_width>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>217</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>576</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>27</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Choice Button_1</name>
+    <pv_name>loc://myChoice</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="64" blue="128" />
+    </foreground_color>
+    <widget_type>Choice Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Verdana" height="9" style="0" />
+    </font>
+    <width>138</width>
+    <border_style>0</border_style>
+    <selected_color>
+      <color red="128" green="255" blue="255" />
+    </selected_color>
+    <rules />
+    <items>
+      <s>White</s>
+      <s>Red</s>
+      <s>Yellow</s>
+    </items>
+    <border_width>1</border_width>
+    <horizontal>true</horizontal>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>241</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>135</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>27</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Combo Box_2</name>
     <pv_name>EpicsDemo1.SCAN</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
@@ -440,10 +563,10 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>405</y>
+    <y>398</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>90</x>
+    <x>294</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -451,7 +574,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
-    <name>Label_9</name>
+    <name>Label_5</name>
     <transparent>true</transparent>
     <background_color>
       <color red="255" green="255" blue="255" />
@@ -474,9 +597,9 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>386</y>
+    <y>379</y>
     <tooltip />
-    <x>90</x>
+    <x>294</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -515,10 +638,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>407</y>
+    <y>402</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>351</x>
+    <x>499</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -549,54 +672,9 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>386</y>
+    <y>381</y>
     <tooltip />
-    <x>351</x>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <scripts />
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
-    <image>../pictures/home-16x16.png</image>
-    <rules />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>559</y>
-    <actions hook="true">
-      <action type="OPEN_DISPLAY">
-        <path>../10_widgets.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>true</replace>
-        <description />
-      </action>
-    </actions>
-    <tooltip />
-    <x>23</x>
+    <x>499</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -614,7 +692,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Please change this widget's PV Name to a real PV that is available to you computer.</text>
+    <text>Please change the PV Name property to a real PV that is available to you computer.</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
@@ -627,9 +705,9 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" />
-    <y>500</y>
+    <y>495</y>
     <tooltip />
-    <x>124</x>
+    <x>272</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -640,13 +718,13 @@ $(pv_value)</tooltip>
     <rotation_angle>0.0</rotation_angle>
     <scripts />
     <arrows>2</arrows>
-    <height>52</height>
+    <height>44</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Polyline</name>
     <points>
-      <point x="196" y="492" />
-      <point x="146" y="441" />
+      <point x="377" y="487" />
+      <point x="294" y="444" />
     </points>
     <transparent>false</transparent>
     <pv_name />
@@ -663,7 +741,7 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <line_style>0</line_style>
-    <width>51</width>
+    <width>84</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -673,10 +751,10 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>441</y>
+    <y>444</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>146</x>
+    <x>294</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -692,8 +770,8 @@ $(pv_value)</tooltip>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Polyline_1</name>
     <points>
-      <point x="311" y="492" />
-      <point x="381" y="436" />
+      <point x="443" y="487" />
+      <point x="529" y="431" />
     </points>
     <transparent>false</transparent>
     <pv_name />
@@ -710,7 +788,7 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <line_style>0</line_style>
-    <width>71</width>
+    <width>87</width>
     <border_style>0</border_style>
     <rules />
     <border_width>1</border_width>
@@ -720,9 +798,85 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <actions hook="false" />
-    <y>436</y>
+    <y>431</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>311</x>
+    <x>443</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.radioBox" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>236</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Radio Box_2</name>
+    <pv_name>EpicsDemo1.SCAN</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Radio Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <selected_color>
+      <color red="0" green="0" blue="0" />
+    </selected_color>
+    <rules />
+    <border_width>1</border_width>
+    <horizontal>false</horizontal>
+    <items_from_pv>true</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>324</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>43</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>236</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Choice Button_2</name>
+    <pv_name>EpicsDemo1.SCAN</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Choice Button</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <selected_color>
+      <color red="255" green="255" blue="255" />
+    </selected_color>
+    <rules />
+    <border_width>1</border_width>
+    <horizontal>false</horizontal>
+    <items_from_pv>true</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>324</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>159</x>
   </widget>
 </display>

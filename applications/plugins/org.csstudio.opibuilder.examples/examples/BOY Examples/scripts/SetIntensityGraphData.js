@@ -1,8 +1,8 @@
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
 var simuData = DataUtil.createDoubleArray(65536);
-var value = PVUtil.getDouble(pvArray[0]);
-var dataSrc = PVUtil.getString(pvArray[1]);
+var value = PVUtil.getDouble(pvs[0]);
+var dataSrc = PVUtil.getString(pvs[1]);
 
 if(dataSrc == "Linear Sine Wave"){
 	for(var i=0; i<256; i++){
@@ -20,6 +20,6 @@ if(dataSrc == "Linear Sine Wave"){
 		}
 	}
 }
-widgetController.setValue(simuData);
+widget.setValue(simuData);
 	
 

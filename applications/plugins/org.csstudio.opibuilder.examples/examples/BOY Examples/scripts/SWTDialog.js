@@ -6,7 +6,7 @@ importPackage(Packages.org.eclipse.jface.dialogs);
 importPackage(Packages.java.lang);
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-if(PVUtil.getDouble(pvArray[0]) == 100){
+if(PVUtil.getDouble(pvs[0]) == 100){
 	execute();
 }
 
