@@ -12,6 +12,9 @@
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
+         <adapter
+               type="org.csstudio.trends.databrowser2.ProcessVariableWithSamples">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.csstudio.trends.databrowser2.model.ChannelInfo"
@@ -149,6 +152,23 @@
    </extension>
    <extension
          point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="org.csstudio.trends.databrowser2.popup.processvariablewithsamples"
+               label="%PVSampleMenu">
+            <visibleWhen>
+               <with
+                     variable="activeMenuSelection">
+                                       <iterate>
+                     <adapt type="org.csstudio.trends.databrowser2.ProcessVariableWithSamples"/>
+                  </iterate>
+                     
+               </with>
+            </visibleWhen>
+         </menu>
+      </menuContribution>
       <menuContribution
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.processvariable">

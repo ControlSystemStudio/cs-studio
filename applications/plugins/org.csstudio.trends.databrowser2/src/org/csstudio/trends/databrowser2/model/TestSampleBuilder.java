@@ -38,6 +38,8 @@ public class TestSampleBuilder
     {
         final ISeverity no_value = new ISeverity()
         {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public boolean hasValue()  { return false; }
             @Override
