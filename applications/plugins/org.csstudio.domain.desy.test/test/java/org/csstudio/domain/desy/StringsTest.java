@@ -21,6 +21,9 @@
  */
 package org.csstudio.domain.desy;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
 import java.util.Iterator;
 
 import junit.framework.Assert;
@@ -36,6 +39,95 @@ import com.google.common.collect.Iterables;
  * @since 17.05.2011
  */
 public class StringsTest {
+    
+    @Test
+    public final void testTrim() {
+        Assert.assertEquals("", Strings.trim("", 'f'));
+        Assert.assertEquals("", Strings.trim("x", 'x'));
+        Assert.assertEquals("ha ha", Strings.trim("  ha ha  ", ' '));
+        Assert.assertEquals("h\ta \tha", Strings.trim("\t\th\ta \tha\t", '\t'));
+        Assert.assertEquals(" a\"h\"a ", Strings.trim("\"\" a\"h\"a ", '\"'));
+        Assert.assertEquals("aha ", Strings.trim("aha \"\"", '\"'));
+        Assert.assertEquals("a??=[]()//", Strings.trim("|||a??=[]()//|", '|'));
+    }
+    
+    @Test
+    public final void testSplitIgnoreInQuotesEmptyReturns() {
+        
+        Collection<String> split = Strings.splitIgnoreWithinQuotes("", ' ');
+        assertEquals(0, split.size());
+        split = Strings.splitIgnoreWithinQuotes("x", 'x');
+        assertEquals(0, split.size());
+        split = Strings.splitIgnoreWithinQuotes("   ", ' ');
+        assertEquals(0, split.size());
+        
+    }
+    @Test
+    public final void testSplitIgnoreInQuotes() {
+        
+        Collection<String> split = Strings.splitIgnoreWithinQuotes("tritra  tru lala", ' ');
+        assertEquals(3, split.size());
+        Iterator<String> it = split.iterator();
+        assertEquals("tritra", it.next());
+        assertEquals("tru", it.next());
+        assertEquals("lala", it.next());
+        split = Strings.splitIgnoreWithinQuotes("  tri\"tra tru \" lala", ' ');
+        
+        it = split.iterator();
+        assertEquals(2, split.size());
+        assertEquals("tri\"tra tru \"", it.next());
+        assertEquals("lala", it.next());
+        
+        split = Strings.splitIgnoreWithinQuotes("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x');
+        it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("\"Hello Dolly\"", it.next());
+        assertEquals("this", it.next());
+        assertEquals("is", it.next());
+        assertEquals("\" a test \"", it.next());
+        
+    }
+    
+    @Test
+    public final void testSplitIgnore() {
+        Collection<String> split = 
+            Strings.splitIgnore("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 
+                                'x', 
+                                'i');
+        Iterator<String> it = split.iterator();
+        assertEquals(4, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("\"Hello Dolly\"", it.next());
+        assertEquals("thisxxxxis", it.next());
+        assertEquals("\" a test \"", it.next());
+    }
+
+    @Test
+    public final void testSplitIgnoreInQuotesTrimmed() {
+        Collection<String> split = 
+            Strings.splitIgnoreWithinQuotesTrimmed("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x', '\"');
+        Iterator<String> it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("Hello Dolly", it.next());
+        assertEquals("this", it.next());
+        assertEquals("is", it.next());
+        assertEquals(" a test ", it.next());
+    }
+
+    @Test
+    public final void testSplitIgnoreInQuotesTrimmed2() {
+        Collection<String> split = 
+            Strings.splitIgnoreWithinQuotes("|||This is a|| || |\"complicated||test.\"|||Hello, \"fox|and\"dog", '|');
+        Iterator<String> it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("This is a", it.next());
+        assertEquals(" ", it.next());
+        assertEquals(" ", it.next());
+        assertEquals("\"complicated||test.\"", it.next());
+        assertEquals("Hello, \"fox|and\"dog", it.next());
+    }
     
     @Test
     public final void testCreateListFromString() {

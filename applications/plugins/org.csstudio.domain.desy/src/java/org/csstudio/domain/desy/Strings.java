@@ -21,11 +21,16 @@
  */
 package org.csstudio.domain.desy;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Function;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 
 
@@ -41,6 +46,78 @@ public final class Strings {
      */
     private Strings() {
         // Empty
+    }
+
+    /**
+     * Trims the source string of the given trim char.
+     *
+     * @param source
+     * @param char
+     * @return
+     */
+    @Nonnull
+    public static String trim(@Nonnull final String source, final char trim) {
+        final String trimQuoted = Pattern.quote(String.valueOf(trim));
+        final String sourceWOLeadingChars = source.replaceAll("^" + trimQuoted + "+", "");
+        final String sourceWOLeadingAndTrailingChars = sourceWOLeadingChars.replaceAll(trimQuoted + "+$", "");
+        return sourceWOLeadingAndTrailingChars;
+    }
+
+    @Nonnull
+    public static Collection<String> splitIgnoreWithinQuotes(@Nonnull final String source,
+                                                             @Nonnull final char sep) {
+        return splitIgnore(source, sep, '\"');
+    }
+
+    /**
+     * Splits a string into substring on a separating character. Ignores those separators in
+     * within the ignore char (typically a quote '"') and those separators following on each other.
+     *
+     * Unfortunately, the {@link com.google.common.Splitter} doesn't provide the
+     * 'ignore in whatever feature'.
+     *
+     * @param source
+     * @param sep
+     * @param ignore
+     * @return
+     */
+    @Nonnull
+    public static Collection<String> splitIgnore(@Nonnull final String source,
+                                                 @Nonnull final char sep,
+                                                 @Nonnull final char ignore) {
+        String trimmedSource = trim(source, sep);
+
+        final String sepQuoted = Pattern.quote(String.valueOf(sep));
+
+        trimmedSource = trimmedSource.replaceAll("[" + sepQuoted + "]+" + ignorePairLookAheadRegex(String.valueOf(ignore)),
+                                                 String.valueOf(sep));
+        if ("".equals(trimmedSource)) {
+            return Collections.emptyList();
+        }
+        final String[] split = trimmedSource.split("[" + sepQuoted + "]" + ignorePairLookAheadRegex(String.valueOf(ignore)));
+        return Lists.newArrayList(split);
+    }
+
+    @Nonnull
+    private static String ignorePairLookAheadRegex(@Nonnull final String ignExpr) {
+        final String quotedIgnExpr = Pattern.quote(ignExpr);
+        return "(?=([^" + quotedIgnExpr + "]*" + quotedIgnExpr + "[^" + quotedIgnExpr + "]*" + quotedIgnExpr + ")*[^" + quotedIgnExpr + "]*$)";
+    }
+
+
+    @Nonnull
+    public static Collection<String> splitIgnoreWithinQuotesTrimmed(@Nonnull final String source,
+                                                                    @Nonnull final char sep,
+                                                                    @Nonnull final char trim) {
+
+        return Collections2.transform(splitIgnoreWithinQuotes(source, sep),
+                                      new Function<String, String>() {
+                                            @Override
+                                            @Nonnull
+                                            public String apply(@Nonnull final String input) {
+                                                return Strings.trim(input, trim);
+                                            }
+                                        });
     }
 
     /**
