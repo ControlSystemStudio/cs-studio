@@ -39,7 +39,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-
 /**
  * Preference page for the JAAS authentication
  *
@@ -65,7 +64,8 @@ public class JAASPreferencePage extends PreferencePage implements
 		sourceCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 		sourceCombo.setItems(JAASPreferenceModel.CONFIG_SOURCES);
 		sourceCombo.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
+			@Override
+            public void modifyText(ModifyEvent e) {
 				setMessage(RESTART_NOTICE);
 				final boolean fileSource =
 					sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
@@ -79,7 +79,8 @@ public class JAASPreferencePage extends PreferencePage implements
 		configFileEntryText = new Text(composite_sourceField, SWT.SINGLE | SWT.BORDER);
 		configFileEntryText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 		configFileEntryText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
+			@Override
+            public void modifyText(ModifyEvent e) {
 				setMessage(RESTART_NOTICE);
 			}
 		});
@@ -95,7 +96,8 @@ public class JAASPreferencePage extends PreferencePage implements
 
 	}
 
-	public void init(IWorkbench workbench)
+	@Override
+    public void init(IWorkbench workbench)
 	{
 	    // NOP
 	}

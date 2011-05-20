@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.jaasauthentication.ui;
 
 
@@ -43,12 +50,12 @@ public class ModuleColumnEditor extends EditingSupport {
 		if (element == ModuleTableContentProvider.ADD_ELEMENT)
 		{
 			je = new JAASConfigurationEntry(value.toString(), JAASPreferenceModel.FLAG_REQUIRED);
-			JAASPreferenceModel.configurationEntryList.add(je);			
+			JAASPreferenceModel.configurationEntryList.add(je);
 			getViewer().refresh();
 			TableViewer tableViewer = (TableViewer) getViewer();
 			tableViewer.getTable().select(JAASPreferenceModel.configurationEntryList.size()-1);
 			moduleTableEditor.updateOptionsTable();
-			
+
 			return;
 		}
 		// else
