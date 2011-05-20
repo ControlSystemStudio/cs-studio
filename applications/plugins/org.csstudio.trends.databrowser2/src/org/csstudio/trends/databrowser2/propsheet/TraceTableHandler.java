@@ -114,7 +114,7 @@ public class TraceTableHandler implements ILazyContentProvider
      *  @param operations_manager
      *  @param table_viewer
      */
-    public void createColumns(TableColumnLayout table_layout, final OperationsManager operations_manager,
+    public void createColumns(final TableColumnLayout table_layout, final OperationsManager operations_manager,
             final TableViewer table_viewer)
     {
         final Shell shell = table_viewer.getTable().getShell();

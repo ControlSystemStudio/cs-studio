@@ -12,6 +12,9 @@
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
+         <adapter
+               type="org.csstudio.trends.databrowser2.ProcessVariableWithSamples">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.csstudio.trends.databrowser2.model.ChannelInfo"
