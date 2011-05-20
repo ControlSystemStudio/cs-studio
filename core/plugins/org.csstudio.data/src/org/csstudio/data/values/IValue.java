@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.data.values;
 
+import java.io.Serializable;
+
 /** Base interface for all control system values.
  *  <p>
  *  The <code>Value</code> handles all the other 'stuff' that comes with
@@ -35,7 +37,7 @@ package org.csstudio.data.values;
  *  @see IMinMaxDoubleValue
  *  @author Kay Kasemir
  */
-public interface IValue
+public interface IValue extends Serializable
 {
     /** Get the time stamp.
      *  @return The time stamp.

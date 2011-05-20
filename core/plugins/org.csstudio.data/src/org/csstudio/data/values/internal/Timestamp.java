@@ -31,6 +31,8 @@ import org.csstudio.data.values.ITimestamp;
  */
 public final class Timestamp implements ITimestamp
 {
+    private static final long serialVersionUID = 1L;
+
     /** Milliseconds per second. */
     public static final long millis_per_sec = 1000L;
 
