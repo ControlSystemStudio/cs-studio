@@ -163,6 +163,7 @@
             restorable="false">
       </view>
    </extension>
+   <!-- Moved to org.csstudio.ui.preferences
    <extension
          id="cssPreferenceCategories"
          name="cssPreferencesCategories"
@@ -231,7 +232,7 @@
             id="org.csstudio.platform.ui.css.applications.others"
             name="%othersPreferencesName"/>                         
    </extension>
-
+   -->
   <extension
         point="org.eclipse.ui.popupMenus">
      <objectContribution

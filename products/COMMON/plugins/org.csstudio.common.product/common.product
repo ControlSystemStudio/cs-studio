@@ -95,6 +95,7 @@
       <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.trends.databrowser2.shell.fragment" fragment="true"/>
       <plugin id="org.csstudio.ui.menu"/>
+      <plugin id="org.csstudio.ui.preferences"/>
       <plugin id="org.csstudio.ui.util"/>
       <plugin id="org.csstudio.utility.adlParser"/>
       <plugin id="org.csstudio.utility.channel"/>
