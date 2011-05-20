@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Messages;
@@ -21,6 +22,7 @@ import org.csstudio.trends.databrowser2.model.ModelListener;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddPVAction;
 import org.csstudio.trends.databrowser2.ui.StartEndTimeAction;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -219,6 +221,18 @@ public class DataBrowserPropertySheetPage extends Page
 
         trace_table.setContentProvider(tth);
         trace_table.setInput(model);
+
+        new ControlSystemDragSource(trace_table.getControl())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection selection = (IStructuredSelection) trace_table.getSelection();
+                final Object[] objs = selection.toArray();
+                final ModelItem[] items = Arrays.copyOf(objs, objs.length, ModelItem[].class);
+                return items;
+            }
+        };
     }
 
     /** Within SashForm of the "Traces" tab, create the Item item detail panel:
