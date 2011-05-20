@@ -23,6 +23,8 @@ package org.csstudio.domain.desy;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -48,21 +50,6 @@ public final class Strings {
         // Empty
     }
 
-    /**
-     * Trims the source string of the given trim char.
-     *
-     * @param source
-     * @param char
-     * @return
-     */
-    @Nonnull
-    public static String trim(@Nonnull final String source, final char trim) {
-        final String trimQuoted = Pattern.quote(String.valueOf(trim));
-        final String sourceWOLeadingChars = source.replaceAll("^" + trimQuoted + "+", "");
-        final String sourceWOLeadingAndTrailingChars = sourceWOLeadingChars.replaceAll(trimQuoted + "+$", "");
-        return sourceWOLeadingAndTrailingChars;
-    }
-
     @Nonnull
     public static Collection<String> splitIgnoreWithinQuotes(@Nonnull final String source,
                                                              @Nonnull final char sep) {
@@ -73,9 +60,6 @@ public final class Strings {
      * Splits a string into substring on a separating character. Ignores those separators in
      * within the ignore char (typically a quote '"') and those separators following on each other.
      *
-     * Unfortunately, the {@link com.google.common.Splitter} doesn't provide the
-     * 'ignore in whatever feature'.
-     *
      * @param source
      * @param sep
      * @param ignore
@@ -84,26 +68,18 @@ public final class Strings {
     @Nonnull
     public static Collection<String> splitIgnore(@Nonnull final String source,
                                                  @Nonnull final char sep,
-                                                 @Nonnull final char ignore) {
-        String trimmedSource = trim(source, sep);
+                                                 @Nonnull final char ign) {
 
-        final String sepQuoted = Pattern.quote(String.valueOf(sep));
-
-        trimmedSource = trimmedSource.replaceAll("[" + sepQuoted + "]+" + ignorePairLookAheadRegex(String.valueOf(ignore)),
-                                                 String.valueOf(sep));
-        if ("".equals(trimmedSource)) {
-            return Collections.emptyList();
+        final List<String> result = Lists.newArrayList();
+        final Matcher matcher = Pattern.compile(createRegEx(sep, ign)).matcher(source);
+        while (matcher.find()) {
+            final String cand = matcher.group();
+            if (!cand.isEmpty()) {
+                result.add(cand);
+            }
         }
-        final String[] split = trimmedSource.split("[" + sepQuoted + "]" + ignorePairLookAheadRegex(String.valueOf(ignore)));
-        return Lists.newArrayList(split);
+        return result;
     }
-
-    @Nonnull
-    private static String ignorePairLookAheadRegex(@Nonnull final String ignExpr) {
-        final String quotedIgnExpr = Pattern.quote(ignExpr);
-        return "(?=([^" + quotedIgnExpr + "]*" + quotedIgnExpr + "[^" + quotedIgnExpr + "]*" + quotedIgnExpr + ")*[^" + quotedIgnExpr + "]*$)";
-    }
-
 
     @Nonnull
     public static Collection<String> splitIgnoreWithinQuotesTrimmed(@Nonnull final String source,
@@ -118,6 +94,21 @@ public final class Strings {
                                                 return Strings.trim(input, trim);
                                             }
                                         });
+    }
+
+    /**
+     * Trims the source string of the given trim char.
+     *
+     * @param source
+     * @param char
+     * @return
+     */
+    @Nonnull
+    public static String trim(@Nonnull final String source, final char trim) {
+        final String trimQuoted = Pattern.quote(String.valueOf(trim));
+        final String sourceWOLeadingChars = source.replaceAll("^" + trimQuoted + "+", "");
+        final String sourceWOLeadingAndTrailingChars = sourceWOLeadingChars.replaceAll(trimQuoted + "+$", "");
+        return sourceWOLeadingAndTrailingChars;
     }
 
     /**
@@ -149,5 +140,44 @@ public final class Strings {
             return 0;
         }
         return s.codePointCount(0, s.length());
+    }
+
+    /**
+     * Creates the magic regex that finds the fields of the source string.
+     * Note that their order matters!
+     * sep=, ign=X : ([^X,]*X[^X]+X[^X,]*) | ([^,X]*X[^,X]*)(?=[^X]*) | ([^X,]+)
+     */
+    @Nonnull
+    private static String createRegEx(@Nonnull final char sep,
+                                      @Nonnull final char ign) {
+        final String qSep = Pattern.quote(String.valueOf(sep));
+        final String qIgn = Pattern.quote(String.valueOf(ign));
+        return createRegExDoubleIgnore(qSep, qIgn) + "|" +
+               createRegExSingleIgnoreWithLookAhead(qSep, qIgn) + "|" +
+               createRegExWithoutSepsOrIgnore(qSep, qIgn);
+    }
+    /**
+     * Regex matching anything between qSeps(,) with two qIgn(X): ,(abcXab,c,Xabc), OR ,(Xa,X), OR ,(abcXmX),
+     */
+    @Nonnull
+    private static String createRegExDoubleIgnore(@Nonnull final String qSep,
+                                                  @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qIgn + "]+" + qIgn + "[^" + qSep + qIgn + "]*)";
+    }
+    /**
+     * Regex matching anything between qSeps(,) with ONE qIgn(X) when there isn't any other qIgn later on: ,(abcXab),abaa,aa
+     */
+    @Nonnull
+    private static String createRegExSingleIgnoreWithLookAhead(@Nonnull final String qSep,
+                                                               @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qSep + qIgn + "]*)(?=[^" + qIgn + "]*)";
+    }
+    /**
+     * Regex matching anything between qSeps and qIgns: ,(abc), OR x(foo)x OR X(aa), OR ,(aa)X
+     */
+    @Nonnull
+    private static String createRegExWithoutSepsOrIgnore(@Nonnull final String qSep,
+                                                         @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]+)";
     }
 }

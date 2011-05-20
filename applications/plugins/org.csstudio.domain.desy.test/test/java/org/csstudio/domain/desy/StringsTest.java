@@ -62,6 +62,7 @@ public class StringsTest {
         assertEquals(0, split.size());
         
     }
+    
     @Test
     public final void testSplitIgnoreInQuotes() {
         
@@ -71,13 +72,21 @@ public class StringsTest {
         assertEquals("tritra", it.next());
         assertEquals("tru", it.next());
         assertEquals("lala", it.next());
-        split = Strings.splitIgnoreWithinQuotes("  tri\"tra tru \" lala", ' ');
         
+        split = Strings.splitIgnoreWithinQuotes("  tri\"tra tru \" lala", ' ');
         it = split.iterator();
         assertEquals(2, split.size());
         assertEquals("tri\"tra tru \"", it.next());
         assertEquals("lala", it.next());
         
+        split = Strings.splitIgnoreWithinQuotes("aa,\"bb,bb\",cc\",dd\"ee", ',');
+        it = split.iterator();
+        assertEquals(3, split.size());
+        assertEquals("aa", it.next());
+        assertEquals("\"bb,bb\"", it.next());
+        assertEquals("cc\",dd\"ee", it.next());
+
+      
         split = Strings.splitIgnoreWithinQuotes("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x');
         it = split.iterator();
         assertEquals(5, split.size());
@@ -101,6 +110,14 @@ public class StringsTest {
         assertEquals("\"Hello Dolly\"", it.next());
         assertEquals("thisxxxxis", it.next());
         assertEquals("\" a test \"", it.next());
+        
+        split = Strings.splitIgnore("aa,|bb,bb|,cc|,ddee", ',', '|');
+        it = split.iterator();
+        assertEquals(4, split.size());
+        assertEquals("aa", it.next());
+        assertEquals("|bb,bb|", it.next());
+        assertEquals("cc|", it.next());
+        assertEquals("ddee", it.next());
     }
 
     @Test
@@ -117,7 +134,7 @@ public class StringsTest {
     }
 
     @Test
-    public final void testSplitIgnoreInQuotesTrimmed2() {
+    public final void testSplitIgnoreInQuotesTrimmedRegexLiteral() {
         Collection<String> split = 
             Strings.splitIgnoreWithinQuotes("|||This is a|| || |\"complicated||test.\"|||Hello, \"fox|and\"dog", '|');
         Iterator<String> it = split.iterator();
