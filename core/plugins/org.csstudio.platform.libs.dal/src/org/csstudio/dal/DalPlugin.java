@@ -25,12 +25,17 @@ import org.eclipse.core.runtime.Plugin;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.simple.SimpleDALBroker;
+import org.epics.css.dal.spi.DefaultPropertyFactoryService;
+import org.epics.css.dal.spi.LinkPolicy;
+import org.epics.css.dal.spi.Plugs;
+import org.epics.css.dal.spi.PropertyFactory;
+import org.epics.css.dal.spi.PropertyFactoryService;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DalPlugin extends Plugin {
+public class DalPlugin extends Plugin implements PropertyFactoryService {
 	
 	{
 		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_SEVERITY);
@@ -85,7 +90,7 @@ public class DalPlugin extends Plugin {
 	 */
 	public synchronized SimpleDALBroker getSimpleDALBroker() {
 		if (broker == null) {
-			broker = SimpleDALBroker.newInstance(getApplicationContext());
+			broker = SimpleDALBroker.newInstance(getApplicationContext(),this);
 		}
 		return broker;
 	}
@@ -112,4 +117,37 @@ public class DalPlugin extends Plugin {
 		}
 		return applicationContext;
 	}
+
+	/**
+	 * Creates factory for default plug by further calling {@link DalPlugin#getPropertyFactory(AbstractApplicationContext, LinkPolicy, String)}.
+	 * 
+	 */
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy) {
+		
+		// find default
+		String plug= Plugs.getDefaultPlug(ctx.getConfiguration());
+		
+		return getPropertyFactory(ctx, linkPolicy, plug);
+	}
+
+	/**
+	 * Creates factory in following order:
+	 * <ul>
+	 * <li>first tries to lookup delegate service defined by RCP extension point, this is done trough {@link PlugRegistry}. If this fails, then...</li>
+	 * <li>tries to load factory by calling {@link DefaultPropertyFactoryService}, this is fallback procedure, it does no use extension points.</li>
+	 * </ul> 
+	 */
+	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+			LinkPolicy linkPolicy, String plugName) {
+		
+		PropertyFactoryService pfs= PlugRegistry.getInstance().getPropertyFactoryService(plugName);
+		
+		if (pfs!=null) {
+			return pfs.getPropertyFactory(ctx, linkPolicy);
+		}
+		
+		return DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx, linkPolicy, plugName);
+	}
+	
 }

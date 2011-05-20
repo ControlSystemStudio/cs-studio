@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.csstudio.archivereader.ArchiveInfo;
 import org.csstudio.archivereader.ArchiveReader;
@@ -100,13 +101,15 @@ public abstract class ArchiveListGUI
         if (urls.getEnabled())
             connectToArchiveServer(urls.getText());
 
-        // TODO Archive table: Allow dragging of multiple archive data sources
+        // Archive table: Allow dragging of multiple archive data sources
         new ControlSystemDragSource(archive_table.getTable())
         {
             @Override
             public Object getSelection()
             {
-                return ((IStructuredSelection)archive_table.getSelection()).getFirstElement();
+                final Object[] objs = ((IStructuredSelection)archive_table.getSelection()).toArray();
+                final ArchiveDataSource[] archives = Arrays.copyOf(objs, objs.length, ArchiveDataSource[].class);
+                return archives;
             }
         };
     }
