@@ -163,12 +163,13 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 	}
 	
 	public synchronized void setState(String state){
-		if(states.contains(state)){
-			fromSetState = true;
+		fromSetState = true;
+		if(states.contains(state)){			
 			buttonGroup.setSelected(models.get(
-				states.indexOf(state)));
-			fromSetState = false;
-		}
+				states.indexOf(state)));			
+		}else
+			buttonGroup.setSelected(null);
+		fromSetState = false;
 	}
 
 	/**Set all the state string values.

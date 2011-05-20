@@ -13,12 +13,12 @@ import java.util.List;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -48,7 +48,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Xihui Chen
  *
  */
-public class ScriptsInputDialog extends Dialog {
+public class ScriptsInputDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action editAction;
@@ -91,6 +91,11 @@ public class ScriptsInputDialog extends Dialog {
 			}
 		}
 		super.okPressed();
+	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Script.html"; //$NON-NLS-1$; //$NON-NLS-2$
 	}
 	
 	/**
@@ -193,7 +198,7 @@ public class ScriptsInputDialog extends Dialog {
 		optionTab.setText("Options");
 		
 		
-		pvsEditor = new PVTupleTableEditor(tabFolder, new ArrayList<PVTuple>());
+		pvsEditor = new PVTupleTableEditor(tabFolder, new ArrayList<PVTuple>(), SWT.NONE);
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		pvsEditor.setEnabled(false);
 		
@@ -206,9 +211,9 @@ public class ScriptsInputDialog extends Dialog {
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 
 		skipFirstExecutionButton.setLayoutData(gd);
-		skipFirstExecutionButton.setText("Skip execution triggered by PVs' first connection");
+		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections");
 		skipFirstExecutionButton.setToolTipText(
-			"Skip the script execution caused by PVs' first connection during OPI startup.\n" +
+			"Skip the script executions triggered by PVs' first connections during OPI startup.\n" +
 			"This is useful if you want to trigger a script from user inputs only.");
 		skipFirstExecutionButton.setSelection(false);
 		skipFirstExecutionButton.setEnabled(false);
@@ -348,7 +353,8 @@ public class ScriptsInputDialog extends Dialog {
 			public void run() {
 				IPath path;				
 				RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-						Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
+						Display.getCurrent().getActiveShell(), startPath, "Select a script file",
+						new String[]{ScriptService.JS, ScriptService.PY});
 				if (rsd.open() == Window.OK) {
 					if (rsd.getSelectedResource() != null) {
 						path = rsd.getSelectedResource();
@@ -372,7 +378,8 @@ public class ScriptsInputDialog extends Dialog {
 				if (!selection.isEmpty()
 						&& selection.getFirstElement() instanceof ScriptData) {
 					RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
-					Display.getCurrent().getActiveShell(), startPath, "Select a java script file", new String[]{"js"});
+					Display.getCurrent().getActiveShell(), startPath, "Select a script file",
+					new String[]{ScriptService.JS, ScriptService.PY});
 					rsd.setSelectedResource(((ScriptData)selection.getFirstElement()).getPath());
 					if (rsd.open() == Window.OK) {
 						if (rsd.getSelectedResource() != null) {
@@ -462,4 +469,5 @@ public class ScriptsInputDialog extends Dialog {
 						"icons/search_next.gif")); //$NON-NLS-1$
 		moveDownAction.setEnabled(false);
 	}
+	
 }

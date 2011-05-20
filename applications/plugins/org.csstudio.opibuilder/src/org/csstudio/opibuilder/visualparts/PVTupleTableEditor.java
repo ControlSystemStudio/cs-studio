@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -51,8 +51,8 @@ public class PVTupleTableEditor extends Composite {
 	
 	private List<PVTuple> pvTupleList;
 
-	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList) {
-		super(parent, SWT.None);
+	public PVTupleTableEditor(Composite parent, List<PVTuple> pvTupleList, int style) {
+		super(parent,style);
 		this.pvTupleList = pvTupleList;
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginLeft = 0;

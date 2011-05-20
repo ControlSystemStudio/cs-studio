@@ -18,9 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
 /**A manager help to manage the display open history and provide go back and forward functions.
  * @author Xihui Chen
@@ -31,10 +29,12 @@ public class DisplayOpenManager {
 	private SizeLimitedStack<IRunnerInput> forwardStack;
 	private List<IDisplayOpenManagerListener> listeners;
 	private static int STACK_SIZE = 10;
-	public DisplayOpenManager() {
+	private IOPIRuntime opiRuntime;
+	public DisplayOpenManager(IOPIRuntime opiRuntime) {
 		backStack =  new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
 		forwardStack = new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
 		listeners = new ArrayList<IDisplayOpenManagerListener>();
+		this.opiRuntime = opiRuntime;
 	}
 
 	public void openNewDisplay(){
@@ -59,29 +59,25 @@ public class DisplayOpenManager {
 
 	private IRunnerInput getCurrentRunnerInputInEditor() {
 
-		IEditorPart activeEditor = PlatformUI.getWorkbench().
-			getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		IEditorInput input = activeEditor.getEditorInput();
+		IEditorInput input = opiRuntime.getOPIInput();
 
 		if(input instanceof IRunnerInput){
 			if(((IRunnerInput)input).getDisplayOpenManager() == null)
 				((IRunnerInput)input).setDisplayOpenManager(
-					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
+					(DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
 			return (IRunnerInput)input;
 		}
 
 		else
 			return new RunnerInput(getCurrentPathInEditor(),
-					(DisplayOpenManager)activeEditor.getAdapter(DisplayOpenManager.class));
+					(DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
 
 
 	}
 
 	private IPath getCurrentPathInEditor() {
-		IEditorInput input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().
-		getActiveEditor().getEditorInput();
-
-		return ResourceUtil.getPathInEditor(input);
+		return ResourceUtil.getPathInEditor(
+				opiRuntime.getOPIInput());
 
 
 	}
@@ -92,7 +88,7 @@ public class DisplayOpenManager {
 	 */
 	private void openOPI(IRunnerInput input) {
 		try {
-			RunModeService.getInstance().replaceActiveEditorContent(input);
+			RunModeService.replaceOPIRuntimeContent(opiRuntime, input);
 		} catch (PartInitException e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to go back", e);
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error",

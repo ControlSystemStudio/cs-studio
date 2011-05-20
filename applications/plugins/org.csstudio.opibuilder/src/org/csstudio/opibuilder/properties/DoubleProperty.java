@@ -130,4 +130,9 @@ public final class DoubleProperty extends AbstractWidgetProperty {
 	public Object readValueFromXML(Element propElement) {
 		return Double.parseDouble(propElement.getValue());
 	}
+	
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
 }

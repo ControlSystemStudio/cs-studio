@@ -65,7 +65,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of bits", 
+		addProperty(new IntegerProperty(PROP_NUM_BITS, "Number of Bits", 
 				WidgetPropertyCategory.Display, 16, 0, 64));
 		addProperty(new IntegerProperty(PROP_START_BIT, "Start Bit", 
 				WidgetPropertyCategory.Display, 0, 0, 64));

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -63,8 +63,7 @@ public class ScriptData implements IAdaptable {
 	 * @return true if successful. false if the input is not a javascript file.
 	 */
 	public boolean setPath(IPath path){
-		if(path.getFileExtension() != null && 
-				path.getFileExtension().equals(SCRIPT_EXTENSION)){
+		if(path.getFileExtension() != null){
 			this.path = path; 
 			return true;
 		}
@@ -129,8 +128,14 @@ public class ScriptData implements IAdaptable {
 				}
 				
 				public ImageDescriptor getImageDescriptor(Object object) {
+					String icon;
+					if(path != null && !path.isEmpty() 
+							&& path.getFileExtension().equals(ScriptService.PY)){
+						icon = "icons/python_file.gif";
+					}else
+						icon = "icons/js.gif";
 					return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-							OPIBuilderPlugin.PLUGIN_ID, "icons/js.gif");
+							OPIBuilderPlugin.PLUGIN_ID, icon);
 				}
 				
 				public Object[] getChildren(Object o) {

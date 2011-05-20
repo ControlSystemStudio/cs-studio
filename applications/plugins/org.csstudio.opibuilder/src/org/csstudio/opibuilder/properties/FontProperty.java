@@ -47,6 +47,9 @@ public class FontProperty extends AbstractWidgetProperty {
 	 * XML attribute name <code>fontName</code>.
 	 */
 	public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
+
+
+	private static final String QUOTE = "\""; //$NON-NLS-1$
 	
 	
 	/**Font Property Constructor. The property value type is {@link OPIFont}.
@@ -144,4 +147,23 @@ public class FontProperty extends AbstractWidgetProperty {
 		}
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		OPIFont opiFont = (OPIFont)propValue;
+		if(opiFont.isPreDefined())
+			return QUOTE + opiFont.getFontMacroName() + QUOTE;
+		else{
+			FontData fontData = opiFont.getFontData();
+			return "ColorFontUtil.getFont(\"" +
+				fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
+		}
+	}
+	
+	
+	
 }

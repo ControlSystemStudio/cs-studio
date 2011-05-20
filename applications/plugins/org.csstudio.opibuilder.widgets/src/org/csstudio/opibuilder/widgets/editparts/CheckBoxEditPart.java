@@ -139,10 +139,12 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
-			((CheckBoxFigure)getFigure()).setValue((Double)value);
+		if(value instanceof Number)
+			((CheckBoxFigure)getFigure()).setValue(((Number)value).longValue());
 		else if (value instanceof Boolean)
 			((CheckBoxFigure)getFigure()).setBoolValue((Boolean)value);
+		else
+			super.setValue(value);
 	}
 
 	@Override

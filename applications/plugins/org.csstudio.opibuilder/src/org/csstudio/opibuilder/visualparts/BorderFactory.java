@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
 import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
-import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
+import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;

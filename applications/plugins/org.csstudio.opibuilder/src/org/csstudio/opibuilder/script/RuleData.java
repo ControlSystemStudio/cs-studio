@@ -13,22 +13,10 @@ import java.util.List;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
-import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.ColorProperty;
-import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.FilePathProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
-import org.csstudio.opibuilder.properties.IntegerProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
-import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.util.StringUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**Data of a rule.
@@ -37,7 +25,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class RuleData implements IAdaptable{
 
-	private static final String QUOTE = "\""; //$NON-NLS-1$
+	public static final String QUOTE = "\""; //$NON-NLS-1$
 
 	/**
 	 * The name of the rule.
@@ -141,6 +129,9 @@ public class RuleData implements IAdaptable{
 		pvList.remove(pvTuple);
 	}	
 	
+	/**Generate the Javascript string for this rule. 
+	 * @return the script string
+	 */
 	public String generateScript(){
 		if(expressionList.size() <=0)
 			return ""; //$NON-NLS-1$
@@ -175,13 +166,13 @@ public class RuleData implements IAdaptable{
 		}
 		for(int i=0; i<pvList.size(); i++){
 			if(needDbl)
-				sb.append("var pv" + i + " = PVUtil."+ "getDouble(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				sb.append("var pv" + i + " = PVUtil."+ "getDouble(pvs[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(needInt)
-				sb.append("var pvInt" + i + " = PVUtil."+ "getLong(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				sb.append("var pvInt" + i + " = PVUtil."+ "getLong(pvs[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(needStr)
-				sb.append("var pvStr" + i + " = PVUtil."+ "getString(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				sb.append("var pvStr" + i + " = PVUtil."+ "getString(pvs[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(needSev)
-				sb.append("var pvSev" + i + " = PVUtil.getSeverity(pvArray[" + i + "]);\n");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				sb.append("var pvSev" + i + " = PVUtil.getSeverity(pvs[" + i + "]);\n");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		int i=0;
 		for(Expression exp : expressionList){
@@ -189,13 +180,13 @@ public class RuleData implements IAdaptable{
 			sb.append(expressionList.get(i++).getBooleanExpression());
 			sb.append(")\n");//$NON-NLS-1$
 			
-			sb.append("\twidgetController.setPropertyValue(\"" + propId + "\","); //$NON-NLS-1$ //$NON-NLS-2$
+			sb.append("\twidget.setPropertyValue(\"" + propId + "\","); //$NON-NLS-1$ //$NON-NLS-2$
 			
 			String propValue = generatePropValueString(property, exp);
 			sb.append(propValue + ");\n"); //$NON-NLS-1$			
 		}
 		sb.append("else\n"); //$NON-NLS-1$
-		sb.append("\twidgetController.setPropertyValue(\"" + propId + "\"," + //$NON-NLS-1$ //$NON-NLS-2$
+		sb.append("\twidget.setPropertyValue(\"" + propId + "\"," + //$NON-NLS-1$ //$NON-NLS-2$
 				generatePropValueString(property, null)+");\n"); //$NON-NLS-1$
 		
 		return sb.toString();
@@ -236,38 +227,12 @@ public class RuleData implements IAdaptable{
 				value = property.getPropertyValue();
 			
 			if(value == null)
-				return "null"; //$NON-NLS-1$
+				return "null"; //$NON-NLS-1$			
 			
-			if(property instanceof BooleanProperty){			
-				propValue = (Boolean)value? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
-			}else if(property instanceof ColorProperty){
-				OPIColor opiColor = (OPIColor)value;
-				if(opiColor.isPreDefined())
-					propValue = QUOTE + opiColor.getColorName()+QUOTE;
-				else{
-					RGB rgb = opiColor.getRGBValue();
-					propValue = "ColorFontUtil.getColorFromRGB("+ //$NON-NLS-1$
-						rgb.red + "," + rgb.green + "," + rgb.blue + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				}
-			}else if (property instanceof FontProperty){
-				OPIFont opiFont = (OPIFont)value;
-				if(opiFont.isPreDefined())
-					propValue = QUOTE + opiFont.getFontMacroName() + QUOTE;
-				else{
-					FontData fontData = opiFont.getFontData();
-					propValue = "ColorFontUtil.getFont(\"" +
-						fontData.getName() + QUOTE + "," + fontData.getHeight() + "," + fontData.getStyle() + ")";
-				}
-			}else if(property instanceof ComboProperty || property instanceof IntegerProperty)
-				propValue = ((Integer)value).toString();
-			else if(property instanceof DoubleProperty)
-				propValue = ((Double)value).toString();
-			else
-				propValue = value.toString();		
+			propValue = property.toStringInRuleScript(value);		
 		}
 	
-		if(property instanceof StringProperty || property instanceof FilePathProperty)
-			propValue = QUOTE + propValue + QUOTE;
+		
 		return propValue;
 	}
 

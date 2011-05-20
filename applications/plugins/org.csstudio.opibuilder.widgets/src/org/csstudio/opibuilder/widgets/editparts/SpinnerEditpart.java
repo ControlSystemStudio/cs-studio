@@ -304,8 +304,10 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double || value instanceof Integer)
-			((SpinnerFigure)getFigure()).setValue((Double) value);
+		if(value instanceof Number)
+			((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
+		else
+			super.setValue(value);
 	}
 
 

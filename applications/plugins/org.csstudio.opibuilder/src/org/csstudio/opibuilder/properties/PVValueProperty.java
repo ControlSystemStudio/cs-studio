@@ -74,5 +74,14 @@ public class PVValueProperty extends AbstractWidgetProperty {
 		return null;
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public boolean onlyAcceptExpressionInRule() {
+		return true;
+	}
 
 }

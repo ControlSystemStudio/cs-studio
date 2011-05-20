@@ -7,11 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**The cell editor for rules input.
  * @author Xihui Chen
@@ -32,6 +34,12 @@ public class RulesInputCellEditor extends AbstractDialogCellEditor {
 	protected void openDialog(Shell parentShell, String dialogTitle) {
 		RulesInputDialog dialog = 
 			new RulesInputDialog(parentShell, rulesInput, widgetModel, dialogTitle);
+		
+		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+				"org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
+			PlatformUI.getWorkbench().getHelpSystem().displayHelp(
+					OPIBuilderPlugin.PLUGIN_ID + ".rule"); //$NON-NLS-1$
+		
 		if(dialog.open() == Window.OK){
 			rulesInput = new RulesInput(dialog.getRuleDataList());
 		}

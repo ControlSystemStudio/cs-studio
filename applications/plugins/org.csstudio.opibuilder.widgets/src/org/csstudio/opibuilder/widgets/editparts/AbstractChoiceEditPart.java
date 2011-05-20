@@ -254,7 +254,10 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof String)
 			((AbstractChoiceFigure)getFigure()).setState((String)value);
-		else if (value instanceof Integer)
-			((AbstractChoiceFigure)getFigure()).setState((Integer)value);	}
+		else if (value instanceof Number)
+			((AbstractChoiceFigure)getFigure()).setState(((Number)value).intValue());
+		else 
+			super.setValue(value);
+	}
 
 }

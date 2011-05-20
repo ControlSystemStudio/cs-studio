@@ -162,5 +162,16 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 		
 	}
 	
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Number){
+			((PolylineFigure)getFigure()).setFill(((Number)value).doubleValue());
+		}else
+			super.setValue(value);
+	}
 	
+	@Override
+	public Object getValue() {
+		return ((PolylineFigure)getFigure()).getFill();
+	}
 }

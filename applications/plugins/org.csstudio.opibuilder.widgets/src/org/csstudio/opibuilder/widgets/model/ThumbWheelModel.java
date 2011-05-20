@@ -54,7 +54,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	public static final String ID = "org.csstudio.opibuilder.widgets.ThumbWheel"; //$NON-NLS-1$
 
-	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
+//	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
 
 	private static final int DEFAULT_HEIGHT = 60;
 
@@ -95,22 +95,22 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(new DoubleProperty(PROP_VALUE, "Value",
-				WidgetPropertyCategory.Behavior, 0));
+//		addProperty(new DoubleProperty(PROP_VALUE, "Value",
+//				WidgetPropertyCategory.Behavior, 0));
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum",
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		addProperty(new DoubleProperty(PROP_MAX, "Maximum",
 				WidgetPropertyCategory.Behavior, DEFAULT_MAX));
 		addProperty(new IntegerProperty(PROP_INTEGER_DIGITS_PART, 
-				"Integer digits", WidgetPropertyCategory.Behavior, DEFAULT_INTEGER_DIGITS));
+				"Integer Digits", WidgetPropertyCategory.Behavior, DEFAULT_INTEGER_DIGITS));
 		addProperty(new IntegerProperty(PROP_DECIMAL_DIGITS_PART, 
-				"Decimal digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
+				"Decimal Digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
 		addProperty(new ColorProperty(PROP_INTERNAL_FRAME_COLOR, 
-				"Internal frame color", WidgetPropertyCategory.Display,
+				"Internal Frame Color", WidgetPropertyCategory.Display,
 				ColorConstants.black.getRGB()));
 
 		addProperty(new IntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, 
-				"Internal frame thickness", WidgetPropertyCategory.Display, 1));
+				"Internal Frame Thickness", WidgetPropertyCategory.Display, 1));
 
 	}
 
@@ -135,9 +135,9 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 		setPropertyValue(PROP_DECIMAL_DIGITS_PART, val);
 	}
 
-	public double getValue() {
-		return (Double)getProperty(PROP_VALUE).getPropertyValue();
-	}
+//	public double getValue() {
+//		return (Double)getProperty(PROP_VALUE).getPropertyValue();
+//	}
 
 	public int getInternalFrameThickness() {
 		return (Integer)getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();

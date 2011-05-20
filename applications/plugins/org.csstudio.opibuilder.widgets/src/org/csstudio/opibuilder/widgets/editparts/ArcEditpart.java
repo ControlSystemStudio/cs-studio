@@ -93,5 +93,17 @@ public class ArcEditpart extends AbstractShapeEditPart {
 		
 	}
 
-
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Boolean){
+			((ArcFigure)getFigure()).setFill((Boolean)value);
+		}else
+			super.setValue(value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return ((ArcFigure)getFigure()).isFill();
+	}
+	
 }

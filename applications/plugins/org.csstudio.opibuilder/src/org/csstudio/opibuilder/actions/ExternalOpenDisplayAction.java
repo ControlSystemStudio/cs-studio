@@ -9,11 +9,11 @@ package org.csstudio.opibuilder.actions;
 
 import java.util.LinkedHashMap;
 
+import org.csstudio.openfile.IOpenDisplayAction;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.platform.ui.display.IOpenDisplayAction;
 import org.csstudio.platform.util.StringUtil;
 
 /**Run OPI from external program, such as alarm GUI, data browser...

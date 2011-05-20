@@ -398,9 +398,12 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof double[] || value instanceof Double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
-		}
+		} else
+			super.setValue(value);
 	}
 
+
+	
 	@Override
 	public void deactivate() {
 		((IntensityGraphFigure)getFigure()).dispose();

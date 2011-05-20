@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.GraphicalViewer;
 
 /**
  * The root model for an OPI Display.
@@ -58,7 +59,7 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_AUTO_ZOOM_TO_FIT_ALL = "auto_zoom_to_fit_all"; //$NON-NLS-1$
 	
-	
+	private GraphicalViewer viewer;
 	
 	private IPath opiFilePath;
 	
@@ -96,6 +97,7 @@ public class DisplayModel extends AbstractContainerModel {
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
+		setPropertyValue(PROP_NAME, ""); //$NON-NLS-1$
 				
 	}
 
@@ -142,6 +144,21 @@ public class DisplayModel extends AbstractContainerModel {
 	public IPath getOpiFilePath() {
 		return opiFilePath;
 	}
+
+	/**Set the viewer of the display model if this model belongs to a viewer.
+	 * @param viewer the viewer to set
+	 */
+	public void setViewer(GraphicalViewer viewer) {
+		this.viewer = viewer;
+	}
+
+	/**
+	 * @return the viewer, null if it has no viewer.
+	 */
+	public GraphicalViewer getViewer() {
+		return viewer;
+	}
+	
 	
 	
 

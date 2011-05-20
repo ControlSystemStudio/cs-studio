@@ -58,7 +58,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		model = (ThumbWheelModel) getWidgetModel();
 
-		logic = new ThumbWheelLogic(model.getValue(), model
+		logic = new ThumbWheelLogic(0, model
 				.getWholePartDigits(), model.getDecimalPartDigits());
 
 		logic.setMax(model.getMaximum());
@@ -240,15 +240,15 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_MAX, handler);
 
 		// value
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				logic.setValue((Double) newValue);
-				updateWheelValues();
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, handler);
+//		handler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue, final IFigure refreshableFigure) {
+//				logic.setValue((Double) newValue);
+//				updateWheelValues();
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, handler);
 
 		// font
 		handler = new IWidgetPropertyChangeHandler() {
@@ -634,13 +634,14 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double) {
-			double doubleValue = ((Double) value).doubleValue();
+		if(value instanceof Number) {
+			double doubleValue = ((Number) value).doubleValue();
 			logic.setValue(doubleValue);
 		}
 		else if(value instanceof String) {
 			double doubleValue = Double.parseDouble((String) value);
 			logic.setValue(doubleValue);
-		}
+		}else
+			super.setValue(value);
 	}
 }

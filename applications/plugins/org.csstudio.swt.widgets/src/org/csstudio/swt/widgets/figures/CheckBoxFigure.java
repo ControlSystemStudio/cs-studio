@@ -206,7 +206,7 @@ public class CheckBoxFigure extends Label implements Introspectable{
 	 */
 	protected void updateBoolValue() {
 		//get boolValue
-		if(bit == -1)
+		if(bit <0 )
 			boolValue = (this.value != 0);
 		else if(bit >=0) {
 			char[] binArray = Long.toBinaryString(this.value).toCharArray();
@@ -232,13 +232,13 @@ public class CheckBoxFigure extends Label implements Introspectable{
 	@SuppressWarnings("nls")
     private void updateValue(){
 		//get boolValue
-		if(bit == -1)
+		if(bit < 0)
 			setValue(boolValue ? 1 : 0);
 		else if(bit >=0) {
 			char[] binArray = Long.toBinaryString(value).toCharArray();
-			if(bit >= 64 || bit <-1) {
+			if(bit >= 64 ) {
 			    // Log with exception to obtain call stack
-			    Activator.getLogger().log(Level.WARNING, "Bit " + bit + " out of range: [-1,63]", new Exception());
+			    Activator.getLogger().log(Level.WARNING, "Bit " + bit + " exceeds 63.", new Exception());
             }
 			else {
 				char[] bin64Array = new char[64];

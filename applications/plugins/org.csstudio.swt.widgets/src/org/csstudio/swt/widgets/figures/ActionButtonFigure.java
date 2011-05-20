@@ -9,6 +9,7 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -19,6 +20,8 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.ActionButtonIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
@@ -55,12 +58,12 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	/**
 	 * When it was set as armed, action will be fired when mouse released.
 	 */
-	private boolean armed;
+	private boolean armed = false;
 
 	/**
 	 * The status of mouse button.
 	 */
-	private boolean mousePressed;
+	private boolean mousePressed = false;
 
 
 	/**
@@ -74,11 +77,11 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	 */
 	private Label label;
 
-	private boolean toggleStyle;
+	private boolean toggleStyle = false;
 
-	private boolean selected;
+	private boolean selected = false;
 
-	private boolean toggled;
+	private boolean toggled =false;
 
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
@@ -318,17 +321,34 @@ public class ActionButtonFigure extends Figure implements Introspectable{
 	@SuppressWarnings("nls")
     public void setImagePath(final IPath path){
 		dispose();
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+			
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				image = new Image(null, stream);
+				try {
+					stream.close();
+				} catch (IOException e) {
+				}
+				if(label.isEnabled())
+					label.setIcon(image);
+				else{
+					if(grayImage == null && image != null)
+						grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+					label.setIcon(grayImage);
+				}
+			}
+		};
 		if(path != null && !path.isEmpty()){
 			this.imagePath = path;
-			try {
-				InputStream stream = ResourceUtil.pathToInputStream(path);
-				image = new Image(null, stream);
-				stream.close();
-			} catch (Exception e) {
-				image = null;
-				Activator.getLogger().log(Level.WARNING,
-			            "Failed to load image from path" + path, e);
-			}
+			ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
+				
+				public void handleError(Exception exception) {
+					image = null;
+					Activator.getLogger().log(Level.WARNING,
+			            "Failed to load image from path" + path, exception);
+				}
+			});			
 		}
 
 		if(label.isEnabled())
