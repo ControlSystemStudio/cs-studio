@@ -1,4 +1,3 @@
-javax.annotation/**
 org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
@@ -15,6 +14,8 @@ org.csstudio.archive.rdb/**
 org.csstudio.archivereader/**
 org.csstudio.archivereader.channelarchiver/**
 org.csstudio.archivereader.rdb/**
+org.csstudio.auth/**
+org.csstudio.auth.ui/**
 org.csstudio.basic.epics.product/**
 org.csstudio.csdata/**
 org.csstudio.csdata.clipboard/**
@@ -41,6 +42,7 @@ org.csstudio.logbook.sns/**
 org.csstudio.logbook.ui/**
 org.csstudio.logging/**
 org.csstudio.logging.ui/**
+org.csstudio.openfile/**
 org.csstudio.opibuilder/**
 org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
@@ -51,8 +53,6 @@ org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.ldapAuthorization/**
 org.csstudio.platform.ldapAuthorization.ui/**
-org.csstudio.platform.libs.dal/**
-org.csstudio.platform.libs.dal.epics/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.jdbc/**
@@ -63,7 +63,7 @@ org.csstudio.platform.libs.log4j/**
 org.csstudio.platform.ui/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
-org.csstudio.platform.workspace/**
+org.csstudio.remote/**
 org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.ldapAuthorization/**
@@ -92,3 +92,4 @@ org.csstudio.utility.pvmanager/**
 org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
+org.csstudio.workspace/**
