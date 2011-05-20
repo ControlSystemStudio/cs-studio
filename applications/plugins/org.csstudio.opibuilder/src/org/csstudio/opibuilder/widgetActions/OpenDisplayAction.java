@@ -32,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Xihui Chen
  * 
  */
-public class OpenOPIInEditorAction extends AbstractOpenOPIAction {
+public class OpenDisplayAction extends AbstractOpenOPIAction {
 
 
 	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
