@@ -2,16 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Databrowser OPI widget
 Bundle-SymbolicName: org.csstudio.trends.databrowser2.opiwidget;singleton:=true
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir, <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.1",
+ org.eclipse.ui.views;bundle-version="3.5.1",
+ org.eclipse.ui.ide;bundle-version="3.6.0",
  org.csstudio.apputil.ui;bundle-version="1.1.7",
  org.csstudio.opibuilder;bundle-version="1.0.6",
  org.csstudio.opibuilder.widgets;bundle-version="1.0.5",
- org.csstudio.trends.databrowser2;bundle-version="2.0.7",
+ org.csstudio.trends.databrowser2;bundle-version="3.0.0",
  org.csstudio.swt.xygraph;bundle-version="1.1.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
