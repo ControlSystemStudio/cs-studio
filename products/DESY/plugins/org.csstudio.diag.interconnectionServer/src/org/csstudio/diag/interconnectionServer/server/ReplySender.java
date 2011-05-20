@@ -27,14 +27,16 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 
+
 /**
  * Sends a reply to the IOC.
  *
  * @author Joerg Rathlev
  */
 class ReplySender {
+
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ReplySender.class);
-	/*
+    /*
 	 * TODO
 	 * For compatibility reasons the message sender on the IOC side
 	 * now accepts STATUS and REPLY - but ONLY the NEW version!

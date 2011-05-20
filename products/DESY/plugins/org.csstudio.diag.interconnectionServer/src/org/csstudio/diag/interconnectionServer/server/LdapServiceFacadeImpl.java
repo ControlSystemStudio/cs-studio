@@ -46,25 +46,29 @@ import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.service.util.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.csstudio.utility.ldap.service.util.LdapUtils;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
+
 
 /**
  * Helper class for local LDAP support.
  *
  * @author Matthias Clausen
  * @author Bastian Knerr
+ * @deprecated use modern dependency injection to inject the LDAP service tracked by the framework
  */
-public enum LdapSupport {
+@Deprecated
+public enum LdapServiceFacadeImpl {
 
     // Modern singleton pattern with synchronization and serialization safety for free.
     INSTANCE;
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapSupport.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceFacadeImpl.class);
 
-	private LdapSupport() {
+    
+	private LdapServiceFacadeImpl() {
 		// EMPTY
 	}
 
@@ -76,10 +80,11 @@ public enum LdapSupport {
 	 * @param ldapIocName
 	 * @return 1. Param = logicalIocName; 2. Param = ldapIocName
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
 	@Nonnull
 	public String[] getLogicalIocName (@Nonnull final InetAddress ipAddress,
-	                                   @Nonnull final String hostName) throws NamingException {
+	                                   @Nonnull final String hostName) throws NamingException, LdapServiceException {
 
 		final String[] stringReturnArray = new String[2];
 
@@ -120,9 +125,11 @@ public enum LdapSupport {
      *            the IP address of the IOC.
      * @return The LDAP distinguished name of the IOC with the given IP address.
      * @throws NamingException
+     * @throws LdapServiceException 
      */
 	@CheckForNull
-    synchronized public LdapName getLogicalNameFromIPAdr(@CheckForNull final InetAddress ipAddress) throws NamingException {
+    synchronized public LdapName getLogicalNameFromIPAdr(@CheckForNull final InetAddress ipAddress) 
+	throws NamingException, LdapServiceException {
         if (ipAddress == null) {
             return null;
         }
