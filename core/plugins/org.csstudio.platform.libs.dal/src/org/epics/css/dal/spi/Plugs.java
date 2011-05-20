@@ -101,6 +101,13 @@ public final class Plugs
 	 * to use properties from cache when connection is requested. By default new property is created.
 	 */
 	public static final String PROPERTIES_FROM_CACHE = "dal.propertiesFromCache";
+	
+	/**
+	 * An optional application configuration property name under which is in AbstractAppplicationContext stored an instance of 
+	 * PropertyFactoryService. This service implementation must be able to produce PropertyFactory 
+	 * implementations for all supported and available plug types within application runtime context.
+	 */
+	public static final String PROPERTY_FACTORY_SERVICE_IMPLEMENTATION = "dal.propertyfactoryServiceImplementation";
 
 	/**
 	 * DAL default connection timeout value in milliseconds. Used if CONNECTION_TIMEOUT is not defined.

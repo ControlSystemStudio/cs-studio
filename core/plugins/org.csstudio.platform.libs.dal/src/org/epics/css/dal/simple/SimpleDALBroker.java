@@ -131,6 +131,12 @@ public class SimpleDALBroker {
 	 * @return if ctx is provided new instance, otherwise singelton
 	 */
 	public static SimpleDALBroker newInstance(final AbstractApplicationContext ctx) {
+		
+		Object o= ctx.getApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION);
+		
+		if (o instanceof PropertyFactoryService) {
+			return newInstance(ctx, (PropertyFactoryService)o);
+		}
 		return newInstance(ctx, null);
 	}
 

@@ -44,6 +44,7 @@ public class CssApplicationContext extends DefaultApplicationContext {
 		super(name);
 		PlugRegistry.getInstance().configurePlugs(getConfiguration());
 		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "5000");
+		putApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION, DalPlugin.getDefault());
 	}
 
 }
