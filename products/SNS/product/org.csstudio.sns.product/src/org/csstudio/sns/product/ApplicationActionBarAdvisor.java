@@ -26,7 +26,6 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
-import org.eclipse.ui.internal.ReopenEditorMenu;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -41,14 +40,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 @SuppressWarnings("restriction")
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-	private static final String MENU_WORKSPACE = "workspace";	//$NON-NLS-1$
-	private static final String RECENT_FILES = "recent_files"; //$NON-NLS-1$
-
-	/**
-     * Menu and cool bar ID of switch user
-     */
-    private static final String MENU_TOOLBAR_LOGIN = "css_login"; //$NON-NLS-1$
-
 	/**
      * Group ID of switch user and logout toolbar
      */
@@ -65,7 +56,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction save_all;
     private IAction importAction;
     private IAction exportAction;
-    private IAction logout;
     private IAction quit;
 
     //Edit menu
@@ -84,7 +74,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction help;
     private IAction about;
     private IContributionItem menu_perspectives;
-    private IContributionItem recent_files;
     private IContributionItem menu_views;
 
     /**
@@ -178,11 +167,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
             ContributionItemFactory.PERSPECTIVES_SHORTLIST.create(window);
         menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 
-        recent_files = new ReopenEditorMenu(window, "reopenEditors", false); //$NON-NLS-1$
-        //Following is the standard way to create this menu, but it
-        //will create a separator before the menu.
-        //ContributionItemFactory.REOPEN_EDITORS.create(window);
-
         if (window.getWorkbench().getIntroManager().hasIntro())
         {
             intro = ActionFactory.INTRO.create(window);
@@ -211,16 +195,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         createWindowMenu(menubar);
         createHelpMenu(menubar);
-    }
-
-
-    /** Create the file menu. TODO REMOVE FIle menu */
-    private void createFileMenu(IMenuManager menubar)
-    {
-//        menu_file.add(new GroupMarker(RECENT_FILES));
-//        final MenuManager recentFilesSubMenu =	new MenuManager(Messages.Menu_File_Recent);
-//        recentFilesSubMenu.add(recent_files);
-//        menu_file.add(recentFilesSubMenu);
     }
 
     /** Create the file menu. */

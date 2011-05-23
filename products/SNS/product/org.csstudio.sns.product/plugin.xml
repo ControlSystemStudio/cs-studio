@@ -115,6 +115,13 @@
                   label="New"
                   style="push">
             </command>
+            <menu
+                  label="Recent Files...">
+                <dynamic
+                      class="org.csstudio.sns.product.MenuReopenEditors"
+                      id="org.csstudio.sns.product.reopen_editors">
+                </dynamic>
+            </menu>
             <separator
                   name="new.ext">
             </separator>
@@ -179,5 +186,8 @@
             </command>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
    </extension>
 </plugin>
