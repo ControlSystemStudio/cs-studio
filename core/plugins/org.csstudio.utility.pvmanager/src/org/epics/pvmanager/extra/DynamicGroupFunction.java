@@ -6,10 +6,10 @@ package org.epics.pvmanager.extra;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.epics.pvmanager.Function;
 
 /**
+ * Function that implements the dynamic group.
  *
  * @author carcassi
  */
@@ -28,11 +28,15 @@ class DynamicGroupFunction extends Function<List<Object>> {
         for (int i = 0; i < arguments.size(); i++) {
             Function<?> function = arguments.get(i);
             try {
+                // Compute the new value for the ith function.
+                // If the value changed, reset the exception
                 result.add(function.getValue());
                 if (result.get(i) != previousValues.get(i)) {
                     exceptions.set(i, null);
                 }
             } catch (Exception ex) {
+                // Computation of value failed. Leave last value
+                // and update exception
                 exceptions.set(i, ex);
             }
         }
