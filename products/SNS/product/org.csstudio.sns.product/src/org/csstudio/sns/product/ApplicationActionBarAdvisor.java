@@ -24,35 +24,22 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
-
 /** Create workbench window actions, menu bar, coolbar.
  *  @author Kay Kasemir
- *  @author Alexander Will provided most of the hints
- *          in the CssWorkbenchAdvisor code
  *  @author Xihui Chen
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
-	/**
-     * Group ID of switch user and logout toolbar
-     */
+	/** Toolbar ID of switch user and logout toolbar */
     private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
     final private IWorkbenchWindow window;
 
-    /**
-     * The coolbar context menu manager.
-     * @since 2.2.1
-     */
-	private MenuManager coolbarPopupMenuManager;
-
-    // SNS Actions
 	private IWorkbenchAction lockToolBarAction;
 
 	private IWorkbenchAction editActionSetAction;
 
-
-    public ApplicationActionBarAdvisor(IActionBarConfigurer configurer)
+    public ApplicationActionBarAdvisor(final IActionBarConfigurer configurer)
     {
         super(configurer);
         window = configurer.getWindowConfigurer().getWindow();
@@ -60,13 +47,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     /** {@inheritDoc} */
 	@Override
-    protected void makeActions(IWorkbenchWindow window)
+    protected void makeActions(final IWorkbenchWindow window)
     {
         lockToolBarAction = ActionFactory.LOCK_TOOL_BAR.create(window);
         register(lockToolBarAction);
 
-        editActionSetAction = ActionFactory.EDIT_ACTION_SETS
-        .create(window);
+        editActionSetAction = ActionFactory.EDIT_ACTION_SETS.create(window);
         register(editActionSetAction);
 
         // The help menu tries to invoke the into(welcome)
@@ -80,7 +66,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     /** {@inheritDoc} */
     @Override
-    protected void fillMenuBar(IMenuManager menubar)
+    protected void fillMenuBar(final IMenuManager menubar)
     {
         // Placeholder for possible additions, rest filled from plugin.xml
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -88,24 +74,25 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     /** {@inheritDoc} */
     @Override
-    protected void fillCoolBar(ICoolBarManager coolbar)
+    protected void fillCoolBar(final ICoolBarManager coolbar)
     {
-        { // Set up the context Menu
-            coolbarPopupMenuManager = new MenuManager();
-			coolbarPopupMenuManager.add(new ActionContributionItem(lockToolBarAction));
-            coolbarPopupMenuManager.add(new ActionContributionItem(editActionSetAction));
-            coolbar.setContextMenuManager(coolbarPopupMenuManager);
-            IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
-            menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
-        }
+        // Set up the context Menu
+        final MenuManager coolbarPopupMenuManager = new MenuManager();
+        coolbarPopupMenuManager.add(new ActionContributionItem(lockToolBarAction));
+        coolbarPopupMenuManager.add(new ActionContributionItem(editActionSetAction));
+        coolbar.setContextMenuManager(coolbarPopupMenuManager);
+        final IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
+        menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
 
+        // 'File' and 'User' sections of the cool bar
         IToolBarManager file_bar = new ToolBarManager();
         IToolBarManager user_bar = new ToolBarManager();
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
         coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
 
-//        file_bar.add(create_new);
-//        file_bar.add(save);
+        // File 'new' and 'save' actions
+        file_bar.add(ActionFactory.NEW.create(window));
+        file_bar.add(ActionFactory.SAVE.create(window));
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
     }
 }

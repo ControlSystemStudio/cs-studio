@@ -337,11 +337,5 @@
             </separator>
          </menu>
       </menuContribution>
-
-
-
-   </extension>
-   <extension
-         point="org.eclipse.ui.commands">
    </extension>
 </plugin>
