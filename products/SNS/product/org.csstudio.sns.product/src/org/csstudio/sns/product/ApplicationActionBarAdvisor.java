@@ -11,7 +11,6 @@ import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -23,7 +22,6 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.menus.IMenuService;
@@ -46,24 +44,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     final private IWorkbenchWindow window;
 
-    //File menu
-    private IAction create_new;
-    private IAction close;
-    private IAction close_all;
-    private IAction save;
-    private IAction save_as;
-    private IAction save_all;
-    private IAction importAction;
-    private IAction exportAction;
-    private IAction quit;
-
-    private IAction new_window;
-    private IContributionItem open_windows;
     private IAction intro;
     private IAction help;
     private IAction about;
-    private IContributionItem menu_perspectives;
-    private IContributionItem menu_views;
 
     /**
      * The coolbar context menu manager.
@@ -87,49 +70,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 	@Override
     protected void makeActions(IWorkbenchWindow window)
     {
-		//File menu
-        create_new = ActionFactory.NEW.create(window);
-        register(create_new);
-
-        close = ActionFactory.CLOSE.create(window);
-        register(close);
-
-        close_all = ActionFactory.CLOSE_ALL.create(window);
-        register(close_all);
-
-        save = ActionFactory.SAVE.create(window);
-        register(save);
-
-        save_as = ActionFactory.SAVE_AS.create(window);
-        register(save_as);
-
-        save_all = ActionFactory.SAVE_ALL .create(window);
-        register(save_all);
-
-        importAction = ActionFactory.IMPORT.create(window);
-        register(importAction);
-
-        exportAction = ActionFactory.EXPORT.create(window);
-        register(exportAction);
-
-        quit = ActionFactory.QUIT.create(window);
-        register(quit);
-
-        new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
-        register(new_window);
-
         lockToolBarAction = ActionFactory.LOCK_TOOL_BAR.create(window);
         register(lockToolBarAction);
 
         editActionSetAction = ActionFactory.EDIT_ACTION_SETS
         .create(window);
         register(editActionSetAction);
-
-        open_windows = ContributionItemFactory.OPEN_WINDOWS.create(window);
-
-        menu_perspectives =
-            ContributionItemFactory.PERSPECTIVES_SHORTLIST.create(window);
-        menu_views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
 
         if (window.getWorkbench().getIntroManager().hasIntro())
         {
@@ -155,27 +101,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
         // Placeholder for possible additions
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        createWindowMenu(menubar);
         createHelpMenu(menubar);
     }
 
     /** Create the window menu. */
     private void createWindowMenu(IMenuManager menubar)
     {
-        final MenuManager menu_window =
-            new MenuManager(Messages.Menu_Window, IWorkbenchActionConstants.M_WINDOW);
-        menu_window.add(new_window);
-        menu_window.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
-        final MenuManager persp_sub = new MenuManager(Messages.Menu_Perspectives);
-        persp_sub.add(menu_perspectives);
-        menu_window.add(persp_sub);
-
-        final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
-        view_sub.add(menu_views);
-        menu_window.add(view_sub);
-        menu_window.add(open_windows);
-        menubar.add(menu_window);
+//        final MenuManager persp_sub = new MenuManager(Messages.Menu_Perspectives);
+//        persp_sub.add(menu_perspectives);
+//        menu_window.add(persp_sub);
+//
+//        final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
+//        view_sub.add(menu_views);
+//        menu_window.add(view_sub);
+//        menu_window.add(open_windows);
+//        menubar.add(menu_window);
     }
 
     /** Create the help menu. */
@@ -222,8 +162,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
         coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
 
-        file_bar.add(create_new);
-        file_bar.add(save);
+//        file_bar.add(create_new);
+//        file_bar.add(save);
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
     }
 }

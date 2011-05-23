@@ -245,6 +245,46 @@
             </separator>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="window"
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.window.newWindow"
+                  label="New Window"
+                  style="push">
+            </command>
+            <separator
+                  name="views"
+                  visible="true">
+            </separator>
+            <menu
+                  label="Open Perspective">
+               <dynamic
+                     class="org.csstudio.sns.product.OpenPerspectiveMenu"
+                     id="org.csstudio.sns.product.open_perspective">
+               </dynamic>
+            </menu>
+            <menu
+                  label="Show View">
+               <dynamic
+                     class="org.csstudio.sns.product.ShowViewMenu"
+                     id="org.csstudio.sns.product.show_view">
+               </dynamic>
+            </menu>
+            <separator
+                  name="additions"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences..."
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
