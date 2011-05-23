@@ -22,7 +22,6 @@
 package org.csstudio.domain.desy;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +29,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Function;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
@@ -50,6 +48,20 @@ public final class Strings {
         // Empty
     }
 
+    /**
+     * Splits a source string on a comma, ignoring commas within quotes.
+     *
+     * Note, uneven numbers of quotes break the regex such that the first separator before the first
+     * quote is not considered.
+     *
+     * @param source a string of comma separated entries
+     * @return an iterable of strings, and an empty list if the string is blank
+     */
+    @Nonnull
+    public static String[] splitOnCommaIgnoreInQuotes(@Nonnull final String source) {
+        return source.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+    }
+
     @Nonnull
     public static Collection<String> splitIgnoreWithinQuotes(@Nonnull final String source,
                                                              @Nonnull final char sep) {
@@ -59,6 +71,7 @@ public final class Strings {
     /**
      * Splits a string into substring on a separating character. Ignores those separators in
      * within the ignore char (typically a quote '"') and those separators following on each other.
+     * Empty strings are filtered (any output string !isEmpty).
      *
      * @param source
      * @param sep
@@ -81,6 +94,16 @@ public final class Strings {
         return result;
     }
 
+    /**
+     * Splits a string into substring on a separating character. Ignores those separators in
+     * within the ignore char (typically a quote '"') and those separators following on each other.
+     * Result strings are trimmed, which may result in empty strings.
+     *
+     * @param source
+     * @param sep
+     * @param trim
+     * @return
+     */
     @Nonnull
     public static Collection<String> splitIgnoreWithinQuotesTrimmed(@Nonnull final String source,
                                                                     @Nonnull final char sep,
@@ -111,21 +134,6 @@ public final class Strings {
         return sourceWOLeadingAndTrailingChars;
     }
 
-    /**
-     * Creates a list of string from the comma separated entries in the input string
-     * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
-     * added!
-     *
-     * @param commaSeparatedString a string of comma separated entries
-     * @return an iterable of strings, and an empty list if the string is blank
-     */
-    @Nonnull
-    public static Iterable<String> createListFrom(@Nonnull final String commaSeparatedString) {
-        if (com.google.common.base.Strings.isNullOrEmpty(commaSeparatedString)) {
-            return Collections.emptyList();
-        }
-        return Splitter.on(",").trimResults().omitEmptyStrings().split(commaSeparatedString);
-    }
 
     /**
      * Returns the size of the string measured in bytes.

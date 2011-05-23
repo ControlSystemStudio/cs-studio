@@ -30,8 +30,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.google.common.collect.Iterables;
-
 /**
  * Test for {@link Strings}. 
  * 
@@ -147,23 +145,38 @@ public class StringsTest {
     }
     
     @Test
-    public final void testCreateListFromString() {
+    public final void testSplitOnCommasIgnoreInQuotes() {
         
-        Assert.assertNotNull(Strings.createListFrom(null));
-        Assert.assertNotNull(Strings.createListFrom(""));
-        Assert.assertNotNull(Strings.createListFrom("hallo"));
+        String[] empty = Strings.splitOnCommaIgnoreInQuotes("");
+        Assert.assertNotNull(empty);
+        Assert.assertEquals(1, empty.length);
+        Assert.assertEquals("", empty[0]);
 
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom(null)));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom("")));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom("  ")));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom(" ,  ")));
-        Assert.assertEquals(1, Iterables.size(Strings.createListFrom("hallo")));
-        Assert.assertEquals(1, Iterables.size(Strings.createListFrom("hallo ,")));
+        String[] notEmpty = Strings.splitOnCommaIgnoreInQuotes("hallo");
+        Assert.assertNotNull(notEmpty);
+        Assert.assertEquals(1, notEmpty.length);
+        Assert.assertEquals("hallo", notEmpty[0]);
 
-        Assert.assertEquals("hallo", Strings.createListFrom("hallo ,").iterator().next());
-        Iterator<String> it = Strings.createListFrom(" , hallo , tut,").iterator();
-        Assert.assertEquals("hallo", it.next());
-        Assert.assertEquals("tut", it.next());
+        Assert.assertEquals(1, Strings.splitOnCommaIgnoreInQuotes("  ").length);
+        Assert.assertEquals(2, Strings.splitOnCommaIgnoreInQuotes(" ,  ").length);
+        
+        String[] source = Strings.splitOnCommaIgnoreInQuotes("a,b,\"c,d\",e");
+        Assert.assertEquals(4, source.length);
+        Assert.assertEquals("a", source[0]);
+        Assert.assertEquals("b", source[1]);
+        Assert.assertEquals("\"c,d\"", source[2]);
+        Assert.assertEquals("e", source[3]);
+        
+        source = Strings.splitOnCommaIgnoreInQuotes("conf,\"use");
+        Assert.assertEquals(1, source.length);
+        Assert.assertEquals("conf,\"use", source[0]);
+
+        source = Strings.splitOnCommaIgnoreInQuotes("co,\"nf,\"us,\"e");
+        Assert.assertEquals(2, source.length);
+        Assert.assertEquals("co,\"nf", source[0]);
+        Assert.assertEquals("\"us,\"e", source[1]);
+ 
+
     }
     
     @Test
