@@ -11,8 +11,10 @@ import org.eclipse.ui.internal.ReopenEditorMenu;
  *  @author Xihui Chen - Previous code in SNS CSS ApplicationActionBarAdvisor
  *  @author Kay Kasemir
  */
+@SuppressWarnings("restriction")
 public class MenuReopenEditors extends ContributionItem
 {
+    @SuppressWarnings("nls")
     @Override
     public void fill(final Menu menu, final int index)
     {
