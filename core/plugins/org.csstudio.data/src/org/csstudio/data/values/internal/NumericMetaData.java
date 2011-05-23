@@ -15,6 +15,8 @@ import org.csstudio.data.values.INumericMetaData;
  */
 public class NumericMetaData implements INumericMetaData
 {
+    private static final long serialVersionUID = 1L;
+
     private final double disp_low;
 	private final double disp_high;
     private final double warn_low;

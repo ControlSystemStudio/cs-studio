@@ -100,4 +100,5 @@
       <workbench class="org.csstudio.sns.product.startupmodule.Workbench"/>
       <project class="org.csstudio.startup.module.defaults.DefaultProject"/>
    </extension>
+   
 </plugin>

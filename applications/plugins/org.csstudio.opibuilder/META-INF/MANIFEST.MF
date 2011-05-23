@@ -9,8 +9,6 @@ Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.1.0";visibility:=reexport,
- org.csstudio.platform.ui;bundle-version="1.1.1";visibility:=reexport,
  org.eclipse.gef;visibility:=reexport,
  org.csstudio.utility.pv;bundle-version="1.2.0";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.4.0",
@@ -25,7 +23,13 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.apputil;bundle-version="1.0.11",
  org.csstudio.email.ui;bundle-version="1.0.0",
  org.csstudio.apputil.ui;bundle-version="1.1.4",
- org.csstudio.logbook;bundle-version="1.0.2"
+ org.csstudio.logbook;bundle-version="1.0.2",
+ org.eclipse.help,
+ org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.openfile;bundle-version="3.0.0",
+ org.csstudio.java;bundle-version="3.0.0",
+ org.csstudio.platform;bundle-version="1.2.0",
+ org.csstudio.platform.ui;bundle-version="1.2.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
@@ -47,5 +51,6 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgetActions
 Bundle-ClassPath: lib/jdom/jdom.jar,
  lib/rhino/js.jar,
+ lib/jython/jython.jar,
  .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

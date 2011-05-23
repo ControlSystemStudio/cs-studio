@@ -2,14 +2,17 @@ org.csstudio.auth
 org.csstudio.auth.ui
 org.csstudio.csdata
 org.csstudio.data
+org.csstudio.java
 org.csstudio.logging
 org.csstudio.logging.test
 org.csstudio.logging.ui
 org.csstudio.openfile
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.jms
+org.csstudio.remote
 org.csstudio.startup
 org.csstudio.ui.menu
+org.csstudio.ui.preferences
 org.csstudio.ui.util
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics

@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.util.logging.Level;
 
 import org.csstudio.swt.widgets.Activator;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
@@ -21,9 +23,11 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-/**The image boolean button figure.
+/**
+ * The image boolean button figure.
+ * 
  * @author Xihui Chen
- *
+ * 
  */
 public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
@@ -39,6 +43,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	private IPath onImagePath;
 
 	private IPath offImagePath;
+	
+	private volatile boolean loadingImage;
 
 	public ImageBoolButtonFigure() {
 		cursor = Cursors.HAND;
@@ -47,25 +53,25 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	}
 
 	public void dispose() {
-		if(onImage !=null){
+		if (onImage != null) {
 			onImage.dispose();
 			onImage = null;
 		}
 
-		if(offImage !=null){
+		if (offImage != null) {
 			offImage.dispose();
 			offImage = null;
 		}
 
 	}
 
-
 	public Dimension getAutoSizedDimension() {
 		Image temp = booleanValue ? onImage : offImage;
 
-		if(temp != null)
-			return new Dimension(temp.getBounds().width + getInsets().left + getInsets().right,
-					temp.getBounds().height + getInsets().bottom + getInsets().top);
+		if (temp != null)
+			return new Dimension(temp.getBounds().width + getInsets().left
+					+ getInsets().right, temp.getBounds().height
+					+ getInsets().bottom + getInsets().top);
 		return null;
 
 	}
@@ -76,6 +82,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	public IPath getOffImagePath() {
 		return offImagePath;
 	}
+
 	/**
 	 * @return the onImagePath
 	 */
@@ -83,6 +90,10 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		return onImagePath;
 	}
 
+	public boolean isLoadingImage() {
+		return loadingImage;
+	}
+	
 	/**
 	 * @return the stretch
 	 */
@@ -93,42 +104,52 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	protected void layout() {
 		Rectangle clientArea = getClientArea().getCopy();
-		if(boolLabel.isVisible()){
+		if (boolLabel.isVisible()) {
 			Dimension labelSize = boolLabel.getPreferredSize();
-			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - labelSize.width/2,
-					clientArea.y + clientArea.height/2 - labelSize.height/2,
-					labelSize.width, labelSize.height));
+			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width
+					/ 2 - labelSize.width / 2, clientArea.y + clientArea.height
+					/ 2 - labelSize.height / 2, labelSize.width,
+					labelSize.height));
 		}
 		super.layout();
 	}
 
-	private Image loadImageFromIPath(IPath path){
-		if(path == null || path.isEmpty())
-			return null;
-		try {
-			InputStream input = ResourceUtil.pathToInputStream(path);
-			return new Image(Display.getDefault(), input);
-		} catch (Exception e) {
-		    Activator.getLogger().log(Level.WARNING, "Failed to load image " + path, e);
-		}
-		return null;
+	private void loadImageFromIPath(final IPath path,
+			AbstractInputStreamRunnable uiTask) {
+		if (path == null || path.isEmpty())
+			return;
+
+		ResourceUtil.pathToInputStreamInJob(path, uiTask, "Loading Image...",
+				new IJobErrorHandler() {
+
+					public void handleError(Exception exception) {
+						Activator.getLogger().log(Level.WARNING,
+								"Failed to load image " + path, exception);
+						loadingImage = false;
+					}
+				});
+
+		return;
 
 	}
 
 	@Override
 	protected void paintClientArea(Graphics graphics) {
+		if(loadingImage)
+			return;
 		Rectangle clientArea = getClientArea();
 		Image temp;
-		if(booleanValue)
+		if (booleanValue)
 			temp = onImage;
 		else
 			temp = offImage;
-		if(temp !=null)
-			if(stretch)
-				graphics.drawImage(temp, new Rectangle(temp.getBounds()), clientArea);
+		if (temp != null)
+			if (stretch)
+				graphics.drawImage(temp, new Rectangle(temp.getBounds()),
+						clientArea);
 			else
 				graphics.drawImage(temp, clientArea.getLocation());
-		if(!isEnabled()) {
+		if (!isEnabled()) {
 			graphics.setAlpha(DISABLED_ALPHA);
 			graphics.setBackgroundColor(DISABLE_COLOR);
 			graphics.fillRectangle(bounds);
@@ -139,41 +160,65 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if(runMode){
-			if(value){
-				if(cursor == null || cursor.isDisposed())
+		if (runMode) {
+			if (value) {
+				if (cursor == null || cursor.isDisposed())
 					cursor = Cursors.HAND;
-			}else {
+			} else {
 				cursor = null;
 			}
 		}
-		setCursor(runMode? cursor : null);
+		setCursor(runMode ? cursor : null);
 	}
 
-	public void setOffImagePath(IPath offImagePath) {
+	public synchronized void setOffImagePath(IPath offImagePath) {
+		loadingImage = true;
 		this.offImagePath = offImagePath;
-		if(offImage != null){
+		if (offImage != null) {
 			offImage.dispose();
 			offImage = null;
 		}
-		offImage = loadImageFromIPath(offImagePath);
-		revalidate();
+
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream inputStream) {
+				offImage = new Image(Display.getDefault(), inputStream);
+				loadingImage = false;
+				revalidate();
+				repaint();				
+			}
+		};
+
+		loadImageFromIPath(offImagePath, uiTask);
+
 	}
 
-	public void setOnImagePath(IPath onImagePath) {
+	public synchronized void setOnImagePath(IPath onImagePath) {
+		loadingImage = true;
 		this.onImagePath = onImagePath;
-		if(onImage != null){
+		if (onImage != null) {
 			onImage.dispose();
 			onImage = null;
 		}
-		onImage = loadImageFromIPath(onImagePath);
-		revalidate();
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream inputStream) {
+				onImage = new Image(Display.getDefault(), inputStream);
+				loadingImage = false;
+				revalidate();
+				repaint();
+			}
+		};
+
+		loadImageFromIPath(onImagePath, uiTask);
 	}
 
 	@Override
 	public void setRunMode(boolean runMode) {
 		super.setRunMode(runMode);
-		setCursor(runMode? cursor : null);
+		setCursor(runMode ? cursor : null);
 	}
 
 	public void setStretch(boolean strech) {
@@ -185,7 +230,5 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		super.setValue(value);
 		revalidate();
 	}
-
-
 
 }

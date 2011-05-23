@@ -29,9 +29,10 @@ import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.csstudio.domain.desy.Strings;
 import org.csstudio.testsuite.util.TestDataProvider;
 import org.csstudio.testsuite.util.TestProviderException;
+
+import com.google.common.base.Splitter;
 
 /**
  * Factory for test suites that collect test classes over all existing bundles.
@@ -60,10 +61,10 @@ public final class TestSuiteFactory {
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
         try {
-            return TestDataProvider.getInstance(Activator.PLUGIN_ID);
+            return TestDataProvider.getInstance(TestSuiteActivator.PLUGIN_ID);
         } catch (final TestProviderException e) {
             Assert.fail("Unexpected exception creating the test data provider for plugin " +
-                        Activator.PLUGIN_ID + ".\n" + e.getMessage());
+                        TestSuiteActivator.PLUGIN_ID + ".\n" + e.getMessage());
         }
         return TestDataProvider.EMPTY_PROVIDER;
     }
@@ -95,10 +96,10 @@ public final class TestSuiteFactory {
 
         final BundleTestCollector testCollector = new BundleTestCollector();
 
-        final List<Test> tests = testCollector.collectTests(Strings.createListFrom(BUNDLES),
-                                                            Strings.createListFrom(BUNDLES_BLACKLIST),
-                                                            Strings.createListFrom(PACKAGE_BLACKLIST),
-                                                            Strings.createListFrom(classFilter),
+        final List<Test> tests = testCollector.collectTests(Splitter.on(",").trimResults().omitEmptyStrings().split(BUNDLES),
+                                                            Splitter.on(",").trimResults().omitEmptyStrings().split(BUNDLES_BLACKLIST),
+                                                            Splitter.on(",").trimResults().omitEmptyStrings().split(PACKAGE_BLACKLIST),
+                                                            Splitter.on(",").trimResults().omitEmptyStrings().split(classFilter),
                                                             commonFilterSuffix);
 
         for (final Test test : tests) {

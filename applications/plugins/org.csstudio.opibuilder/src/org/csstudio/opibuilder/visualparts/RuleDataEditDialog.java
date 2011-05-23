@@ -15,22 +15,12 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
-import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.ColorProperty;
-import org.csstudio.opibuilder.properties.ComboProperty;
-import org.csstudio.opibuilder.properties.DoubleProperty;
-import org.csstudio.opibuilder.properties.FilePathProperty;
-import org.csstudio.opibuilder.properties.FontProperty;
-import org.csstudio.opibuilder.properties.IntegerProperty;
-import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -66,7 +56,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Xihui Chen
  *
  */
-public class RuleDataEditDialog extends Dialog {
+public class RuleDataEditDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action removeAction;
@@ -107,10 +97,7 @@ public class RuleDataEditDialog extends Dialog {
 		}
 		for(String id : propIDSet.toArray(new String[0])){
 			AbstractWidgetProperty prop = ruleData.getWidgetModel().getProperty(id);
-			if(prop instanceof BooleanProperty || prop instanceof DoubleProperty || prop instanceof IntegerProperty
-					|| prop instanceof ComboProperty || prop instanceof ColorProperty || prop instanceof StringProperty
-					|| prop instanceof FilePathProperty || prop instanceof FontProperty
-					|| prop instanceof PVValueProperty)
+			if(prop.configurableByRule())
 				continue;
 			else
 				propIDSet.remove(id);
@@ -121,6 +108,10 @@ public class RuleDataEditDialog extends Dialog {
 		
 	}
 	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Rules.html"; //$NON-NLS-1$; //$NON-NLS-2$
+	}
 	
 	@Override
 	protected void okPressed() {
@@ -214,7 +205,8 @@ public class RuleDataEditDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				ruleData.setPropId(propIDList.get(propCombo.getSelectionIndex()));
-				if(ruleData.getProperty().getPropertyDescriptor() == null){
+				if(ruleData.getProperty().getPropertyDescriptor() == null || 
+						ruleData.getProperty().onlyAcceptExpressionInRule()){
 					ruleData.setOutputExpValue(true);
 					outPutExpButton.setSelection(true);					
 					outPutExpButton.setEnabled(false);
@@ -238,7 +230,8 @@ public class RuleDataEditDialog extends Dialog {
 		gd.horizontalSpan = 2;
 		outPutExpButton.setLayoutData(gd);
 		outPutExpButton.setText("Output Expression");
-		if(ruleData.getProperty().getPropertyDescriptor() == null){
+		if(ruleData.getProperty().getPropertyDescriptor() == null ||
+				ruleData.getProperty().onlyAcceptExpressionInRule()){
 			ruleData.setOutputExpValue(true);
 			outPutExpButton.setEnabled(false);
 		}
@@ -308,7 +301,7 @@ public class RuleDataEditDialog extends Dialog {
 		rightComposite.setLayoutData(gd);
 		this.createLabel(rightComposite, "Input PVs");
 		
-		pvsEditor = new PVTupleTableEditor(rightComposite, ruleData.getPVList());
+		pvsEditor = new PVTupleTableEditor(rightComposite, ruleData.getPVList(), SWT.BORDER);
 		pvsEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		if(expressionList.size() > 0)
@@ -554,7 +547,6 @@ public class RuleDataEditDialog extends Dialog {
 						"icons/search_next.gif")); //$NON-NLS-1$
 		moveDownAction.setEnabled(false);
 	}
-	
 	
 	class ExpressionLabelProvider extends LabelProvider implements
 				ITableLabelProvider {

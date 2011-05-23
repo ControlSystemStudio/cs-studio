@@ -95,4 +95,8 @@ public class ComboProperty extends AbstractWidgetProperty {
 		return Integer.parseInt(propElement.getValue());
 	}
 
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
 }

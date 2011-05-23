@@ -158,7 +158,7 @@ public final class TestDataProvider {
 
             final String curDir = System.getProperty("user.dir");
             final File configFile = new File(curDir + File.separator + testConfigFileName);
-            resource = configFile.toURL();
+            resource = configFile.toURI().toURL();
         } else {
             resource = bundle.getResource(testConfigFileName);
         }

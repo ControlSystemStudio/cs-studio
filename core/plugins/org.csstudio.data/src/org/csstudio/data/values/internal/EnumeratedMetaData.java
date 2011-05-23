@@ -16,6 +16,8 @@ import org.csstudio.data.values.IEnumeratedMetaData;
  */
 public class EnumeratedMetaData implements IEnumeratedMetaData
 {
+    private static final long serialVersionUID = 1L;
+
     /** The enumeration strings for the possible values of an EnumSample. */
 	private final String states[];
 

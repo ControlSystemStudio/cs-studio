@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.preferences;
 
 
 
-import org.csstudio.platform.ui.swt.stringtable.RowEditDialog;
+import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

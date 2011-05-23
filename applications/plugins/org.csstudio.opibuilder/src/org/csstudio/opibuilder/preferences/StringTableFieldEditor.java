@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.swt.stringtable.RowEditDialog;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.csstudio.platform.util.StringUtil;
+import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;

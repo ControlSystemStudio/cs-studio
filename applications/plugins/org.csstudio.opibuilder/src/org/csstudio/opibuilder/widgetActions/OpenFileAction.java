@@ -71,15 +71,16 @@ public class OpenFileAction extends AbstractWidgetAction {
 			                	IFile file = ResourceUtil.getIFileFromIPath(absolutePath);
 			                	if(file != null) // if file exists in workspace
 			                		IDE.openEditor(page, file, true);
-			                	else{ //if it is on local file system.
-			                		try {
+			                	else if (ResourceUtil.isExistingLocalFile(absolutePath)){ //if it is on local file system.
+			                		try {			                			
 										IFileStore localFile =
 											EFS.getLocalFileSystem().getStore(absolutePath);
 										IDE.openEditorOnFileStore(page, localFile);
 									} catch (Exception e) {
 				                		throw new Exception("Cannot find the file at " + getPath());
 									}
-			                	}
+			                	}else 
+			                		throw new Exception("This action can only open file from workspace or local file system.");
 
 		                }
 		            }

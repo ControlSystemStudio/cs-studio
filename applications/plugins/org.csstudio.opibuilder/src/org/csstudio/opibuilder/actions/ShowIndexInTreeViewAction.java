@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;

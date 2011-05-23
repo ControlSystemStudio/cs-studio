@@ -131,11 +131,20 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(RoundedRectangleModel.PROP_CORNER_HEIGHT, cornerHeightHandler);	
 	
-		
-		
-		
 	}
 
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Number){
+			((RoundedRectangleFigure)getFigure()).setFill(((Number)value).doubleValue());
+		}else
+			super.setValue(value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return ((RoundedRectangleFigure)getFigure()).getFill();
+	}
 
 
 }

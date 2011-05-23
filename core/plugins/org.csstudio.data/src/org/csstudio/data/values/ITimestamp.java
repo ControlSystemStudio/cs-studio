@@ -21,6 +21,7 @@
  */
 package org.csstudio.data.values;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 /** A control system time stamp.
@@ -44,7 +45,7 @@ import java.util.Calendar;
  *  @author Sven Wende
  *  @author Kay Kasemir
  */
-public interface ITimestamp extends Comparable<ITimestamp>
+public interface ITimestamp extends Comparable<ITimestamp>, Serializable
 {
     /** Get seconds since epoch, i.e. 1 January 1970 0:00 UTC.
      *  <p>

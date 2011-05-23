@@ -15,8 +15,8 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
-import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
@@ -56,13 +56,13 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			public void actionPerformed(int mouseEventState) {					
 				AbstractWidgetAction action = getHookedAction();
 				if(action!= null){
-					if(action instanceof OpenDisplayAction){
-						((OpenDisplayAction) action).setCtrlPressed(false);
-						((OpenDisplayAction) action).setShiftPressed(false);
+					if(action instanceof AbstractOpenOPIAction){
+						((AbstractOpenOPIAction) action).setCtrlPressed(false);
+						((AbstractOpenOPIAction) action).setShiftPressed(false);
 						if(mouseEventState == InputEvent.CONTROL){
-							((OpenDisplayAction) action).setCtrlPressed(true);
+							((AbstractOpenOPIAction) action).setCtrlPressed(true);
 						}else if (mouseEventState == InputEvent.SHIFT){
-							((OpenDisplayAction) action).setShiftPressed(true);
+							((AbstractOpenOPIAction) action).setShiftPressed(true);
 						}	
 					}
 					action.run();
@@ -171,14 +171,14 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	
-
 	@Override
-	public void setValue(Object value) {		
+	public void setValue(Object value) {
+		((ActionButtonFigure)getFigure()).setText(value.toString());
 	}
 	
 	@Override
 	public Object getValue() {
-		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		return ((ActionButtonFigure)getFigure()).getText();
 	}
 
 }

@@ -26,6 +26,8 @@ import java.net.InetAddress;
 
 import javax.naming.NamingException;
 
+import org.csstudio.utility.ldap.service.LdapServiceException;
+
 /**
  * Provides information about IOC names.
  *
@@ -43,7 +45,8 @@ public interface IIocDirectory {
 	 * @return an array containing two strings, where the first string is the
 	 *         IOC's logical name and the second string is the LDAP path.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	String[] getLogicalIocName(InetAddress iocInetAddress, String hostname) throws NamingException;
+	String[] getLogicalIocName(InetAddress iocInetAddress, String hostname) throws NamingException, LdapServiceException;
 
 }

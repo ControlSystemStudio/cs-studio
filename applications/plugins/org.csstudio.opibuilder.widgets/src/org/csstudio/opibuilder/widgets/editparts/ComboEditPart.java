@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
@@ -190,7 +191,11 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue, final IFigure refreshableFigure) {
 				if(newValue != null && newValue instanceof IValue){
 					String stringValue = ValueUtil.getString((IValue)newValue);
-					combo.setText(stringValue);
+					if(Arrays.asList(combo.getItems()).contains(stringValue))
+						combo.setText(stringValue);
+					else
+						combo.deselectAll();
+					
 					if(getWidgetModel().isBorderAlarmSensitve())
 							autoSizeWidget((ComboFigure) refreshableFigure);
 				}
@@ -267,8 +272,10 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof String)
 			combo.setText((String) value);
-		else if (value instanceof Integer)
-			combo.select((Integer)value);
+		else if (value instanceof Number)
+			combo.select(((Number)value).intValue());
+		else
+			super.setValue(value);
 	}
 
 }

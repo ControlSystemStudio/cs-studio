@@ -21,11 +21,16 @@
  */
 package org.csstudio.domain.desy;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Splitter;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 
 
@@ -44,20 +49,91 @@ public final class Strings {
     }
 
     /**
-     * Creates a list of string from the comma separated entries in the input string
-     * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
-     * added!
+     * Splits a source string on a comma, ignoring commas within quotes.
      *
-     * @param commaSeparatedString a string of comma separated entries
+     * Note, uneven numbers of quotes break the regex such that the first separator before the first
+     * quote is not considered.
+     *
+     * @param source a string of comma separated entries
      * @return an iterable of strings, and an empty list if the string is blank
      */
     @Nonnull
-    public static Iterable<String> createListFrom(@Nonnull final String commaSeparatedString) {
-        if (com.google.common.base.Strings.isNullOrEmpty(commaSeparatedString)) {
-            return Collections.emptyList();
-        }
-        return Splitter.on(",").trimResults().omitEmptyStrings().split(commaSeparatedString);
+    public static String[] splitOnCommaIgnoreInQuotes(@Nonnull final String source) {
+        return source.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
     }
+
+    @Nonnull
+    public static Collection<String> splitIgnoreWithinQuotes(@Nonnull final String source,
+                                                             @Nonnull final char sep) {
+        return splitIgnore(source, sep, '\"');
+    }
+
+    /**
+     * Splits a string into substring on a separating character. Ignores those separators in
+     * within the ignore char (typically a quote '"') and those separators following on each other.
+     * Empty strings are filtered (any output string !isEmpty).
+     *
+     * @param source
+     * @param sep
+     * @param ignore
+     * @return
+     */
+    @Nonnull
+    public static Collection<String> splitIgnore(@Nonnull final String source,
+                                                 @Nonnull final char sep,
+                                                 @Nonnull final char ign) {
+
+        final List<String> result = Lists.newArrayList();
+        final Matcher matcher = Pattern.compile(createRegEx(sep, ign)).matcher(source);
+        while (matcher.find()) {
+            final String cand = matcher.group();
+            if (!cand.isEmpty()) {
+                result.add(cand);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Splits a string into substring on a separating character. Ignores those separators in
+     * within the ignore char (typically a quote '"') and those separators following on each other.
+     * Result strings are trimmed, which may result in empty strings.
+     *
+     * @param source
+     * @param sep
+     * @param trim
+     * @return
+     */
+    @Nonnull
+    public static Collection<String> splitIgnoreWithinQuotesTrimmed(@Nonnull final String source,
+                                                                    @Nonnull final char sep,
+                                                                    @Nonnull final char trim) {
+
+        return Collections2.transform(splitIgnoreWithinQuotes(source, sep),
+                                      new Function<String, String>() {
+                                            @Override
+                                            @Nonnull
+                                            public String apply(@Nonnull final String input) {
+                                                return Strings.trim(input, trim);
+                                            }
+                                        });
+    }
+
+    /**
+     * Trims the source string of the given trim char.
+     *
+     * @param source
+     * @param char
+     * @return
+     */
+    @Nonnull
+    public static String trim(@Nonnull final String source, final char trim) {
+        final String trimQuoted = Pattern.quote(String.valueOf(trim));
+        final String sourceWOLeadingChars = source.replaceAll("^" + trimQuoted + "+", "");
+        final String sourceWOLeadingAndTrailingChars = sourceWOLeadingChars.replaceAll(trimQuoted + "+$", "");
+        return sourceWOLeadingAndTrailingChars;
+    }
+
 
     /**
      * Returns the size of the string measured in bytes.
@@ -72,5 +148,44 @@ public final class Strings {
             return 0;
         }
         return s.codePointCount(0, s.length());
+    }
+
+    /**
+     * Creates the magic regex that finds the fields of the source string.
+     * Note that their order matters!
+     * sep=, ign=X : ([^X,]*X[^X]+X[^X,]*) | ([^,X]*X[^,X]*)(?=[^X]*) | ([^X,]+)
+     */
+    @Nonnull
+    private static String createRegEx(@Nonnull final char sep,
+                                      @Nonnull final char ign) {
+        final String qSep = Pattern.quote(String.valueOf(sep));
+        final String qIgn = Pattern.quote(String.valueOf(ign));
+        return createRegExDoubleIgnore(qSep, qIgn) + "|" +
+               createRegExSingleIgnoreWithLookAhead(qSep, qIgn) + "|" +
+               createRegExWithoutSepsOrIgnore(qSep, qIgn);
+    }
+    /**
+     * Regex matching anything between qSeps(,) with two qIgn(X): ,(abcXab,c,Xabc), OR ,(Xa,X), OR ,(abcXmX),
+     */
+    @Nonnull
+    private static String createRegExDoubleIgnore(@Nonnull final String qSep,
+                                                  @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qIgn + "]+" + qIgn + "[^" + qSep + qIgn + "]*)";
+    }
+    /**
+     * Regex matching anything between qSeps(,) with ONE qIgn(X) when there isn't any other qIgn later on: ,(abcXab),abaa,aa
+     */
+    @Nonnull
+    private static String createRegExSingleIgnoreWithLookAhead(@Nonnull final String qSep,
+                                                               @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]*" + qIgn + "[^" + qSep + qIgn + "]*)(?=[^" + qIgn + "]*)";
+    }
+    /**
+     * Regex matching anything between qSeps and qIgns: ,(abc), OR x(foo)x OR X(aa), OR ,(aa)X
+     */
+    @Nonnull
+    private static String createRegExWithoutSepsOrIgnore(@Nonnull final String qSep,
+                                                         @Nonnull final String qIgn) {
+        return "([^" + qSep + qIgn + "]+)";
     }
 }

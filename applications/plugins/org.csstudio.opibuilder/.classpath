@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="lib/jdom/jdom.jar" sourcepath="lib/jdom/src.zip"/>
 	<classpathentry kind="lib" path="lib/rhino/js.jar" sourcepath="lib/rhino/src.zip"/>
+	<classpathentry kind="lib" path="lib/jython/jython.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

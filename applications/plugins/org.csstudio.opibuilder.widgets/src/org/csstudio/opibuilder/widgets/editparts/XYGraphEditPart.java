@@ -16,7 +16,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -466,9 +465,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		case BUFFER_SIZE:
 			dataProvider.setBufferSize((Integer)newValue);
 			break;
-		case CHRONOLOGICAL:
-			dataProvider.setChronological((Boolean)newValue);
-			break;
+//		case CHRONOLOGICAL:
+			//dataProvider.setChronological((Boolean)newValue);
+//			break;
 		//case CLEAR_TRACE:
 		//	if((Boolean)newValue)
 		//		dataProvider.clearTrace();
@@ -513,6 +512,12 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 		case YAXIS_INDEX:
 			if(axisList.get((Integer)newValue).isYAxis())
 				trace.setYAxis(axisList.get((Integer)newValue));
+			break;
+		case XPV:
+			if(newValue.toString()!= null && newValue.toString().trim().length() > 0)
+				dataProvider.setChronological(false);
+			else
+				dataProvider.setChronological(true);
 			break;
 		case XPV_VALUE:
 			if(newValue == null || !(newValue instanceof IValue))
@@ -574,15 +579,16 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
+		throw new RuntimeException("XY Graph does not accept value");
 	}
 
 	@Override
 	public Object getValue() {
-		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		throw new RuntimeException("XY Graph does not have value");
 	}
 
 	/**
-	 * Clear the graph by deleting buffered data.
+	 * Clear the graph by deleting data in buffer.
 	 */
 	public void clearGraph(){
 		for(int i=0; i<getWidgetModel().getTracesAmount(); i++){

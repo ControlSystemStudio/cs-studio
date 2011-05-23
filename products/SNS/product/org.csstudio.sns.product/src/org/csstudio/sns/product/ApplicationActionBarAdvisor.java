@@ -7,14 +7,8 @@
  ******************************************************************************/
 package org.csstudio.sns.product;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.auth.ui.internal.actions.LogoutAction;
-import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -61,8 +55,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
      */
     private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
-	/** ID of CSS SNS Menu */
-    private static final String CSS_MENU_WEB = "web"; //$NON-NLS-1$
+    final private IWorkbenchWindow window;
 
     //File menu
     private IAction create_new;
@@ -102,8 +95,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 	private MenuManager coolbarPopupMenuManager;
 
     // SNS Actions
-    private ArrayList<IAction> web_actions = new ArrayList<IAction>();
-	private IWorkbenchWindow window;
 	private IWorkbenchAction lockToolBarAction;
 
 	private IWorkbenchAction editActionSetAction;
@@ -210,66 +201,22 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         about = ActionFactory.ABOUT.create(window);
         about.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
         register(about);
-
-        createWeblinkActions(window);
-    }
-
-    /** Create actions for web links.
-     *  <p>
-     *  Expects a preference "weblinks" that lists further prefs,
-     *  separated by space.
-     *  Each of those is then LABEL|URL.
-     *  Example:
-     *  <pre>
-     *   org.csstudio.sns.product/weblinks=sns_elog sns_wiki
-     *   org.csstudio.sns.product/sns_elog=E-Log|https://snsapp1.sns.ornl.gov/Logbook/WebObjects/Logbook.woa
-     *   org.csstudio.sns.product/sns_wiki=...
-     *  </pre>
-     */
-    @SuppressWarnings("nls")
-    private void createWeblinkActions(IWorkbenchWindow window)
-    {
-        // SNS Actions
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        final String weblinks = prefs.getString(Activator.PLUGIN_ID, "weblinks", null, null);
-        if (weblinks == null)
-            return;
-        final String[] link_prefs = weblinks.split("[ \t]+");
-        for (String pref : link_prefs)
-        {
-            final String descriptor = prefs.getString(Activator.PLUGIN_ID, pref, null, null);
-            if (descriptor == null)
-                continue;
-            final String[] link = descriptor.split("\\|");
-            if (link.length != 2)
-            {
-                Activator.getLogger().log(Level.WARNING,
-                    "Web link doesn't follow the LABEL|URL pattern: {0}", pref);
-                continue;
-            }
-            final String label = link[0];
-            final String url = link[1];
-            Activator.getLogger().log(Level.FINE, "Web link {0} = {1} ({2})",
-                    new Object[] { pref, label, url });
-
-            web_actions.add(new OpenWebBrowserAction(window, label, url));
-        }
     }
 
     /** {@inheritDoc} */
     @Override
     protected void fillMenuBar(IMenuManager menubar)
     {
-        // See org.eclipse.ui.internal.ide.WorkbenchActionBuilder
-        // for IDE example.
+        // TODO Check NSLS-II Product for creating menu entries via plugin.xml
         createFileMenu(menubar);
         createEditMenu(menubar);
-        createCSSMenu(menubar);
+
         // Placeholder for possible additions
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         createWindowMenu(menubar);
         createHelpMenu(menubar);
     }
+
 
     /** Create the file menu. */
     private void createFileMenu(IMenuManager menubar)
@@ -338,43 +285,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menubar.add(menu_edit);
     }
 
-    /** Create the CSS menu. */
-    private void createCSSMenu(IMenuManager menubar)
-    {
-        final MenuManager menu_css = new MenuManager(Messages.Menu_CSS_CSS,
-                        CssWorkbenchActionConstants.CSS_MENU);
-        // Alphabetical order
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Alarm,
-                CssWorkbenchActionConstants.CSS_ALARM_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Configuration,
-                CssWorkbenchActionConstants.CSS_CONFIGURATION_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Debug,
-                CssWorkbenchActionConstants.CSS_DEBUGGING_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Diagnostics,
-                CssWorkbenchActionConstants.CSS_DIAGNOSTICS_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Display,
-                        CssWorkbenchActionConstants.CSS_DISPLAY_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Editors,
-                        CssWorkbenchActionConstants.CSS_EDITORS_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Management,
-                CssWorkbenchActionConstants.CSS_MANAGEMENT_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Trends,
-                        CssWorkbenchActionConstants.CSS_TRENDS_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Utilities,
-                        CssWorkbenchActionConstants.CSS_UTILITIES_MENU));
-        // .. except for test and other
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Test,
-                        CssWorkbenchActionConstants.CSS_TEST_MENU));
-        menu_css.add(new MenuManager(Messages.Menu_CSS_Other,
-                        CssWorkbenchActionConstants.CSS_OTHER_MENU));
-        final MenuManager menu_sns = new MenuManager(Messages.Menu_CSS_Weblinks,
-                    CSS_MENU_WEB);
-        for (IAction weblink : web_actions)
-            menu_sns.add(weblink);
-        menu_css.add(menu_sns);
-        menu_css.add(new Separator(CssWorkbenchActionConstants.CSS_END));
-        menubar.add(menu_css);
-    }
 
     /** Create the window menu. */
     private void createWindowMenu(IMenuManager menubar)

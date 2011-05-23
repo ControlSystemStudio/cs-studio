@@ -14,10 +14,9 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -43,7 +42,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Xihui Chen
  *
  */
-public class RulesInputDialog extends Dialog {
+public class RulesInputDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action editAction;
@@ -84,6 +83,12 @@ public class RulesInputDialog extends Dialog {
 		}
 		super.okPressed();
 	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Rules.html"; //$NON-NLS-1$; //$NON-NLS-2$
+	}
+	
 	
 	/**
 	 * @return the ruleData List
@@ -233,6 +238,7 @@ public class RulesInputDialog extends Dialog {
 			@Override
 			public void run() {
 				RuleDataEditDialog dialog = new RuleDataEditDialog(getShell(), new RuleData(widgetModel));
+			
 				if(dialog.open() == OK){
 					ruleDataList.add(dialog.getOutput());
 					rulesViewer.refresh();

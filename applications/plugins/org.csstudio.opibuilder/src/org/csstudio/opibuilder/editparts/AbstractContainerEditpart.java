@@ -59,9 +59,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	 * @param name the name of the child widget
 	 * @return the widgetController of the child. null if the child doesn't exist.
 	 */
-	@SuppressWarnings("unchecked")
 	public AbstractBaseEditPart getChild(String name){
-		List children = getChildren();
+		List<?> children = getChildren();
 		for(Object o : children){
 			if(o instanceof AbstractBaseEditPart){
 				if(((AbstractBaseEditPart)o).getWidgetModel().getName().equals(name))
@@ -70,6 +69,41 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		}
 		return null;
 	}
+	
+	/**Get the widget which is a descendant of the container by name. 
+	 * @param name the name of the widget.
+	 * @return the widget controller.
+	 * @throws Exception If widget with this name doesn't exist
+	 */
+	public AbstractBaseEditPart getWidget(String name) throws Exception{
+		AbstractBaseEditPart widget = searchWidget(name);
+		if(widget == null)
+			throw new Exception("Widget with name \"" + name + "\" does not exist!");
+		else
+			return widget;
+	}
+	
+	/**Recursively search the widget
+	 * @param name
+	 * @return
+	 */
+	private AbstractBaseEditPart searchWidget(String name){
+		AbstractBaseEditPart child = getChild(name);
+		if(child != null)
+			return child;
+		else {			
+			for(Object obj : getChildren()){
+				if(obj instanceof AbstractContainerEditpart){
+					AbstractContainerEditpart containerChild = (AbstractContainerEditpart)obj;
+					AbstractBaseEditPart widget = containerChild.searchWidget(name);
+					if(widget != null)
+						return widget;
+				}
+			}
+		}
+		return null;
+	}
+	
 	
 	@Override
 	public void setModel(Object model) {
@@ -91,8 +125,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		
 		super.activate();
-		
-		layout();
+		if(getExecutionMode() == ExecutionMode.RUN_MODE)
+			layout();
 		
 		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -206,11 +240,10 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		//make snap to G work
 		if (adapter == SnapToHelper.class) {
-			List snapStrategies = new ArrayList();
+			List<SnapToHelper> snapStrategies = new ArrayList<SnapToHelper>();
 			Boolean val = (Boolean)getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
 			if (val != null && val.booleanValue())
 				snapStrategies.add(new SnapToGuides(this));
@@ -228,7 +261,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 
 			SnapToHelper ss[] = new SnapToHelper[snapStrategies.size()];
 			for (int i = 0; i < snapStrategies.size(); i++)
-				ss[i] = (SnapToHelper)snapStrategies.get(i);
+				ss[i] = snapStrategies.get(i);
 			return new CompoundSnapToHelper(ss);
 		}
 		return super.getAdapter(adapter);

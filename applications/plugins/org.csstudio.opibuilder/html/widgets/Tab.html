@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Tabbed Container
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Tabbed Container
+    </h2>
+    <img src="img/Tab.gif" align="right" alt="Tabbed Container">
+    <p>Tabbed Container can host widgets by tab.
+    </p>
+    
+    <h3>Operations</h3>
+    With its context menu, you are able to
+    <ul>
+    <li>Remove Tab. Remove the current tab. </li>
+    <li>Duplicate Tab. Duplicate the current tab with its content.</li>
+    <li>Change Tab Index. Change the position of the current tab.</li>
+    <li>Add Tab After. Add an empty tab after the current tab.</li>
+    <li>Add Tab Before. Add an empty tab before the current tab.</li>    
+    </ul>
+    
+    <h3>Special Properties</h3>
+    <ul>
+    <li>Tab Count (tab_count). The number of tabbs. Change this property can add/remove tabbs.
+<b>Attention</b>: If you remove tabbs by changing this property, the widgets on the removed tabbs cannot be recovered by Undo. 
+So it is recommended to remove a tab by right clicking the tab and choose "Remove Tab".</li>
+	<li>Title (title). Title of the tab.</li>
+	<li>Icon path (icon_path). The path of an image that is used as the icon of the tab.</li>
+    </ul>
+    <h3>See Also</h3>
+   <ul>
+   	<li><a href="../CreateWidgets.html">Properties Common to All Container Widgets</a></li>
+   
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+    <h3>Special Methods</h3>
+    <HR>
+		 <A NAME="getActiveTabIndex()"><!-- --></A><H4>
+		getActiveTabIndex</H4>
+		<PRE>
+public int <B>getActiveTabIndex</B>()</PRE>
+		<DL>
+		<DD>Get the index of the active tab.
+		<P>
+		<DD><DL>
+		
+		<DT><B>Returns:</B><DD>the index of the active tab. Index starts from 0.</DL>
+		</DD>
+		</DL>
+		<HR>
+		<A NAME="setActiveTabIndex(int)"><!-- --></A><H3>
+setActiveTabIndex</H3>
+<PRE>
+public void <B>setActiveTabIndex</B>(int&nbsp;index)</PRE>
+<DL>
+<DD>Show tab in this index.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>index</CODE> - the index of the tab to be shown. Index starts from 0.</DL>
+</DD>
+</DL>
+<HR>
+   
+    
+<br>
+
+</body>
+</html>

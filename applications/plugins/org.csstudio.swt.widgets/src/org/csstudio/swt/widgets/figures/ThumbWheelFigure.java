@@ -476,9 +476,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
 	public void setInternalBorderThickness(int thickness) {
 		if(thickness <0)
-			throw new IllegalArgumentException();
-		if(this.internalBorderThickness == thickness)
-			return;
+			throw new IllegalArgumentException();		
 		this.internalBorderThickness = thickness;
 		for (DigitBox box : wholePart) {
 			box.setBorderThickness(thickness);

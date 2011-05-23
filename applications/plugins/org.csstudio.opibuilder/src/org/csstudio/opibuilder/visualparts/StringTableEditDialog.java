@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

@@ -3,18 +3,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
     <link rel="stylesheet" href="default.css" type="text/css" />
     <title>
-     Widgets Overview
+     Widgets
     </title>
   </head>
   <body>
 
     <h2>
-      Widgets Overview
+      Widgets
     </h2>
     <p>
-   Widget is the brick to build your OPI.All the currently available widgets are listed in the Widget Palette. 
+   Widgets are the bricks to build an OPI.All the currently available widgets are listed in the Widget Palette. 
    There could be more widgets to be added in future. 
-   Benefits from the plug-in mechanism of Eclipse, you may also add your own widgets by implement a new widgets plug-in.   
+   Benefits from the plug-in mechanism of Eclipse, you may also add your own widgets by implementing a new widgets plug-in.   
    See <a href="CreateWidgets.html">Creating Customized Widget</a>.
     </p>
     <p>
@@ -23,15 +23,86 @@
     <ul>
     <li><b>Graphics</b>: The graphics widgets can help you decorate your OPI.</li>
     <li><b>Monitors</b>: The widgets that can graphically display the value of PV in various ways.</li>
-    <li><b>Controls</b>: The widgets by which you can make control operations directly.</li>
+    <li><b>Controls</b>: The widgets by which you can make control operations, for example, write a PV.</li>
     <li><b>Others</b>: The other widgets which is not in the three major categories.</li>
+    <li><b>Layout</b>: Virtual widgets help to automatically layout widgets in a particular way.</li>
     </ul>
 
+<p><img src ="img/WidgetsPalette.gif" alt="Widgets Palette"> </p>
 
 <p>The details and examples of all the widgets are available in <code>BOY Examples->10_widgets.opi.</code>
-Run this OPI to get the details of every widget.
+Run this OPI see examples of widgets.
 </p>
+<p><font color="Red"><b>Tip:</b></font> In OPI Editor, press F1 key on Windows, Ctrl+F1 on GTK, Help key on Carbon to open
+the context help view. It will show related help whenever a widget is selected. </p>
 
-    <p><img src ="img/Widgets_Overview.PNG" alt="Widgets Overview"> </p>
+<h3>List of Widgets</h3>
+    <ul>
+    <li><a href="Widget Properties.html">Widget Properties</a></li>
+    <li><a href="widgets/PVWidgets.html">PV Widgets</a></li>
+     
+     <li><a href="widgets/ShapeWidgets.html">Shape Widgets</a>
+     <ul>
+        <li><a href="widgets/Arc.html" >Arc</a></li>
+        <li><a href="widgets/Polyline.html" >Polyline</a></li>
+        <li><a href="widgets/Polygon.html" >Polygon</a></li>
+        <li><a href="widgets/Rectangle.html" >Rectangle</a></li>
+        <li><a href="widgets/RoundedRectangle.html" >Rounded Rectangle</a></li>
+        <li><a href="widgets/Ellipse.html" >Ellipse</a></li>
+     </ul>
+     </li>
+     <li><a href="widgets/Label.html" >Label</a></li>
+     <li><a href="widgets/Image.html" >Image</a></li>
+     <li><a href="widgets/BooleanWidgets.html" >Boolean Widgets</a>
+     <ul>
+        <li><a href="widgets/LED.html" >LED</a></li>
+        <li><a href="widgets/BoolSwitch.html" >Boolean Switch</a></li>
+        <li><a href="widgets/BoolButton.html" >Boolean Button</a></li>
+        <li><a href="widgets/ImageBoolButton.html" >Image Boolean Button</a></li>
+     </ul>
+     </li>
+     <li><a href="widgets/TextUpdate.html" >Text Update</a></li>
+     <li><a href="widgets/ScaledWidgets.html" >Scaled Widgets</a>
+     <ul>
+        <li><a href="widgets/Meter.html" >Meter</a></li>
+        <li><a href="widgets/ProgressBar.html" >Progress Bar</a></li>
+        <li><a href="widgets/Gauge.html" >Gauge</a></li>
+        <li><a href="widgets/Thermometer.html" >Thermometer</a></li>
+        <li><a href="widgets/Tank.html" >Tank</a></li>
+        <li><a href="widgets/ScaledSlider.html" >Scaled Slider</a></li>
+        <li><a href="widgets/Knob.html" >Knob</a></li>        
+     </ul>
+     </li>
+     <li><a href="widgets/XYGraph.html" >XY Graph</a></li>
+     <li><a href="widgets/IntensityGraph.html" >Intensity Graph</a></li>
+     <li><a href="widgets/ByteMonitor.html" >Byte Monitor</a></li>
+     <li><a href="widgets/ActionButton.html" >Action Button</a></li>
+     <li><a href="widgets/MenuButton.html" >Menu Button</a></li>
+     <li><a href="widgets/TextInput.html" >Text Input</a></li>
+     <li><a href="widgets/Spinner.html" >Spinner</a></li>
+     <li><a href="widgets/Scrollbar.html" >Scrollbar</a></li>
+     <li><a href="widgets/ThumbWheel.html" >Thumb Wheel</a></li>
+     <li><a href="widgets/CheckBox.html" >Check Box</a></li>
+     
+     <li><a href="widgets/ChoiceWidgets.html" >Choice Widgets</a>
+     <ul>
+        <li><a href="widgets/Combo.html">Combo Box</a></li>
+        <li><a href="widgets/RadioBox.html" >Radio Box</a></li>
+         <li><a href="widgets/ChoiceButton.html" >Choice Button</a></li>         
+     </ul></li>
+   
+     <li><a href="widgets/ContainerWidgets.html" >Container Widgets</a>
+     <ul>
+     <li><a href="widgets/Display.html" >Display</a></li>
+        <li><a href="widgets/GroupingContainer.html" >Grouping Container</a></li>
+        <li><a href="widgets/LinkingContainer.html" >Linking Container</a></li>
+         <li><a href="widgets/Tab.html" >Tabbed Container</a></li>         
+     </ul> </li>
+     <li><a href="widgets/WebBrowser.html" >Web Brower</a></li>
+     <li><a href="widgets/GridLayout.html" >Grid Layout</a></li>
+    </ul>
+    
+    
+    <br>
 </body>
 </html>

@@ -26,8 +26,8 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPITimer;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -225,15 +225,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	};
 
 	@Override
+	protected ConnectionHandler createConnectionHandler() {
+		return new PVWidgetConnectionHandler(this);
+	}
+
+	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
 				new DropPVtoPVWidgetEditPolicy());
-	}
-
-	@Override
-	protected ConnectionHandler createConnectionHandler() {
-		return new PVWidgetConnectionHandler(this);
 	}
 
 	@Override
@@ -266,20 +266,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	}
 
 
-	public String getName() {
-		 if(getWidgetModel().getPVMap().isEmpty())
-			 return "";
-		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
-			.getPropertyValue();
-	}
-	/**Get the pv.
-	 * @param pvPropId
-	 * @return the corresponding pv for the pvPropId. null if the pv desn't exist.
-	 */
-	public PV getPV(String pvPropId){
-		return pvMap.get(pvPropId);
-	}
-
 	/**
 	 * @return the control PV. null if no control PV on this widget.
 	 */
@@ -287,6 +273,29 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		if(controlPVPropId != null)
 			return pvMap.get(controlPVPropId);
 		return null;
+	}
+	public String getName() {
+		 if(getWidgetModel().getPVMap().isEmpty())
+			 return "";
+		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
+			.getPropertyValue();
+	}
+	
+	/**Get the PV corresponding to the <code>PV Name</code> property. 
+	 * It is same as calling <code>getPV("pv_name")</code>.
+	 * @return the PV corresponding to the <code>PV Name</code> property. 
+	 * null if PV Name is not configured for this widget.
+	 */
+	public PV getPV(){
+		return pvMap.get(AbstractPVWidgetModel.PROP_PVNAME);
+	}
+
+	/**Get the pv by PV property id.
+	 * @param pvPropId the PV property id.
+	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
+	 */
+	public PV getPV(String pvPropId){
+		return pvMap.get(pvPropId);
 	}
 
 	/**Get value from one of the attached PVs.
@@ -305,9 +314,19 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return TYPE_ID;
 	}
 
-	/**Get the value of the widget.
-	 * @return the value of the widget. It is not the value of the attached PV
-	 * even though they are equals in most cases. {@link #getPVValue(String)}
+	/**
+	 * @return the time needed to suppress reading back from PV after writing.
+	 * No need to suppress if returned value <=0
+	 */
+	protected int getUpdateSuppressTime(){
+		return UPDATE_SUPPRESS_TIME;
+	}
+
+	/**The value of the widget that is in representing.
+	 * It is not the value of the attached PV even though they are equals in most cases.
+	 * The value type is specified by the widget, for example, boolean for boolean widget,
+	 * double for meter and gauge.
+	 * @return 	The value of the widget.
 	 */
 	public abstract Object getValue();
 
@@ -517,6 +536,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		saveBackColor = figure.getBackgroundColor();
 	}
 
+
 	private void setAlarmBorder(Border alarmBorder){
 		if(getConnectionHandler() != null && !getConnectionHandler().isConnected()){
 			return;
@@ -528,7 +548,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
 		this.ignoreOldPVValue = ignoreOldValue;
 	}
-
 
 	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
 	 * @param pvPropId
@@ -562,13 +581,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		}
 	}
 
-	/**Set the value of the widget. This only take effect on the visual presentation of the widget and
-	 * will not write the value to the PV attached to this widget which can be reached by calling
-	 * {@link #setPVValue(String, Object)}.
+	/**Set the value of the widget. This only takes effect on the visual presentation of the widget and
+	 * will not write the value to the PV attached to this widget.
 	 * @param value the value to be set. It must be the compatible type for the widget.
-	 *  For example, a boolean widget only accept boolean or double values.
-	 */
-	public abstract void setValue(Object value);
+	 *  For example, a boolean widget only accept boolean or number.
+	 * @throws RuntimeException if the value is not an acceptable type.
+	 */	
+	public void setValue(Object value){
+		throw new RuntimeException("widget.setValue() does not accept " + value.getClass().getSimpleName());
+	}
 
 	/**
 	 * Start the updateSuppressTimer. All property change listeners of PV_Value property will
@@ -580,14 +601,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		pvValueListeners = pvValueProperty.getAllPropertyChangeListeners();
 		pvValueProperty.removeAllPropertyChangeListeners();
 		updateSuppressTimer.start(timerTask, getUpdateSuppressTime());
-	}
-
-	/**
-	 * @return the time needed to suppress reading back from PV after writing.
-	 * No need to suppress if returned value <=0
-	 */
-	protected int getUpdateSuppressTime(){
-		return UPDATE_SUPPRESS_TIME;
 	}
 
 }

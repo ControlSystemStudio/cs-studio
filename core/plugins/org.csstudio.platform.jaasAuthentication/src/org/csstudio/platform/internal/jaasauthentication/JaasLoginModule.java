@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.platform.internal.jaasauthentication;
@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.security.Principal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -36,7 +38,6 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.auth.securestore.SecureStore;
 import org.csstudio.auth.security.Credentials;
 import org.csstudio.auth.security.ILoginCallbackHandler;
@@ -46,12 +47,10 @@ import org.csstudio.auth.security.User;
 import org.csstudio.platform.internal.jassauthentication.preference.ConfigurationFromPreferences;
 import org.csstudio.platform.internal.jassauthentication.preference.JAASPreferenceModel;
 import org.csstudio.platform.internal.jassauthentication.preference.PreferencesHelper;
-import org.csstudio.platform.logging.CentralLogger;
-
 
 /**
  * Performs user login via JAAS.
- * 
+ *
  * @author Joerg Rathlev
  * @author Xihui Chen
  * @author Kay Kasemir
@@ -70,7 +69,7 @@ public class JaasLoginModule implements ILoginModule {
 	 * file.
 	 */
 	private static final String AUTH_CONFIG_PROPERTY = "java.security.auth.login.config";
-	
+
 	/** The name of the JAAS configuration file included in the plug-in.
 	 *  @see #JAAS_CONFIG
 	 */
@@ -79,35 +78,35 @@ public class JaasLoginModule implements ILoginModule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public User login(final ILoginCallbackHandler handler) {
+	@Override
+    public User login(final ILoginCallbackHandler handler) {
 		// Determine which JAAS configuration entry to use
 		//final IPreferencesService service = Platform.getPreferencesService();
-		//final String contextName = service.getString(Activator.PLUGIN_ID, 
+		//final String contextName = service.getString(Activator.PLUGIN_ID,
 		//		JAAS_CONFIG, null, null);
 		String contextName;
 		if(PreferencesHelper.getConfigSource().equals(JAASPreferenceModel.SOURCE_FILE)) {
-			contextName = PreferencesHelper.getConfigFileEntry();			
+			contextName = PreferencesHelper.getConfigFileEntry();
 			setConfigFileProperty();
 		} else {
 			contextName = "From_Preference_Page"; //$NON-NLS-1$
-			Configuration.setConfiguration(new ConfigurationFromPreferences());			
+			Configuration.setConfiguration(new ConfigurationFromPreferences());
 		}
-		
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
-        if (logger.isDebugEnabled())
-            logger.debug("Using JAAS config '" + contextName + "'");
-	
+
+        final Logger logger = Logger.getLogger(getClass().getName());
+        logger.fine("Using JAAS config '" + contextName + "'");
+
 		final CredentialsCallbackHandler ch = new CredentialsCallbackHandler();
-		
-		LoginContext loginCtx = null;  
+
+		LoginContext loginCtx = null;
 		User user = null;
 		boolean loggedIn = false;
-		
+
 		// Re-attempt to login as long as the login is not complete.
 		while (!loggedIn) {
 			// The LoginContext cannot be reused if a call to its login()
 			// method failed. This is why a new LoginContext instance is
-			// created in every iteration through this loop.			
+			// created in every iteration through this loop.
 			ch.credentials = handler.getCredentials();
 			if (ch.credentials != null) {
 				//Anonymous login
@@ -117,9 +116,9 @@ public class JaasLoginModule implements ILoginModule {
 					try {
 							loginCtx = new LoginContext(contextName, ch);
 						} catch (LoginException e) {
-							logger.error("Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
+							logger.log(Level.WARNING, "Login error: cannot create a JAAS LoginContext. Using anonymously.", e);
 							return null;
-						}			
+						}
 					try {
 						loginCtx.login();  // this will call back to get the credentials
 						final Subject subject = loginCtx.getSubject();
@@ -130,9 +129,9 @@ public class JaasLoginModule implements ILoginModule {
 								ch.credentials.getPassword());
 					} catch (LoginException e) {
 						// Note: LoginContext unfortunately does not throw a
-						// more specific exception than LoginException.						
+						// more specific exception than LoginException.
 						handler.signalFailedLoginAttempt();
-						logger.info("Login failed", e);
+						logger.log(Level.WARNING, "Login failed", e);
 					}
 				}
 			} else { //user canceled, keep the current user as it was
@@ -158,7 +157,7 @@ public class JaasLoginModule implements ILoginModule {
 			System.setProperty(AUTH_CONFIG_PROPERTY, url.toExternalForm());
 		}
 	}
-	
+
 	/**
 	 * Creates a {@link User} object for a specified {@link Subject}.
 	 * @param subject the {@code Subject}.
@@ -175,7 +174,7 @@ public class JaasLoginModule implements ILoginModule {
 	 * Returns the given subject's username. The username is taken from the
 	 * subject's principals. If the subject has more than one principal, one
 	 * of them will be chosen arbitrarily to get the username.
-	 * 
+	 *
 	 * @param subject the subject.
 	 * @return a username.
 	 * @throws LoginException if the subject does not contain any principals.
@@ -193,28 +192,30 @@ public class JaasLoginModule implements ILoginModule {
 	 * support logout.
 	 * @throws UnsupportedOperationException always thrown.
 	 */
-	public void logout() {
+	@Override
+    public void logout() {
 		/*
 		 * Note: to do logout, we would have to store the jaas login context and
 		 * call its logout() method. This would work, but I am not sure what
 		 * to do with the user object after logout.
 		 */
-		
+
 		throw new UnsupportedOperationException();
 	}
-	
+
 	/**
 	 * Implementation of {@link CallbackHandler} that will return the username
 	 * and password stored in a credentials object when called back.
 	 */
 	private static class CredentialsCallbackHandler implements CallbackHandler {
 		private Credentials credentials;
-		
+
 		/**
 		 * Handles username and password callbacks by returning the username
 		 * and password of the credentials. Other callbacks are not supported.
 		 */
-		public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+		@Override
+        public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 			for (Callback c : callbacks) {
 				if (c instanceof NameCallback) {
 					// return the username

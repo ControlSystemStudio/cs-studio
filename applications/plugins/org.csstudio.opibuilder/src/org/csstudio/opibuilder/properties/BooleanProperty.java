@@ -67,5 +67,16 @@ public final class BooleanProperty extends AbstractWidgetProperty {
 		return Boolean.parseBoolean(propElement.getValue());
 	}
 	
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public String toStringInRuleScript(Object propValue) {
+		return (Boolean)propValue? "true" : "false";
+	}
+	
+	
 
 }

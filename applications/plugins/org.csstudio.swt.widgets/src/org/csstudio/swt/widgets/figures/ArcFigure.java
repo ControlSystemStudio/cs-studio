@@ -27,7 +27,7 @@ public class ArcFigure extends Shape implements Introspectable{
 //	private boolean cordFill = false;
 	private int startAngle = 0;	
 	private int totalAngle = 90;
-	private boolean fill;
+	private boolean fill = false;
 	
 
 	/**

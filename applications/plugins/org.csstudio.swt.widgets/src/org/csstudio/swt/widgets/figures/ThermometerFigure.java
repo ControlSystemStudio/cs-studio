@@ -7,13 +7,11 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
-import java.text.NumberFormat;
-
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
-import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
+import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureUtilities;
@@ -45,7 +43,8 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 	public enum TemperatureUnit {
 		CELSIUS("Celsius", "\u2103"), //$NON-NLS-2$
 		FAHRENHEIT("Fahrenheit", "\u2109"), //$NON-NLS-2$
-		KELVIN("Kelvin", "K"); //$NON-NLS-2$
+		KELVIN("Kelvin", "K"),
+		NONE("None", ""); //$NON-NLS-2$
 		
 		public static String[] stringValues(){
 			String[] result = new String[values().length];
@@ -90,15 +89,12 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 	
 
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_GRAY);
-	
-	/**
-	 * the value be set before coerced, which is used for displaying on bulb
-	 */
-	private double rawValue = 20;	
+			CustomMediaFactory.COLOR_GRAY);		
 	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
+	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_BLACK);
 	
 	public ThermometerFigure() {
 		
@@ -219,7 +215,6 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
-		rawValue = value;
 	}
 
 
@@ -278,6 +273,8 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			
 			if(effect3D && support3D)
 				graphics.setForegroundColor(EFFECT3D_BULB_COLOR);
+			else
+				graphics.setForegroundColor(BLACK_COLOR);
 			super.outlineShape(graphics);			
 			//draw a small rectangle to hide the joint  
 			
@@ -300,6 +297,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		
 			}else{
 				graphics.setBackgroundColor(fillColor);
+				
 				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
 						((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),

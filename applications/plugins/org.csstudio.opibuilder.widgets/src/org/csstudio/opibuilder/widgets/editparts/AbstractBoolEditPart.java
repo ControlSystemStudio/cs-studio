@@ -202,10 +202,12 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
-			((AbstractBoolFigure)getFigure()).setValue((Double)value);
+		if(value instanceof Number)
+			((AbstractBoolFigure)getFigure()).setValue(((Number)value).doubleValue());
 		else if (value instanceof Boolean)
 			((AbstractBoolFigure)getFigure()).setBooleanValue((Boolean)value);
+		else 
+			super.setValue(value);
 	}
 
 	@Override

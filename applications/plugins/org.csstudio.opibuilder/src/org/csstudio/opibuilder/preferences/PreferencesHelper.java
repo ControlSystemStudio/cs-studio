@@ -20,7 +20,10 @@ import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**This is the central place for preference related operations.
  * @author Xihui Chen
@@ -45,6 +48,12 @@ public class PreferencesHelper {
 	public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
 	public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
 	public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
+	public static final String PYTHON_PATH = "python_path"; //$NON-NLS-1$
+	public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
+	public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";
+	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";
+	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";
+	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";
 	
 
 	private static final char ROW_SEPARATOR = '|'; 
@@ -201,7 +210,74 @@ public class PreferencesHelper {
 		return result;
 
     }
+    
+    /**Get python path preferences.
+     * @return the python path, null if this preference is not setted.
+     * @throws Exception
+     */
+    public static String getPythonPath() throws Exception {
+    	String rawString = getString(PYTHON_PATH);
+    	if(rawString == null || rawString.isEmpty())
+    		return null;
+    	String[] rawPaths = StringUtil.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
+    	StringBuilder sb = new StringBuilder();
+    	for(String rawPath : rawPaths){
+    		IPath path = new Path(rawPath);
+    		IPath location = ResourceUtil.workspacePathToSysPath(path);
+    		if(location != null){
+    			sb.append(location.toOSString());
+    		}else{
+    			sb.append(rawPath);
+    		}    		
+			sb.append(System.getProperty("path.separator"));			
+    	}
+    	sb.deleteCharAt(sb.length()-1);
+    	return sb.toString();
+    	
+    }
+    
+    public static boolean isDisplaySystemOutput(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DISPLAY_SYSTEM_OUTPUT, false, null);
+    }
 
+    public static boolean isShowCompactModeDialog(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_COMPACT_MODE_DIALOG, true, null);
+    }
+    
+    public static void setShowCompactModeDialog(boolean show){    	
+    	putBoolean(SHOW_COMPACT_MODE_DIALOG, show);    	
+    }   
+    
+    public static boolean isShowFullScreenDialog(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_FULLSCREEN_DIALOG, true, null);
+    }
+    
+    public static void setShowFullScreenDialog(boolean show){
+    	putBoolean(SHOW_FULLSCREEN_DIALOG, show);
+    }
+    
+     public static boolean isStartWindowInCompactMode(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
+    }
+     
+    private static void putBoolean(String name, boolean value){
+    	IEclipsePreferences prefs = new InstanceScope().getNode(OPIBuilderPlugin.PLUGIN_ID);
+    	prefs.putBoolean(name, value);
+    	try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			OPIBuilderPlugin.getLogger().log(Level.SEVERE, "Failed to store preferences.", e);
+		}	
+    }
+    
+    public static int getURLFileLoadingTimeout(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, URL_FILE_LOADING_TIMEOUT, 8000, null);
+    }
 
 
 }

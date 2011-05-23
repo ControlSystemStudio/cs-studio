@@ -72,6 +72,14 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 		if(value instanceof ColorMap){
 			if(((ColorMap)value).getMap().size() >=2)
 				acceptableValue = (ColorMap)value;			
+		}else if (value instanceof String){
+			for(PredefinedColorMap map : ColorMap.PredefinedColorMap.values()){
+				if(map.toString().equals(value)){
+					acceptableValue = new ColorMap(map, true, true);
+				break;
+				}
+			}
+
 		}
 		
 		return acceptableValue;
@@ -139,4 +147,15 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 		propElement.addContent(preDefinedElement);
 	}
 
+	
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
+	
+	@Override
+	public boolean onlyAcceptExpressionInRule() {
+		return true;
+	}
+	
 }

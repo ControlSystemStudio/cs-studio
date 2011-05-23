@@ -24,12 +24,14 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.platform.logging.CentralLogger;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.utility.adlparser.internationalization.Messages;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
+import org.csstudio.utility.adlparser.fileParser.ParserADL;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 
 /**
@@ -49,11 +51,11 @@ public class ADLObject extends WidgetPart{
     private int _width;
     /** The height of the Object.*/
     private int _height;
-    
+
     /**
      * The default constructor.
-     * 
-     * @param adlObject An ADLWidget that correspond a ADL Object. 
+     *
+     * @param adlObject An ADLWidget that correspond a ADL Object.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -69,9 +71,9 @@ public class ADLObject extends WidgetPart{
         name = new String("object");
         /* Not to initialization*/
     }
-    
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlObject) throws WrongADLFormatException {
@@ -85,7 +87,7 @@ public class ADLObject extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
             }
-            row[1] = row[1].replaceAll("\"", "").trim(); 
+            row[1] = row[1].replaceAll("\"", "").trim();
             if(FileLine.argEquals(row[0], "x")){ //$NON-NLS-1$
                 if(row[1].startsWith("$")){
                     //TODO: ADLObject --> Dynamic x coordinate
@@ -106,7 +108,7 @@ public class ADLObject extends WidgetPart{
                 _height=Integer.parseInt(row[1]);
             }else if(FileLine.argEquals(row[0], "groupid")){ //$NON-NLS-1$
                 // TODO: ADLObject->groupid
-                CentralLogger.getInstance().info(this, "Unhandel Parameter: "+fileLine);
+                Logger.getLogger(ParserADL.class.getName()).log(Level.INFO, "Unhandled Parameter: " + fileLine);
             }else {
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Parameter_Begin+fileLine+Messages.ADLObject_WrongADLFormatException_Parameter_End);
             }
@@ -122,7 +124,7 @@ public class ADLObject extends WidgetPart{
 //**            setY(_y);
 //**            setWidth(_width);
 //**            setHeight(_height);
-//**        
+//**
 //**    }
 
     /**
@@ -179,7 +181,7 @@ public class ADLObject extends WidgetPart{
 //**     * @param height set the height-coordinate.
 //**     */
 
-    
+
 //**        public final void setHeight(final int height) {
 //**        _height = height;
 //**        _widgetModel.setHeight(_height);
@@ -195,7 +197,7 @@ public class ADLObject extends WidgetPart{
     	ret[1] = new ADLResource(ADLResource.Y, new Integer(_y));
     	ret[2] = new ADLResource(ADLResource.WIDTH, new Integer(_width));
     	ret[3] = new ADLResource(ADLResource.HEIGHT, new Integer(_height));
-    	
+
     	return ret;
     }
 }

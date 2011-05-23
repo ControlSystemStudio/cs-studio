@@ -12,32 +12,45 @@
       Access PV in Script
     </h2>
     
-    <h3>pvArray</h3>
-    <p>The input PVs for a script can be accessed in script via <b>pvArray</b> object. 
-    The order of the input PVs in the configuation list is preserved in pvArray. 
-    pvArray[0] is the first input pv. If you have <i>N</i> input PVs, <code>pvArray[N-1]</code> is the last input PV.       
+    <h3>pvs object</h3>
+    <p>The input PVs for a script can be accessed in script via <b>pvs</b> object. 
+    The order of the input PVs in the configuation list is preserved in pvs. 
+    pvs[0] is the first input pv. If you have <i>N</i> input PVs, <code>pvs[N-1]</code> is the last input PV.       
     </p>
     
-    <p>In script, you can read/write the input PVs and get the timestamp or severitis of the PVs via the utility APIs 
+    <p>You may also able to get the PV attached to a PV widget via <a href = "AccessWidget.html#getPV()">widget.getPV()</a>.</p>
+    
+    <p>In script, you can read/write PV or get its timestamp or severity via the utility APIs 
     provided in <a href ="ScriptUtil/PVUtil.html">PVUtil</a> 
     </p>
+    
+   <h3>triggerPV object</h3>
+    <p>The PV that triggers the execution of the script can be accessed via <b>triggerPV</b> object.
+    When there are more than one trigger PV for a script and you need to know this execution is triggered
+    by which PV, you can use this object.    
+    For example,</p>
+    <pre class="example_code">
+importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+if(triggerPV == pvs[1]) 
+	ConsoleUtil.writeInfo("I'm triggered by the second input PV.");     </pre>
+ 
     
     <h3>Examples:</h3> 
     <h4>1. Get double value from PV</h4>
 	<pre class="example_code">
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var value = PVUtil.getDouble(pvArray[0]);
-widgetController.getWidgetModel().setPropertyValue("start_angle", value);</pre>
+var value = PVUtil.getDouble(pvs[0]);
+widget.setPropertyValue("start_angle", value);</pre>
 
  <h4>2. Write PV Value
 	</h4>
-	<p>Only the input PVs are allowed to write in the script. If writing a PV is forbidden 
-	by PV security, an exception will be returned and shown in console. The method PV.setValue(data) accepts
+	<p>If writing a PV is forbidden	by PV security, 
+	an exception will be thrown and shown in console. The method PV.setValue(data) accepts
 	Double, Double[], Integer, String, maybe more.	</p>
 	
 	<pre class="example_code">importPackage(Packages.org.csstudio.platform.data);
-pvArray[0].setValue(0);	</pre>
+pvs[0].setValue(0);	</pre>
 
     <h4>3. Get severity of PV</h4>
 	<pre class="example_code">
@@ -48,7 +61,7 @@ var ORANGE = ColorUtil.getColorFromRGB(255,255,0);
 var GREEN = ColorUtil.getColorFromHSB(120.0,1.0,1.0);
 var PINK = ColorUtil.PINK;
 
-var severity = PVUtil.getSeverity(pvArray[0]);
+var severity = PVUtil.getSeverity(pvs[0]);
 var color;
 
 switch(severity){
@@ -66,8 +79,9 @@ switch(severity){
 		color = PINK;
 }
 
-widgetController.getWidgetModel().setPropertyValue("foreground_color",color);</pre>
+widget.setPropertyValue("foreground_color",color);</pre>
 
+<br>
  
   </body>
 </html>

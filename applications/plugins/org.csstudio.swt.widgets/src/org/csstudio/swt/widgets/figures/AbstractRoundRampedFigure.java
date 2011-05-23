@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Color;
 public class AbstractRoundRampedFigure extends AbstractMarkedWidgetFigure {	
 
 
-	protected boolean gradient;
+	protected boolean gradient = true;
 	protected RoundScaledRamp ramp;
 
 	

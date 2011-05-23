@@ -83,7 +83,7 @@ public class TextIndicatorModel extends LabelModel {
 		
 		setPropertyValue(PROP_TEXT, "######");
 		setPropertyValue(PROP_ALIGN_H, 0);
-		setPropertyValue(PROP_ALIGN_V, 0);
+		setPropertyValue(PROP_ALIGN_V, 1);
 	}
 	
 	public FormatEnum getFormat(){

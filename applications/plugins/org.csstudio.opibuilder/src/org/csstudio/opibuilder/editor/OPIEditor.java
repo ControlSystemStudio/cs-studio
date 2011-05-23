@@ -64,7 +64,6 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -127,6 +126,7 @@ import org.eclipse.gef.ui.parts.SelectionSynchronizer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.properties.UndoablePropertySheetEntry;
 import org.eclipse.gef.ui.rulers.RulerComposite;
+import org.eclipse.help.IContextProvider;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -157,8 +157,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
@@ -198,8 +200,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 	private Clipboard clipboard;
 
-
 	private SelectionSynchronizer synchronizer;
+	
+	private OPIHelpContextProvider helpContextProvider;
 
 
 	public OPIEditor() {
@@ -619,7 +622,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	}
 
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+	public Object getAdapter(Class type) {
 		if(type == IPropertySheetPage.class)
 			return getPropertySheetPage();
 		else if (type == ZoomManager.class)
@@ -630,6 +633,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		else if (type == IContentOutlinePage.class) {
 			outlinePage = new OutlinePage(new TreeViewer());
 			return outlinePage;
+		}else if (type.equals(IContextProvider.class)){
+			if(helpContextProvider == null)
+				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
+			return helpContextProvider;
 		}
 		return super.getAdapter(type);
 	}
@@ -826,9 +833,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	protected void initializeGraphicalViewer() {
 		super.initializeGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
-
+		
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), 
+				"org.csstudio.opibuilder.opi_editor"); //$NON-NLS-1$
+		
 		viewer.setContents(displayModel);
-
+		displayModel.setViewer(viewer);
+		
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
 		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
@@ -1045,8 +1056,13 @@ class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
 		if (type == ZoomManager.class)
 			return getGraphicalViewer().getProperty(ZoomManager.class.toString());
-		if (type == CommandStack.class)
+		else if (type == CommandStack.class)
 			return getCommandStack();
+		else if (type.equals(IContextProvider.class)){
+			if(helpContextProvider == null)
+				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
+			return helpContextProvider;
+		}					
 		return null;
 	}
 

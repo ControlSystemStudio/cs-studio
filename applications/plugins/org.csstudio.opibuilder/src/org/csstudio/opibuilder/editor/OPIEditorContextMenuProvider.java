@@ -13,7 +13,7 @@ import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.ChangeOrientationAction.OrientationType;
 import org.csstudio.opibuilder.actions.CopyPropertiesAction;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
