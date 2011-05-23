@@ -37,7 +37,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  *          in the CssWorkbenchAdvisor code
  *  @author Xihui Chen
  */
-@SuppressWarnings("restriction")
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 {
 	/**
@@ -57,16 +56,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IAction importAction;
     private IAction exportAction;
     private IAction quit;
-
-    //Edit menu
-    private IAction undo;
-    private IAction redo;
-    private IAction cut;
-    private IAction copy;
-    private IAction paste;
-    private IAction delete;
-    private IAction selectAll;
-    private IAction findReplace;
 
     private IAction new_window;
     private IContributionItem open_windows;
@@ -126,31 +115,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         quit = ActionFactory.QUIT.create(window);
         register(quit);
 
-        //Edit menu
-        undo = ActionFactory.UNDO.create(window);
-        register(undo);
-
-        redo = ActionFactory.REDO.create(window);
-        register(redo);
-
-        cut = ActionFactory.CUT.create(window);
-        register(cut);
-
-        copy = ActionFactory.COPY.create(window);
-        register(copy);
-
-        paste = ActionFactory.PASTE.create(window);
-        register(paste);
-
-        delete = ActionFactory.DELETE.create(window);
-        register(delete);
-
-        selectAll = ActionFactory.SELECT_ALL.create(window);
-        register(selectAll);
-
-        findReplace = ActionFactory.FIND.create(window);
-        register(findReplace);
-
         new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(new_window);
 
@@ -189,40 +153,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         // TODO Check NSLS-II Product for creating menu entries via plugin.xml
 
-        createEditMenu(menubar);
-
         // Placeholder for possible additions
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         createWindowMenu(menubar);
         createHelpMenu(menubar);
     }
-
-    /** Create the file menu. */
-    private void createEditMenu(IMenuManager menubar)
-    {
-        final MenuManager menu_edit =
-            new MenuManager(Messages.Menu_Edit, IWorkbenchActionConstants.M_EDIT);
-        // Markers allow other code to use MenuManager.appendToGroup(...)...
-        menu_edit.add(new GroupMarker(IWorkbenchActionConstants.EDIT_START));
-
-        menu_edit.add(undo);
-        menu_edit.add(redo);
-        menu_edit.add(new Separator());
-        menu_edit.add(cut);
-        menu_edit.add(copy);
-        menu_edit.add(paste);
-        menu_edit.add(new Separator());
-
-        menu_edit.add(delete);
-        menu_edit.add(selectAll);
-        menu_edit.add(new Separator());
-        menu_edit.add(new GroupMarker(IWorkbenchActionConstants.EDIT_END));
-        menu_edit.add(new Separator());
-        menu_edit.add(findReplace);
-        menu_edit.add(new Separator());
-        menubar.add(menu_edit);
-    }
-
 
     /** Create the window menu. */
     private void createWindowMenu(IMenuManager menubar)

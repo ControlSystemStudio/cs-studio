@@ -186,6 +186,65 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?before=additions">
+         <menu
+               id="edit"
+               label="Edit">
+            <command
+                  commandId="org.eclipse.ui.edit.undo"
+                  label="Undo"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.redo"
+                  label="Redo"
+                  style="push">
+            </command>
+            <separator
+                  name="copy"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.edit.cut"
+                  label="Cut"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.copy"
+                  label="Copy"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.paste"
+                  label="Paste"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.delete"
+                  label="Delete"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.selectAll"
+                  label="Select All"
+                  style="push">
+            </command>
+            <separator
+                  name="find.ext"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.edit.findReplace"
+                  label="Find/Replace..."
+                  style="push">
+            </command>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
