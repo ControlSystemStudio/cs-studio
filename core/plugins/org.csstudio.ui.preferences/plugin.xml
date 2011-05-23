@@ -69,4 +69,25 @@
             id="org.csstudio.platform.ui.css.applications.others"
             name="%othersPreferencesName"/>                         
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.ui.preferences.OpenPreferences"
+            id="org.csstudio.ui.preferences.open_preferences"
+            name="%OpenPreferences">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:css?after=other">
+         <command
+               commandId="org.csstudio.ui.preferences.open_preferences"
+               icon="icons/preferences.gif"
+               label="%OpenPreferences"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
 </plugin>
