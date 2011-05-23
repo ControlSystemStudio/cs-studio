@@ -59,8 +59,6 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
         super.doProcessConnectionStateChange(widget, anyDataChannel);
         AnyData anyData = anyDataChannel.getData();
         Severity severity = anyData.getSeverity();
-        System.out.println("Name: "+anyDataChannel.getUniqueName());
-        System.out.println("severity: "+severity.toString());
         if (severity != null) {
             if (severity.isInvalid()) {
                 widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
