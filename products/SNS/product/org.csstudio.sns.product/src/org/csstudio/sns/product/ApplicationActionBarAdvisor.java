@@ -8,7 +8,6 @@
 package org.csstudio.sns.product;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
-import org.csstudio.auth.ui.internal.actions.LogoutAction;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -135,9 +134,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         exportAction = ActionFactory.EXPORT.create(window);
         register(exportAction);
 
-        logout = new LogoutAction(window);
-        register(logout);
-
         quit = ActionFactory.QUIT.create(window);
         register(quit);
 
@@ -208,7 +204,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     protected void fillMenuBar(IMenuManager menubar)
     {
         // TODO Check NSLS-II Product for creating menu entries via plugin.xml
-        createFileMenu(menubar);
+
         createEditMenu(menubar);
 
         // Placeholder for possible additions
@@ -218,45 +214,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     }
 
 
-    /** Create the file menu. */
+    /** Create the file menu. TODO REMOVE FIle menu */
     private void createFileMenu(IMenuManager menubar)
     {
-        final MenuManager menu_file =
-            new MenuManager(Messages.Menu_File, IWorkbenchActionConstants.M_FILE);
-        // Markers allow other code to use MenuManager.appendToGroup(...)...
-        menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-
-        final MenuManager new_sub =
-            new MenuManager(Messages.Menu_New, ActionFactory.NEW.getId());
-        new_sub.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-        new_sub.add(create_new);
-        menu_file.add(new_sub);
-        menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-        menu_file.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
-        menu_file.add(close);
-        menu_file.add(close_all);
-        menu_file.add(new Separator());
-        menu_file.add(save);
-        menu_file.add(save_as);
-        menu_file.add(new Separator());
-        menu_file.add(importAction);
-        menu_file.add(exportAction);
-        menu_file.add(new Separator());
-        menu_file.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
-        menu_file.add(new Separator());
-        menu_file.add(new GroupMarker(MENU_WORKSPACE));
-        menu_file.add(new Separator());
-
-        menu_file.add(new GroupMarker(RECENT_FILES));
-        final MenuManager recentFilesSubMenu =	new MenuManager(Messages.Menu_File_Recent);
-        recentFilesSubMenu.add(recent_files);
-        menu_file.add(recentFilesSubMenu);
-
-        menu_file.add(new Separator());
-        menu_file.add(new GroupMarker(MENU_TOOLBAR_LOGIN));
-        menu_file.add(logout);
-        menu_file.add(quit);
-        menubar.add(menu_file);
+//        menu_file.add(new GroupMarker(RECENT_FILES));
+//        final MenuManager recentFilesSubMenu =	new MenuManager(Messages.Menu_File_Recent);
+//        recentFilesSubMenu.add(recent_files);
+//        menu_file.add(recentFilesSubMenu);
     }
 
     /** Create the file menu. */
@@ -352,11 +316,5 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         file_bar.add(create_new);
         file_bar.add(save);
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
-        file_bar.add(new Separator());
-
-        user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
-        user_bar.add(logout);
-
     }
-
 }
