@@ -83,7 +83,7 @@ public class BundleTestCollector {
      *      List of filter strings that will be used to search for test cases. The filter
      *      applies to the unqualified class name only (not including the
      *      package name). Wildcards are allowed, as defined by the {@link
-     *      Activator Bundle#findEntries(String, String, boolean)} method.
+     *      TestSuiteActivator Bundle#findEntries(String, String, boolean)} method.
      * @return list of test classes that match the bundle prefixes and filters passed in
      */
     @Nonnull
@@ -95,7 +95,7 @@ public class BundleTestCollector {
 
         final List<Test> tests = new ArrayList<Test>();
 
-        final Bundle[] bundles = Activator.getInstance().getBundles();
+        final Bundle[] bundles = TestSuiteActivator.getInstance().getBundles();
         for (final Bundle bundle : bundles) {
 
             if (!isFragment(bundle) && isBundleValid(bundle, bundleNames, bundlesBlackList)) {
@@ -323,7 +323,7 @@ public class BundleTestCollector {
         if(fragmenthost.indexOf(";") > 0) {
             fragmenthost = fragmenthost.substring(0,fragmenthost.indexOf(";"));
         }
-        final Bundle[] bundles = Activator.getInstance().getBundles();
+        final Bundle[] bundles = TestSuiteActivator.getInstance().getBundles();
         for (final Bundle b : bundles) {
             if(b.getSymbolicName().equals(fragmenthost)) {
                 return b;
