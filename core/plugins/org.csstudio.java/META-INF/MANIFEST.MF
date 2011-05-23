@@ -7,4 +7,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: Java Utilities, no dependencies to Eclipse
 Require-Bundle: org.junit4
-Export-Package: org.csstudio.java.string
+Export-Package: org.csstudio.java.string,
+ org.csstudio.java.thread
