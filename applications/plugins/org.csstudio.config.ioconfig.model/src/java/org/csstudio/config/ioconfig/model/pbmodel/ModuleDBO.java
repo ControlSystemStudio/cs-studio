@@ -434,6 +434,7 @@ public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> im
      */
     @Override
     @Nonnull
+    @Transient
     public Set<DocumentDBO> getPrototypeDocuments() {
         GSDModuleDBO gsdModule = getGSDModule();
         return gsdModule==null?  new HashSet<DocumentDBO>():gsdModule.getDocuments();
