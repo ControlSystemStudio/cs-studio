@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.auth.ui.dialogs;
@@ -43,13 +43,15 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * <p>A simple login dialog.</p>
- * 
+ *
+ * TODO ILoginCallbackHandler cleanup instead of warnings
+ *
  * <p>Warning: Do not use an instance of this class as an
  * <code>ILoginCallbackHandler</code>. This class's implementation of that
  * interface incorrectly assumes that it will be called in the UI thread
  * and may not work correctly if called in another thread. Future versions of
  * this class will no longer implement <code>ILoginCallbackHandler</code>.</p>
- * 
+ *
  * @author Alexander Will, Jörg Rathlev, Anže Vodovnik, Xihui Chen, Kay Kasemir
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
@@ -63,12 +65,12 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * Text box that holds the password.
 	 */
 	private Text _password;
-	
+
 	/**
 	 * checkbox to show "Login as anonymous"
 	 */
 	private Button _loginAnonymous;
-	
+
 	/**
 	 * Checkbox for option to remember username and password.
 	 */
@@ -93,7 +95,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	 * The message displayed in the dialog.
 	 */
 	private final String _message;
-	
+
 	/**
 	 * Creates a new login dialog.
 	 * @param parentShell the parent shell.
@@ -101,10 +103,10 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	public LoginDialog(final Shell parentShell) {
 		this(parentShell, "");
 	}
-	
+
 	/**
      * Creates a new login dialog.
-     * 
+     *
 	 * @param parentShell
 	 *            the parent shell.
 	 * @param lastUser
@@ -114,10 +116,10 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
         this(parentShell, "Login", "Please enter your user name and password.",
         		lastUser);
     }
-    
+
     /**
 	 * Creates a new login dialog.
-	 * 
+	 *
 	 * @param parentShell
 	 *            the parent shell.
 	 * @param title
@@ -134,7 +136,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_message = message;
 		_lastUser = lastUser;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -143,7 +145,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
     	super.configureShell(newShell);
     	newShell.setText(_title);
     }
-	
+
 	/**
 	 * Creates the contents of this dialog.
 	 */
@@ -172,14 +174,14 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 
 		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		_username.setText(_lastUser != null ? _lastUser : "");
-		
-		
+
+
 		// password
 		label = new Label(contents, SWT.NONE);
 		label.setText(Messages.LoginDialog_Password);
 		_password = new Text(contents, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
 		_password.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		
+
 		// Anonymous login checkbox
 		_loginAnonymous = new Button(contents, SWT.CHECK);
 		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
@@ -200,7 +202,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 				}
 			}
 		});
-		
+
 		// remember password checkbox (invisible by default)
 		_rememberLogin = new Button(contents, SWT.CHECK);
 		_rememberLogin.setText("Remember my user name and password");
@@ -214,7 +216,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		}
 		return parentComposite;
 	}
-	
+
 	/**
 	 * Sets the window title of this login dialog window.
 	 * @param title the title.
@@ -222,7 +224,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	public final void setWindowTitle(final String title) {
 		getShell().setText(title);
 	}
-	
+
 	/**
 	 * Sets whether the remember password checkbox is visible (default is
 	 * <code>false</code>.
@@ -231,7 +233,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	public final void setRememberPasswordVisible(final boolean visible) {
 		_rememberLogin.setVisible(visible);
 	}
-	
+
 	/**
 	 * Returns whether the user checked the remember password option.
 	 * @return <code>true</code> if the user wants the password to be
@@ -240,12 +242,12 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 	public final boolean isRememberPasswordChecked() {
 		return _rememberLogin.getSelection();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void okPressed() {		
+	protected final void okPressed() {
 		if(_loginAnonymous.getSelection())
 			_credentials = Credentials.ANONYMOUS;
 		else {
@@ -257,21 +259,21 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 		_password = null;
 		super.okPressed();
 	}
-	
+
 	/**
 	 * Returns the credentials that were entered by the user.
-	 * 
+	 *
 	 * @return the credentials entered by the user, or <code>null</code> if
 	 *         the user did not enter any credentials.
 	 */
 	public Credentials getLoginCredentials() {
 		return _credentials;
 	}
-	
+
 	/**
 	 * Opens the login window and queries the user
 	 * for credentials which it returns.
-	 * 
+	 *
 	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
 	 */
 	public Credentials getCredentials() {
@@ -283,7 +285,7 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
 	 */
 	public void signalFailedLoginAttempt() {
