@@ -15,6 +15,7 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** Tell the workbench how to behave.
  *  @author Kay Kasemir
@@ -42,7 +43,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         configurer.setSaveAndRestore(true);
         // Register adapters needed by Navigator view to display workspace files
         IDE.registerAdapters();
-        
+
      // register shared images
 		declareWorkbenchImages();
     }
@@ -61,11 +62,11 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
     }
-    
+
     /**
 	 * Declares all IDE-specific workbench images. This includes both "shared"
 	 * images (named in {@link IDE.SharedImages}) and internal images.
-	 * 
+	 *
 	 * @see IWorkbenchConfigurer#declareImage
 	 */
 	private void declareWorkbenchImages() {
@@ -77,7 +78,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 
 	/**
 	 * Declares a workbench image.
-	 * 
+	 *
 	 * @param symbolicName
 	 *            the symbolic name of the image
 	 * @param path
@@ -89,7 +90,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 	 */
 	private void declareWorkbenchImage(String symbolicName,
 			String path, boolean shared) {
-		ImageDescriptor desc = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
+		ImageDescriptor desc = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
 		getWorkbenchConfigurer().declareImage(symbolicName, desc, shared);
 	}
 }
