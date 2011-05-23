@@ -13,6 +13,7 @@ import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.ide.IDE;
 
 /** Tell the workbench how to behave.
  *  @author Kay Kasemir
@@ -28,16 +29,18 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 
 	@Override
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-                    IWorkbenchWindowConfigurer configurer)
+                    final IWorkbenchWindowConfigurer configurer)
     {
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
     @Override
-    public void initialize(IWorkbenchConfigurer configurer)
+    public void initialize(final IWorkbenchConfigurer configurer)
     {
         // Per default, state is not preserved (RCP book 5.1.1)
         configurer.setSaveAndRestore(true);
+        // Register adapters needed by Navigator view to display workspace files
+        IDE.registerAdapters();
     }
 
     /** @return ID of initial perspective */
@@ -48,7 +51,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     }
 
     @Override
-    public void eventLoopIdle(Display display) {
+    public void eventLoopIdle(final Display display)
+    {
     	if(openDocProcessor != null)
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
