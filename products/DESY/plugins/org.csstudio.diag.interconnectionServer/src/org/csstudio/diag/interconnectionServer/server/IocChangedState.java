@@ -110,7 +110,7 @@ public class IocChangedState extends Thread{
 			/*
 			 * set changes in LDAP and generate JMS Alarm message
 			 */
-			LdapSupport.INSTANCE.setAllRecordsToDisconnected (ldapIocName);
+			LdapServiceFacadeImpl.INSTANCE.setAllRecordsToDisconnected (ldapIocName);
 			/*
 			 * remember that we've set this IOC to disconnected!
 			 * one the IOC is back online - and we are selected - -> get all alarms from the IOC

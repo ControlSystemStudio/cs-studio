@@ -26,7 +26,8 @@ import java.net.InetAddress;
 
 import javax.naming.NamingException;
 
-import org.csstudio.diag.interconnectionServer.server.LdapSupport;
+import org.csstudio.diag.interconnectionServer.server.LdapServiceFacadeImpl;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 
 /**
  * LDAP-based implementation of an IOC directory.
@@ -38,9 +39,10 @@ public class LdapIocDirectory implements IIocDirectory {
 	/**
 	 * {@inheritDoc}
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	public String[] getLogicalIocName(final InetAddress ipAddress, final String hostname) throws NamingException {
-		return LdapSupport.INSTANCE.getLogicalIocName(ipAddress, hostname);
+	public String[] getLogicalIocName(final InetAddress ipAddress, final String hostname) throws NamingException, LdapServiceException {
+		return LdapServiceFacadeImpl.INSTANCE.getLogicalIocName(ipAddress, hostname);
 	}
 
 }
