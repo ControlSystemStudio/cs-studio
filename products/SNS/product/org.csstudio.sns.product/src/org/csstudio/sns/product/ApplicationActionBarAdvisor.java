@@ -7,15 +7,12 @@
  ******************************************************************************/
 package org.csstudio.sns.product;
 
-import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -26,7 +23,6 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 
 /** Create workbench window actions, menu bar, coolbar.
@@ -43,10 +39,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private static final String TOOLBAR_USER = "user"; //$NON-NLS-1$
 
     final private IWorkbenchWindow window;
-
-    private IAction intro;
-    private IAction help;
-    private IAction about;
 
     /**
      * The coolbar context menu manager.
@@ -77,71 +69,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         .create(window);
         register(editActionSetAction);
 
+        // The help menu tries to invoke the into(welcome)
+        // and help commands, but by default no handler is
+        // available. Registering these actions also
+        // registers the handlers.
         if (window.getWorkbench().getIntroManager().hasIntro())
-        {
-            intro = ActionFactory.INTRO.create(window);
-            register(intro);
-        }
-        else
-            System.out.println("There is no Intro: Check for org.eclipse.ui.intro.univeral"); //$NON-NLS-1$
-
-        help = ActionFactory.HELP_CONTENTS.create(window);
-        register(help);
-
-        about = ActionFactory.ABOUT.create(window);
-        about.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/css16.gif")); //$NON-NLS-1$
-        register(about);
+            register(ActionFactory.INTRO.create(window));
+        register(ActionFactory.HELP_CONTENTS.create(window));
     }
 
     /** {@inheritDoc} */
     @Override
     protected void fillMenuBar(IMenuManager menubar)
     {
-        // TODO Check NSLS-II Product for creating menu entries via plugin.xml
-
-        // Placeholder for possible additions
+        // Placeholder for possible additions, rest filled from plugin.xml
         menubar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        createHelpMenu(menubar);
-    }
-
-    /** Create the window menu. */
-    private void createWindowMenu(IMenuManager menubar)
-    {
-//        final MenuManager persp_sub = new MenuManager(Messages.Menu_Perspectives);
-//        persp_sub.add(menu_perspectives);
-//        menu_window.add(persp_sub);
-//
-//        final MenuManager view_sub = new MenuManager(Messages.Menu_Views);
-//        view_sub.add(menu_views);
-//        menu_window.add(view_sub);
-//        menu_window.add(open_windows);
-//        menubar.add(menu_window);
-    }
-
-    /** Create the help menu. */
-    private void createHelpMenu(IMenuManager menubar)
-    {
-        final MenuManager menu_help =
-            new MenuManager(Messages.Menu_Help, IWorkbenchActionConstants.M_HELP);
-       	menu_help.add(intro);
-       	menu_help.add(new Separator());
-        menu_help.add(help);
-        // Not sure if this is the best way.
-        // Is the Sheet Cheat View ID defined as a public somewhere?
-        // Does org.eclipse.* already provide an action for opening it?
-        // There is org.eclipse.ui.internal.cheatsheets.actions.CheatSheetHelpMenuAction(),
-        // but that is "internal"...
-        menu_help.add(new OpenViewAction(
-                "org.eclipse.ui.cheatsheets.views.CheatSheetView", //$NON-NLS-1$
-                Messages.Menu_Help_CheatSheet));
-        menu_help.add(new Separator());
-        menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_START));
-        // CSS platform.ui plugin hooks software update into help/group.updates
-        menu_help.add(new GroupMarker("group.updates")); //$NON-NLS-1$
-        menu_help.add(new GroupMarker(IWorkbenchActionConstants.HELP_END));
-        menu_help.add(new Separator());
-        menu_help.add(about);
-        menubar.add(menu_help);
     }
 
     /** {@inheritDoc} */

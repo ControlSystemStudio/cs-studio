@@ -285,6 +285,61 @@
             </command>
          </menu>
       </menuContribution>
+
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
+         <menu
+               id="help"
+               label="Help">
+            <command
+                  commandId="org.eclipse.ui.help.quickStartAction"
+                  icon="icons/css16.gif"
+                  label="Welcome"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/css16.gif"
+                  label="About"
+                  style="push">
+            </command>
+            <separator
+                  name="helpStart"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.help.helpContents"
+                  icon="icons/help.gif"
+                  label="Help Contents"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ui.views.showView"
+                  label="Cheat Sheets..."
+                  style="push">
+                <parameter
+                    name="org.eclipse.ui.views.showView.viewId"
+                    value="org.eclipse.ui.cheatsheets.views.CheatSheetView">
+                </parameter>
+            </command>
+            <separator
+                  name="helpEnd"
+                  visible="true">
+            </separator>
+            <separator
+                  name="additions"
+                  visible="true">
+            </separator>
+            <separator
+                  name="end"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+
+
+
    </extension>
    <extension
          point="org.eclipse.ui.commands">
