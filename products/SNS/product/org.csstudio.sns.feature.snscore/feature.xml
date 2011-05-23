@@ -34,6 +34,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <requires>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.csstudio.logbook" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
@@ -42,7 +43,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.cheatsheets"/>
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging.ui" version="0.0.1" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.workspace"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
@@ -51,12 +51,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.jaasAuthentication" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.ldapAuthorization" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.web" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -74,20 +72,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.sns.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.jaasAuthentication"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.jaasAuthentication.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
