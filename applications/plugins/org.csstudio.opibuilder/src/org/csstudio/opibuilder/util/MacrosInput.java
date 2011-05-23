@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.csstudio.java.string.StringUtil;
 import org.csstudio.opibuilder.properties.MacrosProperty;
-import org.csstudio.platform.util.StringUtil;
 
 /**The value type definition for {@link MacrosProperty}, which describes the input
  * for a Macros Property.

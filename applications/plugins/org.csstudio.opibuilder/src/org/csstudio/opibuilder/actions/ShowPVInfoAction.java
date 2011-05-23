@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -48,14 +49,14 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 		protected Control createCustomArea(Composite parent) {
 			if(pvMap == null || pvMap.size() == 0)		
 				return super.createCustomArea(parent);
-			parent.setLayout(new FillLayout());
-			TabFolder tabFolder = new TabFolder(parent, SWT.None);
+			parent.setLayout(new FillLayout());			
+			TabFolder tabFolder = new TabFolder(parent, SWT.None);			
 			for(Entry<String, PV> entry : pvMap.entrySet()){
 				TabItem tabItem = new TabItem(tabFolder, SWT.None);
 				tabItem.setText(entry.getKey());
-				Label label = new Label(tabFolder, SWT.None);
-				label.setText(getPVInfo(entry.getValue()));
-				tabItem.setControl(label);				
+				Text text = new Text(tabFolder, SWT.MULTI|SWT.READ_ONLY);
+				text.setText(getPVInfo(entry.getValue()));
+				tabItem.setControl(text);				
 				
 			}
 			return tabFolder;

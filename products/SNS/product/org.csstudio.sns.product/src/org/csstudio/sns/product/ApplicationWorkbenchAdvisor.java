@@ -8,6 +8,7 @@
 package org.csstudio.sns.product;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -41,6 +42,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         configurer.setSaveAndRestore(true);
         // Register adapters needed by Navigator view to display workspace files
         IDE.registerAdapters();
+        
+     // register shared images
+		declareWorkbenchImages();
     }
 
     /** @return ID of initial perspective */
@@ -57,4 +61,35 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
     }
+    
+    /**
+	 * Declares all IDE-specific workbench images. This includes both "shared"
+	 * images (named in {@link IDE.SharedImages}) and internal images.
+	 * 
+	 * @see IWorkbenchConfigurer#declareImage
+	 */
+	private void declareWorkbenchImages() {
+		declareWorkbenchImage(IDE.SharedImages.IMG_OBJ_PROJECT,
+				"icons/project_open.png", true); //$NON-NLS-1$
+		declareWorkbenchImage(IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED,
+				"icons/project_close.png", true); //$NON-NLS-1$
+	}
+
+	/**
+	 * Declares a workbench image.
+	 * 
+	 * @param symbolicName
+	 *            the symbolic name of the image
+	 * @param path
+	 *            the path of the image file relative to the product plugin;
+	 * @param shared
+	 *            <code>true</code> if this is a shared image, and
+	 *            <code>false</code> if this is not a shared image
+	 * @see IWorkbenchConfigurer#declareImage
+	 */
+	private void declareWorkbenchImage(String symbolicName,
+			String path, boolean shared) {
+		ImageDescriptor desc = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, path);
+		getWorkbenchConfigurer().declareImage(symbolicName, desc, shared);
+	}
 }

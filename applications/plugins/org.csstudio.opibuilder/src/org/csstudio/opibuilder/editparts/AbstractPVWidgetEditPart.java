@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -25,9 +26,8 @@ import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPITimer;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
@@ -46,8 +46,7 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
-	implements IProcessVariable{
+public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 
 
 	private interface AlarmSeverity extends ISeverity{
@@ -310,9 +309,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		return null;
 	}
 
-	public String getTypeId() {
-		return TYPE_ID;
-	}
+//	public String getTypeId() {
+//		return TYPE_ID;
+//	}
 
 	/**
 	 * @return the time needed to suppress reading back from PV after writing.
@@ -603,4 +602,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 		updateSuppressTimer.start(timerTask, getUpdateSuppressTime());
 	}
 
+	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+		if(key == ProcessVariable.class){			
+			return new ProcessVariable(getName());
+		}
+		return super.getAdapter(key);
+	}
 }

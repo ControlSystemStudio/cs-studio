@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.widgets.figures;
 
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Triangle;

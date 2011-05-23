@@ -10,8 +10,8 @@ package org.csstudio.opibuilder.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.gef.EditPartViewer;
 
 /**The Drop PV target listener for process variable name transfer.
@@ -21,16 +21,16 @@ import org.eclipse.gef.EditPartViewer;
 public class ProcessVariableNameTransferDropPVTargetListener extends AbstractDropPVTargetListener {
 
 	public ProcessVariableNameTransferDropPVTargetListener(EditPartViewer viewer) {
-		super(viewer, ProcessVariableNameTransfer.getInstance());
+		super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable[].class));
 	}
 
 	@Override
 	protected String[] getPVNamesFromTransfer() {
 		if(getCurrentEvent().data == null)
 			return null;
-		IProcessVariable[] pvArray = (IProcessVariable[])getCurrentEvent().data;
+		ProcessVariable[] pvArray = (ProcessVariable[])getCurrentEvent().data;
 		List<String> pvList = new ArrayList<String>();
-		for(IProcessVariable pv : pvArray){
+		for(ProcessVariable pv : pvArray){
 			pvList.add(pv.getName());
 		}
 		return pvList.toArray(new String[pvList.size()]);

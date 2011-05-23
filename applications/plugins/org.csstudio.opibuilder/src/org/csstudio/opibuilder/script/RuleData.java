@@ -10,10 +10,10 @@ package org.csstudio.opibuilder.script;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.java.string.StringUtil;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
