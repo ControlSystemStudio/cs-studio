@@ -143,12 +143,15 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		public void run() {
 			ConnectionState cs = getConnectionState();
 			if (cs == ConnectionState.CONNECTING) {
-				//abortConnection = true;
-				setConnectionState(
-						ConnectionState.CONNECTION_FAILED, 
-						new RemoteException(
-								PropertyProxyImpl.this, 
-								"Timeout '"+Plugs.getInitialConnectionTimeout(plug.getConfiguration())+"ms' while connecting!"));
+				synchronized (abortConnectionTask) {
+					if (connectionStateMachine.isConnecting()) {
+						setConnectionState(
+								ConnectionState.CONNECTION_FAILED, 
+								new RemoteException(
+										PropertyProxyImpl.this, 
+										"Timeout '"+Plugs.getInitialConnectionTimeout(plug.getConfiguration())+"ms' while connecting!"));
+					}
+				}
 			}
 		}
 	}
@@ -924,7 +927,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
 	 */
 	public synchronized void connectionChanged(ConnectionEvent event) {
-		if (abortConnectionTask != null) abortConnectionTask.cancel();
+		if (abortConnectionTask != null) {
+			abortConnectionTask.cancel();
+		}
+		
 		// this prevented the proxy from ever connecting
 //		if (abortConnection) return;
 		
@@ -940,7 +946,13 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
 					setConnectionState(ConnectionState.DESTROYED,null);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
-					setConnectionState(ConnectionState.CONNECTED,null);
+					if (abortConnectionTask!=null) {
+						synchronized (abortConnectionTask) {
+							setConnectionState(ConnectionState.CONNECTED,null);
+						}
+					} else {
+						setConnectionState(ConnectionState.CONNECTED,null);
+					}
 					if (plug.isInitializeCharacteristicsOnConnect()) {
 						synchronized (getCharacteristics()) {
 							if (getCharacteristics().size() == 0) {
@@ -959,8 +971,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		
 		if (getPlug().getMaxThreads() == 0) {
 			execute(connChangedRunnable);
-		}
-		else if (!getExecutor().isShutdown()) {
+		} else if (!getExecutor().isShutdown()) {
 			execute(connChangedRunnable);
 		}
 	}
