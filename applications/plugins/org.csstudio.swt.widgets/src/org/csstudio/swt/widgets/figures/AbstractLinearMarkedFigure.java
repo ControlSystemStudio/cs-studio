@@ -8,9 +8,9 @@
 package org.csstudio.swt.widgets.figures;
 
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Color;
 
 

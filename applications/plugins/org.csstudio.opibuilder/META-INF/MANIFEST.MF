@@ -28,8 +28,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.openfile;bundle-version="3.0.0",
  org.csstudio.java;bundle-version="3.0.0",
- org.csstudio.platform;bundle-version="1.2.0",
- org.csstudio.platform.ui;bundle-version="1.2.0"
+ org.eclipse.ui.ide;bundle-version="3.6.0",
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.platform.libs.jdom;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
@@ -49,8 +50,7 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.util,
  org.csstudio.opibuilder.visualparts,
  org.csstudio.opibuilder.widgetActions
-Bundle-ClassPath: lib/jdom/jdom.jar,
- lib/rhino/js.jar,
+Bundle-ClassPath: lib/rhino/js.jar,
  lib/jython/jython.jar,
  .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

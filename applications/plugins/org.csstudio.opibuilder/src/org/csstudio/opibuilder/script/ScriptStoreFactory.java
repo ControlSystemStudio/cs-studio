@@ -4,7 +4,7 @@ import java.util.Properties;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.mozilla.javascript.Context;
 import org.python.util.PythonInterpreter;

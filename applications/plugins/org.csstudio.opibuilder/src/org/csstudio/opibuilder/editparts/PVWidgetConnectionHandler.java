@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 
 /**

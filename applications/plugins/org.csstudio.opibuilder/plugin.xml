@@ -89,6 +89,16 @@
             id="org.csstudio.opibuilder.actions.fullscreen"
             name="Full Screen">
       </command>
+      <command
+            description="Send PV name to OPI Probe "
+            id="org.csstudio.opibuilder.commands.openopiprobe"
+            name="Open OPI Probe">
+      </command>
+      <command
+            defaultHandler="org.csstudio.opibuilder.actions.OpenOPIProbeHandler"
+            id="org.csstudio.opibuilder.openProbeOPI"
+            name="OPI Probe">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -397,5 +407,29 @@
             name="OPI View"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.opibuilder.openProbeOPI"
+               icon="icons/OPIRunner.png"
+               label="OPI Probe"
+               style="push"
+               tooltip="Send PV name to OPI Probe">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart"
+            class="org.csstudio.opibuilder.editparts.PVWidgetAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
 </plugin>

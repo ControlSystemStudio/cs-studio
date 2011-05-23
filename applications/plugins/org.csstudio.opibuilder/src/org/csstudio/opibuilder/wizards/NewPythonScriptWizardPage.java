@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.opibuilder.script.ScriptService;
-import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
+import org.csstudio.ui.util.wizards.WizardNewFileCreationPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**Wizard page for the creation of new Python script files.
