@@ -29,6 +29,7 @@ public class ExpressionLanguage {
 
     /**
      * Aggregates the sample at the scan rate and takes the average.
+     * 
      * @param doublePv the expression to take the average of; can't be null
      * @return an expression representing the average of the expression
      */
@@ -37,6 +38,11 @@ public class ExpressionLanguage {
         return new WaterfallPlot(queue, "waterfallOf(" + arrayPv.getDefaultName() + ")");
     }
     
+    /**
+     * Creates a group of dynamically managed expressions.
+     * 
+     * @return a new group
+     */
     public static DynamicGroup group() {
         return new DynamicGroup();
     }

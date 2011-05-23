@@ -138,7 +138,7 @@ public abstract class AbstractProxyImpl<P extends AbstractPlug> implements Proxy
 	 *
 	 * @param s new connection state.
 	 */
-	public void setConnectionState(ConnectionState s, Throwable error)
+	public void setConnectionState(final ConnectionState s, final Throwable error)
 	{
 		if (connectionStateMachine.requestNextConnectionState(s)) {
 			if (connectionStateMachine.getConnectionState()==ConnectionState.CONNECTED) {

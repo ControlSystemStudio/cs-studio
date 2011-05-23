@@ -30,22 +30,24 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends Plugin {
+public class TestSuiteActivator extends Plugin {
 
-	// The plug-in ID
+	/**
+	 *  The plug-in ID
+	 */
 	public static final String PLUGIN_ID = "org.csstudio.testsuite";
 
     /**
      *  The shared instance
      */
-    private static Activator INSTANCE;
+    private static TestSuiteActivator INSTANCE;
 
 	private BundleContext _context;
 
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public TestSuiteActivator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
@@ -76,7 +78,7 @@ public class Activator extends Plugin {
 	}
 
 	@Nonnull
-	public static Activator getInstance() {
+	public static TestSuiteActivator getInstance() {
 		return INSTANCE;
 	}
 

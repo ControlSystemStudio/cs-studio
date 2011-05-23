@@ -37,6 +37,7 @@ import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
 import org.csstudio.diag.interconnectionServer.server.IocConnectionManager;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.service.LdapServiceException;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -65,6 +66,8 @@ public class IocControlMessageListener implements MessageListener {
 				LOG.error("Error processing IOC control message: " + m, e);
 			} catch (final NamingException e) {
                 LOG.error("LDAP naming error on processing message " + m, e);
+            } catch (LdapServiceException e) {
+                LOG.error("LDAP service error on processing message " + m, e);
             }
 		} else {
 			LOG.warn("IOC control message is not a MapMessage, ignoring: " + m);
@@ -92,8 +95,9 @@ public class IocControlMessageListener implements MessageListener {
 	 * @param m
 	 *            the command message.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	private void processIcsCommand(final MapMessage m) throws JMSException, NamingException {
+	private void processIcsCommand(final MapMessage m) throws JMSException, NamingException, LdapServiceException {
 		final String command = m.getString("NAME");
 		final String args = m.getString("TEXT");
 		LOG.info("Received IOC control command (command=" + command +
@@ -117,8 +121,9 @@ public class IocControlMessageListener implements MessageListener {
 	 * @param args
 	 *            the name of the IOC.
 	 * @throws NamingException
+	 * @throws LdapServiceException 
 	 */
-	private void refreshLogicalIocName(final String args) throws NamingException {
+	private void refreshLogicalIocName(final String args) throws NamingException, LdapServiceException {
 		IocConnectionManager.INSTANCE.refreshIocNameDefinition(args);
 	}
 
