@@ -36,9 +36,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.csstudio.platform"/>
       <import plugin="org.csstudio.apputil.ui"/>
-      <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.platform.libs.jdbc"/>
    </requires>
 

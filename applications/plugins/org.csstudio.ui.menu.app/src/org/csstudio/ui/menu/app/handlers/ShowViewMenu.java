@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.product;
+package org.csstudio.ui.menu.app.handlers;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.widgets.Menu;
@@ -13,21 +13,21 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ContributionItemFactory;
 
-/** Dynamic menu handler to open perspective views
+/** Dynamic menu handler to show view
  *  @author Kay Kasemir
  */
-public class OpenPerspectiveMenu extends ContributionItem
+public class ShowViewMenu extends ContributionItem
 {
-    @Override
-    public void fill(final Menu menu, final int index)
-    {
-        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        ContributionItemFactory.PERSPECTIVES_SHORTLIST.create(window).fill(menu, index);
-    }
-
     @Override
     public boolean isDynamic()
     {
         return true;
+    }
+
+    @Override
+    public void fill(final Menu menu, final int index)
+    {
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        ContributionItemFactory.VIEWS_SHORTLIST.create(window).fill(menu, index);
     }
 }

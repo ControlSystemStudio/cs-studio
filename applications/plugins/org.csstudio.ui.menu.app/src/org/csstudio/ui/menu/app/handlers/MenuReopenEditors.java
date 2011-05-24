@@ -1,4 +1,4 @@
-package org.csstudio.sns.product;
+package org.csstudio.ui.menu.app.handlers;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IContributionItem;
@@ -14,13 +14,17 @@ import org.eclipse.ui.internal.ReopenEditorMenu;
 @SuppressWarnings("restriction")
 public class MenuReopenEditors extends ContributionItem
 {
+    @Override
+    public boolean isDynamic()
+    {
+        return true;
+    }
+
     @SuppressWarnings("nls")
     @Override
     public void fill(final Menu menu, final int index)
     {
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-
-
         final IContributionItem recent;
 
         // Using public API, a separator is added before the actual menu entries.
@@ -29,11 +33,5 @@ public class MenuReopenEditors extends ContributionItem
         recent = new ReopenEditorMenu(window, "reopenEditors", false);
 
         recent.fill(menu, index);
-    }
-
-    @Override
-    public boolean isDynamic()
-    {
-        return true;
     }
 }

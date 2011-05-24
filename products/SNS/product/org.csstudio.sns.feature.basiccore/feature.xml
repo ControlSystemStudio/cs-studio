@@ -42,6 +42,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.9" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
