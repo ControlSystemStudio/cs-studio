@@ -55,6 +55,9 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,9 +81,9 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 
 	private static final int OFFSET_TO_PARENT = 50;
 	
-	private static final int SHELL_BORDER = 20;
+	private static final int SHELL_BORDER = 40;
 	
-	private static final int SCROLLBAR_MARGIN = 15;
+	private static final int SCROLLBAR_MARGIN = 25;
 
 	private EditPartViewerProxy _editPartViewerProxy;
 
@@ -141,7 +144,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		scrollComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0, 0).create());
 		scrollComposite.setLayout(getFillLayout());
 		scrollComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
-		
+
 		// create a parent composite that fills the whole shell
 		GridLayout parentLayout = new GridLayout(1, false);
 		parentLayout.horizontalSpacing = 0;
@@ -180,7 +183,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 			Point size = navigation.computeSize(width, SWT.DEFAULT);
 			fullHeight = fullHeight + size.y ;
 		}
-		_shell.setSize(fullWidth + SCROLLBAR_MARGIN, fullHeight + SHELL_BORDER + SCROLLBAR_MARGIN); 
+		_shell.setSize(fullWidth + SCROLLBAR_MARGIN, fullHeight + SHELL_BORDER + SCROLLBAR_MARGIN);
 
 		// configure a graphical viewer
 		final GraphicalViewer graphicalViewer = createGraphicalViewer(c);
