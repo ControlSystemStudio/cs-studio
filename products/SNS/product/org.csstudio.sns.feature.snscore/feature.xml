@@ -37,24 +37,25 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.logbook" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
       <import plugin="org.eclipse.ui.cheatsheets"/>
+      <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logging.ui" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace"/>
+      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.menu.web" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.ldapAuthorization" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ui.menu.web" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

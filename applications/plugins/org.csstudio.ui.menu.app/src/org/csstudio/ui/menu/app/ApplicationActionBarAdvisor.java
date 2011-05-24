@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.sns.product;
+package org.csstudio.ui.menu.app;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
@@ -24,7 +24,18 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
-/** Create workbench window actions, menu bar, coolbar.
+/** {@link ActionBarAdvisor} that can be called by CSS
+ *  application startup code to create the menu and tool bar.
+ *
+ *  <p>The menu bar is mostly empty, only providing the "additions"
+ *  section that is used by the contributions in plugin.xml.
+ *
+ *  <p>The toolbar also mostly defines sections used by contributions
+ *  from plugin.xml.
+ *
+ *  <p>Some actions are created for Eclipse command names
+ *  in the help menu that have no default implementation.
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */

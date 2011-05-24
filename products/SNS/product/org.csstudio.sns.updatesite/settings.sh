@@ -2,7 +2,7 @@
 #
 # Kay Kasemir
 
-export VERSION=2.5.2
+export VERSION=3.0.0
 
 # Mac OS X window system
 OSWIN=cocoa

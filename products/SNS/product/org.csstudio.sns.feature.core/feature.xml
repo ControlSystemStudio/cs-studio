@@ -71,6 +71,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
@@ -274,13 +275,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.ui.menu"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.csdata.clipboard"
          download-size="0"
          install-size="0"
@@ -316,13 +310,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.ui.menu.web"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.ui.preferences"
          download-size="0"
          install-size="0"
@@ -331,6 +318,27 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.platform.libs.jdom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.web"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.app"
          download-size="0"
          install-size="0"
          version="0.0.0"
