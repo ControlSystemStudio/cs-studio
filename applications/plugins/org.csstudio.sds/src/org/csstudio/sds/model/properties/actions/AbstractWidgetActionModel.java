@@ -177,7 +177,7 @@ public abstract class AbstractWidgetActionModel implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public final Object getAdapter(final Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
