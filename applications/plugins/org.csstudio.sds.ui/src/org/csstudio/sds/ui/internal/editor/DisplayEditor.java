@@ -123,7 +123,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
@@ -639,10 +638,12 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 			}
 		};
 		getActionRegistry().registerAction(a);
-
+		
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+		
+		System.out.println("DisplayEditor.refreshGridLayer()");
 	}
 
 	/**
@@ -769,6 +770,10 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		getSelectionActions().add(action.getId());
 
 		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.MIDDLE);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeHorizontalAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}

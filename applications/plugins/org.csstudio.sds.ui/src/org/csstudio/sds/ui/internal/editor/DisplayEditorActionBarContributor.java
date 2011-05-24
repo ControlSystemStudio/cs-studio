@@ -90,6 +90,10 @@ public class DisplayEditorActionBarContributor extends ActionBarContributor {
 		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				SdsUiPlugin.PLUGIN_ID, "icons/ruler.png"));
 		addRetargetAction(a);
+		
+		a = new RetargetAction(ArrangeHorizontalAction.ID, "Arrange Horizontal");
+		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/info.png"));
+		addRetargetAction(a);
 	}
 
 	/**
@@ -124,6 +128,9 @@ public class DisplayEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(getAction(GEFActionConstants.ZOOM_OUT));
 		tbm.add(new ZoomComboContributionItem(getPage()));
 		tbm.add(new GridSpacingContributionItem());
+		
+		tbm.add(new Separator());
+		tbm.add(getAction(ArrangeHorizontalAction.ID));
 	}
 
 	/**
