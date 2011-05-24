@@ -55,9 +55,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
@@ -74,7 +71,7 @@ import org.eclipse.ui.PlatformUI;
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
  * displays.
  * 
- * @author Sven Wende
+ * @author Sven Wende, Kai Meyer, Christian Zoller
  * @version $Revision: 1.26 $
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
