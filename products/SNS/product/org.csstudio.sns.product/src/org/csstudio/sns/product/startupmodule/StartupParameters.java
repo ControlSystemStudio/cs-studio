@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.auth.security.SecureStorage;
 import org.csstudio.sns.product.Messages;
 import org.csstudio.sns.startuphelper.PasswordInput;
 import org.csstudio.startup.module.LoginExtPoint;
@@ -18,6 +19,7 @@ import org.csstudio.startup.module.StartupParametersExtPoint;
 import org.csstudio.startup.module.WorkspaceExtPoint;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.swt.widgets.Display;
 
 /** Implementation of {@link StartupParametersExtPoint} which provides the following parameters:
@@ -59,7 +61,8 @@ public class StartupParameters implements StartupParametersExtPoint
     public static final String SHARE_LINK_PARAM = "css.shareLink"; //$NON-NLS-1$
 
 	/** {@inheritDoc} */
-	@Override
+	@SuppressWarnings("nls")
+    @Override
     public Map<String, Object> readStartupParameters(Display display,
 			IApplicationContext context) throws Exception
 	{
@@ -159,9 +162,36 @@ public class StartupParameters implements StartupParametersExtPoint
                     }
                 }
                 if (password == null)
+                    password = PasswordInput.readPassword("Enter password: ");
+            }
+            else if (arg.equalsIgnoreCase("-set_password"))
+            {
+                String preference_name = null;
+                if ((i + 1) < args.length)
                 {
-                    password = PasswordInput.readPassword("Enter password: ");  //$NON-NLS-1$
+                    preference_name = args[i+1];
+                    if (preference_name.startsWith("-"))
+                        preference_name = null;
                 }
+                if (preference_name == null)
+                {
+                    System.out.println("Missing preference name");
+                    System.exit(0);
+                }
+                if (password == null)
+                    password = PasswordInput.readPassword("Enter password: ");
+
+                final String[] path_key = preference_name.split("/");
+                if (path_key.length != 2)
+                {
+                    System.out.println("preference name must be plugin_id/key");
+                    System.exit(0);
+                }
+                System.out.println("Setting plugin " + path_key[0] + " setting " + path_key[1]);
+                final ISecurePreferences secure = SecureStorage.getNode(path_key[0]);
+                secure.put(path_key[1], password, true);
+                secure.flush();
+                System.exit(0);
             }
         }
 
@@ -200,5 +230,7 @@ public class StartupParameters implements StartupParametersExtPoint
                 USER + " username");
         System.out.format("  %-35s : provide the password of default user in login dialog\n",
                 PASSWORD + " username");
+        System.out.format("  %-35s : set a password preferences (need to follow with -p)\n",
+                "-set_password preference_name");
     }
 }
