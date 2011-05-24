@@ -175,6 +175,31 @@
                </dynamic>
             </menu>
             <separator
+                  name="toolbar"
+                  visible="true">
+            </separator>
+            <command
+              commandId="org.eclipse.ui.ToggleCoolbarAction"
+              style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <or>
+                     <with
+                           variable="activeWorkbenchWindow.isCoolbarVisible">
+                        <equals
+                              value="false">
+                        </equals>
+                     </with>
+                     <with
+                           variable="activeWorkbenchWindow.isPerspectiveBarVisible">
+                        <equals
+                              value="false">
+                        </equals>
+                     </with>
+                  </or>
+               </visibleWhen>
+            </command>
+            <separator
                   name="additions"
                   visible="true">
             </separator>
