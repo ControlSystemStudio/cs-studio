@@ -110,7 +110,16 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	}
 }
 	
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("############.##"); //$NON-NLS-1$  
+	private static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0"; //$NON-NLS-1$
+    
+    /** the default label format */
+    private static final String DEFAULT_DECIMAL_FORMAT = "############.####";  //$NON-NLS-1$
+
+	/**
+	 * the digits limit to be displayed in engineering format
+	 */
+	private static final int ENGINEERING_LIMIT = 4;
+	
 	
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GRAY);
@@ -158,13 +167,16 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 			ColorConstants.white,
 			ColorConstants.button);
 	
+	private DecimalFormat decimalFormat;
+	
 	public ScrollbarFigure() {
-		
+		decimalFormat = new DecimalFormat(DEFAULT_DECIMAL_FORMAT);
 		listeners = new ArrayList<IManualValueChangeListener>();
 		
 		
 		initializeListeners();
 		initializeParts();
+		
 		
 	}
 	
@@ -443,9 +455,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if (this.value == value)
 			return;
 		if(showValueTip){
-			valueIncreased = value > this.value;
-				
-			label.setText("" + DECIMAL_FORMAT.format(value));
+			valueIncreased = value > this.value;			
+			label.setText("" + decimalFormat.format(value));
 			label.setVisible(true);
 			initLabelTimer();
 			if(!labelTimer.isDue())
@@ -568,6 +579,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if(this.maximum == maximum)
 			return;
 		this.maximum = maximum;
+		updateFormat();
 		revalidate();
 	}
 
@@ -578,6 +590,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		if(this.minimum == minimum)
 			return;
 		this.minimum = minimum;
+		updateFormat();
 		revalidate();
 
 	}
@@ -740,5 +753,14 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		manualSetValue(getValue() - stepIncrement);
 	}
 	
+	private void updateFormat(){
+		String formatPattern;
+		if((maximum != 0 && Math.abs(Math.log10(Math.abs(maximum))) >= ENGINEERING_LIMIT)
+        		|| (minimum !=0 && Math.abs(Math.log10(Math.abs(minimum))) >= ENGINEERING_LIMIT))
+                formatPattern = DEFAULT_ENGINEERING_FORMAT;
+        	else
+        		formatPattern = DEFAULT_DECIMAL_FORMAT;	
+		decimalFormat = new DecimalFormat(formatPattern);
+	}
 	
 }
