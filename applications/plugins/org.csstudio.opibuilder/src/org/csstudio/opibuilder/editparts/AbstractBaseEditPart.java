@@ -45,10 +45,10 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
+import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
-import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -248,7 +248,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 
 
 	/**
-	 * Hook the default {@link OpenDisplayAction} with mouse click.
+	 * Hook the default {@link AbstractOpenOPIAction} with mouse click.
 	 */
 	protected void hookMouseClickAction() {
 		final AbstractWidgetAction action = getHookedAction();
@@ -260,13 +260,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				public void mousePressed(MouseEvent me) {
 					if(me.button != 1)
 						return;
-					if(action instanceof OpenDisplayAction){
-						((OpenDisplayAction)action).setCtrlPressed(false);
-						((OpenDisplayAction)action).setShiftPressed(false);
+					if(action instanceof AbstractOpenOPIAction){
+						((AbstractOpenOPIAction)action).setCtrlPressed(false);
+						((AbstractOpenOPIAction)action).setShiftPressed(false);
 						if(me.getState() == InputEvent.CONTROL){
-							((OpenDisplayAction)action).setCtrlPressed(true);
+							((AbstractOpenOPIAction)action).setCtrlPressed(true);
 						}else if (me.getState() == InputEvent.SHIFT){
-							((OpenDisplayAction)action).setShiftPressed(true);
+							((AbstractOpenOPIAction)action).setShiftPressed(true);
 						}
 					}
 					action.run();

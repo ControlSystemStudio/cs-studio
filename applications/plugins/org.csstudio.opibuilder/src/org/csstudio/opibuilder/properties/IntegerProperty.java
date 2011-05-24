@@ -127,6 +127,9 @@ public class IntegerProperty extends AbstractWidgetProperty {
 		}
 	}
 
-
+	@Override
+	public boolean configurableByRule() {
+		return true;
+	}
 
 }

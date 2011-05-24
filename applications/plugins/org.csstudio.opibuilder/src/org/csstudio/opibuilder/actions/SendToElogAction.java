@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.actions;
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.logbook.ILogbook;
-import org.csstudio.opibuilder.runmode.OPIRunner;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -20,7 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public class SendToElogAction extends SendToElogActionHelper
 {
-    final private OPIRunner opiRunner;
+    final private IOPIRuntime opiRuntime;
     public static final String ID = "org.csstudio.opibuilder.actions.sendToElog";
 
 
@@ -28,9 +28,9 @@ public class SendToElogAction extends SendToElogActionHelper
      *  @param part Parent shell
      *  @param graph Graph to print
      */
-    public SendToElogAction(final OPIRunner part)
+    public SendToElogAction(final IOPIRuntime part)
     {
-        this.opiRunner = part;
+        this.opiRuntime = part;
         setId(ID);
     }
 
@@ -42,11 +42,11 @@ public class SendToElogAction extends SendToElogActionHelper
         try
         {
             filename = ResourceUtil.getScreenshotFile(
-            		(GraphicalViewer) opiRunner.getAdapter(GraphicalViewer.class));
+            		(GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(opiRunner.getEditorSite().getShell(), "error", ex.getMessage());
+            MessageDialog.openError(opiRuntime.getSite().getShell(), "error", ex.getMessage());
             return;
         }
 
@@ -54,8 +54,8 @@ public class SendToElogAction extends SendToElogActionHelper
         try
         {
             final ElogDialog dialog =
-                new ElogDialog(opiRunner.getEditorSite().getShell(), "Send To Logbook",
-                        opiRunner.getDisplayModel().getName(),
+                new ElogDialog(opiRuntime.getSite().getShell(), "Send To Logbook",
+                        opiRuntime.getDisplayModel().getName(),
                         "See attached opi screenshot",
                         filename)
             {
@@ -82,7 +82,7 @@ public class SendToElogAction extends SendToElogActionHelper
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(opiRunner.getEditorSite().getShell(), "Error", ex.getMessage());
+            MessageDialog.openError(opiRuntime.getSite().getShell(), "Error", ex.getMessage());
         }
     }
 }

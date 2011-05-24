@@ -8,13 +8,11 @@
 package org.csstudio.swt.chart.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.platform.model.CentralItemFactory;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
 import org.csstudio.swt.chart.Chart;
 import org.csstudio.swt.chart.ChartListener;
 import org.csstudio.swt.chart.DefaultColors;
@@ -26,11 +24,13 @@ import org.csstudio.swt.chart.actions.ShowButtonBarAction;
 import org.csstudio.swt.chart.axes.XAxis;
 import org.csstudio.swt.chart.axes.YAxis;
 import org.csstudio.swt.chart.axes.YAxisListener;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -118,7 +118,19 @@ public class ChartDemo
         addDemoTrace("y", chart.getYAxis(0));
 
         // List is a drag source
-        new ProcessVariableDragSource(list_viewer.getList(), list_viewer);
+        new ControlSystemDragSource(list_viewer.getControl())
+        {
+            @Override
+            public Object getSelection()
+            {
+                final IStructuredSelection selection = (IStructuredSelection) list_viewer.getSelection();
+                final Object[] objs = selection.toArray();
+                final ProcessVariable[] pvs =
+                    Arrays.copyOf(objs, objs.length,ProcessVariable[].class);
+                return pvs;
+            }
+        };
+
         // Listener Demo
         chart.addListener(new ChartListener()
         {
@@ -151,24 +163,16 @@ public class ChartDemo
         });
 
         // Allow PV drops into the chart
-        new ProcessVariableDropTarget(chart)
+        new ControlSystemDropTarget(chart, ProcessVariable[].class)
         {
             @Override
-            public void handleDrop(final IProcessVariable name, final DropTargetEvent event)
+            public void handleDrop(final Object item)
             {
-                YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
-                if (yaxis == null) {
-                    yaxis = addDemoTrace(name.getName(), null);
-                } else
-                {
-                    // Does the chart automatically use the trace labels?
-                    String label;
-                    if ((chart_flags & Chart.USE_TRACE_NAMES) == 0)
-                        label = yaxis.getLabel() + ", " + name.getName();
-                    else
-                        label = name.getName();
-                    addDemoTrace(label, yaxis);
-                }
+                if (! (item instanceof ProcessVariable[]))
+                    return;
+                final ProcessVariable[] pvs = (ProcessVariable[]) item;
+                for (ProcessVariable pv : pvs)
+                    addDemoTrace(pv.getName(), null);
             }
         };
 
@@ -246,11 +250,11 @@ public class ChartDemo
         list_viewer = new ListViewer(list);
         list_viewer.setLabelProvider(new LabelProvider());
         list_viewer.setContentProvider(new ArrayContentProvider());
-        final Vector<IProcessVariable> names = new Vector<IProcessVariable>();
-        names.add(CentralItemFactory.createProcessVariable("fred"));
-        names.add(CentralItemFactory.createProcessVariable("freddy"));
-        names.add(CentralItemFactory.createProcessVariable("jane"));
-        names.add(CentralItemFactory.createProcessVariable("janet"));
+        final Vector<ProcessVariable> names = new Vector<ProcessVariable>();
+        names.add(new ProcessVariable("fred"));
+        names.add(new ProcessVariable("freddy"));
+        names.add(new ProcessVariable("jane"));
+        names.add(new ProcessVariable("janet"));
         list_viewer.setInput(names);
         gd = new GridData();
         gd.minimumWidth = 300;

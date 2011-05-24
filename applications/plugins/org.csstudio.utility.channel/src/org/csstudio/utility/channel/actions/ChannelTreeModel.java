@@ -1,16 +1,17 @@
 package org.csstudio.utility.channel.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.csstudio.utility.channel.ICSSChannel;
 
 public class ChannelTreeModel {
 	private ChannelTreeModel parent;
-	private Collection<ICSSChannel> child = new HashSet<ICSSChannel>();
+	private Collection<Channel> child = new HashSet<Channel>();
 	private int counter;
 
-	public ChannelTreeModel(Collection<ICSSChannel> child) {
+	public ChannelTreeModel(Collection<Channel> child) {
 		this.child = child;
 	}
 
@@ -27,11 +28,11 @@ public class ChannelTreeModel {
 		this.parent = parent;
 	}
 
-	public Collection<ICSSChannel> getChild() {
+	public Collection<Channel> getChild() {
 		return child;
 	}
 
-	public void setChild(Collection<ICSSChannel> child) {
+	public void setChild(Collection<Channel> child) {
 		this.child = child;
 	}
 

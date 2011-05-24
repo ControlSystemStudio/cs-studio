@@ -21,13 +21,14 @@
  */
 package org.csstudio.domain.desy;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Collection;
 import java.util.Iterator;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import com.google.common.collect.Iterables;
 
 /**
  * Test for {@link Strings}. 
@@ -38,23 +39,144 @@ import com.google.common.collect.Iterables;
 public class StringsTest {
     
     @Test
-    public final void testCreateListFromString() {
+    public final void testTrim() {
+        Assert.assertEquals("", Strings.trim("", 'f'));
+        Assert.assertEquals("", Strings.trim("x", 'x'));
+        Assert.assertEquals("ha ha", Strings.trim("  ha ha  ", ' '));
+        Assert.assertEquals("h\ta \tha", Strings.trim("\t\th\ta \tha\t", '\t'));
+        Assert.assertEquals(" a\"h\"a ", Strings.trim("\"\" a\"h\"a ", '\"'));
+        Assert.assertEquals("aha ", Strings.trim("aha \"\"", '\"'));
+        Assert.assertEquals("a??=[]()//", Strings.trim("|||a??=[]()//|", '|'));
+    }
+    
+    @Test
+    public final void testSplitIgnoreInQuotesEmptyReturns() {
         
-        Assert.assertNotNull(Strings.createListFrom(null));
-        Assert.assertNotNull(Strings.createListFrom(""));
-        Assert.assertNotNull(Strings.createListFrom("hallo"));
+        Collection<String> split = Strings.splitIgnoreWithinQuotes("", ' ');
+        assertEquals(0, split.size());
+        split = Strings.splitIgnoreWithinQuotes("x", 'x');
+        assertEquals(0, split.size());
+        split = Strings.splitIgnoreWithinQuotes("   ", ' ');
+        assertEquals(0, split.size());
+        
+    }
+    
+    @Test
+    public final void testSplitIgnoreInQuotes() {
+        
+        Collection<String> split = Strings.splitIgnoreWithinQuotes("tritra  tru lala", ' ');
+        assertEquals(3, split.size());
+        Iterator<String> it = split.iterator();
+        assertEquals("tritra", it.next());
+        assertEquals("tru", it.next());
+        assertEquals("lala", it.next());
+        
+        split = Strings.splitIgnoreWithinQuotes("  tri\"tra tru \" lala", ' ');
+        it = split.iterator();
+        assertEquals(2, split.size());
+        assertEquals("tri\"tra tru \"", it.next());
+        assertEquals("lala", it.next());
+        
+        split = Strings.splitIgnoreWithinQuotes("aa,\"bb,bb\",cc\",dd\"ee", ',');
+        it = split.iterator();
+        assertEquals(3, split.size());
+        assertEquals("aa", it.next());
+        assertEquals("\"bb,bb\"", it.next());
+        assertEquals("cc\",dd\"ee", it.next());
 
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom(null)));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom("")));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom("  ")));
-        Assert.assertEquals(0, Iterables.size(Strings.createListFrom(" ,  ")));
-        Assert.assertEquals(1, Iterables.size(Strings.createListFrom("hallo")));
-        Assert.assertEquals(1, Iterables.size(Strings.createListFrom("hallo ,")));
+      
+        split = Strings.splitIgnoreWithinQuotes("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x');
+        it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("\"Hello Dolly\"", it.next());
+        assertEquals("this", it.next());
+        assertEquals("is", it.next());
+        assertEquals("\" a test \"", it.next());
+        
+    }
+    
+    @Test
+    public final void testSplitIgnore() {
+        Collection<String> split = 
+            Strings.splitIgnore("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 
+                                'x', 
+                                'i');
+        Iterator<String> it = split.iterator();
+        assertEquals(4, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("\"Hello Dolly\"", it.next());
+        assertEquals("thisxxxxis", it.next());
+        assertEquals("\" a test \"", it.next());
+        
+        split = Strings.splitIgnore("aa,|bb,bb|,cc|,ddee", ',', '|');
+        it = split.iterator();
+        assertEquals(4, split.size());
+        assertEquals("aa", it.next());
+        assertEquals("|bb,bb|", it.next());
+        assertEquals("cc|", it.next());
+        assertEquals("ddee", it.next());
+    }
 
-        Assert.assertEquals("hallo", Strings.createListFrom("hallo ,").iterator().next());
-        Iterator<String> it = Strings.createListFrom(" , hallo , tut,").iterator();
-        Assert.assertEquals("hallo", it.next());
-        Assert.assertEquals("tut", it.next());
+    @Test
+    public final void testSplitIgnoreInQuotesTrimmed() {
+        Collection<String> split = 
+            Strings.splitIgnoreWithinQuotesTrimmed("xxx  /tmp/demox\"Hello Dolly\"xthisxxxxisxxxx\" a test \"xxx", 'x', '\"');
+        Iterator<String> it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("  /tmp/demo", it.next());
+        assertEquals("Hello Dolly", it.next());
+        assertEquals("this", it.next());
+        assertEquals("is", it.next());
+        assertEquals(" a test ", it.next());
+    }
+
+    @Test
+    public final void testSplitIgnoreInQuotesTrimmedRegexLiteral() {
+        Collection<String> split = 
+            Strings.splitIgnoreWithinQuotes("|||This is a|| || |\"complicated||test.\"|||Hello, \"fox|and\"dog", '|');
+        Iterator<String> it = split.iterator();
+        assertEquals(5, split.size());
+        assertEquals("This is a", it.next());
+        assertEquals(" ", it.next());
+        assertEquals(" ", it.next());
+        assertEquals("\"complicated||test.\"", it.next());
+        assertEquals("Hello, \"fox|and\"dog", it.next());
+    }
+    
+    @Test
+    public final void testSplitOnCommasIgnoreInQuotes() {
+        
+        String[] empty = Strings.splitOnCommaIgnoreInQuotes("");
+        Assert.assertNotNull(empty);
+        Assert.assertEquals(1, empty.length);
+        Assert.assertEquals("", empty[0]);
+
+        String[] notEmpty = Strings.splitOnCommaIgnoreInQuotes("hallo");
+        Assert.assertNotNull(notEmpty);
+        Assert.assertEquals(1, notEmpty.length);
+        Assert.assertEquals("hallo", notEmpty[0]);
+
+        Assert.assertEquals(1, Strings.splitOnCommaIgnoreInQuotes("  ").length);
+        Assert.assertEquals(2, Strings.splitOnCommaIgnoreInQuotes(" ,  ").length);
+        
+        String[] source = Strings.splitOnCommaIgnoreInQuotes("a,b,\"c,d\",e");
+        Assert.assertEquals(4, source.length);
+        Assert.assertEquals("a", source[0]);
+        Assert.assertEquals("b", source[1]);
+        Assert.assertEquals("\"c,d\"", source[2]);
+        Assert.assertEquals("e", source[3]);
+        
+        source = Strings.splitOnCommaIgnoreInQuotes("conf,\"use");
+        Assert.assertEquals(1, source.length);
+        Assert.assertEquals("conf,\"use", source[0]);
+
+        source = Strings.splitOnCommaIgnoreInQuotes("co,\"nf,\"us,\"e");
+        Assert.assertEquals(2, source.length);
+        Assert.assertEquals("co,\"nf", source[0]);
+        Assert.assertEquals("\"us,\"e", source[1]);
+ 
+
     }
     
     @Test

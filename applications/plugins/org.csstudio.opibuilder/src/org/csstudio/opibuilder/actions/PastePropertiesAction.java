@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.datadefinition.PropertiesCopyData;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;

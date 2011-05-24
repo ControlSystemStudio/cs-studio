@@ -3,42 +3,78 @@
     <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
     <link rel="stylesheet" href="default.css" type="text/css" />
     <title>
-      Actions
+      Action
     </title>
   </head>
   <body>
 
     <h2>
-      Actions
+      Action
     </h2>
     <p>
-	 Action is the interactive interface to make operations from widget. It can be configured from the "Actions" Property.
-      There are five types of actions that can be associated with any type of widget:
+	 Actions can be attached to any widget so that actions can be executed from that widget. 
+	 They are configured from the <code>Actions</code> Property. 
+	 There are several types of actions that can be associated with any type of widget. You may also add
+      customzied action through Eclipse plugin mechanism.
       </p>
-      <ol>
-      <li><b>Open another OPI</b>
+      <ul>
+      <li><b>Open OPI</b> <dl><dd>Open a related OPI. If <code>Repalce</code> is selected, it will replace
+      the current OPI. You can send macros to the OPI to be opened by setting the <code>Macros</code>
+      property.   If a widget has this action hooked to its mouse
+      click event, user will also be able to open the related OPI from its context menu: 
+      <code>Open</code>, <code>Open in New Tab</code> or <code>Open in New Window</code>. Or user can 
+      hold the <code>Ctrl</code>/<code>Shift</code> key while clicking on the widget 
+      to open the related OPI in new Tab/Window.</dd></dl>
       </li>
-      <li><b>Write PV</b>
+      <li><b>Open OPI in View</b><dl><dd>Open an OPI in view. The view will surround the center OPI Runtime
+      in one of four positions: Left, Right, Top or Bottom.
+      A View can be detached as standalone window floating on top by right clicking
+      the view tab and click <code>Detached</code>. By clicking <code>Detached</code> again, you can
+      put it back to the workbench window.</dd></dl></li>
+      <li><b>Write PV</b> <dl><dd>Write a PV.</dd></dl>
       </li>
-      <li> <b>Execute Command</b>: execute command just as execute command in a shell. The output will be displayed in the console.
+      <li> <b>Execute Command</b> <dl><dd>
+      Execute system command just as executing command from shell or command line on Windows.
+      The command should be searchable from system PATH, otherwise, it should be a full path to the command.
+      The output will be displayed in the console if there is.</dd></dl>
       </li>
-      <li> <b>Execute JavaScript</b>
+      <li> <b>Execute JavaScript</b><dl><dd>Execute a Javascript file, in which there are two
+      accessible objects: <code>widget</code> and <code>display</code> so that you can 
+      access the widget or the display. See <a href="script/AccessWidget.html">Access Widget</a></dd></dl>
       </li>
-      <li><b>Open File</b> open a file with the default editor. For example, you can open a databrowser
-      file in databrowser. 
-      </li>      
-      <li><b>Play WAV file</b> 
+      <li> <b>Execute Python Script</b><dl><dd>Execute a Python script file, in which there are two
+      accessible objects: <code>widget</code> and <code>display</code> so that you can 
+      access the widget or the display. See <a href="script/AccessWidget.html">Access Widget</a></dd></dl>
       </li>
-      <li><b>Open Webpage</b> 
+      <li><b>Play WAV file</b> <dl><dd>Play a sound file in WAV format.</dd></dl></li>
+      <li><b>Open File</b> <dl><dd>Open a file with the default editor. 
+      For example, you can open a databrowser file in databrowser. </dd></dl> </li>     
+     
+      <li><b>Open Webpage</b> <dl><dd>Open a webpage in system default web browser.</dd></dl>
       </li>
-      </ol> 
-      <h3>Invoke Action</h3>
-     <p><img src="img/Actions.png" align="right"> In run mode, you can invoke the actions by right clicking a widget and select from
-      the "Actions" submenu. If you selected the option "Hook the first action to the mouse click event on widget" in
-      the actions config dialog, you can simply invoke the first configured action by clicking the widget.
-     </p>
-    
+      </ul> 
+      
+      <h3>Configure Actions</h3>
+      <p>Actions are configured from the <code>Actions</code> property of widget. The first 
+      action can be hooked with the mouse click event, which means clicking on the widget at Runtime
+      will execute the first action.
+      </p>
+      <p><img src="img/ActionsDialog.gif"></p>
+      
+      <h3>Invoke Action at Runtime</h3>
+     <p>At Runtime, you can execute an action by right clicking on the widget and selecting the action from
+      <code>Actions</code> submenu. If you selected the option <code>
+      Hook the first action to the mouse click event on widget</code> in
+      the actions config dialog, you can simply execute the first action by clicking on the widget.
+    </p>
+    <p><img src="img/Actions.png">  </p>
 
+	<p>Actions may also be invoked from script by calling the method
+	 <a href="script/AccessWidget.html#executeAction(int)">executeAction</a>.
+	For example:
+	<pre class="example_code">widget.executeAction(0); //execute the first attached action</pre>	
+	</p>
+	
 
   </body>
 </html>

@@ -121,6 +121,19 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 				lineColorHandler);
 		
 	}
+	
+	@Override
+	public void setValue(Object value) {
+		if(value instanceof Number){
+			((OPIRectangleFigure)getFigure()).setFill(((Number)value).doubleValue());
+		}else
+			super.setValue(value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return ((OPIRectangleFigure)getFigure()).getFill();
+	}
 
 
 

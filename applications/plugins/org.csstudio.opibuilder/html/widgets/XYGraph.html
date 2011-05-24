@@ -1,0 +1,214 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+      XY Graph
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      XY Graph
+    </h2>
+
+    <p>
+      A widget that is able to plot 1D or 2D data in an XY Graph.
+      It has comprehensive drawing and operating functionalities:      
+    </p>
+
+    <ul>
+    <li>Supports scalar PV, array or waveform PV.</li>
+      <li>
+      Line chart, scatter chart, bar chart, step chart, area chart...
+    </li>
+    <li>
+    Abundant interactive operating capabilities: Five Zoom Types, Panning, Auto Scale, Add/Remove Annotations, Undo/Redo, Take
+    snapshot.
+  </li>
+  <li>
+  Configure properties at Runtime, such as chaning trace color, line width and axis color etc,.
+</li>
+<li>
+Multiple axes support
+</li>
+<li>
+Log scale, date time format axis support
+</li>
+<li>
+Group legends by axes
+</li>
+<li>
+Annotations could be free or snapped to a trace
+</li>
+
+<li>
+...
+</li>
+</ul>
+
+<img src="img/XYGraph.gif" alt="">
+<h3>
+  Operations
+</h3>
+<p>The widget is equipped with a toolbar which allows you to: </p>
+<ul>
+	<li>Configure the properties of graph, axes or traces.</li>
+	<li>Add/Remove Annotations. Annotations are moveable by dragging and dropping.</li>
+	<li>Perform auto scaling.</li>
+	<li>Zoom In/Out on plotting area or axes in different ways.</li>
+	<li>Pan on plotting area or axes.</li>
+	<li>Undo/Redo operations up to 30 steps.</li>
+	<li>Save snapshot to image file.</li>
+</ul>
+
+<h3>
+  Special Properties
+</h3>
+<h4>Graph properties</h4>
+<ul> <li>Title (title)<dl> <dd>Title of the graph. </dd></dl></li>
+	<li>Title Font (title_font)  <dl> <dd>Font of the title.</dd></dl></li>
+	<li>Show Legend (show_legend) <dl> <dd> Show traces legend on graph. </dd></dl></li>
+	<li>Show Plot Area Border (show_plot_area_border) <dl> <dd>Show border around the plot area.</dd></dl></li>
+	<li>Plot Area Background Color (plot_area_background_color) <dl> <dd>
+	Color the plot area backgournd.</dd></dl></li>
+	<li>Transparent (transparent) <dl> <dd>If the background is transparent.</dd></dl></li>
+	<li>Axis Count (axis_count) <dl> <dd>Total number of axes. At least two and up to four axes 
+	can be added to the graph.	Properties sheet will be updated whenever you make change to this property,
+	so that you can set the properties for each axis. </dd></dl></li>
+	<li>Trace Count (trace_count) <dl> <dd>Total number of traces. Up to 20 traces 
+	can be added to the graph.	Properties sheet will be updated whenever you make change to this property,
+	so that you can set the properties for each trace. </dd></dl></li>
+	<li>Show Toolbar (show_toolbar) <dl> <dd>If toolbar is visible.</dd></dl></li>
+	<li>Trigger PV (trigger_pv)<dl> <dd>The PV whose value change event will trigger trace update if
+	the <code>Update Mode</code> property of the trace is set to<code>Trigger</code>.</dd></dl></li>
+
+</ul>
+
+<h4>Axis Properties</h4>
+<p>The property id for axis has a prefix of <code>axis_{index}_</code>. In which, <code>{index}</code> should 
+be replaced with the index of the axis, which starts from 0. For example, the property id
+of <code>Axis Color</code> property for primary X Axis (0) is <code>axis_0_axis_color</code>. </p>
+<ul>
+	<li>Auto Scale (auto_scale) <dl> <dd>If the axis will automatically adjust its scale according to the 
+	data range.</dd></dl></li>
+	<li>Auto Scale Threshold (auto_scale_threshold) <dl> <dd>The threshold must be 
+	a value in range [0,1], which represents the percentage of the plot area.
+	The autoScale will performed only if the spare space exceeds this threshold. 
+	So it may reduce the CPU usage by increasing the threshold.</dd></dl></li>	
+	<li>Axis Color (axis_color) <dl> <dd>Color of the axis.</dd></dl></li>
+	<li>Axis Title (axis_title) <dl> <dd>Title of the axis.</dd></dl></li>
+	<li>Dash Grid Line (dash_grid_line) <dl> <dd>If the grid line is dash.</dd></dl></li>
+	<li>Grid Color (grid_color) <dl> <dd>Color of the grid.</dd></dl></li>
+	<li>Left/Bottom Side (left_bottom_side) <dl> <dd>Yes if the axis is on left/bottom side.
+	No if the axis is on right/up side.</dd></dl></li>
+	<li>Log Scale (log_scale) <dl> <dd>If the axis scale is in log10.</dd></dl></li>
+	<li>Maximum (maximum) <dl> <dd>Upper range of the axis.</dd></dl></li>
+	<li>Minimum (minimum) <dl> <dd>Lower range of the axis.</dd></dl></li>
+	<li>Scale Font (scale_font) <dl> <dd>Font of the scale.</dd></dl></li>
+	<li>Scale Format (scale_format) <dl><dd>The format pattern used to format the numeric value
+    on axis. For example, <code>#.00</code> formats the number 1234 as <code>1234.00</code>, <code>#.##</code>
+    formats the number 12.3456 as <code>12.35</code>, <code>0.###E0</code> formats the number 1234 as <code>1.234E3</code>. 
+    If it is an empty string, the axis will be automatically formatted. 
+    Refer to <a href="http://download.oracle.com/javase/1.5.0/docs/api/java/text/DecimalFormat.html">http://download.oracle.com/javase/1.5.0/docs/api/java/text/DecimalFormat.html</a> 
+    for more details.  </dd></dl></li>
+    <li>Show Grid (show_grid) <dl> <dd>Show grid in plot area for this axis.</dd></dl></li>
+	<li>Time Format (time_format) <dl> <dd>The format of date and time.</dd></dl></li>
+	<li>Title Font (title_font) <dl> <dd>Font of the axis title.</dd></dl></li>	
+    <li>Visible (visible) <dl> <dd>If the axis is visible.</dd></dl></li>
+    <li>Y Axis (y_axis) <dl> <dd>If the axis is a Y axis. This property is
+	invisible to Primary X Axis and Primary Y Axis.</dd></dl></li>	
+</ul>
+
+<h4>Trace Properties</h4>
+<p>The property id for traces has a prefix of <code>trace_{index}_</code>. 
+In which, <code>{index}</code> should 
+be replaced with the index of the trace, which starts from 0. For example, the property id
+of <code>Trace Color</code> property for Trace 0 is <code>trace_0_trace_color</code>. </p>
+<ul>
+	<li>Anti Alias (anti_alias) <dl> <dd>Enable this will make the trace looks more smooth.</dd></dl></li>
+	<li>Buffer Size (buffer_size) <dl> <dd>Size of the buffer which stores data of the trace. It is 
+	a FIFO buffer, so if the buffer is full, the oldest data will be deleted when new data arrives.</dd></dl></li>
+	<li>Concatenate (concatenate)<dl> <dd>If yes, it will concatenate newly arrived data with old data.
+	Otherwise, it only plots newly arrived data.</dd></dl></li>
+	<li>Line Width (line_width) <dl> <dd>Line thickness of the trace. 
+	For trace type of Bar, this is the bar width.</dd></dl></li>
+	<li>Name (name) <dl> <dd>Name of the trace.</dd></dl></li>
+	<li>Plot Mode (plot_mode) <dl> <dd>The mode of plotting. <code>Plot last n pts</code> will
+	always plot the last buffer size of points of the input data or concatenated data. 
+	<code>Plot n pts &amp; stop</code> will stop plotting after buffer size is full.</dd></dl></li>
+	<li>Point Size (point_size)<dl> <dd>Size of the point in pixels if point systle is not 
+	<code>None</code>.</dd></dl></li>
+	<li>Point Style (point_style) <dl> <dd>Style of the point.</dd></dl></li>
+	<li>Trace Color (trace_color) <dl> <dd>Color of the trace.</dd></dl></li>
+	<li>Trace Type (trace_type) <dl> <dd>Type of the trace.</dd></dl></li>
+	<li>Update Delay (update_delay) <dl> <dd> If this is not zero, the graph will not update everytime
+	when new data arrived. Instead, it will delay for specified milliseconds before redrawing the graph.
+	This can help to reduce the CPU usage especially when the PV updates very fast. 
+	For multiple traces, the shortest delay will be used.</dd></dl></li>
+	<li>Update Mode (update_mode)<dl> <dd>The mode that when should new data be added to the trace buffer
+	and get	plotted.
+		<ul>
+			<li>X or Y: Update the trace whenever X PV or Y PV data changed.
+			Data will not be missed in this mode.</li>
+			<li>X AND Y: Update the trace only if both X PV and Y PV data changed. 
+			Data may subject to missing in this mode. For example, if Y PV updated faster than
+			X PV.</li>
+			<li>X: Update the trace only if X PV data changed. 
+			Data may subject to missing in this mode. For example, if Y PV updated faster than
+			X PV.</li>
+			<li>Y: Update the trace only if Y PV data changed. 
+			Data may subject to missing in this mode. For example, if X PV updated faster than
+			Y PV.</li>
+			<li>Trigger: Update the trace only if trigger PV data changed. Trigger PV is specified
+			in <code>Trigger PV</code> property of the graph. One graph can only have one trigger PV.
+			Data may subject to missing in this mode. For example, if Y PV updated faster than
+			Trigger PV.</li>			
+		</ul>	</dd></dl></li>
+	<li>X Axis Index (x_axis_index) <dl> <dd>Index of the axis that is X Axis of this trace.</dd></dl></li>
+	<li>X PV (x_pv) <dl> <dd>PV for x value, leave blank for a chronological plot, which means only Y data will be 
+	plotted. The PV can be either a PV with scalar data or a PV with numeric array data.</dd></dl></li>
+	<li>Y Axis Index (y_axis_index) <dl> <dd>Index of the axis that is Y Axis of this trace.</dd></dl></li>
+	<li>Y PV (y_pv)<dl> <dd>PV for y value. The PV can be either a PV with scalar data or a PV with numeric array data.</dd></dl></li>
+		
+</ul>
+
+
+<h3>
+  Special Methods
+</h3>
+
+<h3>
+  See Also
+</h3>
+<ul>  
+<li>
+<a href="PVWidgets.html">
+  Properties Common to PV Widgets
+</a>
+</li>
+<li>
+<a href="../Widget Properties.html">
+  Properties Common to All Widgets
+</a>
+</li>
+</ul>
+<h3>
+  Special Methods
+</h3>
+<HR>
+
+<A NAME="clearGraph()"><!-- --></A><H3>
+clearGraph</H3>
+<PRE>
+public void <B>clearGraph</B>()</PRE>
+<DL>
+<DD>Clear the graph by deleting data in buffer.
+<P>
+
+</DL>
+<HR>
+
+
+</body>
+</html>

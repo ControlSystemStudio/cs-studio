@@ -32,56 +32,11 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="org.csstudio"
-            name="CSS"/>
-      <wizard
-            category="org.csstudio"
-            id="org.csstudio.display.pvtable.NewPVTableWizard"
-            class="org.csstudio.display.pvtable.NewPVTableWizard"
-            icon="icons/table.gif"
-            name="%PVTable"/>
-   </extension>
-   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true">
       </toc>
-   </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.display.pvtable.popupMenu"
-            objectClass="org.csstudio.platform.model.IProcessVariable">
-         <menu
-               id="org.csstudio.popmenu"
-               label="CSS"
-               path="additions">
-            <groupMarker name="content"/>
-            <separator name="additions"/>
-         </menu>
-         <action
-               id="org.csstudio.display.pvtable.PVpopupAction"
-               class="org.csstudio.display.pvtable.PVpopupAction"
-               icon="icons/table.gif"
-               label="%PVTable"
-               menubarPath="org.csstudio.popmenu/content"
-               tooltip="%PVTableObject_TT"/>
-      </objectContribution>
-      <objectContribution
-           adaptable="false"
-           id="org.csstudio.display.pvtable.createnewablepopup"
-           objectClass="org.eclipse.core.resources.IContainer">
-        <action
-              class="org.csstudio.display.pvtable.CreateNewPVTableConfig"
-              icon="icons/table.gif"
-              id="org.csstudio.display.pvtable.CreateNewPVTableConfig"
-              label="%NewPVTableConfig"
-              menubarPath="new.ext"/>
-      </objectContribution>
    </extension>
    <!-- extension
          point="org.eclipse.ui.actionSets">
@@ -115,28 +70,52 @@
       </actionSet>
    </extension -->
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.display.pvtable"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.display.pvtable.NewPVTableAction"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.display.pvtable.PVpopup"
                icon="icons/table.gif"
-               id="org.csstudio.display.pvtable.NewPVTableAction"
                label="%PVTable"
-               menubarPath="css/display/"
                style="push"
-               tooltip="%PVTableMenu_TT"/>
-         <action
-               class="org.csstudio.display.pvtable.CreateNewPVTableConfig"
+               tooltip="%PVTableObject_TT">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.csstudio.display.pvtable.new_pv_table"
                icon="icons/table.gif"
-               id="org.csstudio.display.pvtable.createnewablemenu"
-               label="%NewPVTableConfig"
-               menubarPath="file/new/additions"
-               style="push"/>
-      </actionSet>
+               label="%PVTable"
+               style="push"
+               tooltip="%PVTableMenu_TT">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.display.pvtable.PVpopupAction"
+            id="org.csstudio.display.pvtable.PVpopup"
+            name="%PVTable">
+      </command>
+      <command
+            defaultHandler="org.csstudio.display.pvtable.NewPVTableAction"
+            id="org.csstudio.display.pvtable.new_pv_table"
+            name="New PV Table">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.display.pvtable.model.PVListEntry"
+            class="org.csstudio.display.pvtable.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
    
 </plugin>

@@ -10,10 +10,9 @@ package org.csstudio.opibuilder.visualparts;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,7 +43,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Xihui Chen
  *
  */
-public class OPIColorDialog extends Dialog {
+public class OPIColorDialog extends HelpTrayDialog {
 	
 	private OPIColor opiColor;
 	private TableViewer preDefinedColorsViewer;
@@ -85,6 +84,12 @@ public class OPIColorDialog extends Dialog {
 			shell.setText(title);
 		}
 	}
+	
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/ColorFont.html"; //$NON-NLS-1$; //$NON-NLS-2$
+	}
+	
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		final Composite parent_Composite = (Composite) super.createDialogArea(parent);
@@ -358,7 +363,7 @@ public class OPIColorDialog extends Dialog {
 		
 		@Override
 		public void run() {
-			MediaService.getInstance().reload();
+			MediaService.getInstance().reloadColorFile();
 			preDefinedColorsViewer.setInput(
 					MediaService.getInstance().getAllPredefinedColors());
 		}

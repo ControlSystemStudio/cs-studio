@@ -20,6 +20,8 @@ import org.csstudio.data.values.Messages;
  */
 public class StringValue extends Value implements IStringValue
 {
+    private static final long serialVersionUID = 1L;
+
     // Slight inconsistency, because that's the way EPICS works right now:
     // There is no array of Strings as there would be arrays of
     // the other types, so we only handle a scalar string as well....

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 

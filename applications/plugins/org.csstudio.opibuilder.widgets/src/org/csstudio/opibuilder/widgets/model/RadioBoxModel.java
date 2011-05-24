@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 
 
 /**Model of Radio Box.

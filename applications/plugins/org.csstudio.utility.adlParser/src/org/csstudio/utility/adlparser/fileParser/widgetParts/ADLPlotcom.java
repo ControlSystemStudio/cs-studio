@@ -1,6 +1,5 @@
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
@@ -21,10 +20,10 @@ public class ADLPlotcom extends WidgetPart {
     private String yLabel;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
-   
-    
-    /** 
-     * 
+
+
+    /**
+     *
      * @param widgetPart
      * @throws WrongADLFormatException
      */
@@ -38,7 +37,7 @@ public class ADLPlotcom extends WidgetPart {
 	public ADLPlotcom(){
 		super();
 	}
-	
+
 	@Override
 	public Object[] getChildren() {
     	Object[] ret = new Object[5];
@@ -47,7 +46,7 @@ public class ADLPlotcom extends WidgetPart {
 		ret[2] = new ADLResource(ADLResource.CHANNEL, title);
 		ret[3] = new ADLResource(ADLResource.PLOT_XLABEL, xLabel);
 		ret[4] = new ADLResource(ADLResource.PLOT_YLABEL, yLabel);
-		
+
 		return ret;
 	}
 
@@ -71,7 +70,7 @@ public class ADLPlotcom extends WidgetPart {
 	             if(row.length!=2){
 	                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
 	             }
-	             row[1] = row[1].replaceAll("\"", "").trim(); 
+	             row[1] = row[1].replaceAll("\"", "").trim();
 				if (FileLine.argEquals(row[0], "title")){
 					setTitle(FileLine.getTrimmedValue(row[1]));
 				}

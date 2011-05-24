@@ -28,11 +28,11 @@ public class GroupingContainerFigure extends Figure implements Introspectable{
 	
 	private IFigure pane;
 	
-	private boolean transparent;
+	private boolean transparent = false;
 
 	private ScrollPane scrollPane;
 
-	private boolean showScrollbar;
+	private boolean showScrollbar = false;
 	
 	public GroupingContainerFigure() {
 		scrollPane = new ScrollPane(){

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 
 /** Filter to suppress for example messages of type ALARM with TEXT=IDLE.
  *  @author Kay Kasemir

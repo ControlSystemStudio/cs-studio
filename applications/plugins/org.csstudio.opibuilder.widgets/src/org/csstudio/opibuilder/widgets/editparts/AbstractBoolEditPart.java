@@ -18,8 +18,8 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -202,10 +202,12 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
-			((AbstractBoolFigure)getFigure()).setValue((Double)value);
+		if(value instanceof Number)
+			((AbstractBoolFigure)getFigure()).setValue(((Number)value).doubleValue());
 		else if (value instanceof Boolean)
 			((AbstractBoolFigure)getFigure()).setBooleanValue((Boolean)value);
+		else 
+			super.setValue(value);
 	}
 
 	@Override

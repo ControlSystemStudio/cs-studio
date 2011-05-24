@@ -13,9 +13,9 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
-import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.actions.AddComponentAction;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
@@ -25,6 +25,7 @@ import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
 import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -94,8 +95,16 @@ public class GUI implements AlarmClientModelListener
         });
 
         connectContextMenu(site);
+
         // Allow 'drag' of alarm info as text
-        new AlarmPVDragSource(tree_viewer.getTree(), tree_viewer);
+        new ControlSystemDragSource(tree_viewer.getTree())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)tree_viewer.getSelection());
+            }
+        };
     }
 
     /** Create the GUI elements */

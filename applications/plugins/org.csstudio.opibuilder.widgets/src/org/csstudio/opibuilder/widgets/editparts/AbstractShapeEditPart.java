@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel.LineStyle;
@@ -80,13 +79,5 @@ public abstract class AbstractShapeEditPart extends AbstractPVWidgetEditPart {
 		
 	}
 	
-	@Override
-	public void setValue(Object value) {		
-	}
-	
-	@Override
-	public Object getValue() {
-		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
-	}	
 	
 }

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.actions;
 
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 
 /** Helper for parsing a display reference
  *  <p>
@@ -37,7 +37,7 @@ public class DisplayReference
     public DisplayReference(final String display_reference) throws Exception
     {
         // Expect <filename> <space> <data>
-        final String sections[] = StringUtil.splitIgnoreInQuotes(display_reference, ' ',  true);
+        final String sections[] = StringSplitter.splitIgnoreInQuotes(display_reference, ' ',  true);
         if (sections.length <= 0)
         {
             is_valid = false;

@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.email.ui.AbstractSendEMailAction;
-import org.csstudio.opibuilder.runmode.OPIRunner;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -18,18 +18,18 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public class SendEMailAction extends AbstractSendEMailAction
 {
-    final private OPIRunner opiRunner;
+    final private IOPIRuntime opiRuntime;
     public static final String ID = "org.csstudio.opibuilder.actions.sendEmail";
     /** Initialize
      *  @param shell
      *  @param graph
      */
-    public SendEMailAction(final OPIRunner part)
+    public SendEMailAction(final IOPIRuntime part)
     {
         super(part.getSite().getShell(), "opi@css",
               part.getDisplayModel().getName(),
               "See attached OPI screenshot");
-        opiRunner = part;
+        opiRuntime = part;
         setId(ID);
     }
     
@@ -40,7 +40,7 @@ public class SendEMailAction extends AbstractSendEMailAction
         try
         {
             return ResourceUtil.getScreenshotFile(
-            		(GraphicalViewer) opiRunner.getAdapter(GraphicalViewer.class));
+            		(GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)
         {

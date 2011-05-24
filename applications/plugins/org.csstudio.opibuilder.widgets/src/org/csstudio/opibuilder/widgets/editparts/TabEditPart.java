@@ -25,10 +25,11 @@ import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.TabModel;
 import org.csstudio.opibuilder.widgets.model.TabModel.ITabItemHandler;
 import org.csstudio.opibuilder.widgets.model.TabModel.TabProperty;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.swt.widgets.figures.TabFigure;
 import org.csstudio.swt.widgets.figures.TabFigure.ITabListener;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -208,6 +209,9 @@ public class TabEditPart extends AbstractContainerEditpart {
 		return tabFigure;
 	}
 
+	/**Get the index of the active tab.
+	 * @return the index of the active tab. Index starts from 0.
+	 */
 	public int getActiveTabIndex(){
 		return getTabFigure().getActiveTabIndex();
 	}
@@ -420,11 +424,14 @@ public class TabEditPart extends AbstractContainerEditpart {
 	}
 
 
+	/**Show tab in this index.
+	 * @param index the index of the tab to be shown. Index starts from 0.
+	 */
 	public void setActiveTabIndex(int index){
 		getTabFigure().setActiveTabIndex(index);
 	}
 
-	private void setTabFigureProperty(int index, TabProperty tabProperty, Object newValue){
+	private void setTabFigureProperty(int index, TabProperty tabProperty, final Object newValue){
 			Label label = getTabFigure().getTabLabel(index);
 			switch (tabProperty) {
 			case TITLE:
@@ -442,16 +449,20 @@ public class TabEditPart extends AbstractContainerEditpart {
 				label.setForegroundColor(CustomMediaFactory.getInstance().getColor(
 							((OPIColor)newValue).getRGBValue()));
 					break;
-			case ICON_PATH:
-				try {
-					getTabFigure().setIconPath(
-							index, getWidgetModel().toAbsolutePath((IPath)newValue));
-				} catch (Exception e) {
-					String message = "Failed to load image from path" + newValue + "\n" + e;
-		            Activator.getLogger().log(Level.WARNING, message , e);
-					ConsoleService.getInstance().writeError(message);
-				}
-				break;
+		case ICON_PATH:
+			getTabFigure().setIconPath(index,
+					getWidgetModel().toAbsolutePath((IPath) newValue),
+					new IJobErrorHandler() {
+						public void handleError(Exception e) {
+							String message = "Failed to load image from "
+									+ newValue + "\n" + e;
+							Activator.getLogger()
+									.log(Level.WARNING, message, e);
+							ConsoleService.getInstance().writeError(message);
+						}
+					});
+
+			break;
 			default:
 				break;
 			}

@@ -62,6 +62,7 @@ public class MySqlServiceImplActivator implements BundleActivator {
             throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
+        LOG.info("WHAT THE FUCK");
     }
 
     /**

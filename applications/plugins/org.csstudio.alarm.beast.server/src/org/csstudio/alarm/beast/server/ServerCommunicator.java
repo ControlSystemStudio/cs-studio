@@ -24,7 +24,7 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.data.values.ITimestamp;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
@@ -265,7 +265,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
                     server_producer.send(map);
@@ -304,7 +304,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
                     global_producer.send(map);
                 }
                 catch (Exception ex)

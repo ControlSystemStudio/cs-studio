@@ -56,6 +56,21 @@ public interface AbstractApplicationContext extends LifecycleReporter,
 	 * lifecycle event.
 	 */
 	public void destroy();
+	
+	/**
+	 * Returns value from arbitrary key/value storage for this application context. 
+	 * @param keyName name of property
+	 * @return prioperty value if exists, otherwise <code>null</code>
+	 */
+	public Object getApplicationProperty(String keyName);
+	
+	/**
+	 * Stores named value to arbitrary key/value storage for this application context. 
+	 * This may be used for application to store additional configuration parameters. 
+	 * @param keyName the name of stored property
+	 * @param value the value of the property
+	 */
+	public void putApplicationProperty(String keyName, Object value);
 }
 
 /* __oOo__ */

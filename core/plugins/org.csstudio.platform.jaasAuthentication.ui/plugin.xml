@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.csstudio.platform.ui.internal.security.AuthenticationPreferencePage"
+            category="org.csstudio.platform.ui.css.platform"
             class="org.csstudio.jaasauthentication.ui.JAASPreferencePage"
             id="org.csstudio.platform.jaasauthentication.ui.page"
             name="%JaasAuthenticationPage"/>

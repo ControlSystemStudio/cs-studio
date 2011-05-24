@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.preferences.MacroEditDialog;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

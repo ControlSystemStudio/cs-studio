@@ -21,6 +21,8 @@ public class SeverityInstances
     /** Implementation of an 'OK' ISeverity. */
     public static final ISeverity ok = new ISeverity()
     {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public boolean hasValue()
         {   return true;  }
@@ -49,6 +51,8 @@ public class SeverityInstances
     /** Implementation of a 'minor' ISeverity. */
     public static final ISeverity minor = new ISeverity()
     {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public boolean hasValue()
         {   return true;  }
@@ -75,8 +79,9 @@ public class SeverityInstances
     };
 
     /** Implementation of a 'major' ISeverity. */
-   public static final ISeverity major = new ISeverity()
+    public static final ISeverity major = new ISeverity()
     {
+       private static final long serialVersionUID = 1L;
        @Override
         public boolean hasValue()
         {   return true;  }
@@ -105,6 +110,8 @@ public class SeverityInstances
     /** Implementation of an 'invalid' ISeverity. */
     public static final ISeverity invalid = new ISeverity()
     {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public boolean hasValue()
         {   return true;  }

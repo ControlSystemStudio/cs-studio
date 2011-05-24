@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -100,7 +100,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
 	public void run(IAction action) {
 		Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if(topOPIs.keySet().size() >= 1){
+		if(topOPIs != null && topOPIs.keySet().size() >= 1){
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
 			if(path != null){
 				RunModeService.getInstance().runOPI(

@@ -101,6 +101,13 @@ public final class Plugs
 	 * to use properties from cache when connection is requested. By default new property is created.
 	 */
 	public static final String PROPERTIES_FROM_CACHE = "dal.propertiesFromCache";
+	
+	/**
+	 * An optional application configuration property name under which is in AbstractAppplicationContext stored an instance of 
+	 * PropertyFactoryService. This service implementation must be able to produce PropertyFactory 
+	 * implementations for all supported and available plug types within application runtime context.
+	 */
+	public static final String PROPERTY_FACTORY_SERVICE_IMPLEMENTATION = "dal.propertyfactoryServiceImplementation";
 
 	/**
 	 * DAL default connection timeout value in milliseconds. Used if CONNECTION_TIMEOUT is not defined.
@@ -302,6 +309,34 @@ public final class Plugs
 		}
 
 		return cl;
+	}
+
+	/**
+	 * Tries to locate default plug name. First
+	 * tries to find key for  <code>PLUGS_DEFAULT</code> in
+	 * provided properties. If this fails or properties are null, then System
+	 * properties are searched.
+	 *
+	 * @param prop properties, may be <code>null</code>
+	 *
+	 * @return default plug name or <code>null</code> if no configuration
+	 *         found
+	 *
+	 * @throws ClassNotFoundException if class loading failed
+	 */
+	public static String getDefaultPlug(Properties prop)
+	{
+		if (prop != null) {
+			String pl = prop.getProperty(PLUGS_DEFAULT);
+			if (pl!=null) {
+				return pl;
+			}
+		}
+
+		prop = System.getProperties();
+
+		String pl = prop.getProperty(PLUGS_DEFAULT);
+		return pl;
 	}
 
 	/**

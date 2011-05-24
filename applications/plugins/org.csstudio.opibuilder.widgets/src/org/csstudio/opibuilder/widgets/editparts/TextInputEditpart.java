@@ -41,9 +41,11 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.osgi.util.NLS;
 
-/**The editpart for text input widget.)
+/**
+ * The editpart for text input widget.)
+ * 
  * @author Xihui Chen
- *
+ * 
  */
 public class TextInputEditpart extends TextIndicatorEditPart {
 
@@ -52,12 +54,13 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 
 	@Override
 	public TextInputModel getWidgetModel() {
-		return (TextInputModel)getModel();
+		return (TextInputModel) getModel();
 	}
 
 	@Override
 	protected IFigure doCreateFigure() {
-		TextInputFigure textInputFigure = (TextInputFigure)super.doCreateFigure();
+		TextInputFigure textInputFigure = (TextInputFigure) super
+				.doCreateFigure();
 		textInputFigure.setSelectorType(getWidgetModel().getSelectorType());
 		textInputFigure.setDateTimeFormat(getWidgetModel().getDateTimeFormat());
 		textInputFigure.setFileSource(getWidgetModel().getFileSource());
@@ -67,21 +70,25 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 				.addManualValueChangeListener(new IManualStringValueChangeListener() {
 
 					public void manualValueChanged(String newValue) {
-						if(getExecutionMode() == ExecutionMode.RUN_MODE){
+						if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 							setPVValue(TextInputModel.PROP_PVNAME, newValue);
 							getWidgetModel().setPropertyValue(
-								TextInputModel.PROP_TEXT, newValue, false);
-						}else{
-							getViewer().getEditDomain().getCommandStack().execute(
-									new SetWidgetPropertyCommand(
-											getWidgetModel(), TextInputModel.PROP_TEXT, newValue));
+									TextInputModel.PROP_TEXT, newValue, false);
+						} else {
+							getViewer()
+									.getEditDomain()
+									.getCommandStack()
+									.execute(
+											new SetWidgetPropertyCommand(
+													getWidgetModel(),
+													TextInputModel.PROP_TEXT,
+													newValue));
 						}
 					}
 				});
 
 		return textInputFigure;
 	}
-
 
 	@Override
 	protected TextFigure createTextFigure() {
@@ -91,12 +98,14 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextIndicatorDirectEditPolicy());
+		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+				new TextIndicatorDirectEditPolicy());
 	}
 
 	@Override
 	public void activate() {
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME,
+				AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
 	}
 
@@ -106,30 +115,37 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		registerLoadLimitsListener();
 	}
 
-
 	/**
 	 *
 	 */
 	private void registerLoadLimitsListener() {
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			final TextInputModel model = getWidgetModel();
-			if(model.isLimitsFromPV()){
+			if (model.isLimitsFromPV()) {
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(pvLoadLimitsListener == null)
+				if (pv != null) {
+					if (pvLoadLimitsListener == null)
 						pvLoadLimitsListener = new PVListener() {
 							public void pvValueUpdate(PV pv) {
 								IValue value = pv.getValue();
-								if (value != null && value.getMetaData() instanceof INumericMetaData){
-									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
-									if(meta == null || !meta.equals(new_meta)){
+								if (value != null
+										&& value.getMetaData() instanceof INumericMetaData) {
+									INumericMetaData new_meta = (INumericMetaData) value
+											.getMetaData();
+									if (meta == null || !meta.equals(new_meta)) {
 										meta = new_meta;
-										model.setPropertyValue(TextInputModel.PROP_MAX,	meta.getDisplayHigh());
-										model.setPropertyValue(TextInputModel.PROP_MIN,	meta.getDisplayLow());
+										model.setPropertyValue(
+												TextInputModel.PROP_MAX,
+												meta.getDisplayHigh());
+										model.setPropertyValue(
+												TextInputModel.PROP_MIN,
+												meta.getDisplayLow());
 									}
 								}
 							}
-							public void pvDisconnected(PV pv) {}
+
+							public void pvDisconnected(PV pv) {
+							}
 						};
 					pv.addListener(pvLoadLimitsListener);
 				}
@@ -140,20 +156,27 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
 			removeAllPropertyChangeHandlers(LabelModel.PROP_TEXT);
-			IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+			IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
-					String text = (String)newValue;
-					//((TextFigure)figure).setText(text);
+					String text = (String) newValue;
+					// ((TextFigure)figure).setText(text);
 
 					try {
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, parseString(text));
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME,
+								parseString(text));
 					} catch (Exception e) {
-						String msg = NLS.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
-								new String[]{getPV(AbstractPVWidgetModel.PROP_PVNAME).getName(),
-								getWidgetModel().getName(), text}) + e.toString();
+						String msg = NLS
+								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
+										new String[] {
+												getPV(
+														AbstractPVWidgetModel.PROP_PVNAME)
+														.getName(),
+												getWidgetModel().getName(),
+												text })
+								+ e.toString();
 						ConsoleService.getInstance().writeError(msg);
 					}
 					return false;
@@ -164,80 +187,103 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 
 		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
 				registerLoadLimitsListener();
 				return false;
 			}
 		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
+				pvNameHandler);
 
 		IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((TextInputFigure)figure).setDateTimeFormat((String)newValue);
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((TextInputFigure) figure).setDateTimeFormat((String) newValue);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_DATETIME_FORMAT, dateTimeFormatHandler);
+		setPropertyChangeHandler(TextInputModel.PROP_DATETIME_FORMAT,
+				dateTimeFormatHandler);
 
 		IWidgetPropertyChangeHandler fileSourceHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((TextInputFigure)figure).setFileSource(FileSource.values()[(Integer)newValue]);
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((TextInputFigure) figure)
+						.setFileSource(FileSource.values()[(Integer) newValue]);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_FILE_SOURCE, fileSourceHandler);
+		setPropertyChangeHandler(TextInputModel.PROP_FILE_SOURCE,
+				fileSourceHandler);
 
 		IWidgetPropertyChangeHandler fileReturnPartHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((TextInputFigure)figure).setFileReturnPart(FileReturnPart.values()[(Integer)newValue]);
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((TextInputFigure) figure).setFileReturnPart(FileReturnPart
+						.values()[(Integer) newValue]);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART, fileReturnPartHandler);
+		setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART,
+				fileReturnPartHandler);
 
+		setPropertiesVisibilities(getWidgetModel().getSelectorType());
+		
+		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
+				.addPropertyChangeListener(new PropertyChangeListener() {
 
-		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE).
-			addPropertyChangeListener(new PropertyChangeListener() {
-
-				public void propertyChange(PropertyChangeEvent evt) {
-					SelectorType selectorType = SelectorType.values()[(Integer)evt.getNewValue()];
-					((TextInputFigure)figure).setSelectorType(selectorType);
-					switch (selectorType) {
-					case NONE:
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_DATETIME_FORMAT, false);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_RETURN_PART, false);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_SOURCE, false);
-						break;
-					case DATETIME:
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_DATETIME_FORMAT, true);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_RETURN_PART, false);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_SOURCE, false);
-						break;
-					case FILE:
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_DATETIME_FORMAT, false);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_RETURN_PART, true);
-						getWidgetModel().setPropertyVisible(TextInputModel.PROP_FILE_SOURCE, true);
-						break;
-					default:
-						break;
+					public void propertyChange(PropertyChangeEvent evt) {
+						SelectorType selectorType = SelectorType.values()[(Integer) evt
+								.getNewValue()];
+						((TextInputFigure) figure)
+								.setSelectorType(selectorType);
+						setPropertiesVisibilities(selectorType);
 					}
-				}
-		});
 
+				});
+	}
 
-
-
+	protected void setPropertiesVisibilities(SelectorType selectorType) {
+		switch (selectorType) {
+		case NONE:
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_DATETIME_FORMAT, false);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_RETURN_PART, false);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_SOURCE, false);
+			break;
+		case DATETIME:
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_DATETIME_FORMAT, true);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_RETURN_PART, false);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_SOURCE, false);
+			break;
+		case FILE:
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_DATETIME_FORMAT, false);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_RETURN_PART, true);
+			getWidgetModel().setPropertyVisible(
+					TextInputModel.PROP_FILE_SOURCE, true);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	protected void doDeActivate() {
 		super.doDeActivate();
-		if(getWidgetModel().isLimitsFromPV()){
+		if (getWidgetModel().isLimitsFromPV()) {
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && pvLoadLimitsListener != null){
+			if (pv != null && pvLoadLimitsListener != null) {
 				pv.removeListener(pvLoadLimitsListener);
 			}
 		}
@@ -245,15 +291,16 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	}
 
 	@Override
-	public void performRequest(Request request){
-		if (getFigure().isEnabled() && (request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
-				request.getType() == RequestConstants.REQ_OPEN))
+	public void performRequest(Request request) {
+		if (getFigure().isEnabled()
+				&& (request.getType() == RequestConstants.REQ_DIRECT_EDIT || request
+						.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}
 
-	protected void performDirectEdit(){
-		new LabelEditManager(this,
-				new LabelCellEditorLocator((Figure)getFigure()), false).show();
+	protected void performDirectEdit() {
+		new LabelEditManager(this, new LabelCellEditorLocator(
+				(Figure) getFigure()), false).show();
 	}
 
 	@Override
@@ -261,28 +308,30 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		return -1;
 	}
 
-	/**Parse string to a value according PV value type and format
+	/**
+	 * Parse string to a value according PV value type and format
+	 * 
 	 * @param text
 	 * @return value
 	 * @throws ParseException
 	 */
-	private Object parseString(final String text) throws ParseException{
+	private Object parseString(final String text) throws ParseException {
 		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		FormatEnum formatEnum = getWidgetModel().getFormat();
 
-		if(pvValue == null || pvValue instanceof IStringValue){
+		if (pvValue == null || pvValue instanceof IStringValue) {
 			return text;
 		}
 
-		if(pvValue instanceof IDoubleValue){
+		if (pvValue instanceof IDoubleValue) {
 			switch (formatEnum) {
 			case HEX:
 			case HEX64:
 				return parseHEX(text, true);
 			case STRING:
-				if(((IDoubleValue)pvValue).getValues().length > 1){
+				if (((IDoubleValue) pvValue).getValues().length > 1) {
 					return parseCharArray(text);
-				}else
+				} else
 					return text;
 			case DECIAML:
 			case EXP:
@@ -297,15 +346,15 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			}
 		}
 
-		if(pvValue instanceof ILongValue){
+		if (pvValue instanceof ILongValue) {
 			switch (formatEnum) {
 			case HEX:
 			case HEX64:
 				return parseHEX(text, true);
 			case STRING:
-				if(((ILongValue)pvValue).getValues().length > 1){
+				if (((ILongValue) pvValue).getValues().length > 1) {
 					return parseCharArray(text);
-				}else
+				} else
 					return text;
 			case DECIAML:
 			case EXP:
@@ -320,7 +369,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			}
 		}
 
-		if(pvValue instanceof IEnumeratedValue){
+		if (pvValue instanceof IEnumeratedValue) {
 			switch (formatEnum) {
 			case HEX:
 			case HEX64:
@@ -348,23 +397,24 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		Integer[] iString = new Integer[text.length()];
 		char[] textChars = text.toCharArray();
 
-		for (int ii = 0; ii< text.length(); ii++){
+		for (int ii = 0; ii < text.length(); ii++) {
 			iString[ii] = Integer.valueOf(textChars[ii]);
 		}
 		return iString;
 	}
 
-	private double parseDouble(final String text, final boolean coerce) throws ParseException {
+	private double parseDouble(final String text, final boolean coerce)
+			throws ParseException {
 		DecimalFormat format = new DecimalFormat();
 
 		double value = format.parse(text).doubleValue();
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();
 			double max = getWidgetModel().getMaximum();
-			if(value<min){
+			if (value < min) {
 				value = min;
-			}else if(value>max)
-				value=max;
+			} else if (value > max)
+				value = max;
 		}
 		return value;
 
@@ -375,26 +425,27 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 		if (text.startsWith(TextIndicatorEditPart.HEX_PREFIX)) {
 			valueText = text.substring(2);
 		}
-		if(valueText.contains(" ")){  //$NON-NLS-1$
+		if (valueText.contains(" ")) { //$NON-NLS-1$
 			valueText = valueText.substring(0, valueText.indexOf(' '));
 		}
 		long i = Long.parseLong(valueText, 16);
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();
 			double max = getWidgetModel().getMaximum();
-			if(i<min){
-				i=(long) min;
-			}else if(i>max)
-				i=(long) max;
+			if (i < min) {
+				i = (long) min;
+			} else if (i > max)
+				i = (long) max;
 		}
-		return (int)i;  //EPICS_V3_PV doesn't support Long
+		return (int) i; // EPICS_V3_PV doesn't support Long
 
 	}
 
 	@Override
 	protected String formatValue(Object newValue, String propId, IFigure figure) {
 		String text = super.formatValue(newValue, propId, figure);
-		getWidgetModel().setPropertyValue(TextInputModel.PROP_TEXT, text, false);
+		getWidgetModel()
+				.setPropertyValue(TextInputModel.PROP_TEXT, text, false);
 		return text;
 
 	}

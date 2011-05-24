@@ -7,13 +7,15 @@
  ******************************************************************************/
 package org.csstudio.data.values;
 
+import java.io.Serializable;
+
 /** Base interface for a sample's meta data.
  *  @see IValue
  *  @see INumericMetaData
  *  @see IEnumeratedMetaData
  *  @author Kay Kasemir
  */
-public interface IMetaData
+public interface IMetaData extends Serializable
 {
     // No content, only defined as base for other *MetaData interfaces
 }

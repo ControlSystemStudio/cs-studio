@@ -19,6 +19,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
 {
+    private static final long serialVersionUID = 1L;
+
     /** The minimum resp. maximum. */
 	final private double minimum, maximum;
 

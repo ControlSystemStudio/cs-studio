@@ -35,7 +35,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	public Object getValue() {
-		return null;
+		return ((ByteMonitorFigure)getFigure()).getValue();
 	}
 
 	/* (non-Javadoc)
@@ -49,6 +49,10 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			((ByteMonitorFigure)getFigure()).setValue((Long)value);
 		else if (value instanceof Double)
 			((ByteMonitorFigure)getFigure()).setValue((Double)value);
+		else if (value instanceof Number)
+			((ByteMonitorFigure)getFigure()).setValue(((Number)value).longValue());
+		else
+			super.setValue(value);
 	}
 
 	/* (non-Javadoc)

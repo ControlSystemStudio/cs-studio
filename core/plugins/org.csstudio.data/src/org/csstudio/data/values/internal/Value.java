@@ -18,6 +18,8 @@ import org.csstudio.data.values.Messages;
  */
 abstract public class Value implements IValue
 {
+    private static final long serialVersionUID = 1L;
+
     /** Time stamp of this value. */
 	private final ITimestamp time;
 

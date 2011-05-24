@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.sns.jms2rdb;
 
-import java.net.InetAddress;
-import java.util.Calendar;
 import java.util.logging.Level;
 
 import javax.jms.Connection;
@@ -22,7 +20,6 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
-import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.sns.jms2rdb.rdb.RDBWriter;
 
 /** Thread that receives log messages and sends them to the RDB.
@@ -135,7 +132,8 @@ public class LogClientThread extends Thread
                 Activator.getLogger().log(Level.INFO, "Connected to RDB {0}", rdb_url);
                 jms_connection = connectJMS();
 
-                addStartMessage();
+                // Add start message
+                rdb_writer.write("JMS Log Tool started");
 
                 // Incoming JMS messages are handled in onMessage,
                 // so nothing to do here but wait...
@@ -194,19 +192,6 @@ public class LogClientThread extends Thread
                 }
             }
         }
-    }
-
-    /** Add a startup message. */
-    private void addStartMessage() throws Exception
-    {
-        final Calendar now = Calendar.getInstance();
-        final String host = InetAddress.getLocalHost().getHostName();
-        final String user = System.getProperty("user.name");
-        final JMSLogMessage initial_msg = new JMSLogMessage(
-                "INFO: JMS Log Tool started",
-                Level.INFO.toString(), now, now,
-                "LogClientThread", "run", "", "JMSLogTool", host, user);
-        rdb_writer.write(initial_msg);
     }
 
     /** Connect to JMS server

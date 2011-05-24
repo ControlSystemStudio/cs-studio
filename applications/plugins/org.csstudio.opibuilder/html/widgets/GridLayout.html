@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Grid Layout
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Grid Layout
+    </h2>
+    
+    <p>A virtual widget (widget with no figure at runtime) that helps to automatically
+    layout widgets in a container in grids. The width of a grid is determined by 
+    the widget with largest width in the same column. The height of a grid is determined by
+    the widget with largest height in the same row.
+     Layout widget is always on top of other widgets and its
+    position is always on left top corner. Its size is not changeable.
+    A container can have only one layout widget.  
+    </p>
+    <p>If you have a script generated OPI, you make take advantage of this widget to layout the widgets
+    automatically so that you don't need to specify the position and size of every widget in your script.</p>
+    	<img src="img/GridLayout.gif" alt="">
+    
+    <h3>Operations</h3>
+    <p>In edit mode, right click the widget and select <code>Layout Widgets</code> will
+    layout widgets in the same container in grids. At runtime, it will automatically layout 
+    widgets during OPI startup.</p>
+    
+    <h3>Special Properties</h3>
+    <ul>   
+	<li>Number of Columns (number_of_columns) <dl><dd>The number of columns that widgets
+	will be arraged in. </dd></dl></li>
+    <li>Fill  Grids (fill_grids) <dl><dd>Enlarge small widgets to fill the grids.</dd></dl></li>
+    <li>Grid Gap (grid_gap)<dl><dd>The gap between grids.</dd></dl></li>
+
+    </ul>
+  
+      <h3>See Also</h3>
+      <p>Most of widget common properties are not available to this widget.</p>
+   <ul> 
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>   
+   </ul>
+    
+<br>
+
+</body>
+</html>

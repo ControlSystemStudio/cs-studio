@@ -10,12 +10,13 @@ package org.csstudio.util.editor;
 import java.util.logging.Level;
 
 import org.csstudio.display.pvtable.Plugin;
-import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 /** Helper for running 'SaveAs' dialog for new XML file.
  *  @author Kay Kasemir
@@ -39,7 +40,8 @@ public class PromptForNewXMLFileDialog
             dlg.setBlockOnOpen(true);
             if (old_file != null)
                 dlg.setOriginalFile(old_file);
-            dlg.open();
+            if (dlg.open() != Window.OK)
+                return null;
             // The path to the new resource relative to the workspace
             new_resource_path = dlg.getResult();
         }

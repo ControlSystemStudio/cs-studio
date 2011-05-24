@@ -29,7 +29,7 @@ public class ConnectionStateMachine {
 		/*CONNECTED*/		  {false, false, false, false, true,  true,  false, true,  false, false},
 		/*OPERATIONAL*/		  {false, false, false, false, false, true,  false, true,  false, false},
 		/*CONNECTION_LOST*/	  {false, false, false, true,  true,  false, false, true,  false, false},
-		/*CONNECTION_FAILED*/ {true,  false, false, true,  false, false, false, true,  false, true},
+		/*CONNECTION_FAILED*/ {true,  false, false, true,  true,  false, false, true,  false, true},
 		/*DISCONNECTING*/ 	  {false, false, false, false, false, false, false, false, true,  false},
 		/*DISCONNECTED*/ 	  {true,  true,  true,  false, false, false, false, false, false, true}, 
 		/*DESTROYED*/		  {false, false, false, false, false, false, false, false, false, false}

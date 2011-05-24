@@ -29,13 +29,12 @@ import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -63,7 +62,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * @author Xihui Chen,  Kai Meyer (part of the code is copied from SDS) 
  *
  */
-public class ActionsInputDialog extends Dialog {
+public class ActionsInputDialog extends HelpTrayDialog {
 	
 	private Action addAction;
 	private Action copyAction;
@@ -104,6 +103,11 @@ public class ActionsInputDialog extends Dialog {
 		super.okPressed();
 	}
 
+	@Override
+	protected String getHelpResourcePath() {
+		return "/" + OPIBuilderPlugin.PLUGIN_ID + "/html/Actions.html"; //$NON-NLS-1$; //$NON-NLS-2$
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

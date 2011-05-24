@@ -20,6 +20,7 @@ import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.ButtonBorder;
+import org.eclipse.draw2d.ButtonBorder.ButtonScheme;
 import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -28,8 +29,9 @@ import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.KeyEvent;
 import org.eclipse.draw2d.KeyListener;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.Orientable;
-import org.eclipse.draw2d.ButtonBorder.ButtonScheme;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -134,6 +136,13 @@ public class SpinnerFigure extends Figure implements Introspectable {
 			}
 		};
 		labelFigure.setText(format(value));
+		labelFigure.addMouseListener(new MouseListener.Stub(){
+			@Override
+			public void mousePressed(MouseEvent me) {
+				if(!hasFocus())
+					requestFocus();
+			}
+		});
 		add(labelFigure);
 		
 		ButtonBorder buttonBorder = new ButtonBorder(new ButtonScheme(new Color[]{ColorConstants.buttonLightest},

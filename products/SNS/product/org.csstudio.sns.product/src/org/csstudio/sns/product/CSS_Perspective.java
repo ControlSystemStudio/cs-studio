@@ -46,7 +46,7 @@ public class CSS_Perspective implements IPerspectiveFactory
                         IPageLayout.BOTTOM, 0.66f, editor);
 
         // Stuff for 'left'
-        left.addView(IPageLayout.ID_RES_NAV); // Deprecated, but what use instead?
+        left.addView("org.eclipse.ui.views.ResourceNavigator");
         left.addPlaceholder(ID_SNS_PV_UTIL);
         left.addPlaceholder(ID_ALARM_TREE);
 

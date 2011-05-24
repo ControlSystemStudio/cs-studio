@@ -32,7 +32,13 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
 	public final static double getDouble(PV pv){
+		checkPVValue(pv);
 		return ValueUtil.getDouble(pv.getValue());
+	}
+
+	protected static void checkPVValue(PV pv) {
+		if(pv.getValue() == null)
+			throw new RuntimeException("PV " + pv.getName() + " has no value.");
 	}
 
 	 /** Try to get a long integer number from the PV.
@@ -44,6 +50,7 @@ public class PVUtil{
      *  @return A long integer.
      */
 	public final static Long getLong(PV pv){
+		checkPVValue(pv);
 		return (long) ValueUtil.getDouble(pv.getValue());
 	}
 
@@ -58,6 +65,7 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
 	public final static double getDouble(PV pv, int index){
+		checkPVValue(pv);
 		return ValueUtil.getDouble(pv.getValue(), index);
 	}
 
@@ -71,6 +79,7 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
 	public final static double[] getDoubleArray(PV pv){
+		checkPVValue(pv);
 		return ValueUtil.getDoubleArray(pv.getValue());
 	}
 
@@ -83,6 +92,7 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
 	public final static long[] getLongArray(PV pv){
+		checkPVValue(pv);
 		double[] dblArray = ValueUtil.getDoubleArray(pv.getValue());
 		long[] longArray = new long[dblArray.length];
 		int i=0;
@@ -96,6 +106,7 @@ public class PVUtil{
      * @param pv the pv.
      * @return Array length of the pv value. <code>1</code> for scalars. */
 	public final static double getSize(PV pv){
+		checkPVValue(pv);
 		return ValueUtil.getSize(pv.getValue());
 	}
 
@@ -112,6 +123,7 @@ public class PVUtil{
 	 * @return a string representation of the value.
 	 */
 	public final static String getString(PV pv){
+		checkPVValue(pv);
 		return ValueUtil.getString(pv.getValue());
 	}
 
@@ -121,6 +133,7 @@ public class PVUtil{
 	 * @return the full info string
 	 */
 	public final static String getFullString(PV pv){
+		checkPVValue(pv);
 		return pv.getValue().toString();
 	}
 
@@ -130,6 +143,7 @@ public class PVUtil{
 	 * @return the timestamp in string.
 	 */
 	public final static String getTimeString(PV pv){
+		checkPVValue(pv);
 		return pv.getValue().getTime().toString();
 	}
 
@@ -143,6 +157,7 @@ public class PVUtil{
      *  @return milliseconds since 1970.
      */
 	public final static double getTimeInMilliseconds(PV pv){
+		checkPVValue(pv);
 		ITimestamp timestamp = pv.getValue().getTime();
 		double result = timestamp.seconds()*1000 + timestamp.nanoseconds()/1000000;
 		return result;
@@ -154,6 +169,7 @@ public class PVUtil{
 	 * @return 0:OK; -1: Invalid; 1: Major; 2:Minor.
 	 */
 	public final static int getSeverity(PV pv){
+		checkPVValue(pv);
 		ISeverity severity = pv.getValue().getSeverity();
 		if(severity.isInvalid())
 			return -1;

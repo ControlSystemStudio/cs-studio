@@ -10,13 +10,20 @@ package org.csstudio.opibuilder.runmode;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPageListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -50,13 +57,19 @@ public class RunModeService {
 	public IWorkbenchWindow getRunWorkbenchWindow(){
 		return runWorkbenchWindow;
 	}
-
-
-	public void replaceActiveEditorContent(IRunnerInput input) throws PartInitException{
-		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-			getActivePage().getActiveEditor();
-		activeEditor.init(activeEditor.getEditorSite(),input);
-
+//
+//	
+//	
+//
+//	public void replaceActiveEditorContent(IRunnerInput input) throws PartInitException{
+//		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().
+//			getActivePage().getActiveEditor();
+//		activeEditor.init(activeEditor.getEditorSite(),input);
+//	}
+	
+	public static void replaceOPIRuntimeContent(
+			final IOPIRuntime opiRuntime, final IEditorInput input) throws PartInitException{
+		opiRuntime.setOPIInput(input);
 	}
 
 	/**Run an OPI file with necessary parameters. This function should be called when open an OPI
@@ -139,7 +152,7 @@ public class RunModeService {
 						targetWindow.getShell().forceActive();
 						targetWindow.getShell().forceFocus();
 						targetWindow.getActivePage().openEditor(
-								runnerInput, "org.csstudio.opibuilder.OPIRunner"); //$NON-NLS-1$
+								runnerInput, OPIRunner.ID); //$NON-NLS-1$
 						targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						OPIBuilderPlugin.getLogger().log(Level.WARNING,
@@ -152,6 +165,62 @@ public class RunModeService {
 	}
 
 
+	public static void runOPIInView(final IPath path, 
+			final DisplayOpenManager displayOpenManager, final MacrosInput macrosInput, final Position position){
+		final RunnerInput runnerInput = new RunnerInput(path, displayOpenManager, macrosInput);
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			
+			public void run() {
+			    final IWorkbench workbench = PlatformUI.getWorkbench();
+	            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+	            final IWorkbenchPage page = window.getActivePage();
+				try {
+					
+					
+					
+					IViewReference[] viewReferences = page.getViewReferences();
+					//If it is already opened.
+					for(IViewReference viewReference : viewReferences){
+						if(viewReference.getId().equals(OPIView.ID)){
+							if(runnerInput.equals(
+									((IOPIRuntime)viewReference.getView(true)).getOPIInput())){
+								page.showView(
+										OPIView.ID, viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
+								return;								
+							}
+						}
+					}
+					
+					if(!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
+						if(MessageDialog.openQuestion(window.getShell(), "Switch to OPI Runtime Perspective", 
+								"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
+								"\nDo you want to switch to it now?"))
+							try {
+								workbench.showPerspective(OPIRunnerPerspective.ID, window);
+							} catch (WorkbenchException e) {
+								ErrorHandlerUtil.handleError(
+										"Faile to switch to OPI Runtime perspective", e, false, true);
+							}
+							
+					}
+					
+					//Open a new view
+					IViewPart opiView = page.showView(
+							OPIView.ID, OPIView.createNewInstance() + position.name(), IWorkbenchPage.VIEW_ACTIVATE);
+					if(opiView instanceof OPIView){
+						((OPIView)opiView).setOPIInput(runnerInput);
+					}
+				} catch (PartInitException e) {
+					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);
+				}
+			}
+		});
+	}
+	
+	
+	
+	
+	
 	/**
 	 * @param displayModel
 	 */
@@ -159,7 +228,7 @@ public class RunModeService {
 		IWorkbenchWindow newWindow = null;
 		try {
 			newWindow =
-				PlatformUI.getWorkbench().openWorkbenchWindow("org.csstudio.opibuilder.OPIRunner", null); //$NON-NLS-1$
+				PlatformUI.getWorkbench().openWorkbenchWindow(OPIRunnerPerspective.ID, null); //$NON-NLS-1$
 			if(windowBounds != null){
 				if(windowBounds.x >=0 && windowBounds.y > 1)
 					newWindow.getShell().setLocation(windowBounds.x, windowBounds.y);

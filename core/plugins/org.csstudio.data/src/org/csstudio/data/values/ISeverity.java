@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.data.values;
 
+import java.io.Serializable;
+
 /** Description of the 'severity' of a value.
  *  <p>
  *  The severity code is usually meant to indicate if the process variable
@@ -33,7 +35,7 @@ package org.csstudio.data.values;
  *  </ul>
  *  @author Kay Kasemir
  */
-public interface ISeverity
+public interface ISeverity extends Serializable
 {
     /** @return Returns the textual representation for this severity. */
     @Override

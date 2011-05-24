@@ -1,10 +1,11 @@
 package org.csstudio.multichannelviewer;
 
-import org.csstudio.utility.channel.ICSSChannel;
+import gov.bnl.channelfinder.api.Channel;
+
 import org.eclipse.swt.SWT;
 
 
-public class GlazedSortNameComparator implements IDirectionalComparator<ICSSChannel> {
+public class GlazedSortNameComparator implements IDirectionalComparator<Channel> {
 
 	private int col;
 	private int direction;	
@@ -15,8 +16,8 @@ public class GlazedSortNameComparator implements IDirectionalComparator<ICSSChan
 	}
 	
 	@Override
-	public int compare(ICSSChannel channel1, ICSSChannel channel2) {
-		int ret = channel1.getChannel().getName().compareTo(channel2.getChannel().getName());
+	public int compare(Channel channel1, Channel channel2) {
+		int ret = channel1.getName().compareTo(channel2.getName());
 		if (direction == SWT.DOWN)
 			ret = -ret;
 		

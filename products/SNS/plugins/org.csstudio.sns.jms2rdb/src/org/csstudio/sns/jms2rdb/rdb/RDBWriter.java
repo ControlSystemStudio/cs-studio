@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 import javax.jms.MapMessage;
 
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.csstudio.sns.jms2rdb.Activator;
@@ -227,24 +227,16 @@ public class RDBWriter
     }
 
     /** Write log message to RDB
-     *  @param message JMSLogMessage to write
+     *  @param message Text to write
      *  @throws Exception on error
      */
-    public void write(final JMSLogMessage message) throws Exception
+    public void write(final String message) throws Exception
     {
         final Connection connection = rdb_util.getConnection();
         try
         {
-            final long message_id = insertMessage(JMSLogMessage.TYPE_LOG, message.getMethodName(),
-            		message.getSeverity());
-            batchProperty(message_id, JMSLogMessage.TEXT, message.getText());
-            batchProperty(message_id, JMSLogMessage.CREATETIME,
-                    date_format.format(message.getCreateTime().getTime()));
-            batchProperty(message_id, JMSLogMessage.CLASS, message.getClassName());
-            batchProperty(message_id, JMSLogMessage.FILENAME, message.getFileName());
-            batchProperty(message_id, JMSLogMessage.APPLICATION_ID, message.getApplicationID());
-            batchProperty(message_id, JMSLogMessage.HOST, message.getHost());
-            batchProperty(message_id, JMSLogMessage.USER, message.getUser());
+            final long message_id = insertMessage(JMSLogMessage.TYPE, null, "INFO");
+            batchProperty(message_id, JMSLogMessage.TEXT, message);
             insert_property_statement.executeBatch();
             connection.commit();
         }
@@ -256,7 +248,7 @@ public class RDBWriter
     }
 
     /** Write log message to RDB
-     *  @param message JMSLogMessage to write
+     *  @param message MapMessage to write
      *  @throws Exception on error
      */
     @SuppressWarnings("unchecked")
@@ -294,7 +286,7 @@ public class RDBWriter
 
     /** Insert a new message
      *  @param type  Message type
-     *  @param name Primary name (PV name, ...) to which the msg refers
+     *  @param name Primary name (PV name, ...) to which the msg refers. May be <code>null</code>
      *  @param severity Message severity
      *  @return ID of the new message row
      *  @throws Exception on error

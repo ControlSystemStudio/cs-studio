@@ -1,34 +1,26 @@
 package org.csstudio.multichannelviewer.actions;
 
+import static gov.bnl.channelfinder.api.Channel.Builder.channel;
 import static gov.bnl.channelfinder.api.Property.Builder.property;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
-import static gov.bnl.channelfinder.api.Channel.Builder.channel;
-
-import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
+import gov.bnl.channelfinder.api.Channel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelFinderClient;
-
 import org.csstudio.multichannelviewer.ChannelsListView;
 import org.csstudio.multichannelviewer.model.CSSChannelGroup;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PlatformUI;
 
 public class AddTestChannels implements IViewActionDelegate {
 	private Random generator = new Random(19580427);
 	private IViewPart view;
-	private Collection<ICSSChannel> channels;
-
-	CSSChannelFactory factory = CSSChannelFactory.getInstance();
-
+	private Collection<Channel> channels;
+	
 	@Override
 	public void init(IViewPart view) {
 		// TODO Auto-generated method stub
@@ -37,7 +29,7 @@ public class AddTestChannels implements IViewActionDelegate {
 
 	@Override
 	public void run(IAction action) {
-		channels = new ArrayList<ICSSChannel>();
+		channels = new ArrayList<Channel>();
 
 		for (int i = 0; i < 2000; i++) {
 			String channelName = "SR:C01";
@@ -53,7 +45,7 @@ public class AddTestChannels implements IViewActionDelegate {
 					generateString(new Random(), "0123456789.", 4)));
 			channel.with(property("Facility", "storageRing"));
 			channel.with(property("element", i%2 == 0?"sextupole":"quadrupole"));
-			channels.add(factory.getCSSChannel(channel.build()));
+			channels.add(channel.build());
 		}
 		// Add all the channels;
 		try {
@@ -92,11 +84,6 @@ public class AddTestChannels implements IViewActionDelegate {
 		return ":" + Integer.toString(i / 10) + ":" + Integer.toString(i);
 	}
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
-	}
-
 	private static String generateString(Random rng, String characters,
 			int length) {
 		char[] text = new char[length];
@@ -104,5 +91,11 @@ public class AddTestChannels implements IViewActionDelegate {
 			text[i] = characters.charAt(rng.nextInt(characters.length()));
 		}
 		return new String(text);
+	}
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		// TODO Auto-generated method stub
+		
 	}
 }

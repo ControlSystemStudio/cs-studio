@@ -25,7 +25,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
-import org.csstudio.platform.logging.JMSLogMessage;
+import org.csstudio.logging.JMSLogMessage;
 
 /** Receives alarm updates, sends acknowledgments.
  *  <p>

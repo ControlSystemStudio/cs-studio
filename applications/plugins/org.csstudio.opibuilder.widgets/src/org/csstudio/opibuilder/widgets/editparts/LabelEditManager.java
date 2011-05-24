@@ -9,8 +9,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;

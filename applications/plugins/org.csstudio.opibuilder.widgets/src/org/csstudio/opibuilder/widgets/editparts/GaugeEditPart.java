@@ -14,8 +14,8 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.GaugeModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.GaugeFigure;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 
 /**

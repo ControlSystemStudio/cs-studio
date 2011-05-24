@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="org.csstudio.auth.ui.systemActions"
-            label="System Actions"
-            visible="true">         
-         <action
-               class="org.csstudio.auth.ui.internal.actions.LoginAction"
-               icon="icons/switch_user.png"
-               id="org.csstudio.platform.ui.LoginAction"
-               label="%menuLogin"
-               menubarPath="file/workspace"
-               style="push"
-               toolbarPath="user/css_login">
-            <enablement>
-               <systemProperty
-                     name="org.csstudio.platform.loginAvailable"
-                     value="true">
-               </systemProperty>
-            </enablement>
-         </action>
-      </actionSet>
-   </extension>
      <extension
         point="org.eclipse.ui.menus">
      <menuContribution
@@ -34,6 +11,48 @@
                  class="org.csstudio.auth.ui.internal.workbench.LoginInformationToolbar">
            </control>
         </toolbar>
+     </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="menu:file?after=workspace">
+        <command
+              commandId="org.csstudio.auth.ui.log_in"
+              icon="icons/switch_user.png"
+              label="%menuLogin"
+              style="push">
+           <visibleWhen
+                 checkEnabled="false">
+              <systemTest
+                    property="org.csstudio.platform.loginAvailable"
+                    value="true">
+              </systemTest>
+           </visibleWhen>
+        </command>
+        <dynamic
+              class="org.csstudio.auth.ui.internal.actions.LogoutAction"
+              id="org.csstudio.auth.ui.log_out">
+        </dynamic>
+     </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="toolbar:user">
+        <command
+              commandId="org.csstudio.auth.ui.log_in"
+              icon="icons/switch_user.png"
+              label="%menuLogin"
+              style="push">
+           <visibleWhen
+                 checkEnabled="false">
+              <systemTest
+                    property="org.csstudio.platform.loginAvailable"
+                    value="true">
+              </systemTest>
+           </visibleWhen>
+        </command>
+        <dynamic
+              class="org.csstudio.auth.ui.internal.actions.LogoutAction"
+              id="org.csstudio.auth.ui.log_out">
+        </dynamic>
      </menuContribution>
   </extension>
      <extension
@@ -56,5 +75,13 @@
               id="org.csstudio.auth.ui.internal.preferences.OnsiteSubnetPreferencePage"
               name="Onsite Subnets">
         </page>
+     </extension>
+     <extension
+           point="org.eclipse.ui.commands">
+        <command
+              defaultHandler="org.csstudio.auth.ui.internal.actions.LoginAction"
+              id="org.csstudio.auth.ui.log_in"
+              name="%menuLogin">
+        </command>
      </extension>
 </plugin>

@@ -19,7 +19,7 @@ public class AdapterFactory implements IAdapterFactory
     @Override
     public Class<?>[] getAdapterList()
     {
-        return new Class<?>[] { ProcessVariable.class, String.class };
+        return new Class<?>[] { ProcessVariable.class };
     }
 
     @SuppressWarnings("rawtypes")
@@ -29,6 +29,6 @@ public class AdapterFactory implements IAdapterFactory
         final AlarmTreeLeaf leaf = (AlarmTreeLeaf) adaptableObject;
         if (adapterType == ProcessVariable.class)
             return new ProcessVariable(leaf.getName());
-        return leaf.getName();
+        return null;
     }
 }

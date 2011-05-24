@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.csstudio.java.string.StringUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.platform.util.StringUtil;
 import org.eclipse.osgi.util.NLS;
 
 /** Helper for executing a (system) command.

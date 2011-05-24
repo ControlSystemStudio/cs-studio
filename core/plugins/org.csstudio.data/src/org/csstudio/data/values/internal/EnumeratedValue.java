@@ -22,6 +22,8 @@ import org.csstudio.data.values.Messages;
  */
 public class EnumeratedValue extends Value implements IEnumeratedValue
 {
+    private static final long serialVersionUID = 1L;
+
     final private int values[];
 
     /** Constructor from pieces. */

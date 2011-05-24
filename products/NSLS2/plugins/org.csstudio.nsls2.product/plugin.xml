@@ -87,7 +87,7 @@
             class="org.csstudio.nsls2.product.startupmodule.Workbench">
       </workbench>
       <project
-            class="org.csstudio.startuphelper.module.DefaultProject">
+            class="org.csstudio.startup.module.defaults.DefaultProject">
       </project>
    </extension>
    <extension
@@ -115,6 +115,11 @@
                id="file"
                label="File"
                mnemonic="F">
+            <command
+                  commandId="org.eclipse.ui.newWizard"
+                  label="New"
+                  style="push">
+            </command>
             <command
                   commandId="org.eclipse.ui.file.close"
                   label="Close"
@@ -156,6 +161,88 @@
                   style="push">
             </command>
          </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="window"
+               label="Window">
+            <command
+                  commandId="org.eclipse.ui.window.newWindow"
+                  label="Open New Window"
+                  style="push">
+            </command>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:window?after=additions">
+         <menu
+               label="Open Perspectives">
+            <dynamic
+                  class="org.csstudio.nsls2.product.OpenPerspectives"
+                  id="org.csstudio.nsls2.product.windows.openperspectives">
+            </dynamic>
+         </menu>
+         <menu
+               label="Open Views">
+            <dynamic
+                  class="org.csstudio.nsls2.product.OpenViews"
+                  id="org.csstudio.nsls2.product.windows.openviews">
+            </dynamic>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
+         <menu
+               id="help"
+               label="help">
+            <separator
+                  name="helpStart"
+                  visible="true">
+            </separator>
+            <separator
+                  name="helpEnd"
+                  visible="true">
+            </separator>
+            <separator
+                  name="additions"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:help?before=helpStart">
+         <command
+               commandId="org.eclipse.ui.help.quickStartAction"
+               label="Welcome"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:help?after=helpStart">
+         <command
+               commandId="org.eclipse.ui.help.helpContents"
+               label="Help Contents"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:help?after=helpEnd">
+         <command
+               commandId="org.eclipse.ui.help.installationDialog"
+               icon="icons/alt_window_16.gif"
+               label="About CSS"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
 

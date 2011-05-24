@@ -23,10 +23,10 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
 import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -254,7 +254,10 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof String)
 			((AbstractChoiceFigure)getFigure()).setState((String)value);
-		else if (value instanceof Integer)
-			((AbstractChoiceFigure)getFigure()).setState((Integer)value);	}
+		else if (value instanceof Number)
+			((AbstractChoiceFigure)getFigure()).setState(((Number)value).intValue());
+		else 
+			super.setValue(value);
+	}
 
 }

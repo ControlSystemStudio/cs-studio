@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
 import org.csstudio.alarm.beast.ui.actions.ConfigureItemAction;
@@ -24,6 +24,7 @@ import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -150,9 +151,24 @@ public class GUI implements AlarmClientModelListener
 
         connectContextMenu(active_table_viewer, site);
         connectContextMenu(acknowledged_table_viewer, site);
+
         // Allow 'drag' of alarm info as text
-        new AlarmPVDragSource(active_table_viewer.getTable(), getSelectedAlarms());
-        new AlarmPVDragSource(acknowledged_table_viewer.getTable(), getSelectedAckAlarms());
+        new ControlSystemDragSource(active_table_viewer.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)active_table_viewer.getSelection());
+            }
+        };
+        new ControlSystemDragSource(acknowledged_table_viewer.getTable())
+        {
+            @Override
+            public Object getSelection()
+            {
+                return SelectionHelper.getAlarmTreePVsForDragging((IStructuredSelection)acknowledged_table_viewer.getSelection());
+            }
+        };
     }
 
     /** @return Provider for selected active alarms */

@@ -106,7 +106,7 @@ public class PVTableHelper
             switch (item)
             {
             case NAME:
-                return entry.getPV().getName();
+                return entry.getName();
             case TIME:
             {
                 IValue value = entry.getPV().getValue();

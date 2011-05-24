@@ -12,10 +12,10 @@ import java.beans.IntrospectionException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Color;
@@ -219,7 +219,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	 */
 	protected void updateBoolValue() {
 		//get boolValue
-		if(bit == -1)
+		if(bit < 0)
 			booleanValue = (this.value != 0);
 		else if(bit >=0) {
 			char[] binArray = Long.toBinaryString(this.value).toCharArray();
@@ -242,13 +242,13 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	@SuppressWarnings("nls")
     protected void updateValue(){
 		//get boolValue
-		if(bit == -1)
+		if(bit < 0)
 			setValue(booleanValue ? 1 : 0);
 		else if(bit >=0) {
 			char[] binArray = Long.toBinaryString(value).toCharArray();
-			if(bit >= 64 || bit <-1) {
+			if(bit >= 64) {
 			    // Log with exception to obtain call stack
-                Activator.getLogger().log(Level.WARNING, "Bit " + bit + " out of range: [-1,63]", new Exception());
+                Activator.getLogger().log(Level.WARNING, "Bit " + bit + "can not exceed 63.", new Exception());
 			}
 			else {
 				char[] bin64Array = new char[64];

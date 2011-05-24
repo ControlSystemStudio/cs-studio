@@ -79,6 +79,26 @@
             id="org.csstudio.opibuilder.actions.layoutWidgets"
             name="Layout Widgets">
       </command>
+      <command
+            description="Enter/Exit compact mode"
+            id="org.csstudio.opibuilder.actions.compactMode"
+            name="Compact Mode">
+      </command>
+      <command
+            description="Enter/Exit Full Screen"
+            id="org.csstudio.opibuilder.actions.fullscreen"
+            name="Full Screen">
+      </command>
+      <command
+            description="Send PV name to OPI Probe "
+            id="org.csstudio.opibuilder.commands.openopiprobe"
+            name="Open OPI Probe">
+      </command>
+      <command
+            defaultHandler="org.csstudio.opibuilder.actions.OpenOPIProbeHandler"
+            id="org.csstudio.opibuilder.openProbeOPI"
+            name="OPI Probe">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -123,14 +143,38 @@
             id="org.csstudio.opibuilder.keybinding.scheme"
             name="OPIBuilderKeyBindingScheme">
       </scheme>
+      <key
+            commandId="org.csstudio.opibuilder.actions.compactMode"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F8">
+      </key>
+      <key
+            commandId="org.csstudio.opibuilder.actions.fullscreen"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F11">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.platform.ui.css.applications.display"
-            class="org.csstudio.opibuilder.preferences.OPIBuilderPreferencePage"
+            class="org.csstudio.opibuilder.preferences.CommonPreferencePage"
             id="org.csstudio.opibuilder.preferences"
             name="BOY">
+      </page>
+      <page
+            category="org.csstudio.opibuilder.preferences"
+            class="org.csstudio.opibuilder.preferences.OPIRuntimePreferencePage"
+            id="org.csstudio.opibuilder.preferences.opiruntime"
+            name="OPI Runtime">
+      </page>
+      <page
+            category="org.csstudio.opibuilder.preferences"
+            class="org.csstudio.opibuilder.preferences.OPIEditorPreferencePage"
+            id="org.csstudio.opibuilder.preferences.opieditor"
+            name="OPI Editor">
       </page>
    </extension>
    <extension
@@ -156,6 +200,15 @@
             icon="icons/js.gif"
             id="org.csstudio.opibuilder.wizards.newJSWizard"
             name="JavaScript">
+      </wizard>
+      <wizard
+            canFinishEarly="false"
+            category="org.csstudio.opibuilder.wizards"
+            class="org.csstudio.opibuilder.wizards.NewPythonScriptWizard"
+            hasPages="true"
+            icon="icons/python_file.gif"
+            id="org.csstudio.opibuilder.wizards.newPyWizard"
+            name="Python Script">
       </wizard>
    </extension>
    <extension
@@ -187,6 +240,20 @@
                definitionId="org.csstudio.opibuilder.runopi"
                id="org.csstudio.opibuilder.runOPIAction"
                label="Run OPI"
+               style="push">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.actions.CompactModeAction"
+               definitionId="org.csstudio.opibuilder.actions.compactMode"
+               id="org.csstudio.opibuilder.compactModeAction"
+               label="Compact Mode"
+               style="push">
+         </action>
+         <action
+               class="org.csstudio.opibuilder.actions.FullScreenAction"
+               definitionId="org.csstudio.opibuilder.actions.fullscreen"
+               id="org.csstudio.opibuilder.fullScreenAction"
+               label="Full Screen"
                style="push">
          </action>
       </actionSet>
@@ -311,5 +378,58 @@
             content="intro/firststeps.xml"
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.index">
+      <index
+            file="index.xml">
+      </index>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="OPIContextHelp.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.opibuilder.views"
+            name="BOY">
+      </category>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiView"
+            name="OPI View"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.opibuilder.openProbeOPI"
+               icon="icons/OPIRunner.png"
+               label="OPI Probe"
+               style="push"
+               tooltip="Send PV name to OPI Probe">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart"
+            class="org.csstudio.opibuilder.editparts.PVWidgetAdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
    </extension>
 </plugin>

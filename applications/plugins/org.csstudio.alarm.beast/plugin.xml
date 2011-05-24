@@ -9,9 +9,6 @@
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
-         <adapter
-               type="java.lank.String">
-         </adapter>
       </factory>
    </extension>
 

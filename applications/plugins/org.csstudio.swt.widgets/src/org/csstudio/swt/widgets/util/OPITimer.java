@@ -10,7 +10,7 @@ package org.csstudio.swt.widgets.util;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.platform.ExecutionService;
+import org.csstudio.java.thread.ExecutionService;
 
 /**A customized timer for the internal use of OPI builder. 
  * It will execute a task after certain delay. The timer can be reseted

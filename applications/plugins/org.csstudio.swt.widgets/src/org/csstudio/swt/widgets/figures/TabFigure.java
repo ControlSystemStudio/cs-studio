@@ -9,15 +9,18 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
@@ -276,14 +279,25 @@ public class TabFigure extends Figure implements Introspectable{
 		
 	}
 	
-	public void setIconPath(int index, final IPath path) throws Exception{		
+	public void setIconPath(final int index, final IPath path, final IJobErrorHandler errorHandler){		
 		dispose(index);	
-		Image image = null;
+		
 		if(path != null && !path.isEmpty()){			
-				InputStream stream = ResourceUtil.pathToInputStream(path);
-				image = new Image(null, stream);
-				stream.close();
-				getTabLabel(index).setIcon(image);
+				
+				AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+					
+					@Override
+					public void runWithInputStream(InputStream stream) {
+						Image image = new Image(null, stream);
+						try {
+							stream.close();
+						} catch (IOException e) {							
+						}
+						getTabLabel(index).setIcon(image);
+					}
+				};				
+				ResourceUtil.pathToInputStreamInJob(path, uiTask, "Loading Tab Icon...", errorHandler);
+				
 		}	
 	}
 	

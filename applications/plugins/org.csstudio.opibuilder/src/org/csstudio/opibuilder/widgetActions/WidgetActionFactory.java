@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
 
@@ -19,9 +19,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class WidgetActionFactory {
 	public enum ActionType{
 		OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
+		OPEN_OPI_IN_VIEW("Open OPI in View", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
 		WRITE_PV("Write PV", createImage("icons/writePV.png")), //$NON-NLS-2$
 		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")), //$NON-NLS-2$
 		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
+		EXECUTE_PYTHONSCRIPT("Execute Python Script", createImage("icons/exePy.gif")),//$NON-NLS-2$
 		PLAY_SOUND("Play WAV File", createImage("icons/sound.gif")),//$NON-NLS-2$
 		OPEN_FILE("Open File", createImage("icons/openFile.png")),//$NON-NLS-2$		
 		OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif"));//$NON-NLS-2$
@@ -74,7 +76,9 @@ public class WidgetActionFactory {
 		Assert.isNotNull(actionType);
 		switch (actionType) {
 		case OPEN_DISPLAY:
-			return new OpenDisplayAction();			
+			return new OpenDisplayAction();		
+		case OPEN_OPI_IN_VIEW:
+			return new OpenOPIInViewAction();
 		case WRITE_PV:
 			return new WritePVAction();
 		case OPEN_FILE:
@@ -83,6 +87,8 @@ public class WidgetActionFactory {
 			return new ExecuteCommandAction();
 		case EXECUTE_JAVASCRIPT:
 			return new ExecuteJavaScriptAction();
+		case EXECUTE_PYTHONSCRIPT:
+			return new ExecutePythonScriptAction();
 		case OPEN_WEBPAGE:
 			return new OpenWebpageAction();
 		case PLAY_SOUND:

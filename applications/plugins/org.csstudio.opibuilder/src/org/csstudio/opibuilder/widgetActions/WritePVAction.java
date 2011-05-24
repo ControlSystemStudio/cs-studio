@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;

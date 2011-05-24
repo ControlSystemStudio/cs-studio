@@ -22,14 +22,14 @@ import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
 import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IProfileDataChangeLisenter;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 
@@ -398,9 +398,12 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	public void setValue(Object value) {
 		if(value instanceof double[] || value instanceof Double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
-		}
+		} else
+			super.setValue(value);
 	}
 
+
+	
 	@Override
 	public void deactivate() {
 		((IntensityGraphFigure)getFigure()).dispose();

@@ -29,6 +29,7 @@ org.csstudio.display.pvtable
 org.csstudio.domain.desy
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logging
 org.csstudio.multiChannelViewer
@@ -50,6 +51,7 @@ org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.shell.fragment
 org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
+org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters

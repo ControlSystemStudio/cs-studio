@@ -23,7 +23,9 @@ import org.csstudio.data.values.Messages;
  */
 public class DoubleValue extends Value implements IDoubleValue
 {
-	/** Map of NumberFormats by precision.
+    private static final long serialVersionUID = 1L;
+
+    /** Map of NumberFormats by precision.
 	 *
 	 *  JProfiler tests showed that about _half_ of the string formatting
 	 *  is spent in creating the suitable NumberFormat,

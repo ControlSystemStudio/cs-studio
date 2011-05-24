@@ -7,7 +7,7 @@
       <objectContribution
             adaptable="true"
             id="org.csstudio.utility.channel.contribution1"
-            objectClass="org.csstudio.utility.channel.ICSSChannel">
+            objectClass="gov.bnl.channelfinder.api.Channel">
          <action
                class="org.csstudio.utility.channel.actions.AddTagAction"
                icon="icons/add_tag.gif"
@@ -40,18 +40,11 @@
             <visibleWhen>
                <with
                      variable="activeMenuSelection">
-                  <or>
-                     <iterate>
-                        <adapt
-                              type="gov.bnl.channelfinder.api.Channel">
-                        </adapt>
-                     </iterate>
-                     <iterate>
-                        <adapt
-                              type="org.csstudio.utility.channel.ICSSChannel">
-                        </adapt>
-                     </iterate>
-                  </or>
+                  <iterate>
+                     <adapt
+                           type="gov.bnl.channelfinder.api.Channel">
+                     </adapt>
+                  </iterate>
                </with>
             </visibleWhen>
          </menu>

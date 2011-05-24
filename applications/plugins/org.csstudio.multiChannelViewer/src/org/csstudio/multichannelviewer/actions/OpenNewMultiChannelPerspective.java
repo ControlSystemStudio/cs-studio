@@ -3,13 +3,14 @@
  */
 package org.csstudio.multichannelviewer.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.csstudio.multichannelviewer.MultiChannelPlot;
 import org.csstudio.multichannelviewer.PerspectiveFactory;
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -40,7 +41,7 @@ public class OpenNewMultiChannelPerspective extends AbstractHandler implements
 	@SuppressWarnings("deprecation")
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		Collection<ICSSChannel> channels = new ArrayList<ICSSChannel>();
+		Collection<Channel> channels = new ArrayList<Channel>();
 		// the most straightforward ;>
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if (selection != null & selection instanceof IStructuredSelection) {
@@ -48,7 +49,7 @@ public class OpenNewMultiChannelPerspective extends AbstractHandler implements
 			for (@SuppressWarnings("rawtypes")
 			Iterator iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.add((ICSSChannel) Platform.getAdapterManager().getAdapter(iterator.next(), ICSSChannel.class));				
+				channels.add((Channel) Platform.getAdapterManager().getAdapter(iterator.next(), Channel.class));				
 			}
 		}
 

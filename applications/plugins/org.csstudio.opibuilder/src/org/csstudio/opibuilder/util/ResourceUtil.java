@@ -10,16 +10,24 @@ package org.csstudio.opibuilder.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.URLPath;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.SWTGraphics;
@@ -27,6 +35,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.LayerManager;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -35,6 +44,7 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -42,6 +52,20 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Xihui Chen, Abadie Lana, Kay Kasemir
  */
 public class ResourceUtil {
+	private static InputStream inputStream;
+	private static Object lock = new Boolean(true);
+	
+	
+	
+		
+	/**
+	 *Return the {@link InputStream} of the file that is available on the
+	 * specified path. The task will run in UIJob. Caller must be in UI thread too.
+	 * @see #pathToInputStream(IPath, boolean)
+	 */
+	public static InputStream pathToInputStream(final IPath path) throws Exception {
+		return pathToInputStream(path, true);
+	}
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
 	 * specified path.
@@ -49,12 +73,14 @@ public class ResourceUtil {
 	 * @param path
 	 *            The {@link IPath} to the file in the workspace, the local
 	 *            file system, or a URL (http:, https:, ftp:, file:, platform:)
-	 *
+	 * @param runInUIJob
+	 * 				true if the task should run in UIJob, which will block UI responsiveness with a progress bar
+	 * on status line. Caller must be in UI thread if this is true.
 	 * @return The corresponding {@link InputStream}. Never <code>null</code>
 	 * @throws Exception
 	 */
 	@SuppressWarnings("nls")
-    public static InputStream pathToInputStream(final IPath path) throws Exception
+    public static InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception
     {
 	    // Try workspace location
 	    final IFile workspace_file = getIFileFromIPath(path);
@@ -87,16 +113,70 @@ public class ResourceUtil {
 
         // Must be a URL
         final URL url = new URL(urlString);
-        try
-        {
-            return url.openStream();
-        }
-        catch (Exception ex)
-        {
-            // Exception can be a FileNotFoundException where the message
-            // is just the URL, so assert that we have a "Cannot open" message:
-            throw new Exception("Cannot open " + url, ex);
-        }
+        inputStream = null;
+        
+		if (runInUIJob) {
+			synchronized (lock) {
+				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+
+					public void run(IProgressMonitor monitor)
+							throws InvocationTargetException,
+							InterruptedException {
+						try {
+							monitor.beginTask("Connecting to " + url,
+									IProgressMonitor.UNKNOWN);
+							inputStream = openURLStream(url);
+						} catch (IOException e) {
+							throw new InvocationTargetException(e,
+									"Timeout while connecting to " + url);
+						} finally {
+							monitor.done();
+						}
+					}
+
+				};
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+						.run(true, false, openURLTask);
+			}
+		}else
+			return openURLStream(url);
+       
+		return inputStream;        
+
+	}
+	
+	private static InputStream openURLStream(final URL url) throws IOException {
+		URLConnection connection = url.openConnection();
+		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
+		return connection.getInputStream();
+	}
+	
+	/**
+	 * Returns a stream which can be used to read this editors input data.
+	 * @param editorInput
+	 *
+	 * @return a stream which can be used to read this editors input data
+	 */
+	public static InputStream getInputStreamFromEditorInput(IEditorInput editorInput) {
+		InputStream result = null;
+		if (editorInput instanceof FileEditorInput) {
+			try {
+				result = ((FileEditorInput) editorInput).getFile()
+						.getContents();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		} else if (editorInput instanceof FileStoreEditorInput) {
+			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
+					.getURI());
+			try {
+				result = new FileInputStream(path.toFile());
+			} catch (FileNotFoundException e) {
+				result = null;
+			}
+		}
+
+		return result;
 	}
 
 	/**Get the IFile from IPath.
@@ -121,6 +201,33 @@ public class ResourceUtil {
 	        // Ignored
 	    }
 	    return null;
+	}
+	
+	/**
+	 * @param path the file path
+	 * @return true if the file path is an existing workspace file.
+	 */
+	public static boolean isExistingWorkspaceFile(IPath path){
+		return getIFileFromIPath(path) != null;
+	}
+	
+	public static boolean isExistingLocalFile(IPath path){
+		 // Not a workspace file. Try local file system
+        File local_file = path.toFile();
+        // Path URL for "file:..." so that it opens as FileInputStream
+        if (local_file.getPath().startsWith("file:"))
+            local_file = new File(local_file.getPath().substring(5));
+        try
+        {
+            InputStream inputStream = new FileInputStream(local_file);
+            inputStream.close();
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+        return true;
+        
 	}
 
 	/**Build the absolute path from the file path (without the file name part)
@@ -176,6 +283,20 @@ public class ResourceUtil {
 		else
 			return new Path(input);
 	}
+	
+	/**Convert workspace path to OS system path.
+	 * @param path the workspace path
+	 * @return the corresponding system path. null if it is not exist.
+	 */
+	public static IPath workspacePathToSysPath(IPath path){
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    	IWorkspaceRoot root = workspace.getRoot();
+    	IResource resource = root.findMember(path);
+    	if(resource != null)
+    		return resource.getLocation();
+    	else
+    		 return null;    		
+	}
 
 	/** Check if a URL is actually a URL
 	 *  @param url Possible URL
@@ -183,7 +304,7 @@ public class ResourceUtil {
 	 */
 	@SuppressWarnings("nls")
     public static boolean isURL(final String url){
-		return url.contains(":/");
+		return url.contains(":/");  //$NON-NLS-1$
 	}
 
 	/**Get screenshot image from GraphicalViewer

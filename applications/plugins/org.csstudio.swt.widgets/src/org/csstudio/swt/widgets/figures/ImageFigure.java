@@ -23,18 +23,21 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.ui.util.UIBundlingThread;
+import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.AbstractInputStreamRunnable;
+import org.csstudio.swt.widgets.util.IJobErrorHandler;
 import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.swt.widgets.util.TextPainter;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Figure;
@@ -48,16 +51,14 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
 
-
 /**
  * An image figure.
- *
+ * 
  * @author jbercic, Xihui Chen
- *
+ * 
  */
 
 public final class ImageFigure extends Figure implements Introspectable {
-
 
 	/**
 	 * The {@link IPath} to the image.
@@ -66,37 +67,37 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * The image itself.
 	 */
-	private Image staticImage=null;
+	private Image staticImage = null;
 	/**
 	 * The width of the image.
 	 */
-	private int imgWidth=0;
+	private int imgWidth = 0;
 	/**
 	 * The height of the image.
 	 */
-	private int imgHeight=0;
+	private int imgHeight = 0;
 
 	/**
 	 * The amount of pixels, which are cropped from the top.
 	 */
-	private int topCrop=0;
+	private int topCrop = 0;
 
 	/**
 	 * The amount of pixels, which are cropped from the bottom.
 	 */
-	private int bottomCrop=0;
+	private int bottomCrop = 0;
 	/**
 	 * The amount of pixels, which are cropped from the left.
 	 */
-	private int leftCrop=0;
+	private int leftCrop = 0;
 	/**
 	 * The amount of pixels, which are cropped from the right.
 	 */
-	private int rightCrop=0;
+	private int rightCrop = 0;
 	/**
 	 * The stretch state for the image.
 	 */
-	private boolean stretch=true;
+	private boolean stretch = true;
 	/**
 	 * If this is an animated image
 	 */
@@ -128,13 +129,11 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	private ImageLoader loader = new ImageLoader();
 
-	//private boolean useGIFBackground = false;
+	// private boolean useGIFBackground = false;
 
 	private ImageData originalStaticImageData = null;
 
 	private int repeatCount;
-
-
 
 	private int animationIndex = 0;
 	private long lastUpdateTime;
@@ -142,11 +141,13 @@ public final class ImageFigure extends Figure implements Introspectable {
 	private ScheduledFuture<?> scheduledFuture;
 
 	private boolean startAnimationRequested = false;
+	
+	private volatile boolean loadingImage;
 
 	/**
 	 * dispose the resources used by this figure
 	 */
-	public synchronized void dispose(){
+	public synchronized void dispose() {
 		stopAnimation();
 		if (offScreenImage != null && !offScreenImage.isDisposed()) {
 			offScreenImage.dispose();
@@ -168,15 +169,18 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @return the auto sized widget dimension according to the static imageSize
 	 */
 	public synchronized Dimension getAutoSizedDimension() {
-		if(originalStaticImageData != null)
-			return new Dimension(originalStaticImageData.width + getInsets().getWidth() - leftCrop - rightCrop,
-						originalStaticImageData.height + getInsets().getHeight() - topCrop - bottomCrop);
+		if (originalStaticImageData != null)
+			return new Dimension(originalStaticImageData.width
+					+ getInsets().getWidth() - leftCrop - rightCrop,
+					originalStaticImageData.height + getInsets().getHeight()
+							- topCrop - bottomCrop);
 		else
 			return null;
 	}
 
 	/**
 	 * Returns the amount of pixels, which are cropped from the top.
+	 * 
 	 * @return The amount of pixels
 	 */
 	public synchronized int getBottomCrop() {
@@ -185,6 +189,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Returns the path to the image.
+	 * 
 	 * @return The path to the image
 	 */
 	public synchronized IPath getFilePath() {
@@ -193,6 +198,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Returns the amount of pixels, which are cropped from the top.
+	 * 
 	 * @return The amount of pixels
 	 */
 	public synchronized int getLeftCrop() {
@@ -201,6 +207,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Returns the amount of pixels, which are cropped from the top.
+	 * 
 	 * @return The amount of pixels
 	 */
 	public synchronized int getRightCrop() {
@@ -209,6 +216,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Returns the stretch state for the image.
+	 * 
 	 * @return True, if it should be stretched, false otherwise
 	 */
 	public synchronized boolean getStretch() {
@@ -217,6 +225,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Returns the amount of pixels, which are cropped from the top.
+	 * 
 	 * @return The amount of pixels
 	 */
 	public synchronized int getTopCrop() {
@@ -230,24 +239,51 @@ public final class ImageFigure extends Figure implements Introspectable {
 		return animationDisabled;
 	}
 
-	private synchronized void loadImage(IPath path) throws Exception {
-		Image temp = null;
-		try {
-			InputStream stream = ResourceUtil.pathToInputStream(filePath);
-			temp=new Image(null,stream);
-			originalStaticImageData = temp.getImageData();
-			imgWidth=originalStaticImageData.width;
-			imgHeight=originalStaticImageData.height;
-			stream.close();
-			stream = ResourceUtil.pathToInputStream(filePath); // reopen stream
-			originalImageDataArray = loader.load(stream);
-			stream.close();
-			animated = (originalImageDataArray.length > 1);
-			repaint();
-		}finally {
-			if (temp != null && !temp.isDisposed())
-				temp.dispose();
-		}
+	public boolean isLoadingImage() {
+		return loadingImage;
+	}
+	
+	private synchronized void loadImage(IPath path,
+			IJobErrorHandler errorHandler) {		
+		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				synchronized (ImageFigure.this) {
+					Image temp = null;
+					try {
+						temp = new Image(null, stream);
+						originalStaticImageData = temp.getImageData();
+						imgWidth = originalStaticImageData.width;
+						imgHeight = originalStaticImageData.height;
+						stream.close();
+					} catch (IOException e) {
+						if (temp != null && !temp.isDisposed())
+							temp.dispose();
+					}
+				}
+			}
+		};
+		ResourceUtil.pathToInputStreamInJob(filePath, uiTask, "Loading Image...",
+				errorHandler);
+		uiTask = new AbstractInputStreamRunnable() {
+
+			@Override
+			public void runWithInputStream(InputStream stream) {
+				synchronized (ImageFigure.this) {
+					originalImageDataArray = loader.load(stream);
+					try {
+						stream.close();
+					} catch (IOException e) {
+					}
+					animated = (originalImageDataArray.length > 1);
+					loadingImage = false;
+					repaint();
+				}
+			}
+		};
+		ResourceUtil.pathToInputStreamInJob(filePath, uiTask, "Loading Image...",
+				errorHandler);
 
 	}
 
@@ -255,113 +291,124 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 *
 	 */
 	@SuppressWarnings("nls")
-    private synchronized void loadImageFromFile() {
-		//load image from file
-		try {
-			if (staticImage==null && !filePath.isEmpty()) {
+	private synchronized void loadImageFromFile() {
+		// load image from file
+		if (staticImage == null && !filePath.isEmpty()) {
+			loadingImage = true;
+			showIndex =0;
+			// loading by stream
+			loadImage(filePath, new IJobErrorHandler() {
 
-				//loading by stream
-				loadImage(filePath);
-			}
-		} catch (Exception e) {
-			loadingError = true;
-			Activator.getLogger().log(Level.WARNING, "ERROR in loading image " + filePath, e);
+				public void handleError(Exception exception) {
+					loadingError = true;
+					loadingImage = false;
+					Activator.getLogger().log(Level.WARNING,
+							"ERROR in loading image " + filePath, exception);
+				}
+			});
 		}
+
 	}
 
 	/**
 	 * The main drawing routine.
-	 * @param gfx The {@link Graphics} to use
+	 * 
+	 * @param gfx
+	 *            The {@link Graphics} to use
 	 */
 	@Override
-    public synchronized void paintFigure(final Graphics gfx) {
-		Rectangle bound=getBounds().getCopy();
+	public synchronized void paintFigure(final Graphics gfx) {
+		if(loadingImage)
+			return;
+		Rectangle bound = getBounds().getCopy();
 		bound.crop(this.getInsets());
-		if(loadingError) {
-				if (staticImage!=null) {
-					staticImage.dispose();
-				}
-				staticImage=null;
-				if (!filePath.isEmpty()) {
-					/*Font f=gfx.getFont();
-					FontData fd=f.getFontData()[0];
-
-					if (bound.width>=20*30) {
-						fd.setHeight(30);
-					} else {
-						if (bound.width/20+1<7) {
-							fd.setHeight(7);
-						} else {
-							fd.setHeight(bound.width/20+1);
-						}
-					}
-					f=new Font(Display.getDefault(),fd);
-					gfx.setFont(f);*/
-					gfx.setBackgroundColor(getBackgroundColor());
-					gfx.setForegroundColor(getForegroundColor());
-					gfx.fillRectangle(bound);
-					gfx.translate(bound.getLocation());
-					TextPainter.drawText(gfx,"ERROR in loading image\n"+filePath,bound.width/2,bound.height/2,TextPainter.CENTER);
-					//f.dispose();
-				}
-				return;
+		if (loadingError) {
+			if (staticImage != null) {
+				staticImage.dispose();
+			}
+			staticImage = null;
+			if (!filePath.isEmpty()) {
+				/*
+				 * Font f=gfx.getFont(); FontData fd=f.getFontData()[0];
+				 * 
+				 * if (bound.width>=20*30) { fd.setHeight(30); } else { if
+				 * (bound.width/20+1<7) { fd.setHeight(7); } else {
+				 * fd.setHeight(bound.width/20+1); } } f=new
+				 * Font(Display.getDefault(),fd); gfx.setFont(f);
+				 */
+				gfx.setBackgroundColor(getBackgroundColor());
+				gfx.setForegroundColor(getForegroundColor());
+				gfx.fillRectangle(bound);
+				gfx.translate(bound.getLocation());
+				TextPainter.drawText(gfx,
+						"ERROR in loading image\n" + filePath, bound.width / 2,
+						bound.height / 2, TextPainter.CENTER);
+				// f.dispose();
+			}
+			return;
 		}
 
-		//create static image
-		if(staticImage == null && originalStaticImageData !=null){
-				if (stretch) {
-					staticImage=new Image(Display.getDefault(),
-							originalStaticImageData.scaledTo(bound.width+leftCrop+rightCrop,
-									bound.height+topCrop+bottomCrop));
-					if(animated) {
-						imageDataArray = new ImageData[originalImageDataArray.length];
-						double widthScaleRatio = (double)(bound.width+leftCrop+rightCrop) / (double)originalStaticImageData.width;
-						double heightScaleRatio = (double)(bound.height+topCrop+bottomCrop) / (double)originalStaticImageData.height;
-						for (int i = 0; i < originalImageDataArray.length; i++){
-							int scaleWidth = (int) (originalImageDataArray[i].width * widthScaleRatio);
-							int scaleHeight = (int) (originalImageDataArray[i].height * heightScaleRatio);
-							int x = (int) (originalImageDataArray[i].x * widthScaleRatio);
-							int y = (int) (originalImageDataArray[i].y * heightScaleRatio);
+		// create static image
+		if (staticImage == null && originalStaticImageData != null) {
+			if (stretch) {
+				staticImage = new Image(Display.getDefault(),
+						originalStaticImageData.scaledTo(bound.width + leftCrop
+								+ rightCrop, bound.height + topCrop
+								+ bottomCrop));
+				if (animated) {
+					imageDataArray = new ImageData[originalImageDataArray.length];
+					double widthScaleRatio = (double) (bound.width + leftCrop + rightCrop)
+							/ (double) originalStaticImageData.width;
+					double heightScaleRatio = (double) (bound.height + topCrop + bottomCrop)
+							/ (double) originalStaticImageData.height;
+					for (int i = 0; i < originalImageDataArray.length; i++) {
+						int scaleWidth = (int) (originalImageDataArray[i].width * widthScaleRatio);
+						int scaleHeight = (int) (originalImageDataArray[i].height * heightScaleRatio);
+						int x = (int) (originalImageDataArray[i].x * widthScaleRatio);
+						int y = (int) (originalImageDataArray[i].y * heightScaleRatio);
 
-							imageDataArray[i] = originalImageDataArray[i].scaledTo(scaleWidth, scaleHeight);
-							imageDataArray[i].x = x;
-							imageDataArray[i].y = y;
-						}
-
+						imageDataArray[i] = originalImageDataArray[i].scaledTo(
+								scaleWidth, scaleHeight);
+						imageDataArray[i].x = x;
+						imageDataArray[i].y = y;
 					}
-				} else {
-					staticImage=new Image(Display.getDefault(),originalStaticImageData);
-					if(animated)
-						imageDataArray = originalImageDataArray;
-				}
-				imgWidth=staticImage.getBounds().width;
-				imgHeight=staticImage.getBounds().height;
 
-				if(animated) {
-					if (offScreenImage != null && !offScreenImage.isDisposed())
-						offScreenImage.dispose();
-					offScreenImage = new Image(Display.getDefault(), imgWidth,
-							imgHeight);
-
-					if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
-						offScreenImageGC.dispose();
-					offScreenImageGC = new GC(offScreenImage);
 				}
+			} else {
+				staticImage = new Image(Display.getDefault(),
+						originalStaticImageData);
+				if (animated)
+					imageDataArray = originalImageDataArray;
 			}
+			imgWidth = staticImage.getBounds().width;
+			imgHeight = staticImage.getBounds().height;
 
-		//avoid negative number
+			if (animated) {
+				if (offScreenImage != null && !offScreenImage.isDisposed())
+					offScreenImage.dispose();
+				offScreenImage = new Image(Display.getDefault(), imgWidth,
+						imgHeight);
+
+				if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
+					offScreenImageGC.dispose();
+				offScreenImageGC = new GC(offScreenImage);
+			}
+		}
+
+		// avoid negative number
 		leftCrop = leftCrop > imgWidth ? 0 : leftCrop;
 		topCrop = topCrop > imgWidth ? 0 : topCrop;
-		int cropedWidth = (imgWidth-leftCrop-rightCrop) > 0 ?
-				(imgWidth-leftCrop-rightCrop) : imgWidth;
-		int cropedHeight = (imgHeight-topCrop-bottomCrop) > 0 ?
-				(imgHeight-topCrop-bottomCrop) : imgHeight;
+		int cropedWidth = (imgWidth - leftCrop - rightCrop) > 0 ? (imgWidth
+				- leftCrop - rightCrop) : imgWidth;
+		int cropedHeight = (imgHeight - topCrop - bottomCrop) > 0 ? (imgHeight
+				- topCrop - bottomCrop) : imgHeight;
 
-		if(leftCrop + cropedWidth > imgWidth || topCrop + cropedHeight > imgHeight)
+		if (leftCrop + cropedWidth > imgWidth
+				|| topCrop + cropedHeight > imgHeight)
 			return;
 
-		if(animated) {   //draw refreshing image
-			if(startAnimationRequested)
+		if (animated) { // draw refreshing image
+			if (startAnimationRequested)
 				realStartAnimation();
 			ImageData imageData = imageDataArray[showIndex];
 			Image refresh_image = new Image(Display.getDefault(), imageData);
@@ -369,53 +416,37 @@ public final class ImageFigure extends Figure implements Introspectable {
 			case SWT.DM_FILL_BACKGROUND:
 				/* Fill with the background color before drawing. */
 				offScreenImageGC.setBackground(getBackgroundColor());
-				offScreenImageGC.fillRectangle(
-						imageData.x, imageData.y, imageData.width, imageData.height);
+				offScreenImageGC.fillRectangle(imageData.x, imageData.y,
+						imageData.width, imageData.height);
 				break;
 			case SWT.DM_FILL_PREVIOUS:
 				/* Restore the previous image before drawing. */
-				Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
-				offScreenImageGC.drawImage(
-					startImage,
-					0,
-					0,
-					imageData.width,
-					imageData.height,
-					imageData.x,
-					imageData.y,
-					imageData.width,
-					imageData.height);
+				Image startImage = new Image(Display.getDefault(),
+						imageDataArray[0]);
+				offScreenImageGC.drawImage(startImage, 0, 0, imageData.width,
+						imageData.height, imageData.x, imageData.y,
+						imageData.width, imageData.height);
 				startImage.dispose();
 				break;
 			}
 
-			offScreenImageGC.drawImage(refresh_image,
-					0,
-					0,
-					imageData.width,
-					imageData.height,
-					imageData.x,
-					imageData.y,
-					imageData.width,
-					imageData.height);
+			offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width,
+					imageData.height, imageData.x, imageData.y,
+					imageData.width, imageData.height);
 
-			gfx.drawImage(offScreenImage, leftCrop,topCrop,
-					cropedWidth,cropedHeight,
-					bound.x,bound.y,
-					cropedWidth,cropedHeight);
+			gfx.drawImage(offScreenImage, leftCrop, topCrop, cropedWidth,
+					cropedHeight, bound.x, bound.y, cropedWidth, cropedHeight);
 			refresh_image.dispose();
 		} else { // draw static image
-			if(animated && animationDisabled && offScreenImage != null && showIndex!=0){
-				gfx.drawImage(offScreenImage, leftCrop,topCrop,
-					cropedWidth,cropedHeight,
-					bound.x,bound.y,
-					cropedWidth,cropedHeight);
-			}else
-				gfx.drawImage(staticImage,
-						leftCrop,topCrop,
-						cropedWidth,cropedHeight,
-						bound.x,bound.y,
-						cropedWidth,cropedHeight);
+			if (animated && animationDisabled && offScreenImage != null
+					&& showIndex != 0) {
+				gfx.drawImage(offScreenImage, leftCrop, topCrop, cropedWidth,
+						cropedHeight, bound.x, bound.y, cropedWidth,
+						cropedHeight);
+			} else
+				gfx.drawImage(staticImage, leftCrop, topCrop, cropedWidth,
+						cropedHeight, bound.x, bound.y, cropedWidth,
+						cropedHeight);
 		}
 	}
 
@@ -423,11 +454,11 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * Resizes the image.
 	 */
 	public synchronized void resizeImage() {
-		if (staticImage!=null && !staticImage.isDisposed()) {
+		if (staticImage != null && !staticImage.isDisposed()) {
 			staticImage.dispose();
 		}
-		staticImage=null;
-		if(refreshing && animated){
+		staticImage = null;
+		if (refreshing && animated) {
 			stopAnimation();
 			startAnimation();
 		}
@@ -435,117 +466,133 @@ public final class ImageFigure extends Figure implements Introspectable {
 	}
 
 	/**
-	 * Automatically make the widget bounds be adjusted to the size of the static image
+	 * Automatically make the widget bounds be adjusted to the size of the
+	 * static image
+	 * 
 	 * @param autoSize
 	 */
-	public synchronized void setAutoSize(final boolean autoSize){
-		if(!stretch && autoSize)
-				resizeImage();
+	public synchronized void setAutoSize(final boolean autoSize) {
+		if (!stretch && autoSize)
+			resizeImage();
 	}
 
-
-	public synchronized void setAnimationDisabled(final boolean stop){
-		if(animationDisabled == stop)
+	public synchronized void setAnimationDisabled(final boolean stop) {
+		if (animationDisabled == stop)
 			return;
 		animationDisabled = stop;
-		if(stop){
+		if (stop) {
 			stopAnimation();
-		}else if(animated){
+		} else if (animated) {
 			startAnimation();
 		}
 	}
 
 	/**
-	 * Automatically make the widget bounds be adjusted to the size of the static image
+	 * Automatically make the widget bounds be adjusted to the size of the
+	 * static image
+	 * 
 	 * @param autoSize
 	 */
-//	public void setAutoSize(final boolean autoSize){
-//		if(!stretch && autoSize)
-//				resizeImage();
-//	}
+	// public void setAutoSize(final boolean autoSize){
+	// if(!stretch && autoSize)
+	// resizeImage();
+	// }
 
 	/**
 	 * Sets the amount of pixels, which are cropped from the bottom.
-	 * @param newval The amount of pixels
+	 * 
+	 * @param newval
+	 *            The amount of pixels
 	 */
 	public synchronized void setBottomCrop(final int newval) {
-		if(bottomCrop == newval || (newval + topCrop)>= imgHeight|| newval <0|| (newval + topCrop) <0 )
+		if (bottomCrop == newval || (newval + topCrop) >= imgHeight
+				|| newval < 0 || (newval + topCrop) < 0)
 			return;
-		bottomCrop=newval;
+		bottomCrop = newval;
 		resizeImage();
 	}
 
 	/**
 	 * Sets the path to the image.
-	 * @param newval The path to the image
+	 * 
+	 * @param newval
+	 *            The path to the image
 	 */
 	public synchronized void setFilePath(final IPath newval) {
-		if(this.filePath != null && this.filePath.equals(newval))
+		if (this.filePath != null && this.filePath.equals(newval))
 			return;
-		if(animated){
+		if (animated) {
 			stopAnimation();
 			animationIndex = 0;
 		}
 		loadingError = false;
-		filePath=newval;
-		if (staticImage!=null  && !staticImage.isDisposed()) {
+		filePath = newval;
+		if (staticImage != null && !staticImage.isDisposed()) {
 			staticImage.dispose();
 		}
-		staticImage=null;
+		staticImage = null;
 
 		loadImageFromFile();
-		if(animated){
+		if (animated) {
 			startAnimation();
 		}
 	}
+
 	/**
 	 * Sets the amount of pixels, which are cropped from the left.
-	 * @param newval The amount of pixels
+	 * 
+	 * @param newval
+	 *            The amount of pixels
 	 */
 	public synchronized void setLeftCrop(final int newval) {
-		if(leftCrop == newval || newval<0 || (newval + rightCrop) > imgWidth|| (newval + rightCrop) <0 )
+		if (leftCrop == newval || newval < 0 || (newval + rightCrop) > imgWidth
+				|| (newval + rightCrop) < 0)
 			return;
-		leftCrop=newval;
+		leftCrop = newval;
 		resizeImage();
 	}
 
 	/**
 	 * Sets the amount of pixels, which are cropped from the right.
-	 * @param newval The amount of pixels
+	 * 
+	 * @param newval
+	 *            The amount of pixels
 	 */
 	public synchronized void setRightCrop(final int newval) {
-		if(rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth || (newval + leftCrop) <0 )
+		if (rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth
+				|| (newval + leftCrop) < 0)
 			return;
-		rightCrop=newval;
+		rightCrop = newval;
 		resizeImage();
 	}
 
-
-
 	/**
-	 * @param showIndex the showIndex to set
+	 * @param showIndex
+	 *            the showIndex to set
 	 */
 	protected synchronized void setShowIndex(int showIndex) {
-		if(showIndex >= imageDataArray.length || this.showIndex == showIndex)
+		if (showIndex >= imageDataArray.length || this.showIndex == showIndex)
 			return;
 		this.showIndex = showIndex;
 		repaint();
 	}
 
-
 	/**
 	 * Sets the stretch state for the image.
-	 * @param newval The new state (true, if it should be stretched, false otherwise)
+	 * 
+	 * @param newval
+	 *            The new state (true, if it should be stretched, false
+	 *            otherwise)
 	 */
 	public synchronized void setStretch(final boolean newval) {
-		if(stretch == newval)
+		if (stretch == newval)
 			return;
-		stretch=newval;
-		if (staticImage!=null  && !staticImage.isDisposed()) {
+		stretch = newval;
+		if (staticImage != null && !staticImage.isDisposed()) {
 			staticImage.dispose();
 		}
-		staticImage=null;
-		if(refreshing && animated){
+		staticImage = null;
+		if (refreshing && animated) {
 			stopAnimation();
 			startAnimation();
 		}
@@ -554,22 +601,23 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * Sets the amount of pixels, which are cropped from the top.
-	 * @param newval The amount of pixels
+	 * 
+	 * @param newval
+	 *            The amount of pixels
 	 */
 	public synchronized void setTopCrop(final int newval) {
-		if(topCrop == newval || newval <0 || (newval + bottomCrop) > imgHeight|| (newval + bottomCrop) <0 )
+		if (topCrop == newval || newval < 0
+				|| (newval + bottomCrop) > imgHeight
+				|| (newval + bottomCrop) < 0)
 			return;
-		topCrop=newval;
+		topCrop = newval;
 		resizeImage();
 	}
-
-
-
 
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if(visible)
+		if (visible)
 			startAnimation();
 		else {
 			stopAnimation();
@@ -577,9 +625,10 @@ public final class ImageFigure extends Figure implements Introspectable {
 	}
 
 	/**
-	 * Start animation. The request will be pended until figure painted for the first time.
+	 * Start animation. The request will be pended until figure painted for the
+	 * first time.
 	 */
-	public synchronized void startAnimation(){
+	public synchronized void startAnimation() {
 		startAnimationRequested = true;
 		repaint();
 	}
@@ -587,37 +636,52 @@ public final class ImageFigure extends Figure implements Introspectable {
 	/**
 	 * start the animation if the image is an animated GIF image.
 	 */
-	public synchronized void realStartAnimation(){
+	public synchronized void realStartAnimation() {
 		startAnimationRequested = false;
-		if(animated && !refreshing && !animationDisabled) {
+		if (animated && !refreshing && !animationDisabled) {
 			repeatCount = loader.repeatCount;
-			//animationIndex = 0;
-			lastUpdateTime=0;
-			interval_ms =0;
+			// animationIndex = 0;
+			lastUpdateTime = 0;
+			interval_ms = 0;
 			refreshing = true;
 			Runnable animationTask = new Runnable() {
 				public void run() {
-					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+					UIBundlingThread.getInstance().addRunnable(new Runnable() {
 
 						public void run() {
 							synchronized (ImageFigure.this) {
-								if(refreshing && (loader.repeatCount ==0 || repeatCount >0)) {
-									long currentTime = System.currentTimeMillis();
-									//use Math.abs() to ensure that the system time adjust won't cause problem
-									if(Math.abs(currentTime - lastUpdateTime) >= interval_ms) {
+								if (refreshing
+										&& (loader.repeatCount == 0 || repeatCount > 0)) {
+									long currentTime = System
+											.currentTimeMillis();
+									// use Math.abs() to ensure that the system
+									// time adjust won't cause problem
+									if (Math.abs(currentTime - lastUpdateTime) >= interval_ms) {
 										setShowIndex(animationIndex);
 										lastUpdateTime = currentTime;
 										int ms = originalImageDataArray[animationIndex].delayTime * 10;
-										animationIndex = (animationIndex + 1) % originalImageDataArray.length;
-										if (ms < 20) ms += 30;
-										if (ms < 30) ms += 10;
+										animationIndex = (animationIndex + 1)
+												% originalImageDataArray.length;
+										if (ms < 20)
+											ms += 30;
+										if (ms < 30)
+											ms += 10;
 										interval_ms = ms;
-										/* If we have just drawn the last image, decrement the repeat count and start again. */
-										if(loader.repeatCount > 0 &&
-												animationIndex == originalImageDataArray.length -1)
-											repeatCount--;									}
-								}else if(loader.repeatCount > 0 && repeatCount <=0){ // stop thread when animation finished
-									if(scheduledFuture !=null){
+										/*
+										 * If we have just drawn the last image,
+										 * decrement the repeat count and start
+										 * again.
+										 */
+										if (loader.repeatCount > 0
+												&& animationIndex == originalImageDataArray.length - 1)
+											repeatCount--;
+									}
+								} else if (loader.repeatCount > 0
+										&& repeatCount <= 0) { // stop thread
+																// when
+																// animation
+																// finished
+									if (scheduledFuture != null) {
 										scheduledFuture.cancel(true);
 										scheduledFuture = null;
 									}
@@ -626,23 +690,25 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 						}
 					});
-			}
-		};
+				}
+			};
 
-			if(scheduledFuture !=null){
+			if (scheduledFuture != null) {
 				scheduledFuture.cancel(true);
 				scheduledFuture = null;
 			}
-			scheduledFuture = ExecutionService.getInstance().
-								getScheduledExecutorService().scheduleAtFixedRate(
-								animationTask, 100, 10, TimeUnit.MILLISECONDS);
+			scheduledFuture = ExecutionService
+					.getInstance()
+					.getScheduledExecutorService()
+					.scheduleAtFixedRate(animationTask, 100, 10,
+							TimeUnit.MILLISECONDS);
 		}
 	}
 
 	/**
 	 * stop the animation if the image is an animated GIF image.
 	 */
-	public synchronized void stopAnimation(){
+	public synchronized void stopAnimation() {
 		if (scheduledFuture != null) {
 			scheduledFuture.cancel(true);
 			scheduledFuture = null;
@@ -652,16 +718,16 @@ public final class ImageFigure extends Figure implements Introspectable {
 
 	/**
 	 * We want to have local coordinates here.
+	 * 
 	 * @return True if here should used local coordinates
 	 */
 	@Override
-    protected boolean useLocalCoordinates() {
+	protected boolean useLocalCoordinates() {
 		return true;
 	}
 
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
-
 
 }

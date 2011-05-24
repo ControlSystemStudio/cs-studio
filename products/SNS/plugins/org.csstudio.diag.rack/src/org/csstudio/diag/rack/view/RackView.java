@@ -9,23 +9,15 @@ package org.csstudio.diag.rack.view;
 
 import java.util.logging.Level;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.diag.rack.Activator;
 import org.csstudio.diag.rack.gui.GUI;
 import org.csstudio.diag.rack.model.RackModel;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.dnd.DropTargetEvent;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -59,43 +51,20 @@ public class RackView extends ViewPart
 	        {
 	            gui = new GUI(parent, control);
 
-	            // Allow Eclipse to listen to PV selection changes
-	            final TableViewer rackTable = gui.getRackTableViewer();
-	            getSite().setSelectionProvider(rackTable);
-
-	            // Allow dragging PV names & Archive Info out of the name table.
-	            new ProcessVariableDragSource(rackTable.getTable(),
-	                            rackTable);
-
 	            // Enable 'Drop'
 	            final Text dvcOrPVFilter = gui.getDVCOrPVEntry();
-	            new ProcessVariableDropTarget(dvcOrPVFilter)
-	            {
-	                @Override
-	                public void handleDrop(IProcessVariable name,
-	                                       DropTargetEvent event)
-	                {
-	                	setDVCOrPVFilter(name.getName());
-	                }
-	            };
-
-	            // Add empty context menu so that other CSS apps can
-	            // add themselves to it
-	            MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-	            menuMgr.setRemoveAllWhenShown(true);
-	            Menu menu = menuMgr.createContextMenu(rackTable.getControl());
-	            rackTable.getControl().setMenu(menu);
-	            getSite().registerContextMenu(menuMgr, rackTable);
-
-	            // Add context menu to the name table.
-	            // One reason: Get object contribs for the NameTableItems.
-	              IWorkbenchPartSite site = getSite();
-	              MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
-	              manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	              Menu contextMenu = manager.createContextMenu(rackTable.getControl());
-	              rackTable.getControl().setMenu(contextMenu);
-	              site.registerContextMenu(manager, rackTable);
-
+	            new ControlSystemDropTarget(dvcOrPVFilter, ProcessVariable.class)
+                {
+                    @Override
+                    public void handleDrop(final Object item)
+                    {
+                        if (item instanceof ProcessVariable)
+                        {
+                            final ProcessVariable pv = (ProcessVariable) item;
+                            setDVCOrPVFilter(pv.getName());
+                        }
+                    }
+                };
 	        }
 	    }
 
@@ -106,7 +75,7 @@ public class RackView extends ViewPart
 	    	gui.setFocus();
 	    }
 
-	    public static boolean activateWithPV(IProcessVariable pv_name)
+	    public static boolean activateWithPV(final ProcessVariable pv_name)
 	    {
 	        try
 	        {

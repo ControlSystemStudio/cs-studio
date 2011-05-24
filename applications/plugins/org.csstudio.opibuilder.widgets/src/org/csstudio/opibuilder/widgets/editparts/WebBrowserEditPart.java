@@ -30,7 +30,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 		final WebBrowserModel model = getWidgetModel();
 		WebBrowserFigure figure = new WebBrowserFigure(
 				(Composite) getViewer().getControl(), model.getParent(),
-				getExecutionMode() == ExecutionMode.RUN_MODE);
+				getExecutionMode() == ExecutionMode.RUN_MODE, model.isShowToolBar());
 		figure.setUrl(model.getURL());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		return figure;

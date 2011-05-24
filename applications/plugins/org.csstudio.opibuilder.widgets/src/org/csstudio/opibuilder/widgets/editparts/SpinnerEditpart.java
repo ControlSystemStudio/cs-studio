@@ -19,13 +19,13 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.SpinnerModel;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.SpinnerFigure;
 import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -304,8 +304,10 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double || value instanceof Integer)
-			((SpinnerFigure)getFigure()).setValue((Double) value);
+		if(value instanceof Number)
+			((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
+		else
+			super.setValue(value);
 	}
 
 

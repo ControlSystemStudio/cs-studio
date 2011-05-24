@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.preferences;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.StringButtonFieldEditor;

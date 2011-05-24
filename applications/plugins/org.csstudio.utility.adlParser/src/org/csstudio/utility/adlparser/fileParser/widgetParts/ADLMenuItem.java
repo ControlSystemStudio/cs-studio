@@ -24,17 +24,10 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.adlparser.Activator;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author hrickens
@@ -72,7 +65,7 @@ public class ADLMenuItem extends WidgetPart {
 
     /**
      * The default constructor.
-     * 
+     *
      * @param menuItem
      *            An ADLWidget that correspond a ADL Menu Item.
      * @param parentWidgetModel
@@ -91,7 +84,7 @@ public class ADLMenuItem extends WidgetPart {
     public ADLMenuItem(){
     	super();
     }
-    
+
     /**
      * {@inheritDoc}
      */

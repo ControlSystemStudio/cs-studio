@@ -16,7 +16,7 @@ import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.formula.Formula;
-import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
+import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -84,8 +84,13 @@ public class ItemConfigDialog extends TitleAreaDialog
     public ItemConfigDialog(final Shell shell, final AlarmTreeItem item)
     {
         super(shell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);
         this.item = item;
+    }
+
+    @Override
+    protected boolean isResizable()
+    {
+        return true;
     }
 
     /** @return description */

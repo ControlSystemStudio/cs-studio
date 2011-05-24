@@ -24,9 +24,6 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSPVUtilData implements PVUtilDataAPI
 {
    final private RDBUtil rdbutil;
-   final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-   final private static String USER = "sns_reports";
-   final private static String PASSWORD = "sns";
 
   /** Connection to the SNS RDB.
    * Dictated by the string variable URL
@@ -35,7 +32,7 @@ public class SNSPVUtilData implements PVUtilDataAPI
    */
    public SNSPVUtilData() throws Exception
    {
-       rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
+       rdbutil = RDBUtil.connect(Preferences.getURL(), Preferences.getUser(), Preferences.getPassword(), true);
     }
 
 	/* (non-Javadoc)

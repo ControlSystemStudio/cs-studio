@@ -10,7 +10,7 @@ package org.csstudio.apputil.macros;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 
 /** A table of macros that's initialized from a string or a hash map,
  *  keeping the macro names and values in a hash
@@ -40,10 +40,10 @@ public class MacroTable implements IMacroTableProvider
     public MacroTable(final String names_and_values) throws Exception
     {
         macros = new HashMap<String, String>();
-        final String pairs[] = StringUtil.splitIgnoreInQuotes(names_and_values, ',', true);
+        final String pairs[] = StringSplitter.splitIgnoreInQuotes(names_and_values, ',', true);
         for (String pair : pairs)
         {
-            final String name_value[] = StringUtil.splitIgnoreInQuotes(pair, '=', true);
+            final String name_value[] = StringSplitter.splitIgnoreInQuotes(pair, '=', true);
             if (name_value.length != 2)
                 throw new Exception("Input '" + pair + "' does not match 'name=value'");
             macros.put(name_value[0], name_value[1]);

@@ -11,10 +11,11 @@
     <h2>
       Widget Properties
     </h2>
-    <p><img src="img/Properties.png" alt="Properties Sheet View" align="right">
-      The outlooking, behavior, location and size of widgets are called properties. The properties could be set in
-      property sheet in editing mode, and also can be changed in the attached scripts during run mode. The value of the
-      any property can be accessed with Property Macro via property_id.
+    <p>
+      <img src="img/Properties.png" alt="Properties Sheet View" align="right">
+      The outlooking, behavior, location and size of widgets are called properties. Properties can be set in property
+      sheet in editing mode, and could also be changed in attached rules or scripts in Runtime. The value of the any
+      property can be accessed with Property Macro via property_id.
     </p>
     <p>
       In most cases, the property_id is following this convention corresponding to the property name:
@@ -24,58 +25,71 @@
       lower case of all characters
     </li>
     <li>
-    eplace space to underscore.
+    replace space with underscore.
   </li>
 </ol>
 <p>
   For Example: The property_id of "Foreground Color" is "foreground_color".
 </p>
 <h3>
-  Common Properties for most widgets
+  Properties Common to All Widgets
 </h3>
 <p>
-  The common properties (PropertyName(Property_id)) for most of the widgets:
+  Few properties may be hidden for some particular widgets on purpose. Property id is shown in braces,
+  which can be used to access the property in <a href="Rules.html">Rules</a> or <a href="Script.html">
+  Scripts</a>.
 </p>
 <ul>
   <li>
   <b>
     Basic
   </b>
-  <ol>
+  <ul>
     <li>
     Name(name). The name of the widget.
   </li>
   <li>
 
-  Widget Type(widget_type). The type of the widget. This is the only property that is uneditable. The name and type of
-  the selected widget will also be displayed on the status bar.
+  Widget Type(widget_type). The type of the widget. This property that is not editable. The name and type of the
+  selected widget will also be displayed on the status bar.
 </li>
-</ol>
+</ul>
 </li>
 <li>
 <b>
   Behavior
 </b>
-<ol>
+<ul>
   <li>
   Actions(actions). The actions assocaited with the widget.
 </li>
 <li>
-Enabled(enabled). A disabled control widget is not controllable.
+Enabled(enabled). A disabled control widget is not operatable.
 </li>
 <li>
-Scripts(scripts). The scripts attached to the widget.
+Rules(rules). The
+<a href="Rules.html">
+  rules
+</a>
+attached to the widget.
+</li>
+<li>
+Scripts(scripts). The
+<a href="Script.html">
+  scripts
+</a>
+attached to the widget.
 </li>
 <li>
 Visible(visible). Visibility of the widget.
 </li>
-</ol>
+</ul>
 </li>
 <li>
 <b>
   Border
 </b>
-<ol>
+<ul>
   <li>
   Border Color(border_color). The color of the border.
 </li>
@@ -85,31 +99,31 @@ Border Style(border_style). The style of the border.
 <li>
 Border width(border_width). The width of the border. Only meaningful for line or dot line styles.
 </li>
-</ol>
+</ul>
 </li>
 <li>
 <b>
   Display
 </b>
-<ol>
+<ul>
   <li>
-  Background Color(background_color).
+  Background Color(background_color). Color of Background.
 </li>
 <li>
-Foreground Color(foreground_color).
+Foreground Color(foreground_color). Color of foreground. In most cases, it is the font color too.
 </li>
 <li>
-Tooltip(tooltip). Tooltip of the widget. Macros are allowed and can be updated. The property macro $(pv_value) could be
-used to show the PV value which has timestamp, value, severity and status.
+Tooltip(tooltip). Tooltip of the widget. Macros are allowed and can be updated when tooltip is shown again. The property
+macro $(pv_value) could be used to show the PV value which has timestamp, value, severity and status.
 </li>
 
-</ol>
+</ul>
 </li>
 <li>
 <b>
   Position
 </b>
-<ol>
+<ul>
   <li>
   Height(height). The height of the widget in pixels.
 </li>
@@ -123,37 +137,11 @@ coordinate is allowed, but is not recommended.
 <li>
 Y(y). Y location coordinate in pixels
 </li>
-</ol>
+</ul>
 </li>
 </ul>
-<h3>
-  Common Properties for PV widgets
-</h3>
-<p>
-  For the widget which has the property of "PV Name(pv_name)", "Readback PV(pv_name)" or "Control PV(control_pv)", we
-  call it PV Widget. During runtime, right click a PV widget and then you will see the "CSS" context menu which allows
-  it connecting with other CSS Applications. The PV name is the bridge of the connection.
-</p>
-<p>The common properties for most of the PV widgets:
-</p>
-<ol>
-<li>PV Name(pv_name). The name of the main PV associated with the widget.
-</li>
-<li>Readback PV(pv_name). Same as PV Name.
-</li>
-<li>Control PV(control_pv). The name of the PV to be controlled.
-</li>
-<li>Limits From PV(limits_from_pv). Load the Maximum, Minimum, HIHI, HI, LOLO, LO limits from PV.
-</li>
-<li>Border Alarm Sensitive(border_alarm_sensitive). The border color and style will change to alarm border and color when PV is in alarm state.
-</li>
-<li>ForeColor Alarm Sensitive(forecolor_alarm_sensitive). 
-</li>
-<li>BackColor Alarm Sensitive(backcolor_alarm_sensitive).
-</li>
-</ol>
-<p>There is also an invisible property: <b>pv_value</b>, which is the value of the PV.
-</p>
-<p></p>
+
+<br>
+
 </body>
 </html>

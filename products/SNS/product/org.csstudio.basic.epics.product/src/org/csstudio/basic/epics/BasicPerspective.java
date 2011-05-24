@@ -22,7 +22,7 @@ public class BasicPerspective implements IPerspectiveFactory
     @Override
     public void createInitialLayout(final IPageLayout layout)
     {
-        layout.addView(IPageLayout.ID_RES_NAV, // Deprecated, but what use instead?
+        layout.addView("org.eclipse.ui.views.ResourceNavigator",
                 IPageLayout.LEFT, 0.33f,
                 IPageLayout.ID_EDITOR_AREA);
 

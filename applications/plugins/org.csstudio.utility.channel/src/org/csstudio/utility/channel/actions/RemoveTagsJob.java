@@ -5,13 +5,13 @@ package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import static org.csstudio.utility.channel.CSSChannelUtils.*;
+import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class RemoveTagsJob extends Job {
 
-	private Collection<ICSSChannel> channels;
+	private Collection<Channel> channels;
 	private Collection<String> selectedTags;
 
 	/**
@@ -34,7 +34,7 @@ public class RemoveTagsJob extends Job {
 	 * @param channels - list of channels from which tags need to be removed
 	 * @param selectedTags - list of tag names to be removed
 	 */
-	public RemoveTagsJob(String name, Collection<ICSSChannel> channels,
+	public RemoveTagsJob(String name, Collection<Channel> channels,
 			Collection<String> selectedTags) {
 		super(name);
 		this.channels = channels;

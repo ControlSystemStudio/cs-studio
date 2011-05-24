@@ -27,7 +27,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 
 /**
  * 
@@ -43,10 +43,9 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 
 	public static final String PROP_ACTIONS_FROM_PV = "actions_from_pv"; //$NON-NLS-1$
 	
-	/**
-	 * The ID of the text alignment property.
-	 */
-	public static final String PROP_TEXT_ALIGNMENT = "text_alignment"; //$NON-NLS-1$
+	
+	public static final String PROP_TRANSPARENT = "transparent";	//$NON-NLS-1$
+
 	/**
 	 * The default value of the height property.
 	 */
@@ -80,6 +79,8 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
 				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
+		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent", 
+				WidgetPropertyCategory.Display, false));
 		removeProperty(PROP_ACTIONS);		
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
@@ -106,17 +107,13 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 		return (String) getProperty(PROP_LABEL).getPropertyValue();
 	}
 	
-	/**
-	 * Returns the alignment for the text.
-	 * @return int 
-	 * 			0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
-	 */
-	public int getTextAlignment() {
-		return (Integer) getProperty(PROP_TEXT_ALIGNMENT).getPropertyValue();
-	}
 
 	public boolean isActionsFromPV(){
 		return (Boolean)getCastedPropertyValue(PROP_ACTIONS_FROM_PV);
+	}
+
+	public boolean isTransparent() {
+		return (Boolean)getPropertyValue(PROP_TRANSPARENT);
 	}
 	
 }

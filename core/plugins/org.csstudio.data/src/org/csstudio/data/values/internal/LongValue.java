@@ -22,7 +22,9 @@ import org.csstudio.data.values.Messages;
  */
 public class LongValue extends Value implements ILongValue
 {
-	private final long values[];
+    private static final long serialVersionUID = 1L;
+
+    private final long values[];
 
     /** Constructor from pieces. */
 	public LongValue(final ITimestamp time, final ISeverity severity,

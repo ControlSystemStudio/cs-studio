@@ -13,7 +13,7 @@ import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.AlarmTreeActionIcon;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.platform.ui.util.DisplayUtil;
+import org.csstudio.openfile.DisplayUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;

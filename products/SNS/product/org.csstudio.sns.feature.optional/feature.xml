@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.optional"
       label="Optional SNS Control Room Tools"
-      version="2.5.1.qualifier"
+      version="3.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -47,15 +47,12 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <requires>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.csstudio.platform"/>
-      <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.apputil.ui"/>
       <import plugin="org.csstudio.platform.libs.jms"/>
       <import plugin="org.csstudio.platform.utility.jms" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.junit4" version="4.3.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
@@ -67,6 +64,15 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.navigator" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
       <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logging" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.alarm.beast.ui" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

@@ -15,7 +15,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -102,7 +102,7 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(PROP_TEXT, "Text",
-				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, "$(actions)", true)); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
 				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		

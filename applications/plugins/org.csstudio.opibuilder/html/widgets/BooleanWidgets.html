@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Boolean Widgets
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Boolean Widgets
+    </h2>
+    
+    <p>
+    Boolean widgets are those widgets that are able to display 
+    or write boolean value to a PV or one of its bits. 
+    For example: <a href="LED.html">LED</a>, 
+    <a href="BoolButton.html">Boolean Button</a>, 
+    <a href="BoolSwitch.html">Boolean Switch</a> and 
+    <a href="ImageBoolButton.html">Image Boolean Button</a>.
+    Boolean widgets only accept numeric or enum PV. It will convert double or float number to 
+    Long Integer before processing it.
+    </p>
+    
+    <h3>Operations Common to Boolean Control Widgets</h3>
+   <p>For a toggled boolean control widget which has its <code>Toggle Button</code> property
+   set as yes,  pressing left mouse button to change its state. It will remain its state after
+   left mouse button released.
+   	For a not toggled boolean control widget, pressing left mouse button to turn it on and releasing 
+   	the left mouse button to turn it off. It remains ON while left mouse button is pressed.
+    </p>
+    
+    
+    <h3>Properties Common to Boolean Widgets</h3>
+    <ul>   
+    <li>Data Type (data_type)<dl><dd>The data type to be operated by this widget, which could be 
+	    <code>Bit</code> or <code>Enum</code>. 
+	    If it is <code>Bit</code>, the widget  will write 0/1 to the corresponding bit 
+	    (specified by <code>Bit</code> property) of the PV. If it is ENUM, it will read/write the 
+	    <code>On State</code> or <code>Off State</code> 
+		property value to the PV.</dd></dl></li>
+	
+    <li>Bit (bit)<dl><dd>Which bit of the PV value to read and write.
+    If this is -1 or any negative number, it will read non-zero value as true and zero as false, 
+    and it will write value 0/1 to the whole PV value. </dd></dl></li>
+	<li>On State (on_state) <dl><dd>If data type is Enum, it will read PV value as true if PV's 
+	string value equals this property, otherwise, it reads PV value as false.
+	And it will write this string to the PV when this widget
+	is set to on.</dd></dl></li>
+    <li>Off State (off_state) <dl><dd>If data type is Enum, it will write this string to  
+    PV when this widget	is set to off.</dd></dl></li>
+    <li>On Label (on_label)<dl><dd>The label text when the widget is on.</dd></dl></li>
+    <li>Off Label (off_label)<dl><dd>The label text when the widget is off.</dd></dl></li>
+    <li>On Color (on_color) <dl><dd>Color of the widget when it is on.</dd></dl></li>
+    <li>Off Color (off_color) <dl><dd>Color of the widget when it is off.</dd></dl></li>    
+	<li>Show Boolean Label (show_boolean_label) <dl><dd>If the boolean label should be visible.</dd></dl></li>
+     <li>Effect 3D (effect_3D) <dl><dd> Draw widget with advanced graphics to make 3D effect.
+    In some platforms, advance graphics may not be available, in which case the widget will not be drawn 
+	with advanced graphics even this is set to yes. The advance graphics function can also be disabled 
+	from <a href="../PreferencePage.html">Preference Settings</a>.</dd></dl></li>
+    </ul>
+    
+    <h3>Properties Common to Boolean Control Widgets</h3>
+    <p>Boolean Control Widgets are those boolean widgets that able to write value to a PV.</p>
+    <ul>
+    <li>Toggle Button (toggle_button) <dl><dd>If yes, this widget will toggle
+    to the state after pressing on it. If not, this widget will back to the origin state when 
+    mouse is released. </dd></dl></li>
+    <li>Push Action Index / Click Action Index (push_action_index) <dl><dd>Index of the action to be executed when 
+    widget is pushed. The actions are configured in <code>Actions</code> property.</dd></dl></li>
+    <li>Release Action Index (release_action_index) <dl><dd>Index of the action to be executed when 
+    mouse on the widget is released. The actions are configured in <code>Actions</code> property.</dd></dl></li>
+    <li>Show Confirm Dialog (show_confirm_dialog) <dl><dd>Show a confirm dialog when widget is operated.
+    If <code>Password</code> property is not empty, it will show a password input dialog.</dd></dl></li>
+	<li>Confirm Message (confirm_message) <dl><dd>The message to be displayed in the confirm dialog.</dd></dl></li>
+    <li>Password (password) <dl><dd>The password needed to perform operations on the widget if
+    <code>Show Confirm Dialog</code> is <code>Yes</code>.</dd></dl></li>
+     
+    </ul>
+<h3>See Also</h3>
+   <ul>
+   <li><a href="PVWidgets.html">Properties Common to PV Widgets</a></li>
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+<br>
+
+</body>
+</html>

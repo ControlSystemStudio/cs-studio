@@ -9,13 +9,16 @@ package org.csstudio.utility.clock.preferences;
 
 import org.csstudio.utility.clock.Messages;
 import org.csstudio.utility.clock.Plugin;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /** Clock prefs.
  *  @author Kay Kasemir
@@ -25,22 +28,24 @@ public class PreferencePage extends FieldEditorPreferencePage
 {
     /** Preference ID (also used in preferences.ini) */
     final private static  String P_HOURS = "hours"; //$NON-NLS-1$
-    
+
+    final public static int DEFAULT_HOURS = 25;
+
     /** Minimum value */
     final private static int min = 24;
-    
+
     /** Maximum value */
     final private static int max = 35;
 
+    /** Initialize */
     public PreferencePage()
     {
-        setPreferenceStore(Plugin.getDefault().getPreferenceStore());
+        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Plugin.ID));
         setMessage(Messages.PreferencePage_Title);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
+    /** {@inheritDoc} */
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
@@ -58,11 +63,13 @@ public class PreferencePage extends FieldEditorPreferencePage
         hour_editor.setValidRange(min, max);
         addField(hour_editor);
     }
-    
+
     /** @return Total hour setting */
     static public int getHours()
     {
-        IPreferenceStore store = Plugin.getDefault().getPreferenceStore();
-        return store.getInt(P_HOURS);
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return DEFAULT_HOURS;
+        return prefs.getInt(Plugin.ID, P_HOURS, DEFAULT_HOURS, null);
     }
 }

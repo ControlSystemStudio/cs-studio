@@ -20,12 +20,12 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -83,7 +83,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		YPV("y_pv", "Y PV"),
 		XPV_VALUE("x_pv_value", "X PV Value"),
 		YPV_VALUE("y_pv_value", "Y PV Value"),
-		CHRONOLOGICAL("chronological", "Chronological"),		
+		//CHRONOLOGICAL("chronological", "Chronological"),		
 		TRACE_COLOR("trace_color","Trace Color"),
 		XAXIS_INDEX("x_axis_index", "X Axis Index"),
 		YAXIS_INDEX("y_axis_index", "Y Axis Index"),
@@ -319,7 +319,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 					"$(" + makeTracePropID(TraceProperty.YPV.propIDPre, traceIndex) + ")"));
 			break;
 		case ANTI_ALIAS:
-		case CHRONOLOGICAL:
+//		case CHRONOLOGICAL:
 			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
 		case BUFFER_SIZE:

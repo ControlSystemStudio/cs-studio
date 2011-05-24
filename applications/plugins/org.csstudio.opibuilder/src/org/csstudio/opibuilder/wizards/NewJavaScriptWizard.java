@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
 
-/**A wizard for creating new OPI Files.
+/**A wizard for creating new Javascript File.
  * @author Xihui Chen
  */
 public class NewJavaScriptWizard extends Wizard implements INewWizard {

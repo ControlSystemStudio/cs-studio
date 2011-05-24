@@ -32,13 +32,6 @@ public class DefaultProject implements ProjectExtPoint
     public Object openProjects(Display display, IApplicationContext context,
             Map<String, Object> parameters)
     {
-        // TODO Must call something from the CSS UI plugin?
-        // Exact mechanism unclear, but when NOT doing this,
-        // the initial ResourceNavigator instance won't show
-        // the 'CSS' project that we're about to create/open?!
-        //        System.out.println("CSS UI plugin: " +
-        //                CSSPlatformUiPlugin.getDefault().getPluginId());
-
         // Assert that there is an open "CSS" project.
         // Without that, an existing 'CSS' might show up,
         // but a 'new Folder' action would run into

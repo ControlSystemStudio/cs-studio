@@ -6,7 +6,8 @@
       <plug
             id="Tango"
             name="Tango"
-            propertyFactoryClass="org.epics.css.dal.tango.PropertyFactoryImpl"/>
+            propertyFactoryClass="org.epics.css.dal.tango.PropertyFactoryImpl"
+            propertyFactoryService="org.csstudio.platform.libs.dal.tango.Activator"/>
    </extension>
 
 </plugin>

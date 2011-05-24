@@ -6,7 +6,8 @@
       <plug
             id="TINE"
             name="TINE"
-            propertyFactoryClass="de.desy.css.dal.tine.PropertyFactoryImpl"/>
+            propertyFactoryClass="de.desy.css.dal.tine.PropertyFactoryImpl"
+            propertyFactoryService="org.csstudio.platform.libs.dal.tine.Activator"/>
    </extension>
 
 </plugin>
