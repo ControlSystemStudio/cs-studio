@@ -55,10 +55,9 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -77,19 +76,22 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
 
+	private static final int OFFSET_TO_PARENT = 50;
+	
+	private static final int SHELL_BORDER = 20;
+	
+	private static final int SCROLLBAR_MARGIN = 15;
+
 	private EditPartViewerProxy _editPartViewerProxy;
 
 	private RunModeContextMenuProvider _contextMenuProvider;
 
 	/**
-	 * The width of the ScrollBars.
-	 */
-	private static final int SCROLLBAR_WIDTH = 17;
-
-	/**
 	 * The shell.
 	 */
 	private Shell _shell;
+
+	private Point location;
 
 	
 	/**
@@ -98,47 +100,58 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 	 * @param input
 	 *            the input
 	 */
-	public ShellRunModeBox(RunModeBoxInput input) {
+	public ShellRunModeBox(RunModeBoxInput input, Point parentLocation) {
 		super(input);
+		
+		if (parentLocation != null) {
+			this.location = new Point(parentLocation.x + OFFSET_TO_PARENT, parentLocation.y + OFFSET_TO_PARENT);
+		} 
+	}
+	
+	protected void setLocation(Point location) {
+		this.location = location;
+	}
+	
+	protected boolean hasLocation() {
+		return location != null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unused")
-	protected GraphicalViewer doOpen(final int x, final int y, final int width, final int height, final String title) {
+	protected GraphicalViewer doOpen(final int width, final int height, final String title) {
 		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
 		
 		// create a shell
 		_shell = new Shell();
 		_shell.setText(title);
-		_shell.setLocation(x, y);
+		if (location != null) {
+			_shell.setLocation(location.x, location.y);
+		} else {
+			_shell.setLocation(0, 0);
+		}
 		_shell.setLayout(getFillLayout());
 		_shell.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/sds.gif"));
-		if (predecessors.size() > 0) {
-			_shell.setSize(width + SCROLLBAR_WIDTH + 17, height + SCROLLBAR_WIDTH + 66); 
-		} else {
-			_shell.setSize(width + SCROLLBAR_WIDTH + 1, height + SCROLLBAR_WIDTH + 50); 
-		}
+		_shell.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		
 		
 		final ScrolledComposite scrollComposite = new ScrolledComposite(_shell, SWT.V_SCROLL | SWT.H_SCROLL);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
-		scrollComposite.setSize(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 0);
 		scrollComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0, 0).create());
 		scrollComposite.setLayout(getFillLayout());
+		scrollComposite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 		
 		// create a parent composite that fills the whole shell
 		GridLayout parentLayout = new GridLayout(1, false);
-		parentLayout.marginBottom = -5;
-		parentLayout.marginTop = -5;
-		parentLayout.marginLeft = -5;
-		parentLayout.marginRight = -5;
 		parentLayout.horizontalSpacing = 0;
+		parentLayout.marginWidth = 0;
+		parentLayout.marginHeight = 0;
 		parentLayout.verticalSpacing = 0;
 		final Composite parent = new Composite(scrollComposite, SWT.NONE);
+//		final Composite parent = new Composite(_shell, SWT.NONE);
 		parent.setLayout(parentLayout);
-		parent.setSize(width, height + 20);
+		parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
 		
 		// create a composite for the graphical viewer
 		Composite c = new Composite(parent, SWT.NONE);
@@ -147,12 +160,14 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		
 		// create a composite for path and navigation information
 
+		int fullHeight = height;
+		int fullWidth = width;
+		
 		if (predecessors.size() > 0) {
 			Composite navigation = new Composite(parent, SWT.NONE);
 			RowLayout rowLayout = new RowLayout();
 			navigation.setLayout(rowLayout);
-			navigation.setLayoutData(GridDataFactory.fillDefaults().align(SWT.FILL,	SWT.BOTTOM).grab(true, false).create());
-			
+			navigation.setLayoutData(GridDataFactory.fillDefaults().align(SWT.FILL,	SWT.BOTTOM).grab(true, false).create());	
 
 			for (int i = 0; i < predecessors.size(); i++) {
 				new LinkLabel(navigation, predecessors.get(i));
@@ -161,8 +176,11 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 					new SeparatorLabel(navigation);
 				}
 			}
-
+			//navigation.pack();
+			Point size = navigation.computeSize(width, SWT.DEFAULT);
+			fullHeight = fullHeight + size.y ;
 		}
+		_shell.setSize(fullWidth + SCROLLBAR_MARGIN, fullHeight + SHELL_BORDER + SCROLLBAR_MARGIN); 
 
 		// configure a graphical viewer
 		final GraphicalViewer graphicalViewer = createGraphicalViewer(c);
@@ -201,7 +219,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		});
 
 		// open the shell
-		_shell.open();
+		_shell.open();		
 
 		return graphicalViewer;
 	}
@@ -400,8 +418,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 			_label.setForeground(CustomMediaFactory.getInstance().getColor(0, 0, 255));
 			_label.addMouseListener(this);
 			_label.addMouseTrackListener(this);
-			_label
-					.setToolTipText(_input.calculateFullPath() + " [" + new SimpleDateFormat("hh:mm").format(new Date(input.getTimestamp()))
+			_label.setToolTipText(_input.calculateFullPath() + " [" + new SimpleDateFormat("hh:mm").format(new Date(input.getTimestamp()))
 							+ "]");
 		}
 
@@ -420,6 +437,11 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 
 		public void mouseHover(MouseEvent e) {
 		}
+	}
+
+	@Override
+	public Point getCurrentLocation() {
+		return _shell.getLocation();
 	}
 
 }

@@ -34,6 +34,7 @@ import org.csstudio.sds.ui.internal.runmode.ShellRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.ViewRunModeBox;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IMemento;
 
@@ -98,6 +99,12 @@ public final class RunModeService {
 				aliases, RunModeType.SHELL);
 
 		runModeBoxInput.setPredecessorBox(predecessor);
+		
+		Point location = null;
+		if (_activeBoxes.containsKey(predecessor)) {
+			AbstractRunModeBox runModeBox = _activeBoxes.get(predecessor);
+			location = runModeBox.getCurrentLocation();
+		}
 
 		if (_activeBoxes.containsKey(runModeBoxInput)) {
 			AbstractRunModeBox box = _activeBoxes.get(runModeBoxInput);
@@ -105,7 +112,7 @@ public final class RunModeService {
 		} else {
 			try {
 				final AbstractRunModeBox runModeBox = new ShellRunModeBox(
-						runModeBoxInput);
+						runModeBoxInput, location);
 
 				// memorize box
 				_activeBoxes.put(runModeBoxInput, runModeBox);
