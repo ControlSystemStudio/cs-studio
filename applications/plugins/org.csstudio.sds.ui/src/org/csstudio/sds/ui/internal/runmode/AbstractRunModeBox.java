@@ -32,7 +32,6 @@ import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
@@ -55,6 +54,7 @@ import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.SelectionTool;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.epics.css.dal.simple.SimpleDALBroker;
@@ -122,6 +122,10 @@ public abstract class AbstractRunModeBox {
 		_disposeListeners = new ArrayList<IRunModeDisposeListener>();
 		_propertyListeners = new HashMap<WidgetProperty, IPropertyChangeListener>();
 	}
+	
+	protected abstract boolean hasLocation();
+	
+	protected abstract void setLocation(Point location);
 
 	/**
 	 * Open!
@@ -189,8 +193,11 @@ public abstract class AbstractRunModeBox {
 														: "");
 											}
 										}
+										if (!hasLocation()) {
+											setLocation(new Point(x, y));
+										}
 
-										_graphicalViewer = doOpen(x, y, width,
+										_graphicalViewer = doOpen(width,
 												height, title.toString());
 
 										// configure the viewer
@@ -223,10 +230,6 @@ public abstract class AbstractRunModeBox {
 	 * the necessary listeners to the created workbench parts which call
 	 * {@link #dispose()} on this box, in case the part is closed by the user.
 	 *
-	 * @param x
-	 *            x position hint
-	 * @param y
-	 *            y position hin
 	 * @param width
 	 *            width hint
 	 * @param height
@@ -235,7 +238,7 @@ public abstract class AbstractRunModeBox {
 	 *            a title
 	 * @return the {@link GraphicalViewer} which is used to display the model
 	 */
-	protected abstract GraphicalViewer doOpen(int x, int y, int width,
+	protected abstract GraphicalViewer doOpen(int width,
 			int height, String title);
 
 	/**
@@ -395,4 +398,7 @@ public abstract class AbstractRunModeBox {
 
 		return result;
 	}
+	
+	public abstract Point getCurrentLocation();
+	
 }

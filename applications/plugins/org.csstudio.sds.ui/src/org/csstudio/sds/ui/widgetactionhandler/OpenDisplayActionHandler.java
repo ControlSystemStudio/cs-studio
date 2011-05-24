@@ -36,6 +36,7 @@ import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swt.graphics.Point;
 
 /**
  * Opens a display in a shell.
@@ -82,31 +83,29 @@ public final class OpenDisplayActionHandler implements IWidgetActionHandler {
 		}
 
 		// close the parent display if necessary
-		
+
 		boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
 				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
-		
-		if(displayAction.getClose() || shouldClose) {
+
+		if (displayAction.getClose() || shouldClose) {
 			RuntimeContext rtc = widget.getRoot().getRuntimeContext();
-			
-			if(rtc!=null) {
-				RunModeService.getInstance().closeRunModeBox(rtc.getRunModeBoxInput());
+
+			if (rtc != null) {
+				RunModeService.getInstance().closeRunModeBox(
+						rtc.getRunModeBoxInput());
 			}
 		}
-		
-		// open the new display in a shell or view 
-		if(displayAction.getTarget()==OpenDisplayActionTarget.SHELL) {
-		RunModeService.getInstance().openDisplayShellInRunMode(
-				path,
-				forwardedAliases,
-				(RunModeBoxInput) widget.getRoot().getRuntimeContext()
-						.getRunModeBoxInput());
-		}
-		else if(displayAction.getTarget()==OpenDisplayActionTarget.VIEW) {
-		    RunModeService.getInstance().openDisplayViewInRunMode(
+
+		// open the new display in a shell or view
+		if (displayAction.getTarget() == OpenDisplayActionTarget.SHELL) {
+			RunModeService.getInstance().openDisplayShellInRunMode(
 					path,
-					forwardedAliases
-					);
+					forwardedAliases,
+					(RunModeBoxInput) widget.getRoot().getRuntimeContext()
+							.getRunModeBoxInput());
+		} else if (displayAction.getTarget() == OpenDisplayActionTarget.VIEW) {
+			RunModeService.getInstance().openDisplayViewInRunMode(path,
+					forwardedAliases);
 		} else {
 			throw new IllegalArgumentException("Not implemented yet.");
 		}

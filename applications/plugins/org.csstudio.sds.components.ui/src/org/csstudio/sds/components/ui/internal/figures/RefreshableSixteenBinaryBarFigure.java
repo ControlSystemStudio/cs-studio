@@ -15,7 +15,6 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
@@ -75,11 +74,8 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
     @Override
     public void paint(final Graphics graphics) {
         super.paint(graphics);
-        Rectangle bound = getBounds().getCopy();
         _crossedOutAdapter.paint(graphics);
         _rhombusAdapter.paint(graphics);
-
-
     }
 
     /**
@@ -169,8 +165,8 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
      *
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
-    public final Object getAdapter(final Class adapter) {
+    @SuppressWarnings("rawtypes")
+	public final Object getAdapter(final Class adapter) {
         if (adapter == IBorderEquippedWidget.class) {
             if (_borderAdapter == null) {
                 _borderAdapter = new BorderAdapter(this);
@@ -372,11 +368,7 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
         public void setInternalFrame(final int thickness, final Color color) {
             if (color != null) {
                 if (thickness > 0) {
-                    if (color != null) {
-                        setBorder(new LineBorder(color, thickness));
-                    } else {
-                        setBorder(new LineBorder(thickness));
-                    }
+                    setBorder(new LineBorder(color, thickness));
                 } else {
                     setBorder(null);
                 }
