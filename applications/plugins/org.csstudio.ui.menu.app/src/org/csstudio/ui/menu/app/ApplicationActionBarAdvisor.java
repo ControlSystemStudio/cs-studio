@@ -108,8 +108,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
 
         // 'File' and 'User' sections of the cool bar
-        IToolBarManager file_bar = new ToolBarManager();
-        IToolBarManager user_bar = new ToolBarManager();
+        final IToolBarManager file_bar = new ToolBarManager();
+        final IToolBarManager user_bar = new ToolBarManager();
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
         coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
 
