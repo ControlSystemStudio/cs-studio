@@ -8,6 +8,7 @@
 package org.csstudio.basic.epics;
 
 import org.csstudio.logging.ui.ConsoleViewHandler;
+import org.csstudio.ui.menu.app.ApplicationActionBarAdvisor;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -46,10 +47,8 @@ public class BasicWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor
     }
 
     @Override
-    public ActionBarAdvisor createActionBarAdvisor(
-                    final IActionBarConfigurer configurer)
+    public ActionBarAdvisor createActionBarAdvisor(final IActionBarConfigurer configurer)
     {
-        return new BasicActionBarAdvisor(configurer);
+        return new ApplicationActionBarAdvisor(configurer);
     }
-
 }

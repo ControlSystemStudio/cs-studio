@@ -6,6 +6,7 @@ Bundle-Version: 3.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.expressions,
+ org.eclipse.equinox.security;bundle-version="1.0.200",
  org.eclipse.ui,
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
