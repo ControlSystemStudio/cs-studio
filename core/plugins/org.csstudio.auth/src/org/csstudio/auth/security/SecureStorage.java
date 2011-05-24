@@ -4,7 +4,11 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.csstudio.auth.internal.AuthActivator;
+import org.csstudio.auth.internal.preferences.PreferencesHelper;
 import org.csstudio.auth.securestore.SecureStore;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
@@ -39,7 +43,17 @@ public class SecureStorage
     /** @return URL of the file that stores the secure settings */
 	private static URL getStorageURL() throws MalformedURLException
     {
-        return new URL(Platform.getConfigurationLocation().getURL()+"secure_storage");
+		URL secureStorageLocation;
+		switch (PreferencesHelper.getSecureStorageLocation()) {		
+		case INSTALL_LOCATION:
+			secureStorageLocation = Platform.getInstallLocation().getURL();
+			break;
+		case CONFIGURATION_LOCATION:
+		default:
+			secureStorageLocation = Platform.getConfigurationLocation().getURL();
+			break;
+		}
+        return new URL(secureStorageLocation + "secure_storage");
     }
 
     /**Retrieve value of the key specified from the secure storage file  
@@ -95,10 +109,8 @@ public class SecureStorage
     	    // running into an error:
     	    // In that case, calling CentralLogger from here would create
     	    // infinite loop.
-    	    System.err.println("Failed to read value of " + key + " from secure storage");
-    	    e.printStackTrace(System.err);
-//    	    CentralLogger.getInstance().getLogger(new SecureStorage()).error(
-//	            "Failed to read value of " + key + " from secure storage", e);
+    		Logger.getLogger(AuthActivator.ID).log(Level.SEVERE,
+    				"Failed to read value of " + key + " from secure storage", e);
 		}		
     	//in case of no value in secure storage, return the preference value 
     	return Platform.getPreferencesService().getString(qualifier, key, null, null);
