@@ -53,7 +53,7 @@ else
     fi
   if [[ ! -f eclipse-3.6.1-delta-pack.zip ]]
   then
-    wget http://download.eclipse.org/eclipse/downloads/drops/R-3.6.1-201009090800/eclipse-3.6.1-delta-pack.zip
+    wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.6.1-201009090800/eclipse-3.6.1-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-helios-SR1-linux-gtk.tar.gz
   unzip -o eclipse-3.6.1-delta-pack.zip
