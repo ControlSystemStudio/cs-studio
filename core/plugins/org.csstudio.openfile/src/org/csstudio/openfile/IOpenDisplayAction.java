@@ -15,7 +15,7 @@ package org.csstudio.openfile;
 public interface IOpenDisplayAction
 {
     /** Extension point that uses this interface */
-    final public static String EXTENSION_POINT_ID = "org.csstudio.platform.ui.openDisplay";
+    final public static String EXTENSION_POINT_ID = "org.csstudio.openfile.openDisplay";
 
     /**Open display
 	 * @param path the path of the display file, format defined by implementation

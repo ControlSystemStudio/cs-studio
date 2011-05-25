@@ -367,13 +367,6 @@
       </objectContribution>
    </extension>
    <extension
-         point="org.csstudio.platform.ui.openDisplay">
-      <openDisplay
-            class="org.csstudio.opibuilder.actions.ExternalOpenDisplayAction"
-            file_extension="opi">
-      </openDisplay>   
-   </extension>
-   <extension
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
             content="intro/firststeps.xml"
@@ -432,5 +425,12 @@
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
+   </extension>
+   <extension
+         point="org.csstudio.openfile.openDisplay">
+      <openDisplay
+            class="org.csstudio.opibuilder.actions.ExternalOpenDisplayAction"
+            file_extension="opi">
+      </openDisplay>
    </extension>
 </plugin>
