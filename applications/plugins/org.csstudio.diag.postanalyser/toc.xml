@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#diag" label="FFT">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#diag" label="FFT">
 	<topic label="Post Analyzer">
 		<topic label="Overview"        href="html/index.html"/>
 		<topic label="Add data"        href="html/index.html#add"/>

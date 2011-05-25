@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#display" label="PACE Editor">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#display" label="PACE Editor">
 	<topic label="PACE Editor"  href="html/pace_editor.html">
 	   <topic label="Starting the PACE Editor" href="html/open_config.html"/>
 	   <topic label="Editing Values" href="html/edit_limits.html"/>
