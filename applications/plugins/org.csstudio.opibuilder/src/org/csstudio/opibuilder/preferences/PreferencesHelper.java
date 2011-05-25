@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.csstudio.java.string.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -185,9 +185,9 @@ public class PreferencesHelper {
     	if(rawString == null)
     		return null;
     	Map<IPath, MacrosInput> result = new LinkedHashMap<IPath, MacrosInput>();
-    	String[] rows = StringUtil.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, false);
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, false);
 		for(String rowString : rows){
-			String[] items = StringUtil.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
+			String[] items = StringSplitter.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
 			IPath path = null;
 			MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 			for(int i= 0; i<items.length; i++){
@@ -199,7 +199,7 @@ public class PreferencesHelper {
 						path = new Path(urlString);
 				}
 				else{
-					String[] macro = StringUtil.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
+					String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
 					if(macro.length == 2)
 						macrosInput.getMacrosMap().put(macro[0], macro[1]);
 				}
@@ -219,7 +219,7 @@ public class PreferencesHelper {
     	String rawString = getString(PYTHON_PATH);
     	if(rawString == null || rawString.isEmpty())
     		return null;
-    	String[] rawPaths = StringUtil.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
+    	String[] rawPaths = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
     	StringBuilder sb = new StringBuilder();
     	for(String rawPath : rawPaths){
     		IPath path = new Path(rawPath);

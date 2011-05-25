@@ -9,8 +9,9 @@ package org.csstudio.opibuilder.script;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.csstudio.java.string.StringUtil;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
@@ -142,8 +143,8 @@ public class RuleData implements IAdaptable{
 		boolean needDbl = false, needInt = false, needStr = false, needSev=false;
 		for(Expression exp : expressionList){
 			if(!needDbl)
-				needDbl = StringUtil.containRegex(exp.getBooleanExpression(), "pv\\d") || //$NON-NLS-1$
-						(outputExpValue && StringUtil.containRegex(exp.getValue().toString(), "pv\\d")); //$NON-NLS-1$
+				needDbl = containRegex(exp.getBooleanExpression(), "pv\\d") || //$NON-NLS-1$
+						(outputExpValue && containRegex(exp.getValue().toString(), "pv\\d")); //$NON-NLS-1$
 			if(!needInt){
 				if(exp.getBooleanExpression().contains("pvInt")) //$NON-NLS-1$
 					needInt = true;
@@ -251,8 +252,7 @@ public class RuleData implements IAdaptable{
 		return ruleScriptData;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
 				
@@ -279,5 +279,16 @@ public class RuleData implements IAdaptable{
 
 	public AbstractWidgetModel getWidgetModel() {
 		return widgetModel;
+	}
+	
+	/**If a String contains the regular expression.
+	 * @param source the source string.
+	 * @param regex the regular expression.
+	 * @return true if the source string contains the input regex. false other wise.
+	 */
+	private static boolean containRegex(final String source, final String regex) {
+		final Pattern p = Pattern.compile(regex);
+		final Matcher m = p.matcher(source);
+		return m.find();
 	}
 }

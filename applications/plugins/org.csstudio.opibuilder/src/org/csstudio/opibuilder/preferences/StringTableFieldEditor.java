@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.csstudio.java.string.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.ui.util.swt.stringtable.RowEditDialog;
 import org.csstudio.ui.util.swt.stringtable.StringTableEditor;
@@ -150,12 +150,12 @@ public class StringTableFieldEditor extends FieldEditor {
 
 	public static List<String[]> decodeStringTable(final String flattedString) throws Exception{
 		final List<String[]> result = new ArrayList<String[]>();
-		final String[] rows = StringUtil.splitIgnoreInQuotes(flattedString, ROW_SEPARATOR, false);
+		final String[] rows = StringSplitter.splitIgnoreInQuotes(flattedString, ROW_SEPARATOR, false);
 		for(String rowString : rows){
 		    // Skip empty rowString, don't split it into String[1] { "" }
 		    if (rowString.length() <= 0)
 		        continue;
-			final String[] items = StringUtil.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
+			final String[] items = StringSplitter.splitIgnoreInQuotes(rowString, ITEM_SEPARATOR, true);
 			result.add(items);
 		}
 		return result;

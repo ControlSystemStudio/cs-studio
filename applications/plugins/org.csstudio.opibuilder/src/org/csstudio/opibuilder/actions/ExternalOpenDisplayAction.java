@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.actions;
 
 import java.util.LinkedHashMap;
 
-import org.csstudio.java.string.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.openfile.IOpenDisplayAction;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
@@ -33,9 +33,9 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 			//parse macros
 			if(data != null && data.trim().length() > 0){
 				macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
-				 final String pairs[] = StringUtil.splitIgnoreInQuotes(data, ',', true); //$NON-NLS-1$
+				 final String pairs[] = StringSplitter.splitIgnoreInQuotes(data, ',', true); //$NON-NLS-1$
 			     for (String pair : pairs){
-			        final String name_value[] = StringUtil.splitIgnoreInQuotes(pair, '=', true); //$NON-NLS-1$
+			        final String name_value[] = StringSplitter.splitIgnoreInQuotes(pair, '=', true); //$NON-NLS-1$
 			        if (name_value.length != 2)
 			                throw new Exception("Input '" + pair + "' does not match 'name=value'");
 			            macrosInput.getMacrosMap().put(name_value[0], name_value[1]);
