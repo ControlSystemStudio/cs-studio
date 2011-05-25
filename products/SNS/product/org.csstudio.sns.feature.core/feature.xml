@@ -69,12 +69,12 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.logging" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.jaasAuthentication" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.0.0" match="greaterOrEqual"/>
    </requires>
@@ -247,13 +247,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.auth.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.openfile"
          download-size="0"
          install-size="0"
@@ -339,6 +332,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.auth.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

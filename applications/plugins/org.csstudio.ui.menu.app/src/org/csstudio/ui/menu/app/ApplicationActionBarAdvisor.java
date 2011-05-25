@@ -46,32 +46,44 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
 
     final private IWorkbenchWindow window;
 
-	private IWorkbenchAction lockToolBarAction;
+	private IWorkbenchAction lock_toolbar, edit_actionsets, save;
 
-	private IWorkbenchAction editActionSetAction;
-
+	/** Initialize */
     public ApplicationActionBarAdvisor(final IActionBarConfigurer configurer)
     {
         super(configurer);
         window = configurer.getWindowConfigurer().getWindow();
     }
 
-    /** {@inheritDoc} */
+    /** Create actions.
+     *
+     *  <p>Some of these actions are created to programmatically
+     *  add them to the toolbar.
+     *  Other actions like save_as are not used at all in here,
+     *  but they need to be created because the plugin.xml
+     *  registers their command ID in the menu bar,
+     *  and the action actually implements the handler.
+     *  The actions also provide the dynamic enablement.
+     *
+     *  {@inheritDoc}
+     */
 	@Override
     protected void makeActions(final IWorkbenchWindow window)
     {
-        lockToolBarAction = ActionFactory.LOCK_TOOL_BAR.create(window);
-        register(lockToolBarAction);
+        lock_toolbar = ActionFactory.LOCK_TOOL_BAR.create(window);
+        register(lock_toolbar);
 
-        editActionSetAction = ActionFactory.EDIT_ACTION_SETS.create(window);
-        register(editActionSetAction);
+        edit_actionsets = ActionFactory.EDIT_ACTION_SETS.create(window);
+        register(edit_actionsets);
 
-        // The help menu tries to invoke the into(welcome)
-        // and help commands, but by default no handler is
-        // available. Registering these actions also
-        // registers the handlers.
+        save = ActionFactory.SAVE.create(window);
+        register(save);
+
+        register(ActionFactory.SAVE_AS.create(window));
+
         if (window.getWorkbench().getIntroManager().hasIntro())
             register(ActionFactory.INTRO.create(window));
+
         register(ActionFactory.HELP_CONTENTS.create(window));
     }
 
@@ -89,21 +101,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     {
         // Set up the context Menu
         final MenuManager coolbarPopupMenuManager = new MenuManager();
-        coolbarPopupMenuManager.add(new ActionContributionItem(lockToolBarAction));
-        coolbarPopupMenuManager.add(new ActionContributionItem(editActionSetAction));
+        coolbarPopupMenuManager.add(new ActionContributionItem(lock_toolbar));
+        coolbarPopupMenuManager.add(new ActionContributionItem(edit_actionsets));
         coolbar.setContextMenuManager(coolbarPopupMenuManager);
         final IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
         menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
 
         // 'File' and 'User' sections of the cool bar
-        IToolBarManager file_bar = new ToolBarManager();
-        IToolBarManager user_bar = new ToolBarManager();
+        final IToolBarManager file_bar = new ToolBarManager();
+        final IToolBarManager user_bar = new ToolBarManager();
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
         coolbar.add(new ToolBarContributionItem(user_bar, TOOLBAR_USER));
 
         // File 'new' and 'save' actions
         file_bar.add(ActionFactory.NEW.create(window));
-        file_bar.add(ActionFactory.SAVE.create(window));
+        file_bar.add(save);
         file_bar.add(new CoolItemGroupMarker(IWorkbenchActionConstants.FILE_END));
     }
 }
