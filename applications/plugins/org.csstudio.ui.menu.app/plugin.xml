@@ -67,7 +67,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="org.csstudio.ui.menu.app.command1"
+                  commandId="org.csstudio.ui.menu.app.switch_workspace"
                   label="%FileSwitchWorkspace"
                   style="push">
             </command>
@@ -283,6 +283,11 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.ui.menu.app.handlers.SwitchWorkspace"
+            id="org.csstudio.ui.menu.app.switch_workspace"
+            name="%FileSwitchWorkspace">
+      </command>
       <command
             defaultHandler="org.csstudio.ui.menu.app.handlers.Restart"
             id="org.csstudio.ui.menu.app.restart"
