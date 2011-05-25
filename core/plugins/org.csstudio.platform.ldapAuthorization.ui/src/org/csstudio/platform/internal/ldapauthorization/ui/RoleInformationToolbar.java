@@ -48,17 +48,17 @@ import org.csstudio.platform.internal.ldapauthorization.LdapAuthorizationReader;
 import org.csstudio.platform.internal.ldapauthorization.ui.localization.Messages;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 /**
@@ -80,8 +80,10 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void handleUserManagementEvent(final UserManagementEvent event) {
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     // Force an update of the contribution manager. This will
                     // cause the contribution manager to ask the contribution
@@ -137,17 +139,20 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
 			}
 
 			Button button = new Button(composite, SWT.PUSH);
-			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-					false));
+			GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT,22).align(SWT.FILL, SWT.TOP).indent(0,-2).create();
+			button.setLayoutData(layoutData);
 			button.setText(Messages.RoleInformationToolbar_ButtonText);
 			button.setToolTipText(sb.toString());
+			button.setCursor(new Cursor(null, SWT.CURSOR_HELP));
 			button.addSelectionListener(new SelectionListener() {
 
-				public void widgetSelected(SelectionEvent e) {
+				@Override
+                public void widgetSelected(SelectionEvent e) {
 					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
 				}
 
-				public void widgetDefaultSelected(SelectionEvent e) {
+				@Override
+                public void widgetDefaultSelected(SelectionEvent e) {
 					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
 				}
 			});
