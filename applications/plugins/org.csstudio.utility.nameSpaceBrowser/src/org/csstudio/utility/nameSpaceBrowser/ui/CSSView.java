@@ -28,13 +28,14 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
+import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
-import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.eclipse.jface.action.IMenuListener;
@@ -171,12 +172,8 @@ public class CSSView extends Composite implements Observer {
                    final String defaultFilter,
                    final String selection,
                    final String[] headlines,
-                   final int level) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
-
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
-        makeListField(selection);
+                   final int level) throws Exception {
+        this(parent, automat, nameSpace, site, defaultFilter, selection, headlines, level, null);
     }
 
     public CSSView(final Composite parent,
@@ -187,33 +184,16 @@ public class CSSView extends Composite implements Observer {
                    final String selection,
                    final String[] headlines,
                    final int level,
-                   final String fixFrist) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
-
-        _haveFixFirst = true;
-        _fixFirst = fixFrist;
-
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
-        makeListField(selection);
-    }
-
-    private CSSView(final Composite parent,
-                    final Automat automat,
-                    final NameSpace nameSpace,
-                    final IWorkbenchPartSite site,
-                    final String defaultFilter,
-                    final String[] headlines,
-                    final int level) {
+                   final String fixFrist) throws Exception {
         super(parent, SWT.NONE);
         _display = parent.getDisplay();
 
-        this._automat = automat;
-        this._nameSpace = nameSpace;
-        this._parent = parent;
-        this._site = site;
-        this._headlines = headlines;
-        this._level = level;
+        _automat = automat;
+        _nameSpace = nameSpace;
+        _parent = parent;
+        _site = site;
+        _headlines = headlines;
+        _level = level;
         _defaultPVFilter = defaultFilter;
 
         init();
@@ -221,6 +201,12 @@ public class CSSView extends Composite implements Observer {
         NameSpaceSearchResult searchResult = nameSpace.getSearchResult();
         // FIXME (bknerr) : Antipattern - here, the 'this' pointer is used although object is not completely constructed
         searchResult.addObserver(this);
+        _fixFirst = fixFrist;
+        _haveFixFirst = _fixFirst!=null;
+
+        // Make a Textfield to Filter the list. Can text drop
+        makeFilterField();
+        makeListField(selection);
     }
 
     /**
@@ -306,8 +292,9 @@ public class CSSView extends Composite implements Observer {
     /**
      * Creates the new child CSSView.
      * @param viewParams
+     * @throws Exception 
      */
-    protected void makeChild(final CSSViewParameter viewParams) {
+    protected void makeChild(final CSSViewParameter viewParams) throws Exception {
         _parent.setRedraw(false);
         // Has a child, destroy it.
         if (_hasChild) {
@@ -327,13 +314,15 @@ public class CSSView extends Composite implements Observer {
             final String stringWithoutBrackets = selectionString.substring(1, selectionString.length() - 1);
             final ControlSystemItem csi = _itemList.get(stringWithoutBrackets);
 
-            if (_fixFirst == null) {
-                _child =
-                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1); //$NON-NLS-1$
-            } else {
-                _child =
-                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _fixFirst); //$NON-NLS-1$
-            }
+            _child = new CSSView(_parent,
+                                 _automat,
+                                 _nameSpace.createNew(),
+                                 _site,
+                                 _defaultPVFilter,
+                                 csi.getPath(),
+                                 _headlines,
+                                 _level + 1,
+                                 _fixFirst); //$NON-NLS-1$
         } else {
 
             final Collection<ControlSystemItem> values = _itemList.values();
@@ -445,9 +434,10 @@ public class CSSView extends Composite implements Observer {
 
     /**
      * @param selection
+     * @throws Exception 
      *
      */
-    private void makeListField(final String selection) {
+    private void makeListField(final String selection) throws Exception {
         _cssParameter = getParameter(selection);
 
         final NameSpaceBrowserState state = _automat.getState();
@@ -586,7 +576,12 @@ public class CSSView extends Composite implements Observer {
                     // angeklickt werden kann.
                     if (_cssParameter.newCSSView) {
                         _parent.setEnabled(false);
-                        makeChild(_cssParameter);
+                        try {
+                            makeChild(_cssParameter);
+                        } catch (Exception e) {
+                            ErrorDetailDialog errorDetailDialog = new ErrorDetailDialog(null, "Titel", e.getLocalizedMessage(), e.toString());
+                            errorDetailDialog.open();
+                        }
                         _parent.setEnabled(true);
                     }
                 }
