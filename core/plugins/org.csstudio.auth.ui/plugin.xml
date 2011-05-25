@@ -14,7 +14,7 @@
      </menuContribution>
      <menuContribution
            allPopups="false"
-           locationURI="menu:file?after=workspace">
+           locationURI="menu:file?after=user">
         <command
               commandId="org.csstudio.auth.ui.log_in"
               icon="icons/switch_user.png"
