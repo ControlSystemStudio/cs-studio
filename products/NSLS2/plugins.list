@@ -4,8 +4,6 @@ org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.auth
 org.csstudio.auth.ui
-org.csstudio.archive
-org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
@@ -13,7 +11,6 @@ org.csstudio.csdata
 org.csstudio.data
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
-org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
@@ -38,7 +35,6 @@ org.csstudio.swt.chart
 org.csstudio.swt.widgets
 org.csstudio.swt.xygraph
 org.csstudio.testsuite
-org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
@@ -46,7 +42,6 @@ org.csstudio.ui.util
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
-org.csstudio.utility.channel.legacy
 org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
@@ -62,7 +57,6 @@ org.csstudio.utility.pvmanager.jfreechart.widgets
 org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.widgets
-org.csstudio.platform
 org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.epics
@@ -76,7 +70,6 @@ org.csstudio.platform.libs.jfreechart
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
-org.csstudio.platform.ui
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.rdb
 org.csstudio.remote
