@@ -70,11 +70,11 @@ public class Activator extends AbstractCssPlugin {
 
 	@Override
 	protected void doStart(final BundleContext context) throws Exception {
-		final IIocConnectionReporter reporter = new IocConnectionReporter();
-		final Dictionary<String, Object> props = new Hashtable<String, Object>();
-		props.put("org.csstudio.management.remoteservice", Boolean.TRUE);
-		context.registerService(IIocConnectionReporter.class.getName(),
-				reporter, props);
+//		final IIocConnectionReporter reporter = new IocConnectionReporter();
+//		final Dictionary<String, Object> props = new Hashtable<String, Object>();
+//		props.put("org.csstudio.management.remoteservice", Boolean.TRUE);
+//		context.registerService(IIocConnectionReporter.class.getName(),
+//				reporter, props);
 
 		_ldapServiceTracker = new LdapServiceTracker(context);
 		_ldapServiceTracker.open();
