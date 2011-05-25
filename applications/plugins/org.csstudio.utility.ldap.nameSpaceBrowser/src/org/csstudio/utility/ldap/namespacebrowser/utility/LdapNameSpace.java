@@ -36,7 +36,9 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NameParser;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
@@ -127,6 +129,8 @@ public class LdapNameSpace extends NameSpace {
         
         for (final SearchResult row : answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
             String cleanList = row.getName();
+            Attribute attribute = row.getAttributes().get("epicsCsIsRedundant");
+            NamingEnumeration<? extends Attribute> all = row.getAttributes().getAll();
             // Delete "-Chars that add from LDAP-Reader when the result contains special character
             if(cleanList.startsWith("\"")) { //$NON-NLS-1$
                 if(cleanList.endsWith("\"")) {
@@ -147,7 +151,7 @@ public class LdapNameSpace extends NameSpace {
             if(cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
                 tmpList.add(new ProcessVariable(token[1], cleanList));
             } else {
-                tmpList.add(new ControlSystemItem(token[1], cleanList));
+                tmpList.add(new ControlSystemItem(token[1], cleanList, attribute));
             }
             
         }

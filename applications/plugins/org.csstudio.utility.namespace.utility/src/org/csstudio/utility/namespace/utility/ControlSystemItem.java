@@ -21,6 +21,9 @@
  */
 package org.csstudio.utility.namespace.utility;
 
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+
 import org.csstudio.platform.model.IControlSystemItem;
 
 public class ControlSystemItem implements IControlSystemItem {
@@ -28,14 +31,45 @@ public class ControlSystemItem implements IControlSystemItem {
 	private final String _name;
 	private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
 	private final String _path;
+    private boolean _redundant;
 
 
 	public ControlSystemItem(final String name, final String path) {
-		this._name = name;
-		this._path = path;
+		this(name, path, null);
 	}
 
-	public String getName() {
+	/**
+     * Constructor.
+     * @param string
+     * @param cleanList
+     * @param attribute
+     */
+    public ControlSystemItem(String name, String path, Attribute attribute) {
+        this._name = name;
+        this._path = path;
+        setRedundant(attribute);
+    }
+
+    /**
+     * @param attribute
+     */
+    private void setRedundant(Attribute attribute) {
+        _redundant = false;
+        if(attribute!=null) {
+            try {
+                Object object = attribute.get();
+                if(object instanceof String) {
+                    String redu = (String) object;
+                    _redundant = redu.compareToIgnoreCase("true") == 0;
+                }
+            } catch (NamingException e) {
+                _redundant = false;
+            }
+        }
+    }
+
+    @Override
+    public String getName() {
 		return _name;
 	}
 
@@ -43,7 +77,8 @@ public class ControlSystemItem implements IControlSystemItem {
 		return _path;
 	}
 
-	public String getTypeId() {
+	@Override
+    public String getTypeId() {
 		return TYPE_ID;
 	}
 
@@ -56,4 +91,8 @@ public class ControlSystemItem implements IControlSystemItem {
     public String toString(){
 		return _name;
 	}
+
+    public boolean isRedundant() {
+        return _redundant;
+    }
 }

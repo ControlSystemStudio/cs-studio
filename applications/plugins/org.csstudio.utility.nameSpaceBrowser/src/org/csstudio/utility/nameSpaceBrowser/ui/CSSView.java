@@ -43,6 +43,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -62,6 +63,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -85,8 +88,24 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CSSView extends Composite implements Observer {
 
-    class CSSLabelProvider implements ILabelProvider {
+    class CSSLabelProvider implements ILabelProvider, IFontProvider{
 
+        
+        private final Font _font;
+        private final Font _boldFont;
+
+
+        /**
+         * Constructor.
+         * @param font 
+         */
+        public CSSLabelProvider(Font font) {
+            _font = font;
+            FontData fontData = font.getFontData()[0];
+            _boldFont = new Font(null, new FontData(fontData.getName(), fontData.getHeight(), SWT.BOLD));
+        }
+        
+        
         /**
          * (@inheritDoc)
          */
@@ -126,16 +145,32 @@ public class CSSView extends Composite implements Observer {
          * (@inheritDoc)
          */
         @Override
-        public void dispose() {
+        public void removeListener(final ILabelProviderListener listener) {
             // Empty
         }
 
         /**
-         * (@inheritDoc)
+         * {@inheritDoc}
          */
         @Override
-        public void removeListener(final ILabelProviderListener listener) {
-            // Empty
+        public Font getFont(Object element) {
+            Font font = _font;
+            if(element instanceof ControlSystemItem) {
+                if(((ControlSystemItem) element).isRedundant()) {
+                    font = _boldFont;
+                }
+            }
+            return font;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void dispose() {
+            _font.dispose();
+            _boldFont.dispose();
         }
     }
 
@@ -422,7 +457,7 @@ public class CSSView extends Composite implements Observer {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
-                    _tableViewer.setInput(new ArrayList<Object>(_itemList.values()).toArray());
+                    _tableViewer.setInput(_itemList.values().toArray());
                 } else if (e.keyCode == SWT.F1) {
                     PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
                 }
@@ -460,7 +495,8 @@ public class CSSView extends Composite implements Observer {
                                                 getSize().y - (_filter.getSize().y + 31));
             }
         });
-        _tableViewer.setLabelProvider(new CSSLabelProvider());
+        Font font = _tableViewer.getTable().getFont();
+        _tableViewer.setLabelProvider(new CSSLabelProvider(font));
         _tableViewer.setContentProvider(new ArrayContentProvider());
         _tableViewer.setSorter(new ViewerSorter());
         //        listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
