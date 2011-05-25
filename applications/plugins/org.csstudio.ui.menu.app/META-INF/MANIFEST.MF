@@ -5,6 +5,7 @@ Bundle-Description: Provide common application menu entries (File, Edit, Window,
 Bundle-SymbolicName: org.csstudio.ui.menu.app;singleton:=true
 Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.0",
  org.csstudio.ui.menu;bundle-version="3.0.0"

@@ -8,15 +8,15 @@
             locationURI="menu:org.eclipse.ui.main.menu?before=additions">
          <menu
                id="file"
-               label="File"
+               label="%File"
                mnemonic="F">
             <command
                   commandId="org.eclipse.ui.newWizard"
-                  label="New"
+                  label="%FileNew"
                   style="push">
             </command>
             <menu
-                  label="Recent Files...">
+                  label="%FileRecent">
                 <dynamic
                       class="org.csstudio.ui.menu.app.handlers.MenuReopenEditors"
                       id="org.csstudio.ui.menu.app.reopen_editors">
@@ -31,12 +31,12 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.file.close"
-                  label="Close"
+                  label="%FileClose"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.closeAll"
-                  label="Close All"
+                  label="%FileCloseAll"
                   style="push">
             </command>
             <separator
@@ -45,31 +45,49 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.file.save"
-                  label="Save"
+                  label="%FileSave"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.saveAll"
-                  label="Save All"
+                  label="%FileSaveAll"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.saveAs"
-                  label="Save As"
+                  label="%FileSaveAs"
                   style="push">
             </command>
+            <separator
+                  name="user"
+                  visible="true">
+            </separator>
             <separator
                   name="workspace"
                   visible="true">
             </separator>
             <command
+                  commandId="org.csstudio.ui.menu.app.command1"
+                  label="%FileSwitchWorkspace"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.csstudio.ui.menu.app.restart"
+                  label="%FileRestart"
+                  style="push">
+            </command>
+            <separator
+                  name="export"
+                  visible="true">
+            </separator>
+            <command
                   commandId="org.eclipse.ui.file.import"
-                  label="Import"
+                  label="%FileImport"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.file.export"
-                  label="Export"
+                  label="%FileExport"
                   style="push">
             </command>
             <separator
@@ -81,7 +99,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.file.exit"
-                  label="Exit"
+                  label="%FileExit"
                   style="push">
             </command>
          </menu>
@@ -91,15 +109,15 @@
             locationURI="menu:org.eclipse.ui.main.menu?before=additions">
          <menu
                id="edit"
-               label="Edit">
+               label="%Edit">
             <command
                   commandId="org.eclipse.ui.edit.undo"
-                  label="Undo"
+                  label="%EditUndo"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.edit.redo"
-                  label="Redo"
+                  label="%EditRedo"
                   style="push">
             </command>
             <separator
@@ -108,27 +126,27 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.edit.cut"
-                  label="Cut"
+                  label="%EditCut"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.edit.copy"
-                  label="Copy"
+                  label="%EditCopy"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.edit.paste"
-                  label="Paste"
+                  label="%EditPaste"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.edit.delete"
-                  label="Delete"
+                  label="%EditDelete"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.edit.selectAll"
-                  label="Select All"
+                  label="%EditSelectAll"
                   style="push">
             </command>
             <separator
@@ -137,7 +155,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.edit.findReplace"
-                  label="Find/Replace..."
+                  label="%EditFind"
                   style="push">
             </command>
             <separator
@@ -150,10 +168,10 @@
             locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
          <menu
                id="window"
-               label="Window">
+               label="%Window">
             <command
                   commandId="org.eclipse.ui.window.newWindow"
-                  label="New Window"
+                  label="%WindowNew"
                   style="push">
             </command>
             <separator
@@ -161,14 +179,14 @@
                   visible="true">
             </separator>
             <menu
-                  label="Open Perspective">
+                  label="%WindowPerspective">
                <dynamic
                      class="org.csstudio.ui.menu.app.handlers.OpenPerspectiveMenu"
                      id="org.csstudio.ui.menu.app.open_perspective">
                </dynamic>
             </menu>
             <menu
-                  label="Show View">
+                  label="%WindowView">
                <dynamic
                      class="org.csstudio.ui.menu.app.handlers.ShowViewMenu"
                      id="org.csstudio.ui.menu.app.show_view">
@@ -205,7 +223,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.window.preferences"
-                  label="Preferences..."
+                  label="%WindowPreferences"
                   style="push">
             </command>
          </menu>
@@ -216,17 +234,17 @@
             locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
          <menu
                id="help"
-               label="Help">
+               label="%Help">
             <command
                   commandId="org.eclipse.ui.help.quickStartAction"
                   icon="icons/css16.gif"
-                  label="Welcome"
+                  label="%HelpWelcome"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
                   icon="icons/css16.gif"
-                  label="About"
+                  label="%HelpAbout"
                   style="push">
             </command>
             <separator
@@ -236,12 +254,12 @@
             <command
                   commandId="org.eclipse.ui.help.helpContents"
                   icon="icons/help.gif"
-                  label="Help Contents"
+                  label="%HelpContent"
                   style="push">
             </command>
             <command
                   commandId="org.eclipse.ui.views.showView"
-                  label="Cheat Sheets..."
+                  label="%HelpCheat"
                   style="push">
                 <parameter
                     name="org.eclipse.ui.views.showView.viewId"
@@ -262,5 +280,13 @@
             </separator>
          </menu>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.ui.menu.app.handlers.Restart"
+            id="org.csstudio.ui.menu.app.restart"
+            name="%FileRestart">
+      </command>
    </extension>
 </plugin>
