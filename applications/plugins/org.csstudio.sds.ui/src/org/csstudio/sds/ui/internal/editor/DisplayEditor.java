@@ -56,6 +56,7 @@ import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
+import org.csstudio.sds.ui.internal.actions.ArrangeAction;
 import org.csstudio.sds.ui.internal.actions.CopyWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.CreateGroupAction;
 import org.csstudio.sds.ui.internal.actions.CutWidgetsAction;
@@ -642,8 +643,6 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
-		
-		System.out.println("DisplayEditor.refreshGridLayer()");
 	}
 
 	/**
@@ -773,7 +772,11 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
-		action = new ArrangeHorizontalAction(this);
+		action = new ArrangeAction(this, Arrange.HORIZONTAL);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeAction(this, Arrange.VERTICAL);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
