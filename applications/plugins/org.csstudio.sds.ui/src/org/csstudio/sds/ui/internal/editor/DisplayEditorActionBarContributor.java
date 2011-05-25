@@ -22,6 +22,7 @@
 package org.csstudio.sds.ui.internal.editor;
 
 import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.sds.ui.internal.actions.ArrangeAction;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.gef.ui.actions.ActionBarContributor;
 import org.eclipse.gef.ui.actions.AlignmentRetargetAction;
@@ -90,6 +91,14 @@ public class DisplayEditorActionBarContributor extends ActionBarContributor {
 		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				SdsUiPlugin.PLUGIN_ID, "icons/ruler.png"));
 		addRetargetAction(a);
+		
+		a = new RetargetAction(ArrangeAction.HORIZONTAL, "Arrange Horizontal");
+		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_hor.png"));
+		addRetargetAction(a);
+		
+		a = new RetargetAction(ArrangeAction.VERTICAL, "Arrange Vertical");
+		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/arrange_ver.png"));
+		addRetargetAction(a);
 	}
 
 	/**
@@ -114,6 +123,10 @@ public class DisplayEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(getAction(GEFActionConstants.ALIGN_TOP));
 		tbm.add(getAction(GEFActionConstants.ALIGN_MIDDLE));
 		tbm.add(getAction(GEFActionConstants.ALIGN_BOTTOM));
+		
+		tbm.add(new Separator());
+		tbm.add(getAction(ArrangeAction.HORIZONTAL));
+		tbm.add(getAction(ArrangeAction.VERTICAL));
 
 		tbm.add(new Separator());
 		tbm.add(getAction(GEFActionConstants.MATCH_WIDTH));

@@ -56,6 +56,7 @@ import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
+import org.csstudio.sds.ui.internal.actions.ArrangeAction;
 import org.csstudio.sds.ui.internal.actions.CopyWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.CreateGroupAction;
 import org.csstudio.sds.ui.internal.actions.CutWidgetsAction;
@@ -123,7 +124,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
@@ -639,7 +639,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 			}
 		};
 		getActionRegistry().registerAction(a);
-
+		
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
@@ -769,6 +769,14 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		getSelectionActions().add(action.getId());
 
 		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.MIDDLE);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeAction(this, Arrange.HORIZONTAL);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		
+		action = new ArrangeAction(this, Arrange.VERTICAL);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
