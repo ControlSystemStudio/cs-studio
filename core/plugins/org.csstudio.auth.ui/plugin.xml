@@ -31,6 +31,13 @@
         <dynamic
               class="org.csstudio.auth.ui.internal.actions.LogoutAction"
               id="org.csstudio.auth.ui.log_out">
+           <visibleWhen
+                 checkEnabled="false">
+              <systemTest
+                    property="org.csstudio.platform.loginAvailable"
+                    value="true">
+              </systemTest>
+           </visibleWhen>
         </dynamic>
      </menuContribution>
      <menuContribution
@@ -52,6 +59,13 @@
         <dynamic
               class="org.csstudio.auth.ui.internal.actions.LogoutAction"
               id="org.csstudio.auth.ui.log_out">
+           <visibleWhen
+                 checkEnabled="false">
+              <systemTest
+                    property="org.csstudio.platform.loginAvailable"
+                    value="true">
+              </systemTest>
+           </visibleWhen>
         </dynamic>
      </menuContribution>
   </extension>
