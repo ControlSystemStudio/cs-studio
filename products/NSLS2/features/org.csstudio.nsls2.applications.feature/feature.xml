@@ -42,4 +42,8 @@
          id="org.csstudio.trends.databrowser2.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.email.feature"
+         version="0.0.0"/>
+
 </feature>
