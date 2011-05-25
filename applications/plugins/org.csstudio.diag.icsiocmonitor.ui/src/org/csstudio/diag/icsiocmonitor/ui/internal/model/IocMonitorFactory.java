@@ -25,7 +25,7 @@ package org.csstudio.diag.icsiocmonitor.ui.internal.model;
 import org.csstudio.diag.icsiocmonitor.ui.internal.Activator;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.service.connection.session.ISessionService;
 
 /**
  * Factory class which creates an {@link IocMonitor} and connects it to the
