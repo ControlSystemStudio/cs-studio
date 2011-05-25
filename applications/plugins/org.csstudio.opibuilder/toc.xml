@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Best OPI Yet" link_to="../org.csstudio.platform.ui/tocApps.xml#display">
+<toc label="Best OPI Yet" link_to="../org.csstudio.ui.help/tocApps.xml#display">
 <topic label="Best OPI Yet"  href="html/Contents.html">
    <topic href="html/BOY_Introduction.html" label="Introduction">
    </topic> 

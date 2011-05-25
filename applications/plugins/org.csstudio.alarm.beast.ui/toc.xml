@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc link_to="../org.csstudio.platform.ui/tocApps.xml#alarm" label="Alarm System">
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#alarm" label="Alarm System">
   <topic label="Alarm System"  href="html/alarm_system.html">
     <topic href="html/alarm_system.html#overview" label="Overview"></topic>
     <topic href="html/alarm_system.html#principles" label="Principles"></topic>
