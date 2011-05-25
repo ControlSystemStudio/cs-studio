@@ -14,6 +14,5 @@ org.csstudio.nsls2.databrowser.feature
 org.csstudio.nsls2.feature.core
 org.csstudio.nsls2.feature.eclipse
 org.csstudio.nsls2.intro.feature
-org.csstudio.nsls2.opibuilder.feature
 org.csstudio.nsls2.product.feature
-
+org.csstudio.opibuilder.feature
