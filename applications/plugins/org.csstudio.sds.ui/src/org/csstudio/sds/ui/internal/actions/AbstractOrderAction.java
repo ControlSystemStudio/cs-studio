@@ -61,7 +61,7 @@ abstract class AbstractOrderAction extends SelectionAction {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void run() {
 		List selections = getSelectedObjects();
