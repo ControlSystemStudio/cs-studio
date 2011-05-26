@@ -163,10 +163,11 @@
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>153</y>
+    <y>151</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>311</x>
+    <x>64</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -205,10 +206,11 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>187</y>
+    <y>185</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>311</x>
+    <x>64</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -218,7 +220,7 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
-    <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update_2</name>
     <format_type>2</format_type>
     <precision_from_pv>true</precision_from_pv>
@@ -247,10 +249,11 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>228</y>
+    <y>149</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>311</x>
+    <x>208</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -289,10 +292,11 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>262</y>
+    <y>183</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>311</x>
+    <x>208</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -501,13 +505,13 @@ $(pv_value)</tooltip>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
     <scripts />
-    <height>20</height>
+    <height>56</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Text Update_4</name>
+    <name>Text Update_5</name>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>loc://s(I'm a string)</pv_name>
+    <pv_name>loc://s2(The quick brown fox jumps over the lazy dog.)</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -522,7 +526,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <width>166</width>
+    <width>184</width>
     <border_style>1</border_style>
     <rules />
     <border_width>1</border_width>
@@ -531,9 +535,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>300</y>
+    <y>149</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>284</x>
+    <x>356</x>
   </widget>
 </display>

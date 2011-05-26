@@ -50,7 +50,8 @@ public class TextIndicatorModel extends LabelModel {
 	public static final String PROP_FORMAT_TYPE = "format_type";	//$NON-NLS-1$
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
 	public static final String PROP_PRECISION_FROM_DB = "precision_from_pv";	//$NON-NLS-1$
-	public static final String PROP_SHOW_UNITS = "show_units";	
+	public static final String PROP_SHOW_UNITS = "show_units"; //$NON-NLS-1$		
+	public static final String PROP_WRAP_WORDS = "wrap_words"; //$NON-NLS-1$	
 	
 	
 	public TextIndicatorModel() {
@@ -80,6 +81,8 @@ public class TextIndicatorModel extends LabelModel {
 		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", category, 0, 0, 100));
 		addProperty(new BooleanProperty(PROP_PRECISION_FROM_DB, "Precision from PV", category, true));
 		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
+		addProperty(new BooleanProperty(PROP_WRAP_WORDS, "Wrap Words", 
+				WidgetPropertyCategory.Display, false));
 		
 		setPropertyValue(PROP_TEXT, "######");
 		setPropertyValue(PROP_ALIGN_H, 0);
@@ -100,5 +103,8 @@ public class TextIndicatorModel extends LabelModel {
 	
 	public boolean isShowUnits(){
 		return (Boolean)getCastedPropertyValue(PROP_SHOW_UNITS);
+	}
+	public boolean isWrapWords(){
+		return (Boolean)getPropertyValue(PROP_WRAP_WORDS);
 	}
 }

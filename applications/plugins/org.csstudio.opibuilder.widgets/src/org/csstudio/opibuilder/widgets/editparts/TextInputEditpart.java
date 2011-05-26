@@ -300,7 +300,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 
 	protected void performDirectEdit() {
 		new LabelEditManager(this, new LabelCellEditorLocator(
-				(Figure) getFigure()), false).show();
+				(Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
 	}
 
 	@Override
