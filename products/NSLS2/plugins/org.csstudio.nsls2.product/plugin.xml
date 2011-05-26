@@ -52,15 +52,15 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="000000">
+               value="FFFFFF">
          </property>
          <property
                name="startupMessageRect"
-               value="7,180,445,20">
+               value="7,230,457,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,200,445,15">
+               value="5,250,461,15">
          </property>
          <property
                name="preferenceCustomization"
@@ -76,11 +76,29 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/about.gif">
+               value="icons/alt_window_32.gif">
          </property>
          <property
                name="aboutText"
-               value="Control System Studio : Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. Project website : http://cs-studio.sourceforge.net/ntrol SystemSystem">
+               value="&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System
+
+Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
+
+&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control
+
+System Studio is an Eclipse-based collections of tools to monitor and
+
+operate large scale control systems, such as the ones in the
+
+accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
+
+&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project
+
+website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;
+
+&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;
+
+&lt;/P&gt;">
          </property>
       </product>
    </extension>

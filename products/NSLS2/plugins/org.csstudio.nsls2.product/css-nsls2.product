@@ -6,15 +6,24 @@
    <aboutInfo>
       <image path="/org.csstudio.nsls2.product/icons/alt_window_32.gif"/>
       <text>
-         &lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System
-Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
-&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control
-System Studio is an Eclipse-based collections of tools to monitor and
-operate large scale control systems, such as the ones in the
-accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
-&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project
-website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;
-&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;
+         &lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System
+
+Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
+
+&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control
+
+System Studio is an Eclipse-based collections of tools to monitor and
+
+operate large scale control systems, such as the ones in the
+
+accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
+
+&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project
+
+website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;
+
+&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;
+
 &lt;/P&gt;
       </text>
    </aboutInfo>
@@ -31,9 +40,9 @@ website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;F
 
    <splash
       location="org.csstudio.nsls2.product"
-      startupProgressRect="5,200,445,15"
-      startupMessageRect="7,180,445,20"
-      startupForegroundColor="0000A0" />
+      startupProgressRect="5,250,461,15"
+      startupMessageRect="7,230,457,20"
+      startupForegroundColor="FFFFFF" />
    <launcher name="css-nsls2">
       <solaris/>
       <win useIco="true">
