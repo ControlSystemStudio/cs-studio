@@ -15,6 +15,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.nsls2.product.CSS_Perspective"
+            icon="icons/css16.gif"
             id="org.csstudio.nsls2.product.CSS_Perspective"
             name="CSS perspective">
       </perspective>
@@ -47,7 +48,7 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif">
+               value="product:icons/css128x128.gif">
          </property>
          <property
                name="startupForegroundColor"
@@ -228,7 +229,7 @@
                   visible="true">
             </separator>
             <command
-                  commandId="org.eclipse.ui.help.installationDialog"
+                  commandId="org.eclipse.ui.help.aboutAction"
                   icon="icons/alt_window_16.gif"
                   label="About CSS"
                   style="push">
