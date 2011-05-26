@@ -48,11 +48,11 @@
          </property>
          <property
                name="windowImages"
-               value="product:icons/css128x128.gif">
+               value="product:icons/css128.gif">
          </property>
          <property
                name="startupForegroundColor"
-               value="0000A0">
+               value="000000">
          </property>
          <property
                name="startupMessageRect"

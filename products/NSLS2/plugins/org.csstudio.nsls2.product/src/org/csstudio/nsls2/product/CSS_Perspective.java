@@ -19,7 +19,6 @@ public class CSS_Perspective implements IPerspectiveFactory
     final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
     
     public void createInitialLayout(IPageLayout layout)
     {
@@ -36,7 +35,6 @@ public class CSS_Perspective implements IPerspectiveFactory
         
         // Stuff for 'left'
         left.addView(IPageLayout.ID_RES_NAV); // Deprecated, but what use instead?
-        left.addPlaceholder(ID_SNS_PV_UTIL);
         
         // Stuff for 'bottom'
         bottom.addPlaceholder(ID_PROBE);
