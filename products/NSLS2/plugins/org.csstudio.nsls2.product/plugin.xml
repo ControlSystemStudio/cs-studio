@@ -74,6 +74,14 @@
                name="introDescription-firststeps"
                value="The following documents....">
          </property>
+         <property
+               name="aboutImage"
+               value="icons/about.gif">
+         </property>
+         <property
+               name="aboutText"
+               value="Control System Studio : Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. Project website : http://cs-studio.sourceforge.net/ntrol SystemSystem">
+         </property>
       </product>
    </extension>
    <extension
