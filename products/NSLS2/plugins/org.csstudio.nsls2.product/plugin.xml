@@ -76,11 +76,11 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/alt_window_32.gif">
+               value="icons/about.gif">
          </property>
          <property
                name="aboutText"
-               value="&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System&#x0A;&#x0A;Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&#x0A;&#x0A;&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control&#x0A;&#x0A;System Studio is an Eclipse-based collections of tools to monitor and&#x0A;&#x0A;operate large scale control systems, such as the ones in the&#x0A;&#x0A;accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&#x0A;&#x0A;&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project&#x0A;&#x0A;website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;&#x0A;&#x0A;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&#x0A;&#x0A;&lt;/P&gt;">
+               value="Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net">
          </property>
       </product>
    </extension>
