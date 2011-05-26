@@ -210,6 +210,14 @@
                      id="org.csstudio.nsls2.product.windows.openviews">
                </dynamic>
             </menu>
+            <separator
+                  name="additions">
+            </separator>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences..."
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
