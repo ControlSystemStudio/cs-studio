@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.csstudio.openfile.DisplayUtil;
 import org.csstudio.startup.Plugin;
@@ -102,6 +104,7 @@ public class OpenDocumentEventProcessor implements Listener {
 					pathPart = path.substring(0,de);
 					ext = path.substring(ds+1, de).trim();
 					data = path.substring(de + 1);
+					data = replaceAsciiCode(data);
 				}
 				//open file with DisplayUtil if it is a supported Display file
 				if(DisplayUtil.getInstance().isExtensionSupported(ext)){
@@ -161,5 +164,22 @@ public class OpenDocumentEventProcessor implements Listener {
 				}
 			}
 		});
+	}
+	
+	/**Replace ascii code with its characters in a string. The ascii code in the string must 
+	 * follow this format <code>[\ascii]</code>. For example: <code>abc[\58]def</code> will be replaced with <code>abc:def</code>.
+	 * @param input the input string 
+	 */
+	private static String replaceAsciiCode(final String input){
+		String output = input;
+		Pattern p = Pattern.compile("\\x5b\\\\\\d+\\x5d"); //$NON-NLS-1$
+		Matcher m = p.matcher(input);
+		while(m.find()){
+			String g = m.group();
+			String asciiString = g.substring(2,g.length()-1);
+			char code = (char) Integer.parseInt(asciiString);
+			output = output.replace(g, ""+code);
+		}
+		return output;
 	}
 }

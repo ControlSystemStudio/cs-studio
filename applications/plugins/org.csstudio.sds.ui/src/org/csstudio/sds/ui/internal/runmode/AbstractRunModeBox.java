@@ -122,10 +122,6 @@ public abstract class AbstractRunModeBox {
 		_disposeListeners = new ArrayList<IRunModeDisposeListener>();
 		_propertyListeners = new HashMap<WidgetProperty, IPropertyChangeListener>();
 	}
-	
-	protected abstract boolean hasLocation();
-	
-	protected abstract void setLocation(Point location);
 
 	/**
 	 * Open!
@@ -159,6 +155,7 @@ public abstract class AbstractRunModeBox {
 
 						final int x = _displayModel.getX();
 						final int y = _displayModel.getY();
+						final boolean openRelative = _displayModel.getOpenRelative();
 						final int width = _displayModel.getWidth();
 						final int height = _displayModel.getHeight();
 
@@ -193,11 +190,8 @@ public abstract class AbstractRunModeBox {
 														: "");
 											}
 										}
-										if (!hasLocation()) {
-											setLocation(new Point(x, y));
-										}
 
-										_graphicalViewer = doOpen(width,
+										_graphicalViewer = doOpen(x, y, openRelative, width,
 												height, title.toString());
 
 										// configure the viewer
@@ -230,6 +224,12 @@ public abstract class AbstractRunModeBox {
 	 * the necessary listeners to the created workbench parts which call
 	 * {@link #dispose()} on this box, in case the part is closed by the user.
 	 *
+	 * @param x
+	 *            x position hint
+	 * @param y
+	 *            y position hin
+	 * @param openRelative 
+	 * 			  To be opened relative to predecessor displays          
 	 * @param width
 	 *            width hint
 	 * @param height
@@ -238,7 +238,7 @@ public abstract class AbstractRunModeBox {
 	 *            a title
 	 * @return the {@link GraphicalViewer} which is used to display the model
 	 */
-	protected abstract GraphicalViewer doOpen(int width,
+	protected abstract GraphicalViewer doOpen(int x, int y, boolean openRelative, int width,
 			int height, String title);
 
 	/**
@@ -398,7 +398,6 @@ public abstract class AbstractRunModeBox {
 
 		return result;
 	}
-	
+
 	public abstract Point getCurrentLocation();
-	
 }

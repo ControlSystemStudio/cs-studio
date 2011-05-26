@@ -43,7 +43,10 @@ public class TextInputModel extends TextIndicatorModel {
 	public static final String PROP_FILE_SOURCE = "file_source"; //$NON-NLS-1$		
 	
 	/** Load limit from PV. */
-	public static final String PROP_FILE_RETURN_PART = "file_return_part"; //$NON-NLS-1$		
+	public static final String PROP_FILE_RETURN_PART = "file_return_part"; //$NON-NLS-1$	
+	
+	/** Allow multi-line input. */
+	public static final String PROP_MULTILINE_INPUT = "multiline_input"; //$NON-NLS-1$
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = Double.NEGATIVE_INFINITY;
@@ -73,6 +76,9 @@ public class TextInputModel extends TextIndicatorModel {
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, true));
 		
+		addProperty(new BooleanProperty(PROP_MULTILINE_INPUT, "Multi-line Input",
+				WidgetPropertyCategory.Display, false));		
+		
 		addProperty(new StringProperty(PROP_DATETIME_FORMAT, "Datetime Format", 
 				WidgetPropertyCategory.Display, "yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$
 		addProperty(new ComboProperty(PROP_SELECTOR_TYPE, "Selector Type", 
@@ -85,7 +91,7 @@ public class TextInputModel extends TextIndicatorModel {
 		setPropertyVisible(PROP_DATETIME_FORMAT, false);
 		setPropertyVisible(PROP_FILE_RETURN_PART, false);
 		setPropertyVisible(PROP_FILE_SOURCE, false);
-		
+		setPropertyVisible(PROP_WRAP_WORDS, false);
 		
 		setText(""); //$NON-NLS-1$
 		setBorderStyle(BorderStyle.LOWERED);
@@ -130,6 +136,10 @@ public class TextInputModel extends TextIndicatorModel {
 	public FileReturnPart getFileReturnPart(){
 		return FileReturnPart.values()
 			[(Integer)getPropertyValue(PROP_FILE_RETURN_PART)];
+	}
+	
+	public boolean isMultilineInput(){
+		return (Boolean)getPropertyValue(PROP_MULTILINE_INPUT);
 	}
 	
 }

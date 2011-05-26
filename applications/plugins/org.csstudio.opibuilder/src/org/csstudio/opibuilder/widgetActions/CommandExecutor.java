@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.csstudio.java.string.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.eclipse.osgi.util.NLS;
 
@@ -94,7 +94,7 @@ public final class CommandExecutor
         final Process process;
         try
         {
-   	     	final String[] cmd = StringUtil.splitIgnoreInQuotes(command, ' ', true);
+   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = Runtime.getRuntime().exec(cmd, null, dir);
         }
         catch (Throwable ex)

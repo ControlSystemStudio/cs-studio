@@ -7,9 +7,12 @@ import java.util.Properties;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -53,7 +56,13 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 		Button button = new Button(composite, SWT.NONE);
-		button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		Font font = button.getFont();
+		font.getFontData()[0].setHeight(6);
+        button.setCursor(new Cursor(null, SWT.CURSOR_HELP));
+//		button.setFont(font)
+//		GridData layoutData = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).indent(0,-5).create();
+		GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT,22).align(SWT.FILL, SWT.TOP).indent(0,-2).create();
+        button.setLayoutData(layoutData);
 		if (EpicsPlugin.getDefault().usePureJava()) {
 			button.setText("Pure Java");
 		} else {

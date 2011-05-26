@@ -132,6 +132,7 @@
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>32</height>
@@ -178,6 +179,7 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>32</height>
@@ -224,6 +226,7 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>32</height>
@@ -270,6 +273,7 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>32</height>
@@ -430,6 +434,7 @@ Press "Enter" to send value to PV.</text>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>27</height>
@@ -449,13 +454,13 @@ Press "Enter" to send value to PV.</text>
     </foreground_color>
     <widget_type>Text Input</widget_type>
     <enabled>true</enabled>
-    <text />
+    <text>2011-05-02 10:56:00</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>3</precision>
     <font>
       <opifont.name>Text</opifont.name>
     </font>
-    <width>229</width>
+    <width>158</width>
     <border_style>3</border_style>
     <rules />
     <border_width>1</border_width>
@@ -477,8 +482,9 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
-    <file_source>1</file_source>
+    <file_source>0</file_source>
     <scripts />
     <height>27</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -502,7 +508,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Text</opifont.name>
     </font>
-    <width>382</width>
+    <width>309</width>
     <file_return_part>0</file_return_part>
     <border_style>3</border_style>
     <rules />
@@ -517,7 +523,7 @@ $(pv_value)</tooltip>
     <y>297</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>300</x>
+    <x>221</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -525,9 +531,10 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>true</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
-    <height>32</height>
+    <height>67</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Input_6</name>
     <format_type>4</format_type>
@@ -603,6 +610,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>404</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>50</x>
@@ -645,6 +653,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>404</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>173</x>
@@ -687,6 +696,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>404</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>296</x>
@@ -729,6 +739,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>404</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>419</x>
@@ -740,7 +751,7 @@ $(pv_value)</tooltip>
     <show_units>false</show_units>
     <auto_size>false</auto_size>
     <scripts />
-    <height>32</height>
+    <height>76</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Input_6</name>
     <format_type>4</format_type>
@@ -771,6 +782,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>404</y>
+    <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>544</x>
@@ -803,7 +815,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Text</opifont.name>
     </font>
-    <width>229</width>
+    <width>164</width>
     <border_style>1</border_style>
     <rules />
     <border_width>1</border_width>
@@ -813,6 +825,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>453</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>50</x>
@@ -845,7 +858,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Text</opifont.name>
     </font>
-    <width>386</width>
+    <width>309</width>
     <border_style>1</border_style>
     <rules />
     <border_width>1</border_width>
@@ -854,10 +867,11 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
-    <y>454</y>
+    <y>455</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>296</x>
+    <x>221</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>

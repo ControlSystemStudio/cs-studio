@@ -28,13 +28,14 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
+import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
 import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
-import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.eclipse.jface.action.IMenuListener;
@@ -42,6 +43,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -61,6 +63,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -84,8 +88,24 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CSSView extends Composite implements Observer {
 
-    class CSSLabelProvider implements ILabelProvider {
+    class CSSLabelProvider implements ILabelProvider, IFontProvider{
 
+        
+        private final Font _font;
+        private final Font _boldFont;
+
+
+        /**
+         * Constructor.
+         * @param font 
+         */
+        public CSSLabelProvider(Font font) {
+            _font = font;
+            FontData fontData = font.getFontData()[0];
+            _boldFont = new Font(null, new FontData(fontData.getName(), fontData.getHeight(), SWT.BOLD));
+        }
+        
+        
         /**
          * (@inheritDoc)
          */
@@ -125,16 +145,32 @@ public class CSSView extends Composite implements Observer {
          * (@inheritDoc)
          */
         @Override
-        public void dispose() {
+        public void removeListener(final ILabelProviderListener listener) {
             // Empty
         }
 
         /**
-         * (@inheritDoc)
+         * {@inheritDoc}
          */
         @Override
-        public void removeListener(final ILabelProviderListener listener) {
-            // Empty
+        public Font getFont(Object element) {
+            Font font = _font;
+            if(element instanceof ControlSystemItem) {
+                if(((ControlSystemItem) element).isRedundant()) {
+                    font = _boldFont;
+                }
+            }
+            return font;
+        }
+
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void dispose() {
+            _font.dispose();
+            _boldFont.dispose();
         }
     }
 
@@ -171,12 +207,8 @@ public class CSSView extends Composite implements Observer {
                    final String defaultFilter,
                    final String selection,
                    final String[] headlines,
-                   final int level) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
-
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
-        makeListField(selection);
+                   final int level) throws Exception {
+        this(parent, automat, nameSpace, site, defaultFilter, selection, headlines, level, null);
     }
 
     public CSSView(final Composite parent,
@@ -187,33 +219,16 @@ public class CSSView extends Composite implements Observer {
                    final String selection,
                    final String[] headlines,
                    final int level,
-                   final String fixFrist) {
-        this(parent, automat, nameSpace, site, defaultFilter, headlines, level);
-
-        _haveFixFirst = true;
-        _fixFirst = fixFrist;
-
-        // Make a Textfield to Filter the list. Can text drop
-        makeFilterField();
-        makeListField(selection);
-    }
-
-    private CSSView(final Composite parent,
-                    final Automat automat,
-                    final NameSpace nameSpace,
-                    final IWorkbenchPartSite site,
-                    final String defaultFilter,
-                    final String[] headlines,
-                    final int level) {
+                   final String fixFrist) throws Exception {
         super(parent, SWT.NONE);
         _display = parent.getDisplay();
 
-        this._automat = automat;
-        this._nameSpace = nameSpace;
-        this._parent = parent;
-        this._site = site;
-        this._headlines = headlines;
-        this._level = level;
+        _automat = automat;
+        _nameSpace = nameSpace;
+        _parent = parent;
+        _site = site;
+        _headlines = headlines;
+        _level = level;
         _defaultPVFilter = defaultFilter;
 
         init();
@@ -221,6 +236,12 @@ public class CSSView extends Composite implements Observer {
         NameSpaceSearchResult searchResult = nameSpace.getSearchResult();
         // FIXME (bknerr) : Antipattern - here, the 'this' pointer is used although object is not completely constructed
         searchResult.addObserver(this);
+        _fixFirst = fixFrist;
+        _haveFixFirst = _fixFirst!=null;
+
+        // Make a Textfield to Filter the list. Can text drop
+        makeFilterField();
+        makeListField(selection);
     }
 
     /**
@@ -306,8 +327,9 @@ public class CSSView extends Composite implements Observer {
     /**
      * Creates the new child CSSView.
      * @param viewParams
+     * @throws Exception 
      */
-    protected void makeChild(final CSSViewParameter viewParams) {
+    protected void makeChild(final CSSViewParameter viewParams) throws Exception {
         _parent.setRedraw(false);
         // Has a child, destroy it.
         if (_hasChild) {
@@ -327,13 +349,15 @@ public class CSSView extends Composite implements Observer {
             final String stringWithoutBrackets = selectionString.substring(1, selectionString.length() - 1);
             final ControlSystemItem csi = _itemList.get(stringWithoutBrackets);
 
-            if (_fixFirst == null) {
-                _child =
-                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1); //$NON-NLS-1$
-            } else {
-                _child =
-                    new CSSView(_parent, _automat, _nameSpace.createNew(), _site, _defaultPVFilter, csi.getPath(), _headlines, _level + 1, _fixFirst); //$NON-NLS-1$
-            }
+            _child = new CSSView(_parent,
+                                 _automat,
+                                 _nameSpace.createNew(),
+                                 _site,
+                                 _defaultPVFilter,
+                                 csi.getPath(),
+                                 _headlines,
+                                 _level + 1,
+                                 _fixFirst); //$NON-NLS-1$
         } else {
 
             final Collection<ControlSystemItem> values = _itemList.values();
@@ -433,7 +457,7 @@ public class CSSView extends Composite implements Observer {
             @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR) {
-                    _tableViewer.setInput(new ArrayList<Object>(_itemList.values()).toArray());
+                    _tableViewer.setInput(_itemList.values().toArray());
                 } else if (e.keyCode == SWT.F1) {
                     PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
                 }
@@ -445,9 +469,10 @@ public class CSSView extends Composite implements Observer {
 
     /**
      * @param selection
+     * @throws Exception 
      *
      */
-    private void makeListField(final String selection) {
+    private void makeListField(final String selection) throws Exception {
         _cssParameter = getParameter(selection);
 
         final NameSpaceBrowserState state = _automat.getState();
@@ -470,7 +495,8 @@ public class CSSView extends Composite implements Observer {
                                                 getSize().y - (_filter.getSize().y + 31));
             }
         });
-        _tableViewer.setLabelProvider(new CSSLabelProvider());
+        Font font = _tableViewer.getTable().getFont();
+        _tableViewer.setLabelProvider(new CSSLabelProvider(font));
         _tableViewer.setContentProvider(new ArrayContentProvider());
         _tableViewer.setSorter(new ViewerSorter());
         //        listViewer.getList().setToolTipText(Messages.getString("CSSView_ToolTip2"));
@@ -586,7 +612,12 @@ public class CSSView extends Composite implements Observer {
                     // angeklickt werden kann.
                     if (_cssParameter.newCSSView) {
                         _parent.setEnabled(false);
-                        makeChild(_cssParameter);
+                        try {
+                            makeChild(_cssParameter);
+                        } catch (Exception e) {
+                            ErrorDetailDialog errorDetailDialog = new ErrorDetailDialog(null, "Titel", e.getLocalizedMessage(), e.toString());
+                            errorDetailDialog.open();
+                        }
                         _parent.setEnabled(true);
                     }
                 }

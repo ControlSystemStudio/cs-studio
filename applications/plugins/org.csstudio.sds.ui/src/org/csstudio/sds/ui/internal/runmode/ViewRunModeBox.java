@@ -153,7 +153,7 @@ public final class ViewRunModeBox extends AbstractRunModeBox implements
 	 * is used. Otherwise a new view will be created.
 	 */
 	@Override
-	protected GraphicalViewer doOpen(int width, int height,
+	protected GraphicalViewer doOpen(int x, int y, boolean openRelative, int width, int height,
 			String title) {
 		if (_viewPart != null) {
 			// the view was already instantiated by the workbench (this usually
@@ -358,16 +358,6 @@ public final class ViewRunModeBox extends AbstractRunModeBox implements
 			p.setPerspective(perspective);
 			p.activate(viewReference.getPart(false));
 		}
-	}
-
-	@Override
-	protected boolean hasLocation() {
-		return true;
-	}
-
-	@Override
-	protected void setLocation(Point location) {
-		// nothing to do
 	}
 
 	@Override

@@ -48,6 +48,7 @@ public final class DisplayModel extends ContainerModel {
 	public static final String PROP_GRID_ON = "grid_on";
 	public static final String PROP_RULER_ON = "ruler_on";
 	public static final String PROP_GEOMETRY_ON = "geometry_on";
+	public static final String PROP_OPEN_RELATIVE_ON = "open_relative_on";
 
 	/**
 	 * The runtime context. (This is transient and will not get persisted).
@@ -89,6 +90,8 @@ public final class DisplayModel extends ContainerModel {
 				WidgetPropertyCategory.DISPLAY, false, false);
 		addBooleanProperty(PROP_GEOMETRY_ON, "Snap to Geometry activated",
 				WidgetPropertyCategory.DISPLAY, false, false);
+		addBooleanProperty(PROP_OPEN_RELATIVE_ON, "Open Relative",
+				WidgetPropertyCategory.POSITION, false, true, AbstractWidgetModel.PROP_POS_X);
 		
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
@@ -121,6 +124,10 @@ public final class DisplayModel extends ContainerModel {
 	
 	public boolean getGeometryState() {
 		return getBooleanProperty(PROP_GEOMETRY_ON);
+	}
+	
+	public boolean getOpenRelative() {
+		return getBooleanProperty(PROP_OPEN_RELATIVE_ON);
 	}
 
 	public RuntimeContext getRuntimeContext() {

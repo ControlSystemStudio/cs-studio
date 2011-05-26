@@ -76,8 +76,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
 
-	private static final int OFFSET_TO_PARENT = 50;
-	
 	private static final int SHELL_BORDER = 40;
 	
 	private static final int SCROLLBAR_MARGIN = 25;
@@ -91,7 +89,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 	 */
 	private Shell _shell;
 
-	private Point location;
+	private Point parentLocation;
 
 	
 	/**
@@ -104,31 +102,26 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		super(input);
 		
 		if (parentLocation != null) {
-			this.location = new Point(parentLocation.x + OFFSET_TO_PARENT, parentLocation.y + OFFSET_TO_PARENT);
-		} 
+			this.parentLocation = parentLocation;
+		}
+		else {
+			this.parentLocation = new Point(0, 0);
+		}
 	}
 	
-	protected void setLocation(Point location) {
-		this.location = location;
-	}
-	
-	protected boolean hasLocation() {
-		return location != null;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
-	protected GraphicalViewer doOpen(final int width, final int height, final String title) {
+	protected GraphicalViewer doOpen(final int x, final int y, final boolean openRelative, final int width, final int height, final String title) {
 		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
 		
 		// create a shell
 		_shell = new Shell();
 		_shell.setText(title);
-		if (location != null) {
-			_shell.setLocation(location.x, location.y);
+		if (openRelative) {
+			_shell.setLocation(parentLocation.x + x, parentLocation.y + y);
 		} else {
-			_shell.setLocation(0, 0);
+			_shell.setLocation(x, y);
 		}
 		_shell.setLayout(getFillLayout());
 		_shell.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/sds.gif"));
@@ -149,7 +142,6 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		parentLayout.marginHeight = 0;
 		parentLayout.verticalSpacing = 0;
 		final Composite parent = new Composite(scrollComposite, SWT.NONE);
-//		final Composite parent = new Composite(_shell, SWT.NONE);
 		parent.setLayout(parentLayout);
 		parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
 		

@@ -23,6 +23,8 @@
 package org.csstudio.sds.ui.internal.actions;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -77,7 +79,7 @@ public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 	 * 
 	 * @return a list with all widget models that are currently selected
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
 		List selection = getSelectedObjects();
 	
@@ -89,7 +91,25 @@ public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 						.getWidgetModel());
 			}
 		}
+		sortWidgetModels(selectedWidgetModels);
 		return selectedWidgetModels;
+	}
+	
+	private void sortWidgetModels(final List<AbstractWidgetModel> widgetModels) {
+		Collections.sort(widgetModels, new Comparator<AbstractWidgetModel>() {
+			@Override
+			public int compare(AbstractWidgetModel model1, AbstractWidgetModel model2) {
+				int indexOfModel1 = model1.getParent().getIndexOf(model1);
+				int indexOfModel2 = model1.getParent().getIndexOf(model2);
+				if (indexOfModel1 < indexOfModel2) {
+					return -1;
+				} else if (indexOfModel1 > indexOfModel2) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+		});
 	}
 
 }

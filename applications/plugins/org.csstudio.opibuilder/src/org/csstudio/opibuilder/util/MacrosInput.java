@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.csstudio.java.string.StringUtil;
+import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.properties.MacrosProperty;
 
 /**The value type definition for {@link MacrosProperty}, which describes the input
@@ -134,13 +134,13 @@ public class MacrosInput {
 	 * @throws Exception
 	 */
 	public static MacrosInput recoverFromString(String s) throws Exception{
-		String[] items = StringUtil.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);	
+		String[] items = StringSplitter.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);	
 		MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
 		for(int i= 0; i<items.length; i++){
 			if(i == 0)
 				macrosInput.setInclude_parent_macros(Boolean.valueOf(items[i]));
 			else{
-				String[] macro = StringUtil.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
+				String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
 				if(macro.length == 2)
 					macrosInput.getMacrosMap().put(macro[0], macro[1]);
 			}				
