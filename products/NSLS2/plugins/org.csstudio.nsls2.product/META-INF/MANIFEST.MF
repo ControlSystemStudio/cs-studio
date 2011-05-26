@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.intro.universal;bundle-version="3.2.300",
  org.csstudio.ui.menu;bundle-version="3.0.0",
  org.csstudio.logging.ui;bundle-version="0.0.1",
- org.csstudio.logging;bundle-version="0.0.1"
+ org.csstudio.logging;bundle-version="0.0.1",
+ org.csstudio.ui.menu.app;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab
