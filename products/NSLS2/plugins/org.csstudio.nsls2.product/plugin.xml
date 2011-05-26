@@ -48,7 +48,7 @@
          </property>
          <property
                name="windowImages"
-               value="product:icons/css128.gif">
+               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif">
          </property>
          <property
                name="startupForegroundColor"
