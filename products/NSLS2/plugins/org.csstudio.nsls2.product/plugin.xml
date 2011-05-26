@@ -48,7 +48,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/css16.gif,icons/css32.gif,icons/css48.gif,icons/css64.gif,icons/css128.gif">
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
          </property>
          <property
                name="startupForegroundColor"
@@ -80,25 +80,7 @@
          </property>
          <property
                name="aboutText"
-               value="&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System
-
-Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
-
-&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control
-
-System Studio is an Eclipse-based collections of tools to monitor and
-
-operate large scale control systems, such as the ones in the
-
-accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;
-
-&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project
-
-website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;
-
-&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;
-
-&lt;/P&gt;">
+               value="&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=5&gt;&lt;B&gt;Control System&#x0A;&#x0A;Studio&lt;/B&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&#x0A;&#x0A;&lt;P LANG=&quot;en-GB&quot; STYLE=&quot;font-weight: normal&quot;&gt;&lt;FONT COLOR=&quot;#000080&quot;&gt;&lt;FONT SIZE=4&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;Control&#x0A;&#x0A;System Studio is an Eclipse-based collections of tools to monitor and&#x0A;&#x0A;operate large scale control systems, such as the ones in the&#x0A;&#x0A;accelerator community.&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/P&gt;&#x0A;&#x0A;&lt;P LANG=&quot;en-GB&quot;&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;FONT SIZE=4&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;SPAN STYLE=&quot;font-weight: normal&quot;&gt;Project&#x0A;&#x0A;website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;FONT COLOR=&quot;#000000&quot;&gt;&lt;FONT FACE=&quot;Times New Roman&quot;&gt;&lt;SPAN STYLE=&quot;font-style: normal&quot;&gt;&lt;A HREF=&quot;http://cs-studio.sourceforge.net/&quot;&gt;http://cs-studio.sourceforge.net/&lt;/A&gt;&#x0A;&#x0A;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&#x0A;&#x0A;&lt;/P&gt;">
          </property>
       </product>
    </extension>

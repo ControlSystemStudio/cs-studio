@@ -36,7 +36,7 @@ website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;F
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.nsls2.product/icons/css16.gif" i32="/org.csstudio.nsls2.product/icons/css32.gif" i48="/org.csstudio.nsls2.product/icons/css48.gif" i64="/org.csstudio.nsls2.product/icons/css64.gif" i128="/org.csstudio.nsls2.product/icons/css128.gif"/>
+   <windowImages i16="/org.csstudio.nsls2.product/icons/css16.png" i32="/org.csstudio.nsls2.product/icons/css32.png" i48="/org.csstudio.nsls2.product/icons/css48.png" i64="/org.csstudio.nsls2.product/icons/css64.png" i128="/org.csstudio.nsls2.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.nsls2.product"
@@ -46,7 +46,7 @@ website : &lt;/SPAN&gt;&lt;/SPAN&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;/FONT&gt;&lt;F
    <launcher name="css-nsls2">
       <solaris/>
       <win useIco="true">
-         <ico path="/org.csstudio.nsls2.product/icons/alt_launcher.ico"/>
+         <ico path="/org.csstudio.nsls2.product/icons/css.ico"/>
          <bmp/>
       </win>
    </launcher>
