@@ -578,25 +578,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		this.configureRuler();
 
 		// configure zoom actions
-		ZoomManager zm = root.getZoomManager();
-
-		List<String> zoomLevels = new ArrayList<String>(3);
-		zoomLevels.add(ZoomManager.FIT_ALL);
-		zoomLevels.add(ZoomManager.FIT_WIDTH);
-		zoomLevels.add(ZoomManager.FIT_HEIGHT);
-		zm.setZoomLevelContributions(zoomLevels);
-
-		zm.setZoomLevels(createZoomLevels());
-
-		if (zm != null) {
-			IAction zoomIn = new ZoomInAction(zm);
-			IAction zoomOut = new ZoomOutAction(zm);
-			getActionRegistry().registerAction(zoomIn);
-			getActionRegistry().registerAction(zoomOut);
-		}
-
-		/* scroll-wheel zoom */
-		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+		configureZoomManager(root);
 
 		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
 		// mit Model persistiert werden
@@ -643,6 +625,28 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+	}
+
+	private void configureZoomManager(final ScalableFreeformRootEditPart rootEditPart) {
+		ZoomManager zm = rootEditPart.getZoomManager();
+
+		List<String> zoomLevels = new ArrayList<String>(3);
+		zoomLevels.add(ZoomManager.FIT_ALL);
+		zoomLevels.add(ZoomManager.FIT_WIDTH);
+		zoomLevels.add(ZoomManager.FIT_HEIGHT);
+		zm.setZoomLevelContributions(zoomLevels);
+
+		zm.setZoomLevels(createZoomLevels());
+
+		if (zm != null) {
+			IAction zoomIn = new ZoomInAction(zm);
+			IAction zoomOut = new ZoomOutAction(zm);
+			getActionRegistry().registerAction(zoomIn);
+			getActionRegistry().registerAction(zoomOut);
+		}
+
+		/* scroll-wheel zoom */
+		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 	}
 
 	/**
