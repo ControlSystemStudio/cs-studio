@@ -50,6 +50,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		
 		save = ActionFactory.SAVE.create(window);
 		register(save);
+		
+		register(ActionFactory.SAVE_AS.create(window));
+		register(ActionFactory.SAVE_ALL.create(window));
 
 		help = ActionFactory.HELP_CONTENTS.create(window);
 		register(help);

@@ -145,6 +145,10 @@
                   label="Save As"
                   style="push">
             </command>
+            <separator
+                  name="workspace"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.file.import"
                   label="Import"
@@ -155,6 +159,13 @@
                   label="Export"
                   style="push">
             </command>
+            <separator
+                  name="additions">
+            </separator>
+            <separator
+                  name="exit"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.file.exit"
                   label="Exit"
@@ -176,24 +187,20 @@
             <separator
                   name="additions">
             </separator>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:window?after=additions">
-         <menu
-               label="Open Perspectives">
-            <dynamic
-                  class="org.csstudio.nsls2.product.OpenPerspectives"
-                  id="org.csstudio.nsls2.product.windows.openperspectives">
-            </dynamic>
-         </menu>
-         <menu
-               label="Open Views">
-            <dynamic
-                  class="org.csstudio.nsls2.product.OpenViews"
-                  id="org.csstudio.nsls2.product.windows.openviews">
-            </dynamic>
+            <menu
+                  label="Open Perspectives">
+               <dynamic
+                     class="org.csstudio.nsls2.product.OpenPerspectives"
+                     id="org.csstudio.nsls2.product.windows.openperspectives">
+               </dynamic>
+            </menu>
+            <menu
+                  label="Open Views">
+               <dynamic
+                     class="org.csstudio.nsls2.product.OpenViews"
+                     id="org.csstudio.nsls2.product.windows.openviews">
+               </dynamic>
+            </menu>
          </menu>
       </menuContribution>
       <menuContribution
@@ -202,47 +209,35 @@
          <menu
                id="help"
                label="help">
+            <command
+                  commandId="org.eclipse.ui.help.quickStartAction"
+                  label="Welcome"
+                  style="push">
+            </command>
             <separator
                   name="helpStart"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.help.helpContents"
+                  label="Help Contents"
+                  style="push">
+            </command>
             <separator
                   name="helpEnd"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.help.installationDialog"
+                  icon="icons/alt_window_16.gif"
+                  label="About CSS"
+                  style="push">
+            </command>
             <separator
                   name="additions"
                   visible="true">
             </separator>
          </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?before=helpStart">
-         <command
-               commandId="org.eclipse.ui.help.quickStartAction"
-               label="Welcome"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?after=helpStart">
-         <command
-               commandId="org.eclipse.ui.help.helpContents"
-               label="Help Contents"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?after=helpEnd">
-         <command
-               commandId="org.eclipse.ui.help.installationDialog"
-               icon="icons/alt_window_16.gif"
-               label="About CSS"
-               style="push">
-         </command>
       </menuContribution>
    </extension>
 
