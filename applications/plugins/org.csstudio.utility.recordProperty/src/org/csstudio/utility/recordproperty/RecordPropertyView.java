@@ -22,9 +22,12 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
@@ -38,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -140,12 +144,27 @@ public class RecordPropertyView extends ViewPart {
             
         });
         
+        Text filterText = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+        filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        filterText.setMessage("Filter");
+        filterText.setText("");
+        
+        new ViewerFilter() {
+            
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+        };
         RecordPropertyEntryViewerSorter sorter = new RecordPropertyEntryViewerSorter();
         createTableViewer(parent, sorter);
         tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         tableViewer.setContentProvider(new RecordPropertyContentProvider());
         tableViewer.setLabelProvider(new RecordPropertyLabelProvider());
         tableViewer.setSorter(sorter);
+        RecordPropertyEntryViewerFilter recordPropertyEntryViewerFilter = new RecordPropertyEntryViewerFilter(filterText);
+        tableViewer.addFilter(recordPropertyEntryViewerFilter);
         
         // Creates a context menu
         initializeContextMenu();
@@ -171,6 +190,16 @@ public class RecordPropertyView extends ViewPart {
         // Maybe it works on some OS? Maybe there's another magic
         // modifier key to force a 'drag'?
         new ProcessVariableDragSource(cv.getControl(), cv);
+        
+        filterText.addKeyListener(new KeyAdapter() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public void keyReleased(KeyEvent e) {
+                tableViewer.refresh();
+            }
+        });
     }
     
     /**
@@ -377,7 +406,7 @@ public class RecordPropertyView extends ViewPart {
         public RecordPropertyEntryViewerSorter() {
             // Constructor
         }
-
+        
         @Override
         public int compare(@Nonnull Viewer viewer, @Nullable Object e1, @Nullable Object e2) {
             _viewer = viewer;
@@ -470,6 +499,34 @@ public class RecordPropertyView extends ViewPart {
         private void setState() {
             _sorter.setState(_state);
         }
+    }
+    
+    final class RecordPropertyEntryViewerFilter extends ViewerFilter {
+        
+        private final Text _text;
+        
+        /**
+         * Constructor.
+         */
+        public RecordPropertyEntryViewerFilter(Text text) {
+            _text = text;
+        }
+        
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean select(Viewer viewer, Object parentElement, Object element) {
+            boolean show = false;
+            if(element instanceof RecordPropertyEntry) {
+                RecordPropertyEntry entry = (RecordPropertyEntry) element;
+                String text = _text.getText();
+                show = entry.getPvName().contains(text) || entry.getRdb().contains(text)
+                        || entry.getVal().contains(text) || entry.getRmi().contains(text);
+            }
+            return show;
+        }
+        
     }
     
 }
