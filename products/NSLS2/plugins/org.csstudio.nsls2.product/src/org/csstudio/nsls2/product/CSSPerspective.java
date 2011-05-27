@@ -8,10 +8,10 @@ import org.eclipse.ui.IPerspectiveFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CSS_Perspective implements IPerspectiveFactory
+public class CSSPerspective implements IPerspectiveFactory
 {
     /** The perspective ID */
-    final public static String ID = CSS_Perspective.class.getName();
+    final public static String ID = CSSPerspective.class.getName();
 
     // Other view IDs
     // Copied them here instead of using their ...View.ID member so that

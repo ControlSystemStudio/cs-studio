@@ -14,9 +14,9 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.nsls2.product.CSS_Perspective"
-            icon="icons/css16.gif"
-            id="org.csstudio.nsls2.product.CSS_Perspective"
+            class="org.csstudio.nsls2.product.CSSPerspective"
+            icon="icons/css16.png"
+            id="org.csstudio.nsls2.product.CSSPerspective"
             name="CSS perspective">
       </perspective>
    </extension>
