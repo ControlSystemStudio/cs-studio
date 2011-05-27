@@ -60,6 +60,7 @@ org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.ui.menu
 org.csstudio.ui.util
+org.csstudio.ui.preferences
 org.csstudio.utility.adlParser
 org.csstudio.utility.channel
 org.csstudio.utility.channel.adapters
