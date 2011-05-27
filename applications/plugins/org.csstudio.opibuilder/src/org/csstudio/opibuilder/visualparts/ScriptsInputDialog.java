@@ -60,6 +60,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 	private PVTupleTableEditor pvsEditor;
 	private Button skipFirstExecutionButton;
 	private Button checkConnectivityButton;
+	private Button stopExecuteOnErrorButton;
 	
 	private List<ScriptData> scriptDataList;
 	private String title;	
@@ -208,10 +209,10 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		optionTabComposite.setLayout(new GridLayout(1, false));
 		optionTab.setControl(optionTabComposite);
 		skipFirstExecutionButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
-		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		gd.minimumWidth = 300;
 		skipFirstExecutionButton.setLayoutData(gd);
-		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections");
+		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections.");
 		skipFirstExecutionButton.setToolTipText(
 			"Skip the script executions triggered by PVs' first connections during OPI startup.\n" +
 			"This is useful if you want to trigger a script from user inputs only.");
@@ -233,7 +234,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		checkConnectivityButton.setLayoutData(gd);
 		checkConnectivityButton.setSelection(false);
 		checkConnectivityButton.setText(
-				"Execute anyway even if some PVs are disconnected");
+				"Execute anyway even if some PVs are disconnected.");
 		checkConnectivityButton.setToolTipText(
 				"This is only useful if you want to handle PVs' disconnection in script.\nOtherwise, please keep it unchecked.");
 		checkConnectivityButton.setEnabled(false);
@@ -256,6 +257,26 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 			}
 		});
 		
+		stopExecuteOnErrorButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
+		stopExecuteOnErrorButton.setLayoutData(gd);
+		stopExecuteOnErrorButton.setSelection(false);
+		stopExecuteOnErrorButton.setText(
+				"Do not execute the script if error was detected.");
+		stopExecuteOnErrorButton.setToolTipText(
+				"If this option is selected, the script will not be executed \n" +
+				"on next trigger if error was detected in the script.");
+		stopExecuteOnErrorButton.setEnabled(false);
+		stopExecuteOnErrorButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = 
+					(IStructuredSelection) scriptsViewer.getSelection();
+				if(!selection.isEmpty()){
+					((ScriptData)selection.getFirstElement()).setStopExecuteOnError(
+							stopExecuteOnErrorButton.getSelection());
+				}				
+			}
+		});
 		
 		
 		if(scriptDataList.size() > 0){
@@ -264,6 +285,9 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 					!scriptDataList.get(0).isCheckConnectivity());
 			skipFirstExecutionButton.setSelection(
 					scriptDataList.get(0).isSkipPVsFirstConnection());
+			stopExecuteOnErrorButton.setSelection(
+					scriptDataList.get(0).isStopExecuteOnError());
+			
 		}
 		return parent_Composite;
 	}
@@ -290,6 +314,9 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 			skipFirstExecutionButton.setSelection(((ScriptData) selection
 					.getFirstElement()).isSkipPVsFirstConnection());
 			skipFirstExecutionButton.setEnabled(true);
+			stopExecuteOnErrorButton.setSelection(((ScriptData) selection
+					.getFirstElement()).isStopExecuteOnError());
+			stopExecuteOnErrorButton.setEnabled(true);
 			
 		} else {
 			removeAction.setEnabled(false);
@@ -299,6 +326,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 			editAction.setEnabled(false);
 			checkConnectivityButton.setEnabled(false);
 			skipFirstExecutionButton.setEnabled(false);
+			stopExecuteOnErrorButton.setEnabled(false);
 		}
 	}
 	

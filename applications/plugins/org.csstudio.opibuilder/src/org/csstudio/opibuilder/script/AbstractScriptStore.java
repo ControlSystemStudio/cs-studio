@@ -182,14 +182,18 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	private void executeScriptInUIThread(final PV triggerPV) {
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 			public void run() {
-				if (!errorInScript && !unRegistered) {
+				if ((!scriptData.isStopExecuteOnError() || !errorInScript) && !unRegistered) {
 					try {
 						execScript(triggerPV);
 					} catch (Exception e) {
 						errorInScript = true;
+						final String notExecuteWarning = "\nThe script or rule will not be executed afterwards. " +
+								"You can change this setting in script dialog.";
 						final String message = NLS
-								.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed afterwards.\n{1}",
-										errorSource, e);
+								.bind("Error in {0}.{1}\n{2}",
+										new String[]{errorSource, 
+										 !scriptData.isStopExecuteOnError()? "" : notExecuteWarning, //$NON-NLS-1$
+												 e.toString()});
 						ConsoleService.getInstance().writeError(message);
 						OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 					}

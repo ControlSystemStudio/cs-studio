@@ -47,6 +47,11 @@ public class ScriptData implements IAdaptable {
 	 */
 	private boolean skipPVsFirstConnection = false;
 	
+	/**
+	 * Stop to execute the script if error is detected in script.
+	 */
+	private boolean stopExecuteOnError = false;
+	
 	
 	public ScriptData() {
 		path = new Path("");
@@ -107,6 +112,7 @@ public class ScriptData implements IAdaptable {
 		copy.setPath(path);
 		copy.setCheckConnectivity(checkConnectivity);
 		copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
+		copy.setStopExecuteOnError(stopExecuteOnError);
 		for(PVTuple pv : pvList){
 			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
 		}
@@ -158,6 +164,22 @@ public class ScriptData implements IAdaptable {
 	 */
 	public boolean isSkipPVsFirstConnection() {
 		return skipPVsFirstConnection;
+	}
+	
+	/**
+	 * @param stopExecuteOnError
+	 *  If true, stop to execute the script if error is detected in script.
+	 */
+	public void setStopExecuteOnError(
+			boolean stopExecuteOnError) {
+		this.stopExecuteOnError = stopExecuteOnError;
+	}
+	
+	/**
+	 * @return true if stop to execute the script if error is detected in script..
+	 */
+	public boolean isStopExecuteOnError() {
+		return stopExecuteOnError;
 	}
 
 	
