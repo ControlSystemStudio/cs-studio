@@ -187,7 +187,8 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="window"
-               label="Window">
+               label="Window"
+               mnemonic="W">
             <command
                   commandId="org.eclipse.ui.window.newWindow"
                   label="Open New Window"
@@ -213,11 +214,6 @@
             <separator
                   name="additions">
             </separator>
-            <command
-                  commandId="org.eclipse.ui.window.preferences"
-                  label="Preferences..."
-                  style="push">
-            </command>
          </menu>
       </menuContribution>
       <menuContribution
@@ -225,7 +221,8 @@
             locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
          <menu
                id="help"
-               label="help">
+               label="Help"
+               mnemonic="H">
             <command
                   commandId="org.eclipse.ui.help.quickStartAction"
                   label="Welcome"
@@ -246,7 +243,7 @@
             </separator>
             <command
                   commandId="org.eclipse.ui.help.aboutAction"
-                  icon="icons/alt_window_16.gif"
+                  icon="icons/css16.png"
                   label="About CSS"
                   style="push">
             </command>
