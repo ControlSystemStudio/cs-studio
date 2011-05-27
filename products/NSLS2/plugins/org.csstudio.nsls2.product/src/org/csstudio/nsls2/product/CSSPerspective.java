@@ -16,7 +16,7 @@ public class CSSPerspective implements IPerspectiveFactory
     // Other view IDs
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
-    final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
+    final private static String ID_PROBE = "org.csstudio.diag.pvmanager.probe.MultipleView";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
     
