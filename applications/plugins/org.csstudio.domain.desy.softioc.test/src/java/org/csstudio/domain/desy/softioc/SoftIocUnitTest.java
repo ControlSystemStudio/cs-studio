@@ -21,14 +21,48 @@
  */
 package org.csstudio.domain.desy.softioc;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) : 
+import java.io.*;
+ 
+public class Main {
+ 
+       public static void main(String args[]) {
+ 
+            try {
+                Runtime rt = Runtime.getRuntime();
+                //Process pr = rt.exec("cmd /c dir");
+                Process pr = rt.exec("c:\\helloworld.exe");
+ 
+                BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+ 
+                String line=null;
+ 
+                while((line=input.readLine()) != null) {
+                    System.out.println(line);
+                }
+ 
+                int exitVal = pr.waitFor();
+                System.out.println("Exited with error code "+exitVal);
+ 
+            } catch(Exception e) {
+                System.out.println(e.toString());
+                e.printStackTrace();
+            }
+        }
+} 
  * 
  * @author bknerr
  * @since 27.05.2011
@@ -38,15 +72,27 @@ public class SoftIocUnitTest {
     private SoftIoc _softIoc;
     
     @Before
-    public void setup() throws IOException {
+    public void setup() throws IOException, URISyntaxException {
         _softIoc = new SoftIoc();
         _softIoc.start();
         
     }
     
     @Test
-    public void test() throws IOException {
-        System.out.println("RUNS");
+    public void test() throws IOException, URISyntaxException {
+        URL camExeUrl = getClass().getClassLoader().getResource("win/camonitor.exe");
+        Process cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "TrainIoc:alive").start();
+        
+        BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
+        String line = null;
+        int noOfRuns = 0;
+        while((line=input.readLine()) != null && noOfRuns < 5) {
+            Assert.assertTrue(line.startsWith("TrainIoc:alive"));
+            noOfRuns++;
+        }
+        cam.destroy();
+        
+        Assert.assertEquals(Integer.valueOf(5), Integer.valueOf(noOfRuns));
     }
     
     @After

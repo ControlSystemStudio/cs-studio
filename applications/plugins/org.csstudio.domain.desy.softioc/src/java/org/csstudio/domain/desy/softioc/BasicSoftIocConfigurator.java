@@ -22,6 +22,9 @@
 package org.csstudio.domain.desy.softioc;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 
@@ -39,10 +42,14 @@ public class BasicSoftIocConfigurator implements ISoftIocConfigurator {
     
     /**
      * Constructor.
+     * 
+     * @throws URISyntaxException 
      */
-    public BasicSoftIocConfigurator() {
-        _exeFilePath = new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\win\\demo.exe");
-        _cmdCfgFilePath = new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\st.cmd");
+    public BasicSoftIocConfigurator() throws URISyntaxException {
+        URL exeUrl = getClass().getClassLoader().getResource("win/demo.exe");
+        URL cmdsUrl = getClass().getClassLoader().getResource("st.cmd");
+        _exeFilePath = new File(exeUrl.toURI());
+        _cmdCfgFilePath = new File(cmdsUrl.toURI());
     }
     
     /**
