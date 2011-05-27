@@ -180,7 +180,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 	 */
 	private void registerColorPropertyChangeHandler() {
 		setPropertyChangeHandler(BargraphModel.PROP_DEFAULT_FILL_COLOR,
-				new ColorChangeHander<RefreshableBargraphFigure>() {
+				new ColorChangeHandler<RefreshableBargraphFigure>() {
 					@Override
 					protected void doHandle(RefreshableBargraphFigure figure, Color color) {
 						figure.setDefaultFillColor(color);						
@@ -189,7 +189,7 @@ public final class BargraphEditPart extends AbstractWidgetEditPart {
 		
 		setPropertyChangeHandler(BargraphModel.PROP_FILLBACKGROUND_COLOR,
 
-				new ColorChangeHander<RefreshableBargraphFigure>() {
+				new ColorChangeHandler<RefreshableBargraphFigure>() {
 					@Override
 					protected void doHandle(RefreshableBargraphFigure figure, Color color) {
 						figure.setFillBackgroundColor(color);						
