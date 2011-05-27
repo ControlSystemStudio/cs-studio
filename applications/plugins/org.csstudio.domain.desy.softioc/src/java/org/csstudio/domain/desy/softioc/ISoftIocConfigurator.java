@@ -31,38 +31,24 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 27.05.2011
  */
-public class SoftIocConfigurator {
-
-    /**
-     * Constructor.
-     */
-    public SoftIocConfigurator() {
-        // TODO Auto-generated constructor stub
-    }
-    
-    /**
-     * @return
-     */
-    @Nonnull
-    public String getDemoExecutableFilePath() {
-        return "d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\win\\demo.exe";
-//        return "d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\old\\bin\\demo.exe";
-    }
-
-
+public interface ISoftIocConfigurator {
 
     /**
      * @return
      */
     @Nonnull
-    public String getSoftIocCmdFileName() {
-        return "st.cmd";
-    }
+    String getDemoExecutableFilePath();
 
+    /**
+     * @return
+     */
     @Nonnull
-    public File getSoftIocCmdFilePath() {
-        return new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\");
-//        return new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\old\\iocBoot\\iocdemo\\");
-    }
+    String getSoftIocCmdFileName();
+
+    /**
+     * @return
+     */
+    @Nonnull
+    File getSoftIocCmdFilePath();
     
 }

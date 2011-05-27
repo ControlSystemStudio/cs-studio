@@ -21,7 +21,6 @@
  */
 package org.csstudio.domain.desy.softioc;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -63,23 +62,29 @@ public class Main {
  */
 public class SoftIoc {
     
-    private final SoftIocConfigurator _cfg;
+    private final ISoftIocConfigurator _cfg;
     private Process _process;
     
     /**
      * Constructor.
      */
-    public SoftIoc(@Nonnull final SoftIocConfigurator cfg) {
+    public SoftIoc() {
+        this(new BasicSoftIocConfigurator());
+    }
+    
+    /**
+     * Constructor.
+     */
+    public SoftIoc(@Nonnull final ISoftIocConfigurator cfg) {
         _cfg = cfg;
         _process = null;
     }
     
     public void start() throws IOException {
-        Runtime rt = Runtime.getRuntime();
-        _process = rt.exec(new String[] {_cfg.getDemoExecutableFilePath(), 
-                                         _cfg.getSoftIocCmdFileName()},
-                                         null,
-                                         _cfg.getSoftIocCmdFilePath());
+        ProcessBuilder builder = new ProcessBuilder().command(_cfg.getDemoExecutableFilePath(), _cfg.getSoftIocCmdFileName())
+                                                     .directory(_cfg.getSoftIocCmdFilePath());
+        
+        _process = builder.start();
     }
     
     public void stop() throws IOException {

@@ -21,11 +21,9 @@
  */
 package org.csstudio.domain.desy.softioc;
 
-import java.io.IOException;
+import java.io.File;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import javax.annotation.Nonnull;
 
 /**
  * TODO (bknerr) : 
@@ -33,24 +31,42 @@ import org.junit.Test;
  * @author bknerr
  * @since 27.05.2011
  */
-public class SoftIocUnitTest {
+public class BasicSoftIocConfigurator implements ISoftIocConfigurator {
 
-    private SoftIoc _softIoc;
+    private final File _exeFilePath;
+    private final File _cmdCfgFilePath; 
     
-    @Before
-    public void setup() throws IOException {
-        _softIoc = new SoftIoc();
-        _softIoc.start();
-        
+    
+    /**
+     * Constructor.
+     */
+    public BasicSoftIocConfigurator() {
+        _exeFilePath = new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\win\\demo.exe");
+        _cmdCfgFilePath = new File("d:\\development\\repo\\cs-studio\\applications\\plugins\\org.csstudio.domain.desy.softioc\\res\\st.cmd");
     }
     
-    @Test
-    public void test() throws IOException {
-        System.out.println("RUNS");
+    /**
+     * @return
+     */
+    @Override
+    @Nonnull
+    public String getDemoExecutableFilePath() {
+        return _exeFilePath.toString();
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    @Nonnull
+    public String getSoftIocCmdFileName() {
+        return _cmdCfgFilePath.getName();
+    }
+
+    @Override
+    @Nonnull
+    public File getSoftIocCmdFilePath() {
+        return _cmdCfgFilePath.getParentFile();
     }
     
-    @After
-    public void teardown() throws IOException {
-        _softIoc.stop();
-    }
 }
