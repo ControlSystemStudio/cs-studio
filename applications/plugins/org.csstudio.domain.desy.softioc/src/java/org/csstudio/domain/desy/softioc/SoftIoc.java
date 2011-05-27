@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy.softioc;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -54,10 +56,32 @@ public class SoftIoc {
     }
     
     public void start() throws IOException {
-        ProcessBuilder builder = new ProcessBuilder().command(_cfg.getDemoExecutableFilePath(), _cfg.getSoftIocCmdFileName())
-                                                     .directory(_cfg.getSoftIocCmdFilePath());
+        
+        File softIocCmdFile = appendDbFilesAndInitialisation();
+        
+        ProcessBuilder builder = new ProcessBuilder().command(_cfg.getDemoExecutableFilePath(), softIocCmdFile.getName())
+                                                     .directory(softIocCmdFile.getParentFile());
         
         _process = builder.start();
+    }
+
+    private File appendDbFilesAndInitialisation() throws IOException {
+        File softIocCmdFile = _cfg.getSoftIocCmdFile();
+
+        FileWriter writer = new FileWriter(softIocCmdFile, true);
+        for (File dbFile : _cfg.getDbFileSet()) {
+            
+            String relPathFromCmd = softIocCmdFile.toURI().relativize(dbFile.toURI()).getPath();
+            
+            writer.append("dbLoadRecords(\"").append(relPathFromCmd).append("\")\n");
+        }
+        writer.append("iocInit\n");
+        writer.append("dbpf \"TrainIoc:valid\",\"Enabled\"   # from demo\n\n\n");
+
+        writer.flush();
+        writer.close();
+        
+        return softIocCmdFile;
     }
     
     public void stop() throws IOException {

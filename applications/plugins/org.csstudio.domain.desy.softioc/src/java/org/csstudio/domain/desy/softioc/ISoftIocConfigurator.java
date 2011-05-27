@@ -22,6 +22,7 @@
 package org.csstudio.domain.desy.softioc;
 
 import java.io.File;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -33,22 +34,15 @@ import javax.annotation.Nonnull;
  */
 public interface ISoftIocConfigurator {
 
-    /**
-     * @return
-     */
     @Nonnull
     String getDemoExecutableFilePath();
 
-    /**
-     * @return
-     */
     @Nonnull
-    String getSoftIocCmdFileName();
-
-    /**
-     * @return
-     */
-    @Nonnull
-    File getSoftIocCmdFilePath();
+    File getSoftIocCmdFile();
     
+    @Nonnull
+    Set<File> getDbFileSet();
+
+    ISoftIocConfigurator with(@Nonnull File...dbFiles);
+
 }

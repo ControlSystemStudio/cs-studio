@@ -13,15 +13,13 @@ epicsEnvSet(IOCSH_PS1,"TrainIoc> ")
 dbLoadDatabase "dbd/demo.dbd"
 demo_registerRecordDeviceDriver pdbbase
 
-## Load record instances
-#dbLoadRecords("D:\development\repo\cs-studio\applications\plugins\org.csstudio.domain.desy.softioc\res\db\iocCommon.db", "APPL=TrainIoc")
-#dbLoadRecords("D:/development/repo/cs-studio/applications/plugins/org.csstudio.domain.desy.softioc/res/db/iocCommon.db", "APPL=TrainIoc")
-#dbLoadRecords("res/db/iocCommon.db", "APPL=TrainIoc")
-dbLoadRecords("db/iocCommon.db", "APPL=TrainIoc")
-
 # CA security
 asSetFilename("asFile")
 
-iocInit
+## Load record instances
+dbLoadRecords("db/iocCommon.db", "APPL=TrainIoc")
 
-dbpf "TrainIoc:valid","Enabled"   # from demo
+# here the soft ioc code will append the given db files
+# and thereafter the following two lines
+#iocInit 
+#dbpf "TrainIoc:valid","Enabled"   # from demo

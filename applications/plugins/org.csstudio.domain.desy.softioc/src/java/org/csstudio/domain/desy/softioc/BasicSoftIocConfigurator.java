@@ -22,11 +22,8 @@
 package org.csstudio.domain.desy.softioc;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
-import javax.annotation.Nonnull;
 
 /**
  * TODO (bknerr) : 
@@ -34,46 +31,16 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 27.05.2011
  */
-public class BasicSoftIocConfigurator implements ISoftIocConfigurator {
+public class BasicSoftIocConfigurator extends AbstractSoftIocConfigurator {
 
-    private final File _exeFilePath;
-    private final File _cmdCfgFilePath; 
-    
-    
     /**
      * Constructor.
      * 
      * @throws URISyntaxException 
      */
     public BasicSoftIocConfigurator() throws URISyntaxException {
-        URL exeUrl = getClass().getClassLoader().getResource("win/demo.exe");
-        URL cmdsUrl = getClass().getClassLoader().getResource("st.cmd");
-        _exeFilePath = new File(exeUrl.toURI());
-        _cmdCfgFilePath = new File(cmdsUrl.toURI());
-    }
-    
-    /**
-     * @return
-     */
-    @Override
-    @Nonnull
-    public String getDemoExecutableFilePath() {
-        return _exeFilePath.toString();
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    @Nonnull
-    public String getSoftIocCmdFileName() {
-        return _cmdCfgFilePath.getName();
-    }
-
-    @Override
-    @Nonnull
-    public File getSoftIocCmdFilePath() {
-        return _cmdCfgFilePath.getParentFile();
+        super(new File(BasicSoftIocConfigurator.class.getClassLoader().getResource("win/demo.exe").toURI()),
+              new File(BasicSoftIocConfigurator.class.getClassLoader().getResource("st.cmd").toURI()));
     }
     
 }
