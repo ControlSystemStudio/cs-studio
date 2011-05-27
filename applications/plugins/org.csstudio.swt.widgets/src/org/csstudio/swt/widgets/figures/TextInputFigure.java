@@ -296,9 +296,11 @@ public class TextInputFigure extends TextFigure {
 						new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
 								"Select workspace file", new String[]{"*.*"}); //$NON-NLS-2$
 					if(currentPath != null)
-						dialog.setSelectedResource(new Path(currentPath));
+						dialog.setSelectedResource(new Path(currentPath));					 
 					else if(startPath != null && startPath.trim().length() > 0)
 						dialog.setSelectedResource(new Path(startPath));
+					else 
+						dialog.setSelectedResource(new Path(getText()));
 					if(dialog.open() == Window.OK){
 						IPath path = dialog.getSelectedResource();
 						currentPath = path.toPortableString();

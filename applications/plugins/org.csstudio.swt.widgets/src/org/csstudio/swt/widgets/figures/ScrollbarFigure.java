@@ -110,15 +110,15 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	}
 }
 	
-	private static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0"; //$NON-NLS-1$
+	private static final String DEFAULT_ENGINEERING_FORMAT = "0.##E0"; //$NON-NLS-1$
     
     /** the default label format */
-    private static final String DEFAULT_DECIMAL_FORMAT = "############.####";  //$NON-NLS-1$
+    private static final String DEFAULT_DECIMAL_FORMAT = "############.##";  //$NON-NLS-1$
 
 	/**
 	 * the digits limit to be displayed in engineering format
 	 */
-	private static final int ENGINEERING_LIMIT = 4;
+	private static final int ENGINEERING_LIMIT = 2;
 	
 	
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
