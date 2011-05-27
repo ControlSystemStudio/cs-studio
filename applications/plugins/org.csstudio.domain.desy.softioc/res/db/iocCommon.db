@@ -1,0 +1,66 @@
+	record(calc,"$(APPL):alive") {
+		field(DESC,"Blinking...")
+		field(SCAN,"1 second")
+		field(SDIS,"$(APPL):valid NPP NMS")
+		field(CALC,"(A>7)?6:8")
+		field(INPA,"$(APPL):alive.VAL NPP NMS")
+		field(INPB,"1.0")
+	}
+	record(bi,"$(APPL):valid") {
+		field(DESC,"Disable Database")
+		field(UDF, "0")
+		field(STAT,"NO_ALARM")
+		field(SEVR,"NO_ALARM")
+		field(VAL,"1")
+		field(ZNAM,"Enabled")
+		field(ONAM,"Disabled")
+	}
+       	record(stringin,"$(APPL):last_burt_str") {
+                field(DESC,"Last Burt")
+                field(SCAN,"Passive")
+		field(UDF, "0")
+		field(STAT,"NO_ALARM")
+		field(SEVR,"NO_ALARM")
+                field(DTYP,"Soft Channel")
+                field(VAL,"NO SAVE")
+        }
+        record(bi,"$(APPL):setRebootSav_bi") {
+                field(DESC,"set to trigger Saveset")
+		field(UDF, "0")
+		field(STAT,"NO_ALARM")
+		field(SEVR,"NO_ALARM")
+		field(ONAM,"Enable")
+		field(ZNAM,"Disable")
+        }
+
+	record(bi,"$(APPL):burtEnable_bi") {
+		field(DESC,"Enable BurtSave or Not")
+		field(UDF, "0")
+		field(STAT,"NO_ALARM")
+		field(SEVR,"NO_ALARM")
+		field(ONAM,"Enable")
+		field(ZNAM,"Disable")
+	}
+	record(bi,"$(APPL):burtStatus_bi") {
+		field(DESC,"Shows BurtSave Status")
+		field(UDF, "0")
+		field(STAT,"NO_ALARM")
+		field(SEVR,"NO_ALARM")
+		field(ONAM,"Done")
+		field(ZNAM,"NotDone")
+	}
+	record(calc,"$(APPL):CALC1_calc") {
+		field(DESC,"Reserve")
+	}
+	record(calc,"$(APPL):CALC2_calc") {
+		field(DESC,"Reserve")
+	}
+	record(calc,"$(APPL):CALC3_calc") {
+		field(DESC,"Reserve")
+	}
+	record(calc,"$(APPL):CALC4_calc") {
+		field(DESC,"Reserve")
+	}
+	record(calc,"$(APPL):CALC5_calc") {
+		field(DESC,"Reserve")
+	}
