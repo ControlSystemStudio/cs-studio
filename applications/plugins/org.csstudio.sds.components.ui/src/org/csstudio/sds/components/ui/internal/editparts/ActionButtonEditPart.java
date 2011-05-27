@@ -230,7 +230,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
 		setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
 
 		// font
-		setPropertyChangeHandler(ActionButtonModel.PROP_FONT, new FontChangeHander<RefreshableActionButtonFigure>(){
+		setPropertyChangeHandler(ActionButtonModel.PROP_FONT, new FontChangeHandler<RefreshableActionButtonFigure>(){
 			@Override
 			protected void doHandle(final RefreshableActionButtonFigure rabFigure, final Font font) {
 				rabFigure.setFont(font);

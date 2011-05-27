@@ -72,8 +72,7 @@ public abstract class AbstractSelectionAction extends SelectionAction {
 		return ((DisplayEditor)getWorkbenchPart()).getGraphicalViewer();
 	}
 
-	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private final List<AbstractWidgetModel> getSelectedWidgetModels() {
 		List selection = getSelectedObjects();
 

@@ -41,7 +41,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//needle Color
-		setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, new ColorChangeHander<RefreshableGaugeFigure>(){
+		setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, new ColorChangeHandler<RefreshableGaugeFigure>(){
 			@Override
 			protected void doHandle(RefreshableGaugeFigure figure, Color color) {
 				figure.setNeedleColor(color);
