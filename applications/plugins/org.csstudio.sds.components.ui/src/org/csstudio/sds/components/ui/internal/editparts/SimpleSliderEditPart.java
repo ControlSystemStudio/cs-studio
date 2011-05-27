@@ -225,7 +225,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 				orientationHandler);
 
 		// Color
-		ColorChangeHander<SimpleSliderFigure> colorHandler = new ColorChangeHander<SimpleSliderFigure>() {
+		ColorChangeHandler<SimpleSliderFigure> colorHandler = new ColorChangeHandler<SimpleSliderFigure>() {
 
             @Override
             protected void doHandle(final SimpleSliderFigure figure, final Color color) {

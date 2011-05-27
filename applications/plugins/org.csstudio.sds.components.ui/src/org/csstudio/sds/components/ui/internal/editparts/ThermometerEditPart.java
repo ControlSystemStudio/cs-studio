@@ -42,7 +42,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//fillColor
-		setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, new ColorChangeHander<RefreshableThermoFigure>(){
+		setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, new ColorChangeHandler<RefreshableThermoFigure>(){
 			@Override
 			protected void doHandle(RefreshableThermoFigure figure, Color color) {
 				figure.setFillColor(color);
@@ -50,7 +50,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		});	
 		
 		//fillBackgroundColor
-		setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<RefreshableThermoFigure>(){
+		setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHandler<RefreshableThermoFigure>(){
 			@Override
 			protected void doHandle(RefreshableThermoFigure figure, Color color) {
 				figure.setFillBackgroundColor(color);

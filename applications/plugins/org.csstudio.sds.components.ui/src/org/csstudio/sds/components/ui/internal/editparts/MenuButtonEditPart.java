@@ -174,7 +174,7 @@ public final class MenuButtonEditPart extends AbstractWidgetEditPart implements
         setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
         
         // font
-        setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>(){
+        setPropertyChangeHandler(LabelModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>(){
 
 			@Override
 			protected void doHandle(RefreshableLabelFigure figure, Font font) {

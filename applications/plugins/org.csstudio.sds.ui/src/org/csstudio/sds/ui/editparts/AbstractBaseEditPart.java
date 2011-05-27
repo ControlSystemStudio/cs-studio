@@ -457,7 +457,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				fullRefreshHandler);
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -466,7 +466,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				});
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -495,7 +495,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				borderWidthHandler);
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,
-				new ColorChangeHander<IFigure>() {
+				new ColorChangeHandler<IFigure>() {
 					@Override
 					protected void doHandle(final IFigure figure,
 							final Color color) {
@@ -1093,7 +1093,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * @param <F>
 	 *            the figure type
 	 */
-	public abstract class ColorChangeHander<F extends IFigure> implements
+	public abstract class ColorChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
 		public boolean handleChange(final Object oldValue,
@@ -1121,7 +1121,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * @param <F>
 	 *            the figure type
 	 */
-	public abstract class FontChangeHander<F extends IFigure> implements
+	public abstract class FontChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
 		public boolean handleChange(final Object oldValue,

@@ -170,7 +170,7 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
     private void registerFontPropertyChangeHandlers() {
         // changes to the font property
         setPropertyChangeHandler(LabelModel.PROP_FONT,
-                                 new FontChangeHander<RefreshableLabelFigure>() {
+                                 new FontChangeHandler<RefreshableLabelFigure>() {
 
                                      @Override
                                      protected void doHandle(final RefreshableLabelFigure refreshableFigure,

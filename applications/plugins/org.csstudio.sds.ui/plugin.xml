@@ -648,4 +648,17 @@
              parentId="org.eclipse.ui.contexts.window">
        </context>
     </extension>
+    <extension
+          point="org.eclipse.ltk.core.refactoring.renameParticipants">
+       <renameParticipant
+             class="org.csstudio.sds.ui.internal.actions.SdsFileRenameParticipant"
+             id="org.csstudio.sds.ui.SdsFileRenameParticipant"
+             name="SDS File Rename">
+          <enablement>
+             <instanceof
+                   value="org.eclipse.core.resources.IFile">
+             </instanceof>
+          </enablement>
+       </renameParticipant>
+    </extension>
 </plugin>

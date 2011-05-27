@@ -150,7 +150,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_VALUE, getPropValue());
 
 		// font
-		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, new FontChangeHander<RefreshableThumbWheelFigure>(){
+		setPropertyChangeHandler(ThumbWheelModel.PROP_FONT, new FontChangeHandler<RefreshableThumbWheelFigure>(){
 
 			@Override
 			protected void doHandle(RefreshableThumbWheelFigure figure, Font font) {
@@ -161,7 +161,7 @@ public class ThumbWheelEditPart extends AbstractWidgetEditPart {
 
 		// border color
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,
-				new ColorChangeHander<RefreshableThumbWheelFigure>(){
+				new ColorChangeHandler<RefreshableThumbWheelFigure>(){
 					@Override
 					protected void doHandle(RefreshableThumbWheelFigure figure, Color color) {
 						figure.setInternalBorderColor(color);

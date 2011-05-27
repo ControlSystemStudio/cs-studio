@@ -40,7 +40,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 		registerCommonPropertyChangeHandlers();
 		
 		//fillColor
-		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, new ColorChangeHander<RefreshableTankFigure>(){
+		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, new ColorChangeHandler<RefreshableTankFigure>(){
 			@Override
 			protected void doHandle(RefreshableTankFigure figure, Color color) {
 				figure.setFillColor(color);
@@ -48,7 +48,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 		});	
 		
 		//fillBackgroundColor
-		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHander<RefreshableTankFigure>(){
+		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, new ColorChangeHandler<RefreshableTankFigure>(){
 			@Override
 			protected void doHandle(RefreshableTankFigure figure, Color color) {
 				figure.setFillBackgroundColor(color);
