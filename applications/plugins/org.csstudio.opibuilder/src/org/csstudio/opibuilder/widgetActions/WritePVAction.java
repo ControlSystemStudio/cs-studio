@@ -71,11 +71,11 @@ public class WritePVAction extends AbstractWidgetAction {
 				try {
 					pv = PVFactory.createPV(getPVName());
 					pv.start();
-					long startTime = Calendar.getInstance().getTimeInMillis();
+					long startTime = System.currentTimeMillis();
 					int timeout = getTimeout()*1000;
 					while((Calendar.getInstance().getTimeInMillis() - startTime) < timeout && 
 							!pv.isConnected() && !monitor.isCanceled()){
-						TimeUnit.MILLISECONDS.sleep(100);
+						Thread.sleep(100);
 					}
 					if(monitor.isCanceled()){
 						ConsoleService.getInstance().writeInfo("\"" + getDescription() + "\" " //$NON-NLS-1$ //$NON-NLS-2$
@@ -90,6 +90,9 @@ public class WritePVAction extends AbstractWidgetAction {
 					if(!pv.isWriteAllowed())
 					 throw new Exception("The PV is not allowed to write");
 					setPVValue(pv, text);
+					//If no sleep here, other listeners will have a delay to get update.
+					//Don't know the reason, but this is a work around.
+					Thread.sleep(200);
 				} catch (Exception e1) {
 					popErrorDialog(new Exception(e1));
 					return Status.OK_STATUS;
