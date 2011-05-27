@@ -36,7 +36,7 @@
          </property>
          <property
                name="introBrandingImage"
-               value="product:icons/about.gif">
+               value="product:icons/welcome.png">
          </property>
          <property
                name="introBrandingImageText"
@@ -76,7 +76,7 @@
          </property>
          <property
                name="aboutImage"
-               value="icons/about.gif">
+               value="icons/about.png">
          </property>
          <property
                name="aboutText"
