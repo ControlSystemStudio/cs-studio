@@ -71,8 +71,7 @@ public class OPIHelpContextProvider implements IContextProvider{
 		}
 
 		public String getStyledText() {
-			return WidgetsService.getInstance().getWidgetDescriptor(
-					widgetModel.getTypeID()).getDescription();
+			return getText();
 		}
 
 		public String getCategory(IHelpResource topic) {
