@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
@@ -32,6 +33,9 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.ui.IEditorInput;
@@ -112,6 +116,16 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		};
 		setPropertyChangeHandler(LinkingContainerModel.PROP_ZOOMTOFITALL, handler);
 
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if((Boolean)newValue)
+					performAutosize();
+				return false;
+			}
+		};
+		setPropertyChangeHandler(LinkingContainerModel.PROP_AUTO_SIZE, handler);
+		
 
 
 	}
@@ -177,11 +191,14 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			Activator.getLogger().log(Level.WARNING, message , e);
 			ConsoleService.getInstance().writeError(message);
 		}
+		if(getWidgetModel().isAutoSize()){
+			performAutosize();
+		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				layout();
+				layout();				
 				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
-				((LinkingContainerFigure)getFigure()).updateZoom();
+				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
 		});
 	}
@@ -222,6 +239,21 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			}
 			layoutter.layout(modelChildren, getFigure().getClientArea());
 		}
+	}
+	
+	public void performAutosize(){
+		Rectangle childrenRange = GeometryUtil.getChildrenRange(this);
+		Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
+		
+		getWidgetModel().setSize(new Dimension(
+						childrenRange.width + figure.getInsets().left + figure.getInsets().right,
+						childrenRange.height + figure.getInsets().top + figure.getInsets().bottom));
+		
+
+		for(Object editpart : getChildren()){
+			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
+			widget.setLocation(widget.getLocation().translate(tranlateSize.getNegated()));
+		}	
 	}
 
 }
