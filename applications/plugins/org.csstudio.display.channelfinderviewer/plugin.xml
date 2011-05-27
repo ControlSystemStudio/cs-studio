@@ -12,7 +12,7 @@
             allowMultiple="true"
             category="org.csstudio.channelfinder"
             class="org.csstudio.channelfinder.views.ChannelFinderView"
-            icon="icons/cficon.gif"
+            icon="icons/channelFinder.png"
             id="org.csstudio.channelfinder.views.ChannelfinderView"
             name="Channel Finder View">
       </view>
@@ -43,7 +43,7 @@
             locationURI="menu:display">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/cficon.gif"
+               icon="icons/channelFinder.png"
                label="Channel Finder"
                style="push">
             <parameter

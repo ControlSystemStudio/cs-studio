@@ -10,14 +10,14 @@
             objectClass="gov.bnl.channelfinder.api.Channel">
          <action
                class="org.csstudio.utility.channel.actions.AddTagAction"
-               icon="icons/add_tag.gif"
+               icon="icons/add_tag.png"
                id="org.csstudio.utility.channel.addTag"
                label="Add Tag"
                menubarPath="org.csstudio.ui.menu.popup.channel">
          </action>
          <action
                class="org.csstudio.utility.channel.actions.RemoveTagAction"
-               icon="icons/remove_tag.gif"
+               icon="icons/remove_tag.png"
                id="org.csstudio.utility.channel.removeTag"
                label="Remove Tag"
                menubarPath="org.csstudio.ui.menu.popup.channel">
