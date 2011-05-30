@@ -67,6 +67,7 @@ import org.csstudio.sds.ui.internal.actions.PasteWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
+import org.csstudio.sds.ui.internal.actions.ZoomInAndRevealAction;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
@@ -112,7 +113,6 @@ import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleRulerVisibilityAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
-import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette;
 import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
@@ -578,25 +578,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		this.configureRuler();
 
 		// configure zoom actions
-		ZoomManager zm = root.getZoomManager();
-
-		List<String> zoomLevels = new ArrayList<String>(3);
-		zoomLevels.add(ZoomManager.FIT_ALL);
-		zoomLevels.add(ZoomManager.FIT_WIDTH);
-		zoomLevels.add(ZoomManager.FIT_HEIGHT);
-		zm.setZoomLevelContributions(zoomLevels);
-
-		zm.setZoomLevels(createZoomLevels());
-
-		if (zm != null) {
-			IAction zoomIn = new ZoomInAction(zm);
-			IAction zoomOut = new ZoomOutAction(zm);
-			getActionRegistry().registerAction(zoomIn);
-			getActionRegistry().registerAction(zoomOut);
-		}
-
-		/* scroll-wheel zoom */
-		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
+		configureZoomManager(root);
 
 		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
 		// mit Model persistiert werden
@@ -643,6 +625,31 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void configureZoomManager(final ScalableFreeformRootEditPart rootEditPart) {
+		ZoomManager zm = rootEditPart.getZoomManager();
+
+		List<String> zoomLevels = new ArrayList<String>(3);
+		zoomLevels.add(ZoomManager.FIT_ALL);
+		zoomLevels.add(ZoomManager.FIT_WIDTH);
+		zoomLevels.add(ZoomManager.FIT_HEIGHT);
+		zm.setZoomLevelContributions(zoomLevels);
+
+		zm.setZoomLevels(createZoomLevels());
+
+		if (zm != null) {
+			IAction zoomIn = new ZoomInAndRevealAction(zm, this, this.getGraphicalViewer());
+			getSelectionActions().add(zoomIn.getId());
+			getActionRegistry().registerAction(zoomIn);
+			IAction zoomOut = new ZoomOutAction(zm);
+			getActionRegistry().registerAction(zoomOut);
+		}
+
+		/* scroll-wheel zoom */
+		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 	}
 
 	/**

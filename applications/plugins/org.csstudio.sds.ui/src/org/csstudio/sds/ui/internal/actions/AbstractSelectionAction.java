@@ -72,17 +72,14 @@ public abstract class AbstractSelectionAction extends SelectionAction {
 		return ((DisplayEditor)getWorkbenchPart()).getGraphicalViewer();
 	}
 
-	@SuppressWarnings("rawtypes")
 	private final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
-
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-
-		for (Object o : selection) {
+		for (Object o : getSelectedObjects()) {
 			if (o instanceof AbstractBaseEditPart) {
 				selectedWidgetModels.add(((AbstractBaseEditPart) o).getWidgetModel());
 			}
 		}
+		
 		return selectedWidgetModels;
 	}
 
