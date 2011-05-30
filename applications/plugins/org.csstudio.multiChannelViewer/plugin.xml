@@ -70,6 +70,7 @@
             locationURI="menu:display">
          <command
                commandId="org.csstudio.multichannelviewer.openPerspective"
+               icon="icons/multi_channel.png"
                label="Open MultiChannel Plot"
                style="push">
          </command>
@@ -78,6 +79,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.channel">
          <command
                commandId="org.csstudio.multichannelviewer.openPerspective"
+               icon="icons/multi_channel.png"
                label="MultiChannel Viewer"
                style="push">
          </command>

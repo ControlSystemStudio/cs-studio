@@ -1,6 +1,6 @@
 package org.csstudio.nsls2.product;
 
-import org.csstudio.nsls2.product.CSS_Perspective;
+import org.csstudio.nsls2.product.CSSPerspective;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -22,6 +22,6 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
 	public String getInitialWindowPerspectiveId() {
-		return CSS_Perspective.ID;
+		return CSSPerspective.ID;
 	}
 }

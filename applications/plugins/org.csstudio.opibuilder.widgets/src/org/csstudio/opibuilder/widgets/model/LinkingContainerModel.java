@@ -50,6 +50,9 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_ZOOMTOFITALL = "zoom_to_fit"; //$NON-NLS-1$
 	
+	public static final String PROP_AUTO_SIZE = "auto_size"; //$NON-NLS-1$
+	
+	
 	/**
 	 * The default value of the height property.
 	 */
@@ -78,7 +81,7 @@ public class LinkingContainerModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, "")); //$NON-NLS-1$
 		
 		addProperty(new BooleanProperty(PROP_ZOOMTOFITALL, "Zoom to Fit", WidgetPropertyCategory.Display, true));
-	
+		addProperty(new BooleanProperty(PROP_AUTO_SIZE, "Auto Size", WidgetPropertyCategory.Display, false));
 	}
 
 	@Override
@@ -108,6 +111,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	public boolean isAutoFit() {
 		return (Boolean) getProperty(PROP_ZOOMTOFITALL).getPropertyValue();
+	}
+	
+	public boolean isAutoSize() {
+		return (Boolean) getProperty(PROP_AUTO_SIZE).getPropertyValue();
 	}
 	
 	public String getGroupName(){

@@ -38,7 +38,7 @@ public abstract class NameSpace {
 	private String _filter;
 	private String _selection;
 
-	abstract public void start();
+	abstract public void start() throws Exception;
 	abstract public void stop();
 
 

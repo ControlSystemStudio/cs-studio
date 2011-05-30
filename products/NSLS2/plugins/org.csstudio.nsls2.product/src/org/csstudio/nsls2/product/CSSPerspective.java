@@ -8,21 +8,17 @@ import org.eclipse.ui.IPerspectiveFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CSS_Perspective implements IPerspectiveFactory
+public class CSSPerspective implements IPerspectiveFactory
 {
     /** The perspective ID */
-    final public static String ID = CSS_Perspective.class.getName();
+    final public static String ID = CSSPerspective.class.getName();
 
     // Other view IDs
     // Copied them here instead of using their ...View.ID member so that
     // this plugin doesn't depend on other app plugins.
-    final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
+    final private static String ID_PROBE = "org.csstudio.diag.pvmanager.probe.MultipleView";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
-    final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
-    final private static String ID_ALARM_TREE = "org.csstudio.alarm.ui.alarmtree.View";
-    final private static String ID_ALARM_TABLE= "org.csstudio.alarm.ui.alarmtable.view";
     
     public void createInitialLayout(IPageLayout layout)
     {
@@ -39,14 +35,10 @@ public class CSS_Perspective implements IPerspectiveFactory
         
         // Stuff for 'left'
         left.addView(IPageLayout.ID_RES_NAV); // Deprecated, but what use instead?
-        left.addPlaceholder(ID_SNS_PV_UTIL);
-        left.addPlaceholder(ID_ALARM_TREE);
         
         // Stuff for 'bottom'
         bottom.addPlaceholder(ID_PROBE);
         bottom.addPlaceholder(ID_PROBE + ":*");
-        bottom.addPlaceholder(ID_DATABROWSER_CONFIG);
-        bottom.addPlaceholder(ID_ALARM_TABLE);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
         
         // Populate the "Window/Perspectives..." menu with suggested persp.

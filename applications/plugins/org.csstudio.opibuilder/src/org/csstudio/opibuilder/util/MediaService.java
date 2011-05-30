@@ -199,7 +199,7 @@ public final class MediaService {
 	}
 
 	private void loadFontFile() {
-		Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().syncExec(new Runnable() {
 			
 			public void run() {
 				loadPredefinedFonts();

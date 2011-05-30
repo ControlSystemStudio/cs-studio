@@ -36,7 +36,9 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NameParser;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
@@ -54,7 +56,6 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author hrickens
  * @author $Author$
@@ -64,9 +65,9 @@ import org.slf4j.LoggerFactory;
 public class LdapNameSpace extends NameSpace {
     
     private static final Logger LOG = LoggerFactory.getLogger(LdapNameSpace.class);
-
-    private NameSpaceSearchResult _resultList;
-
+    
+    private final NameSpaceSearchResult _resultList;
+    
     /**
      * Constructor.
      */
@@ -74,96 +75,96 @@ public class LdapNameSpace extends NameSpace {
         _resultList = new LdapNamespaceSearchResult();
     }
     
-    
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
-	 */
-	@Override
-	public void start() {
-		try {
-		    final ILdapService service = Activator.getDefault().getLdapService();
-		    if (service == null) {
-		        LOG.error("LDAP service unavailable.");
-		        return;
-		    }
-		    final NameParser parser = service.getLdapNameParser();
-		    
-		    final LdapName searchRoot = (LdapName) parser.parse(getName());
-		    
-		    ILdapSearchResult result;
-		    if(getSelection().endsWith(FIELD_ASSIGNMENT + FIELD_WILDCARD + FIELD_SEPARATOR)) {
-		        result = service.retrieveSearchResultSynchronously(searchRoot,
-		                                                           getFilter(),
-		                                                           SearchControls.SUBTREE_SCOPE);
-		    } else {
-		        result = service.retrieveSearchResultSynchronously(searchRoot,
-		                                                           getFilter(),
-		                                                           SearchControls.ONELEVEL_SCOPE);
-		    }
-		    if (result != null) {
-		        NameSpaceSearchResult searchResult = (NameSpaceSearchResult) getSearchResult();
-		        searchResult.setCSIResultList(createCSIResultList(result));
-		        searchResult.notifyView();
-		    }
-
-
+    /* (non-Javadoc)
+     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
+     */
+    @Override
+    public void start() throws LdapServiceException, NamingException {
+        final ILdapService service = Activator.getDefault().getLdapService();
+        if(service == null) {
+            LOG.error("LDAP service unavailable.");
+            throw new LdapServiceException("LDAP service unavailable", null);
+        }
+        try {
+            final NameParser parser = service.getLdapNameParser();
+            
+            final LdapName searchRoot = (LdapName) parser.parse(getName());
+            
+            ILdapSearchResult result;
+            if(getSelection().endsWith(FIELD_ASSIGNMENT + FIELD_WILDCARD + FIELD_SEPARATOR)) {
+                result = service.retrieveSearchResultSynchronously(searchRoot,
+                                                                   getFilter(),
+                                                                   SearchControls.SUBTREE_SCOPE);
+            } else {
+                result = service.retrieveSearchResultSynchronously(searchRoot,
+                                                                   getFilter(),
+                                                                   SearchControls.ONELEVEL_SCOPE);
+            }
+            if(result != null) {
+                NameSpaceSearchResult searchResult = (NameSpaceSearchResult) getSearchResult();
+                searchResult.setCSIResultList(createCSIResultList(result));
+                searchResult.notifyView();
+            }
+            
         } catch (final IllegalArgumentException e) {
             LOG.error("CSSView.exp.IAE.1", e);
+            throw e;
         } catch (final NamingException ne) {
             LOG.error("Error while parsing search root " + getName() + " as LDAP name.", ne);
+            throw ne;
         } catch (final LdapServiceException e) {
             LOG.error("Error while parsing search root " + getName() + " as LDAP name.", e);
+            throw e;
         }
-	}
-
-
-	@Nonnull
-	private List<ControlSystemItem> createCSIResultList(@Nonnull final ILdapSearchResult result) {
-
-	    final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
-	    final Set<SearchResult> answerSet = result.getAnswerSet();
-	    if(answerSet == null) {
-	        return Collections.emptyList();
-	    }
-
-	    for (final SearchResult row : answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
-	        String cleanList = row.getName();
-	        // Delete "-Chars that add from LDAP-Reader when the result contains special character
-	        if(cleanList.startsWith("\"")){ //$NON-NLS-1$
-	            if(cleanList.endsWith("\"")) {
-	                cleanList = cleanList.substring(1,cleanList.length()-1);
-	            } else {
-	                cleanList = cleanList.substring(1);
-	            }
-	        }
-	        final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
-	        if(token.length<2) {
-	            if(!token[0].equals("no entry found")){
-	                LOG.error("CSSViewError " + row + "'");//$NON-NLS-1$ //$NON-NLS-2$
-	            }
-	            break;
-
-	        }
-
-	        if (cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
-	            tmpList.add(new ProcessVariable(token[1], cleanList));
-	        } else {
-	            tmpList.add(new ControlSystemItem(token[1], cleanList));
-	        }
-
-	    }
-	    return tmpList;
-
-	}
-
-
+    }
+    
+    @Nonnull
+    private List<ControlSystemItem> createCSIResultList(@Nonnull final ILdapSearchResult result) {
+        
+        final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
+        final Set<SearchResult> answerSet = result.getAnswerSet();
+        if(answerSet == null) {
+            return Collections.emptyList();
+        }
+        
+        for (final SearchResult row : answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
+            String cleanList = row.getName();
+            Attribute attribute = row.getAttributes().get("epicsCsIsRedundant");
+            NamingEnumeration<? extends Attribute> all = row.getAttributes().getAll();
+            // Delete "-Chars that add from LDAP-Reader when the result contains special character
+            if(cleanList.startsWith("\"")) { //$NON-NLS-1$
+                if(cleanList.endsWith("\"")) {
+                    cleanList = cleanList.substring(1, cleanList.length() - 1);
+                } else {
+                    cleanList = cleanList.substring(1);
+                }
+            }
+            final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
+            if(token.length < 2) {
+                if(!token[0].equals("no entry found")) {
+                    LOG.error("CSSViewError " + row + "'");//$NON-NLS-1$ //$NON-NLS-2$
+                }
+                break;
+                
+            }
+            
+            if(cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
+                tmpList.add(new ProcessVariable(token[1], cleanList));
+            } else {
+                tmpList.add(new ControlSystemItem(token[1], cleanList, attribute));
+            }
+            
+        }
+        return tmpList;
+        
+    }
+    
     @Override
     @CheckForNull
     public NameSpaceSearchResult getSearchResult() {
         return _resultList;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -172,7 +173,7 @@ public class LdapNameSpace extends NameSpace {
     public NameSpace createNew() {
         return new LdapNameSpace();
     }
-
+    
     /**
      * {@inheritDoc}
      */

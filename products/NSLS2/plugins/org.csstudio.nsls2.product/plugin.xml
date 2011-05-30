@@ -14,8 +14,9 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.nsls2.product.CSS_Perspective"
-            id="org.csstudio.nsls2.product.CSS_Perspective"
+            class="org.csstudio.nsls2.product.CSSPerspective"
+            icon="icons/css16.png"
+            id="org.csstudio.nsls2.product.CSSPerspective"
             name="CSS perspective">
       </perspective>
    </extension>
@@ -35,7 +36,7 @@
          </property>
          <property
                name="introBrandingImage"
-               value="product:icons/about.gif">
+               value="product:icons/welcome.png">
          </property>
          <property
                name="introBrandingImageText"
@@ -47,19 +48,19 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif">
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
          </property>
          <property
                name="startupForegroundColor"
-               value="0000A0">
+               value="FFFFFF">
          </property>
          <property
                name="startupMessageRect"
-               value="7,180,445,20">
+               value="7,230,457,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,200,445,15">
+               value="5,250,461,15">
          </property>
          <property
                name="preferenceCustomization"
@@ -72,6 +73,14 @@
          <property
                name="introDescription-firststeps"
                value="The following documents....">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/about.png">
+         </property>
+         <property
+               name="aboutText"
+               value="Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net">
          </property>
       </product>
    </extension>
@@ -145,6 +154,10 @@
                   label="Save As"
                   style="push">
             </command>
+            <separator
+                  name="workspace"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.file.import"
                   label="Import"
@@ -155,6 +168,13 @@
                   label="Export"
                   style="push">
             </command>
+            <separator
+                  name="additions">
+            </separator>
+            <separator
+                  name="exit"
+                  visible="true">
+            </separator>
             <command
                   commandId="org.eclipse.ui.file.exit"
                   label="Exit"
@@ -167,7 +187,8 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="window"
-               label="Window">
+               label="Window"
+               mnemonic="W">
             <command
                   commandId="org.eclipse.ui.window.newWindow"
                   label="Open New Window"
@@ -176,24 +197,23 @@
             <separator
                   name="additions">
             </separator>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:window?after=additions">
-         <menu
-               label="Open Perspectives">
-            <dynamic
-                  class="org.csstudio.nsls2.product.OpenPerspectives"
-                  id="org.csstudio.nsls2.product.windows.openperspectives">
-            </dynamic>
-         </menu>
-         <menu
-               label="Open Views">
-            <dynamic
-                  class="org.csstudio.nsls2.product.OpenViews"
-                  id="org.csstudio.nsls2.product.windows.openviews">
-            </dynamic>
+            <menu
+                  label="Open Perspectives">
+               <dynamic
+                     class="org.csstudio.nsls2.product.OpenPerspectives"
+                     id="org.csstudio.nsls2.product.windows.openperspectives">
+               </dynamic>
+            </menu>
+            <menu
+                  label="Open Views">
+               <dynamic
+                     class="org.csstudio.nsls2.product.OpenViews"
+                     id="org.csstudio.nsls2.product.windows.openviews">
+               </dynamic>
+            </menu>
+            <separator
+                  name="additions">
+            </separator>
          </menu>
       </menuContribution>
       <menuContribution
@@ -201,48 +221,37 @@
             locationURI="menu:org.eclipse.ui.main.menu?endof=additions">
          <menu
                id="help"
-               label="help">
+               label="Help"
+               mnemonic="H">
+            <command
+                  commandId="org.eclipse.ui.help.quickStartAction"
+                  label="Welcome"
+                  style="push">
+            </command>
             <separator
                   name="helpStart"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.help.helpContents"
+                  label="Help Contents"
+                  style="push">
+            </command>
             <separator
                   name="helpEnd"
                   visible="true">
             </separator>
+            <command
+                  commandId="org.eclipse.ui.help.aboutAction"
+                  icon="icons/css16.png"
+                  label="About CSS"
+                  style="push">
+            </command>
             <separator
                   name="additions"
                   visible="true">
             </separator>
          </menu>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?before=helpStart">
-         <command
-               commandId="org.eclipse.ui.help.quickStartAction"
-               label="Welcome"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?after=helpStart">
-         <command
-               commandId="org.eclipse.ui.help.helpContents"
-               label="Help Contents"
-               style="push">
-         </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:help?after=helpEnd">
-         <command
-               commandId="org.eclipse.ui.help.installationDialog"
-               icon="icons/alt_window_16.gif"
-               label="About CSS"
-               style="push">
-         </command>
       </menuContribution>
    </extension>
 

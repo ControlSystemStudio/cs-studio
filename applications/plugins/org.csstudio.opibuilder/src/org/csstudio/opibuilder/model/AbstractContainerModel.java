@@ -236,6 +236,14 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 		return (MacrosInput)getCastedPropertyValue(PROP_MACROS);
 	}
 
+	/**Add a macro to the container. 
+	 * This method must be called before this widget is activated.
+	 * @param macroName name of the macro
+	 * @param macroValue value of the macro
+	 */
+	public void addMacro(String macroName, String macroValue){
+		getMacrosInput().put(macroName, macroValue);
+	}
 
 	/**
 	 * @return the macros of its parent.

@@ -444,7 +444,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
 		// font
-		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>() {
+		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>() {
 			@Override
 			protected void doHandle(final RefreshableLabelFigure refreshLableFigure, final Font font) {
 				refreshLableFigure.setFont(font);

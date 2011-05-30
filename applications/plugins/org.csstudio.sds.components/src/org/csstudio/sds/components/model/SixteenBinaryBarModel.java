@@ -96,7 +96,8 @@ public class SixteenBinaryBarModel extends AbstractWidgetModel {
 		addColorProperty(PROP_LABEL_COLOR, "Label text color", WidgetPropertyCategory.FORMAT, "#000000", false,PROP_OFF_COLOR);
 		addColorProperty(PROP_INTERNAL_FRAME_COLOR, "Internal Frame Color", WidgetPropertyCategory.FORMAT, "#000000", false,PROP_LABEL_COLOR);
 
-
+		hideProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getTypeID());
+		hideProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND, getTypeID());
 	}
 
 	/**

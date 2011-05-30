@@ -72,7 +72,6 @@ public abstract class AbstractSelectionAction extends SelectionAction {
 		return ((DisplayEditor)getWorkbenchPart()).getGraphicalViewer();
 	}
 
-	
 	private final List<AbstractWidgetModel> getSelectedWidgetModels() {
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 		for (Object o : getSelectedObjects()) {

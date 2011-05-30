@@ -66,6 +66,7 @@ public class OPIEditorPerspective implements IPerspectiveFactory
         layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
         layout.addShowViewShortcut(ID_CONSOLE_VIEW);
         layout.addShowViewShortcut(ID_HELP_VIEW);
+        layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder"); //$NON-NLS-1$
         layout.addNewWizardShortcut("org.csstudio.opibuilder.wizards.newOPIWizard"); //$NON-NLS-1$
         layout.addNewWizardShortcut("org.csstudio.opibuilder.wizards.newJSWizard"); //$NON-NLS-1$
         layout.addNewWizardShortcut("org.csstudio.opibuilder.wizards.newPyWizard"); //$NON-NLS-1$

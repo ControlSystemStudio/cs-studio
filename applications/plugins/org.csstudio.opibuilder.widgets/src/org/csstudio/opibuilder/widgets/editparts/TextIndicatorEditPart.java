@@ -25,6 +25,7 @@ import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.WrappableTextFigure;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
@@ -70,6 +71,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	}
 
 	protected TextFigure createTextFigure(){
+		if(getWidgetModel().isWrapWords())
+			return new WrappableTextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);	
 		return new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 	}
 
@@ -233,7 +236,6 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextIndicatorModel.PROP_SHOW_UNITS, handler);
-
 	}
 
 	@Override

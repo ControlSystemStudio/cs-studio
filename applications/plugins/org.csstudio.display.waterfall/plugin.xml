@@ -36,9 +36,14 @@
             allPopups="false"
             locationURI="menu:display">
          <command
-               commandId="org.csstudio.display.waterfall.OpenView"
+               commandId="org.eclipse.ui.views.showView"
                icon="icons/water.png"
+               label="Waterfall"
                style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.display.waterfall.WaterfallView">
+            </parameter>
          </command>
       </menuContribution>
       <menuContribution

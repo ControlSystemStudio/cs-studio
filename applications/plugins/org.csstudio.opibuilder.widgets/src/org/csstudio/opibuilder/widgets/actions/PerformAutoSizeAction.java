@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.eclipse.draw2d.IFigure;
@@ -48,32 +49,14 @@ public class PerformAutoSizeAction extends AbstractWidgetTargetAction{
 		
 		IFigure figure = getContainerFigure();
 
-		int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, 
-		maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
+		Rectangle childrenRange = GeometryUtil.getChildrenRange(containerEditpart);
 		
-		for(Object editpart : containerEditpart.getChildren()){
-			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
-			int leftX = widget.getLocation().x;
-			int upY = widget.getLocation().y;
-			int rightX = widget.getLocation().x + widget.getSize().width;
-			int bottomY = widget.getLocation().y + widget.getSize().height;
-			if( leftX<minX)
-				minX = leftX;
-			if( upY < minY)
-				minY = upY;
-			if(rightX > maxX)
-				maxX =rightX;
-			if(bottomY > maxY)
-				maxY = bottomY;	
-			
-	
-		}
-		Point tranlateSize = new Point(minX,minY);
+		Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
 		
 		compoundCommand.add(new SetBoundsCommand(containerModel, 
 				new Rectangle(containerModel.getLocation().translate(tranlateSize), new Dimension(
-						maxX - minX + figure.getInsets().left + figure.getInsets().right,
-						maxY - minY + figure.getInsets().top + figure.getInsets().bottom))));
+						childrenRange.width + figure.getInsets().left + figure.getInsets().right,
+						childrenRange.height + figure.getInsets().top + figure.getInsets().bottom))));
 		
 
 		for(Object editpart : containerEditpart.getChildren()){

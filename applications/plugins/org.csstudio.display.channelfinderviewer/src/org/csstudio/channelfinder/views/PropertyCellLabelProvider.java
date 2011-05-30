@@ -4,6 +4,7 @@
 package org.csstudio.channelfinder.views;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.Property;
 
 import org.csstudio.channelfinder.util.ChannelUtilities;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -31,8 +32,12 @@ public class PropertyCellLabelProvider extends CellLabelProvider {
 	 */
 	@Override
 	public void update(ViewerCell cell) {
-		cell.setText(ChannelUtilities.getProperty((Channel) cell.getElement(),
-				this.propertyName).getValue());
+		Property property = ChannelUtilities.getProperty((Channel) cell.getElement(),
+				this.propertyName);
+		if(property == null)
+			cell.setText("");
+		else
+			cell.setText(property.getValue());
 	}
 
 }

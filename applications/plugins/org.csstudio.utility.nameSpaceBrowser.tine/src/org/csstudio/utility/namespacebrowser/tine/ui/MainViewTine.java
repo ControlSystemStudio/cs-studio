@@ -21,16 +21,16 @@
  */
 package org.csstudio.utility.namespacebrowser.tine.ui;
 
+import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
+import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.csstudio.utility.namespacebrowser.tine.Activator;
 import org.csstudio.utility.namespacebrowser.tine.Messages;
 import org.csstudio.utility.namespacebrowser.tine.utility.AutomatTine;
 import org.csstudio.utility.namespacebrowser.tine.utility.TineNameSpace;
-import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
-import org.csstudio.utility.tine.reader.TineSearchResult;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -50,7 +50,8 @@ public class MainViewTine extends ViewPart {
 	private AutomatTine automat;
 
 	// @Override
-	public void createPartControl(Composite parent) {
+	@Override
+    public void createPartControl(Composite parent) {
 		automat = new AutomatTine();
 		ScrolledComposite sc = new ScrolledComposite(parent,SWT.H_SCROLL);
 		Composite composite = new Composite(sc,SWT.NONE);
@@ -61,14 +62,13 @@ public class MainViewTine extends ViewPart {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(
 				parent.getShell(),
 				Activator.PLUGIN_ID + ".nsB");
-        composite.getShell().addKeyListener(new KeyListener() {
-			public void keyReleased(KeyEvent e) {
+        composite.getShell().addKeyListener(new KeyAdapter() {
+			@Override
+            public void keyReleased(KeyEvent e) {
 				if(e.keyCode==SWT.F1){
 					PlatformUI.getWorkbench().getHelpSystem().displayDynamicHelp();
 				}
 			}
-
-			public void keyPressed(KeyEvent e) {}
 		});
 		String[] headlines = {	Messages.getString("CSSView_Facility"),
 								Messages.getString("CSSView_Controller"),
@@ -78,6 +78,7 @@ public class MainViewTine extends ViewPart {
 		};
 		
 		// Namend the Records
+		try {
 		cssview = 
 			new CSSView(
 					composite, 
@@ -89,10 +90,20 @@ public class MainViewTine extends ViewPart {
 					headlines, 
 					0,
 					Messages.getString("MainViewTine.Default"));
+		} catch (Exception e) {
+            ErrorDetailDialog errorDetailDialog = new ErrorDetailDialog(null,
+                                                                        "Titel",
+                                                                        e.getLocalizedMessage(),
+                                                                        e.toString());
+            errorDetailDialog.open();
+        }
 	}
 
 	// @Override
-	public void setFocus() {}
+	@Override
+    public void setFocus() {
+	    // do noting
+	}
 
 	public void setDefaultPVFilter(String defaultFilter) {
 		defaultPVFilter = defaultFilter;
@@ -100,7 +111,8 @@ public class MainViewTine extends ViewPart {
 	}
 
 	// @Override
-	public void dispose(){
+	@Override
+    public void dispose(){
 		automat = null;
 	}
 }

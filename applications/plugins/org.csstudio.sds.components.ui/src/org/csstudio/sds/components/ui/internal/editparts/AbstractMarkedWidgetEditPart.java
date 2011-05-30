@@ -90,7 +90,7 @@ public abstract class AbstractMarkedWidgetEditPart extends
      */
 	private void setHihiColorHandler() {
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR,
-				new ColorChangeHander<AbstractMarkedWidgetFigure>() {
+				new ColorChangeHandler<AbstractMarkedWidgetFigure>() {
 					@Override
 					protected void doHandle(
 							final AbstractMarkedWidgetFigure figure,
@@ -105,7 +105,7 @@ public abstract class AbstractMarkedWidgetEditPart extends
      */
 	private void setHiColorHandler() {
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR,
-				new ColorChangeHander<AbstractMarkedWidgetFigure>() {
+				new ColorChangeHandler<AbstractMarkedWidgetFigure>() {
 					@Override
 					protected void doHandle(
 							final AbstractMarkedWidgetFigure figure,
@@ -120,7 +120,7 @@ public abstract class AbstractMarkedWidgetEditPart extends
      */
 	private void setLoColorHandler() {
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR,
-				new ColorChangeHander<AbstractMarkedWidgetFigure>() {
+				new ColorChangeHandler<AbstractMarkedWidgetFigure>() {
 					@Override
 					protected void doHandle(
 							final AbstractMarkedWidgetFigure figure,
@@ -135,7 +135,7 @@ public abstract class AbstractMarkedWidgetEditPart extends
      */
 	private void setLoloColorHandler() {
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR,
-				new ColorChangeHander<AbstractMarkedWidgetFigure>() {
+				new ColorChangeHandler<AbstractMarkedWidgetFigure>() {
 					@Override
 					protected void doHandle(
 							final AbstractMarkedWidgetFigure figure,

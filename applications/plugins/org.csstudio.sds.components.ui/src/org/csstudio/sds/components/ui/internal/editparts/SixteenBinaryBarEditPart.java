@@ -79,7 +79,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_VALUE, handler);
 
 		// font
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_FONT, new FontChangeHander<RefreshableSixteenBinaryBarFigure>(){
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_FONT, new FontChangeHandler<RefreshableSixteenBinaryBarFigure>(){
 			@Override
 			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Font font) {
 				figure.setLabelFont(font);
@@ -87,7 +87,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		});
 
 		// on color
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_ON_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_ON_COLOR, new ColorChangeHandler<RefreshableSixteenBinaryBarFigure>(){
 			@Override
 			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
 				figure.setOnColor(color);
@@ -95,7 +95,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 		});
 
 		// off color
-		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_OFF_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_OFF_COLOR, new ColorChangeHandler<RefreshableSixteenBinaryBarFigure>(){
 			@Override
 			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
 				figure.setOffColor(color);
@@ -116,7 +116,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 
 		// label color
 		setPropertyChangeHandler(SixteenBinaryBarModel.PROP_LABEL_COLOR,
-				new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+				new ColorChangeHandler<RefreshableSixteenBinaryBarFigure>(){
 			@Override
 			protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
 				figure.setLabelColor(color);
@@ -125,7 +125,7 @@ public class SixteenBinaryBarEditPart extends AbstractWidgetEditPart {
 
 		// frame color
 		setPropertyChangeHandler(
-				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, new ColorChangeHander<RefreshableSixteenBinaryBarFigure>(){
+				SixteenBinaryBarModel.PROP_INTERNAL_FRAME_COLOR, new ColorChangeHandler<RefreshableSixteenBinaryBarFigure>(){
 					@Override
 					protected void doHandle(RefreshableSixteenBinaryBarFigure figure, Color color) {
 						figure.setInternalBorderColor(color);

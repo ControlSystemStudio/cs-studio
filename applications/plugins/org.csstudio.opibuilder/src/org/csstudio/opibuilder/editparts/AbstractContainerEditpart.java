@@ -20,8 +20,11 @@ import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.scriptUtil.WidgetUtil;
+import org.csstudio.opibuilder.util.GeometryUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -31,6 +34,7 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.osgi.util.NLS;
 
 /**The editpart for {@link AbstractContainerModel}
  * @author Xihui Chen, Sven Wende (class of same name in SDS)
@@ -102,8 +106,54 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			}
 		}
 		return null;
+	}	
+	/**Add a child widget to the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChild(AbstractWidgetModel widgetModel){
+		getWidgetModel().addChild(widgetModel);
 	}
 	
+	/**Add a child widget to the right of the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChildToRight(AbstractWidgetModel widgetModel){
+		Rectangle range = GeometryUtil.getChildrenRange(this);
+		widgetModel.setX(range.x + range.width);
+		addChild(widgetModel);
+	}
+	
+	/**Add a child widget to the bottom of the container.
+	 * @param widgetModel model of the widget to be added. 
+	 * @see WidgetUtil#createWidgetModel(String)
+	 */
+	public void addChildToBottom(AbstractWidgetModel widgetModel){
+		Rectangle range = GeometryUtil.getChildrenRange(this);
+		widgetModel.setY(range.y + range.height);
+		addChild(widgetModel);
+	}
+	
+	/**Remove a child widget by its name.
+	 * @param widgetName name of the widget.
+	 * @throws RuntimeException if the widget name does not exist.
+	 */
+	public void removeChildByName(String widgetName) {
+		AbstractBaseEditPart child = getChild(widgetName);
+		if(child != null)
+			getWidgetModel().removeChild(child.getWidgetModel());
+		else
+			 throw new RuntimeException(NLS.bind(
+					 "Widget with name {0} doesn't exist!", widgetName));
+	}
+	
+	/**
+	 * Remove all children.
+	 */
+	public void removeAllChildren(){
+		getWidgetModel().removeAllChildren();
+	}
 	
 	@Override
 	public void setModel(Object model) {
@@ -125,8 +175,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		
 		super.activate();
-		if(getExecutionMode() == ExecutionMode.RUN_MODE)
-			layout();
+		
+		layout();
 		
 		childrenPropertyChangeListener = new PropertyChangeListener() {					
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -134,11 +184,14 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 						if(evt.getOldValue() instanceof Integer){
 							addChild(createChild(evt.getNewValue()), ((Integer)evt
 									.getOldValue()).intValue());
+							layout();
 						}else if (evt.getOldValue() instanceof AbstractWidgetModel){
 							EditPart child = (EditPart)getViewer().getEditPartRegistry().get(
 									evt.getOldValue());						
-							if(child != null)
+							if(child != null){
 								removeChild(child);
+								layout();
+							}	
 						}else							
 							refreshChildren();						
 					}
@@ -226,7 +279,16 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		return null;
 	}
 	
+	@Override
+	protected void refreshChildren() {
+		super.refreshChildren();
+		if(isActive())
+			layout();
+	}
+	
 	public void layout(){
+		if(getExecutionMode() != ExecutionMode.RUN_MODE)
+			return;
 		AbstractLayoutEditpart layoutter = getLayoutWidget();
 		if(layoutter != null && layoutter.getWidgetModel().isEnabled()){
 			List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();

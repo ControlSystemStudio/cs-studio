@@ -31,12 +31,15 @@ public class MacroUtilUnitTest
 
 	    // Actual macros
 	    final IMacroTableProvider macros =
-	        new MacroTable("ABC=DEF, 123=456, abc_456_def=789, A=$(B), B=C, C=D, 1=$(2), 2=$(1)");
+	        new MacroTable("ABC=DEF, 123=456, abc_456_def=789, " +
+	        		"A=$(B), B=C, C=D, " +
+	        		"1=$(2), 2=$(3), 3=a$(A)${1}," +
+	        		"d=hello, e= !, f =$(d)-world$(e)");
 
 	    System.out.println("Macros: " + macros);
 
 		//simple test
-		String input = "$(ABC)";
+	    String input = "$(ABC)";
 		String result = MacroUtil.replaceMacros(input, macros);
 		assertEquals("DEF", result);
 
@@ -56,7 +59,7 @@ public class MacroUtilUnitTest
 		//throw exception when infinite loop detected
 		try
 		{
-			input = "$(1)";
+			input = "abc$(123)$(1)";
 			result = MacroUtil.replaceMacros(input, macros);
 		}
 		catch (InfiniteLoopException e)
@@ -74,6 +77,10 @@ public class MacroUtilUnitTest
 		input = "$($($(abc_$(123)_def)))Hello $($($(A)))Best OPI $(ABC)D) Yet ${ABC}))!";
 		result = MacroUtil.replaceMacros(input, macros);
 		assertEquals("$($(789))Hello $(D)Best OPI DEFD) Yet DEF))!", result);
+		
+		input = "$(f)!";
+		result = MacroUtil.replaceMacros(input, macros);
+		assertEquals("hello-world!!", result);
 	}
 
 	@Test
