@@ -21,7 +21,10 @@
  */
 package org.csstudio.sds.internal.persistence;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jdom.Element;
@@ -63,10 +66,11 @@ public final class StringMapPropertyPersistenceHandler extends
 	public void writeProperty(final Element domElement,
 			final Object propertyValue) {
 		Map<String, String> aliases = (Map<String, String>) propertyValue;
+		List<String> aliasKeys = new ArrayList<String>(aliases.keySet());
+		Collections.sort(aliasKeys);
 
 		Element mapElement = new Element(XML_ELEMENT_MAP);
-
-		for (String key : aliases.keySet()) {
+		for (String key : aliasKeys) {
 			Element mapEntryElement = new Element(XML_ELEMENT_MAP_ENTRY);
 			mapEntryElement.setAttribute(XML_ATTRIBUTE_NAME, key); //$NON-NLS-1$
 			mapEntryElement.setAttribute(XML_ATTRIBUTE_VALUE, aliases.get(key)); //$NON-NLS-1$

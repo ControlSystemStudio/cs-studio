@@ -93,18 +93,8 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 	/**
 	 * The scaling coefficient (needed because only by rotating, the switch could go out of bounds).
 	 */
-	private double _coefficient=1.0;
+	private double _scaling = 1.0;
 
-	/**
-	 * Double versions of the current width.
-	 * wdth is the shorter side
-	 */
-	private double _wdth=1.0;
-	/**
-	 * Double versions of the current height.
-	 * hght is the longer side
-	 */
-	private double _hght=1.0;
 	/**
 	 * True if the switch was resized after last paint event.
 	 */
@@ -154,34 +144,34 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 		Rectangle figureBounds = getBounds().getCopy().crop(this.getInsets());
 		gfx.translate(figureBounds.getLocation());
-
+		
+		gfx.translate(figureBounds.width/2,figureBounds.height/2);
+		
+		int scalingDegreeOffset = 90;
+		if ((_rotAngle >= 90 && _rotAngle < 180) || (_rotAngle >= 270 && _rotAngle < 360)) {
+			int tmpWidth = figureBounds.width;
+			figureBounds.width = figureBounds.height;
+			figureBounds.height = tmpWidth;
+			scalingDegreeOffset = 0;
+		}
+		
 		if (_resized) {
 			/*some trigonometry to determine the new scaling factor*/
-			_wdth=(figureBounds.width<figureBounds.height)?(double)figureBounds.width:(double)figureBounds.height;
-			_hght=(figureBounds.width<figureBounds.height)?(double)figureBounds.height:(double)figureBounds.width;
-			double angle=_rotAngle;
+			double longSide  = (figureBounds.width<figureBounds.height)?(double)figureBounds.width:(double)figureBounds.height;
+			double shortSide = (figureBounds.width<figureBounds.height)?(double)figureBounds.height:(double)figureBounds.width;
 
-			if ((_rotAngle<=90) || ((_rotAngle>180) && (_rotAngle<=270))) {
-				_coefficient=_wdth/(_wdth*Trigonometry.sin(-angle+90.0)+_hght*Trigonometry.cos(-angle+90.0));
-				_coefficient=Math.abs(_coefficient);
-			}
-			if (((_rotAngle>90) && (_rotAngle<=180)) || ((_rotAngle>270) && (_rotAngle<=360))) {
-				_coefficient=_wdth/(_hght*Trigonometry.sin(angle)-_wdth*Trigonometry.cos(angle));
-				_coefficient=Math.abs(_coefficient);
-			}
-			//switch_painter.resize((int)(k*(double)bounds.width),(int)(k*(double)bounds.height));
+			_scaling=longSide / (longSide * Trigonometry.sin(-_rotAngle + scalingDegreeOffset) + shortSide * Trigonometry.cos(-_rotAngle + scalingDegreeOffset));
+			_scaling=Math.abs(_scaling);
 			_resized=false;
 		}
-
-		if (_rotAngle!=0) {
-			gfx.translate(figureBounds.width/2,figureBounds.height/2);
-			try {
-				gfx.rotate(_rotAngle);
-			} catch (RuntimeException e) {
-				CentralLogger.getInstance().error(this, "Error occured during ratation");
-			}
-			gfx.translate(-(int)(_coefficient*figureBounds.width*0.5),-(int)(_coefficient*figureBounds.height*0.5));
+		
+		try {
+			gfx.rotate(_rotAngle);
+		} catch (RuntimeException e) {
+			CentralLogger.getInstance().error(this, "Error occured during ratation");
 		}
+		gfx.translate(-(int)(_scaling*figureBounds.width*0.5),-(int)(_scaling*figureBounds.height*0.5));
+		
 
 		if (_switchState==CosySwitch.STATE_UNKNOWN) {
 			gfx.setForegroundColor(getForegroundColor());
@@ -190,10 +180,10 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		}
 		gfx.setBackgroundColor(gfx.getForegroundColor());
 		gfx.setLineWidth(getLineWidth());
-		_switchPainter.paintSwitch(gfx,_switchState, (int)(_coefficient*figureBounds.width),(int)(_coefficient*figureBounds.height));
+		_switchPainter.paintSwitch(gfx,_switchState, (int)(_scaling*figureBounds.width),(int)(_scaling*figureBounds.height));
 
 		if (_rotAngle!=0) {
-			gfx.translate((int)(_coefficient*figureBounds.width*0.5),(int)(_coefficient*figureBounds.height*0.5));
+			gfx.translate((int)(_scaling*figureBounds.width*0.5),(int)(_scaling*figureBounds.height*0.5));
 			try {
 				gfx.rotate(-(float)_rotAngle);
 			} catch (RuntimeException e) {
