@@ -30,10 +30,14 @@ import java.net.URL;
 
 import junit.framework.Assert;
 
+import org.csstudio.domain.desy.junit.ConditionalClassRunner;
+import org.csstudio.domain.desy.junit.OsCondition;
+import org.csstudio.domain.desy.junit.RunIf;
 import org.eclipse.core.runtime.FileLocator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Test for {@link SoftIoc}.
@@ -41,6 +45,8 @@ import org.junit.Test;
  * @author bknerr
  * @since 27.05.2011
  */
+@RunWith(ConditionalClassRunner.class)
+@RunIf(conditionClass = OsCondition.class, arguments = {OsCondition.LINUX})
 public class SoftIocHeadlessTest {
 
     private SoftIoc _softIoc;
@@ -59,20 +65,52 @@ public class SoftIocHeadlessTest {
     @Test
     public void testMonitorSoftIoc() throws IOException, URISyntaxException {
         URL camExeUrl = FileLocator.toFileURL(SoftIocHeadlessTest.class.getClassLoader().getResource("win/camonitor.exe"));
-        Process cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "SoftIocTest:calc").start();
         
-        BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
-        String line = null;
+        boolean killCaRepeater = !isCaRepeaterAlreadyRunning();
+        
+        Process cam = null;
         int noOfRuns = 0;
-        while((line=input.readLine()) != null && noOfRuns < 5) {
-            Assert.assertTrue(line.startsWith("SoftIocTest:calc"));
-            noOfRuns++;
+        try {
+            cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "SoftIocTest:calc").start();
+            BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
+            String line = null;
+            while((line=input.readLine()) != null && noOfRuns < 5) {
+                Assert.assertTrue(line.startsWith("SoftIocTest:calc"));
+                noOfRuns++;
+            }
+            input.close();
+        } finally {
+            if (cam != null) {
+                cam.destroy();
+                Assert.assertEquals(Integer.valueOf(5), Integer.valueOf(noOfRuns));
+            } else {
+                Assert.fail("Monitor process could not be spawned.");
+            }
+            if (killCaRepeater) {
+                new ProcessBuilder("taskkill.exe", "/f", "/im", "caRepeater.exe").start();
+            }
         }
-        cam.destroy();
-        
-        Assert.assertEquals(Integer.valueOf(5), Integer.valueOf(noOfRuns));
     }
     
+    private boolean isCaRepeaterAlreadyRunning() throws IOException {
+        Process taskList = new ProcessBuilder("tasklist.exe", "/fi", "IMAGENAME eq caRepeater.exe").start();
+        
+        BufferedReader input = new BufferedReader(new InputStreamReader(taskList.getInputStream()));
+        boolean taskExists = false;
+        String line;
+        while((line=input.readLine()) != null) {
+            if ("INFO: No tasks running with the specified criteria.".equals(line)) {
+                break;
+            } else if (line.startsWith("caRepeater.exe")) {
+                taskExists = true;
+                break;
+            }
+        }
+        input.close();
+        taskList.destroy();
+        return taskExists;
+    }
+
     @After
     public void teardown() throws IOException {
         _softIoc.stop();
