@@ -4,7 +4,7 @@ record(calc, "SoftIocTest:calc") {
    field(SCAN, "1 second")
    field(PHAS, "1")
    field(CALC, "(A<C)?C:((A<D)?(A+B):C)")
-   field(INPA, "AT_calc.VAL NPP MS")
+   field(INPA, "SoftIocTest:calc.VAL NPP MS")
    field(INPB, "1")
    field(INPC, "0")
    field(INPD, "10")

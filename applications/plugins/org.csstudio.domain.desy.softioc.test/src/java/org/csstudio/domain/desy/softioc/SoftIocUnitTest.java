@@ -84,18 +84,18 @@ public class SoftIocUnitTest {
     @Test
     public void testMonitorSoftIoc() throws IOException, URISyntaxException {
         URL camExeUrl = getClass().getClassLoader().getResource("win/camonitor.exe");
-//        Process cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "TrainIoc:alive").start();
+        Process cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "SoftIocTest:calc").start();
         
-//        BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
-//        String line = null;
-//        int noOfRuns = 0;
-//        while((line=input.readLine()) != null && noOfRuns < 5) {
-//            Assert.assertTrue(line.startsWith("TrainIoc:alive"));
-//            noOfRuns++;
-//        }
-//        cam.destroy();
-//        
-//        Assert.assertEquals(Integer.valueOf(5), Integer.valueOf(noOfRuns));
+        BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
+        String line = null;
+        int noOfRuns = 0;
+        while((line=input.readLine()) != null && noOfRuns < 5) {
+            Assert.assertTrue(line.startsWith("SoftIocTest:calc"));
+            noOfRuns++;
+        }
+        cam.destroy();
+        
+        Assert.assertEquals(Integer.valueOf(5), Integer.valueOf(noOfRuns));
     }
     
     @After

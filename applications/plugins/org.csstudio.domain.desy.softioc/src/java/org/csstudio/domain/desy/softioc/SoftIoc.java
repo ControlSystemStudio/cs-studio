@@ -28,6 +28,8 @@ import java.net.URISyntaxException;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.io.Files;
+
 /**
  * Wraps access via Runtime to the configurable Soft IOC. 
  * 
@@ -57,7 +59,7 @@ public class SoftIoc {
     
     public void start() throws IOException {
         
-        File softIocCmdFile = appendDbFilesAndInitialisation();
+        File softIocCmdFile = createCmdFile(_cfg);
         
         ProcessBuilder builder = new ProcessBuilder().command(_cfg.getDemoExecutableFilePath(), softIocCmdFile.getName())
                                                      .directory(softIocCmdFile.getParentFile());
@@ -65,23 +67,40 @@ public class SoftIoc {
         _process = builder.start();
     }
 
-    private File appendDbFilesAndInitialisation() throws IOException {
-        File softIocCmdFile = _cfg.getSoftIocCmdFile();
+    private File createCmdFile(@Nonnull final ISoftIocConfigurator cfg) throws IOException {
 
-        FileWriter writer = new FileWriter(softIocCmdFile, true);
-        for (File dbFile : _cfg.getDbFileSet()) {
-            
-            String relPathFromCmd = softIocCmdFile.toURI().relativize(dbFile.toURI()).getPath();
-            
-            writer.append("dbLoadRecords(\"").append(relPathFromCmd).append("\")\n");
+        File tmpCopy = createTmpCmdFileCopy(cfg);
+        insertDbFilesAndInitCommands(cfg, tmpCopy);
+        
+        return tmpCopy;
+    }
+
+    private void insertDbFilesAndInitCommands(@Nonnull final ISoftIocConfigurator cfg, 
+                                              @Nonnull final File tmpCopy) throws IOException {
+        FileWriter writer = new FileWriter(tmpCopy, true);
+        for (File dbFile : cfg.getDbFileSet()) {
+            writer.append("dbLoadRecords(\"").append(dbFile.getAbsolutePath()).append("\")\n");
         }
         writer.append("iocInit\n");
         writer.append("dbpf \"TrainIoc:valid\",\"Enabled\"   # from demo\n\n\n");
+        writer.append("iocLogClientInit\n");
 
-        writer.flush();
         writer.close();
+    }
+
+    /**
+     * @param cfg
+     * @return
+     * @throws IOException
+     */
+    private File createTmpCmdFileCopy(final ISoftIocConfigurator cfg) throws IOException {
+        File softIocCmdFile = cfg.getSoftIocCmdFile();
         
-        return softIocCmdFile;
+        File tmpCopy = File.createTempFile(softIocCmdFile.getName(), null, softIocCmdFile.getParentFile());
+        tmpCopy.deleteOnExit();
+        
+        Files.copy(softIocCmdFile, tmpCopy);
+        return tmpCopy;
     }
     
     public void stop() throws IOException {
