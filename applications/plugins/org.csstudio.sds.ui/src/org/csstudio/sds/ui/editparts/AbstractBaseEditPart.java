@@ -89,8 +89,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		implements NodeEditPart, PropertyChangeListener,
 		IProcessVariableAdressProvider, IProcessVariable, IListenerRegistry {
 
-	private boolean activated = false;
-
 	enum ConnectionStatus {
 		DISCONNECTED, CONNECTED, CONNECTING, DISCONNECTING
 	}
@@ -337,8 +335,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	@Override
 	public void activate() {
 		super.activate();
-
-		activated = true;
 
 		final AbstractWidgetModel model = getWidgetModel();
 
@@ -693,8 +689,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	@Override
 	public void deactivate() {
-		activated = false;
-
 		// stop listening to the preferences
 		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(
 				_preferencesListener);
@@ -774,7 +768,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(final Class adapter) {
 		if (adapter == IPropertySource.class) {
@@ -787,7 +781,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	public synchronized void propertyChange(final PropertyChangeEvent evt) {
 		String prop = evt.getPropertyName();
 
@@ -1096,6 +1089,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	public abstract class ColorChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue != null;
@@ -1124,6 +1118,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	public abstract class FontChangeHandler<F extends IFigure> implements
 			IWidgetPropertyChangeHandler {
 
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue instanceof String;
