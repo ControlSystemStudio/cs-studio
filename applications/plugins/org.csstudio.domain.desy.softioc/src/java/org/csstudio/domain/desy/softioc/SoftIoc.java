@@ -44,8 +44,9 @@ public class SoftIoc {
     /**
      * Constructor.
      * @throws URISyntaxException 
+     * @throws IOException 
      */
-    public SoftIoc() throws URISyntaxException {
+    public SoftIoc() throws URISyntaxException, IOException {
         this(new BasicSoftIocConfigurator());
     }
     
@@ -53,6 +54,10 @@ public class SoftIoc {
      * Constructor.
      */
     public SoftIoc(@Nonnull final ISoftIocConfigurator cfg) {
+        String os = System.getProperty("os.name");
+        if (!os.startsWith("Windows")) {
+            throw new IllegalArgumentException("Soft IOC can only be used on windows systems.");
+        }
         _cfg = cfg;
         _process = null;
     }

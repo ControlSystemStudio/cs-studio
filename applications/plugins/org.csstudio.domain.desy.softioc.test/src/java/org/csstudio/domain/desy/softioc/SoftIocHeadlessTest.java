@@ -30,52 +30,27 @@ import java.net.URL;
 
 import junit.framework.Assert;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
-import java.io.*;
- 
-public class Main {
- 
-       public static void main(String args[]) {
- 
-            try {
-                Runtime rt = Runtime.getRuntime();
-                //Process pr = rt.exec("cmd /c dir");
-                Process pr = rt.exec("c:\\helloworld.exe");
- 
-                BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
- 
-                String line=null;
- 
-                while((line=input.readLine()) != null) {
-                    System.out.println(line);
-                }
- 
-                int exitVal = pr.waitFor();
-                System.out.println("Exited with error code "+exitVal);
- 
-            } catch(Exception e) {
-                System.out.println(e.toString());
-                e.printStackTrace();
-            }
-        }
-} 
+ * Test for {@link SoftIoc}.
  * 
  * @author bknerr
  * @since 27.05.2011
  */
-public class SoftIocUnitTest {
+public class SoftIocHeadlessTest {
 
     private SoftIoc _softIoc;
     
     @Before
     public void setup() throws IOException, URISyntaxException {
         
-        URL dbFile = SoftIocUnitTest.class.getClassLoader().getResource("db/myTestDbFile.db");
-        ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFile.toURI()));
+        URL dbBundleResourceUrl = SoftIocHeadlessTest.class.getClassLoader().getResource("db/myTestDbFile.db");
+        URL dbFileUrl = FileLocator.toFileURL(dbBundleResourceUrl);
+        ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
         
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
@@ -83,7 +58,7 @@ public class SoftIocUnitTest {
     
     @Test
     public void testMonitorSoftIoc() throws IOException, URISyntaxException {
-        URL camExeUrl = getClass().getClassLoader().getResource("win/camonitor.exe");
+        URL camExeUrl = FileLocator.toFileURL(SoftIocHeadlessTest.class.getClassLoader().getResource("win/camonitor.exe"));
         Process cam = new ProcessBuilder(new File(camExeUrl.toURI()).toString(), "SoftIocTest:calc").start();
         
         BufferedReader input = new BufferedReader(new InputStreamReader(cam.getInputStream()));
