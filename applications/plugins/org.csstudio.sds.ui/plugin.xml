@@ -95,6 +95,12 @@
            icon="icons/layer_view.gif"
            id="org.csstudio.sds.ui.internal.layers.LayerManagementView"
            name="Layer Management"/>
+     <view
+           class="org.csstudio.sds.ui.internal.connectionview.ConnectionView"
+           id="org.csstudio.sds.ui.ConnectionView"
+           name="Connections"
+           restorable="true">
+     </view>
   </extension>
   <extension
         point="org.eclipse.ui.perspectives">

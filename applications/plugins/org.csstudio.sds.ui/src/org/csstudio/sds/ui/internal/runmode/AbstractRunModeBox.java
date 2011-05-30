@@ -45,6 +45,7 @@ import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.internal.editor.ProcessVariableDragSourceListener;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
+import org.csstudio.sds.ui.runmode.IDisplayLoadedCallback;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -100,6 +101,8 @@ public abstract class AbstractRunModeBox {
 	 */
 	private HashMap<WidgetProperty, IPropertyChangeListener> _propertyListeners;
 
+	private IDisplayLoadedCallback callback;
+
 	/**
 	 * Constructor.
 	 *
@@ -126,9 +129,10 @@ public abstract class AbstractRunModeBox {
 	/**
 	 * Open!
 	 */
-	public void openRunMode(final Runnable runAfterOpen) {
+	public void openRunMode(final Runnable runAfterOpen, final IDisplayLoadedCallback callback) {
 		// Open the run mode representation
 
+		this.callback = callback;
 		// initialize model
 		_displayModel = new DisplayModel();
 		_displayModel.setLive(true);
@@ -209,6 +213,7 @@ public abstract class AbstractRunModeBox {
 										if (runAfterOpen != null) {
 											runAfterOpen.run();
 										}
+										callback.displayLoaded();
 									}
 								});
 					}
@@ -305,6 +310,7 @@ public abstract class AbstractRunModeBox {
 				broker.releaseAll();
 				context.setBroker(null);
 				CentralLogger.getInstance().info(this, "SimpleDALBroker instance released.");
+				callback.displayClosed();
 			}
 
 			// forget all referenced objects
@@ -400,4 +406,8 @@ public abstract class AbstractRunModeBox {
 	}
 
 	public abstract Point getCurrentLocation();
+	
+	public DisplayModel getDisplayModel() {
+		return _displayModel;
+	}
 }
