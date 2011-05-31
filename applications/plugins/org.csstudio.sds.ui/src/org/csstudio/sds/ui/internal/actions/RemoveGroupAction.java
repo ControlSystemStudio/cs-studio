@@ -33,6 +33,7 @@ import org.csstudio.sds.ui.internal.commands.AddWidgetCommand;
 import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
 import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ui.IWorkbenchPart;
@@ -43,12 +44,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Kai Meyer & Sven Wende
  * 
  */
-public final class RemoveGroupAction extends AbstractSelectionAction {
+public final class RemoveGroupAction extends AbstractWidgetSelectionAction {
 
 	public static final String ID = "org.csstudio.sds.ui.internal.actions.RemoveGroupAction";
 
-	public RemoveGroupAction(IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
+	public RemoveGroupAction(IWorkbenchPart workbenchPart, GraphicalViewer viewer) {
+		super(workbenchPart, viewer);
 		setId(ID);
 		setText("Remove Group");
 		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/removegroup.gif"));

@@ -56,8 +56,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractBaseSection<E extends WidgetProperty> extends AbstractPropertySection implements IPropertyChangeListener {
-	protected static Color COLOR_CONTROL_ACTIVE = CustomMediaFactory.getInstance().getColor(255, 255, 64);
+	protected static final Color COLOR_CONTROL_ACTIVE = CustomMediaFactory.getInstance().getColor(255, 255, 64);
 	protected static final Color COLOR_CONTROL_INACTIVE = CustomMediaFactory.getInstance().getColor(255, 0, 0);
+	protected static final Color COLOR_SHARED_VALUE = CustomMediaFactory.getInstance().getColor(109, 34, 124);
 
 	static final int STANDARD_WIDGET_WIDTH = 150;
 	// static final int STANDARD_CCOMBO_WIDTH = STANDARD_WIDGET_WIDTH + 10;
@@ -80,7 +81,6 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
 	private ImageHyperlink nameHyperlink;
 	private ImageHyperlink editSettingsButton;
 	private ImageHyperlink removeSettingsButton;
-
 	/**
 	 * Constructs the section.
 	 * 
@@ -115,7 +115,7 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
 
 		// .. main composite
 		Composite composite = getWidgetFactory().createComposite(parent);
-		GridLayoutFactory.swtDefaults().numColumns(5).margins(0, 2).spacing(0, 2).applyTo(composite);
+		GridLayoutFactory.swtDefaults().numColumns(6).margins(0, 2).spacing(0, 2).applyTo(composite);
 
 		// .. info icon with additional help (will be invisible if no additional
 		// help is available)
@@ -129,7 +129,7 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
 		// .. name of the property
 		nameLabel = getWidgetFactory().createCLabel(composite, label);
 		GridDataFactory.fillDefaults().hint(STANDARD_WIDGET_WIDTH, SWT.DEFAULT).align(SWT.BEGINNING, SWT.BEGINNING).applyTo(nameLabel);
-
+		
 		// .. composite for controls that are added by subclasses
 		compositeForControls = getWidgetFactory().createComposite(composite);
 		GridDataFactory.fillDefaults().hint(STANDARD_WIDGET_WIDTH * 3 + 10, getMinimumHeight()).applyTo(compositeForControls);
@@ -286,15 +286,37 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
 			// configuration
 			boolean dynamic = mainWidgetProperty.getDynamicsDescriptor() != null;
 			nameLabel.setText(mainWidgetProperty.getDescription());
-			nameLabel.setFont(CustomMediaFactory.getInstance().getDefaultFont(dynamic ? SWT.BOLD : SWT.NORMAL));
+			
+			int fontStyle = dynamic ? SWT.BOLD : SWT.NORMAL;
+			Color color = nameLabel.getForeground(); 
+			if (haveAllSelectedWidgetsTheSameValue()) {
+				fontStyle = fontStyle | SWT.ITALIC;
+				color = COLOR_SHARED_VALUE;
+			}
+			nameLabel.setFont(CustomMediaFactory.getInstance().getDefaultFont(fontStyle));
+			nameLabel.setForeground(color);
+			
 			editSettingsButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
 					dynamic ?  "icons/dynamics_edit.gif" : "icons/dynamics_add.gif"));
 			removeSettingsButton.setVisible(dynamic);
-
 		}
 
 		// .. delegate to subclasses
 		doRefreshControls(mainWidgetProperty);
+	}
+	
+	private boolean haveAllSelectedWidgetsTheSameValue() {
+		if (mainWidgetProperty == null || selectedWidgets.size() < 2) {
+			return false;
+		}
+		
+		for (AbstractWidgetModel widget : selectedWidgets) {
+			if (!widget.getPropertyInternal(propertyId).getPropertyValue().equals(mainWidgetProperty.getPropertyValue())) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	/**

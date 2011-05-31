@@ -25,10 +25,8 @@ package org.csstudio.sds.ui.internal.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
-import org.csstudio.sds.ui.internal.editor.DisplayEditor;
-import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
@@ -39,22 +37,25 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Sven Wende
  * 
  */
-public abstract class AbstractSelectionAction extends SelectionAction {
+public abstract class AbstractEditPartSelectionAction extends SelectionAction {
+	
+	private final GraphicalViewer _viewer;
 
-	public AbstractSelectionAction(IWorkbenchPart part) {
+	public AbstractEditPartSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
 		super(part);
+		this._viewer = viewer;
 	}
 
-	protected abstract Command doCreateCommand(List<AbstractWidgetModel> selectedWidgets);
+	protected abstract Command doCreateCommand(List<AbstractBaseEditPart> selectedEditParts);
 
-	protected abstract boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets);
+	protected abstract boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts);
 
 	/**
 	 *{@inheritDoc}
 	 */
 	@Override
 	public final void run() {
-		Command cmd = doCreateCommand(getSelectedWidgetModels());
+		Command cmd = doCreateCommand(getSelectedEditParts());
 		if (cmd != null) {
 			execute(cmd);
 		}
@@ -65,22 +66,23 @@ public abstract class AbstractSelectionAction extends SelectionAction {
 	 */
 	@Override
 	protected final boolean calculateEnabled() {
-		return doCalculateEnabled(getSelectedWidgetModels());
+		return doCalculateEnabled(getSelectedEditParts());
 	}
 
-	protected EditPartViewer getGraphicalViewer() {
-		return ((DisplayEditor)getWorkbenchPart()).getGraphicalViewer();
+	protected GraphicalViewer getGraphicalViewer() {
+		return _viewer;
 	}
 
-	private final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-		for (Object o : getSelectedObjects()) {
+	private final List<AbstractBaseEditPart> getSelectedEditParts() {
+		List<?> selection = getSelectedObjects();
+		
+		List<AbstractBaseEditPart> selectedEditParts = new ArrayList<AbstractBaseEditPart>(selection.size());
+		for (Object o : selection) {
 			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o).getWidgetModel());
+				selectedEditParts.add(((AbstractBaseEditPart) o));
 			}
 		}
-		
-		return selectedWidgetModels;
+		return selectedEditParts;
 	}
 
 }
