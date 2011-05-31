@@ -657,7 +657,7 @@
     <extension
           point="org.eclipse.ltk.core.refactoring.renameParticipants">
        <renameParticipant
-             class="org.csstudio.sds.ui.internal.actions.SdsFileRenameParticipant"
+             class="org.csstudio.sds.ui.internal.refactoringparticipants.SdsFileRenameParticipant"
              id="org.csstudio.sds.ui.SdsFileRenameParticipant"
              name="SDS File Rename">
           <enablement>
@@ -666,5 +666,14 @@
              </instanceof>
           </enablement>
        </renameParticipant>
+    </extension>
+    <extension
+          point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+       <deleteParticipant
+             class="org.csstudio.sds.ui.internal.refactoringparticipants.SdsFileDeleteParticipant"
+             id="org.csstudio.sds.ui.SDSFileDeleteParticipant"
+             name="SDS FIle Delete">
+          <enablement></enablement>
+       </deleteParticipant>
     </extension>
 </plugin>

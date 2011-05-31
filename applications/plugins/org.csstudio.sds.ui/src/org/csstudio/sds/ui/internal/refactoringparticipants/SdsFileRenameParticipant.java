@@ -1,4 +1,4 @@
-package org.csstudio.sds.ui.internal.actions;
+package org.csstudio.sds.ui.internal.refactoringparticipants;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -25,11 +25,8 @@ import org.eclipse.ui.part.FileEditorInput;
 public class SdsFileRenameParticipant extends RenameParticipant {
 
 	private IFile _oldFile;
-	private IWorkbenchPage activePage;
 
 	public SdsFileRenameParticipant() {
-		System.out
-				.println("SdsFileRenameParticipant.SdsFileRenameParticipant()");
 	}
 
 	@Override
@@ -46,7 +43,7 @@ public class SdsFileRenameParticipant extends RenameParticipant {
 
 	@Override
 	public String getName() {
-		return "SDS File Renamer";
+		return "SDS File Rename Participant";
 	}
 
 	@Override
@@ -68,14 +65,15 @@ public class SdsFileRenameParticipant extends RenameParticipant {
 			IResourceDelta[] affectedChangedChildren) {
 		for (IResourceDelta delta : affectedChangedChildren) {
 			IResourceDelta[] children = delta.getAffectedChildren();
+			IWorkbenchPage activePage = findActiveWorkbenchPage();
 			boolean editorClosed = false;
-			final IEditorPart editor = findOpenEditor(_oldFile);
+			final IEditorPart editor = findOpenEditor(activePage, _oldFile);
 			if (editor != null) {
 				if (editor.isDirty()) {
 					status = RefactoringStatus
 							.createFatalErrorStatus("Display has unsaved changes. Please save the display before you rename the file.");
 				} else {
-					closeOpenEditor(editor);
+					closeOpenEditor(activePage, editor);
 					editorClosed = true;
 				}
 				if (editorClosed) {
@@ -90,13 +88,12 @@ public class SdsFileRenameParticipant extends RenameParticipant {
 			final IEditorPart editor) {
 		String editorId = editor.getEditorSite().getId();
 		IFile newFile = getNewFile(children);
-		ResourcesPlugin.getWorkspace()
-				.addResourceChangeListener(
-						new SDSFileResourceChangeListener(newFile,
-								editorId));
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				new SDSFileResourceChangeListener(newFile, editorId));
 	}
 
-	private void closeOpenEditor(final IEditorPart editor) {
+	private void closeOpenEditor(final IWorkbenchPage activePage,
+			final IEditorPart editor) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -105,20 +102,25 @@ public class SdsFileRenameParticipant extends RenameParticipant {
 		});
 	}
 
-	private IEditorPart findOpenEditor(IFile openFile) {
+	private IEditorPart findOpenEditor(IWorkbenchPage activePage, IFile openFile) {
+		IEditorPart editor = activePage
+				.findEditor(new FileEditorInput(openFile));
+		if (editor != null) {
+			return editor;
+		}
+		return null;
+	}
+
+	private IWorkbenchPage findActiveWorkbenchPage() {
 		IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench()
 				.getWorkbenchWindows();
 		for (IWorkbenchWindow window : workbenchWindows) {
-			activePage = window.getActivePage();
-			IEditorPart editor = activePage.findEditor(new FileEditorInput(
-					openFile));
-			if (editor != null) {
-				return editor;
+			if (window.getActivePage() != null) {
+				return window.getActivePage();
 			}
 		}
 		return null;
 	}
-	
 
 	private IFile getNewFile(IResourceDelta[] deltas) {
 		for (IResourceDelta delta : deltas) {
