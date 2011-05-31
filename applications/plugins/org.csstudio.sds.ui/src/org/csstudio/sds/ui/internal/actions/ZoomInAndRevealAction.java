@@ -34,7 +34,7 @@ public class ZoomInAndRevealAction extends SelectionAction {
 	private void revealSelectedEditParts() {
 		List<EditPart> selectedEditParts = getSelectedEditParts();
 		if (!selectedEditParts.isEmpty()) {
-			_viewer.reveal(selectedEditParts.get(0));
+			_viewer.reveal(selectedEditParts.get(selectedEditParts.size() - 1));
 		}
 	}
 

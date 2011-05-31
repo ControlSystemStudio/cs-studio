@@ -22,6 +22,8 @@
 package org.csstudio.sds.internal.persistence;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -381,8 +383,9 @@ public final class DisplayModelInputStream extends ByteArrayInputStream {
 			Map<ConnectionState, Object> connectionStateValues = dynamicsDescriptor
 					.getConnectionStateDependentPropertyValues();
 			if (connectionStateValues != null) {
-				for (ConnectionState connectionState : connectionStateValues
-						.keySet()) {
+				List<ConnectionState> connectionStates = new ArrayList<ConnectionState>(connectionStateValues.keySet());
+				Collections.sort(connectionStates);
+				for (ConnectionState connectionState : connectionStates) {
 					Object value = connectionStateValues.get(connectionState);
 
 					if (persistenceHandler != null) {
