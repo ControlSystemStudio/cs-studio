@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.nsls2.nslscore.feature"
-      label="NSLS2core Feature"
-      version="1.0.0.qualifier"
+      label="CSS-NSLS-II Core"
+      version="3.0.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
