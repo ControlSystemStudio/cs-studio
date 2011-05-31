@@ -44,8 +44,6 @@ import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -184,12 +182,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		// to ensure that the real EditPartViewer can get garbage collected
 		_editPartViewerProxy = new EditPartViewerProxy(graphicalViewer);
 		_contextMenuProvider = new RunModeContextMenuProvider(_editPartViewerProxy, actionRegistry);
-
-		_contextMenuProvider.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(final IMenuManager manager) {
-				manager.setRemoveAllWhenShown(true);
-			}
-		});
+		_contextMenuProvider.setRemoveAllWhenShown(true);
 		graphicalViewer.setContextMenu(_contextMenuProvider);
 
 		IWorkbenchPartSite site = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite();

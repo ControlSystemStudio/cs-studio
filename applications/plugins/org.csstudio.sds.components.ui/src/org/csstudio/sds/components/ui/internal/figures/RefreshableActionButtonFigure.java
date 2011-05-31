@@ -32,7 +32,6 @@ import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.PositionConstants;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -77,19 +76,8 @@ public final class RefreshableActionButtonFigure extends Button implements
 	@Override
 	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
-       Rectangle bound=getBounds().getCopy();
        _crossedOutAdapter.paint(graphics);
        _rhombusAdapter.paint(graphics);
-	}
-
-	/**
-	 * This method is a tribute to unit tests, which need a way to test the
-	 * performance of the figure implementation. Implementors should produce
-	 * some random changes and refresh the figure, when this method is called.
-	 *
-	 */
-	public void randomNoiseRefresh() {
-		setTextValue("" + Math.random()); //$NON-NLS-1$
 	}
 
 	/**
@@ -103,7 +91,6 @@ public final class RefreshableActionButtonFigure extends Button implements
 
 	public void setPressed(final boolean pressed){
 	    getModel().setPressed(pressed);
-
 	}
 
 	/**
@@ -139,7 +126,7 @@ public final class RefreshableActionButtonFigure extends Button implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(final Class adapter) {
 	    if(adapter == ICrossedFigure.class) {
             if(_crossedOutAdapter==null) {
