@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
+import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
@@ -70,7 +71,7 @@ public abstract class AbstractEditPartSelectionAction extends SelectionAction {
 	}
 
 	protected GraphicalViewer getGraphicalViewer() {
-		return _viewer;
+		return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
 	}
 
 	private final List<AbstractBaseEditPart> getSelectedEditParts() {
