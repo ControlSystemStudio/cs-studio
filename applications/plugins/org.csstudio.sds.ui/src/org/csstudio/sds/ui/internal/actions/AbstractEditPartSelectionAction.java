@@ -25,9 +25,9 @@ package org.csstudio.sds.ui.internal.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
@@ -39,9 +39,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  */
 public abstract class AbstractEditPartSelectionAction extends SelectionAction {
+	
+	private final GraphicalViewer _viewer;
 
-	public AbstractEditPartSelectionAction(IWorkbenchPart part) {
+	public AbstractEditPartSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
 		super(part);
+		this._viewer = viewer;
 	}
 
 	protected abstract Command doCreateCommand(List<EditPart> selectedEditParts);
@@ -68,7 +71,7 @@ public abstract class AbstractEditPartSelectionAction extends SelectionAction {
 	}
 
 	protected EditPartViewer getGraphicalViewer() {
-		return ((DisplayEditor)getWorkbenchPart()).getGraphicalViewer();
+		return _viewer;
 	}
 
 	private final List<EditPart> getSelectedEditParts() {

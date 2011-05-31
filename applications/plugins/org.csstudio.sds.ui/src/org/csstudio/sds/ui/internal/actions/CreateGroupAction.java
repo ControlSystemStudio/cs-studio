@@ -35,6 +35,7 @@ import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
 import org.csstudio.sds.ui.internal.editor.WidgetCreationFactory;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ui.IWorkbenchPart;
@@ -54,8 +55,8 @@ public final class CreateGroupAction extends AbstractWidgetSelectionAction {
 	 */
 	private static final int OFFSET = 5;
 
-	public CreateGroupAction(IWorkbenchPart workbenchPart) {
-		super(workbenchPart);
+	public CreateGroupAction(IWorkbenchPart workbenchPart, GraphicalViewer viewer) {
+		super(workbenchPart, viewer);
 		setId(ID);
 		setText("Create Group");
 		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/addgroup.gif"));

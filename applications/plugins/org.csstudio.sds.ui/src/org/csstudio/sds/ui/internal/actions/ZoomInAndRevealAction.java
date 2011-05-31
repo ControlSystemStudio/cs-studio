@@ -3,6 +3,7 @@ package org.csstudio.sds.ui.internal.actions;
 import java.util.List;
 
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.ui.actions.ZoomInAction;
@@ -12,8 +13,8 @@ public class ZoomInAndRevealAction extends AbstractEditPartSelectionAction {
 	
 	private final ZoomInAction _zoomInAction;
 
-	public ZoomInAndRevealAction(ZoomManager zoomManager, IWorkbenchPart part) {
-		super(part);
+	public ZoomInAndRevealAction(ZoomManager zoomManager, IWorkbenchPart part, GraphicalViewer viewer) {
+		super(part, viewer);
 		_zoomInAction = new ZoomInAction(zoomManager);
 		setId(_zoomInAction.getId());
 	}

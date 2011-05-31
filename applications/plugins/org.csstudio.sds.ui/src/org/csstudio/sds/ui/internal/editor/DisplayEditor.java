@@ -641,7 +641,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		zm.setZoomLevels(createZoomLevels());
 
 		if (zm != null) {
-			IAction zoomIn = new ZoomInAndRevealAction(zm, this);
+			IAction zoomIn = new ZoomInAndRevealAction(zm, this, getGraphicalViewer());
 			getSelectionActions().add(zoomIn.getId());
 			getActionRegistry().registerAction(zoomIn);
 			IAction zoomOut = new ZoomOutAction(zm);
@@ -675,11 +675,11 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
 		ActionRegistry registry = getActionRegistry();
 		IAction action;
 
-		action = new CreateGroupAction((IWorkbenchPart) this);
+		action = new CreateGroupAction(this, getGraphicalViewer());
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new RemoveGroupAction((IWorkbenchPart) this);
+		action = new RemoveGroupAction(this, getGraphicalViewer());
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
