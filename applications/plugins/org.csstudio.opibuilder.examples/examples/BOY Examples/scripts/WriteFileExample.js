@@ -1,11 +1,13 @@
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 importPackage(Packages.java.io);
 
-var value = PVUtil.getDouble(pvs[0]);
-var time = PVUtil.getTimeString(pvs[0]);
+var filePath = display.getWidget("filePath").getPropertyValue("text");
 
-var fileWriter = new FileWriter("C:\\tmp\\test.txt", true);
-var out = new BufferedWriter(fileWriter);
-out.write(time + "\t" + value);
-out.newLine();
-out.close();
+var text = display.getWidget("textInput").getPropertyValue("text");
+
+var isInWorkspace = display.getWidget("workspaceFile").getValue();
+
+var isAppend = display.getWidget("append").getValue();
+
+
+FileUtil.writeTextFile(filePath, isInWorkspace.booleanValue(), text, isAppend.booleanValue());

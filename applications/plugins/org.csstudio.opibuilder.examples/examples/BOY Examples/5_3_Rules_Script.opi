@@ -256,7 +256,7 @@ $(pv_value)</tooltip>
     </color_hihi>
     <show_lo>true</show_lo>
     <scripts>
-      <path pathString="scripts/KnobValueDialog.js" checkConnect="true" sfe="true">
+      <path pathString="scripts/KnobValueDialog.js" checkConnect="true" sfe="true" seoe="false">
         <pv trig="true">loc://knob0</pv>
       </path>
     </scripts>
@@ -435,7 +435,7 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <scripts>
-      <path pathString="scripts/ChangePositionAndSize.js" checkConnect="true" sfe="false">
+      <path pathString="scripts/ChangePositionAndSize.js" checkConnect="true" sfe="false" seoe="false">
         <pv trig="true">sim://sine(0,20,100,0.1)</pv>
       </path>
     </scripts>
@@ -903,6 +903,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>1</horizontal_alignment>
     <actions hook="false" />
     <y>431</y>
+    <wrap_words>false</wrap_words>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>638</x>
@@ -980,7 +981,7 @@ $(pv_value)</tooltip>
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>5_4_Python_Script.opi</path>
+        <path>5_4_FileIOWithScript.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -988,7 +989,7 @@ $(pv_value)</tooltip>
         <description />
       </action>
     </actions>
-    <tooltip>Python Script Example</tooltip>
+    <tooltip>File IO Example</tooltip>
     <x>727</x>
   </widget>
 </display>

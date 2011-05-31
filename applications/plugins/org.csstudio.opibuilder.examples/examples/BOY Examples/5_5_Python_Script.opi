@@ -225,7 +225,7 @@ $(pv_value)</tooltip>
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
-        <path>5_3_Rules_Script.opi</path>
+        <path>5_4_FileIOWithScript.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -245,7 +245,7 @@ $(pv_value)</tooltip>
     </color_hihi>
     <show_lo>true</show_lo>
     <scripts>
-      <path pathString="scripts/KnobValueDialog.py" checkConnect="true" sfe="true">
+      <path pathString="scripts/KnobValueDialog.py" checkConnect="true" sfe="true" seoe="false">
         <pv trig="true">loc://knob0</pv>
         <pv trig="false">loc://tempLimit(80)</pv>
       </path>
@@ -629,7 +629,7 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <scripts>
-      <path pathString="scripts/ChangePosAndSize.py" checkConnect="true" sfe="false">
+      <path pathString="scripts/ChangePosAndSize.py" checkConnect="true" sfe="false" seoe="false">
         <pv trig="true">sim://sine(0,20,100,0.1)</pv>
       </path>
     </scripts>
@@ -707,6 +707,7 @@ $(pv_value)</tooltip>
     <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>0</vertical_alignment>
     <show_units>false</show_units>
+    <multiline_input>false</multiline_input>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
