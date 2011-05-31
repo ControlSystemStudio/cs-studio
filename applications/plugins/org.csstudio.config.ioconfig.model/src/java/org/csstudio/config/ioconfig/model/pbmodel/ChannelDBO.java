@@ -400,7 +400,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
         short structSortIndex = getParent().getSortIndex();
         short moduleSortIndex = getModule().getSortIndex();
         
-        if(!( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
+        if(! ( (channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
             // if it a simple Channel (AI/AO)
             if(getChannelStructure().isSimple()) {
                 channelNumber = updateSimpleChannel(channelNumber, structSortIndex);
@@ -441,20 +441,20 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             short counter = structSortIndex;
             while ( (channelStructure == null) && (counter > 0)) {
                 channelStructure = getModule().getChildrenAsMap().get(--counter);
-                if( (channelStructure != null)
-                        && (channelStructure.getFirstChannel().isInput() == isInput())) {
-                    if(channelStructure.isSimple()) {
-                        cNumber = channelStructure.getFirstChannel().getChannelNumber();
-                        cNumber += channelStructure.getFirstChannel().getChannelType()
-                                .getByteSize();
-                        break;
-                    } else {
-                        ChannelDBO lastChannel = channelStructure.getLastChannel();
-                        cNumber = lastChannel.getChannelNumber()
-                                + channelStructure.getStructureType().getByteSize();
-                        break;
+                if(channelStructure != null) {
+                    ChannelDBO firstChannel = channelStructure.getFirstChannel();
+                    if(firstChannel != null && firstChannel.isInput() == isInput()) {
+                        if(channelStructure.isSimple()) {
+                            cNumber = firstChannel.getChannelNumber();
+                            cNumber += firstChannel.getChannelType().getByteSize();
+                            break;
+                        } else {
+                            ChannelDBO lastChannel = channelStructure.getLastChannel();
+                            cNumber = lastChannel.getChannelNumber()
+                                    + channelStructure.getStructureType().getByteSize();
+                            break;
+                        }
                     }
-                    
                 }
                 channelStructure = null;
             }
@@ -470,7 +470,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             while ( (channelStructure == null) && (counter > 0)) {
                 channelStructure = getModule().getChildrenAsMap().get(--counter);
                 ChannelDBO lastChannel = channelStructure.getLastChannel();
-                if( isRigthSimpleChannel(channelStructure, lastChannel)) {
+                if(isRigthSimpleChannel(channelStructure, lastChannel)) {
                     // Previous Channel is:
                     cNr = lastChannel.getChannelNumber();
                     if(channelStructure.isSimple()) {
@@ -485,7 +485,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
         }
         return cNr;
     }
-
+    
     /**
      * @param channelStructure
      * @param lastChannel
@@ -520,28 +520,12 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             for (ModuleChannelPrototypeDBO moduleChannelPrototype : moduleChannelPrototypes) {
                 if( (moduleChannelPrototype.isInput() == isInput())
                         && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
-                    if(getChannelStructure().isSimple()) {
-                        setChannelTypeNonHibernate(moduleChannelPrototype.getType());
-                    } else {
-                        setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
-                    }
-                    if( (getChannelType() == DataType.BIT) && !getChannelStructure().isSimple()) {
-                        sb.append(getChannelStructure().getStructureType().getType());
-                        sb.append(getBitPostion());
-                    } else {
-                        sb.append(moduleChannelPrototype.getType().getType());
-                    }
+                    setChannelType(moduleChannelPrototype);
+                    appendDataType(sb, moduleChannelPrototype);
                     setStatusAddressOffset(moduleChannelPrototype.getShift());
-                    if(moduleChannelPrototype.getMinimum() != null) {
-                        sb.append(",L=" + moduleChannelPrototype.getMinimum());
-                    }
-                    if(moduleChannelPrototype.getMaximum() != null) {
-                        sb.append(",H=" + moduleChannelPrototype.getMaximum());
-                    }
-                    if( (moduleChannelPrototype.getMaximum() != null)
-                            && (moduleChannelPrototype.getByteOrdering() > 0)) {
-                        sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
-                    }
+                    appendMinimum(sb, moduleChannelPrototype);
+                    appendMaximum(sb, moduleChannelPrototype);
+                    appendByteOdering(sb, moduleChannelPrototype);
                 }
             }
             sb.append("'");
@@ -550,6 +534,63 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, InvalidLeav
             setEpicsAddressString("");
         }
         setDirty( (isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
+    }
+
+    /**
+     * @param sb
+     * @param moduleChannelPrototype
+     */
+    private void appendDataType(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if( (getChannelType() == DataType.BIT) && !getChannelStructure().isSimple()) {
+            sb.append(getChannelStructure().getStructureType().getType());
+            sb.append(getBitPostion());
+        } else {
+            sb.append(moduleChannelPrototype.getType().getType());
+        }
+    }
+
+    /**
+     * @param sb
+     * @param moduleChannelPrototype
+     */
+    private void appendByteOdering(StringBuilder sb,
+                                   ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if( (moduleChannelPrototype.getMaximum() != null)
+                && (moduleChannelPrototype.getByteOrdering() > 0)) {
+            sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
+        }
+    }
+
+    /**
+     * @param sb
+     * @param moduleChannelPrototype
+     */
+    private void appendMaximum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if(moduleChannelPrototype.getMaximum() != null) {
+            sb.append(",H=" + moduleChannelPrototype.getMaximum());
+        }
+    }
+
+    /**
+     * @param sb
+     * @param moduleChannelPrototype
+     */
+    private void appendMinimum(StringBuilder sb, ModuleChannelPrototypeDBO moduleChannelPrototype) {
+        if(moduleChannelPrototype.getMinimum() != null) {
+            sb.append(",L=" + moduleChannelPrototype.getMinimum());
+        }
+    }
+
+    /**
+     * @param moduleChannelPrototype
+     * @throws PersistenceException
+     */
+    private void setChannelType(ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
+        if(getChannelStructure().isSimple()) {
+            setChannelTypeNonHibernate(moduleChannelPrototype.getType());
+        } else {
+            setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
+        }
     }
     
     @Transient
