@@ -11,6 +11,7 @@ org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.jms
 org.csstudio.remote
 org.csstudio.startup
+org.csstudio.ui.help
 org.csstudio.ui.menu
 org.csstudio.ui.preferences
 org.csstudio.ui.util
